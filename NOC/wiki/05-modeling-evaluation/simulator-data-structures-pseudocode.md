@@ -1,0 +1,287 @@
+# Simulator 数据结构与伪代码
+
+上级：[建模与评估](./README.md)
+
+相关：[Simulator 设计规格](./simulator-design-spec.md)、[Router Pipeline 与 Allocator](../02-router-microarchitecture/router-pipeline-allocator.md)
+
+## 为什么这页单独存在
+
+`Simulator 设计规格` 解决的是边界和目标。  
+真正开始写代码时，你还会立刻碰到两个问题：
+
+- 数据结构到底怎么落
+- 每周期 tick 到底怎么写
+
+这页提供的是第一版可执行粒度的抽象。
+
+## 推荐的数据结构骨架
+
+### Packet
+
+```text
+Packet {
+  id
+  src
+  dst
+  traffic_class
+  num_flits
+  route_id
+  creation_cycle
+  metadata
+}
+```
+
+`metadata` 可用于放：
+
+- stream_id
+- request_id
+- workload tag
+- multicast / reduce hint
+
+### Flit
+
+```text
+Flit {
+  id
+  packet_id
+  type            // HEADER / BODY / TAIL
+  seq
+  src
+  dst
+  traffic_class
+  route_progress
+  assigned_vc
+  enter_cycle
+}
+```
+
+### VC Buffer Entry
+
+```text
+VCState {
+  flit_queue
+  packet_active
+  route_ready
+  output_port
+  output_vc
+}
+```
+
+关键点：
+
+- `packet_active` 表示这个 VC 目前是否被某个 wormhole packet 占住
+- `output_port / output_vc` 由 header 建立，body / tail 复用
+
+### Router
+
+```text
+Router {
+  id
+  input_vcs[port][vc]
+  output_credit[port][vc]
+  output_vc_free[port][vc]
+  switch_requests
+  switch_grants
+  local_ejection_queue
+}
+```
+
+### Link
+
+```text
+Link {
+  src_router
+  src_port
+  dst_router
+  dst_port
+  pipeline_latency
+  in_flight_flits
+}
+```
+
+如果第一版链路是 1-cycle，可把 `in_flight_flits` 简化成单槽。
+
+### Endpoint / NI
+
+```text
+Endpoint {
+  id
+  injection_queue
+  ejection_queue
+  pending_packets
+  consumer_state
+}
+```
+
+### Stats
+
+```text
+Stats {
+  packet_latency_hist
+  link_utilization
+  router_occupancy
+  stall_cycles_by_reason
+  stall_cycles_by_class
+  workload_completion_cycle
+}
+```
+
+## 一套推荐的枚举
+
+### FlitType
+
+```text
+HEADER
+BODY
+TAIL
+```
+
+### TrafficClass
+
+```text
+CONTROL
+MEMORY_REQUEST
+MEMORY_RESPONSE
+STREAM
+BULK_DMA
+```
+
+### StallReason
+
+```text
+NONE
+NO_CREDIT
+SWITCH_CONFLICT
+LINK_BUSY
+EJECTION_BLOCKED
+INJECTION_BLOCKED
+ROUTE_BLOCKED
+WAITING_FOR_OTHER_STREAM
+VC_UNAVAILABLE
+```
+
+第一版可以把 `VC_UNAVAILABLE` 并入 `ROUTE_BLOCKED`，但单独保留更利于分析。
+
+## Router Tick 伪代码
+
+```text
+tick_router(router):
+  accept_arriving_flits(router)
+  accept_returning_credits(router)
+  update_local_ejection_state(router)
+
+  for each input_vc:
+    if head_flit is HEADER and route not ready:
+      compute_route(head_flit)
+
+  for each input_vc:
+    if head_flit is HEADER and needs output_vc:
+      request_vc_allocation(input_vc)
+
+  run_vc_allocator(router)
+
+  for each input_vc:
+    if head_flit can advance:
+      request_switch(input_vc, output_port)
+
+  run_switch_allocator(router)
+
+  for each granted input_vc:
+    move_flit_to_output_or_ejection(router, input_vc)
+    if input buffer slot released:
+      generate_credit_to_upstream()
+    if flit is TAIL:
+      release_packet_path_state()
+```
+
+## 全局 Tick 伪代码
+
+```text
+tick_system():
+  endpoints_generate_packets()
+  endpoints_packetize_to_injection_queue()
+
+  for each router:
+    phase_collect_inputs(router)
+
+  for each router:
+    tick_router(router)
+
+  advance_links()
+  deliver_link_outputs()
+  update_stats()
+  cycle += 1
+```
+
+如果担心读写同周期互相污染，建议做双缓冲：
+
+- `current_state`
+- `next_state`
+
+## Injection 伪代码
+
+```text
+try_inject(endpoint, attached_router):
+  if injection_queue empty:
+    return
+  pkt = peek(injection_queue)
+  if no local input_vc available:
+    record(INJECTION_BLOCKED)
+    return
+  if local route / vc precondition not met:
+    record(ROUTE_BLOCKED)
+    return
+  push first flit into router local input_vc
+```
+
+## Ejection 伪代码
+
+```text
+try_eject(router, flit):
+  if ejection_queue full:
+    record(EJECTION_BLOCKED)
+    keep flit at local output staging
+    return
+  enqueue_to_endpoint(flit)
+```
+
+## Credit Return 伪代码
+
+```text
+on_pop_input_buffer(router, input_port, input_vc):
+  schedule_credit_to_upstream(input_port, input_vc)
+```
+
+关键原则：
+
+- credit 在 slot 释放时返回
+- 不是 flit 抵达时立即返回
+
+## 一组推荐的最小单元测试
+
+1. 3-hop 单 packet 延迟是否符合手算
+2. input buffer 满时 source 是否停发
+3. tail 释放后 output_vc_free 是否恢复
+4. 两个输入抢一个输出时仲裁是否稳定
+5. ejection queue 满时 backpressure 是否传回
+
+## Debug 时最该打印什么
+
+第一版建议可选打印：
+
+- flit move trace
+- credit update trace
+- vc allocation trace
+- switch grant trace
+- stall reason trace
+
+不要一开始就打印一切，否则很难看。
+
+## 一个很实用的实现建议
+
+把“移动 flit”和“统计 stall”分开写。  
+状态转移逻辑和统计逻辑分离后，模型更容易 debug，也更容易改统计口径。
+
+## 本页结论
+
+第一版 NoC simulator 的关键，不在于把类设计得多优雅，而在于让 `packet / flit / VC / credit / tick order / stall accounting` 这几件事边界清楚、行为一致。
