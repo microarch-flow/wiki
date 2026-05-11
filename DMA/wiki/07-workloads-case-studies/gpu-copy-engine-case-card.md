@@ -10,7 +10,7 @@ GPU 系统里的 copy engine 和通用 DMA 有什么共性，又为什么它经�
 
 ## 典型系统位置
 
-- 位于 GPU 内部或 host-device 边界
+- 位于 GPU 侧的异步传输引擎
 - 负责 host<->device、device<->device、memory staging 等数据搬运
 - 与 compute queue 并行运行
 

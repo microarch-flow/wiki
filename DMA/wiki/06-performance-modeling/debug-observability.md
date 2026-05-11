@@ -29,6 +29,12 @@
 2. 再判定卡在 submit、issue、network、memory 还是 completion
 3. 最后才去细看单个队列、单个 burst 或单个 page 边界
 
+但这条路径并不是所有 DMA 都完全一样。至少可以先分三类：
+
+- `host-managed / queue-based DMA`：更像 `submit -> issue -> data move -> completion`
+- `device DMA to host memory`：更要盯 ring、moderation、host-visible completion
+- `pipeline-coupled local DMA`：更要盯 buffer readiness、dependency、local memory port 和 compute starvation
+
 ## 为什么 observability 是 IP 能力的一部分
 
 没有足够计数器时，DMA 性能问题很容易退化成猜测。  

@@ -12,6 +12,8 @@
 - 年份：
 - 场景：
 - 系统类型：
+- 控制模型：
+- coherent / IOMMU 假设：
 
 ## 它在解决什么 DMA 问题
 
@@ -23,6 +25,7 @@
 - 调度/outstanding：
 - completion/synchronization：
 - 与 NoC/memory/cache 的关系：
+- observability / debug 方法：
 
 ## 关键指标
 

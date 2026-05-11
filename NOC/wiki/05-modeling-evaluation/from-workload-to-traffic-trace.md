@@ -4,6 +4,14 @@
 
 相关：[流量模式](../04-ai-dataflow-system/traffic-patterns.md)、[架构探索方法](./architecture-exploration.md)
 
+## 读这页前先统一几个词
+
+- `workload`：真实要执行的模型、算子序列和数据依赖
+- `event`：一次有语义的通信动作，比如一次读请求或一次 tile-to-tile 发送
+- `flow`：一类持续或成组出现的通信，可由多个 packet 组成
+- `trace`：按时间顺序记录好的事件或 packet 序列，供 simulator 直接消费
+- `abstraction`：保留决定结论的关键信息，先忽略暂时不影响判断的细节
+
 ## 这页解决什么问题
 
 很多人知道 NoC 概念，也知道 workload 很重要，但真正开始建模时会卡在这里：
@@ -75,6 +83,16 @@ NoC 压力不是 workload 自带的，而是 workload 映射到硬件后才产�
 - barrier（屏障同步）/ control
 
 这一步的关键不是精确字节数，而是先把通信语义分清。
+
+同时建议尽早固定一套 canonical traffic class（统一流量类别口径），例如：
+
+- `CONTROL`
+- `MEMORY_REQUEST`
+- `MEMORY_RESPONSE`
+- `STREAM`
+- `BULK_DMA`
+
+这样后面的 trace、simulator 和实验模板才不会各写各的。
 
 ## Step 5：事件转 packet / flow
 

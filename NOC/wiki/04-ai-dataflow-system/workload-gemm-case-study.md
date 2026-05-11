@@ -4,6 +4,14 @@
 
 相关：[流量模式](./traffic-patterns.md)、[Collective Communication](./collective-communication.md)
 
+## 读这页前先统一几个词
+
+- `GEMM`：矩阵乘矩阵，是很多 AI 芯片最常见的核心算子
+- `weight-stationary`：尽量让权重留在本地，激活值在网络里流动
+- `output-stationary`：尽量让输出部分和留在本地累加
+- `forwarding`：结果不先回全局存储，而是直接转给下游 tile
+- `partial sum`：还没归并完成的中间累加结果
+
 ## 为什么先看 GEMM
 
 GEMM（通用矩阵乘法）是最适合作为 NoC 第一批 workload（工作负载）case study 的对象，因为它：

@@ -15,8 +15,12 @@
 - descriptor fetch / command queue
 - address generation
 - read request issue
-- write data path 或 response path
+- read response / data buffer
+- write request / write data path
 - completion tracking
+
+对通用 memory-to-memory DMA 来说，上面这些子路径通常都需要。  
+只有更简单的单向 peripheral DMA，才可能裁掉其中一部分子路径或把它们做得很薄。
 
 ## 常见的关键子模块
 

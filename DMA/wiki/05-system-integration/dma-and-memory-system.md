@@ -38,6 +38,8 @@
 - response latency
 - destination ejection / bank 冲突
 
+软件侧也并不是完全无能为力。queue 深度、batching 粒度、tile size、descriptor packing、polling/interrupt 策略，都会改变 DMA 注入节奏和回包波形。
+
 ## 一句话理解
 
 DMA 的真实上限不是自己定义的，而是由 `local memory + interconnect + external memory` 共同钳制出来的。

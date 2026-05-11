@@ -15,7 +15,7 @@ debug master 为什么经常被当成“特殊访问者”，以及它是怎样�
 - halt / resume CPU
 - 在系统异常时取证
 
-这意味着 debug path 常常需要绕过一部分正常软件路径，直接进入系统互连。
+这意味着 debug path 常常需要绕过一部分正常软件路径，以一个独立 debug master、DAP/access-port bridge 或类似侧向入口的形式接入系统互连。
 
 ## 为什么它是特殊路径
 

@@ -4,20 +4,30 @@
 
 相关：[Collective Communication](./collective-communication.md)、[Source Routing 与 Compiler-Driven NoC](../03-topology-routing/source-routing-compiler-driven-noc.md)
 
+## 读这页前先统一几个词
+
+- `MoE`：每个 token 只激活部分 expert 的模型
+- `dispatch`：把 token 或数据片段送到被选中的 expert
+- `gather`：expert 算完后把结果收回来
+- `dynamic traffic`：目的地和热点会随输入变化，不像 GEMM 那样规则
+- `starvation`：某类流量长期得不到服务，虽然系统整体还在运转
+
 ## 为什么 MoE 对 NoC 很“狠”
 
 MoE（混合专家模型）常常把 AI NoC 推向更动态、更不规则的区域，因为它引入了：
 
-- token（令牌）到 expert（专家模块）的分发
+- gate（门控）为每个 token 选择少数 expert（专家模块）的分发
 - expert 输出的 gather（收集）
 - 可能高度不均衡的流量热点
+
+关键不是“所有 token 发给所有 expert”，而是“每个 token 只发给少数被选中的 expert，但不同 token 的选择会随输入变化且可能高度偏斜”。
 
 这使它成为评估 routing（路由）、QoS（服务质量）和 collective（集合通信）价值的高压案例。
 
 ## 典型通信形态
 
-- many-to-many dispatch
-- many-to-many gather
+- 稀疏、偏斜的 all-to-all-like dispatch
+- 稀疏、偏斜的 all-to-all-like gather
 - 局部 fan-in / fan-out 突发
 
 这比普通 GEMM（通用矩阵乘法）或规则 pipeline（流水线）更接近网络压力测试。
@@ -27,7 +37,7 @@ MoE（混合专家模型）常常把 AI NoC 推向更动态、更不规则的区
 - traffic 是否严重偏斜到少数 expert
 - source routing（源路由）在动态流量下是否失去优势
 - adaptive routing（自适应路由）是否有明显收益
-- all-to-all（全交换）是否需要单独 traffic class（流量类别）或 plane
+- all-to-all（全对全通信）是否需要单独 traffic class（流量类别）或 plane
 
 ## 常见热点
 

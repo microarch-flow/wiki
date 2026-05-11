@@ -4,6 +4,14 @@
 
 相关：[Routing 与 Arbitration](./routing-arbitration.md)、[流量模式](../04-ai-dataflow-system/traffic-patterns.md)
 
+## 读这页前先统一几个词
+
+- `source routing`：路径由源端预先决定，packet header 里带着“该怎么走”
+- `runtime`：介于编译器和硬件之间的执行时软件层，负责按当前任务状态发起或协调传输
+- `placement`：把逻辑任务或数据块放到哪些 tile / cluster 上
+- `segment`：一段路径编码，表示 packet 先按这段规则走，再进入下一段
+- `plane`：相互隔离的一组链路或逻辑网络平面；常用于把不同流量分开跑，避免互相干扰
+
 ## 为什么这个主题对 AI NoC 特别重要
 
 在 CPU coherent NoC（缓存一致性片上网络）里，很多流量是动态产生、动态分叉的。  
@@ -85,6 +93,9 @@ GEMM（通用矩阵乘法）、attention pipeline（注意力流水线）、固�
 - 哪些流量必须避开控制面
 - 哪些流量应落在单独 plane / VC（虚拟通道）上
 
+但要注意，`路径可预先规划` 不等于 `路径集合天然可落地`。  
+如果静态路径集形成 channel dependency（信道依赖）环，source routing 一样会 deadlock（死锁）。
+
 ## 它不能自动解决什么
 
 source routing 不是万能药，它不能自动解决：
@@ -113,7 +124,10 @@ source routing 不是万能药，它不能自动解决：
 - tensor / stream 到 tile graph 的映射
 - DMA 计划
 - 路径冲突感知
+- deadlock-free path set（无死锁路径集）检查
 - 通信与计算重叠计划
+
+也就是说，source routing 落地前，必须检查静态路径集是否形成 channel dependency 环；若会成环，就要通过分离 VC、turn restriction 或 escape VC 保证无死锁。
 
 换句话说，source routing 不是单独的 header 设计问题，而是编译器和 NoC 的接口设计问题。
 
@@ -125,6 +139,7 @@ source routing 不是万能药，它不能自动解决：
 - packet header 只记录 dst（目的地址）和 route id
 - simulator（仿真器）用 route id 查表得到 hop 序列
 - 统计不同 flow 在同一路径段上的重叠情况
+- 额外做一次 path-set legality check（路径集合法性检查）
 
 这样不必一开始就实现复杂 header bit-encoding，也能评估 source routing 的架构价值。
 

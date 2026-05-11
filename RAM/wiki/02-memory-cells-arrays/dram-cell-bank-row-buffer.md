@@ -43,7 +43,7 @@ DRAM 的关键特征不是“随机访问很慢”，而是它的访问方式是
 1. `ACT`：先打开目标 row
 2. 把整行内容感测到 `sense amplifier / row buffer`
 3. `READ / WRITE`：从这行里按列读写
-4. `PRE`：关闭该行，为下一次行切换做准备
+4. 如果后续要切到别的 row，才执行 `PRE`：关闭该行，为下一次行切换做准备
 
 ## Row Buffer 为什么重要
 
@@ -55,11 +55,12 @@ Row buffer 可以看成 DRAM bank 的“当前工作行”。
 - 不需要重新激活
 - 延迟更低
 
-如果下一个访问落在另一个行：
+如果下一个访问不再落在当前打开的行，需要先区分两种情况：
 
-- 属于 `row miss` 或 `row conflict`
-- 需要 precharge 旧行、activate 新行
-- 延迟更高
+- `row miss`：当前 bank 没有打开任何行，需要 `ACT -> READ/WRITE`
+- `row conflict`：当前 bank 打开的是别的行，需要 `PRE -> ACT -> READ/WRITE`
+
+第二种情况通常代价更高。
 
 这就是为什么 DRAM 的实际性能，不只是看接口峰值，还强烈依赖访问局部性。
 

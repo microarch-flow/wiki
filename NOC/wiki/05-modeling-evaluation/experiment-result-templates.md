@@ -30,6 +30,7 @@
 
 至少记录：
 
+- current modeling layer（当前建模层次）
 - topology
 - routing
 - VC（虚通道）/ traffic class（流量类别）设置
@@ -59,6 +60,12 @@
 - stall breakdown（停顿分类统计）
 - tile utilization
 - workload completion time（工作负载完成时间）
+
+并额外标明：
+
+- Supported metrics（当前模型可信输出的指标）
+- Proxy metrics（代理指标）
+- Unsupported metrics（当前模型不应报告的指标）
 
 ### 5. 根因分析
 
@@ -121,6 +128,7 @@
 - `EJECTION_BLOCKED`
 - `INJECTION_BLOCKED`
 - `WAITING_FOR_OTHER_STREAM`
+- `VC_UNAVAILABLE`（若你的实现单独统计）
 
 最好同时提供：
 

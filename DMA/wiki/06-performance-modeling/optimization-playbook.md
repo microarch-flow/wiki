@@ -16,6 +16,14 @@
 - 多流公平性差
 - 偶发错或偶发抖动
 
+再往下一层，还要先分清当前优化对象是哪一类 DMA：
+
+- queue-based / host-managed DMA
+- device DMA to host memory
+- pipeline-coupled local DMA
+
+因为这三类对象的“completion”、瓶颈位置和软件可调旋钮并不完全相同。
+
 ## 常见调优旋钮
 
 - transfer size

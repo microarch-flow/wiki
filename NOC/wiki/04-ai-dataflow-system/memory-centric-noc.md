@@ -4,6 +4,14 @@
 
 相关：[NI / DMA / 存储接口](./ni-dma-memory-interface.md)、[Attention Decode Case Study](./workload-attention-decode-case-study.md)
 
+## 读这页前先统一几个词
+
+- `memory-centric`：系统主要瓶颈由存储访问路径而不是纯 tile-to-tile 流决定
+- `request path`：请求从发起端走到 memory 节点的路径
+- `response path`：数据从 memory 节点返回消费者的路径
+- `memory node`：承接存储请求的端点，例如 SRAM bank 组、HBM controller port 或共享 memory tile
+- `critical response`：不及时返回就会直接卡住后续计算的响应
+
 ## 为什么要单独看 memory-centric NoC
 
 不是所有 NoC 问题都由 tile-to-tile stream 主导。  
@@ -38,10 +46,10 @@
 
 这里尤其要注意：
 
-- request 慢不一定致命
-- response 慢往往更致命
+- 在读主导、decode-like 场景里，request 慢不一定最致命
+- 在这类场景里，response 慢往往更接近关键路径
 
-因为 response 常常处在 compute 是否能继续前进的关键路径上。
+因为 response 常常处在 compute 是否能继续前进的关键路径上；但如果写回、命令仲裁或 request window 受限，request 也可能先成为瓶颈。
 
 ## 为什么 response path 比 request path 更危险
 

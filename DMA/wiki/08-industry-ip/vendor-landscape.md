@@ -14,6 +14,8 @@
 - 高速 I/O 设备里的 device DMA
 - AI / accelerator 内部专用 DMA
 
+如果要和 overview 里的 taxonomy 对齐，更稳妥的理解是：每一类对象其实都是 `系统位置 + 主传输路径 + 控制模式 + coherence/translation 假设` 的组合。
+
 ## 研究时更值得关注什么
 
 - 面向哪类总线和地址空间

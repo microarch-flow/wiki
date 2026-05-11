@@ -4,6 +4,14 @@
 
 相关：[建模层次](./modeling-layers.md)、[Router Pipeline 与 Allocator](../02-router-microarchitecture/router-pipeline-allocator.md)
 
+## 读这页前先统一几个词
+
+- `simulator`：用软件近似硬件行为的模型，用来跑实验和比方案
+- `design spec`：先写清模型边界、对象和必须回答的问题，再开始实现
+- `hook`：为以后接入更真实模块预留的接口
+- `route_id / hop list`：表示 packet 要走哪条路的编码
+- `optional`：不是第一版必须有，但未来可以补的能力
+
 ## 目标边界
 
 这份规格面向的是：
@@ -15,6 +23,8 @@
 - 可扩展到 VC（虚通道）/ traffic class（流量类别）/ hierarchical topology（层次化拓扑）
 
 它不是 RTL（寄存器传输级），也不是物理实现模型。
+
+如果你当前只想回答 `topology / placement / memory port` 的一阶问题，可以先停在 Level 1 或 Level 2 模型；这份规格描述的是“当你已经需要 flit-level 解释力时”的第一版基线。
 
 ## 第一版必须回答的问题
 
@@ -145,10 +155,11 @@ packet 到达 destination router 不等于任务完成，还要满足：
 
 第一版建议至少支持：
 
-- `control`
-- `memory_response`
-- `stream`
-- `bulk_dma`
+- `CONTROL`
+- `MEMORY_REQUEST`
+- `MEMORY_RESPONSE`
+- `STREAM`
+- `BULK_DMA`
 
 实现上可以从简：
 
@@ -172,6 +183,12 @@ packet 到达 destination router 不等于任务完成，还要满足：
 并要求：
 
 - 每周期每个活跃 flit / endpoint 只打一个主 stall 标签
+
+如果实现里需要更细粒度分析，也可以额外保留：
+
+- `VC_UNAVAILABLE`
+
+但应明确它是独立统计项，还是并入 `ROUTE_BLOCKED`。
 
 ## 指标接口
 

@@ -4,6 +4,14 @@
 
 相关：[Simulator 设计规格](./simulator-design-spec.md)、[Router Pipeline 与 Allocator](../02-router-microarchitecture/router-pipeline-allocator.md)
 
+## 读这页前先统一几个词
+
+- `data structure`：程序里保存网络状态和 packet 状态的对象定义
+- `state`：某个周期结束后，系统当前持有的所有关键信息
+- `tick`：模拟器向前推进一个周期的动作
+- `pseudocode`：表达控制流程的近代码描述，不要求可直接运行
+- `metadata`：不直接参与转发，但对统计、调试或 workload 关联有用的附加字段
+
 ## 为什么这页单独存在
 
 `Simulator（模拟器）设计规格` 解决的是边界和目标。  

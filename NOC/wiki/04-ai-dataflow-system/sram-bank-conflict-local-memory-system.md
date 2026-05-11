@@ -4,6 +4,14 @@
 
 相关：[NI / DMA / 存储接口](./ni-dma-memory-interface.md)、[Hierarchical NoC 深化](../03-topology-routing/hierarchical-noc-deep-dive.md)
 
+## 读这页前先统一几个词
+
+- `bank`：把 SRAM 切成多个可部分并行访问的子体
+- `port`：bank 对外提供的读写入口数
+- `scratchpad`：软件显式管理的本地存储，不像 cache 那样自动替换
+- `memory arbitration`：多个本地访问同时到来时，谁先使用 bank / port
+- `local bottleneck`：问题出在端点本地存储系统，而不是 NoC 主干链路
+
 ## 为什么这页重要
 
 很多 NoC 分析会默认端点”只要数据到了就能消费”。  

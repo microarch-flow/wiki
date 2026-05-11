@@ -31,7 +31,7 @@
 - 理论瓶颈：
 - 热点 slave：
 - read/write 混合风险：
-- return path 风险：
+- response path 风险：
 
 ## 集成判断
 

@@ -12,10 +12,17 @@
 
 建议至少有：
 
-- 每个 master 的发起次数
-- 每个 slave 的服务次数
+- 每个 master 的请求接受次数
+- 每个 slave 的服务完成次数
 - 仲裁等待周期
 - response 等待周期
+
+如果要让这些计数器真正可实现，最好把语义钉死：
+
+- `请求接受次数`：地址通道上 `VALID && READY` 的次数
+- `backpressure 周期`：`VALID && !READY` 的周期数
+- `completion latency`：从请求被接受到最后一个完成 beat/response 返回的周期数
+- `服务完成次数`：对读看最后一个返回 beat，对写看最终 response 返回
 
 ## 第二类：缓冲与回压计数
 

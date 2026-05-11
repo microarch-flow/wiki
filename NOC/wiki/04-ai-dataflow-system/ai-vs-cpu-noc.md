@@ -4,6 +4,14 @@
 
 相关：[NoC 分类框架](../01-overview/taxonomy.md)
 
+## 读这页前先统一几个词
+
+- `coherent NoC`：服务于缓存一致性协议的片上网络，不只是搬数据，还要维护协议语义
+- `dataflow NoC`：服务于 AI 数据流执行的网络，重点是吞吐、局部复用和依赖按时满足
+- `snoop`：一致性协议里的查询消息，用来问其他 cache 是否持有某地址副本
+- `invalidate`：让其他 cache 把某份副本作废
+- `forward progress`：系统保证合法事务最终一定能完成，而不是永远卡住
+
 ## 为什么要先划清边界
 
 两者都叫 NoC，但设计哲学不同。  
@@ -45,7 +53,7 @@
 | --- | --- | --- |
 | 主流量 | tensor block、stream、DMA | cache line、snoop、response |
 | 目标 | 吞吐与 pipeline 稳定性 | 一致性与低延迟事务 |
-| 访问模式 | 更规则、更可预测 | 更动态、更程序依赖 |
+| 访问模式 | 很多训练/GEMM 类场景更规则、可编排；但 decode、MoE 等推理流量也可能高度动态 | 更动态、更程序依赖 |
 | 编译器影响 | 很大 | 相对较小 |
 | VC（虚通道）作用 | traffic class 隔离、QoS（服务质量）、避免 HOL（队头阻塞） | 协议隔离、避免 coherence deadlock（一致性死锁） |
 | 重点风险 | backpressure（反压）影响 tile 利用率 | 协议正确性与事务死锁 |

@@ -4,6 +4,14 @@
 
 相关：[Credit / Backpressure](../02-router-microarchitecture/credit-backpressure.md)
 
+## 读这页前先统一几个词
+
+- `NI`：Network Interface，端点和 NoC 之间的协议转换层
+- `injection`：把 packet 从端点送进 NoC
+- `ejection`：把 packet 从 NoC 弹出到目的端点
+- `reassembly`：把收到的一串 flit 重组成完整 packet 或完整数据块
+- `outstanding request`：已经发出但还没收到响应的请求；数量过大时会放大 response 回流压力
+
 ## 为什么这一层必须单独拿出来
 
 很多人把 NoC 建成“router + link”就停了，但真正决定系统堵不堵的，常常是端点。
@@ -51,9 +59,10 @@ NoC 只负责把每个 packet 从源送到目的地，不理解 packet 之间的
 | 编译器 / runtime | 规划发送顺序和时序，确保依赖正确 |
 | NI / DMA 控制器 | 按编译器指定的顺序发起传输，用 barrier / descriptor 做同步 |
 | NoC | 只管转发，不重排、不理解依赖 |
-| 目的端 NI | 按 packet 到达顺序交付 tile，或用 tag 让 tile 重组 |
+| 目的端 NI | 按到达顺序交付，或结合 tag / sequence id 做重组与重排 |
 
-有一个保证：**同一个源、同一个目的、同一个 VC 上的 packet，NoC 保证 FIFO 顺序（先发的先到）。** 因为 wormhole 下同一 VC 的 packet 是串行通过的。但不同源、不同 VC、不同路径的 packet 之间没有顺序保证。
+很多常见 wormhole（虫孔转发）+ per-VC FIFO（每 VC 先进先出）实现里，**同一源、同一目的、同一路径、同一 VC 上的 packet 通常可维持发送顺序**。  
+但这不是无条件保证：如果存在多路径、自适应路由、多队列注入，或端点侧显式重排，就不应默认全局 FIFO，而应依赖 tag / sequence id / scoreboard 做重组。
 
 ### 片上 NoC 不丢数据
 

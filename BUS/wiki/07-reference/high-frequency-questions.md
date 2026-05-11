@@ -8,7 +8,7 @@
 
 ## 1. BUS 和 NoC 是不是一回事
 
-不是。BUS 更强调共享事务互连，NoC 更强调大规模并发和拓扑化传输。
+不是。更准确地说，BUS 强调的是片上事务互连和软件可见语义；shared bus、bus matrix、crossbar、分层互连都可能落在这个抽象里。NoC 更强调大规模并发、拓扑化传输和可扩展流控。
 
 ## 2. AXI 是不是一条“总线”
 
@@ -24,7 +24,7 @@
 
 ## 5. address handshake 成功，是不是事务就完成了
 
-不是。对 AXI 来说，请求被接收只代表事务开始，不代表数据和 response 已经闭环。
+不是。对 AXI 来说，请求被接收只代表地址阶段被接收，不代表整笔事务已经闭环。写事务通常还要看到 `B` 返回，读事务通常还要看到最后一个 `R` beat。
 
 ## 6. coherent 系统是不是就不需要 barrier
 
@@ -44,7 +44,7 @@
 
 ## 10. 波形里 READY 拉低，是不是一定有 bug
 
-不是。READY 拉低本身是正常流控现象，关键是它为什么拉低、是否长期不恢复。
+不是。READY 拉低本身是正常流控现象，关键是它为什么拉低、是否长期不恢复。反过来，`READY` 高也不代表系统就没问题，因为 source 可能根本没有发出 `VALID`。
 
 ## 11. CPU 读 MMIO 卡死，是不是一定是软件 bug
 
@@ -52,7 +52,7 @@
 
 ## 12. DDR 带宽高，是不是 AXI master 就一定体验好
 
-不是。中间的 interconnect、return path、row locality 和 read/write turnaround 都会改变最终体验。
+不是。中间的 interconnect、response path、row locality 和 read/write turnaround 都会改变最终体验。
 
 ## 一句话理解
 

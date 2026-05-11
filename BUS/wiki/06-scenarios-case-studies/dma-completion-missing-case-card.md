@@ -12,7 +12,7 @@ DMA 看起来已经把数据搬完，但软件迟迟收不到 completion，或�
 
 - completion writeback 还没真正可见
 - interrupt 到了，但状态记录还没稳定
-- completion record 被 cache 住了
+- CPU 读到的还是旧缓存副本
 - writeback 与普通 data write 共路，尾部被堵
 - 软件过早复用了 queue/completion buffer
 
@@ -21,7 +21,7 @@ DMA 看起来已经把数据搬完，但软件迟迟收不到 completion，或�
 1. 分清数据搬运完成，还是“软件可见完成”
 2. 看 writeback 路径是否真的发出并返回
 3. 看 interrupt 和 completion record 的先后关系
-4. 看 CPU 侧是否做了正确 invalidate / barrier
+4. 先分清 DMA 路径是 coherent 还是 non-coherent，再看 CPU 侧是否做了正确 invalidate / barrier 或其他 cache maintenance
 
 ## 一个关键判断
 

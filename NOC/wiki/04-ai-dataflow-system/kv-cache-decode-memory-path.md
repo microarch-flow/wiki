@@ -4,6 +4,14 @@
 
 相关：[Memory-Centric NoC](./memory-centric-noc.md)、[Attention Decode Case Study](./workload-attention-decode-case-study.md)
 
+## 读这页前先统一几个词
+
+- `KV cache`：存历史 token 的 key / value 张量，decode 每一步都要回头读它
+- `decode step`：生成一个新 token 的一次迭代
+- `step latency`：完成一个 decode step 的总时间
+- `response isolation`：把关键响应流量和 bulk 流量隔离开，避免响应被长包压住
+- `memory fragment`：一次逻辑读取被切成多个响应片段返回时的单个片段
+
 ## 为什么这页重要
 
 decode（逐token解码）阶段最容易把人带偏的一点是：

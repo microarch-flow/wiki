@@ -15,6 +15,12 @@ DMA 为什么既是硬件模块，也是 software contract；以及 driver、run
 - OS / IOMMU 提供地址与权限管理
 - DMA engine 执行传输并回报完成
 
+这里最好补一个地址桥接：
+
+- CPU/用户态最先看到的往往是虚拟地址
+- descriptor 里真正写进去的，常常是物理地址、IOVA 或其他 device-visible 地址
+- 这层地址是否有效，取决于映射、权限和 buffer 生命周期是否正确
+
 ## 编程模型的关键对象
 
 - descriptor / command
@@ -22,6 +28,9 @@ DMA 为什么既是硬件模块，也是 software contract；以及 driver、run
 - doorbell
 - completion record
 - interrupt 或 polling
+
+这套对象更典型地出现在 `queue-based DMA engine` 里。  
+更简单的 peripheral DMA 也可能只有通道寄存器、状态位和传输完成中断，而不一定暴露完整 ring/queue 模型。
 
 ## 三种常见控制方式
 

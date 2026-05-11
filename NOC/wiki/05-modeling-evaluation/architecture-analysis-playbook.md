@@ -4,6 +4,14 @@
 
 相关：[从 Workload 到 Traffic Trace 操作手册](./from-workload-to-traffic-trace.md)、[检查清单](../06-reference/checklists.md)
 
+## 读这页前先统一几个词
+
+- `playbook`：可重复执行的分析套路，不靠临场发挥
+- `bottleneck`：最先把系统速度卡住的资源或路径
+- `evidence`：支撑判断的数据和观测，而不是纯直觉
+- `decision boundary`：什么条件下当前选择成立，什么条件变化后要重判
+- `self-check`：拿问题清单反过来检查自己有没有漏分析关键环节
+
 ## 为什么这页重要
 
 知道知识点，不等于真的会做架构分析。  
@@ -81,7 +89,7 @@
 你应该优先问：
 
 - all-to-all（全对全通信）是否暴露 topology 弱点
-- source routing（源路由）是否 still useful
+- source routing（源路由）在这种动态流量下是否仍然值得保留
 - QoS / fairness 是否成为关键
 
 ### 场景 4：Collective-heavy（集合通信密集型）workload

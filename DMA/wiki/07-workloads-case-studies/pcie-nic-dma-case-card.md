@@ -34,6 +34,13 @@
 - IOMMU / 映射管理开销
 - cache locality 差
 
+这里的延迟也最好拆开看：
+
+- ring submit 到 DMA issue
+- DMA 数据搬运本身
+- completion 对 host 软件可见
+- interrupt moderation / polling 带来的额外等待
+
 ## 最值得抄走的判断
 
 NIC DMA 最值得学的不是“网卡会 DMA”，而是它如何用 `ring + batching + moderation` 维持高速 steady-state。

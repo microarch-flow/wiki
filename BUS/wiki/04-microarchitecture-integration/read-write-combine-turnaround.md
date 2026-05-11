@@ -38,7 +38,7 @@ memory controller 往往不会严格按到达顺序逐条执行请求，而会�
 表现出来常常是：
 
 - 某些读突然尾延迟变长
-- 写 completion 集中回来
+- 写 response（例如 AXI `B` 返回）集中回来
 - 总体吞吐不低，但单请求体验不稳定
 
 这类现象容易被误认为 interconnect 仲裁问题，但根源可能在 controller 侧。

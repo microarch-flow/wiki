@@ -12,11 +12,18 @@
 
 如果 DMA 不与 CPU cache 自动保持一致，那么软件必须显式处理：
 
-- DMA 前的 cache clean / flush
-- DMA 后的 cache invalidate
 - buffer ownership 切换
+- CPU 写入何时对 DMA 可见
+- DMA 写回何时对 CPU 可见
 
 否则 CPU 看到的可能不是 DMA 刚写入的数据。
+
+更稳妥的理解不是背固定 recipe，而是先按方向分：
+
+- `DMA_TO_DEVICE`：关键是让 CPU 之前写入的数据先对 DMA 可见
+- `DMA_FROM_DEVICE`：关键是避免 CPU 继续读到旧缓存副本
+
+具体要做 `clean / flush / invalidate` 的顺序和 API，通常依赖架构、cache 组织和 driver/runtime 所在软件栈，不适合写成所有平台都一样的死规则。
 
 ## Coherent DMA 也不是“什么都不用管”
 

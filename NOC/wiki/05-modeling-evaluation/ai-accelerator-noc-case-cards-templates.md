@@ -33,6 +33,7 @@
 - year
 - authors
 - link
+- source links
 
 ## Problem
 - 这篇论文在解决什么问题
@@ -47,6 +48,10 @@
 - VC（虚通道）/ QoS
 - endpoint（端点）/ memory assumptions
 
+## What Is Public Fact
+
+## What Is Inference
+
 ## Strengths
 
 ## Weaknesses / Assumptions
@@ -54,6 +59,10 @@
 ## What I Can Reuse
 
 ## What I Still Doubt
+
+## Confidence
+
+## Modeling-Safe Takeaway
 ```
 
 ## 二：架构案例卡模板
@@ -81,9 +90,19 @@
 
 ## Likely Bottlenecks
 
+## Sources
+
+## What Is Public Fact
+
+## What Is Inference
+
 ## Why This Design Probably Chose This NoC
 
 ## What To Compare Against
+
+## Confidence
+
+## What Can Be Safely Modeled
 ```
 
 ## 三：对比卡模板

@@ -21,6 +21,8 @@
 - 系统类型：
 - DMA 所在位置：
 - 主要传输路径：
+- 控制模型：
+- coherent / IOMMU 假设：
 
 ## 它在解决什么问题
 
@@ -32,6 +34,7 @@
 - burst / outstanding 策略
 - completion / synchronization 语义
 - 与 NoC / memory / cache 的关系
+- observability / debug 钩子：
 
 ## 关键指标
 

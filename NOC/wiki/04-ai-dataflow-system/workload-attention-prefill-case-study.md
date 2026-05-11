@@ -4,10 +4,19 @@
 
 相关：[NI / DMA / 存储接口](./ni-dma-memory-interface.md)、[流量模式](./traffic-patterns.md)
 
+## 读这页前先统一几个词
+
+- `prefill`：先把整段输入 prompt 处理完的阶段
+- `Q / K / V`：attention 里的 query、key、value 三类张量
+- `bulk traffic`：大块、持续时间长、偏吞吐导向的数据流量
+- `serialization latency`：一份数据因为要按 flit 逐段发出而花掉的串行化时间
+- `overlap`：NoC 搬运和 compute 同时推进，以减少等待
+
 ## 为什么 prefill 要单独看
 
 prefill（预填充）的特点是：
 
+- 整段 prompt 已知，因此绝大多数 token 位置可并行处理
 - 并行度高
 - 数据块大
 - 多数路径更接近吞吐型 bulk traffic

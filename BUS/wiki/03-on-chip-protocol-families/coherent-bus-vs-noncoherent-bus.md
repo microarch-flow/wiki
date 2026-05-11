@@ -8,22 +8,21 @@
 
 什么时候总线只负责事务搬运，什么时候还要承担 cache coherence 相关语义。
 
-## Non-Coherent Bus 更常见
+## Non-Coherent Interconnect 更常见
 
-它只保证：
+它更核心的特征是：
 
-- 请求发得出去
-- 数据回得来
-- 基本错误能返回
+- 负责事务搬运和基本返回语义
+- 不额外提供 cache coherence 语义
 
 它不天然保证：
 
 - CPU cache 和 DMA 看到的数据一致
 - 多个缓存副本自动失效
 
-这时需要软件或额外硬件配合。
+这时需要软件、cache maintenance、barrier 或额外硬件配合。
 
-## Coherent Bus / Interconnect 增加了什么
+## Coherent Interconnect 增加了什么
 
 它会额外处理：
 
@@ -40,8 +39,8 @@
 ## 一个重要边界
 
 很多系统里真正 coherent 的是 CPU cluster 附近的互连。  
-而普通 peripheral、低速寄存器路径仍然走 non-coherent bus。
+而普通 peripheral、低速寄存器路径仍然走 non-coherent interconnect。
 
 ## 一句话理解
 
-non-coherent bus 负责把事务送到位，coherent interconnect 还要负责让多个缓存视图保持一致。
+non-coherent interconnect 负责把事务送到位，coherent interconnect 还要负责让多个缓存视图保持一致。

@@ -4,6 +4,14 @@
 
 相关：[Topology 与物理布局](./topology-layout.md)、[Physical Realization 与 Floorplan-Aware NoC](../04-ai-dataflow-system/physical-realization-floorplan-aware-noc.md)
 
+## 读这页前先统一几个词
+
+- `flat mesh`：没有明显层级、基本每个 tile 都直接挂在全局 mesh 上的扁平网络
+- `cluster`：一组局部通信频繁、物理上也相对靠近的 tile 或模块
+- `local fabric`：cluster 内部的小型互连结构，可以是 crossbar、ring 或小 mesh
+- `egress port`：某个局部区域流量流出时必须经过的出口端口
+- `data reuse`：同一份数据被多个计算重复使用；它越强，越值得把通信限制在局部范围内
+
 ## 为什么 hierarchical NoC 值得单独深挖
 
 很多 AI accelerator 的真实选择，不是“mesh 还是不是 mesh”，而是：
@@ -50,7 +58,7 @@ cluster 内更容易共享 SRAM（静态随机存取存储器）、权重、part
 
 ### 3. 缩小全局 router 数量
 
-相比每个 tile 一个 full router，分层设计可能更省。
+相比每个 tile 一个 full router，分层设计可能减少全局 router 数量，但未必降低总互连成本，因为 local fabric、集中式端口和边界 router 的 radix / 时序压力往往会上升。
 
 ### 4. 更贴近真实 floorplan
 
@@ -120,7 +128,7 @@ cluster 内更容易共享 SRAM（静态随机存取存储器）、权重、part
 
 若关键 response 路径频繁跨 cluster，hierarchical 优势可能减弱。
 
-### MoE（混合专家模型）/ all-to-all（全互连通信）
+### MoE（混合专家模型）/ all-to-all（全对全通信）
 
 这是 hierarchical NoC 的硬仗。  
 如果大部分通信都跨 cluster，层级结构的收益会下降，甚至暴露 cluster 边界瓶颈。

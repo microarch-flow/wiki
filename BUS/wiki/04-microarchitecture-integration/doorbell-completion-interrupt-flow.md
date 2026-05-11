@@ -8,6 +8,12 @@
 
 为什么很多 SoC 软件路径里总会反复出现 doorbell、completion 和 interrupt，它们在 BUS 上到底是怎样串起来的。
 
+这里先统一三个词：
+
+- `completion record / completion queue entry`：写在内存里的完成记录
+- `status bit / status register`：设备内部或 MMIO 可见的完成状态
+- `interrupt`：把“该看完成状态了”的通知推给 CPU
+
 ## 一条典型提交路径
 
 常见流程是：
@@ -23,7 +29,7 @@
 
 常见流程是：
 
-1. device 更新 completion queue 或 status memory
+1. device 更新 completion record 或 status memory
 2. device 更新状态寄存器或内部完成位
 3. device 触发 interrupt，或软件轮询看到完成
 

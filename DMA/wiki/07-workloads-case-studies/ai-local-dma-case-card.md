@@ -22,10 +22,12 @@
 
 ## 核心机制
 
-- 小而高频的任务提交
+- 高频搬运触发与调度
 - stride/2D/3D 地址生成
 - 强依赖 local memory 端口和 bank 布局
 - 与 compute pipeline 强同步
+
+这里不要默认它一定是 CPU/driver 在高频 submit。很多 local DMA 更常见的是由编译器、runtime 计划或硬件依赖链自动触发。
 
 ## 最常见瓶颈
 

@@ -20,6 +20,15 @@
 - [架构分析题库 / 决策模板 / 自测清单](./architecture-analysis-playbook.md)
 - [推荐阅读顺序：面向 Workload-Based NoC 架构分析](./recommended-reading-path-for-workload-based-analysis.md)
 
+## 读本章前先统一 6 个词
+
+- `modeling layer`：模型保留多少真实细节的层次
+- `metric`：你用什么指标判断方案更好
+- `trace`：按时间顺序列出的通信事件或 packet 序列
+- `first-order insight`：能快速解释主瓶颈的一阶结论，不追求极致精度
+- `stall breakdown`：把停顿按原因拆开统计，而不是只看“总共慢了多少”
+- `boundary`：结论成立的前提和适用范围；没有边界的结论通常不稳
+
 ## 一句话总纲
 
 做 NoC（片上网络）架构探索，不是先追求最复杂模型，而是先建立一套能稳定给出一阶洞察的分层建模方法，再逐步补真实度。

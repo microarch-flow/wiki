@@ -24,9 +24,9 @@
 # NoC Experiment Status
 
 ## Current Simulator Status
-- implemented
-- partially implemented
-- not implemented
+- 已实现
+- 部分实现
+- 未实现
 
 ## Current Verified Experiments
 
@@ -87,13 +87,13 @@
 
 建议每条结论都标：
 
-- low
-- medium
-- high
+- low（低）：主要是一阶趋势判断，尚未充分交叉验证
+- medium（中）：已有多次实验或多指标支撑，但边界仍较强
+- high（高）：在当前模型边界内已被反复验证，且结论口径稳定
 
 因为早期很多结论只是：
 
-- first-order insight
+- first-order insight（一级架构洞察）
 
 而不是强验证结论。
 

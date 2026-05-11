@@ -4,6 +4,14 @@
 
 相关：[指标与实验设计](../05-modeling-evaluation/metrics-experiments.md)
 
+## 读这页前先统一几个词
+
+- `synthetic traffic`：人为构造的规则流量，用来先看网络的普遍行为
+- `workload traffic`：从真实模型执行过程里抽取出的流量
+- `mapping`：把逻辑计算任务分给哪些 tile
+- `placement`：这些 tile 或数据块在物理阵列上具体放哪里
+- `memory behavior`：端点如何读写、缓存、回填和回流数据；它会直接改写 NoC 压力图
+
 ## 为什么 traffic pattern 是核心
 
 NoC 不会脱离 workload 自己产生价值。  
@@ -37,6 +45,7 @@ NoC 不会脱离 workload 自己产生价值。
 
 常见特点：
 
+- 整段 prompt 已知，绝大多数 token 位置可并行处理
 - 大块数据搬运
 - 并行度高
 - HBM（高带宽存储器）与 NoC 都可能形成压力
@@ -45,6 +54,7 @@ NoC 不会脱离 workload 自己产生价值。
 
 常见特点：
 
+- 每一步只新增 1 个 token，下一步必须等待上一步结果
 - batch 小但访问动态
 - KV cache（键值缓存）相关路径更敏感
 - 系统瓶颈可能更偏 memory-centric

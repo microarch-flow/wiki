@@ -20,6 +20,13 @@
 - memory port utilization
 - overlap 成功率
 
+但这些指标如果不写清测量边界，就很容易误导。一个更实用的拆法是：
+
+- `submit latency`：descriptor/命令提交到 DMA 真正开始 issue 的时间
+- `transfer service time`：从首个有效传输发出到最后一笔数据搬运完成
+- `completion visibility latency`：数据完成后，到 completion record / interrupt / polling 对软件可见的时间
+- `consumer-ready latency`：软件或下游计算真正可以继续前进的时间
+
 ## 最常见的瓶颈位置
 
 - software submit 太慢

@@ -14,8 +14,10 @@
 典型场景包括：
 
 - 32-bit CPU 挂到 128-bit fabric
-- 寄存器写只改 1 byte 或 2 byte
 - MMIO 里大量小粒度更新
+
+在 AXI 语境里，更精确地说，它首先对应的是：  
+`AWSIZE / ARSIZE` 小于总线物理宽度，也就是“这次 beat 的传输大小本身就比总线窄”。
 
 ## WSTRB 在表达什么
 
@@ -25,6 +27,13 @@
 - 哪些 byte lane 不应该被写入
 
 这让宽总线可以承接细粒度写操作，但也带来更多 corner case。
+
+这和 narrow transfer 有关联，但不是一回事：
+
+- `narrow transfer`：这次传输粒度本身就比总线窄
+- `partial write with WSTRB`：总线宽度不变，但只写其中部分 byte lane
+
+很多 `1 byte / 2 byte` 的寄存器更新，工程上常会同时牵涉这两件事，但读文档时最好把它们分开理解。
 
 ## 它为什么难
 

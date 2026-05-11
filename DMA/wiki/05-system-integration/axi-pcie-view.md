@@ -21,8 +21,10 @@ AXI DMA 更容易和片上 memory hierarchy、local SRAM、NoC 深耦合。
 
 - host-device 地址映射
 - posted/non-posted 行为
-- completion 延迟
+- PCIe read completion TLP 延迟
 - DMA 与 descriptor ring、MSI-X、中断协同
+
+这里的 `PCIe read completion` 是 PCIe 事务层语义，不要和软件侧说的 `DMA completion interrupt / completion record` 混成同一个 completion。
 
 PCIe DMA 更强调设备和主机之间的系统契约。
 

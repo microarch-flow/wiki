@@ -4,6 +4,14 @@
 
 相关：[Topology 与物理布局](../03-topology-routing/topology-layout.md)、[流量模式](../04-ai-dataflow-system/traffic-patterns.md)
 
+## 读这页前先统一几个词
+
+- `parameter sweep`：系统性扫描一组参数，观察趋势而不是只看单点结果
+- `baseline`：用来对照的新旧方案中的基准方案
+- `sensitivity`：结果对某个参数变化是否敏感
+- `root cause`：表面现象背后的真正原因
+- `tradeoff`：一个方向变好时，另一个方向通常会付出的代价
+
 ## 你现在能开始做什么
 
 基于现有知识，已经可以开始第一阶段探索：

@@ -27,9 +27,17 @@
 软件看见“DMA done”就立刻读 buffer，结果读到旧数据。  
 根因可能是：
 
-- done 只表示请求提交完
-- 或数据已写到内存但 cache 未失效
-- 或目的端还有可见性延迟
+- 当前所谓 `done` 其实只表示 descriptor 已被接收
+- 或数据已写到内存但还没对 CPU 正确可见
+- 或软件虽然收到了 completion 事件，但 cache / ownership 还没完成切换
+
+更稳妥的区分方式是：
+
+- `提交完成 / descriptor consumed`
+- `DMA 写回完成到 memory-visible 点`
+- `软件 completion event delivered`
+
+真正安全读 buffer 或复用 buffer 前，driver/runtime 应该等到自己语义里要求的那个阶段，而不是看到任意一个 “done” 就继续。
 
 ## 排查顺序建议
 

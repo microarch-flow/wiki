@@ -71,6 +71,16 @@ HBM 不只是“把几颗 DRAM 摞起来”，它额外引入了：
 
 因此它的制造和封装边界，比普通 DDR 更深地耦合在一起。
 
+如果把流程展开得更工程化一点，可以近似看成：
+
+1. 普通 DRAM die 的晶圆制造与 wafer sort
+2. 为堆叠做 thinning、micro-bump、TSV 等额外准备
+3. 多层 stack 组装与中间测试
+4. 与 interposer/基板/计算 die 做先进封装集成
+5. 最终成品测试与分档
+
+这意味着 HBM 不只是步骤更多，而是 `die yield -> stack yield -> advanced package yield` 被串成了一条更长的良率链。
+
 ## 一句话理解
 
 普通 DRAM 的挑战偏向 `高密度阵列制造 + 大规模良率控制`；HBM 则在此基础上又叠加了 `堆叠和先进封装协同`。

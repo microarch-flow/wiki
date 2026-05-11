@@ -33,6 +33,8 @@
 - host buffer 分散导致 SGL 成本升高
 - completion 延迟拖累队列深度收益
 
+这里的 `completion` 更偏主机软件可见的 I/O 完成路径，不只是在说底层 DMA 数据搬运本身。
+
 ## 最值得抄走的判断
 
 存储 DMA 强调的是 `深队列并发 + 稳定 completion`，不是单次传输极限速度。

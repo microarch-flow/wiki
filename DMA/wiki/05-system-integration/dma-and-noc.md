@@ -31,6 +31,8 @@ DMA 决定：
 - refill 和 writeback 互相放大波峰
 - DMA 向 local SRAM 注入过快，导致 bank/port 冲突
 
+这些冲突很多也会被软件或 runtime 的调度旋钮重新塑形，例如 queue 深度、tile size、batching、descriptor packing、polling/interrupt 策略。
+
 ## 一句话理解
 
 在很多系统里，NoC 看到的不是“应用流量”，而是被 DMA 调度器重新塑形后的应用流量。

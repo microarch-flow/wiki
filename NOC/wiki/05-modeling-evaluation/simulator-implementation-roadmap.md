@@ -91,10 +91,11 @@
 
 加入：
 
-- control
-- memory_response
-- stream
-- bulk_dma
+- CONTROL
+- MEMORY_REQUEST
+- MEMORY_RESPONSE
+- STREAM
+- BULK_DMA
 
 完成标准：
 

@@ -4,6 +4,16 @@
 
 相关：[流量模式](./traffic-patterns.md)、[QoS、公平性与 Stall Taxonomy](../05-modeling-evaluation/qos-fairness-stall-taxonomy.md)
 
+## 读这页前先统一几个词
+
+- `unicast`：单源到单目的的普通点到点通信
+- `broadcast`：一个源把同一份数据发给所有参与者
+- `multicast`：一个源把同一份数据发给一部分参与者
+- `fan-in`：很多源往少数目的汇聚
+- `fan-out`：一个源向很多目的扩散
+
+读 collective 时，最容易漏掉的一点是：问题不只是“总数据量大”，而是“同一时间很多流量会压到同一段路径”。
+
 ## 为什么 collective communication 需要单独讨论
 
 很多 AI NoC 不是只处理点到点通信。  
@@ -44,18 +54,24 @@
 - 再用理想化的树形复制近似硬件 multicast 下界
 - 对比两者差值，判断硬件 multicast 是否值得
 
-### Reduce / Gather（收集）
+### Gather（收集）与 Reduce（归约）
 
 典型场景：
 
-- partial sum accumulation
-- 多 tile 结果汇聚
+- 多 tile 结果收集
+- partial sum accumulation 前的汇聚
 - 某些 attention 或归约算子
 
 问题本质：
 
 - 多个源同时压向一个目的地
 - sink 端口、ejection FIFO（弹出缓冲队列）、local SRAM（本地静态存储）写入口容易变成瓶颈
+
+要先分清三件事：
+
+- `gather`：只负责把多份数据收拢到一个目的地，不在网络里做合并
+- `reduce`：在收拢过程中或收拢后，还要执行求和、最大值等结合运算
+- `all-reduce`：先做 reduce，再把结果分发回所有参与者
 
 关键要看：
 
@@ -65,11 +81,12 @@
 
 第一版建模建议：
 
-- 先按 many-to-one unicast 建模
+- gather 先按 many-to-one unicast 建模
 - 显式统计 sink ejection stall
+- 如果要近似 reduce，可先用 `gather + endpoint aggregation（端点聚合）`
 - 再评估是否值得加入 tree reduction 或分层 reduce
 
-### All-to-all（全交换）
+### All-to-all（全对全通信）
 
 典型场景：
 

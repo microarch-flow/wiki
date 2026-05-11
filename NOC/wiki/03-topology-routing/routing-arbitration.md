@@ -4,6 +4,14 @@
 
 相关：[VC / Deadlock](../02-router-microarchitecture/virtual-channel-deadlock.md)
 
+## 读这页前先统一几个词
+
+- `routing`：决定 packet 该走哪条路径
+- `arbitration`：决定多个竞争者里谁先拿到同一个资源
+- `deterministic routing`：同一源和目的之间，总是走同一类固定路径
+- `adaptive routing`：路径会根据实时拥塞情况变化
+- `stall`：本周期本来想前进，但因为资源或约束没有前进成功
+
 ## Routing（路由）决定 packet（数据包）走哪条路
 
 架构探索里，routing 的价值不只是把包送到终点，而是决定：
@@ -56,6 +64,8 @@
 ## Arbitration（仲裁）决定谁先过
 
 即使 routing 已经确定，多个输入争同一输出时仍需要仲裁。
+
+而且仲裁不只发生在 switch output 上，也可能发生在 VC 分配、注入口接入、目的端 ejection（弹出）等共享资源上。
 
 常见策略：
 

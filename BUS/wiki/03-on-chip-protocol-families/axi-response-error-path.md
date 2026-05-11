@@ -13,8 +13,11 @@
 response 的核心职责是告诉 master：
 
 - 这笔事务有没有成功
-- 错误来自哪里
+- 错误属于哪一类
 - 读写流程是否已经完整结束
+
+但不要把这句话读得太满：  
+`BRESP / RRESP` 通常只能告诉你成功/失败类别，例如 `DECERR`、`SLVERR`，不等于它能直接把精确根因完整讲出来。真正的根因往往还要结合 interconnect、slave 状态寄存器或 debug 日志继续追。
 
 所以 response 不是“可有可无的附加信息”，而是事务闭环的一部分。
 
@@ -46,7 +49,8 @@ response 的核心职责是告诉 master：
 
 ## 调试时最该看什么
 
-- 错误是 decode 前产生还是 slave 后产生
+- 错误类别是 `DECERR`、`SLVERR` 还是 fabric 合成 timeout
+- 问题是 decode 前产生、slave 内部产生，还是中间路径超时后被包装成错误
 - response 是否被阻塞在返回路径
 - timeout 是真实外设慢，还是互连自己堵住
 - 软件能否区分“访问错地址”和“设备自己报错”

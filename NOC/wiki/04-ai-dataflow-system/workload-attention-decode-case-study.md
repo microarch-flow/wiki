@@ -4,10 +4,19 @@
 
 相关：[NI / DMA / 存储接口](./ni-dma-memory-interface.md)、[QoS、公平性与 Stall Taxonomy](../05-modeling-evaluation/qos-fairness-stall-taxonomy.md)
 
+## 读这页前先统一几个词
+
+- `decode`：每次生成一个 token 的自回归阶段
+- `control / sync`：不是大数据块，但决定执行顺序的小控制消息和同步消息
+- `tail latency`：最慢那部分请求的延迟，常用 P99 之类百分位表示
+- `WAITING_FOR_OTHER_STREAM`：本地还在等其他依赖流完成，因而暂时不能继续
+- `response-sensitive`：总带宽未必大，但对响应返回时间极其敏感
+
 ## 为什么 decode 必须和 prefill 分开
 
 decode（逐token解码）的典型特点是：
 
+- 每一步只新增 1 个 token，下一步必须等待上一步结果
 - batch（批次）更小
 - step-by-step 生成
 - latency（延迟）更敏感

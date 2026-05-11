@@ -19,9 +19,12 @@
 
 ## 与高性能 DMA 的共性
 
-- 都需要 descriptor 或 ring
-- 都需要 completion / interrupt
+- 都需要某种任务描述或寄存器配置入口
+- 都需要某种完成状态或通知机制
 - 都有 backpressure 与目的端消费问题
+
+但不要把它们想成完全同一种软件接口。  
+很多 MCU/SoC 外设 DMA 其实更常见的是寄存器编程、half-transfer / transfer-done 标志、循环模式或握手信号，而不是完整 descriptor ring。
 
 ## 与高性能 DMA 的差异
 

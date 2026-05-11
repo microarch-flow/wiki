@@ -4,6 +4,14 @@
 
 相关：[Routing 与 Arbitration](../03-topology-routing/routing-arbitration.md)、[Credit / Backpressure](../02-router-microarchitecture/credit-backpressure.md)
 
+## 读这页前先统一几个词
+
+- `QoS`：通过隔离、优先级或配额，让关键流量不被其他流量压死
+- `fairness`：不同流量长期来看都能拿到合理服务，而不是有人一直抢不到
+- `traffic class`：按业务重要性或行为相似性分组后的流量类别
+- `latency-sensitive`：对延迟极敏感，小幅排队都会伤系统性能
+- `taxonomy`：把复杂现象按稳定标准分门别类，便于定位根因
+
 ## 为什么这页必须单独存在
 
 很多 NoC（片上网络）分析在看到”吞吐下降”时就停了。  

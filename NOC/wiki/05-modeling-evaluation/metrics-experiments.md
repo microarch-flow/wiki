@@ -4,6 +4,14 @@
 
 相关：[流量模式](../04-ai-dataflow-system/traffic-patterns.md)
 
+## 读这页前先统一几个词
+
+- `metric`：衡量系统行为的数字化指标
+- `throughput`：单位时间完成多少传输或多少工作
+- `utilization`：资源在观察窗口里有多大比例处于忙碌状态
+- `tail latency`：延迟分布尾部的高百分位值，比平均值更能暴露最慢路径
+- `saturation point`：继续提高注入速率后，延迟开始急剧恶化的转折点
+
 ## 为什么必须先定义指标
 
 如果没有统一指标，NoC（片上网络）调参很容易退化成”看起来忙不忙”的直觉比较。
@@ -34,6 +42,22 @@
 - SRAM（静态随机存储）bank contention（存储体冲突）
 - request / response queue occupancy（请求/响应队列占用率）
 - read response return latency（读响应返回延迟）
+
+## 指标要和建模层次绑定
+
+不是所有模型都该产出同一套指标。一个很实用的约束是：
+
+- Level 0 / 1：优先看 throughput、completion time、粗粒度 utilization
+- Level 2：开始看 hotspot link、hop distribution、placement 敏感性
+- Level 3：再看 flit latency、credit stall、per-router occupancy、细粒度 stall breakdown
+
+如果当前模型还不是 flit-level，就不要把 `credit stall cycles`、`per-router occupancy` 这类指标和更粗模型结果放在同一张表里直接横比。  
+更稳的做法是显式记录：
+
+- `Current modeling layer`
+- `Supported metrics`
+- `Proxy metrics`
+- `Unsupported metrics`
 
 ## 至少应该做的实验
 

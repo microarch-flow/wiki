@@ -12,13 +12,15 @@
 
 CPU 配置 DMA 时，常见路径是：
 
-`CPU -> high-performance bus -> bridge -> peripheral register bus -> DMA register block`
+`CPU -> main interconnect -> bridge -> low-speed peripheral bus -> DMA register block`
 
 这条路看起来流量不大，但会影响：
 
 - driver 配置时延
 - doorbell 触发及时性
 - status polling 行为
+
+这里的 `main interconnect` 和 `low-speed peripheral bus` 是角色级叫法，不是固定协议名；真实实现可能分别落成 AXI、AHB、APB 或其他厂内 fabric 组合。
 
 ## 一条典型数据路径
 

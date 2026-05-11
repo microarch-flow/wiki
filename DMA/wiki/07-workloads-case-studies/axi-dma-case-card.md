@@ -27,6 +27,13 @@
 - multiple outstanding transaction
 - interrupt 或 polling completion
 
+## First Bring-Up 先看什么
+
+- 当前路径是 coherent 还是 non-coherent
+- descriptor/buffer 写进的是物理地址还是 IOVA
+- cache flush / invalidate 和 barrier 语义是否匹配
+- 对齐、page 边界和 burst 拆分规则是否满足
+
 ## 最常见瓶颈
 
 - burst 长度太短

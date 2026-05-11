@@ -8,6 +8,8 @@
 
 为什么现代 DMA 的软件接口通常都围绕 queue、doorbell 和 completion 组织，以及这些对象如何决定正确性和吞吐。
 
+这里的讨论更偏 `queue-based DMA engine`，尤其是高吞吐设备、加速器和 host/device DMA。更简单的 MCU/peripheral DMA 可能只有寄存器触发和状态位，不一定有完整 queue/ring。
+
 ## Queue 在解决什么
 
 queue 让软件可以批量提交任务，而不是一条一条同步等完成。  
@@ -22,7 +24,7 @@ queue 让软件可以批量提交任务，而不是一条一条同步等完成�
 doorbell 是“硬件有新任务可取”的通知机制。  
 它的关键不是名字，而是：
 
-- 写 doorbell 前数据是否已可见
+- 写 doorbell 前 descriptor/payload 是否已对 DMA engine 可见
 - doorbell 触发是否会过频
 - 多队列时是否需要分离 doorbell
 
@@ -35,6 +37,14 @@ completion 负责把“硬件完成”传回软件世界。
 - polling
 - completion record
 - event queue
+
+这里最好再区分三件事：
+
+- `descriptor consumed`：DMA 已经接走任务
+- `transfer visible`：数据已经到达软件可安全观察的点
+- `software completion event`：软件已经收到 interrupt、polling 命中或 completion record
+
+不同 DMA IP 说的 `completion` 可能偏向其中某一个阶段。
 
 ## 最容易出的错
 

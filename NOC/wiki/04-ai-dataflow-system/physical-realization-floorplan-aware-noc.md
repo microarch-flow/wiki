@@ -4,6 +4,14 @@
 
 相关：[Topology 与物理布局](../03-topology-routing/topology-layout.md)、[Router Pipeline 与 Allocator](../02-router-microarchitecture/router-pipeline-allocator.md)
 
+## 读这页前先统一几个词
+
+- `physical realization`：把抽象 NoC 落成真实版图、时序和布线实现
+- `long wire`：跨距离较大的链路；它常常需要额外 pipeline stage
+- `timing closure`：让设计在目标频率下满足时序约束
+- `frequency`：电路时钟频率；频率越高，单周期越短，布线和逻辑越难收敛
+- `floorplan-aware`：做架构判断时显式考虑物理摆放和线长，而不是只看抽象图论指标
+
 ## 为什么这页必要
 
 前面的 wiki 主要站在架构建模层。  

@@ -9,6 +9,7 @@
 - 是否已经决定拓扑与基础 routing
 - 是否已经明确 packet / flit 粒度
 - 是否已经决定是否做 request / response / control 分离
+- 是否已经明确当前要停在 Level 1、Level 2 还是 flit-level Level 3，而不是默认一上来就做最复杂模型
 
 ## 第一版 flit-level simulator 最低能力
 
@@ -20,6 +21,16 @@
 - destination ejection / FIFO
 - 至少一种 arbitration
 - workload 或 synthetic traffic 注入
+
+## traffic class 口径检查
+
+- 是否已经固定最小 canonical class：`CONTROL / MEMORY_REQUEST / MEMORY_RESPONSE / STREAM / BULK_DMA`
+- writeback、refill、barrier、descriptor 是否已经明确映射到哪一类
+
+## stall taxonomy 口径检查
+
+- 是否统一了 `NO_CREDIT / SWITCH_CONFLICT / LINK_BUSY / EJECTION_BLOCKED / INJECTION_BLOCKED / ROUTE_BLOCKED / WAITING_FOR_OTHER_STREAM`
+- 如果实现单独统计 `VC_UNAVAILABLE`，是否已经说明它是否并入 `ROUTE_BLOCKED`
 
 ## 统计项检查
 

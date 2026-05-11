@@ -6,7 +6,7 @@
 
 ## 为什么要从“总览”进一步进入“实现深化”
 
-你已经知道 broadcast（广播）、reduce（归约）、all-to-all（全交换）很重要。  
+你已经知道 broadcast（广播）、reduce（归约）、all-to-all（全对全通信）很重要。  
 下一步真正会影响架构判断的问题是：
 
 - 软件实现够不够
@@ -127,8 +127,8 @@ hierarchical NoC 往往更适合：
 
 - software replication：近似实现上界成本
 - ideal shared-path multicast：近似硬件 multicast 下界
-- flat gather：近似最简单 reduce
-- hierarchical gather：近似带中间聚合的 reduce
+- flat gather：近似最简单的收集阶段；若再加 endpoint aggregation，可近似 reduce
+- hierarchical gather：近似分层收集；若再加中间聚合，可近似 tree / hierarchical reduce
 
 只要你能比较这几者的差距，就足以判断硬件 collective 是否有架构价值。
 

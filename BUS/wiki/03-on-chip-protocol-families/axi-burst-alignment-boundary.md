@@ -35,13 +35,21 @@ burst 的核心价值是把一串相邻 beat 作为一组事务发出，从而�
 ## 边界为什么会限制 burst
 
 系统通常不会允许一个 burst 随意跨越某些关键边界。  
+对 AXI 来说，最应该先记住的是：协议层就存在 `4KB boundary` 约束。
+
 常见原因包括：
 
+- AXI 协议级 `4KB` 边界
 - decode 区间边界
 - page 或保护域边界
 - downstream memory / bridge 的限制
 
 所以 master 端常常必须先做拆分，再发多个更小的事务。
+
+更稳妥的理解顺序是：
+
+1. 先满足协议层边界规则
+2. 再满足 SoC 自己的 decode / bridge / memory 约束
 
 ## 最常见的工程误判
 

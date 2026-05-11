@@ -45,6 +45,9 @@ barrier 的价值不是“让系统变慢”，而是明确告诉互连和 CPU�
 - 先保证 descriptor 可见
 - 再写 doorbell
 
+这里最容易误解的一点是：  
+`barrier` 约束的是顺序，不会凭空把脏 cache line 变成 DMA 可见。对 non-coherent DMA 来说，真正建立可见性通常还需要 coherent fabric 或显式 clean/invalidate；barrier 是在此基础上保证“先让 descriptor 真可见，再让 doorbell 发生”。
+
 ## 继续阅读
 
 - 如果你在追 `descriptor、data、writeback 三段为什么语义不同`：看 [DMA Descriptor Fetch、Data Move 与 Writeback](./dma-descriptor-fetch-data-move-writeback.md)

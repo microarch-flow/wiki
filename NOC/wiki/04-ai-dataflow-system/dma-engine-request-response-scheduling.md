@@ -4,6 +4,14 @@
 
 相关：[Memory-Centric NoC](./memory-centric-noc.md)、[KV Cache / Decode Memory Path 深化](./kv-cache-decode-memory-path.md)
 
+## 读这页前先统一几个词
+
+- `request generation`：DMA 何时、以多快节奏发出新请求
+- `burst`：一次连续搬运的一段数据
+- `outstanding window`：允许同时在外飞行的未完成请求数量
+- `response reassembly`：多个响应片段回到 DMA 后，如何重新拼成软件想要的数据块
+- `overlap`：计算和数据搬运同时进行，用并行执行来隐藏延迟
+
 ## 为什么 DMA 不能只当“搬运器”
 
 在很多 AI accelerator 里，DMA 不只是被动搬数据，它还决定：

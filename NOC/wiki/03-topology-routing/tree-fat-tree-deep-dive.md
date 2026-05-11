@@ -6,6 +6,8 @@
 
 ## 为什么 tree 家族值得单独看
 
+在 AI 芯片里，tree / fat-tree 更常见的角色通常是 reduce、broadcast 或其他 collective 子网络，而不是完整替代通用 packet-switched 主 NoC。
+
 tree 和 fat-tree 的价值，不主要体现在规则 tile 邻近通信，而更体现在：
 
 - gather（收集，多源汇聚到单一目的地）
@@ -28,7 +30,7 @@ tree 把网络天然组织成“叶子到根”的层级路径。
 
 - 上层节点容易形成瓶颈
 - 根部压力大
-- 对 all-to-all（全互连通信）很不友好
+- 对 all-to-all（全对全通信）很不友好
 
 ## Fat-Tree
 

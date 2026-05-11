@@ -25,6 +25,14 @@
 - priority
 - completion token
 
+但这里有一个层级必须先分开：
+
+- `descriptor-level`：软件或 runtime 写给 DMA 的任务描述
+- `logical transfer-level`：一条逻辑搬运任务，例如“把这块 buffer 搬过去”
+- `interconnect transaction-level`：真正落到总线/NoC 上的 burst、split 和子事务
+
+很多“一个 descriptor”在硬件里最终会被拆成多笔总线事务。
+
 ## Scatter-Gather 为什么重要
 
 现实系统的数据常常并不连续。  
@@ -54,6 +62,10 @@ burst 决定单次总线或互连占用的粒度。
 - local SRAM bank 映射边界
 
 这些边界会让“逻辑上一段传输”在硬件里变成多段子事务。
+
+例如一个 descriptor 可能描述：  
+`从 0x1003 开始搬 256B 到 0x2000`  
+但真正执行时，DMA 可能因为对齐、`4KB/page` 边界或总线 burst 限制，把它拆成多个 read/write burst。
 
 ## 一句话理解
 

@@ -31,6 +31,7 @@ torus 在 mesh 基础上增加环回边（wrap-around link），目标是：
 - 环回边往往是长链路
 - 物理实现成本不再像 mesh 那样规整
 - 长链路 pipeline（流水线）可能吃掉逻辑 hop 优势
+- 环形信道依赖会让路由约束更复杂，通常还要配合 dateline、turn restriction 或 escape VC 才能稳定避免死锁
 
 ### 适合什么
 

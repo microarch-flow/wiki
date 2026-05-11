@@ -47,7 +47,7 @@
 
 ## 什么时候 mesh 会开始吃亏
 
-- all-to-all（全互连通信）或强 collective（集合通信）占比高
+- all-to-all（全对全通信）或强 collective（集合通信）占比高
 - memory 流量极其集中
 - 芯片变得很大，长路径明显变多
 - 物理长线开始显著改变 latency（延迟）/ credit round-trip（信用往返延迟）

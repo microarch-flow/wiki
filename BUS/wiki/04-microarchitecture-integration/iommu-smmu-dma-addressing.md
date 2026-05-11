@@ -24,9 +24,11 @@ DMA 请求不再只是：
 
 `device -> interconnect -> memory`
 
-而更像：
+但也不要把它机械理解成“每次数据都完整绕一圈”。更稳妥的抽象是：
 
-`device -> interconnect -> IOMMU/SMMU -> interconnect -> memory`
+- 数据请求路径上要经过翻译/权限检查
+- miss 时还会额外引出 page walk 等侧向内存事务
+- IOMMU/SMMU 的物理放置方式会随 SoC 而变，但软件可见效果相近
 
 这会带来额外影响：
 

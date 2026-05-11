@@ -10,6 +10,14 @@
 
 ## Outstanding Window 是最关键的调度旋钮之一
 
+这里先约定几个词：
+
+- `outstanding`：已经发出、但还没闭环完成的 in-flight 事务
+- `request injection`：DMA 把请求持续送进互连/内存系统的节奏
+- `forward progress`：系统虽然可能很慢，但仍持续有事务在真正完成
+
+另外，本页里的 `writeback` 更偏 DMA 写回/完成写回语义，不是默认在说 CPU cache writeback；`refill` 只有在明确讨论 cache 或片上 buffer 补数时才按那个语境理解。
+
 窗口太小：
 
 - 无法隐藏 memory latency
