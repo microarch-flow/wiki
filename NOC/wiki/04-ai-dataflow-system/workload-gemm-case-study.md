@@ -6,31 +6,31 @@
 
 ## 为什么先看 GEMM
 
-GEMM 是最适合作为 NoC 第一批 workload case study 的对象，因为它：
+GEMM（通用矩阵乘法）是最适合作为 NoC 第一批 workload（工作负载）case study 的对象，因为它：
 
 - 结构规则
 - 映射方式相对清楚
-- 容易暴露 broadcast、forwarding、reduce 等典型通信
+- 容易暴露 broadcast（广播）、forwarding（前传）、reduce（归约）等典型通信
 
 ## 典型数据流问题
 
 你至少要先明确：
 
 - 权重是否常驻本地
-- activation 是广播还是分片送达
-- partial sum 是否本地归约还是跨 tile 归约
+- activation（激活值）是广播还是分片送达
+- partial sum（部分和）是否本地归约还是跨 tile（计算单元）归约
 - 输出是否直接 forward 到下一阶段
 
 ## 常见通信形态
 
 - one-to-many：权重或 activation 分发
 - point-to-point：tile pipeline forwarding
-- many-to-one：partial sum gather
+- many-to-one：partial sum gather（收集）
 
 ## 对 NoC 最敏感的架构选择
 
-- weight-stationary vs output-stationary
-- tile placement
+- weight-stationary（权重驻留）vs output-stationary（输出驻留）
+- tile placement（放置策略）
 - cluster 内共享 SRAM 的大小
 - 是否采用 tile-to-tile forwarding
 
@@ -39,16 +39,16 @@ GEMM 是最适合作为 NoC 第一批 workload case study 的对象，因为它�
 - 靠近 source 的 broadcast path
 - partial sum 汇聚点
 - cluster 间边界链路
-- HBM / DMA 注入端
+- HBM（高带宽存储器）/ DMA（直接内存访问）注入端
 
 ## 建模时至少要扫的参数
 
-- packet size
-- flit size
-- local SRAM 大小
+- packet size（数据包大小）
+- flit size（流控单元大小）
+- local SRAM（本地静态存储）大小
 - cluster 大小
 - forwarding 开关
-- multicast 是否存在
+- multicast（组播）是否存在
 
 ## 你最可能看到的 stall
 
@@ -65,9 +65,9 @@ GEMM 是最适合作为 NoC 第一批 workload case study 的对象，因为它�
 
 观察：
 
-- link utilization
-- latency
-- producer stall
+- link utilization（链路利用率）
+- latency（延迟）
+- producer stall（生产者停顿）
 - 总工作完成时间
 
 ## 本页结论

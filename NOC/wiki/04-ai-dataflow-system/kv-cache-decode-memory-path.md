@@ -6,12 +6,12 @@
 
 ## 为什么这页重要
 
-decode 阶段最容易把人带偏的一点是：
+decode（逐token解码）阶段最容易把人带偏的一点是：
 
 - 看起来总流量不一定最大
-- 但系统时延和 tokens/s 却很容易被拖慢
+- 但系统时延和 tokens/s（每秒生成token数）却很容易被拖慢
 
-核心原因之一，就是 KV cache 和 decode memory path 往往处在更关键的前进路径上。
+核心原因之一，就是 KV cache（键值缓存）和 decode memory path 往往处在更关键的前进路径上。
 
 ## Decode 的关键不是“流量大不大”
 
@@ -27,17 +27,17 @@ decode 阶段最容易把人带偏的一点是：
 
 一个简化路径通常是：
 
-1. tile 或 control 发起 KV 相关请求
-2. request 经 NoC 到达 KV 所在 SRAM / memory node
+1. tile（计算单元）或 control 发起 KV 相关请求
+2. request 经 NoC 到达 KV 所在 SRAM（片上静态存储）/ memory node
 3. 数据被读出或聚合
 4. response 经 NoC 返回 consumer tile
 5. consumer tile 才能继续本轮 decode
 
-这里任意一段抖动，都可能被放大成 step latency 波动。
+这里任意一段抖动，都可能被放大成 step latency（单步延迟）波动。
 
 ## 为什么 KV 路径比普通 DMA 更敏感
 
-普通 bulk DMA 更像：
+普通 bulk DMA（大块直接内存访问）更像：
 
 - 吞吐问题
 - overlap 问题
@@ -48,7 +48,7 @@ KV decode path 更像：
 - request / response 时延问题
 - 依赖满足问题
 
-这也是为什么 decode 往往比 prefill 更需要 QoS 和 response isolation。
+这也是为什么 decode 往往比 prefill（预填充）更需要 QoS（服务质量）和 response isolation（响应隔离）。
 
 ## KV Cache Placement 为什么关键
 
@@ -65,8 +65,8 @@ KV 如果放置不合理，常见后果包括：
 不同架构里，KV 可能：
 
 - 更靠近 tile，本地化更多
-- 放在 cluster 级共享 SRAM
-- 放在更远的 memory node 或近 HBM 端
+- 放在 cluster（簇）级共享 SRAM
+- 放在更远的 memory node 或近 HBM（高带宽存储器）端
 
 这三者对 NoC 的含义很不一样：
 
@@ -77,7 +77,7 @@ KV 如果放置不合理，常见后果包括：
 
 - request / response 混跑
 - response 被 bulk stream 压住
-- ejection / local write path 太弱
+- ejection（弹出）/ local write path 太弱
 - 多用户 decode 叠加造成热点漂移
 - tile 在等待多个 memory fragment 汇合
 
@@ -85,7 +85,7 @@ KV 如果放置不合理，常见后果包括：
 
 - response latency
 - tail latency
-- memory node 附近 link utilization
+- memory node 附近 link utilization（链路利用率）
 - ejection blocked cycle
 - waiting_for_other_stream cycle
 
@@ -144,5 +144,5 @@ KV 如果放置不合理，常见后果包括：
 
 ## 本页结论
 
-KV cache / decode memory path 的核心，不是把它看成普通 memory traffic，而是把它识别为 decode forward progress 的关键依赖路径。  
+KV cache / decode memory path 的核心，不是把它看成普通 memory traffic，而是把它识别为 decode forward progress（前进保证）的关键依赖路径。  
 只要这个路径不稳，NoC 就可能在链路并不满的情况下显著拖慢系统。

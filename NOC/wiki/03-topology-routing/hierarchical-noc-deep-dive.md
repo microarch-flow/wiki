@@ -8,8 +8,8 @@
 
 很多 AI accelerator 的真实选择，不是“mesh 还是不是 mesh”，而是：
 
-- 全平铺 flat mesh
-- cluster 内局部互连 + cluster 间全局 NoC
+- 全平铺 flat mesh（扁平网格）
+- cluster（簇，一组紧密互连的 tile）内局部互连 + cluster 间全局 NoC
 
 这实际上是系统组织方式，而不是单个网络参数。
 
@@ -17,14 +17,14 @@
 
 一个典型分层方案可能是：
 
-- cluster 内：crossbar / local ring / local fabric
-- cluster 间：mesh / tree / global fabric
+- cluster 内：crossbar（交叉开关）/ local ring / local fabric
+- cluster 间：mesh / tree / global fabric（全局互连结构）
 
 也可以进一步分成：
 
-- tile
+- tile（计算单元）
 - cluster
-- super-cluster
+- super-cluster（超级簇）
 
 所以 hierarchical NoC 往往天然和架构层级一致。
 
@@ -34,7 +34,7 @@
 
 - 局部通信多
 - 跨大范围通信少但关键
-- 数据复用有明显空间层级
+- 数据复用（data reuse）有明显空间层级
 
 这意味着如果你把“高频局部流量”困在 cluster 内，通常能显著减轻全局网络压力。
 
@@ -46,7 +46,7 @@
 
 ### 2. 强化局部数据复用
 
-cluster 内更容易共享 SRAM、权重、partial sum。
+cluster 内更容易共享 SRAM（静态随机存取存储器）、权重、partial sum（部分和，矩阵乘法中的中间累加结果）。
 
 ### 3. 缩小全局 router 数量
 
@@ -54,13 +54,13 @@ cluster 内更容易共享 SRAM、权重、partial sum。
 
 ### 4. 更贴近真实 floorplan
 
-很多芯片本来就是按 cluster / tile group 组织的。
+很多芯片本来就是按 cluster / tile group 组织的，与 floorplan（芯片版图布局）天然对齐。
 
 ## 它的代价也很明确
 
 ### 1. 软件映射更受限
 
-如果 workload 无法很好贴合 cluster 边界，可能出现：
+如果 workload（工作负载）无法很好贴合 cluster 边界，可能出现：
 
 - 局部互连闲置
 - 跨 cluster 流量暴涨
@@ -71,7 +71,7 @@ cluster 内更容易共享 SRAM、权重、partial sum。
 
 - cluster 内 crossbar
 - local shared SRAM
-- cluster egress port
+- cluster egress port（出口端口）
 
 ### 3. 结构更复杂
 
@@ -102,25 +102,25 @@ cluster 内更容易共享 SRAM、权重、partial sum。
 - 能否把热点数据留在本地
 - cluster 内通信比例能否上升
 
-### Egress / Ingress 口多少
+### Egress / Ingress（出口 / 入口）口多少
 
 即使 local 很强，只要 cluster 出入口太弱，跨 cluster 流量仍会成为瓶颈。
 
 ## 对不同 workload 的敏感性
 
-### GEMM / 规则 pipeline
+### GEMM（通用矩阵乘法）/ 规则 pipeline
 
 通常更适合 hierarchical，因为局部复用更明显。
 
-### Prefill
+### Prefill（预填充阶段，LLM 推理中处理输入提示词的阶段）
 
 取决于大块流量是否能在 cluster 内消化一部分。
 
-### Decode
+### Decode（解码阶段，LLM 推理中逐 token 生成的阶段）
 
 若关键 response 路径频繁跨 cluster，hierarchical 优势可能减弱。
 
-### MoE / all-to-all
+### MoE（混合专家模型）/ all-to-all（全互连通信）
 
 这是 hierarchical NoC 的硬仗。  
 如果大部分通信都跨 cluster，层级结构的收益会下降，甚至暴露 cluster 边界瓶颈。
@@ -137,8 +137,8 @@ cluster 内更容易共享 SRAM、权重、partial sum。
 
 - local traffic ratio
 - global traffic ratio
-- cluster boundary link utilization
-- cluster egress stall
+- cluster boundary link utilization（簇边界链路利用率）
+- cluster egress stall（簇出口阻塞）
 - end-to-end workload completion time
 
 ## 一个高价值实验
@@ -164,4 +164,4 @@ hierarchical NoC 并不是“更高级的 mesh”，而是用结构分层换局�
 ## 本页结论
 
 hierarchical NoC 的真正价值，在于把架构层级、数据复用层级和物理实现层级尽量对齐。  
-但它只有在 workload、mapping 和 memory organization 共同支持局部性的前提下，才会稳定优于 flat mesh。
+但它只有在 workload、mapping（映射，将算子分配到硬件资源）和 memory organization 共同支持局部性的前提下，才会稳定优于 flat mesh。

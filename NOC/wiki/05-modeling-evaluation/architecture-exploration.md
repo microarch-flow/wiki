@@ -8,12 +8,12 @@
 
 基于现有知识，已经可以开始第一阶段探索：
 
-评估 `flat mesh vs cluster-hierarchical NoC` 在 `GEMM / attention-like traffic` 下的：
+评估 `flat mesh（扁平网格）vs cluster-hierarchical NoC（分簇层次化片上网络）` 在 `GEMM（通用矩阵乘法）/ attention-like traffic（注意力类流量）` 下的：
 
-- link utilization
-- stall breakdown
-- average / tail latency
-- tile utilization
+- link utilization（链路利用率）
+- stall breakdown（停顿分类统计）
+- average / tail latency（平均/尾部延迟）
+- tile utilization（计算单元利用率）
 
 ## 推荐的参数扫描顺序
 
@@ -21,41 +21,41 @@
 
 - 拓扑
 - cluster 大小
-- HBM / DMA 端口位置
+- HBM（高带宽内存）/ DMA（直接内存访问）端口位置
 
 ### 第二组：router / link
 
-- link width
-- buffer depth
-- flit size
-- packet size
-- VC 数量
+- link width（链路宽度）
+- buffer depth（缓冲深度）
+- flit size（流控单元大小）
+- packet size（数据包大小）
+- VC（虚通道）数量
 
 ### 第三组：系统交互
 
-- source injection rate
-- destination FIFO 深度
-- DMA burst size
+- source injection rate（源端注入速率）
+- destination FIFO（目的端先入先出队列）深度
+- DMA burst size（DMA 突发传输大小）
 - tile 消费速率
 
 ### 第四组：workload / mapping
 
-- placement
-- tensor 切分方式
+- placement（放置策略）
+- tensor（张量）切分方式
 - 是否 tile-to-tile forwarding
 - 是否回写全局存储
 
 ## 一个有效的分析套路
 
 1. 先找最先饱和的 link / port
-2. 再区分是 credit stall 还是 switch stall
-3. 再判断根因在 NoC、NI、DMA 还是 memory endpoint
+2. 再区分是 credit stall（信用停顿）还是 switch stall（交叉开关停顿）
+3. 再判断根因在 NoC、NI（网络接口）、DMA 还是 memory endpoint（存储端点）
 4. 最后再改参数，而不是先盲目加宽链路
 
 ## 你现在还不该追求什么
 
 - 直接得出“最终芯片最优 NoC”
-- 只凭单一 synthetic traffic 下结论
+- 只凭单一 synthetic traffic（合成流量）下结论
 - 忽略软件映射和端点行为
 - 把第一版 simulator 当成 RTL 替代品
 
@@ -70,10 +70,10 @@
 
 但还不够支持：
 
-- 精确 tape-out 级时序结论
-- 极细粒度 QoS 保证
+- 精确 tape-out（流片）级时序结论
+- 极细粒度 QoS（服务质量）保证
 - 复杂协议 correctness 证明
 
 ## 本页结论
 
-对你当前阶段最重要的，不是把所有 NoC 细节一次做完，而是先建立一套能把 workload、mapping 和 NoC 性能连起来的探索框架。
+对你当前阶段最重要的，不是把所有 NoC 细节一次做完，而是先建立一套能把 workload（工作负载）、mapping（映射）和 NoC 性能连起来的探索框架。

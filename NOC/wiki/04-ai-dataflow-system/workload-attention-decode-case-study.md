@@ -6,19 +6,19 @@
 
 ## 为什么 decode 必须和 prefill 分开
 
-decode 的典型特点是：
+decode（逐token解码）的典型特点是：
 
-- batch 更小
+- batch（批次）更小
 - step-by-step 生成
-- latency 更敏感
-- KV cache 访问路径更重要
+- latency（延迟）更敏感
+- KV cache（键值缓存）访问路径更重要
 
-所以 decode 的核心常常不是“总搬运量大不大”，而是“关键小消息和关键返回路径能否及时走通”。
+所以 decode 的核心常常不是”总搬运量大不大”，而是”关键小消息和关键返回路径能否及时走通”。
 
 ## 典型 NoC 压力来源
 
 - KV cache 相关读请求与返回
-- 小粒度 control / sync
+- 小粒度 control / sync（同步）
 - compute stage 之间较细粒度的数据依赖
 - 多用户推理下的动态流量叠加
 
@@ -35,8 +35,8 @@ decode 更像：
 ## 你最该观察的点
 
 - read response 是否被 bulk traffic 压住
-- control / barrier 是否被延迟
-- QoS 是否显著改善 end-to-end latency
+- control / barrier（同步屏障）是否被延迟
+- QoS（服务质量）是否显著改善 end-to-end latency
 - KV cache placement 是否改变热点分布
 
 ## 常见 stall
@@ -56,9 +56,9 @@ decode 场景下，`WAITING_FOR_OTHER_STREAM` 特别值得小心，因为系统�
 
 观察：
 
-- tail latency
+- tail latency（尾部延迟）
 - response return latency
-- barrier latency
+- barrier latency（屏障延迟）
 - workload completion time
 
 ## 本页结论

@@ -6,13 +6,13 @@
 
 ## 为什么 MoE 对 NoC 很“狠”
 
-MoE 常常把 AI NoC 推向更动态、更不规则的区域，因为它引入了：
+MoE（混合专家模型）常常把 AI NoC 推向更动态、更不规则的区域，因为它引入了：
 
-- token 到 expert 的分发
-- expert 输出的 gather
+- token（令牌）到 expert（专家模块）的分发
+- expert 输出的 gather（收集）
 - 可能高度不均衡的流量热点
 
-这使它成为评估 routing、QoS 和 collective 价值的高压案例。
+这使它成为评估 routing（路由）、QoS（服务质量）和 collective（集合通信）价值的高压案例。
 
 ## 典型通信形态
 
@@ -20,18 +20,18 @@ MoE 常常把 AI NoC 推向更动态、更不规则的区域，因为它引入�
 - many-to-many gather
 - 局部 fan-in / fan-out 突发
 
-这比普通 GEMM 或规则 pipeline 更接近网络压力测试。
+这比普通 GEMM（通用矩阵乘法）或规则 pipeline（流水线）更接近网络压力测试。
 
 ## 你最该观察的点
 
 - traffic 是否严重偏斜到少数 expert
-- source routing 在动态流量下是否失去优势
-- adaptive routing 是否有明显收益
-- all-to-all 是否需要单独 traffic class 或 plane
+- source routing（源路由）在动态流量下是否失去优势
+- adaptive routing（自适应路由）是否有明显收益
+- all-to-all（全交换）是否需要单独 traffic class（流量类别）或 plane
 
 ## 常见热点
 
-- 热门 expert 所在 cluster
+- 热门 expert 所在 cluster（簇）
 - gather 回流路径
 - memory response 与 dispatch 混行的共享链路
 
@@ -51,17 +51,17 @@ MoE 常常把 AI NoC 推向更动态、更不规则的区域，因为它引入�
 
 观察：
 
-- hotspot link 分布
+- hotspot link（热点链路）分布
 - 尾部延迟
-- workload completion time
-- starvation 现象
+- workload completion time（工作负载完成时间）
+- starvation（饥饿）现象
 
 ## 为什么它也是 QoS 问题
 
 如果 MoE dispatch / gather 与 control、memory response 完全混跑，系统很容易出现：
 
 - 关键小消息饿死
-- barrier 被异常放大
+- barrier（同步屏障）被异常放大
 - 端到端时延严重抖动
 
 所以 MoE 不只是 routing 问题，也是 QoS 与公平性问题。

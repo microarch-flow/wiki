@@ -6,10 +6,10 @@
 
 ## 为什么要从 archetype 继续走到具体卡
 
-archetype 能帮你快速分类。  
+archetype（架构原型）能帮你快速分类。  
 具体卡则能逼你开始回答：
 
-- 这个案例到底公开了哪些 NoC 线索
+- 这个案例到底公开了哪些 NoC（片上网络）线索
 - 哪些是可以拿来建模的
 - 哪些只是营销表述
 
@@ -23,12 +23,12 @@ archetype 能帮你快速分类。
 
 - 强规则数据流
 - 强编译器映射
-- 更偏阵列式数据移动，而不是复杂动态 packet fabric
+- 更偏阵列式数据移动，而不是复杂动态 packet fabric（数据包交换网络）
 
 ### What I Can Reuse
 
 - 把规则 array 视为一种“高度结构化局部互连”参考
-- 研究 dataflow 与 placement 的耦合
+- 研究 dataflow（数据流）与 placement（放置策略）的耦合
 
 ### What I Still Doubt
 
@@ -52,19 +52,19 @@ archetype 能帮你快速分类。
 
 ### What I Still Doubt
 
-- 公开材料通常更偏系统叙事，具体 router / flow control 细节有限
+- 公开材料通常更偏系统叙事，具体 router（路由器）/ flow control（流量控制）细节有限
 
 ## Card 3：Tenstorrent / Tensix 类 tile dataflow
 
 ### Problem
 
-- 如何让 tile、stream、DMA、local memory 协同工作
+- 如何让 tile（计算单元）、stream（数据流）、DMA（直接内存访问）、local memory（本地存储）协同工作
 
 ### NoC-Relevant Details
 
 - tile-to-tile stream 很关键
 - control / stream / DMA 的并存很关键
-- destination buffering / local memory arbitration 很关键
+- destination buffering（目的端缓冲）/ local memory arbitration（本地存储仲裁）很关键
 
 ### What I Can Reuse
 
@@ -73,7 +73,7 @@ archetype 能帮你快速分类。
 
 ### What I Still Doubt
 
-- 公开资料是否足够支撑细粒度 cycle 模型
+- 公开资料是否足够支撑细粒度 cycle-accurate（周期精确）模型
 
 ## Card 4：Groq 类编译驱动静态通路
 
@@ -83,12 +83,12 @@ archetype 能帮你快速分类。
 
 ### NoC-Relevant Details
 
-- source-routing / static scheduling 视角特别重要
+- source-routing（源路由）/ static scheduling（静态调度）视角特别重要
 - 路径静态化后，热点与灵活性的平衡很关键
 
 ### What I Can Reuse
 
-- 研究 compiler-driven NoC 的价值边界
+- 研究 compiler-driven NoC（编译器驱动的片上网络）的价值边界
 
 ### What I Still Doubt
 
@@ -100,7 +100,7 @@ archetype 能帮你快速分类。
 
 - 它更接近哪张已有卡
 - 它在哪个 NoC 维度上不同
-- 这个差异值得在 simulator 里试什么实验
+- 这个差异值得在 simulator（模拟器）里试什么实验
 
 ## 本页结论
 

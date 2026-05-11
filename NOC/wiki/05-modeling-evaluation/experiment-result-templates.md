@@ -6,7 +6,7 @@
 
 ## 为什么需要模板
 
-没有统一模板，NoC 实验很容易变成：
+没有统一模板，NoC（片上网络）实验很容易变成：
 
 - 参数记不全
 - 流量条件不一致
@@ -23,8 +23,8 @@
 
 示例：
 
-- 比较 flat mesh 和 hierarchical NoC 在 GEMM-like traffic 下的差异
-- 评估 response priority 是否改善 decode tail latency
+- 比较 flat mesh（扁平网格）和 hierarchical NoC（层次化片上网络）在 GEMM-like traffic（通用矩阵乘法类流量）下的差异
+- 评估 response priority 是否改善 decode（解码）tail latency（尾部延迟）
 
 ### 2. 输入配置
 
@@ -32,12 +32,12 @@
 
 - topology
 - routing
-- VC / traffic class 设置
-- link width / bandwidth
-- buffer depth
-- packet size / flit size
-- endpoint / ejection 限制
-- memory port placement
+- VC（虚通道）/ traffic class（流量类别）设置
+- link width（链路宽度）/ bandwidth（带宽）
+- buffer depth（缓冲深度）
+- packet size（数据包大小）/ flit size（流控单元大小）
+- endpoint / ejection（弹出）限制
+- memory port placement（存储端口放置位置）
 
 ### 3. Workload / Traffic 描述
 
@@ -46,19 +46,19 @@
 - synthetic 还是 workload trace
 - traffic class 构成
 - source / destination 分布
-- tile placement
-- 是否有 forwarding / multicast / reduce
+- tile（计算单元）placement（放置策略）
+- 是否有 forwarding（转发）/ multicast（组播）/ reduce（归约）
 
 ### 4. 输出指标
 
 至少记录：
 
-- packet latency
+- packet latency（数据包延迟）
 - tail latency
-- per-link utilization
-- stall breakdown
+- per-link utilization（每条链路利用率）
+- stall breakdown（停顿分类统计）
 - tile utilization
-- workload completion time
+- workload completion time（工作负载完成时间）
 
 ### 5. 根因分析
 
@@ -66,7 +66,7 @@
 
 - 最先饱和的是哪里
 - 主要 stall 是哪一类
-- 根因在 NoC、endpoint、memory 还是 mapping
+- 根因在 NoC、endpoint（端点）、memory 还是 mapping（映射）
 
 ### 6. 结论边界
 
@@ -132,15 +132,15 @@
 
 如果后续要做汇报，最值得保留的图一般是：
 
-- per-link utilization heatmap
-- latency CDF 或 tail latency 对比
+- per-link utilization heatmap（链路利用率热力图）
+- latency CDF（延迟累积分布函数）或 tail latency 对比
 - stall breakdown bar chart
 - workload completion time 对比
 
 ## 一个简单但很重要的原则
 
 每次实验最好只改 1 到 2 个主参数。  
-否则你很难判断改进到底来自 topology、QoS 还是 memory placement。
+否则你很难判断改进到底来自 topology（拓扑）、QoS（服务质量）还是 memory placement。
 
 ## 本页结论
 

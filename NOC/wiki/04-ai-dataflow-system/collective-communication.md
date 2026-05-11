@@ -10,22 +10,22 @@
 一旦进入：
 
 - 权重广播
-- partial sum reduce
-- expert dispatch / gather
-- 多 tile 同步
+- partial sum（部分和）reduce（归约）
+- expert（专家模块）dispatch / gather（分发/收集）
+- 多 tile（计算单元）同步
 
 流量形态就会从 point-to-point 变成 one-to-many、many-to-one 或 many-to-many。
 
-这类流量通常比普通 unicast 更容易制造热点。
+这类流量通常比普通 unicast（单播）更容易制造热点。
 
 ## 三类你必须重点掌握的 collective
 
-### Broadcast / Multicast
+### Broadcast（广播）/ Multicast（组播）
 
 典型场景：
 
 - 权重分发
-- activation 分发
+- activation（激活值）分发
 - 控制面同步消息
 
 问题本质：
@@ -44,7 +44,7 @@
 - 再用理想化的树形复制近似硬件 multicast 下界
 - 对比两者差值，判断硬件 multicast 是否值得
 
-### Reduce / Gather
+### Reduce / Gather（收集）
 
 典型场景：
 
@@ -55,7 +55,7 @@
 问题本质：
 
 - 多个源同时压向一个目的地
-- sink 端口、ejection FIFO、local SRAM 写入口容易变成瓶颈
+- sink 端口、ejection FIFO（弹出缓冲队列）、local SRAM（本地静态存储）写入口容易变成瓶颈
 
 关键要看：
 
@@ -69,18 +69,18 @@
 - 显式统计 sink ejection stall
 - 再评估是否值得加入 tree reduction 或分层 reduce
 
-### All-to-all
+### All-to-all（全交换）
 
 典型场景：
 
-- MoE dispatch / gather
-- 某些 tensor parallel 交换
+- MoE（混合专家模型）dispatch / gather
+- 某些 tensor parallel（张量并行）交换
 - 不规则 data redistribution
 
 问题本质：
 
 - 多个源与多个目的同时活跃
-- routing、QoS、buffer 和端点都可能成为瓶颈
+- routing（路由）、QoS（服务质量）、buffer（缓冲区）和端点都可能成为瓶颈
 
 这是最接近“网络本体压力测试”的 collective 之一。
 
@@ -118,7 +118,7 @@ collective 流量很容易挤占普通流量，因此通常要考虑：
 - many-to-one traffic 注入
 - many-to-many traffic 注入
 - per-destination ejection 限制
-- 与普通 stream / DMA 混合运行
+- 与普通 stream / DMA（直接内存访问）混合运行
 
 ## 什么时候值得做硬件 collective 支持
 

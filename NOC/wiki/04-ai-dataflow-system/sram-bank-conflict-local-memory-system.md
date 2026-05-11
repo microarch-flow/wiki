@@ -6,14 +6,14 @@
 
 ## 为什么这页重要
 
-很多 NoC 分析会默认端点“只要数据到了就能消费”。  
-但真实 AI accelerator 里，tile、cluster SRAM、本地 scratchpad 往往有明确的 bank、port 和仲裁限制。
+很多 NoC 分析会默认端点”只要数据到了就能消费”。  
+但真实 AI accelerator 里，tile（计算单元）、cluster SRAM（簇级静态存储）、本地 scratchpad（便笺存储器）往往有明确的 bank、port 和仲裁限制。
 
 结果是：
 
 - NoC 看起来没满
-- 但 ejection 或本地读写已经堵住
-- backpressure 最终又表现成 NoC stall
+- 但 ejection（弹出）或本地读写已经堵住
+- backpressure（反压）最终又表现成 NoC stall（停顿）
 
 ## Local Memory System 通常包含什么
 
@@ -23,13 +23,13 @@
 - read / write port
 - address generation / access scheduler
 - load-store queue 或 scratchpad queue
-- 与 DMA / compute / NoC 共享的访问入口
+- 与 DMA（直接内存访问）/ compute / NoC 共享的访问入口
 
 这些对象共同决定“本地能否及时吃下 NoC 送来的数据”。
 
 ## 什么是 bank conflict
 
-当多个访问在同一时刻命中同一个 SRAM bank 或共享端口时，就会发生 bank conflict。
+当多个访问在同一时刻命中同一个 SRAM bank（存储体）或共享端口时，就会发生 bank conflict（存储体冲突）。
 
 后果可能包括：
 
@@ -44,8 +44,8 @@
 
 因为从 router 视角看，表象常常只是：
 
-- 下游 FIFO 不动
-- credit 回不来
+- 下游 FIFO（先入先出缓冲）不动
+- credit（信用计数）回不来
 - source 被迫停发
 
 但根因其实可能是：
@@ -59,7 +59,7 @@
 - compute 读和 NoC 写打架
 - DMA refill 和 tile consume 打架
 - 多个 ejection stream 同时落在相同 bank
-- reduce / gather 结果集中写入单一局部区域
+- reduce（归约）/ gather（收集）结果集中写入单一局部区域
 
 ## 为什么 local memory system 对 hierarchical NoC 特别重要
 

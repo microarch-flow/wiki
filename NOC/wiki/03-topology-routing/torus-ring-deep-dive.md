@@ -8,29 +8,29 @@
 
 它们都可以看成“比 mesh 更强调闭环路径”的家族，但系统价值完全不同：
 
-- torus 更像对 mesh 的增强
-- ring 更像极简互连
+- torus（环面拓扑）更像对 mesh（网格拓扑）的增强
+- ring（环形拓扑）更像极简互连
 
 ## Torus
 
 ### 核心直觉
 
-torus 在 mesh 基础上增加环回边，目标是：
+torus 在 mesh 基础上增加环回边（wrap-around link），目标是：
 
 - 降低边界效应
 - 缩短逻辑最远距离
-- 提高横截面带宽
+- 提高横截面带宽（bisection bandwidth，将网络平分为两半时横跨切面的总带宽）
 
 ### 优点
 
-- 平均 hop 通常更好
+- 平均 hop（跳数）通常更好
 - 边角节点不再天然弱势
 
 ### 关键问题
 
 - 环回边往往是长链路
 - 物理实现成本不再像 mesh 那样规整
-- 长链路 pipeline 可能吃掉逻辑 hop 优势
+- 长链路 pipeline（流水线）可能吃掉逻辑 hop 优势
 
 ### 适合什么
 
@@ -56,7 +56,7 @@ ring 用最小结构换最简单实现。
 
 ### 适合什么
 
-- 小 cluster 内互连
+- 小 cluster（簇）内互连
 - 控制面
 - 较轻量子网络
 
@@ -66,7 +66,7 @@ ring 用最小结构换最简单实现。
 
 - 长链路
 - 更复杂物理实现
-- credit round-trip 可能变长
+- credit round-trip（信用往返延迟）可能变长
 
 否则理论优势未必会兑现。
 
@@ -81,7 +81,7 @@ ring 用最小结构换最简单实现。
 ## 你至少该做的实验
 
 - mesh vs torus：同规模下加入长链路代价后是否还占优
-- ring 作为 cluster-local fabric 是否优于 local crossbar
+- ring 作为 cluster-local fabric（本地互连结构）是否优于 local crossbar（交叉开关）
 
 ## 本页结论
 

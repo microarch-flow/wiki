@@ -19,28 +19,28 @@
 
 先明确第一版不做什么：
 
-- 不做复杂 adaptive routing
-- 不做 bit-accurate header encoding
+- 不做复杂 adaptive routing（自适应路由）
+- 不做 bit-accurate header encoding（位精确包头编码）
 - 不做物理时序细节
-- 不做完整 coherence
+- 不做完整 coherence（一致性协议）
 
 只做：
 
-- flit-level
-- wormhole
-- credit-based flow control
-- 至少一种 topology
-- 至少一种 workload trace
+- flit-level（流控单元级别）
+- wormhole（虫孔转发）
+- credit-based flow control（基于信用的流量控制）
+- 至少一种 topology（拓扑）
+- 至少一种 workload trace（工作负载轨迹）
 
 ## Phase 1：最小拓扑与传输骨架
 
 先实现：
 
-- router node
-- link
-- packet / flit
-- simple topology graph
-- fixed routing
+- router node（路由器节点）
+- link（链路）
+- packet（数据包）/ flit（流控单元）
+- simple topology graph（简单拓扑图）
+- fixed routing（固定路由）
 
 完成标准：
 
@@ -51,15 +51,15 @@
 
 加入：
 
-- per-input buffer
-- credit counter
-- credit return
-- injection / ejection queue
+- per-input buffer（每端口输入缓冲）
+- credit counter（信用计数器）
+- credit return（信用返回）
+- injection / ejection queue（注入/弹出队列）
 
 完成标准：
 
 - buffer 满时发送方会停
-- destination FIFO 满时反压能一路传回 source
+- destination FIFO（目的端先入先出队列）满时反压（backpressure）能一路传回 source
 
 ## Phase 3：wormhole 资源占用
 
@@ -78,9 +78,9 @@
 
 加入：
 
-- RC
-- VC allocation 或最小逻辑通路分配
-- switch arbitration
+- RC（路由计算）
+- VC allocation（虚通道分配）或最小逻辑通路分配
+- switch arbitration（交叉开关仲裁）
 
 完成标准：
 
@@ -105,23 +105,23 @@
 
 先加入 2 类：
 
-- GEMM-like
-- attention decode-like
+- GEMM-like（通用矩阵乘法类）
+- attention decode-like（注意力解码类）
 
 完成标准：
 
-- synthetic traffic 之外，能跑真实 AI-like 模式
+- synthetic traffic（合成流量）之外，能跑真实 AI-like 模式
 - 能观察 compute-facing 指标变化
 
 ## Phase 7：统计与实验接口
 
 加入：
 
-- per-link utilization
+- per-link utilization（每条链路利用率）
 - latency 分布
-- stall breakdown
-- tile utilization
-- workload completion time
+- stall breakdown（停顿分类统计）
+- tile utilization（计算单元利用率）
+- workload completion time（工作负载完成时间）
 
 完成标准：
 
@@ -131,11 +131,11 @@
 
 优先做这几组：
 
-1. flat mesh vs hierarchical NoC
-2. packet size / buffer depth 扫描
-3. QoS on/off
+1. flat mesh（扁平网格）vs hierarchical NoC（层次化片上网络）
+2. packet size / buffer depth（缓冲深度）扫描
+3. QoS（服务质量）on/off
 4. forwarding on/off
-5. memory port placement 变化
+5. memory port placement（存储端口放置位置）变化
 
 完成标准：
 
@@ -165,7 +165,7 @@
 - Phase 2：buffer 满会停发
 - Phase 3：tail 释放前资源不会被错误复用
 - Phase 4：两 packet 抢同一输出时仲裁合理
-- Phase 5：control 高优先级能改善 tail latency
+- Phase 5：control 高优先级能改善 tail latency（尾部延迟）
 
 ## 最容易犯的路线错误
 

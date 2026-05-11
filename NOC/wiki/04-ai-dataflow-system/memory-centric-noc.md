@@ -9,9 +9,9 @@
 不是所有 NoC 问题都由 tile-to-tile stream 主导。  
 在很多 AI 推理场景里，尤其是：
 
-- decode
-- KV cache 主导路径
-- 高并发 DMA
+- decode（逐token解码）
+- KV cache（键值缓存）主导路径
+- 高并发 DMA（直接内存访问）
 - memory response 较敏感的 pipeline
 
 系统更像是被 memory path 驱动，而不是被纯计算流驱动。
@@ -20,9 +20,9 @@
 
 不是说 NoC 只连 memory，而是说系统吞吐、尾延迟和 stall 的主因更集中在：
 
-- HBM / memory controller 端口
+- HBM（高带宽存储器）/ memory controller 端口
 - DMA request / response
-- local SRAM refill / eviction
+- local SRAM（本地静态存储）refill / eviction（回填/驱逐）
 - read response return path
 
 这种情况下，NoC 的主要任务不是“搬运大块数据”，而是保证 memory 相关流量不过早放大成系统 stall。
@@ -31,7 +31,7 @@
 
 常见 memory-centric 事务链条包括：
 
-- tile -> read request -> NoC -> memory port
+- tile（计算单元）-> read request -> NoC -> memory port
 - memory response -> NoC -> tile / DMA / SRAM
 - spill / refill 流量
 - KV cache read / update 路径
@@ -50,7 +50,7 @@ response 则通常意味着：
 
 - tile 在等数据
 - DMA 在等完成
-- barrier 或下游 stage 在等依赖满足
+- barrier（同步屏障）或下游 stage 在等依赖满足
 
 所以如果 response 被 bulk traffic 压住，系统即使总带宽看起来还行，也可能明显变慢。
 
@@ -59,8 +59,8 @@ response 则通常意味着：
 - request / response 共用资源池
 - response 与 bulk DMA 混跑且无优先级
 - HBM 端口位置导致长路径集中
-- ejection / SRAM 写入口太弱
-- KV cache placement 把热点压在少数 memory node 附近
+- ejection（弹出）/ SRAM 写入口太弱
+- KV cache placement（放置策略）把热点压在少数 memory node 附近
 
 ## HBM / memory port placement 为什么关键
 
@@ -77,7 +77,7 @@ response 则通常意味着：
 decode 通常具有：
 
 - 小 batch
-- step latency 敏感
+- step latency（单步延迟）敏感
 - KV cache 访问频繁
 - 关键返回路径短而急
 
@@ -93,7 +93,7 @@ decode 通常具有：
 - request class
 - response class
 - memory port service rate
-- DMA outstanding request 限制
+- DMA outstanding request（未完成请求）限制
 - destination ejection / SRAM 写入口限制
 
 如果没有这些，模型会高估 memory-centric 场景下的 NoC 表现。
@@ -104,7 +104,7 @@ decode 通常具有：
 - response 是否有更高优先级
 - memory port 放置位置变化的影响
 - KV cache placement 对热点的影响
-- decode 与 prefill 对同一 NoC 的敏感性差异
+- decode 与 prefill（预填充）对同一 NoC 的敏感性差异
 
 ## 常见 stall 类型
 
@@ -124,11 +124,11 @@ decode 通常具有：
 
 观察：
 
-- tail latency
+- tail latency（尾部延迟）
 - response latency
-- tile utilization
+- tile utilization（计算单元利用率）
 - workload completion time
 
 ## 本页结论
 
-memory-centric NoC 的核心不是再造一套独立网络，而是识别“系统是不是已经由 memory path 主导”，并据此重新排序你对 QoS、response isolation、memory placement 和 ejection 能力的关注优先级。
+memory-centric NoC 的核心不是再造一套独立网络，而是识别”系统是不是已经由 memory path 主导”，并据此重新排序你对 QoS（服务质量）、response isolation（响应隔离）、memory placement 和 ejection 能力的关注优先级。

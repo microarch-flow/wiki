@@ -1,14 +1,14 @@
 # 05 建模与评估
 
-本章面向你的核心目标：基于 workload 做片上架构探索。
+本章面向你的核心目标：基于 workload（工作负载）做片上架构探索。
 
 ## 本章入口
 
 - [建模层次](./modeling-layers.md)
 - [指标与实验设计](./metrics-experiments.md)
 - [架构探索方法](./architecture-exploration.md)
-- [QoS、公平性与 Stall Taxonomy](./qos-fairness-stall-taxonomy.md)
-- [Simulator 设计规格](./simulator-design-spec.md)
+- [QoS（服务质量）、公平性与 Stall Taxonomy（停顿分类体系）](./qos-fairness-stall-taxonomy.md)
+- [Simulator（模拟器）设计规格](./simulator-design-spec.md)
 - [Simulator 数据结构与伪代码](./simulator-data-structures-pseudocode.md)
 - [实验模板与结果模板](./experiment-result-templates.md)
 - [Simulator 最小实现路线](./simulator-implementation-roadmap.md)
@@ -22,4 +22,4 @@
 
 ## 一句话总纲
 
-做 NoC 架构探索，不是先追求最复杂模型，而是先建立一套能稳定给出一阶洞察的分层建模方法，再逐步补真实度。
+做 NoC（片上网络）架构探索，不是先追求最复杂模型，而是先建立一套能稳定给出一阶洞察的分层建模方法，再逐步补真实度。

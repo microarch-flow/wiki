@@ -16,14 +16,14 @@
 
 ## 一：架构分析主问题模板
 
-每次分析一个 NoC 方案，先固定回答下面 8 个问题：
+每次分析一个 NoC（片上网络）方案，先固定回答下面 8 个问题：
 
-1. workload 的主通信类型是什么
+1. workload（工作负载）的主通信类型是什么
 2. traffic 的关键路径是什么
-3. memory placement 是什么
+3. memory placement（存储放置位置）是什么
 4. 最先饱和的链路 / 端点在哪里
-5. 主要 stall 类型是什么
-6. 根因在 NoC、endpoint、memory 还是 mapping
+5. 主要 stall（停顿）类型是什么
+6. 根因在 NoC、endpoint（端点）、memory 还是 mapping（映射）
 7. 哪个参数最可能改善结果
 8. 这个结论的边界是什么
 
@@ -33,9 +33,9 @@
 
 适用于：
 
-- 选 topology
-- 选 QoS 策略
-- 选 response isolation
+- 选 topology（拓扑）
+- 选 QoS（服务质量）策略
+- 选 response isolation（响应隔离）
 - 选 hierarchical 与否
 
 推荐格式：
@@ -60,37 +60,37 @@
 
 ## 三：按场景的分析题库
 
-### 场景 1：GEMM-like 规则 workload
+### 场景 1：GEMM-like（通用矩阵乘法类）规则 workload
 
 你应该优先问：
 
-- forwarding 是否值得
-- hierarchical 是否提高局部复用
-- partial sum gather 会不会成热点
+- forwarding（转发）是否值得
+- hierarchical（层次化）是否提高局部复用
+- partial sum（部分和）gather（收集）会不会成热点
 
-### 场景 2：Decode-like memory-centric workload
+### 场景 2：Decode-like（解码类）memory-centric workload
 
 你应该优先问：
 
 - response path 是否被压住
-- KV placement 是否不合理
-- QoS 是否改善 tail latency
+- KV（键值）placement 是否不合理
+- QoS 是否改善 tail latency（尾部延迟）
 
-### 场景 3：MoE-like dynamic workload
+### 场景 3：MoE-like（混合专家模型类）dynamic workload
 
 你应该优先问：
 
-- all-to-all 是否暴露 topology 弱点
-- source routing 是否 still useful
+- all-to-all（全对全通信）是否暴露 topology 弱点
+- source routing（源路由）是否 still useful
 - QoS / fairness 是否成为关键
 
-### 场景 4：Collective-heavy workload
+### 场景 4：Collective-heavy（集合通信密集型）workload
 
 你应该优先问：
 
 - software replication 是否已经不够
-- reduce / gather 是否需要层级化
-- tree-like 或 hierarchical 结构是否更合适
+- reduce（归约）/ gather 是否需要层级化
+- tree-like（树形）或 hierarchical 结构是否更合适
 
 ## 四：常见错误决策模板
 
@@ -99,14 +99,14 @@
 - “带宽够大，所以 NoC 不会是瓶颈”
 - “平均 latency 下降，所以架构更好”
 - “链路利用率不高，所以系统没被 NoC 限制”
-- “adaptive routing 更复杂，所以一定更好或一定更差”
+- “adaptive routing（自适应路由）更复杂，所以一定更好或一定更差”
 
 真正稳妥的做法是把判断拉回：
 
-- stall breakdown
+- stall breakdown（停顿分类统计）
 - tail latency
-- endpoint behavior
-- workload completion time
+- endpoint behavior（端点行为）
+- workload completion time（工作负载完成时间）
 
 ## 五：自测清单
 
@@ -114,21 +114,21 @@
 
 ### 基础题
 
-- 为什么 wormhole 会放大 backpressure
-- 为什么 response path 常常比 request path 更敏感
-- 为什么 VC 不只是吞吐优化
+- 为什么 wormhole（虫孔转发）会放大 backpressure（反压）
+- 为什么 response path（响应路径）常常比 request path（请求路径）更敏感
+- 为什么 VC（虚通道）不只是吞吐优化
 
 ### 建模题
 
-- 怎么把 GEMM workload 转成 traffic trace
-- 为什么 decode 要单独保留 response class
-- 为什么 hierarchical NoC 只有在有局部性时才值
+- 怎么把 GEMM（通用矩阵乘法）workload 转成 traffic trace（流量轨迹）
+- 为什么 decode（解码）要单独保留 response class
+- 为什么 hierarchical NoC（层次化片上网络）只有在有局部性时才值
 
 ### 分析题
 
-- 如果 `NO_CREDIT` 很高但 link utilization 不高，先查什么
+- 如果 `NO_CREDIT`（无可用信用）很高但 link utilization（链路利用率）不高，先查什么
 - 如果 tail latency 很差但平均 latency 正常，说明什么
-- 如果 prefill 表现好但 decode 表现差，优先怀疑什么
+- 如果 prefill（预填充）表现好但 decode 表现差，优先怀疑什么
 
 ## 六：一个最实用的分析顺序
 
@@ -146,8 +146,8 @@
 
 如果你已经能：
 
-- 把一个 workload 变成 trace
-- 说清主 bottleneck 在哪里
+- 把一个 workload 变成 trace（轨迹）
+- 说清主 bottleneck（瓶颈）在哪里
 - 解释主要 stall 类型
 - 给出一个有边界的设计判断
 

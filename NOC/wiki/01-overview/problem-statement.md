@@ -10,23 +10,23 @@
 
 ## 它为什么会出现
 
-当芯片内部只有少量 master / slave 时，bus 或小规模 crossbar 往往够用。  
-当系统扩展到几十、几百个 tile，并同时挂接 SRAM、DMA、HBM port、control plane 时，集中式互连会迅速暴露问题：
+当芯片内部只有少量 master / slave 时，bus（总线） 或小规模 crossbar（交叉开关） 往往够用。  
+当系统扩展到几十、几百个 tile（计算单元），并同时挂接 SRAM（片上静态存储）、DMA（直接内存访问引擎）、HBM（高带宽存储器） port、control plane 时，集中式互连会迅速暴露问题：
 
 - 带宽无法随节点数量平滑扩展
-- 线长、仲裁与 mux 规模使面积和功耗恶化
+- 线长、仲裁与 mux（多路选择器） 规模使面积和功耗恶化
 - 全局控制路径过长，时序收敛困难
-- traffic pattern 一复杂，就会出现热点和拥塞
+- traffic pattern（流量模式） 一复杂，就会出现热点和拥塞
 
 ## AI 芯片里真正关心的不是“能不能通信”
 
 而是下面这些更工程化的问题：
 
 - 权重从 HBM 到 tile 怎么走
-- activation 是否能 tile-to-tile forward
-- partial sum 是否需要 reduce
-- KV cache 访问是否挤占主数据流
-- destination 消费变慢时，stall 会不会通过 backpressure 传回 producer
+- activation（激活值） 是否能 tile-to-tile forward
+- partial sum（部分和） 是否需要 reduce
+- KV cache（键值缓存） 访问是否挤占主数据流
+- destination 消费变慢时，stall（停顿） 会不会通过 backpressure（反压，下游阻塞向上游传播的停发效应） 传回 producer
 - NoC 的拥塞会不会直接降低 compute utilization
 
 ## 从系统角度看，NoC 的价值
@@ -35,7 +35,7 @@ NoC 的核心价值是把片上通信变成可管理的设计对象：
 
 - 可扩展：节点增加后仍能维持可接受的复杂度
 - 可预测：编译器和架构师能够推断热点与瓶颈
-- 可建模：可以在 workload、placement、traffic pattern 之上做分析
+- 可建模：可以在 workload（工作负载）、placement（映射放置）、traffic pattern 之上做分析
 - 可分层：把 router、link、flow control、traffic injection 分开建模
 
 ## NoC 不是独立层，它总是服务 workload
@@ -52,7 +52,7 @@ NoC 的核心价值是把片上通信变成可管理的设计对象：
 
 - 把 NoC 当成“片上网线”，忽略其对系统吞吐的反作用
 - 只看峰值带宽，不看拥塞、排队和 backpressure
-- 只看平均 hop，不看 floorplan 与热点位置
+- 只看平均 hop（跳数），不看 floorplan（版图布局） 与热点位置
 - 脱离 compiler/runtime 谈 NoC
 
 ## 本页结论

@@ -10,9 +10,9 @@
 
 目标：
 
-- 知道 packet、flit、phit 的关系
-- 知道 wormhole 为什么能小 buffer 低延迟
-- 知道 credit/backpressure 为什么会影响 compute stall
+- 知道 packet（包）、flit（流控单元）、phit（物理传输单元） 的关系
+- 知道 wormhole（虫孔交换） 为什么能小 buffer 低延迟
+- 知道 credit（信用计数）/backpressure（反压） 为什么会影响 compute stall（计算停顿）
 
 入口：
 
@@ -24,9 +24,9 @@
 
 目标：
 
-- 知道 router pipeline 的基本阶段
-- 知道 switch stall 和 credit stall 的差别
-- 知道为什么需要 VC 和资源隔离
+- 知道 router pipeline（路由器流水线） 的基本阶段
+- 知道 switch stall（交换停顿） 和 credit stall（信用停顿） 的差别
+- 知道为什么需要 VC（virtual channel，虚通道） 和资源隔离
 
 入口：
 
@@ -37,7 +37,7 @@
 
 目标：
 
-- 理解 topology、routing、arbitration、QoS
+- 理解 topology（拓扑）、routing（路由）、arbitration（仲裁）、QoS（服务质量）
 - 能比较 flat mesh 与 cluster-hierarchical 方案
 
 入口：
@@ -49,8 +49,8 @@
 
 目标：
 
-- 理解 NI、DMA、SRAM、HBM 接口
-- 理解 traffic 是如何从 workload 和 mapping 里长出来的
+- 理解 NI（Network Interface，网络接口）、DMA（直接内存访问引擎）、SRAM（片上静态存储）、HBM（高带宽存储器） 接口
+- 理解 traffic（流量） 是如何从 workload（工作负载） 和 mapping（映射） 里长出来的
 
 入口：
 

@@ -9,22 +9,22 @@
 前面的 wiki 主要站在架构建模层。  
 但只要你开始认真比较 topology、router radix、link width，很快就会碰到一个事实：
 
-NoC 不是只在逻辑图上存在，它最终要落到 floorplan、长线、时序和功耗上。
+NoC 不是只在逻辑图上存在，它最终要落到 floorplan（版图规划）、长线、时序和功耗上。
 
 ## 逻辑最优不等于物理可落地
 
-一个 topology 在抽象图上可能平均 hop 更少，但现实里可能：
+一个 topology（拓扑）在抽象图上可能平均 hop（跳数）更少，但现实里可能：
 
 - wire 更长
 - 时序更难收敛
-- 需要更多 pipeline stage
+- 需要更多 pipeline stage（流水级）
 - 面积和功耗上升
 
 所以 architecture exploration 的后半段，必须逐步加入 physical awareness。
 
 ## 长线为什么重要
 
-router 之间的 link 不是“零成本边”。  
+router（路由器）之间的 link（链路）不是”零成本边”。  
 随着芯片尺寸上升，长线会带来：
 
 - 更大延迟
@@ -40,18 +40,18 @@ router 之间的 link 不是“零成本边”。
 结果是：
 
 - 单跳 latency 变大
-- credit round-trip 变长
+- credit（信用计数）round-trip 变长
 - buffer 深度需求上升
 
 所以 physical realization 会反过来改写你对 buffer、latency、throughput 的判断。
 
 ## Router Radix 的物理代价
 
-更高 radix 的 router 在逻辑上可能减少 hop。  
+更高 radix（端口数）的 router 在逻辑上可能减少 hop。  
 但代价通常包括：
 
-- crossbar 更大
-- allocator 更复杂
+- crossbar（交叉开关）更大
+- allocator（分配器）更复杂
 - wiring 更密
 - 面积、功耗和频率压力更大
 
@@ -73,7 +73,7 @@ router 之间的 link 不是“零成本边”。
 
 ## Floorplan Compatibility 为什么必须显式讨论
 
-真实芯片里的 tile、SRAM、DMA、HBM port 并不是抽象网格点。  
+真实芯片里的 tile（计算单元）、SRAM（片上静态存储）、DMA（直接内存访问）、HBM（高带宽存储器）port 并不是抽象网格点。  
 它们的相对位置会影响：
 
 - 链路长度
@@ -111,7 +111,7 @@ hierarchical NoC 往往有一个物理上的优势：
 
 ## 你至少要比较的几个问题
 
-- flat mesh 的全局长线多不多
+- flat mesh（扁平网格）的全局长线多不多
 - hierarchical NoC 是否显著减少长链路依赖
 - 更高 radix router 是否真的值得
 - memory port 的边缘放置是否拉长关键路径

@@ -10,23 +10,62 @@
 
 尤其在 AI accelerator 里，下面这些对象都不是被动终点：
 
-- Network Interface
-- DMA engine
-- tile local SRAM interface
-- HBM / memory controller port
+- Network Interface（网络接口）
+- DMA engine（直接内存访问引擎）
+- tile（计算单元）local SRAM（片上静态存储）interface
+- HBM（高带宽存储器）/ memory controller port
 - destination stream FIFO
 
 ## NI 的职责
 
-Network Interface 通常负责：
+Network Interface 是 tile 世界（语义层）和 NoC 世界（传输层）之间的翻译层：
 
-- tile / DMA 事务与 packet 格式之间的转换
-- source injection
-- destination ejection
+```
+tile 侧（语义层）            NI                     NoC 侧（传输层）
+
+"读地址 0x1000"  ───────→  打包成 read request     ──→ header + body flit
+                           packet：填入源地址、          注入到 router
+                           目的地址、消息类型、
+                           长度等字段
+
+                           ←── 收到 response             ←── flit 到达
+"收到 64B 数据"  ←───────  packet，解包还原为            header + body + tail
+                           tile 可消费的数据块            flit 重组为完整 packet
+```
+
+具体职责：
+
+- **发送侧打包**：将 tile 的读写请求 / DMA 事务打包成 packet（添加 header、切分为 flit），注入 NoC
+- **接收侧解包**：将到达的 flit 重组为完整 packet，还原为 tile 可消费的数据
+- **协议转换**：tile 侧可能是 AXI / TileLink 等总线协议，NI 转换为 NoC 的 flit 格式
+- **缓冲**：injection FIFO 和 ejection FIFO，吸收 tile 和 NoC 之间的速率差异
 - 本地流量分类
-- 与 tile FIFO / SRAM / DMA 描述符接口对接
+- 与 tile FIFO / SRAM / DMA descriptor（描述符）接口对接
 
-所以 NI 不是薄壳，而是 NoC 与系统语义的翻译层。
+### Packet 间的依赖关系不由 NoC 管
+
+NoC 只负责把每个 packet 从源送到目的地，不理解 packet 之间的语义依赖。依赖和顺序由上层保证：
+
+| 层 | 职责 |
+|---|---|
+| 编译器 / runtime | 规划发送顺序和时序，确保依赖正确 |
+| NI / DMA 控制器 | 按编译器指定的顺序发起传输，用 barrier / descriptor 做同步 |
+| NoC | 只管转发，不重排、不理解依赖 |
+| 目的端 NI | 按 packet 到达顺序交付 tile，或用 tag 让 tile 重组 |
+
+有一个保证：**同一个源、同一个目的、同一个 VC 上的 packet，NoC 保证 FIFO 顺序（先发的先到）。** 因为 wormhole 下同一 VC 的 packet 是串行通过的。但不同源、不同 VC、不同路径的 packet 之间没有顺序保证。
+
+### 片上 NoC 不丢数据
+
+这是和片外网络（以太网、互联网）最本质的区别。以太网交换机 buffer 满了会主动丢包（drop），所以需要 TCP 做重传。片上 NoC 不存在这种场景：
+
+- **credit 机制**保证发送方不会发超过下游 buffer 容量的 flit → 不会因溢出丢包
+- 信号在芯片内部走短距离金属线，物理上极可靠
+- wormhole 下 flit 一旦进入 router buffer 就被安全存储
+
+所以 NI 的协议层主要处理的是**打包 / 解包 / 重组 / 顺序**，不需要像 TCP 那样做丢失检测和重传。数据完整性在 NoC 层面通过 credit 就已经保证了。
+
+高可靠性场景（如车规级芯片）可能在 link 上加 ECC（纠错码）或 parity（奇偶校验）来应对极罕见的软错误（如宇宙射线位翻转），但消费电子级设计通常不加。
 
 ## DMA 的职责
 
@@ -37,7 +76,7 @@ DMA 一般负责：
 - 接收 response 并组织回写
 - 与编译器或 runtime 计划配合
 
-架构探索里，DMA 的 burst 行为经常决定：
+架构探索里，DMA 的 burst（突发传输）行为经常决定：
 
 - packet 粒度
 - memory traffic 峰值
@@ -54,7 +93,7 @@ NoC 看上去在“搬数据”，但最终数据必须被端点消费。
 - response reordering 能力
 - destination ejection FIFO 深度
 
-只要目的端消费速度下降，NoC backpressure 就会被拉起来。
+只要目的端消费速度下降，NoC backpressure（反压）就会被拉起来。
 
 ## 第一版模型里最低限度需要的端点建模
 

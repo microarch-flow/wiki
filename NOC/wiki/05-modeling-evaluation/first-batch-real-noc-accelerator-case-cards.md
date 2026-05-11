@@ -9,7 +9,7 @@
 模板本身还不够。  
 你需要先有几张真实卡，后面记录新案例时才知道颗粒度应该到哪里。
 
-下面这批卡不追求全量细节，而是服务于你的 NoC 学习主线。
+下面这批卡不追求全量细节，而是服务于你的 NoC（片上网络）学习主线。
 
 ## Case 1：Google TPU 风格阵列互连
 
@@ -20,7 +20,7 @@
 
 ### Compute Organization
 
-- 大规模规则 PE / array
+- 大规模规则 PE（处理单元）/ array（阵列）
 - 强数据流导向
 
 ### Memory Organization
@@ -34,8 +34,8 @@
 
 ### Main Traffic Types
 
-- activation / weight 有结构的数据移动
-- 局部 forwarding
+- activation（激活值）/ weight（权重）有结构的数据移动
+- 局部 forwarding（转发）
 
 ### Likely Bottlenecks
 
@@ -55,7 +55,7 @@
 
 ### Compute Organization
 
-- 超大规模 2D spatial fabric
+- 超大规模 2D spatial fabric（二维空间阵列结构）
 
 ### Memory Organization
 
@@ -86,8 +86,8 @@
 
 ### System Goal
 
-- 以 tile 为单位组织计算与数据搬运
-- 强调 dataflow-aware execution
+- 以 tile（计算单元）为单位组织计算与数据搬运
+- 强调 dataflow-aware execution（数据流感知执行）
 
 ### Compute Organization
 
@@ -96,7 +96,7 @@
 
 ### Memory Organization
 
-- 本地 SRAM / scratchpad 很关键
+- 本地 SRAM（静态随机存储）/ scratchpad（便签存储）很关键
 
 ### NoC / Interconnect Organization
 
@@ -105,16 +105,16 @@
 
 ### Main Traffic Types
 
-- stream
-- DMA
-- control
-- 局部 pipeline forwarding
+- stream（数据流）
+- DMA（直接内存访问）
+- control（控制消息）
+- 局部 pipeline forwarding（流水线转发）
 
 ### Likely Bottlenecks
 
-- destination buffering
-- local memory arbitration
-- stream backpressure
+- destination buffering（目的端缓冲）
+- local memory arbitration（本地存储仲裁）
+- stream backpressure（数据流反压）
 
 ### 为什么值得参考
 
@@ -137,7 +137,7 @@
 
 ### NoC / Interconnect Organization
 
-- 非常值得从 source routing / compiler-driven 视角去理解
+- 非常值得从 source routing（源路由）/ compiler-driven（编译器驱动）视角去理解
 
 ### Main Traffic Types
 
@@ -155,11 +155,11 @@
 
 ## 这四张卡怎么用
 
-可以把它们当成四种 archetype：
+可以把它们当成四种 archetype（架构原型）：
 
 - 规则阵列型
 - 超大二维扩展型
-- tile dataflow 型
+- tile dataflow（计算单元数据流）型
 - 编译驱动静态路径型
 
 后面遇到新论文或新产品时，优先问：

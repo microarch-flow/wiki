@@ -6,25 +6,25 @@
 
 ## 为什么这个主题对 AI NoC 特别重要
 
-在 CPU coherent NoC 里，很多流量是动态产生、动态分叉的。  
-但在 AI tile dataflow 架构里，很多主流量其实来自：
+在 CPU coherent NoC（缓存一致性片上网络）里，很多流量是动态产生、动态分叉的。  
+但在 AI tile dataflow（数据流）架构里，很多主流量其实来自：
 
 - 已知的算子切分
-- 已知的 tile placement
-- 已知的 producer-consumer 关系
-- 已知的 DMA 搬运计划
+- 已知的 tile（计算单元）placement（放置）
+- 已知的 producer-consumer（生产者-消费者）关系
+- 已知的 DMA（直接内存访问）搬运计划
 
 这意味着路径并不一定要在每个 router 局部决定，完全可以在编译器或 runtime 侧预先规划。
 
 ## 什么是 source routing
 
-source routing 的核心思想是：
+source routing（源路由）的核心思想是：
 
 - 路径在源端或软件侧预先计算
-- packet header 携带路径信息
-- 中间 router 只按 header 指示做转发
+- packet（数据包）header（包头）携带路径信息
+- 中间 router（路由器）只按 header 指示做转发
 
-它和普通 deterministic routing 的主要区别，不是“简单或复杂”，而是谁掌握路径选择权。
+它和普通 deterministic routing（确定性路由）的主要区别，不是”简单或复杂”，而是谁掌握路径选择权。
 
 ## Source routing 的三种常见形式
 
@@ -71,11 +71,11 @@ header 记录几个关键转向点或 segment。
 
 ### 流量更规整
 
-GEMM、attention pipeline、固定 tile graph 往往具有可预测通信模式。
+GEMM（通用矩阵乘法）、attention pipeline（注意力流水线）、固定 tile graph 往往具有可预测通信模式。
 
 ### 更容易和 placement 联动
 
-编译器既然知道算子放在哪里，就能直接知道通信跨多少 hop、哪些链路是热点。
+编译器既然知道算子放在哪里，就能直接知道通信跨多少 hop（跳）、哪些链路是热点。
 
 ### 更容易做通路预留与隔离
 
@@ -83,14 +83,14 @@ GEMM、attention pipeline、固定 tile graph 往往具有可预测通信模式�
 
 - 哪些 packet 走哪条路径
 - 哪些流量必须避开控制面
-- 哪些流量应落在单独 plane / VC 上
+- 哪些流量应落在单独 plane / VC（虚拟通道）上
 
 ## 它不能自动解决什么
 
 source routing 不是万能药，它不能自动解决：
 
-- destination ejection 堵塞
-- credit 不足
+- destination ejection（目的端弹出，数据包从网络到达目标节点的过程）堵塞
+- credit（信用计数，用于流控的下游缓冲区空位计数）不足
 - request / response 资源环
 - 多流量动态叠加产生的新热点
 
@@ -101,7 +101,7 @@ source routing 不是万能药，它不能自动解决：
 对 AI NoC，一个很实用的思路是：
 
 - 主数据流走 source routing 或强 deterministic routing
-- 动态流量、异常流量或 background traffic 再考虑局部 adaptive
+- 动态流量、异常流量或 background traffic（背景流量）再考虑局部 adaptive
 
 这比“全网都做 adaptive”通常更可控。
 
@@ -122,15 +122,15 @@ source routing 不是万能药，它不能自动解决：
 第一版可以先这样做：
 
 - 为每个 flow 预先生成固定路径
-- packet header 只记录 dst 和 route id
-- simulator 用 route id 查表得到 hop 序列
+- packet header 只记录 dst（目的地址）和 route id
+- simulator（仿真器）用 route id 查表得到 hop 序列
 - 统计不同 flow 在同一路径段上的重叠情况
 
 这样不必一开始就实现复杂 header bit-encoding，也能评估 source routing 的架构价值。
 
 ## 你至少应该比较的三件事
 
-- source routing vs XY routing 的热点分布差异
+- source routing vs XY routing（先X轴再Y轴的维序路由）的热点分布差异
 - 固定 placement 下，静态路径是否会放大某些链路压力
 - 当流量模式变化时，source routing 的鲁棒性是否下降
 
@@ -138,15 +138,15 @@ source routing 不是万能药，它不能自动解决：
 
 - 认为 source routing 等于不需要仲裁
 - 认为 source routing 等于不需要 VC
-- 认为只要路径静态就不会 deadlock
+- 认为只要路径静态就不会 deadlock（死锁）
 
 实际情况是：
 
 - 同一路径上的共享链路仍然要竞争
-- traffic class 隔离仍然需要
-- 静态路径一样可能形成资源依赖环
+- traffic class（流量类别）隔离仍然需要
+- 静态路径一样可能形成资源依赖环（导致 deadlock）
 
 ## 本页结论
 
 source routing 对 AI tile dataflow 很重要，因为它把 NoC 设计从“纯硬件局部决策”推进到“编译器与硬件协同的路径规划”。  
-它最适合承担主数据流的可预测传输，但必须和 VC、credit、ejection、QoS 一起考虑，才会变成真正有用的系统能力。
+它最适合承担主数据流的可预测传输，但必须和 VC、credit、ejection、QoS（服务质量）一起考虑，才会变成真正有用的系统能力。

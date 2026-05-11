@@ -19,9 +19,9 @@
 
 适用于：
 
-- NoC 论文
-- AI accelerator interconnect 论文
-- routing / QoS / collective / memory path 相关论文
+- NoC（片上网络）论文
+- AI accelerator（AI 加速器）interconnect（互连）论文
+- routing（路由）/ QoS（服务质量）/ collective（集合通信）/ memory path 相关论文
 
 推荐结构：
 
@@ -41,11 +41,11 @@
 - 核心机制是什么
 
 ## NoC-Relevant Details
-- topology
+- topology（拓扑）
 - routing
-- flow control
-- VC / QoS
-- endpoint / memory assumptions
+- flow control（流量控制）
+- VC（虚通道）/ QoS
+- endpoint（端点）/ memory assumptions
 
 ## Strengths
 
@@ -90,9 +90,9 @@
 
 适用于：
 
-- flat mesh vs hierarchical NoC
-- source routing vs deterministic
-- software replication vs hardware multicast
+- flat mesh（扁平网格）vs hierarchical NoC（层次化片上网络）
+- source routing（源路由）vs deterministic（确定性路由）
+- software replication vs hardware multicast（硬件组播）
 
 推荐结构：
 
@@ -121,9 +121,9 @@
 - 它的主流量是什么
 - 它假设的局部性是什么
 - 它最怕的 bottleneck 是什么
-- 它靠什么机制保护 forward progress
+- 它靠什么机制保护 forward progress（前向推进）
 
-如果只记录“用了 mesh / 用了 DMA / 用了 SRAM”，研究价值很低。
+如果只记录”用了 mesh（网格）/ 用了 DMA（直接内存访问）/ 用了 SRAM（静态随机存储）”，研究价值很低。
 
 ## 五：建议的案例组织方式
 
@@ -139,7 +139,7 @@
 
 对你当前主线，建议优先积累：
 
-- AI tile-based accelerator case
+- AI tile-based accelerator（基于计算单元的 AI 加速器）case
 - memory-centric inference case
 - collective-heavy case
 - hierarchical NoC case

@@ -6,7 +6,7 @@
 
 ## 为什么这页现在就值得建
 
-即使你还没开始跑 simulator，也最好先把结果沉淀结构建好。  
+即使你还没开始跑 simulator（模拟器），也最好先把结果沉淀结构建好。  
 否则后面一旦开始扫参数，记录很容易迅速失控。
 
 ## 建议的目录结构
@@ -99,10 +99,10 @@
 
 ## 你后面最应该沉淀的 4 类结果
 
-- hotspot 定位结果
-- stall breakdown 对比
-- topology / hierarchy 比较
-- QoS / response isolation 结果
+- hotspot（热点）定位结果
+- stall breakdown（停顿分类统计）对比
+- topology（拓扑）/ hierarchy（层次化）比较
+- QoS（服务质量）/ response isolation（响应隔离）结果
 
 ## 本页结论
 

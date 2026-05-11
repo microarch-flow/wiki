@@ -4,7 +4,7 @@
 
 相关：[VC / Deadlock](../02-router-microarchitecture/virtual-channel-deadlock.md)
 
-## Routing 决定 packet 走哪条路
+## Routing（路由）决定 packet（数据包）走哪条路
 
 架构探索里，routing 的价值不只是把包送到终点，而是决定：
 
@@ -17,7 +17,7 @@
 
 ### Deterministic routing
 
-例如 XY、YX、dimension-order。
+例如 XY（先水平再垂直的维序路由）、YX、dimension-order（维序路由，按固定维度顺序转发）。
 
 优点：
 
@@ -31,9 +31,9 @@
 
 ### Source routing
 
-路径由编译器或 runtime 预先决定，header 携带路由信息。
+路径由编译器或 runtime 预先决定，header（头 flit，数据包的首个传输单元，携带路由等控制信息）携带路由信息。
 
-它对 AI tile dataflow 很重要，因为：
+它对 AI tile dataflow（数据流）很重要，因为：
 
 - 流量往往更规整
 - 编译器更容易提前规划通路
@@ -50,19 +50,19 @@
 代价：
 
 - 验证更复杂
-- 乱序与死锁处理更难
+- 乱序与 deadlock（死锁，多个数据包循环等待资源导致永久阻塞）处理更难
 - 不一定适合高度编排的数据流主路径
 
-## Arbitration 决定谁先过
+## Arbitration（仲裁）决定谁先过
 
 即使 routing 已经确定，多个输入争同一输出时仍需要仲裁。
 
 常见策略：
 
-- round-robin
-- fixed priority
-- age-based
-- QoS-aware arbitration
+- round-robin（轮询）
+- fixed priority（固定优先级）
+- age-based（基于报文年龄）
+- QoS-aware arbitration（服务质量感知仲裁）
 
 ## 为什么必须区分 stall 类型
 
@@ -70,8 +70,8 @@
 
 至少要区分：
 
-- credit stall：下游没空位
-- switch stall：仲裁没赢
+- credit stall（信用计数阻塞）：下游没空位
+- switch stall（交换阻塞）：仲裁没赢
 - routing restriction：路径本身受限
 
 不同 stall 类型对应完全不同的优化手段。
@@ -79,10 +79,10 @@
 ## AI NoC 的实用建议
 
 - 主数据流优先保持简单、可预测、可静态规划
-- control / sync 不要与 bulk data 共用同一低优先级路径
+- control / sync 不要与 bulk data（大块数据传输）共用同一低优先级路径
 - 动态流量场景再评估 adaptive routing 的价值
 
 ## 本页结论
 
 routing 决定全局路径分布，arbitration 决定局部竞争结果。  
-做 NoC 架构探索时，如果你只改 link width 却不分析 routing 与仲裁，通常只能看到表面现象。
+做 NoC 架构探索时，如果你只改 link width（链路位宽）却不分析 routing 与仲裁，通常只能看到表面现象。

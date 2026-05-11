@@ -8,8 +8,8 @@
 
 很多人知道 NoC 概念，也知道 workload 很重要，但真正开始建模时会卡在这里：
 
-- 一个 workload 到底怎么变成 NoC 输入
-- 哪些通信该抽象成 packet
+- 一个 workload（工作负载）到底怎么变成 NoC（片上网络）输入
+- 哪些通信该抽象成 packet（数据包）
 - 哪些信息必须保留，哪些可以先忽略
 
 这页的目标，就是把 `workload -> traffic trace` 的转换过程明确下来。
@@ -19,8 +19,8 @@
 建议固定按下面 6 步走：
 
 1. 定义 workload 计算图
-2. 定义 mapping / placement
-3. 定义 memory placement
+2. 定义 mapping（映射）/ placement（放置策略）
+3. 定义 memory placement（存储放置位置）
 4. 提取通信事件
 5. 事件转 packet / flow
 6. packet / flow 转 trace
@@ -33,8 +33,8 @@
 至少明确：
 
 - 算子序列
-- tile 切分粒度
-- producer / consumer 关系
+- tile（计算单元）切分粒度
+- producer / consumer（生产者/消费者）关系
 - 哪些阶段需要同步
 
 ## Step 2：定义 mapping / placement
@@ -47,16 +47,16 @@ NoC 压力不是 workload 自带的，而是 workload 映射到硬件后才产�
 - 哪些 tile 邻近
 - 哪些子任务跨 cluster
 
-如果没有 placement，就没有真实的 hop 和热点。
+如果没有 placement，就没有真实的 hop（跳数）和热点。
 
 ## Step 3：定义 memory placement
 
 至少要明确：
 
 - 权重放在哪里
-- activation 缓存在哪里
-- KV cache 放在哪里
-- HBM / SRAM / shared memory 节点位置
+- activation（激活值）缓存在哪里
+- KV cache（键值缓存）放在哪里
+- HBM（高带宽内存）/ SRAM（静态随机存储）/ shared memory（共享存储）节点位置
 
 同一个 workload，在不同 memory placement 下会变成完全不同的 NoC 问题。
 
@@ -70,9 +70,9 @@ NoC 压力不是 workload 自带的，而是 workload 映射到硬件后才产�
 - read response
 - write / writeback
 - tile-to-tile stream
-- multicast / broadcast
-- reduce / gather
-- barrier / control
+- multicast（组播）/ broadcast（广播）
+- reduce（归约）/ gather（收集）
+- barrier（屏障同步）/ control
 
 这一步的关键不是精确字节数，而是先把通信语义分清。
 
@@ -90,7 +90,7 @@ NoC 压力不是 workload 自带的，而是 workload 映射到硬件后才产�
 - `size`
 - `start_time` 或依赖触发条件
 
-如果是 collective，可以先拆成：
+如果是 collective（集合通信），可以先拆成：
 
 - one-to-many flows
 - many-to-one flows
@@ -99,7 +99,7 @@ NoC 压力不是 workload 自带的，而是 workload 映射到硬件后才产�
 ## Step 6：packet / flow 转 trace
 
 最终 trace 不一定一开始就要精确到每周期。  
-第一版可以先做 event trace，再逐步细化成 cycle-aware trace。
+第一版可以先做 event trace（事件轨迹），再逐步细化成 cycle-aware trace（周期感知轨迹）。
 
 ### 最小 trace 格式建议
 
@@ -134,28 +134,28 @@ packet_id, flow_id, src, dst, class, num_flits, release_time
 
 ## 四类最常见 workload 的转换思路
 
-### GEMM
+### GEMM（通用矩阵乘法）
 
-- 提取权重分发
+- 提取权重（weight）分发
 - 提取 activation 流动
-- 提取 partial sum gather
+- 提取 partial sum（部分和）gather
 
-### Prefill
+### Prefill（预填充）
 
-- 提取 bulk read / write
+- 提取 bulk read / write（大块读写）
 - 提取阶段间 activation 流
 - 标记 HBM 注入热点
 
-### Decode
+### Decode（解码）
 
-- 提取 KV request / response
+- 提取 KV（键值）request / response
 - 标记 response 在关键路径上的依赖
 - 单独保留 control / sync 类消息
 
-### MoE
+### MoE（混合专家模型）
 
-- 提取 dispatch / gather
-- 标记 expert 分布
+- 提取 dispatch（分发）/ gather
+- 标记 expert（专家）分布
 - 保留 many-to-many 结构
 
 ## 一个简单但很重要的原则

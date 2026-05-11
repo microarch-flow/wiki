@@ -6,7 +6,7 @@
 
 ## 为什么这页单独存在
 
-`Simulator 设计规格` 解决的是边界和目标。  
+`Simulator（模拟器）设计规格` 解决的是边界和目标。  
 真正开始写代码时，你还会立刻碰到两个问题：
 
 - 数据结构到底怎么落
@@ -36,7 +36,7 @@ Packet {
 - stream_id
 - request_id
 - workload tag
-- multicast / reduce hint
+- multicast（组播）/ reduce（归约）hint
 
 ### Flit
 
@@ -69,7 +69,7 @@ VCState {
 
 关键点：
 
-- `packet_active` 表示这个 VC 目前是否被某个 wormhole packet 占住
+- `packet_active` 表示这个 VC（虚通道）目前是否被某个 wormhole（虫孔转发）packet（数据包）占住
 - `output_port / output_vc` 由 header 建立，body / tail 复用
 
 ### Router
@@ -101,7 +101,7 @@ Link {
 
 如果第一版链路是 1-cycle，可把 `in_flight_flits` 简化成单槽。
 
-### Endpoint / NI
+### Endpoint / NI（网络接口）
 
 ```text
 Endpoint {
@@ -136,7 +136,7 @@ BODY
 TAIL
 ```
 
-### TrafficClass
+### TrafficClass（流量类别）
 
 ```text
 CONTROL
@@ -146,18 +146,18 @@ STREAM
 BULK_DMA
 ```
 
-### StallReason
+### StallReason（停顿原因）
 
 ```text
 NONE
-NO_CREDIT
-SWITCH_CONFLICT
-LINK_BUSY
-EJECTION_BLOCKED
-INJECTION_BLOCKED
-ROUTE_BLOCKED
-WAITING_FOR_OTHER_STREAM
-VC_UNAVAILABLE
+NO_CREDIT            // 无可用信用
+SWITCH_CONFLICT      // 交叉开关冲突
+LINK_BUSY            // 链路繁忙
+EJECTION_BLOCKED     // 弹出受阻
+INJECTION_BLOCKED    // 注入受阻
+ROUTE_BLOCKED        // 路由受阻
+WAITING_FOR_OTHER_STREAM  // 等待其他数据流
+VC_UNAVAILABLE       // 虚通道不可用
 ```
 
 第一版可以把 `VC_UNAVAILABLE` 并入 `ROUTE_BLOCKED`，但单独保留更利于分析。
@@ -213,7 +213,7 @@ tick_system():
   cycle += 1
 ```
 
-如果担心读写同周期互相污染，建议做双缓冲：
+如果担心读写同周期互相污染，建议做双缓冲（double buffering）：
 
 - `current_state`
 - `next_state`
@@ -254,16 +254,16 @@ on_pop_input_buffer(router, input_port, input_vc):
 
 关键原则：
 
-- credit 在 slot 释放时返回
-- 不是 flit 抵达时立即返回
+- credit（信用）在 slot（槽位）释放时返回
+- 不是 flit（流控单元）抵达时立即返回
 
 ## 一组推荐的最小单元测试
 
-1. 3-hop 单 packet 延迟是否符合手算
-2. input buffer 满时 source 是否停发
+1. 3-hop（三跳）单 packet 延迟是否符合手算
+2. input buffer（输入缓冲）满时 source 是否停发
 3. tail 释放后 output_vc_free 是否恢复
 4. 两个输入抢一个输出时仲裁是否稳定
-5. ejection queue 满时 backpressure 是否传回
+5. ejection queue（弹出队列）满时 backpressure（反压）是否传回
 
 ## Debug 时最该打印什么
 
@@ -284,4 +284,4 @@ on_pop_input_buffer(router, input_port, input_vc):
 
 ## 本页结论
 
-第一版 NoC simulator 的关键，不在于把类设计得多优雅，而在于让 `packet / flit / VC / credit / tick order / stall accounting` 这几件事边界清楚、行为一致。
+第一版 NoC（片上网络）simulator 的关键，不在于把类设计得多优雅，而在于让 `packet / flit / VC / credit / tick order（时钟步进顺序）/ stall accounting（停顿统计）` 这几件事边界清楚、行为一致。

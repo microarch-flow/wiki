@@ -11,7 +11,7 @@
 
 - 典型优点
 - 典型死角
-- 更适合什么 workload
+- 更适合什么 workload（工作负载）
 - 物理实现上最可能踩什么坑
 
 ## Mesh
@@ -25,15 +25,15 @@
 
 ### 优点
 
-- 非常适合 tile array
-- routing 和建模都简单
-- floorplan 兼容性强
+- 非常适合 tile（计算单元）array
+- routing（路由）和建模都简单
+- floorplan（芯片版图布局）兼容性强
 
 ### 缺点
 
-- 平均 hop 会随规模上升
+- 平均 hop（跳数）会随规模上升
 - 中心或主干链路容易形成热点
-- 边缘 memory port 布局会拉长一部分关键路径
+- 边缘 memory port（存储端口）布局会拉长一部分关键路径
 
 ### 适合什么
 
@@ -47,7 +47,7 @@
 
 - 在 mesh 基础上加环回边
 - 减少边界效应
-- 增大 bisection bandwidth
+- 增大 bisection bandwidth（二分带宽，将网络平分为两半时横跨切面的总带宽）
 
 ### 优点
 
@@ -58,7 +58,7 @@
 
 - 环回边可能是长链路
 - 物理实现复杂度明显上升
-- 长链路 pipeline latency 会改变理论优势
+- 长链路 pipeline latency（流水线延迟）会改变理论优势
 
 ### 适合什么
 
@@ -69,7 +69,7 @@
 ### 核心特点
 
 - 结构最简单
-- router 开销低
+- router（路由器）开销低
 - 单路径感强
 
 ### 优点
@@ -86,7 +86,7 @@
 
 ### 适合什么
 
-- 小规模 cluster 内局部互连
+- 小规模 cluster（簇）内局部互连
 - 控制面或较轻量子网络
 
 ## Tree
@@ -98,14 +98,14 @@
 
 ### 优点
 
-- 很适合 gather / reduce 直觉
+- 很适合 gather（收集）/ reduce（归约）直觉
 - 层级清晰
 
 ### 缺点
 
 - 根或上层节点容易形成瓶颈
 - 容错和负载均衡弱
-- 对 all-to-all 不友好
+- 对 all-to-all（全互连通信）不友好
 
 ### 适合什么
 
@@ -122,7 +122,7 @@
 ### 优点
 
 - 对高并发通信更稳
-- 比普通 tree 更能支撑复杂 traffic
+- 比普通 tree 更能支撑复杂 traffic（流量）
 
 ### 缺点
 
@@ -141,7 +141,7 @@
 
 - 先看 workload 是否规则
 - 再看局部性强不强
-- 再看 memory / collective 是否主导
+- 再看 memory / collective（集合通信）是否主导
 
 通常：
 
@@ -161,8 +161,8 @@
 
 - 物理线长如何
 - pipeline link 要不要加
-- router radix 是否变大
-- 长链路是否改写 credit round-trip
+- router radix（路由器端口数）是否变大
+- 长链路是否改写 credit round-trip（信用往返延迟）
 
 ## 第一版实验建议
 

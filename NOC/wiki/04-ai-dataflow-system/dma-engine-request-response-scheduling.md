@@ -9,10 +9,10 @@
 在很多 AI accelerator 里，DMA 不只是被动搬数据，它还决定：
 
 - request 发起节奏
-- burst 粒度
-- outstanding 请求数量
+- burst（突发传输）粒度
+- outstanding（未完成）请求数量
 - response 回流压力
-- 与 compute / NoC 的 overlap 质量
+- 与 compute / NoC 的 overlap（重叠执行）质量
 
 所以 DMA engine 的行为会直接塑造 NoC traffic。
 
@@ -31,7 +31,7 @@
 ## Request-Response Scheduling 为什么重要
 
 如果只看 request，不看 response，你很容易高估系统性能。  
-真正影响 forward progress 的往往是：
+真正影响 forward progress（前进保证）的往往是：
 
 - request 发得太猛，response 回来时挤爆目的端
 - request 和 response 混跑，共同堵塞
@@ -82,18 +82,18 @@ burst 小：
 完全同权混跑。  
 这很容易导致：
 
-- barrier 被延迟
+- barrier（同步屏障）被延迟
 - response 被拖慢
-- tile 等待依赖完成
+- tile（计算单元）等待依赖完成
 
-所以 DMA 行为和 QoS 设计必须联动看。
+所以 DMA 行为和 QoS（服务质量）设计必须联动看。
 
 ## DMA 与 local memory 的关系
 
 DMA 不只向 NoC 发流量，也会对目的端 local memory system 施压。  
 例如：
 
-- refill 写入 cluster SRAM
+- refill（回填）写入 cluster SRAM（簇级静态存储）
 - writeback 与 compute 读写竞争同一 bank
 
 这说明 DMA 调度不只是 NoC 问题，也是 local memory arbitration 问题。
@@ -128,7 +128,7 @@ DMA 不只向 NoC 发流量，也会对目的端 local memory system 施压。
 观察：
 
 - bulk efficiency
-- tail latency
+- tail latency（尾部延迟）
 - control / response 是否被放大阻塞
 
 ### 3. DMA Throttle on/off
@@ -144,7 +144,7 @@ DMA 不只向 NoC 发流量，也会对目的端 local memory system 施压。
 - response latency
 - outstanding occupancy
 - memory port utilization
-- ejection blocked
+- ejection blocked（弹出阻塞）
 - workload completion time
 
 ## 一个实用判断

@@ -6,7 +6,7 @@
 
 ## 为什么要从“总览”进一步进入“实现深化”
 
-你已经知道 broadcast、reduce、all-to-all 很重要。  
+你已经知道 broadcast（广播）、reduce（归约）、all-to-all（全交换）很重要。  
 下一步真正会影响架构判断的问题是：
 
 - 软件实现够不够
@@ -16,11 +16,11 @@
 
 ## 一：Software Replication vs Hardware Multicast
 
-### Software Replication / Multiple Unicast
+### Software Replication / Multiple Unicast（多份单播）
 
 做法：
 
-- 源端复制多份 packet
+- 源端复制多份 packet（数据包）
 - 每个目的地单独走一条 unicast 路径
 
 优点：
@@ -47,8 +47,8 @@
 
 缺点：
 
-- router / NI 复杂度上升
-- credit、buffer、复制点管理更复杂
+- router（路由器）/ NI（网络接口）复杂度上升
+- credit（信用计数）、buffer（缓冲区）、复制点管理更复杂
 
 ### 架构上怎么判断值不值得
 
@@ -72,7 +72,7 @@
 
 缺点：
 
-- sink ejection 压力大
+- sink ejection（汇聚端弹出）压力大
 - 近 sink 链路拥塞重
 
 ### Tree / Hierarchical Reduce
@@ -104,10 +104,10 @@
 
 all-to-all 对 topology 特别敏感，因为它会同时考验：
 
-- bisection bandwidth
+- bisection bandwidth（对分带宽）
 - routing 灵活性
 - 热点分散能力
-- 端点注入 / 弹出能力
+- 端点 injection（注入）/ ejection（弹出）能力
 
 这类流量下，某些平时看起来“够用”的 topology 会迅速暴露问题。
 
@@ -134,10 +134,10 @@ hierarchical NoC 往往更适合：
 
 ## 六：你应该重点看的指标
 
-- 源端附近链路利用率
+- 源端附近 link utilization（链路利用率）
 - sink / ejection 压力
-- 全网总 flit 数
-- tail latency
+- 全网总 flit（流控单元）数
+- tail latency（尾部延迟）
 - workload completion time
 
 如果只是平均带宽变化不大，但 tail latency 和热点显著改善，这仍可能是高价值优化。
