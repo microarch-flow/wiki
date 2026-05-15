@@ -1,8 +1,16 @@
+<<<<<<< HEAD
+# Hierarchical NoC 深化
+
+上级：[Topology 与 Routing](./README.md)
+
+相关：[Topology 与物理布局](./topology-layout.md)、[Physical Realization 与 Floorplan-Aware NoC](../04-ai-dataflow-system/physical-realization-floorplan-aware-noc.md)、[Crossbar 与 Concentrated Mesh](./crossbar-concentrated-mesh.md)
+=======
 # Hierarchical NoC 深化
 
 上级：[Topology 与 Routing](./README.md)
 
 相关：[Topology 与物理布局](./topology-layout.md)、[Physical Realization 与 Floorplan-Aware NoC](../04-ai-dataflow-system/physical-realization-floorplan-aware-noc.md)
+>>>>>>> fcf0028b7d9a83d6157907758db21ce2bd383528
 
 ## 读这页前先统一几个词
 

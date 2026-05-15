@@ -1,8 +1,16 @@
+<<<<<<< HEAD
+# Collective Communication
+
+上级：[AI Dataflow 系统视角](./README.md)
+
+相关：[流量模式](./traffic-patterns.md)、[QoS、公平性与 Stall Taxonomy](../05-modeling-evaluation/qos-fairness-stall-taxonomy.md)、[Broadcast / Multicast / Reduction 网络](./broadcast-multicast-reduction-network.md)
+=======
 # Collective Communication
 
 上级：[AI Dataflow 系统视角](./README.md)
 
 相关：[流量模式](./traffic-patterns.md)、[QoS、公平性与 Stall Taxonomy](../05-modeling-evaluation/qos-fairness-stall-taxonomy.md)
+>>>>>>> fcf0028b7d9a83d6157907758db21ce2bd383528
 
 ## 读这页前先统一几个词
 

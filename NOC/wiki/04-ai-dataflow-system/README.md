@@ -1,3 +1,26 @@
+<<<<<<< HEAD
+# 04 AI Dataflow 系统视角
+
+本章把 NoC 放回 AI accelerator 系统里，而不是单独讨论网络。
+
+## 本章入口
+
+- [AI Dataflow NoC vs CPU Coherent NoC](./ai-vs-cpu-noc.md)
+- [NI / DMA / 存储接口](./ni-dma-memory-interface.md)
+- [流量模式](./traffic-patterns.md)
+- [Collective Communication](./collective-communication.md)
+- [Memory-Centric NoC](./memory-centric-noc.md)
+- [KV Cache / Decode Memory Path 深化](./kv-cache-decode-memory-path.md)
+- [SRAM Bank Conflict / Local Memory System](./sram-bank-conflict-local-memory-system.md)
+- [DMA Engine / Request-Response Scheduling](./dma-engine-request-response-scheduling.md)
+- [CPU/Cache Coherent NoC 对照专题](./cpu-cache-coherent-noc-reference.md)
+- [Collective Implementation 深化](./collective-implementation-deep-dive.md)
+- [多网络组织（Multi-Network NoC）](./multi-network-organization.md)
+- [Broadcast / Multicast / Reduction 网络](./broadcast-multicast-reduction-network.md)
+- [Physical Realization 与 Floorplan-Aware NoC](./physical-realization-floorplan-aware-noc.md)
+- [GEMM Case Study](./workload-gemm-case-study.md)
+- [Attention Prefill Case Study](./workload-attention-prefill-case-study.md)
+=======
 # 04 AI Dataflow 系统视角
 
 本章把 NoC 放回 AI accelerator 系统里，而不是单独讨论网络。
@@ -17,6 +40,7 @@
 - [Physical Realization 与 Floorplan-Aware NoC](./physical-realization-floorplan-aware-noc.md)
 - [GEMM Case Study](./workload-gemm-case-study.md)
 - [Attention Prefill Case Study](./workload-attention-prefill-case-study.md)
+>>>>>>> fcf0028b7d9a83d6157907758db21ce2bd383528
 - [Attention Decode Case Study](./workload-attention-decode-case-study.md)
 - [MoE Case Study](./workload-moe-case-study.md)
 

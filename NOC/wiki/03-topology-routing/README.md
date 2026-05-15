@@ -12,6 +12,7 @@
 - [Mesh 专题](./mesh-deep-dive.md)
 - [Torus 与 Ring 专题](./torus-ring-deep-dive.md)
 - [Tree / Fat-Tree 专题](./tree-fat-tree-deep-dive.md)
+- [Crossbar 与 Concentrated Mesh](./crossbar-concentrated-mesh.md)
 
 ## 读本章前先统一 5 个词
 
