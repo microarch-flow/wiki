@@ -57,8 +57,12 @@ Body1:                  等待  等待  SA   ST   LT → 周期9
 Tail:                         等待  等待  SA   ST → LT 周期9-10
 
 说明：
-  - Body0 在周期 1-2 等待（header 还没完成 VA，路径未建立）
-  - Body0 在周期 5 开始 SA 时，header 的 ST 腾出 crossbar → body0 可以用
+  - Body0 在周期 2 就可以到达 input buffer（上游有 credit 就能发，见下文"Body 为什么
+    能在 header 做 RC/VA 时到达"），但它在 buffer 里等待，不参与 SA
+  - 等待的原因不是 credit 不足，而是 VC 状态机还未进入 ACTIVE：
+    周期 1-2 VC 处于 RC/VA 状态 → body flit 不满足 SA 前提条件 → 不被 SA 选中
+  - 周期 3 header 完成 VA，VC 进入 ACTIVE，但 header 自身还在走 SA→ST
+  - 周期 5 header 进入 LT 腾出 crossbar，body0 才开始 SA
   - 之后每周期一个 flit 流水通过 SA→ST→LT
 ```
 
@@ -110,23 +114,37 @@ XY routing 的 RC 逻辑：
 
 - RC 只对 header 生效
 - body/tail 复用 header 已建立的 output_port，跳过 RC
+- **RC 无需仲裁，可多 VC 并行**：RC 是纯本地计算（读 header 字段 + 比较器），每个 VC 独立完成，不竞争任何共享资源。同一个 input port 的 4 个 VC 可以在同一周期各自做 RC，互不干扰
 
 ## VA：Virtual Channel Allocation
 
 ### 做什么
 
-为 header 在目标 output port 的下游 router 分配一个空闲 VC。这是 wormhole + VC 体系的核心步骤，因为 packet 要持续占用这个 VC 直到 tail 离开。
+为 header 在目标 output port 的**下游 router 分配一个空闲 input VC**。这是 wormhole + VC 体系的核心步骤，因为 packet 要持续占用这个 VC 直到 tail 离开。
+
+注意区分两个层面的 VC 分配：
+
+```
+当前 router 的 input VC：由上游 router 的 VA 阶段决定
+  → 上游 VA 分配成功后，将 VC ID 编码在 flit 中一起发送
+  → 当前 router 收到 flit，读取 tag 直接写入对应 VC buffer
+  → 不需要当前 router 做任何计算
+
+当前 router 的 VA 阶段：为下一跳分配 input VC
+  → 决定的是 flit 到达下游 router 后存在哪个 VC
+  → 需要 RC 先完成（知道 output port 方向），才知道该竞争哪组下游 VC
+```
 
 ### 具体流程
 
 ```
 Header 完成 RC 后知道要去 East port
-→ VA 检查 East 方向下游 router 有哪些 VC 空闲
+→ VA 检查 East 方向下游 router 有哪些 input VC 空闲
 
 情况 1：有空闲 VC
   下游 VC0 空闲 → 分配成功
   → 记录绑定关系：当前 input VC → East output port → 下游 VC0
-  → 进入 SA 阶段
+  → VC 状态从 VA 转为 ACTIVE，进入 SA 阶段
 
 情况 2：所有下游 VC 都被占用
   → VA 失败，header 停在 VA 阶段等待（VA stall / VC_UNAVAILABLE）
@@ -159,6 +177,78 @@ Input Port 2 的 header 也想去 East，也需要下游 VC
 
 **一句话区分：VA 是"长期占位"，SA 是"每周期放行"。**
 
+### VC 状态机：驱动 pipeline 的核心
+
+每个 input VC 维护一个独立的状态机，它决定了该 VC 中的 flit 当前能参与哪个 pipeline 阶段：
+
+```
+IDLE ──header 到达──→ RC ──1周期──→ VA ──分配成功──→ ACTIVE ──tail 离开──→ IDLE
+                                      │
+                                      └──分配失败──→ 留在 VA，下周期重试
+```
+
+| VC 状态 | 含义 | 该 VC 中的 flit 能做什么 |
+|---------|------|------------------------|
+| IDLE | 空闲，无 packet 占用 | 等待新 header 到达 |
+| RC | header 正在做路由计算 | 不能参与 VA 或 SA |
+| VA | header 正在竞争下游 VC | 不能参与 SA |
+| ACTIVE | header 已完成 VA，路径已建立 | 队首 flit 可参与 SA 竞争 |
+
+关键理解：
+
+- **VC 状态机是 SA 选择候选 flit 的前置过滤器。** SA 只从状态为 ACTIVE 且 credit > 0 的 VC 中选取队首 flit 参与竞争。状态为 RC 或 VA 的 VC 中即使有 flit，也不会被 SA 看到
+- **wormhole 中 VC 被 packet 独占**（从 header 到 tail）。当 VC 处于 IDLE 状态时，buffer 必然是空的，所以 header 一到达就是队首，立即触发状态转为 RC
+- **Body/tail 到达 input buffer 后的等待，本质上是被 VC 状态机挡住的**，而不是被 credit 挡住的。credit 管的是"上游能不能发 flit 过来"（inter-router），VC 状态机管的是"buffer 里的 flit 能不能往下走 pipeline"（intra-router）
+
+### Body 为什么能在 header 做 RC/VA 时到达
+
+一个常见的疑问：header 还在做 RC/VA 时，body flit 能到达当前 router 吗？会不会没有 VC 可放？
+
+**答案：能到达，因为当前 router 的 input VC 是上游 VA 决定的，不是当前 router 决定的。**
+
+```
+Router A（上游）                    Router B（当前）
+
+VA：分配 B 的 VC2 给这个 packet
+SA→ST：Header 带 tag=VC2 发出 ──→  收到 Header，读 tag → 写入 VC2 → 开始 RC
+SA→ST：Body0 带 tag=VC2 发出  ──→  收到 Body0，读 tag → 写入 VC2（同一个 FIFO）
+                                    此时 VC2 处于 RC 或 VA 状态
+                                    Body0 安静地坐在 VC2 的 FIFO 中，等待 VC 变为 ACTIVE
+
+credit 机制在这里正常工作：
+  - A 持有的 credit 是针对 B 的 VC2 buffer 的空位计数
+  - VC2 buffer 有空位 → A 可以继续发 body flit
+  - Body0 到达后占用一个 slot → A 的 credit 减 1
+  - credit 管的是 buffer 空间，不管 VC 状态是否 ACTIVE
+```
+
+### 各阶段在同一周期并行工作
+
+router 每周期不是串行处理一个 VC，而是多个阶段同时处理不同 VC 中处于不同状态的 flit：
+
+```
+同一周期内 router 并行发生的事情：
+
+  RC 阶段：所有处于 RC 状态的 VC，各自独立计算 output port（无仲裁，纯组合逻辑）
+  VA 阶段：所有处于 VA 状态的 VC，通过 VA allocator 竞争下游 VC（有仲裁）
+  SA 阶段：所有处于 ACTIVE 且 credit>0 的 VC，通过 SA allocator 竞争 crossbar（有仲裁）
+  ST 阶段：SA 获胜的 flit 穿过 crossbar
+  LT 阶段：上一周期 ST 完成的 flit 发到 link
+
+示例（某周期的 router 快照）：
+  Input Port 0:
+    VC0: ACTIVE, 队首=body2  → 参与 SA（目标 East）
+    VC1: VA,     队首=header → 竞争 North 方向的下游 VC
+  Input Port 1:
+    VC0: RC,     队首=header → 正在计算 output port
+    VC1: ACTIVE, 队首=tail   → 参与 SA（目标 South）
+  Input Port 2:
+    VC0: IDLE                → 空闲
+    VC1: ACTIVE, 队首=body0  → 参与 SA（目标 East，与 Port0.VC0 竞争）
+
+  本周期 RC、VA、SA 同时进行，处理的是不同 VC 中的不同 flit
+```
+
 ## SA：Switch Allocation
 
 SA 的两阶段仲裁机制和详细流程已在 [Packet / Flit / Wormhole 的 SA 详解](./packet-flit-wormhole.md#switch-allocationsa详解) 中展开。这里只强调与 pipeline 相关的要点。
@@ -167,29 +257,31 @@ SA 的两阶段仲裁机制和详细流程已在 [Packet / Flit / Wormhole 的 S
 
 一个 flit 要参与 SA 竞争，必须同时满足：
 
-- 路由已确定（RC 已完成）
-- 如果是 header：VA 已完成（已分到下游 VC）
+- **VC 状态为 ACTIVE**（等价于：RC 已完成 + VA 已完成，路径绑定已建立）
+- 该 flit 处于 VC FIFO 的**队首**
 - 下游对应 VC 有 credit（有 buffer 空间接收）
 
 缺少任何一个条件，该 flit 本周期不参与 SA：
 
 ```
 条件检查流程：
-  RC done?  ── No → 还在做路由计算，不参与 SA
+  VC 状态 == ACTIVE?  ── No → VC 还在 IDLE/RC/VA 阶段，不参与 SA
+       │                      （header 未完成路径建立，该 VC 中所有 flit 都被挡住）
+      Yes
+       │
+  是 FIFO 队首?  ── No → 前面还有 flit 没走，轮不到
        │
       Yes
        │
-  是 header?  ── Yes → VA done? ── No → 还在等 VC 分配，不参与 SA
-       │                    │
-      No（body/tail）       Yes
-       │                    │
-       ├────────────────────┘
-       │
-  credit > 0?  ── No → credit stall（下游满了）
+  credit > 0?  ── No → credit stall（下游 buffer 满了）
        │
       Yes
        │
   → 参与 SA 仲裁 → 赢了: 通过  /  输了: switch stall（下周期重试）
+
+注意：VC 状态 == ACTIVE 隐含了 RC done + VA done。
+  对 header：它自己完成了 RC 和 VA，VC 才进入 ACTIVE
+  对 body/tail：header 已经完成了 RC 和 VA 并离开 buffer，它们自然在 ACTIVE 的 VC 中
 ```
 
 ## ST：Switch Traversal
@@ -363,8 +455,8 @@ Speculative（并行 VA+SA）：
 | 状态 | 说明 |
 |------|------|
 | input buffer occupancy | 每个 VC 当前存了多少 flit |
-| VC state（IDLE / RC / VA / ACTIVE） | 每个 input VC 当前处于哪个阶段 |
-| VC 绑定关系（output_port + downstream_vc） | header 完成 VA 后写入，tail 离开时清除 |
+| VC state（IDLE / RC / VA / ACTIVE） | 每个 input VC 当前处于哪个阶段。SA 只从 ACTIVE 的 VC 中选取候选 flit |
+| VC 绑定关系（output_port + downstream_vc） | header 完成 VA 后写入（VC 进入 ACTIVE），tail 离开时清除（VC 回到 IDLE） |
 | output credit table | 对每个下游 VC 的剩余 credit 计数 |
 | output VC availability | 下游 router 各 VC 是否空闲（用于 VA 判断） |
 | per-cycle SA request / grant | 每周期哪些 flit 参与竞争、谁获胜 |
@@ -379,6 +471,8 @@ Speculative（并行 VA+SA）：
 | tail 不显式释放 VC | VC 永远处于 ACTIVE，新 packet 无法使用，等价于资源泄漏 |
 | 只做 SA 不做 VA | 没有 VC 分配逻辑，wormhole 下无法正确跟踪 packet 的下游通路 |
 | 只统计总延迟不统计 allocator stall | 无法区分瓶颈在 VA 还是 SA，优化方向不同 |
+| 混淆 credit 和 VC 状态机的职责 | credit 管 inter-router 流控（buffer 能不能收 flit），VC 状态机管 intra-router pipeline（buffer 里的 flit 能不能往下走）。body flit 在 header 做 RC/VA 时能到达 buffer（credit 允许），但不能参与 SA（VC 状态不是 ACTIVE） |
+| 认为当前 router 的 RC/VA 决定 input VC | 当前 router 的 input VC 由上游 router 的 VA 分配，flit 带着 VC tag 到达后直接写入对应 buffer。当前 router 的 VA 决定的是下一跳的 input VC |
 
 ## 架构分析里应该问什么
 
