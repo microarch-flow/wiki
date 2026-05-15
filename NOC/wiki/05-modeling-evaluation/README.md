@@ -19,6 +19,7 @@
 - [从 Workload 到 Traffic Trace 操作手册](./from-workload-to-traffic-trace.md)
 - [架构分析题库 / 决策模板 / 自测清单](./architecture-analysis-playbook.md)
 - [推荐阅读顺序：面向 Workload-Based NoC 架构分析](./recommended-reading-path-for-workload-based-analysis.md)
+- [NoC 功耗与面积建模](./power-area-modeling.md)
 
 ## 读本章前先统一 6 个词
 

@@ -13,6 +13,7 @@
 - [Torus 与 Ring 专题](./torus-ring-deep-dive.md)
 - [Tree / Fat-Tree 专题](./tree-fat-tree-deep-dive.md)
 - [Crossbar 与 Concentrated Mesh](./crossbar-concentrated-mesh.md)
+- [NoC 与编译器的完整接口](./noc-compiler-interface.md)
 
 ## 读本章前先统一 5 个词
 

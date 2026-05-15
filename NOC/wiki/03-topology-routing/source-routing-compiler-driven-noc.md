@@ -139,7 +139,6 @@ source routing 不是万能药，它不能自动解决：
 - packet header 只记录 dst（目的地址）和 route id
 - simulator（仿真器）用 route id 查表得到 hop 序列
 - 统计不同 flow 在同一路径段上的重叠情况
-<<<<<<< HEAD
 
 这样不必一开始就实现复杂 header bit-encoding，也能评估 source routing 的架构价值。
 
@@ -414,31 +413,3 @@ flow:
 ## 本页结论
 
 source routing 对 AI tile dataflow 很重要，因为它把 NoC 设计从”纯硬件局部决策”推进到”编译器与硬件协同的路径规划”。三种 header 编码格式各有适用场景，segment-based 是大多数 AI 加速器的好平衡点。编译器需要完成 placement → path → deadlock check → encoding 的完整流程。DSL 应该描述逻辑路径意图，把物理编码留给编译器后端。
-=======
-- 额外做一次 path-set legality check（路径集合法性检查）
-
-这样不必一开始就实现复杂 header bit-encoding，也能评估 source routing 的架构价值。
-
-## 你至少应该比较的三件事
-
-- source routing vs XY routing（先X轴再Y轴的维序路由）的热点分布差异
-- 固定 placement 下，静态路径是否会放大某些链路压力
-- 当流量模式变化时，source routing 的鲁棒性是否下降
-
-## 常见误区
-
-- 认为 source routing 等于不需要仲裁
-- 认为 source routing 等于不需要 VC
-- 认为只要路径静态就不会 deadlock（死锁）
-
-实际情况是：
-
-- 同一路径上的共享链路仍然要竞争
-- traffic class（流量类别）隔离仍然需要
-- 静态路径一样可能形成资源依赖环（导致 deadlock）
-
-## 本页结论
-
-source routing 对 AI tile dataflow 很重要，因为它把 NoC 设计从“纯硬件局部决策”推进到“编译器与硬件协同的路径规划”。  
-它最适合承担主数据流的可预测传输，但必须和 VC、credit、ejection、QoS（服务质量）一起考虑，才会变成真正有用的系统能力。
->>>>>>> fcf0028b7d9a83d6157907758db21ce2bd383528

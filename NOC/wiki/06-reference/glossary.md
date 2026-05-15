@@ -158,6 +158,42 @@
 - `Barrier`：栅栏同步，所有参与节点必须都到达 barrier 点后才能继续执行；用于阶段间同步
 - `Descriptor`：描述一次 DMA 传输或通信操作的控制数据结构，包含源地址、目的地址、传输长度、消息类型等信息
 
+## 拓扑与组织
+
+- `Concentrated mesh`：多个 tile 共享一个 router 的 mesh 变体，减少全局 router 数量，以增加 router radix 为代价换取更少 hop
+- `Crossbar`：交叉开关，全连接的单级交换结构；小规模内单跳零等待，但面积随端口数平方增长
+- `Cluster`：一组物理相邻的 tile 及其局部互连（如 local crossbar 或小 mesh），是层次化 NoC 的基本分组单位
+- `Overlay network`：叠加在 base NoC 之上的专用通信结构，如 reduction tree、broadcast tree，服务特定通信模式
+- `Multi-network`：多物理网络设计，不同 traffic class 走不同的物理独立网络，如 data NoC + control NoC + reduction NoC
+- `Chiplet`：可独立制造的小芯片，多个 chiplet 通过封装互连组成完整系统
+- `Die-to-Die (D2D)`：跨越两个独立 die 之间的互连，延迟通常是片上 NoC 的 10-50 倍
+- `Interposer`：芯片之间的中间层基板，提供 die 间短距离高密度互连
+- `Gateway`：多 die 系统中 NoC 与 D2D link 之间的协议转换节点
+
+## Source Routing 与编译器
+
+- `Per-hop encoding`：source routing header 中为每一跳编码方向（N/S/E/W/Local），每跳 2-3 bit
+- `Segment encoding`：将连续同方向跳压缩为 (direction, hop_count) pair，减少 header 开销
+- `Route table index`：header 携带 route_id，router 查本地表输出 port，适合路径复用场景
+- `Dateline`：torus 中用于打破 wrap-around 死锁的虚拟分界线，packet 穿越 dateline 时必须切换 VC
+- `In-network compute`：在网络传输过程中对数据做计算（如 partial sum 累加），减少端点汇聚压力
+- `Cost model`：编译器用来评估 placement/routing/scheduling 方案优劣的量化模型，从 L0 hop-count 到 L3 cycle-approximate 精度递增
+
+## 地址与存储映射
+
+- `Address map`：地址空间到物理资源的映射表，定义访问某地址应路由到哪个物理节点
+- `Address decode`：NI 或 router 中根据地址判断目的节点的硬件逻辑
+- `Interleaving`：将连续地址交替分配到不同 bank/port/channel，分散访问压力
+- `Striping`：类似 interleaving，按固定粒度轮转分配地址到不同资源
+
+## 功耗与面积
+
+- `Dynamic power`：电路切换活动产生的功耗，与数据流量和翻转率成正比
+- `Leakage power`：即使不切换也因漏电流消耗的功耗，与面积和工艺相关
+- `Wire energy`：信号在长线上传播消耗的能量，与线长和负载电容成正比
+- `Energy per flit`：一个 flit 穿越一跳所消耗的总能量（buffer 读写 + crossbar + link driver）
+- `Pareto front`：在多目标优化中，无法在一个目标上改善而不恶化另一个目标的解的集合
+
 ## CPU 一致性相关（对照）
 
 - `Cache coherence`：缓存一致性协议，确保多个 cache 副本对同一地址的数据保持一致；典型协议有 MOESI、MESIF 等

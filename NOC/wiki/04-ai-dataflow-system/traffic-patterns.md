@@ -58,7 +58,6 @@ NoC 不会脱离 workload 自己产生价值。
 - batch 小但访问动态
 - KV cache（键值缓存）相关路径更敏感
 - 系统瓶颈可能更偏 memory-centric
-<<<<<<< HEAD
 
 ### MoE（混合专家模型）dispatch / gather（分发/收集）
 
@@ -160,26 +159,3 @@ NoC 不会脱离 workload 自己产生价值。
 ## 本页结论
 
 traffic pattern 不是评估用的附加项，而是 NoC 建模的输入主语。没有 traffic，NoC 参数比较大多只剩抽象意义。注入模型的三要素——注入率、空间分布、时间行为——必须明确，否则仿真结果不可复现。AI workload 的突发性和非均匀性是与 synthetic traffic 最本质的差异。
-=======
-
-### MoE（混合专家模型）dispatch / gather（分发/收集）
-
-常见特点：
-
-- all-to-all 倾向更强
-- 热点更动态
-- adaptive routing（自适应路由）、QoS（服务质量）、collective（集合通信）支持价值更高
-
-## 你最应该关注的 traffic 问题
-
-- tile（计算单元）-to-tile forwarding（前传）是否比回写 HBM 更优
-- memory placement 如何改变热点
-- 哪些流量必须与 bulk data 隔离
-- 哪些流量应支持 multicast（组播）/ reduce（归约）
-- destination buffering（目的端缓冲）多深才不会过早触发反压
-
-## 本页结论
-
-traffic pattern 不是评估用的附加项，而是 NoC 建模的输入主语。  
-没有 traffic，NoC 参数比较大多只剩抽象意义。
->>>>>>> fcf0028b7d9a83d6157907758db21ce2bd383528

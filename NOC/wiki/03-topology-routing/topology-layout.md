@@ -4,19 +4,7 @@
 
 相关：[架构探索方法](../05-modeling-evaluation/architecture-exploration.md)、[Mesh 专题](./mesh-deep-dive.md)、[Torus 与 Ring 专题](./torus-ring-deep-dive.md)、[Tree / Fat-Tree 专题](./tree-fat-tree-deep-dive.md)、[Crossbar 与 Concentrated Mesh](./crossbar-concentrated-mesh.md)
 
-<<<<<<< HEAD
 ## 为什么拓扑不是"画图问题"
-=======
-## 读这页前先统一几个词
-
-- `topology`：抽象连线结构，回答“谁和谁直接相连”
-- `floorplan`：芯片物理布局，回答“模块在硅片上摆在哪里”
-- `router radix`：router 端口数；端口越多，单点连接能力越强，但面积和布线压力也越大
-- `bisection bandwidth`：把网络切成两半后，切面上总共还能同时过多少带宽
-- `diameter`：网络中最远两点的最短路径跳数；它决定最坏路径大概会有多长
-
-## 为什么拓扑不是“画图问题”
->>>>>>> fcf0028b7d9a83d6157907758db21ce2bd383528
 
 拓扑同时影响：
 
@@ -54,23 +42,7 @@
 
 ### N=16 endpoint
 
-<<<<<<< HEAD
 假设 link_width = 256 bit，freq = 1 GHz，单链路带宽 = 32 GB/s。
-=======
-### Torus
-
-优点：
-
-- 能缓解 mesh 的边界效应
-- 逻辑最远距离通常更短
-
-缺点：
-
-- 环回边通常是长链路
-- 还会引入环形信道依赖，往往需要 dateline、turn restriction 或 escape VC 等机制保证无死锁
-
-### Ring
->>>>>>> fcf0028b7d9a83d6157907758db21ce2bd383528
 
 | 拓扑 | Diameter | Avg Hop | Bisection BW | Router 数 | Router Radix | Total Links |
 |---|---|---|---|---|---|---|
@@ -178,20 +150,9 @@ endpoint 数量 ≤ 8？
 
 常见方案：
 
-<<<<<<< HEAD
 - **边缘放置**：HBM/DMA port 放在 mesh 边缘，边缘 router 承受更大压力
 - **分布式放置**：memory port 均匀散布，平衡负载但增加布线复杂度
 - **集中放置**：memory port 集中在一侧，简单但容易形成单侧热点
-=======
-- average hop count
-- diameter（直径，网络中最远两节点间的最短路径跳数）
-- bisection bandwidth
-- router radix
-- concentration（每个 router 挂接多少 endpoint / tile）
-- link count（链路数量）
-- physical wire length
-- placement compatibility（放置兼容性）
->>>>>>> fcf0028b7d9a83d6157907758db21ce2bd383528
 
 ## 一个实用判断
 
