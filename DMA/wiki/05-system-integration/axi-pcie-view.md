@@ -2,7 +2,7 @@
 
 上级：[05 系统集成](./README.md)
 
-相关：[SoC 外设与 I/O DMA](./soc-peripheral-io.md)、[DMA 与 NoC](./dma-and-noc.md)
+相关：[SoC 外设与 I/O DMA](./soc-peripheral-io.md)、[DMA 与 NoC](./dma-and-noc.md)、[PCIE Wiki 首页](../../../PCIE/wiki/README.md)
 
 ## 这页在回答什么问题
 
@@ -27,6 +27,12 @@ AXI DMA 更容易和片上 memory hierarchy、local SRAM、NoC 深耦合。
 这里的 `PCIe read completion` 是 PCIe 事务层语义，不要和软件侧说的 `DMA completion interrupt / completion record` 混成同一个 completion。
 
 PCIe DMA 更强调设备和主机之间的系统契约。
+
+如果你要把这条主线系统学完整，继续看：
+
+- [配置空间、BAR 与 Capability](../../../PCIE/wiki/03-configuration-enumeration-addressing/config-space-bar-capability.md)
+- [队列、Doorbell、Completion 与 MSI-X](../../../PCIE/wiki/04-data-path-dma-interrupts/queues-doorbells-completions-msix.md)
+- [PCIe Read Completion 延迟为什么敏感](../../../PCIE/wiki/04-data-path-dma-interrupts/pcie-read-completion-latency.md)
 
 ## 一个有用的对照
 

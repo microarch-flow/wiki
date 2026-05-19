@@ -2,7 +2,7 @@
 
 上级：[02 基础对象与事务语义](./README.md)
 
-相关：[BUS 在解决什么问题](../01-overview/problem-statement.md)、[NoC Wiki 首页](../../../NOC/wiki/README.md)
+相关：[BUS 在解决什么问题](../01-overview/problem-statement.md)、[NoC Wiki 首页](../../../NOC/wiki/README.md)、[PCIE Wiki: PCIE vs AXI / NoC：边界与分工](../../../PCIE/wiki/06-workloads-case-studies/pcie-vs-axi-noc-boundary.md)
 
 ## 这页在回答什么问题
 
@@ -59,6 +59,8 @@ BUS、NoC、点到点链路经常都叫“互连”，但它们适合解决的�
 - 控制面和寄存器面常常更适合 BUS
 - 大规模数据面更容易转向 NoC
 - 局部固定数据通路往往直接用 point-to-point
+
+如果你在看的是 `host` 和 `device` 之间的板级 I/O 互连，而不是 SoC 片内连接，通常应该切到 [PCIE Wiki](../../../PCIE/wiki/README.md) 的视角。
 
 ## 一句话理解
 
