@@ -1,81 +1,52 @@
-# RAM 分类框架
+# RAM 家族的分类与命名体系
 
-上级：[01 概览与问题定义](./README.md)
+上级：[概览](./README.md)
+相关：[同样是 RAM，为什么 SRAM 和 DRAM 走向了完全不同的工程路径](./sram-dram-divergence.md), [DDR、LPDDR、GDDR、HBM：四种 DRAM 协议的 trade-off 全景图](../05-dram-protocol-families/ddr-lpddr-gddr-hbm-tradeoff-map.md)
 
-相关：[DRAM 家族对照：DDR / LPDDR / GDDR / HBM](../03-ddr-protocol-families/ddr-lpddr-gddr-hbm-comparison.md)
+## 这页在回答什么问题
 
-## 为什么先做分类
+RAM 相关名词到底该按哪些维度分类，才能避免用一个词同时指代“存储单元”“协议家族”“系统位置”或“封装形态”。如果这件事不先做干净，后面几乎每个讨论都会出现层级错位。
 
-学习 RAM 时，最容易把下面几种对象混为一谈：
+## 正文
 
-- 存储单元
-- 阵列组织
-- 接口协议
-- 产品家族
-- 系统位置
-- 封装形态
+存储器领域最常见的混乱，不是某个术语难懂，而是不同层级的术语被放进同一句话里直接比较。比如“HBM 比 SRAM 更先进”“DDR 是一种颗粒”“cache 和 LPDDR 谁更快”这类表述，乍看像是在比较对象，实际上比较双方根本不在同一分类轴上。要把问题讲清楚，第一步不是背更多名词，而是先把分类坐标系搭起来。
 
-更稳妥的方式是按正交维度拆开。
+最重要的一条原则是：RAM 相关概念至少要沿五个正交维度拆开看，分别是 `存储单元`、`阵列与访问组织`、`接口/协议家族`、`系统角色`、`封装与集成形态`。这五个维度互相有关，但不能互相替代。你当然可以说某个系统位置“通常由某类存储单元实现”，但不能把“通常”直接偷换成“定义上等于”。
 
-## 维度一：按存储单元分
+第一维是 `存储单元`。这一维回答的是：一个 bit 到底怎么被存住。放在本 wiki 里，主角就是 `SRAM` 和 `DRAM`。SRAM 用双稳态电路持有状态，DRAM 用电容存储电荷并接受 refresh。这个维度决定的是面积效率、读写扰动、保持方式、感测难度和后续一整套访问成本曲线。常见误解是把 `DDR`、`HBM` 也放进这个维度；实际上它们不是新的 bit cell 物理原理，而是在 DRAM 这条单元路线之上继续分化出来的接口和系统方案。
 
-- `SRAM`：6T 或变体单元，不刷新，速度快
-- `DRAM`：1T1C 单元，需要刷新，密度高
+第二维是 `阵列与访问组织`。这一维回答的是：即便底层单元确定了，很多 bit 是如何被组织成可访问资源的。对 SRAM，这一维会关心单口、双口、多口，bank、sub-array、mat，以及 tag/data array 这类组织方式。对 DRAM，则会关心 `row / column / bank / rank / channel`，以及 row buffer、bank group、prefetch、burst 这些桥接结构。这个维度决定“访问一个地址时，硬件内部会经历怎样的路径”，因此它和系统表现直接相关。常见误解是把 `bank` 当成协议名词，或者把 `cache` 当成单元类型；实际上它们都更接近组织方式或系统角色。
 
-重点：
+第三维是 `接口与协议家族`。这一维回答的是：存储器如何被片外系统访问，以及为了某个目标暴露了什么命令、时序和电气约束。这里的主角是 `DDR`、`LPDDR`、`GDDR`、`HBM`。这四者本质上都站在 DRAM 单元之上，但它们为不同系统目标重新布置了带宽、功耗、距离和封装的最优点。也正因为它们属于协议家族，所以讨论它们时应该关注 `ACT/RD/WR/PRE`、timing、功耗状态、I/O 宽度、速率和接口距离，而不是把它们当作新的存储物理类别。常见误解：“HBM 是不是一种和 DRAM 平行的新存储器？” 实际上，HBM 仍然是 DRAM 路线，只是协议和封装路线都更激进。
 
-单元结构决定面积、速度、是否刷新，以及它更适合做 cache 还是 main memory。
+第四维是 `系统角色`。这一维回答的是：某段存储在系统里承担什么功能。典型角色包括 `register file`、`cache`、`scratchpad`、`TCM`、`main memory`、`stacked high-bandwidth memory`。这个维度最容易和前面几维混掉，因为某些系统角色确实强烈偏好某类物理实现，例如 cache 往往由 SRAM 实现，main memory 往往由 DRAM 实现。但“往往”不是“定义上”。cache 讲的是一种由硬件管理的层次化数据复用语义；scratchpad 讲的是一种由软件或编译器管理的局部存储语义；main memory 讲的是地址空间中的主承载层。它们首先是系统角色，其次才讨论通常用什么介质去实现。
 
-## 维度二：按阵列与访问方式分
+第五维是 `封装与集成形态`。这一维回答的是：这些存储 die 最终怎样被放进系统。这里会出现 `DIMM`、`SODIMM`、`PoP`、`MCP`、`HBM stack`、`2.5D interposer`、`3D integration` 这些词。注意这批词自己内部也不完全在同一层。`DIMM` 更接近模块级交付形态，`PoP/MCP` 更接近封装级组织，`HBM stack` 描述的是内存 die 的堆叠形态，`2.5D/3D` 描述的是更高层的集成路线。它们可以一起被放进“封装与集成”这个大类里讨论，但不能假装它们彼此完全等价。常见误解是说“HBM 是一种封装”；更准确的说法应该是：HBM 是一种 DRAM 协议与产品路线，通常依赖堆叠和先进封装去落地。
 
-- SRAM 阵列：按地址直接读写
-- DRAM 阵列：按 `bank -> row -> column` 组织，先激活行再读列
+把这五维放在一起后，很多混淆就会自动消失。比如 `HBM` 应该被描述为：在 `存储单元` 维度上属于 `DRAM`，在 `协议家族` 维度上属于 `HBM`，在 `系统角色` 维度上常承担高带宽外层内存，在 `封装与集成` 维度上通常结合 `HBM stack + 2.5D/3D`。再比如 `cache` 应该被描述为：在 `系统角色` 维度上属于 cache，在 `实现介质` 上常用 SRAM，在 `阵列组织` 上可能涉及 tag/data 分离和多 bank，但它本身不是协议家族，也不是封装名词。只要你能用这种多维表述方式说清一个对象的位置，后面的讨论就不容易再串线。
 
-重点：
+这里还需要补一个实际工作中很有用的判断方法：当你听到一个存储名词时，先问它在回答什么问题。如果它在回答“一个 bit 怎么存”，那大概率是单元维度；如果在回答“怎么对系统暴露命令和时序”，那大概率是协议维度；如果在回答“它在系统里干什么”，那就是系统角色；如果在回答“它被怎么装进板级或封装级系统”，那就是集成形态。这个方法比死记术语表更稳，因为它迫使你先分层，再分析。
 
-DRAM 的行缓冲和页命中，是理解实际延迟和带宽的关键。
+所以，这一页真正要建立的不是一张名词对照表，而是一种说话纪律。后面所有章节都会反复跨这几个维度移动，但每次移动都应该显式说明“现在在切哪一层”。只有这样，比较才有意义，建模才不会把本来不同的约束压扁成一个标签。
 
-## 维度三：按接口和标准分
+## 一句话理解
 
-- DDR
-- LPDDR
-- GDDR
-- HBM
+RAM 相关名词不能放在一个平面上硬比，至少要先分清它是在说 bit cell、阵列组织、协议家族、系统角色，还是封装与集成形态。
 
-重点：
+## 建模启示
 
-这些名字大多不是新的存储物理原理，而是针对不同系统目标做出的 DRAM 接口和封装路线分化。
+这页对应的核心建模价值，是告诉你“标签系统必须多维，而不是单标签”。如果把一个对象只命名成 `HBM` 或 `cache`，模型很快就会因为缺失层级信息而无法扩展。更稳妥的做法是把每个内存对象拆成多个正交属性，让 `primitive`、`organization`、`interface_family`、`system_role`、`package_form` 分开编码。
 
-## 维度四：按系统角色分
+一个最小可扩展的数据结构草图可以是：
 
-- register file / L1 / L2 / L3：通常是 SRAM
-- main memory：通常是 DDR / LPDDR
-- graphics / accelerator memory：通常是 GDDR / HBM
-- local scratchpad / on-chip SRAM：AI 加速器常见
+```text
+MemoryDescriptor {
+  primitive: enum { SRAM, DRAM }
+  organization: enum { RF, TAG_ARRAY, DATA_ARRAY, BANKED_SPM, DRAM_BANKED }
+  interface_family: enum { NONE, DDR, LPDDR, GDDR, HBM }
+  system_role: enum { REGISTER_FILE, CACHE, SCRATCHPAD, TCM, MAIN_MEMORY, BW_MEMORY }
+  package_form: enum { ON_DIE, DIMM, SODIMM, POP, MCP, HBM_STACK, INTERPOSER_2P5D, STACKED_3D }
+}
+```
 
-重点：
-
-系统位置决定“更看重延迟、带宽还是容量”。
-
-## 维度五：按封装形态分
-
-- DIMM
-- PoP / MCP
-- package-on-substrate
-- 2.5D interposer
-- 3D stack
-
-重点：
-
-封装不只是装配问题，而是直接决定互连长度、I/O 密度和每比特能耗。
-
-为了避免把不同层级放在一行硬比，最好再记一个简化层级：
-
-- `DIMM` 更偏模块级
-- `PoP / MCP` 更偏封装级
-- `HBM stack` 是内存 die 堆叠结构
-- `2.5D / 系统级 3D` 描述的是更高层的集成方式
-
-## 一句话记忆法
-
-先问“数据存在哪里”，再问“怎么访问”，再问“怎么对外传输”，最后问“它在系统里扮演什么角色、以什么封装出现”。
+如果只做高层性能比较，可以把某些维度折叠。例如片上 SRAM 可能把 `interface_family=NONE`，而主存模型可能暂时不区分 `DIMM` 和 `SODIMM`。但至少 `primitive`、`interface_family` 和 `system_role` 这三维不能混掉。一个典型反例是把 `HBM` 直接当成 `MAIN_MEMORY` 的同义词，这会让模型丢失“它是 DRAM 路线、但接口和封装约束不同”的关键信息。
