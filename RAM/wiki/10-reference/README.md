@@ -31,6 +31,25 @@
 
 因此，读这一章时最好的心态不是“再学一遍”，而是把它当成你之后反复折返使用的工具箱。前面各章建立的是脑中的地图，这一章提供的是地图旁边那套尺子、坐标系和检查表。
 
+## 阅读顺序
+
+这一章不要求严格线性读完，但如果你想先建立一个最稳的参考层入口，建议按下面顺序：
+
+1. [存储器设计的第一性原理清单](./first-principles.md)
+2. [术语表](./glossary.md)
+3. [高频问答](./high-frequency-questions.md)
+4. [DRAM timing 参数速查](./timing-parameter-cheatsheet.md)
+5. [SRAM 设计与选型 checklist](./sram-design-checklist.md)
+6. [DRAM 系统调试 checklist](./dram-debug-checklist.md)
+7. [存储器在架构探索中的建模模板](./memory-modeling-template.md)
+
+如果你是：
+
+- 回来校正概念边界：优先看 1 -> 3
+- 做 SRAM 规格定义或片上存储评审：优先看 5
+- 做 DRAM 性能定位或 controller 仿真：优先看 4、6、7
+- 准备正式搭 memory model：优先看 1、6、7
+
 ## 一句话理解
 
 这一章不是新的知识线，而是把前面 RAM 全链路内容压缩成可重复使用的判断规则、检查清单和建模模板。

@@ -17,9 +17,23 @@
 
 这一章还有一个很重要的边界条件：它讨论的是 DRAM 的“器件与阵列主线”，暂时不把重点放在 JEDEC 命令、时序参数和控制器调度上。那些内容会在 `05-dram-protocol-families/` 和 `06-memory-controller/` 里系统展开。本章要先做的，是让你形成一个牢固直觉：DRAM 的命令式接口不是平白无故设计出来的，而是 cell 太弱、访问必须成行、刷新必须持续发生、bank 必须被作为独立并行单元管理之后，系统被迫看见的结果。
 
-和前面的 SRAM 章节相比，这一章的学习重点会明显转向“上下文相关成本”。SRAM 的访问虽然也受端口、bank 和阵列大小影响，但单次访问成本相对稳定；DRAM 则从根子上就是上下文敏感的。某次访问是不是 row hit、所在 bank 是否忙、refresh 是否临近、同一通道上是否还有别的请求，这些条件都会改变真实代价。因此理解 DRAM 时，不要只问“它一次访问多慢”，而要问“在什么上下文里，它会快、会慢、会冲突、会被刷新打断”。
+和前面的 SRAM 章节相比，这一章的学习重点会明显转向”上下文相关成本”。SRAM 的访问更像固定票价的地铁——无论几点坐、从哪站上，票价基本一样。DRAM 则更像打车——同一段路程，早高峰可能堵 40 分钟，深夜可能 10 分钟就到，甚至同一时刻你选了一辆正在另一个方向的车也会多等很久。某次访问是不是 row hit、所在 bank 是否忙、refresh 是否临近、同一通道上是否还有别的请求，这些条件都会改变真实代价。因此理解 DRAM 时，不要只问”它一次访问多慢”，而要问”在什么上下文里，它会快、会慢、会冲突、会被刷新打断”。
 
 这一章也会为后面的系统层判断打一个非常关键的底子：DRAM 不是“更慢的大内存”这么简单，而是一种要求工作负载、控制器和地址映射共同配合的存储介质。你之后看到的 row locality、page policy、FR-FCFS、effective bandwidth、HBM 宽接口，都会反复回到这里的几条基础逻辑：cell 很弱、整行感测、bank 并行、接口要桥接 cell 速度与 I/O 速度的剪刀差。如果这些基础逻辑先立住，后面的协议和系统内容就会自然连起来。
+
+## 阅读顺序
+
+建议按下面顺序阅读本目录：
+
+1. [1T1C cell——一颗电容为什么改变了一切](./1t1c-cell-destructive-read.md)
+2. [刷新：DRAM 的原罪和它的代价](./refresh-the-fundamental-cost.md)
+3. [行列解码与读出放大：为什么 DRAM 必须“先开行”](./row-column-decode-sense-amplify.md)
+4. [Row buffer：DRAM 内部的小 cache](./row-buffer-as-cache.md)
+5. [Bank 为什么是 DRAM 并行性的最小单位](./bank-organization-parallelism.md)
+6. [Bank group、prefetch、burst：高频接口下的必然演化](./bank-group-prefetch-burst.md)
+7. [DRAM 工艺路线：平面 -> 堆叠 -> 3D](./dram-process-stacking-trends.md)
+
+如果你这次只想补“为什么 DRAM 会暴露出 ACT/RD/PRE 这种命令式接口”的直觉，优先看 1 -> 5。第一次系统阅读，建议完整按 1 -> 7 顺序走。
 
 ## 一句话理解
 

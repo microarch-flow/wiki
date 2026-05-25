@@ -9,13 +9,13 @@ NPU 里的片上 SRAM 为什么不会被笼统地叫“cache”，而是按 weig
 
 ## 正文
 
-NPU 的片上 SRAM 如果只被叫作“一块本地缓存”，通常说明设计视角还停留在过于粗的层次。因为在大多数 NPU 数据流里，权重、激活和部分和并不是同一种“数据对象”，它们的生命周期、搬运方向、复用距离和并发压力都不同。既然目标不同，底层 SRAM 的最优组织就不可能相同。把它们分成 `weight buffer`、`activation buffer` 和 `accumulator buffer`，不是命名癖好，而是在承认：片上存储要先服从数据流角色，再谈总容量。
+NPU 的片上 SRAM 如果只被叫作”一块本地缓存”，就像把厨房里的冰箱、灶台和砧板统称为”厨房设备”——技术上没错，但在讨论工作流时毫无用处。在大多数 NPU 数据流里，权重、激活和部分和并不是同一种”数据对象”，它们的生命周期、搬运方向、复用距离和并发压力都不同。既然目标不同，底层 SRAM 的最优组织就不可能相同。把它们分成 `weight buffer`、`activation buffer` 和 `accumulator buffer`，不是命名癖好，而是在承认：片上存储要先服从数据流角色，再谈总容量。
 
-先看 weight buffer。权重最典型的特点是 `读多写极少`。在推理场景里，一块权重通常从 HBM、LPDDR 或上一级 SRAM 装入片上后，会被重复读取很多次，直到当前 layer、tile 或 channel block 处理完成。它的设计价值不在“能不能随机写”，而在“能不能让一次装载服务尽可能长的复用距离”。这意味着 weight buffer 常常优先追求三件事：较高净容量效率、较高读带宽、以及按 PE 阵列分发时的并行供数能力。常见误解是把 weight buffer 简化成“只读 SRAM”；更准确的说法是，它是一个为读主导复用而优化的 staged storage。
+先看 weight buffer。权重最典型的特点是 `读多写极少`——就像菜谱：你从书架上拿下来（从 HBM 装入），然后反复翻看（重复读取），直到这道菜做完才放回去。在推理场景里，一块权重通常从 HBM、LPDDR 或上一级 SRAM 装入片上后，会被重复读取很多次，直到当前 layer、tile 或 channel block 处理完成。它的设计价值不在”能不能随机写”，而在”能不能让一次装载服务尽可能长的复用距离”。这意味着 weight buffer 常常优先追求三件事：较高净容量效率、较高读带宽、以及按 PE 阵列分发时的并行供数能力。常见误解是把 weight buffer 简化成“只读 SRAM”；更准确的说法是，它是一个为读主导复用而优化的 staged storage。
 
 activation buffer 的约束则不同。激活数据往往既要被写入，也要被较快地消费。它一方面承接外层输入流或上游 layer 输出，另一方面要按当前 tile 的计算节奏被多个计算单元重复读取。在卷积、attention 或 GEMM 映射里，activation 的复用可以很强，但这种复用通常更短、更依赖 tiling 和窗口滑动方式，也更容易被双缓冲节拍左右。所以 activation buffer 的关键设计变量，往往不是“尽量大”，而是“能否在当前 tile 被消费时，同时把下一块 tile 搬进来”。这也是为什么 activation buffer 天然和 DMA overlap、double buffering、bank interleave 绑得很紧。
 
-accumulator buffer 或 partial-sum buffer 又是第三类完全不同的对象。它不主要承担长距离只读复用，也不只是输入 staging，而是承担 `高频读改写`。一次 MAC 之后，部分和要么继续留在本地等待下一次累加，要么在若干轮累加后再写回外层。于是 accumulator buffer 最敏感的不是“能放多少”，而是“局部读改写回路有多短、每拍能承受多少并发更新”。如果它的端口、bank 组织或本地带宽设计不够，算力阵列会先在 psum 更新路径上堵住。常见误解是把 accumulator 也视为普通输入 buffer；实际上，它更像一个为局部反馈回路定制的工作区。
+accumulator buffer 或 partial-sum buffer 又是第三类完全不同的对象。如果说 weight buffer 像菜谱、activation buffer 像食材传送带，那 accumulator buffer 更像炒锅——食材进去之后不是放着不动，而是不断被翻炒、加料、再翻炒。它承担的是 `高频读改写`。一次 MAC 之后，部分和要么继续留在本地等待下一次累加，要么在若干轮累加后再写回外层。于是 accumulator buffer 最敏感的不是”能放多少”，而是”局部读改写回路有多短、每拍能承受多少并发更新”。如果它的端口、bank 组织或本地带宽设计不够，算力阵列会先在 psum 更新路径上堵住。常见误解是把 accumulator 也视为普通输入 buffer；实际上，它更像一个为局部反馈回路定制的工作区。
 
 把这三类 buffer 放在一起比较，会发现它们至少在四个维度上天然不同。第一，生命周期不同。权重可能跨多个 tile 常驻，activation 常随 tile 滚动，psum 往往在较短窗口内不断更新后被导出。第二，读写方向不同。权重偏只读，activation 常常是“边装边读”，psum 则偏“边读边写回”。第三，复用模式不同。权重更像广播到多个 consumer，activation 更像流经局部窗口，psum 更像围绕单个输出元素反复回流。第四，性能风险不同。权重 buffer 配小了，外层带宽压力会上升；activation buffer 组织不好，流水 overlap 会失效；accumulator buffer 扛不住，则会直接在最内层把阵列停住。
 

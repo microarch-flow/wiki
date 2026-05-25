@@ -25,6 +25,20 @@
 
 所以，读这一章时最重要的心智切换是：不要先把注意力放在“某级存储器名字叫什么”，而要先看它在整条数据路径里负责什么。如果某层负责消化 bursty 外存带宽，把它做成可双缓冲的 staging buffer 就合理；如果某层负责高频 partial sum 回写，把它做成高 RMW 带宽的 accumulator buffer 就合理；如果某层负责跨 tile 重用权重，把它做成 weight-stationary 友好的本地仓库就合理。名字只是表象，数据角色才是内核。
 
+## 阅读顺序
+
+建议按下面顺序阅读本目录：
+
+1. [NPU 的存储层次：L0/L1/L2 SRAM + HBM/LPDDR](./npu-memory-hierarchy.md)
+2. [Weight buffer 的容量与组织：从 model size 反推](./weight-buffer-design.md)
+3. [Activation buffer 与 double buffering：data movement 与 compute 的重叠](./activation-buffer-and-double-buffering.md)
+4. [NPU 的 on-chip 带宽预算从哪来、到哪去](./on-chip-bandwidth-budget.md)
+5. [NPU 选 HBM 还是 LPDDR——决策框架](./hbm-vs-lpddr-for-npu.md)
+6. [“数据搬运优先”原则在 NPU 设计中的体现](./data-movement-first-principle.md)
+7. [Memory bound vs compute bound 的本质与缓解策略](./memory-bound-vs-compute-bound.md)
+
+如果你这次主要想补“为什么 NPU 经常先被数据流卡住而不是先被 MAC 数量卡住”，优先看 1 -> 4 和 6 -> 7。第一次系统阅读，建议完整按 1 -> 7 顺序走。
+
 ## 一句话理解
 
 AI 芯片内存架构的核心不是“堆多少级存储器”，而是按数据流角色把片上 SRAM、片外 DRAM/HBM 和层间带宽组织成一套能持续喂饱算力阵列的搬运系统。
