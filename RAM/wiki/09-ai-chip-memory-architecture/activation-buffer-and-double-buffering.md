@@ -15,7 +15,7 @@ activation buffer 为什么经常决定流水能不能跑满；double buffering 
 
 从访问模式上看，activation 和 weight 的差别很大。weight 通常是“装一次，读很多次”；activation 更常见的是“写入一块，随后在较短窗口内被读若干次，然后很快被下一块替换”。这种生命周期更短、滚动更快的特性，使 activation buffer 天然和 `double buffering`、`prefetch`、`DMA overlap` 绑在一起。因为它不只是要存下当前 tile，还要在当前 tile 被消费时，尽可能把下一 tile 也准备好。
 
-这就是 double buffering 的直观来源。它最常见的说法是“两个 buffer 轮流用，一个算，一个搬”，这当然没错，但还是太表面。更准确地说，double buffering 是在利用 activation 流的阶段性规律，把“数据搬入”和“当前计算消费”这两件原本串行的事情，尽量改造成并行。也就是说，它本质上不是容量优化，而是时间重叠优化。
+这就是 double buffering 的直观来源。它最常见的说法是“两个 buffer 轮流用，一个算，一个搬”，这当然没错，但还是太表面。更准确地说，double buffering 是在利用 activation 流的阶段性规律，把”数据搬入”和”当前计算消费”这两件原本串行的事情，尽量改造成并行。也就是说，它本质上不是容量优化，而是时间重叠优化。想象一个餐厅的传菜窗口：如果只有一个窗台，厨师做完一盘菜放上去，服务员端走，窗台空了，厨师才能放下一盘——做菜和上菜是串行的。如果有两个窗台，厨师可以在服务员端走 A 窗台的菜时，把下一盘放到 B 窗台上。两个窗台不是为了同时摆两倍的菜，而是为了让”出菜”和”上菜”同时进行。
 
 如果写成最简单的节拍图，大致就是这样：
 
@@ -34,13 +34,13 @@ buffer B:                [fill tile 1] [compute tile 1] [fill tile 3]
 
 activation buffer 之所以经常成为流水瓶颈，还因为它更容易受到 `数据整形` 的压力。上游吐出来的数据顺序，未必正好就是阵列最想要的顺序。尤其在卷积、attention、gather/scatter 或者带有 layout transform 的场景里，activation 往往需要在进入计算阵列前经历重排、打包、分 lane 或 bank interleave。也就是说，activation buffer 并不只是一个“把数据摆着等用”的箱子，它常常承担了一部分轻量 reformatting。这个过程如果和搬运、消费竞争同一组 bank 或同一条内部链路，就会让本该隐藏的延迟重新露出来。
 
-从 `Topology` 视角看，activation buffer 还处在一个比 weight buffer 更容易被共享流量打扰的位置。因为 activation 常常是“来自上游算子输出，又流向下游算子输入”的中间态数据，所以它既可能承接外存 DMA，也可能承接片上其他 cluster、其他 stage 的结果。这样一来，它就不只是一个单一 source 的输入池，而更像一个局部交通枢纽。交通枢纽的典型问题不是容量本身，而是同时到站、同时出站时的冲突。很多系统看上去 activation buffer 很大，但真跑起来吞吐上不去，问题往往不在字节数，而在同一时刻既要 fill、又要 read、还要做内部重排。
+从 `Topology` 视角看，activation buffer 还处在一个比 weight buffer 更容易被共享流量打扰的位置。因为 activation 常常是“来自上游算子输出，又流向下游算子输入”的中间态数据，所以它既可能承接外存 DMA，也可能承接片上其他 cluster、其他 stage 的结果。这样一来，它就不只是一个单一 source 的输入池，而更像一个局部交通枢纽。就像火车站的中转站台——同时有列车到站、有旅客换乘、有行李转运，站台的物理面积可能够大，但如果进出通道只有一条，高峰期照样堵死。交通枢纽的典型问题不是容量本身，而是同时到站、同时出站时的冲突。很多系统看上去 activation buffer 很大，但真跑起来吞吐上不去，问题往往不在字节数，而在同一时刻既要 fill、又要 read、还要做内部重排。
 
 因此，activation buffer 的设计通常要同时回答三个问题。第一，`当前 tile` 如何被下游稳定消费。第二，`下一 tile` 能否在当前 tile 期间被无冲突地搬入。第三，如果 activation 来自多个上游路径，进入本地前是否需要额外整形。只有这三件事一起被解决，double buffering 才是有效的；少任何一项，它都可能沦为只是把 buffer 从一份做成两份。
 
 这也说明了为什么 activation buffer 的容量不能单独分析。很多人会问：“这一级 buffer 要不要加倍？”但真正该问的是：“当前 tile 有多大、下游 compute 窗口有多长、下一 tile 的 refill 路径有多宽、两者能否物理并发？”如果 compute window 本来就很短，或者 refill path 明显更慢，那么加一个完整双缓冲可能仍然遮不住延迟；这时更合理的优化反而可能是改 tile 形状、提高上游 burst 效率、增加 bank 并行度，或者减小需要频繁切换的 activation 工作集。
 
-在不同 workload 上，这个问题的形状也不同。卷积类 workload 常常更依赖滑窗与空间重用，activation buffer 会深度参与行列块滚动；attention 类 workload 常常面临更大、更动态的 token/block 组织，buffer 需要吸收更复杂的序列分块节奏；Mixture-of-Experts 或稀疏访问场景下，activation 的到达顺序和消费顺序可能更不规整，double buffering 的理想重叠更难维持。也就是说，activation buffer 的难点不是一个通用存储公式，而是它对 workload 的时间形状高度敏感。
+在不同 workload 上，这个问题的形状也不同。卷积类 workload 常常更依赖滑窗与空间重用，activation buffer 会深度参与行列块滚动；attention 类 workload 常常面临更大、更动态的 token/block 组织，buffer 需要吸收更复杂的序列分块节奏；Mixture-of-Experts 或稀疏访问场景下，activation 的到达顺序和消费顺序可能更不规整，double buffering 的理想重叠更难维持。也就是说，activation buffer 的难点不是一个通用存储公式，而是它对 workload 的时间形状高度敏感。就像同一个行李传送带系统，在处理标准尺寸行李箱时运转流畅，但一旦来了超长滑雪板、不规则形状的乐器盒，传送带就可能卡顿——不是带子不够长，而是它的节奏和分拣逻辑没法适配这种非标形状。
 
 因此，本页真正要建立的判断是：activation buffer 是 AI 芯片流水稳定性的关键节点，而 double buffering 只是它最常见的一种时序组织方法。double buffering 的价值来自重叠，不来自名字；activation buffer 的价值来自把上游粗粒度、可能有抖动的数据流，改造成下游阵列可以持续吞下的局部稳定流。后面到了 `on-chip-bandwidth-budget.md`，你会看到这种“重叠是否真的成立”最终会落到片上和片外两侧带宽是否同时够用。
 
