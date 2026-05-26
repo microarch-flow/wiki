@@ -1,19 +1,26 @@
-# 02 Router 微架构
+# 02 Router Microarchitecture
 
-本章解决的问题是：
+这一章只回答一个问题：一个 packet 进入 NoC 之后，到底是怎样在 router 里逐跳前进、等待、占资源、再释放资源的。
 
-1. 一个 packet（数据包）是怎样在 NoC 里逐跳推进的
-2. credit（信用计数）和 backpressure（反压，下游阻塞向上游传播的停发效应）为什么会影响系统吞吐
-3. VC（Virtual Channel，虚通道）、allocator（分配器）、deadlock（死锁）为什么不是可选细节
+你在这里会看到 NoC 的最小工作机制：
+
+- packet / flit / phit 为什么必须分层
+- header、body、tail 为什么在 router 里不是同一种对象
+- VC、buffer、allocator、credit 如何共同决定 forward progress
+- wormhole 为什么省 buffer，却又把 HoL blocking 和 deadlock 风险带上来
+- 为什么 router 的面积和功耗经常主要花在 buffer，而不是“计算路由”
 
 ## 本章入口
 
-- [Packet / Flit / Wormhole](./packet-flit-wormhole.md)
-- [Credit / Backpressure](./credit-backpressure.md)
-- [VC / Deadlock](./virtual-channel-deadlock.md)
-- [Router Pipeline 与 Allocator](./router-pipeline-allocator.md)
-- [Buffer Depth / Credit Sizing / Allocator Policy](./buffer-depth-credit-sizing-allocator-policy.md)
+- [Packet Flit Phit Hierarchy](./packet-flit-phit-hierarchy.md)
+- [Router Pipeline Stages](./router-pipeline-stages.md)
+- [Input Buffer Organization](./input-buffer-organization.md)
+- [Virtual Channel Fundamentals](./virtual-channel-fundamentals.md)
+- [Allocator Design VC Switch](./allocator-design-vc-switch.md)
+- [Credit Based Flow Control](./credit-based-flow-control.md)
+- [Wormhole Vs VCT Vs Store Forward](./wormhole-vs-vct-vs-store-forward.md)
+- [Router Power Area Tradeoff](./router-power-area-tradeoff.md)
 
 ## 一句话总纲
 
-对 AI NoC 来说，router（路由器）不是简单”转发器”，而是把 `流控、排队、资源占用、协议隔离` 具体化的地方。很多系统级 stall（停顿），根源最后都能追到 router 和 NI（Network Interface，网络接口）的资源竞争。
+对 AI NoC 来说，router 不是“包转发器”，而是把 `排队、流控、资源依赖、延迟上界和隔离策略` 具体化的地方；很多系统级 stall，最后都能沿着这条链追溯到 router 内部状态。

@@ -1,164 +1,162 @@
-# NoC 分类框架
+# Taxonomy
 
-上级：[01 概览与问题定义](./README.md)
+上级：[01 Overview](./README.md)
+相关：[Problem Statement](./problem-statement.md), [../04-routing-and-flow-control/routing-algorithm-classes.md](../04-routing-and-flow-control/routing-algorithm-classes.md)
 
-相关：[Topology 与物理布局](../03-topology-routing/topology-layout.md)、[Routing 与 Arbitration](../03-topology-routing/routing-arbitration.md)
+## 这页在回答什么问题
 
-## 为什么先做分类
+NoC 应该按哪些正交维度拆开理解，才能避免把拓扑、路由、交换方式、流控、QoS 和 workload 这些属于不同层级的东西混在一起。
 
-学习 NoC 时，最容易把以下对象混为一谈：
+这不是为了分类而分类，而是为了后面做判断时不偷换问题。比如“mesh 好不好”是 topology 问题，“XY routing 好不好”是 routing 问题，“credit 麻不麻烦”是 flow control 问题，它们不能互相代答。
 
-- 拓扑
-- 路由
-- switching（交换方式）
-- flow control（流控）
-- protocol / message class
-- workload traffic
+## 为什么 NoC 特别容易学乱
 
-更稳妥的方式是按正交维度拆开。
+BUS 世界里，对象边界相对稳定：地址、数据、响应、仲裁、协议、bridge。NoC 世界里，很多词都在描述“通信”，于是初学者很容易把它们混成一层：
 
-## 维度一：按服务对象分
+- topology 看起来在讲路
+- routing 也在讲路
+- switching 也像在讲怎么走
+- flow control 也会影响能不能走
 
-- AI dataflow NoC
-- CPU/cache coherent NoC（缓存一致性网络：当多个模块各自缓存同一地址的数据时，通过硬件协议保证所有副本始终一致，不会读到过期值。AI 加速器通常使用编译器管理的 scratchpad，不需要硬件一致性）
-- memory-centric NoC
-- control / management fabric
+结果就是一句话里同时出现 mesh、wormhole、XY、credit、QoS，却不知道哪个词在回答哪个问题。这一页的目标就是把这些维度分开。
 
-重点：
+## 第一维：按系统目标分
 
-AI NoC 更像可编排的数据搬运网络；CPU coherent NoC 更像一致性事务网络。
+最先要分的不是结构，而是网络在服务谁。
 
-## 维度二：按拓扑与网络组织分
+AI dataflow NoC 的主问题是高并发数据搬运、局部性利用、静态调度和吞吐稳定。CPU coherent NoC 的主问题是一致性事务、严格 ordering 约束、消息类别隔离和协议无死锁。memory-centric NoC 则更像围绕 request/response 与 memory service rate 组织的网络。
 
-拓扑是图结构（router/endpoint 怎么连），组织方式是分层策略（多张网络怎么叠、cluster 怎么分），两者正交——同一个芯片可以是 cluster 内 crossbar + cluster 间 mesh + 叠加一张 reduction tree overlay。
+这个区分的重要性在于，它决定你后面应该优先关注什么。对 deterministic NPU，source routing、traffic shaping 和 worst-case latency 更值得优先建模；对 CPU coherent NoC，adaptive routing 是否收益更高、VN/VC 如何支撑一致性消息隔离，才是主战场。
 
-### 2a. 基础拓扑（Flat regular topologies）
+常见误解：NoC 先是通用技术，再在 AI/CPU 上“做应用”。  
+实际上：系统目标会反过来决定 NoC 的主矛盾，很多设计并不存在“脱离场景的最佳形式”。
 
-描述 router 和 endpoint 的连接图结构，每个 router 地位对等。
+## 第二维：按 topology 分
 
-- bus（共享总线，严格来说不算 NoC，但小规模 SoC 仍常见）
-- ring（环，单向或双向）
-- mesh（二维网格，AI 加速器绝对主流 baseline）
-- torus（环面，mesh 首尾相连，直径更小但长绕线物理实现困难）
-- tree（树，适合广播/规约/存储层级）
-- fat-tree / Clos（胖树 / 折叠 Clos，高 bisection bandwidth；fat-tree 通过增加上层带宽缓解 root 瓶颈，本质是增强的 tree/Clos 网络）
-- crossbar（交叉开关，小规模内单跳低延迟，面积随规模平方增长）
+topology 回答的是“谁和谁物理相连”，本质是图结构问题。它直接影响：
 
-片上较少但文献中常见的拓扑：
+- 平均最短路径长度
+- 对分带宽
+- router radix
+- 线长与 floorplan 兼容性
+- 多路径冗余度
 
-- butterfly / omega / banyan（多级交换网络，介于 crossbar 和 NoC 之间）
-- hypercube（n 维立方体，理论价值大但物理布局复杂）
-- flattened butterfly（更高 router radix 换更少 hop）
-- dragonfly（高 radix router 网络，系统级/机柜级更常见，片上较少但思想有参考价值）
-- star / hub-and-spoke（特殊小系统或 hub-based design）
-- 3D mesh / 3D torus（用于 3D 堆叠芯片）
+mesh、torus、ring、tree、fat-tree、crossbar、concentrated mesh 都属于这一维。它们的比较核心，不是“谁更高级”，而是“在给定规模、给定物理约束、给定 workload 局部性下，哪种结构更匹配”。
 
-深入阅读：[Topology Family 深化](../03-topology-routing/topology-family-deep-dive.md)、[Crossbar 与 Concentrated Mesh](../03-topology-routing/crossbar-concentrated-mesh.md)
+为什么必须把 topology 单独拿出来？因为同一个 mesh 可以跑 XY、source routing、adaptive routing；同一个 ring 也可以用不同 deadlock 避免手段。把 topology 和 routing 写在同一层，会让你误以为“选了 mesh 就等于选了某种路由哲学”。
 
-### 2b. 层次化与集群化组织（Hierarchical & clustered organizations）
+## 第三维：按 routing 分
 
-不是单一拓扑，而是多层互连的系统组织方式。AI 芯片因为 workload 有明显的通信局部性，几乎都采用某种层次化设计。
+routing 回答的是“从源到目的地允许走哪些路径，以及具体怎么选路径”。它不改变物理连接图，只在既有图上定义路径策略。
 
-- hierarchical mesh（两级 mesh，如 cluster 内 2×2 mesh + cluster 间 4×4 mesh）
-- concentrated mesh（多个 tile 共享一个 router，减少全局 router 数量）
-- cluster-local crossbar + global mesh（cluster 内 crossbar 低延迟互连 + cluster 间 mesh 全局连通，最常见的 AI 加速器组织方式）
-- cluster-local SRAM fabric + global NoC（cluster 内 SRAM 互连 + 全局 NoC）
-- tree of meshes / mesh of trees（树和 mesh 的层次化组合）
-- chiplet-local NoC + package-level interconnect（chiplet 内片上网络 + 封装级互连）
+常见子类包括：
 
-深入阅读：[Hierarchical NoC 深化](../03-topology-routing/hierarchical-noc-deep-dive.md)、[Crossbar 与 Concentrated Mesh](../03-topology-routing/crossbar-concentrated-mesh.md)
+- deterministic routing
+- oblivious routing
+- adaptive routing
+- source routing
+- dimension-order routing
 
-### 2c. 多网络组织（Multi-network organizations）
+这里最重要的判断是：routing 的收益，永远受 topology 提供的路径空间约束。一个 path diversity 很低的网络，adaptive routing 的潜力就小；一个物理长线极贵的网络，source routing 即使可行，也可能在 header 编码和静态调度上引入额外代价。
 
-真实 AI 芯片通常不是只有一张 NoC，而是多张物理或逻辑独立的网络，分别服务不同 traffic class。
+对你的目标而言，这一维尤其关键，因为 deterministic NPU 往往偏爱 `deterministic + source-routed + analyzable` 的组合，而不是 `adaptive + congestion-reactive` 的组合。
 
-- data NoC（activation / weight 搬运，高带宽）
-- control NoC（command / descriptor / barrier，低延迟低带宽）
-- DMA / memory NoC（HBM ↔ SRAM 大块搬运）
-- reduction / collective NoC（all-reduce、partial sum 汇聚）
-- synchronization NoC（credit / semaphore / barrier）
-- debug / profiling NoC（trace / performance counter 采集）
+## 第四维：按 switching 分
 
-深入阅读：[多网络组织](../04-ai-dataflow-system/multi-network-organization.md)
+switching 回答的是“一个 packet 在中间节点是整包存、部分存，还是按 flit 流水推进”。这一维描述的是转发方式，不是路径选择方式。
 
-### 2d. AI 专用通信 overlay（AI-specialized overlays）
+主流分法：
 
-叠加在 base NoC 之上的专用通信结构，服务 AI workload 中大量出现的非点对点通信模式。
+- store-and-forward
+- virtual cut-through
+- wormhole
 
-- broadcast / multicast network（权重广播、activation 分发）
-- reduction tree（partial sum 归约）
-- systolic nearest-neighbor links（最近邻直连，不经过 NoC router）
-- collective network（all-reduce / all-gather 专用）
-- stream / dataflow channel（producer-consumer 专用通道）
+为什么单独列这一维？因为很多性能与面积 trade-off 实际上是从这里长出来的。wormhole 之所以成为片上 NoC 主流，不是因为它“名字酷”，而是因为它用更小 buffer 支撑更细粒度流水。代价则是路径资源占用时间拉长、HoL blocking 更尖锐，于是 VC 和 allocator 复杂度被抬上来。
 
-深入阅读：[Broadcast / Multicast / Reduction 网络](../04-ai-dataflow-system/broadcast-multicast-reduction-network.md)、[Collective Communication](../04-ai-dataflow-system/collective-communication.md)
+也就是说，switching 经常决定 router 微架构问题，而不是 topology 问题。
 
-### 2e. 非规则与定制拓扑（Irregular & workload-specific）
+## 第五维：按 flow control 分
 
-真实芯片未必是完美规则拓扑，可能根据特定 workload 的流量特征定制连接。
+flow control 回答的是“发送方如何知道下游能不能继续接收”。它处理的是安全前进条件，而不是如何选路。
 
-- application-specific topology（根据特定 workload 定制连接图）
-- heterogeneous-router NoC（不同位置的 router 有不同规格）
-- asymmetric bandwidth NoC（不同方向/区域的链路带宽不对称）
-- memory-centric NoC（以存储端口为中心组织的网络）
+常见做法包括：
 
-重点：
+- on/off 或 stop-and-go
+- ready/valid 式短距握手
+- credit-based flow control
 
-拓扑决定平均 hop（跳数）、bisection bandwidth（对分带宽）、wire length、router radix（路由器端口数） 与 floorplan 兼容性。对 AI 加速器而言，mesh 是绝对主流 baseline，hierarchical / concentrated mesh 是最常见的优化方向，多网络 + 专用 overlay 是区别于传统 SoC NoC 的关键特征。
+这一维和 BUS 最容易被误类比。BUS 里你熟悉的是 `VALID/READY`；NoC 里你更常见的是 credit。两者都是 backpressure 机制，但不在同一层。BUS 上的 ready/valid 常常在一个通道、一个局部接口内闭合；NoC 上的 credit 需要跨多跳、多周期链路处理 buffer 可用性，因此必须显式计数和回传。
 
-## 维度三：按路由方式分
+## 第六维：按资源隔离与服务策略分
 
-- deterministic routing（确定性路由）
-- dimension-order routing（维序路由，先 X 后 Y）
-- source routing（源路由，路径由发送端指定）
-- adaptive routing（自适应路由）
+这一维回答的是“不同流量是否共享完全相同的资源，以及共享时如何避免互相压死”。它包括：
 
-重点：
+- 单队列 / 无 VC
+- VC 分离
+- virtual network / plane 分离
+- 多物理网络
+- 优先级与仲裁策略
 
-AI tile dataflow 往往更偏 deterministic 或 source routing，因为更容易被编译器利用和预测。
+很多人会把 QoS 只理解成“高优先级先过”，这是 BUS 视角残留。NoC 上的 QoS 往往是复合机制：traffic class 决定语义层次，VC 决定逻辑隔离，仲裁策略决定局部资源分配，多物理网络决定是否进行硬隔离。只有把这些对象分开，你后面才说得清 “这个流为什么被 bulk DMA 淹没了”。
 
-## 维度四：按 switching 方式分
+## 第七维：按 traffic pattern 与 workload 分
 
-- store-and-forward（存储转发，整包到齐再转发）
-- virtual cut-through（虚拟直通，头到即可转发但需全包缓冲）
-- wormhole（虫孔交换，按 flit 流水转发；注意：这是 1987 年由 William Dally 提出的经典网络交换概念，与 Tenstorrent 公司的同名芯片产品无关）
+这一维回答的是“网络实际上在承受什么流量形状”。uniform random、hotspot、transpose、neighbor traffic，是 synthetic pattern；GEMM、prefill、decode、MoE 则是 workload-derived pattern。
 
-重点：
+这一维看似最晚，实际很早就该进入心智模型，因为 NoC 设计的很多优劣只有放回流量分布里才成立。ring 对邻近通信可能很好，对 all-to-all 可能很差；adaptive routing 对 bursty hotspot 可能有收益，对静态规整数据流可能反而破坏可分析性。
 
-现代片上 NoC，尤其是面积敏感的 AI NoC，主流心智模型通常是 wormhole。
+这也是为什么后面 `05-system-integration` 和 `06-ai-noc-specifics` 必须单独成章。没有 workload 维度，前面的结构和策略会变成静态图鉴。
 
-## 维度五：按 flow control 分
+## 一个更实用的记忆顺序
 
-- ready/valid（就绪/有效握手）
-- credit-based（基于信用的流控）
+比起死背“七大维度”，更实用的顺序是：
 
-重点：
+1. 先问系统目标：这张网在服务什么机器
+2. 再问 topology：物理上怎么连
+3. 再问 routing：允许怎么走
+4. 再问 switching 和 flow control：怎么前进、怎么停
+5. 最后问 isolation 和 workload：谁和谁会互相压
 
-NoC 内长距离、多跳、多周期链路场景下，更常见的是 credit-based flow control。
+这个顺序的好处是，前一层决定后一层的问题空间。你不会再问出“哪种 QoS 最适合 crossbar 还是 mesh”这类混层问题，而会先确定结构，再谈其上的策略。
 
-## 维度六：按资源隔离方式分
+## 和 BUS / RAM 体系的衔接
 
-- single queue / no VC（虚通道）
-- VC-based separation
-- virtual network / plane separation
+和 BUS 体系最重要的衔接点有两个。
 
-重点：
+第一个是 backpressure。BUS 里你更多从 channel handshake 和 outstanding 语义理解 backpressure；NoC 里要把它升级成“资源耗尽如何跨 hop 传播”的问题。两者的相同点是都在协调发送方与接收方节奏；差异在于 NoC 需要显式建模网络中间状态。
 
-VC 不只是”优化吞吐”，更承担协议隔离、避免 HOL blocking（队头阻塞） 与降低 deadlock（死锁） 风险的作用。
+第二个是 QoS。BUS 里的 QoS 常围绕 master priority、channel arbitration 和 response fairness；NoC 里的 QoS 则会深入到 VC、traffic class、multi-plane 和 path contention。这不是 BUS 错了，而是 NoC 的共享资源层次更多。
 
-## 维度七：按流量类型分
+和 RAM 体系的关键衔接点则是：NoC 的 traffic class 和热点，经常是被 memory subsystem 反推出来的。比如 [RAM 分类框架](../../../RAM/wiki/01-overview/taxonomy.md) 里讨论的 bank 组织、以及 [把 register、cache、scratchpad、DRAM、HBM 看作一个系统](../../../RAM/wiki/07-system-architecture/memory-hierarchy-as-system.md) 里强调的层次角色，会直接决定 request/response 的压力分布。bank parallelism 不够、controller return path 偏置、HBM port placement 不均，这些问题都会在 NoC 上表现为特定拓扑区域或 response path 的拥塞，而不会体现在 topology 名词本身。
 
-- read request / read response
-- write
-- tile-to-tile stream
-- multicast / broadcast
-- reduce / gather
-- control / barrier / descriptor
+## 常见误解
 
-重点：
+常见误解：topology 和 routing 不需要强拆，反正最后都一起决定延迟。  
+实际上：两者确实共同影响结果，但设计自由度不同；不拆开就无法说清“结构限制”与“策略限制”谁是主因。
 
-真正影响架构探索结果的，往往不是单个 router 的局部参数，而是不同 traffic class 是否互相阻塞。
+常见误解：wormhole、credit、VC 都属于 router 细节，不必放进 taxonomy。  
+实际上：它们虽然落在 router 内部，但分别属于 switching、flow control、resource isolation 三个不同维度，混在一起会直接污染建模边界。
 
-## 一句话记忆法
+## 一句话理解
 
-先问“谁在通信”，再问“怎么连”，再问“怎么走”，再问“怎么控流”，最后问“在什么 workload 下会堵”。
+NoC taxonomy 的目的不是列百科，而是把“谁在服务谁、怎么连、怎么走、怎么停、谁会互相压”拆成正交问题，从而让后续判断不混层。
+
+## 建模启示
+
+taxonomy 对建模最直接的价值，是把配置参数分组。一个最小配置草图可以写成：
+
+```text
+NoCConfig {
+  system_goal
+  topology
+  routing_policy
+  switching_policy
+  flow_control_policy
+  isolation_policy
+  traffic_model
+}
+```
+
+第一版 analytical 或 event-driven 模型，至少应让这几个字段是分开的，否则你后面做参数扫描时会出现“改了一项，实际上同时改了三项”的伪结论。
+
+更具体一点，如果只关心 topology 对平均 latency 的影响，可以暂时把 `switching_policy` 固定为 `wormhole`、把 `flow_control_policy` 固定为 `credit`。如果要验证 deadlock-free 性质，就必须把 `routing_policy` 与 `isolation_policy` 联合展开，显式记录 `vc_class`, `allowed_turns`, `dependency_edge(src_vc, dst_vc)` 这类状态；否则你根本无法判断是结构无解，还是策略无解。

@@ -1,17 +1,19 @@
-# 01 概览与问题定义
+# 01 Overview
 
-本章先解决三个问题：
+这一章先把 NoC 从“很多 router 连起来”的印象里拉出来，重建成一个系统问题。你在这里需要先回答四件事：
 
-1. NoC 到底在解决什么问题
-2. 学 NoC 时哪些概念最容易混淆
-3. 面向 AI tile dataflow 的主学习路径是什么
+- 为什么 BUS 和小规模 crossbar 会在多 tile 系统里失效
+- BUS、crossbar、NoC 三种互连到底在解决什么不同的问题
+- topology、routing、flow control、QoS 为什么必须拆开看
+- 以 deterministic NPU 为目标时，后续章节应该按什么顺序建立语言体系
 
 ## 本章入口
 
-- [NoC 在解决什么问题](./problem-statement.md)
-- [NoC 分类框架](./taxonomy.md)
-- [学习路线图](./learning-roadmap.md)
+- [Problem Statement](./problem-statement.md)
+- [Bus Vs NoC Vs Crossbar](./bus-vs-noc-vs-crossbar.md)
+- [Taxonomy](./taxonomy.md)
+- [Learning Roadmap](./learning-roadmap.md)
 
 ## 一句话总纲
 
-NoC 的本质不是“把模块连起来”，而是在有限面积、功耗、带宽、时序和软件可控性约束下，让 `tile / SRAM / DMA / HBM / control` 之间的数据交换可扩展、可预测、可建模。
+NoC 的本质不是“片上连线变复杂了”，而是当系统进入 `多端点并发 + 长线 + 热点 + 可建模调度` 的阶段后，互连必须从共享事务骨架演化成分布式网络。
