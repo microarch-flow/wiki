@@ -15,6 +15,8 @@
 
 先看 `prefetch`。这里的 prefetch 不是 CPU 里那种“猜未来地址”的预取，而是 DRAM 内部的一种宽度转换机制。它表达的是：当一行已经被打开，core 并不是每次只从 row buffer 中取出最窄那一点点数据直接送到引脚，而是先在内部取出一个更宽的块，比如 4n、8n、16n 这类粒度，再交给 I/O 边界逻辑。这样做的结果，是外部接口可以在更高的 transfer rate 下持续输出数据，而内部阵列不需要按同样高的频率重新访问 row buffer。常见误解是把 prefetch 读成”缓存更多未来数据”；实际上，它更像一个齿轮箱——自行车的前齿轮大、后齿轮小，前面蹬一圈慢慢的，后面轮子转好几圈快快的。prefetch 就是 DRAM 内部的”大齿轮到小齿轮”的转换：内部慢慢取出一大块，外部快快分拍送出去。
 
+这里容易产生一个疑问：一次取出这么宽的数据，万一其中大部分不是我要的，岂不是浪费带宽？答案是不会，因为 prefetch 取的是从你请求的列地址开始的连续数据，不是随机猜测的。而且整个存储层级是协同设计的：CPU cache 的最小操作单位是 cache line（通常 64B），即使程序只读 1 个字节，cache miss 时 memory controller 发给 DRAM 的也是一整条 cache line 的请求。DRAM 这边的总线宽度、prefetch 深度和 burst length 恰好被设计成让一次 burst 送出的总字节数对齐 cache line 大小——比如 DDR4 的 8B 总线宽度 × BL8 = 64B，刚好一条 cache line。也就是说，prefetch 取出来的每一个字节都是 cache 需要的，真正的”多取”发生在更上层（cache line 用空间局部性赌你会访问相邻数据），而不是在 DRAM prefetch 这一层。这种 cache line 与 burst 粒度的对齐不是巧合，而是 CPU 架构先根据局部性收益、tag 开销和总线效率确定 cache line 大小，DRAM 再通过调整 prefetch 倍数和 burst length 去匹配它的结果。
+
 再看 `burst`。一旦内部已经取出这样一个更宽的数据块，外部接口自然不会一拍只送其中一小部分然后停住，而会连续若干拍把它吐完。这个连续发送窗口就是 burst。也就是说，burst 不是独立于 prefetch 的另一个随机特性，而是 prefetch 在引脚侧的时间展开形式。内部先攒一块，外部再顺着这块连续发出去，二者是一体两面。你可以把 prefetch 看成“空间上一次取更宽”，把 burst 看成“时间上连续发多拍”。
 
 一个简化的数据流可以这样看：

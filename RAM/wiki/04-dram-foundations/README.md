@@ -13,7 +13,7 @@
 
 它和 SRAM 的差别，要从最底层的存储方式开始看。SRAM 用双稳态电路把一个 bit 保存在持续再生的局部状态里，因此读取时主要是在小心地观测一个已稳定存在的节点。DRAM 走的是另一条完全不同的路线：用一颗访问晶体管加一颗电容，把一个 bit 存成非常有限的一点电荷。这个选择换来了极高密度，但也立刻引入一串连锁反应。电荷会漏，所以必须 refresh；读取时电荷极弱，所以必须放大；放大的过程会扰动原始状态，所以读出天然带有破坏性；单个 cell 的信号太小，不可能像 SRAM 那样直接做细粒度本地访问，于是必须先把整行接到 sense amp 上，再进行列访问。后面的复杂性都不是附加功能，而是这条物理路线的必然展开。
 
-因此，本章的结构本身就是一条递进链。`1t1c-cell-destructive-read.md` 先解释为什么“一颗电容”会把问题性质彻底改掉。`refresh-the-fundamental-cost.md` 接着说明 refresh 不是维护动作，而是 DRAM 的原罪。`row-column-decode-sense-amplify.md` 再回答为什么 DRAM 访问必须先开行，而不能像 SRAM 那样把单个地址直接读出来。到 `row-buffer-as-cache.md` 和 `bank-organization-parallelism.md` 时，问题会从“单次访问为什么复杂”进一步变成“系统怎样利用这种复杂结构去换取吞吐”。最后的 `bank-group-prefetch-burst.md` 和 `dram-process-stacking-trends.md` 则把你带到更靠近协议和产品路线的边界，解释为什么高频接口、宽总线和堆叠工艺会自然出现。
+因此，本章的结构本身就是一条递进链。`1t1c-cell-destructive-read.md` 先解释为什么”一颗电容”会把问题性质彻底改掉。`refresh-the-fundamental-cost.md` 接着说明 refresh 不是维护动作，而是 DRAM 的原罪。`row-column-decode-sense-amplify.md` 再回答为什么 DRAM 访问必须先开行，而不能像 SRAM 那样把单个地址直接读出来。到 `row-buffer-as-cache.md` 和 `bank-organization-parallelism.md` 时，问题会从”单次访问为什么复杂”进一步变成”系统怎样利用这种复杂结构去换取吞吐”。`channel-rank-chip-hierarchy.md` 把视角从单颗 chip 内部扩展到完整的系统层级，理清 channel、rank、chip、bank group、bank、row、column 之间的隔离与共享关系。最后的 `bank-group-prefetch-burst.md` 和 `dram-process-stacking-trends.md` 则把你带到更靠近协议和产品路线的边界，解释为什么高频接口、宽总线和堆叠工艺会自然出现。
 
 这一章还有一个很重要的边界条件：它讨论的是 DRAM 的“器件与阵列主线”，暂时不把重点放在 JEDEC 命令、时序参数和控制器调度上。那些内容会在 `05-dram-protocol-families/` 和 `06-memory-controller/` 里系统展开。本章要先做的，是让你形成一个牢固直觉：DRAM 的命令式接口不是平白无故设计出来的，而是 cell 太弱、访问必须成行、刷新必须持续发生、bank 必须被作为独立并行单元管理之后，系统被迫看见的结果。
 
@@ -30,10 +30,11 @@
 3. [行列解码与读出放大：为什么 DRAM 必须“先开行”](./row-column-decode-sense-amplify.md)
 4. [Row buffer：DRAM 内部的小 cache](./row-buffer-as-cache.md)
 5. [Bank 为什么是 DRAM 并行性的最小单位](./bank-organization-parallelism.md)
-6. [Bank group、prefetch、burst：高频接口下的必然演化](./bank-group-prefetch-burst.md)
-7. [DRAM 工艺路线：平面 -> 堆叠 -> 3D](./dram-process-stacking-trends.md)
+6. [Channel、Rank、Chip：从引脚到 cell 的完整物理层级](./channel-rank-chip-hierarchy.md)
+7. [Bank group、prefetch、burst：高频接口下的必然演化](./bank-group-prefetch-burst.md)
+8. [DRAM 工艺路线：平面 -> 堆叠 -> 3D](./dram-process-stacking-trends.md)
 
-如果你这次只想补“为什么 DRAM 会暴露出 ACT/RD/PRE 这种命令式接口”的直觉，优先看 1 -> 5。第一次系统阅读，建议完整按 1 -> 7 顺序走。
+如果你这次只想补”为什么 DRAM 会暴露出 ACT/RD/PRE 这种命令式接口”的直觉，优先看 1 -> 5。第一次系统阅读，建议完整按 1 -> 8 顺序走。
 
 ## 一句话理解
 
