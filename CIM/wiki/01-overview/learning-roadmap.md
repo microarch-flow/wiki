@@ -1,118 +1,89 @@
-# 学习路线图
+# 学习路径与章节依赖关系
 
-## 这张路线图解决什么问题
+上级：[01 Overview](./README.md)
+相关：[CIM/PIM/NMC 的严格区分](./cim-pim-nmc-taxonomy.md), [两条正交主线](./two-axes-memory-and-paradigm.md)
 
-CIM 横跨器件、电路、架构、软件和产业。没有主线时，阅读很容易停留在名词堆积，最后既无法判断论文价值，也无法判断产品路线。
+## 这页在回答什么问题
 
-本页给出的路线图，目标是把知识逐步压实成判断能力。
+如果目标不是背名词，而是形成对 CIM/PIM/NMC 论文、产品和架构路线的判断力，应该按什么顺序读？这页给出依赖关系，避免一开始掉进 cell 细节或公司宣传里。
 
-## 建议主线
+## 最短判断力路径
 
-1. Memory wall 与数据搬运
-2. CIM / PIM / Near-Memory 分类
-3. 不同存储介质路线
-4. 电路与 macro 原理
-5. 架构与系统集成
-6. 编译器、映射与 runtime
-7. Workload 适配
-8. 产业链与商业化判断
+先读 01 的两篇锚点，再进入 02/03 的最小闭环：
 
-## 为什么按这个顺序
+1. [Memory Wall 与 Von Neumann Bottleneck](./problem-statement.md)
+2. [CIM/PIM/NMC 的严格区分](./cim-pim-nmc-taxonomy.md)
+3. [两条正交主线](./two-axes-memory-and-paradigm.md)
+4. [SRAM-CIM 基础](../02-memory-technologies/sram-cim-foundation.md)
+5. [ReRAM 作为计算元件](../02-memory-technologies/reram-as-compute-element.md)
+6. [DRAM-PIM 基础](../02-memory-technologies/dram-pim-foundation.md)
+7. [Analog CIM 基础](../03-compute-paradigms/analog-cim-fundamentals.md)
+8. [Digital CIM 基础](../03-compute-paradigms/digital-cim-fundamentals.md)
+9. [Paradigm × Memory Crossmap](../03-compute-paradigms/paradigm-memory-crossmap.md)
 
-### 先从问题出发
+这条路径的目标是先建立分类直觉：看到一个对象时，能判断它是 CIM、PIM 还是 NMC，属于哪条 memory technology，采用哪种 compute paradigm。
 
-如果不先理解 `memory wall` 和数据搬运，就很容易把 CIM 当成另一种“更省电的 MAC”，从而误判它真正的价值。
+## 架构建模路径
 
-### 再看分类和介质
+如果目标是服务 archax 或类似架构探索工具链，先从系统收益衰减和可建模变量读起：
 
-先分清 `CIM / PIM / Near-Memory`，再进入 `SRAM / DRAM / ReRAM / Flash` 等路线，才能避免把完全不同的技术混在一起比较。
+1. [问题定义](./problem-statement.md)
+2. [Macro 原语](../04-circuit-and-macro/cim-macro-primitives.md)
+3. [Peripheral 开销](../04-circuit-and-macro/peripheral-overhead.md)
+4. [从 Macro 到 System](../05-architecture-and-system/from-macro-to-system.md)
+5. [Dataflow Mapping](../05-architecture-and-system/dataflow-mapping-on-cim.md)
+6. [Memory Hierarchy with CIM](../05-architecture-and-system/memory-hierarchy-with-cim.md)
+7. [性能与能效建模](../05-architecture-and-system/performance-energy-modeling.md)
+8. [Workload Characterization](../07-workloads/workload-characterization-for-cim.md)
 
-### 然后才进入电路和系统
+这条路径不要求把 CIM 立即建成完整模型。更现实的目标是分清哪些细节是 Resource、Topology、Interaction、Capability 层面的状态变量，哪些可以在早期架构探索中折叠成能耗、延迟、精度损失或利用率参数。
 
-电路论文很容易一开始就把人带进细节，但如果不知道系统层最终想解决什么，就很难判断某个宏到底重要在哪里。
+## 论文阅读路径
 
-### 最后落到 workload 和商业化
+如果目标是读 CIM 论文，推荐先建立指标和非理想性口径：
 
-只有当技术路线、系统映射和目标负载三者闭环后，商业判断才有意义。
+1. [CIM/PIM/NMC taxonomy](./cim-pim-nmc-taxonomy.md)
+2. [Analog vs Digital Tradeoff Map](../03-compute-paradigms/analog-vs-digital-tradeoff-map.md)
+3. [ADC/DAC/SA in CIM](../04-circuit-and-macro/adc-dac-sa-in-cim.md)
+4. [Non-Idealities and Error Sources](../04-circuit-and-macro/non-idealities-and-error-sources.md)
+5. [Metrics Glossary](../09-research-frontier/metrics-glossary.md)
+6. [Paper Review Template](../09-research-frontier/paper-review-template.md)
+7. [Open Problems](../09-research-frontier/open-problems.md)
 
-## 四阶段推进方式
+这条路径的核心是防止被 macro-level TOPS/W、ideal MVM 和局部 accuracy 指标误导。读每篇论文时必须记录层级、精度、workload、是否包含 ADC/DAC/buffer/control、是否有 silicon measurement。
 
-- `阶段 A`：建立概念地图
-- `阶段 B`：理解电路和 macro
-- `阶段 C`：上升到 chip 和 system
-- `阶段 D`：形成产业判断能力
+## 产业判断路径
 
-## 每个阶段的目标
+如果目标是看公司和产品，先读 taxonomy，再读产品化路径：
 
-### 阶段 A：建立概念地图
+1. [CIM/PIM/NMC taxonomy](./cim-pim-nmc-taxonomy.md)
+2. [三大 memory 路线对比](../02-memory-technologies/memory-tech-comparison-matrix.md)
+3. [Manufacturing and Test Challenges](../08-industry-and-products/manufacturing-and-test-challenges.md)
+4. [Value Chain and Commercialization](../08-industry-and-products/value-chain-and-commercialization.md)
+5. [Company Comparison Matrix](../08-industry-and-products/company-comparison-matrix.md)
+6. [Samsung HBM-PIM](../08-industry-and-products/company-cards/pim-companies-samsung-hbm-pim.md)
+7. [SK hynix AiM/AiMX](../08-industry-and-products/company-cards/pim-companies-sk-hynix-aim.md)
+8. [UPMEM](../08-industry-and-products/company-cards/nmc-companies-upmem.md)
 
-目标：
+这条路径的目标是把“技术路线”与“商业路线”拆开。一个对象可能技术上不如论文激进，但因为供应链、客户入口和软件接口更稳，反而更接近产品化。
 
-- 搞清楚 CIM 为什么出现
-- 知道几条主路线各自解决什么问题
-- 能区分 `macro-level` 和 `system-level` 价值
+## 章节依赖关系
 
-建议输出物：
+```text
+01 taxonomy + two axes
+  -> 02 memory technologies
+  -> 03 compute paradigms
+  -> 04 circuit and macro
+  -> 05 architecture and system
+  -> 06 software stack
+  -> 07 workloads
+  -> 08 industry and products
+  -> 09 research frontier
+  -> 10 reference
+```
 
-- CIM taxonomy map
-- CIM / PIM / Near-Memory 对比表
-- 典型 workload 适配表
+实际阅读时可以按目标跳转，但写作和维护必须按这个依赖关系。02/03 之前不能谈公司路线，04/05 之前不能相信 macro 指标，06/07 之前不能说“支持某个模型”，08/09 必须区分产业视角和研究视角。
 
-### 阶段 B：理解电路和 macro
+## 一句话理解
 
-目标：
-
-- 能读懂常见 bitcell、bitline、ADC、SA 图
-- 能看出宏设计的真实瓶颈在哪里
-- 能解释精度、噪声和外围开销的关系
-
-建议输出物：
-
-- SRAM-CIM macro 结构图
-- ReRAM crossbar MVM 笔记
-- ADC 能耗 / 精度 trade-off 表
-
-### 阶段 C：上升到 chip 和 system
-
-目标：
-
-- 能分析 tile、NoC、buffer、controller 如何组成系统
-- 能判断数据流、partial sum 和 host 协同是否成立
-- 能做初步性能和能耗拆解
-
-建议输出物：
-
-- chip block diagram
-- GEMM / attention 映射例子
-- 简化的 roofline 或 energy model
-
-### 阶段 D：形成产业判断能力
-
-目标：
-
-- 能看懂公司、产品和论文的真实边界
-- 能区分研究样片、工程样机和量产路线
-- 能判断客户价值和供应链可行性
-
-建议输出物：
-
-- 公司路线图谱
-- 商业化评估表
-- 尽调问题清单
-
-## 对应本 wiki 的推荐阅读顺序
-
-1. [CIM 在解决什么问题](./problem-statement.md)
-2. [CIM / PIM / Near-Memory 分类](./taxonomy.md)
-3. `02-memory-technologies`
-4. `04-circuit-macro`
-5. `05-architecture-system`
-6. `06-software-stack`
-7. `07-workloads`
-8. `08-industry`
-
-## 后续可补充内容
-
-- 不同阶段对应论文清单
-- 不同阶段对应问题列表
-- 不同阶段的输出物模板
+先建立 taxonomy 和两轴矩阵，再读器件、电路、系统、软件、workload 和产业；否则越读越多，只会把不同层级的对象混在同一张表里。

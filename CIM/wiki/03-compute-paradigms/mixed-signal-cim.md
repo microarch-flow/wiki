@@ -1,90 +1,45 @@
-# Mixed-Signal CIM
+# Mixed-Signal CIM：在哪一段切换、为什么切换
 
-## 定位
+上级：[03 Compute Paradigms](./README.md)
+相关：[Analog CIM 深入](./analog-cim-deep-dive.md), [Digital CIM 深入](./digital-cim-deep-dive.md), [Peripheral Overhead](../04-circuit-and-macro/peripheral-overhead.md)
 
-Mixed-signal CIM 是更常见的折中路线，阵列内做部分模拟计算，外围负责数字控制、转换和归约。
+## 这页在回答什么问题
 
-如果说 Digital CIM 更稳，Analog CIM 更激进，那么 Mixed-signal CIM 往往是最接近“现实工程平衡点”的那一类设计。
+为什么真实 CIM 设计很少是“纯 analog”或“纯 digital”？因为 array 内物理并行有价值，但系统最终需要数字控制、可校准精度、可编程数据流和可验证接口，切换边界决定了收益和风险。
 
-## 为什么这条路线常见
+## Mixed-Signal 的基本边界
 
-因为很多团队最终都会发现：
+```text
+digital input/control
+  -> analog/charge/current-domain local compute in array
+  -> SA / ADC / comparator
+  -> digital correction / accumulation / scheduling
+```
 
-- 纯数字路线收益不够大
-- 纯模拟路线工程风险太高
+这个边界可以放得很靠近 cell，也可以放在 column、subarray、macro 或 tile。越晚数字化，analog 局部并行保留越多，但误差、噪声和校准压力越大；越早数字化，精度和验证更稳，但 analog CIM 的能效优势被削弱。
 
-于是最自然的落点就是：
+## 主要落在哪些 memory 上
 
-- 阵列内保留最有价值的模拟并行计算
-- 把精度敏感、控制复杂、归约复杂的部分交给数字外围
+ReRAM-CIM 的现实落点常是 mixed-signal：crossbar 内 analog MVM，外围做 ADC、差分编码、数字校正和多 tile accumulation。SRAM-CIM 也常落在 mixed-signal：bitline charge/current-domain 做局部累加，SA/ADC 和数字 accumulator 完成判决与累加。Flash CIM 用 cell 状态保存 analog weight，但必须依赖数字校准和后处理。
 
-## 常见边界划分
+PCM mixed-signal 可以把 resistance state 用作 analog 权重，再用数字校正补偿 drift，但写入能耗、write-verify 和长期漂移让它更适合研究样片或窄场景。MRAM mixed-signal 只有在 read/sense path、comparator、SA offset correction 或 local reduction 直接参与 compute 时才有 CIM 意义；普通 MRAM + 外围数字逻辑不算 mixed-signal CIM。
 
-### 阵列内
+DRAM/HBM/GDDR-PIM 不属于本章 mixed-signal CIM 纵轴。PIM 系统中当然有 analog PHY、sense path 和 digital processing，但它不是 array-native CIM 的 mixed-signal 切换问题。
 
-通常负责：
+## 为什么 mixed-signal 容易美化指标
 
-- 局部乘法
-- 局部求和
-- 电流 / 电荷域并行
+Mixed-signal 设计最容易把“阵列内计算”报告得很漂亮，再把 ADC、DAC、reference、buffer、controller、calibration、digital accumulation 分散到其他模块里。如果论文或产品材料没有统一统计口径，读者会高估 analog 部分收益。
 
-### 阵列外
+评估 mixed-signal CIM 时要问：输入在哪里变成 analog？输出在哪里数字化？ADC 是每列、共享还是分时？数字校正要多少 SRAM/register？calibration 频率多高？tile 间 partial sum 是否仍要走 NoC？
 
-通常负责：
+## 工程意义
 
-- ADC / DAC
-- 数字校正
-- 多周期累加
-- 控制与调度
-- tile 间归约
+Mixed-signal 不是折中口号，而是职责切分。一个好的边界会把物理最擅长的局部并行留在 array，把精度敏感和控制复杂的部分交给数字逻辑。一个差的边界会同时继承 analog 的校准难度和 digital 的面积开销。
 
-## 关键问题
+## 一句话理解
 
-- 模拟部分和数字部分的边界在哪里
-- 哪些开销必须算进 system-level 指标
-- mixed-signal verification 如何做
+Mixed-signal CIM 的核心问题是 analog/digital 边界放在哪里；边界决定能效、精度、校准、验证和系统可扩展性。
 
-## 研究和评估时该怎么读
+## 研究启示
 
-### 先问边界划分是否合理
-
-一个 mixed-signal 设计是否成立，关键就在于：
-
-- 哪些部分放在阵列里
-- 哪些部分必须拿出来
-- 这种边界是否真正降低了总成本
-
-### 再问是否把折中代价算清楚了
-
-折中不等于免费。常见代价包括：
-
-- 设计复杂度升高
-- 验证复杂度升高
-- 指标口径更容易被美化
-
-### 最后问 system-level 是否仍然成立
-
-很多 mixed-signal 设计在 macro 层看很均衡，但系统层仍可能被：
-
-- ADC
-- NoC
-- buffer
-- control
-
-这些部分吞掉收益。
-
-## 更适合的场景
-
-- 想保留部分模拟收益，又需要可控精度的系统
-- edge inference
-- 研究向片上 CIM 宏和实验芯片
-
-## 与案例库的关系
-
-- [TSMC 16nm CIM Macro](../09-research/case-studies/tsmc-16nm-cim-macro.md) 和 [东京大学 ReRAM-CiM](../09-research/case-studies/u-tokyo-reram-cim.md) 都可以拿来从 mixed-signal 视角重新判断其真实边界
-
-## 后续可补充内容
-
-- 典型 block diagram
-- 误差预算拆分
-- 为什么产业界更偏向折中方案
+Mixed-signal CIM 的研究应把边界作为一等对象报告，而不是只写 “array + ADC”。产业上，最可行的设计往往会牺牲一部分理想 analog 能效，换取低位可控精度、可测试性和软件可建模性；这也是 SRAM-CIM 和 ReRAM-CIM 从论文走向产品时绕不开的方向。
