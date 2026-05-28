@@ -1,6 +1,6 @@
 # 07 工作负载与案例
 
-这一部分把 DMA 放到具体系统与 workload 里看，帮助你建立“为什么这里的 DMA 长这样”的判断。
+这一部分把 DMA 放到具体系统和 workload 里看。前面几章已经建立了概念、微架构、软件契约和系统集成主线；这一章回答的是：为什么不同系统里的 DMA 会长成不同样子，它们各自最核心的约束是什么，以及建模时该保留哪些状态。
 
 ## 推荐阅读顺序
 
@@ -13,3 +13,9 @@
 7. [NVMe / 存储路径中的 DMA](./nvme-storage-dma-case-card.md)
 8. [GPU Copy Engine 案例卡](./gpu-copy-engine-case-card.md)
 9. [AI Local DMA 案例卡](./ai-local-dma-case-card.md)
+
+## 本章输出物
+
+- 一张系统画像：不同 DMA 类型最核心的路径、瓶颈和完成语义是什么
+- 一条案例化主线：同样叫 DMA，为什么 CPU/SoC、GPU、NIC、NVMe、NPU 的关注点会完全不同
+- 一组建模入口：每种案例最少要保留哪些状态和事件，才能解释真实系统行为
