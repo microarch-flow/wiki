@@ -6,9 +6,9 @@
 
 ## 现象
 
-CPU 执行一次 MMIO read 后，软件线程、驱动初始化流程或整个系统停住。软件没有拿到寄存器值，也没有进入预期的错误处理路径。
+这是 BUS 调试中最经典的”**去取信结果人消失了**”场景：CPU 派出一个信使（MMIO read）去外设那里取一个值，信使出发后再也没回来——软件线程、驱动初始化流程或整个系统就此停住。
 
-这张案例卡默认讨论“读 transaction 没有正常闭环”。若软件已经收到 abort、exception、SLVERR/DECERR 或明确 fault status，应先走 fault 分支；若 fabric/bridge 生成 timeout error，应按 timeout 分支继续追下游原始等待点。
+这张案例卡默认讨论”信使没有带回消息”（读 transaction 没有正常闭环）。若已经收到退信或报错（abort/exception/SLVERR/DECERR），应先走 fault 分支；若有人代替信使带回了”超时通知”（fabric/bridge timeout），应追踪信使是在哪一段路上走丢的。
 
 ## 典型路径
 

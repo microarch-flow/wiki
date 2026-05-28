@@ -6,9 +6,11 @@
 
 ## 这页在回答什么问题
 
-AXI master 评价一次读访问时，看到的是 AR 被接收后多久返回 R data，以及 R channel 是否连续。DDR controller 评价同一批请求时，看到的是 row hit、row miss、bank conflict、read/write switch 和 data return buffer。两边的体验不是一一对应。
+AXI master 和 DDR controller 对"这次访问顺不顺"的评价标准完全不同——就像**顾客和厨师对"上菜快不快"的理解不一样**。
 
-本页讨论两个层级如何叠加：DDR 侧 row locality 决定数据能否平滑产出，AXI return path 决定数据能否平滑回到 master。row locality 好但 return path 拥塞，master 仍会看到抖动；return path 空闲但 row conflict 多，RVALID 也会出现空洞。
+顾客（AXI master）看的是：我点完菜后多久端上来，菜是不是一道接一道不断？厨师（DDR controller）看的是：食材在不在手边（row hit）、要不要去冷库拿（row miss）、两个灶台是不是在抢同一口锅（bank conflict）、刚做完热菜现在要做凉菜得换工具（read/write switch）。
+
+两层问题会叠加：厨师手速很快（row locality 好）但传菜通道堵了（return path 拥塞），顾客还是等不到；传菜通道空着但厨师一直在翻找食材（row conflict），菜也上不来。
 
 ## Row Locality 改变 DDR 出数节奏
 
@@ -26,7 +28,7 @@ row locality 的设计取舍在于吞吐与公平。controller 优先服务 row-
 
 ## Return Path 决定数据能否顺利回流
 
-DDR 准备好数据后，还要经过 controller return buffer、interconnect return arbiter、response FIFO、master input buffer 和 AXI R channel。任何一级拥塞都会改变 master 看到的返回节奏。
+厨师做好菜只是第一步——菜还要经过**出菜口（controller return buffer）→ 传菜员排队（interconnect return arbiter）→ 传菜台缓冲（response FIFO）→ 餐桌空位（master input buffer）→ 上桌（AXI R channel）**。任何一个环节堵了，顾客看到的就是"菜怎么还不来"。
 
 | Return path 位置 | 可能瓶颈 | 可见症状 |
 | --- | --- | --- |

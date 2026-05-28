@@ -6,9 +6,9 @@
 
 ## 这页在回答什么问题
 
-一次 DMA 任务不是一笔 BUS transaction，而是一串阶段：软件准备 descriptor，doorbell 触发 DMA，DMA fetch descriptor，随后搬运数据，最后 writeback completion 并通知 CPU。每个阶段使用的 BUS 路径、访问属性、错误返回和可见性条件都不同。
+一次 DMA 任务就像一次**快递取件 + 送件 + 回执**的完整流程：快递员先去取件点拿到包裹单（descriptor fetch），然后去发件人那里取货、送到收件人那里（data move），最后回来填写送达回执并通知调度中心（writeback/completion）。
 
-把 DMA 拆成 descriptor fetch、data move、writeback/completion 三段，是为了避免把所有问题都归成“DMA 慢”或“DMA 没完成”。descriptor fetch 慢代表任务获取链路卡住；data move 慢代表主数据面受限；writeback 慢代表软件可见完成路径出问题。
+把 DMA 拆成这三段，是为了精准定位”哪里出了问题”——不能笼统地说”快递慢”。是取包裹单的路上堵了（descriptor fetch 慢）？还是搬货过程中遇到大件需要多趟（data move 受限）？还是送达后回执一直没交回调度中心（writeback/completion 路径出问题）？
 
 ## 三段链路的责任边界
 

@@ -10,7 +10,9 @@ AHB-Lite 和 APB 为什么不是“落后协议”，而是在 MCU、boot path�
 
 ## AHB-Lite 的价值是低状态流水
 
-AHB-Lite 的核心定位是单 master 或已完成上游仲裁后的子系统访问。它保留 AHB 的地址/data phase 流水思想，但去掉多 master 总线仲裁相关复杂度，让本地 SRAM、ROM、简单 DMA、外设子系统和 MCU 主干可以用较小状态机实现。
+AHB-Lite 就像一条**有两个站台的单轨列车**——当列车在 A 站卸客（data phase）时，B 站已经开始排队检票了（address phase）。这比"一个站台全包"（APB）效率高，但不需要多轨道、多列车的复杂调度（AXI）。
+
+它的核心定位是单 master 或已完成上游仲裁后的子系统访问，让本地 SRAM、ROM、简单 DMA 和 MCU 主干可以用较小状态机实现。
 
 AHB-Lite 访问可以粗略理解成两个 phase：
 
@@ -42,7 +44,9 @@ AHB-Lite 的等待和完成主要通过 `HREADY` 与 `HRESP` 表达。`HREADY` �
 
 ## APB 的价值是把外设访问压成两阶段
 
-APB 的定位是低复杂度外设寄存器访问，不是高性能数据搬运。它把访问压成 setup phase 和 access phase：setup 阶段选择外设并给出地址、方向和写数据；access 阶段拉起 `PENABLE`，等待 `PREADY` 表示完成，必要时用 `PSLVERR` 表示错误。
+APB 就像**自动售货机**——操作极其简单：第一步选商品投币（setup phase），第二步按确认等出货（access phase）。没有排队系统，没有并行通道，每次只服务一个客人。
+
+APB 的定位是低复杂度外设寄存器访问，不是高性能数据搬运。setup 阶段选择外设并给出地址、方向和写数据；access 阶段拉起 `PENABLE`，等待 `PREADY` 表示完成，必要时用 `PSLVERR` 表示错误。
 
 APB 的典型信号语义可以这样看：
 

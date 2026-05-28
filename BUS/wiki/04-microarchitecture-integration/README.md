@@ -1,6 +1,6 @@
 # 04 微架构与系统集成
 
-这一章讨论 BUS 在芯片里如何落地。前面章节把 BUS 拆成 transaction、ordering、backpressure、协议 channel 和 response；第 04 章把这些概念放进真实系统路径：互连组件、bridge、CDC、MMIO、boot、debug、DMA、IOMMU、DDR controller 和 interrupt flow。
+前面三章就像学建筑：01 章学"为什么需要建筑"，02 章学"砖头水泥钢筋的物理特性"，03 章学"不同建筑风格的设计哲学"。第 04 章是**实际施工**——把这些知识用到一栋真正的大楼里：互连组件（承重结构）、bridge/CDC（楼层之间的电梯和楼道）、MMIO/boot/debug（水电消防系统）、DMA/IOMMU（货物运输系统）、DDR controller（地下车库入口）和 interrupt flow（报警系统）。
 
 ## 本章入口
 
@@ -22,7 +22,7 @@
 
 ## 本章主线
 
-第 04 章的核心判断是：BUS 一旦进入真实芯片，就不再是抽象协议，而是 `decoder + arbiter + crossbar + bridge + FIFO + adapter + controller + software contract` 的组合工程。
+第 04 章的核心判断是：BUS 一旦进入真实芯片，就像建筑图纸落地——不再是抽象线条，而是 `decoder（门牌号系统） + arbiter（电梯调度） + crossbar（立交通道） + bridge（楼层转换） + FIFO（缓冲区） + adapter（接口转接） + controller（停车场管理） + software contract（物业规则）` 的组合工程。
 
 | 主题 | 关键问题 |
 | --- | --- |

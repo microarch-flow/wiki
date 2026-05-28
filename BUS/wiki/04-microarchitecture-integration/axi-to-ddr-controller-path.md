@@ -6,9 +6,9 @@
 
 ## 这页在回答什么问题
 
-AXI master 看到的是 transaction：AR/AW/W 发出，R/B 返回。DDR controller 看到的是另一种问题：请求队列、address mapping、bank/row 命中、read/write 调度、DRAM timing、PHY 数据方向、refresh 和返回路径。AXI 侧请求顺，不代表 DDR 侧执行顺。
+AXI master 和 DDR controller 看到的是**两种完全不同的世界**。AXI master 觉得自己在发快递（AR/AW/W 发出，R/B 返回），DDR controller 看到的却是一个**巨大图书馆的管理问题**：这本书在哪个书架（bank）、哪一排（row）、哪个格子（column）？书架正好开着吗（row hit）？需要先关上一排再打开另一排吗（precharge + activate）？同时有人在还书有人在借书怎么调度（read/write scheduling）？
 
-本页讨论 AXI request 进入 DDR controller 后如何被重新解释。核心问题不是“AXI burst 能不能到 DDR”，而是一个通用事务流如何被转换成受物理阵列约束的命令序列，以及这个转换如何改变 latency、throughput 和 jitter。
+AXI 侧的订单排得整整齐齐，不代表图书管理员能按这个顺序一本本取——他会根据书架位置重新优化取书路线。
 
 ## 路径分解
 

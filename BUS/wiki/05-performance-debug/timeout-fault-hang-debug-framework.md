@@ -6,9 +6,13 @@
 
 ## 这页在回答什么问题
 
-系统表现为“卡住了”时，不能马上把所有波形都摊开看。第一步要把现象分成 timeout、fault、hang 三类排查入口：有没有返回，返回的是错误还是超时，波形是否仍有 forward progress。
+系统”卡住了”就像你在路上遇到了麻烦——但麻烦有三种完全不同的性质：
 
-这三类不是互斥根因，而是观察层级。一个下游 slave 永不响应，在 fabric 层可能表现为 no-progress，在 timeout wrapper 层可能被包装成 timeout，在软件层可能变成异常、fault status 或任务超时。定位框架要把这些层级串起来。
+- **Timeout**（超时）：你等了太久，交警过来开了罚单让你离开——“有人收尾，但等太久了”
+- **Fault**（故障）：你闯了红灯，被摄像头拍下来开了罚单——“有明确错误”
+- **Hang**（死锁）：你被堵在一个环形死胡同里，没人来管，你也出不去——“没有人收尾，也没有 forward progress”
+
+第一步不是把所有监控录像都翻出来看，而是先判断你遇到的是哪一种。这三类不是互斥的根因，而是同一个底层问题在不同层级的表现——一个下游 slave 永不响应（根因），在 fabric 层表现为 no-progress（hang），在 timeout wrapper 层被包装成超时罚单（timeout），在软件层变成异常（fault）。
 
 ## 三类现象的边界
 
@@ -18,7 +22,7 @@
 | fault | 得到明确错误 response、fault record 或异常 | 某层主动拒绝或报告错误 | 谁报错，错误是否被中间层映射 |
 | hang | 没有成功、没有错误、没有前进 | transaction 或状态机没有 forward progress | 哪个握手、队列或 response 永远不完成 |
 
-timeout 是“等太久后有人收尾”；fault 是“有人明确说这笔访问不合法或失败”；hang 是“没有人收尾”。工程风险从 timeout 到 hang 逐步上升，因为 hang 可能让 CPU、DMA slot、bridge FIFO 或整个 fabric 永久占住资源。
+用更生活化的比喻：timeout 是”快递超时自动退款”；fault 是”快递公司说你地址写错了，包裹退回”；hang 是”包裹失踪了，快递公司也没给你退款，你的寄件额度永远被占着”。工程风险从 timeout 到 hang 逐步上升，因为 hang 可能让 CPU、DMA slot、bridge FIFO 或整个 fabric 永久占住资源。
 
 ## Timeout：有收尾，但超过预期
 
@@ -51,7 +55,7 @@ fault 还要看传播路径。IOMMU fault 可能写 fault record 并触发 inter
 
 ## Hang：没有 Forward Progress
 
-hang 的判断标准不是“时间很长”，而是关键状态不再前进。
+Hang 就像**车停在十字路口中间，红绿灯也坏了，交警也没来**——不是”等太久”的问题，而是”永远不会动了”。判断标准不是时间长，而是关键状态不再前进。
 
 | Hang 形态 | 波形/状态表现 | 可能原因 |
 | --- | --- | --- |

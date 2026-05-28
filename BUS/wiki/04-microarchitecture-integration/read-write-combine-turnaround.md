@@ -6,9 +6,9 @@
 
 ## 这页在回答什么问题
 
-读写混合负载下，系统可能出现一种表面矛盾：总体 DDR 带宽不低，但某些 AXI read latency 突然变长，write response 集中返回，DMA completion 被拖后。根因常在 read/write combine 和 bus turnaround。
+想象一个**单车道双向隧道**——每次只能走一个方向的车。如果来一辆切换一次方向，大部分时间都浪费在"掉头"上。所以隧道管理员会积攒一批同方向的车一起放行，再换方向放另一批。这就是 read/write combine 和 bus turnaround 的本质。
 
-memory controller 为了提高 DDR 效率，不会把每个 AXI read/write 按到达顺序一条条执行。它会在局部窗口内批量服务读、批量 drain 写、减少方向切换。这样能提升总吞吐，但会牺牲部分请求的局部公平性和尾延迟。
+读写混合负载下，系统可能出现一种看似矛盾的现象：总体 DDR 带宽不低（隧道一天通过的车总量不少），但某些 AXI read latency 突然变长（你的车等了好久才轮到你这个方向放行），write response 集中返回（一批写操作被积攒后集中处理），DMA completion 被拖后。
 
 ## Read/Write Combine 在换什么
 
@@ -26,7 +26,7 @@ read/write combine 的设计动机是减少方向切换和命令碎片。DDR/PHY
 
 ## Turnaround 为什么贵
 
-turnaround 是从 read 数据方向切到 write 数据方向，或从 write 切到 read 的代价。它可能来自 controller pipeline、PHY、DRAM timing、data bus tri-state/drive、write leveling/read capture 约束，以及内部 buffer 的重新对齐。
+Turnaround 就像隧道的**换向操作**——不是简单地"换个信号灯"，而是要等最后一辆出方向的车彻底通过（pipeline 清空），确认对面安全（PHY 方向切换、DRAM timing），调整照明和通风方向（data bus tri-state/drive），以及重新校准入口设备（write leveling/read capture）。每次换向都要花好几个时钟周期，这就是为什么 controller 宁可攒一批再切换。
 
 | 切换 | 典型代价 | AXI 可见影响 |
 | --- | --- | --- |

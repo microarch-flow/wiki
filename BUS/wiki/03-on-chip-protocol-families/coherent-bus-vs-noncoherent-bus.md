@@ -10,9 +10,13 @@
 
 ## Coherence 解决的是共享内存视图
 
-Non-coherent interconnect 负责把 request 送到目标、把 data 和 response 带回来，并按协议处理地址、属性、burst、ordering 和 error。它可以很高性能，也可以支持 AXI outstanding、burst 和复杂 arbitration；但它不负责维护 CPU cache、DMA、accelerator 或其他 cacheable agent 之间的缓存副本一致性。
+用**共享文档编辑**来理解这两种互连的区别：
 
-Coherent interconnect 在 transaction 搬运之外，还要维护共享内存视图：谁拥有某条 cache line 的最新数据，谁可以读，谁可以写，哪些副本需要失效，写入何时对其他 agent 可见。它处理的不只是“把数据送到哪里”，而是“多个观察者看到同一地址时，哪个值是合法可见值”。
+**Non-coherent** 就像每个人各自下载一份文档到本地编辑。快递系统（interconnect）负责把你的修改”寄回去”、把别人的版本”寄给你”，但它**不管大家看到的版本是否一致**——你可能还在改旧版本，别人已经改了新的。同步是你自己的事（软件 cache maintenance）。
+
+**Coherent** 就像 Google Docs——系统自动保证每个人打开文档时看到的都是最新版本。谁在编辑、谁有修改权、谁的副本需要更新，系统全部自动维护。代价是需要更复杂的服务器端逻辑（snoop、directory、state tracking）。
+
+这个差异是系统语义差异，不是性能等级差异。下载编辑可以很快（non-coherent 路径可以很高吞吐），Google Docs 在多人冲突时也可能很慢。
 
 这个差异是系统语义差异，不是性能等级差异。Non-coherent 路径可以很快，coherent 路径也可能因为 snoop、目录、状态转换和冲突而变慢。选择哪一种，取决于软件和硬件是否需要自动维护 cache-line 可见性。
 
@@ -20,9 +24,9 @@ Coherent interconnect 在 transaction 搬运之外，还要维护共享内存视
 
 ## Non-coherent 路径把可见性交给软件或上层机制
 
-Non-coherent DMA 的典型问题是：CPU cache 里有一份数据，DMA 直接访问 memory 中的另一份数据。CPU 写了 descriptor，如果 dirty cache line 没有被 clean 到 memory，DMA 可能读到旧 descriptor；DMA 写回 completion buffer 后，如果 CPU cache 里仍有旧副本，CPU 可能看不到最新 completion。
+Non-coherent DMA 的典型问题就像**两个人各自编辑同一份文档的不同本地副本**。CPU 在本地笔记本上改了会议纪要（写了 descriptor），但没有上传到共享服务器（dirty cache line 没有 clean 到 memory）。DMA 从服务器上下载的还是旧版本——它不知道你改了。反过来，DMA 把工作成果传回了服务器（写回 completion buffer），但你的笔记本上还缓存着旧文件（CPU cache 有旧副本），你也看不到 DMA 的新成果。
 
-这不是 DMA 搬运失败，而是可见性契约没有闭合。Non-coherent 路径需要软件、driver、runtime 或系统库显式管理 ownership、cache clean/invalidate、memory attribute 和 barrier 顺序。
+这不是 DMA 搬运失败，而是**版本同步的契约没有闭合**。Non-coherent 路径需要软件、driver、runtime 或系统库显式管理 ownership、cache clean/invalidate、memory attribute 和 barrier 顺序。
 
 一个最小方向判断：
 

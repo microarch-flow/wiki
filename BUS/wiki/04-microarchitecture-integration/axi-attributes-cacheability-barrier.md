@@ -6,9 +6,9 @@
 
 ## 这页在回答什么问题
 
-AXI transaction 不只携带 address、data 和 response。它还携带或受系统推导出一组访问属性：memory/device 类型、cacheability、bufferability、shareability、secure/privileged、QoS、barrier/order 约束。这些属性决定一笔访问能不能被 cache、能不能被合并、能不能重排、应不应该参与 coherence，以及经过 bridge 后还能保留多少语义。
+AXI transaction 不只携带"去哪里、搬什么"，还携带一张**旅行须知卡**——写着"这件行李能不能寄存（cache）？能不能和别人的行李合并（combine）？能不能调换顺序（reorder）？需不需要安检（secure）？走 VIP 通道还是普通通道（QoS）？有没有'必须等前面的人到了再出发'这种约束（barrier）？"
 
-本页关注属性、cacheability 和 barrier 如何成为软件与硬件之间的契约。DMA descriptor、data buffer、completion、MMIO doorbell 和 interrupt clear 都是地址访问，但它们需要的属性和顺序完全不同。
+这些属性决定一笔访问的处理方式。DMA descriptor、data buffer、completion、MMIO doorbell 和 interrupt clear 虽然都是地址访问，但它们需要的"旅行须知"完全不同——就像普通旅客和外交信使走同一个机场，规则天差地别。
 
 ## AXI 属性在表达系统意图
 

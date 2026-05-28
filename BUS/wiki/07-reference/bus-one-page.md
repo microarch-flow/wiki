@@ -6,9 +6,9 @@
 
 ## BUS 是什么
 
-BUS 是片上事务互连层。它把 CPU、DMA、memory、peripheral、accelerator、debug master 放进同一套访问规则：地址如何 decode，请求如何仲裁，数据如何传输，response 如何返回，错误如何闭环，下游变慢时回压如何传播。
+一句话：BUS 是芯片内部的**公共交通管理系统**。它把 CPU、DMA、memory、peripheral、accelerator、debug master 放进同一套规则：地址如何导航（decode），路口谁先走（仲裁），货物怎么搬（数据传输），签收单怎么回来（response），出了事怎么处理（错误闭环），前方堵车时压力怎么传回来（backpressure）。
 
-BUS 不等于一根共享线。shared bus、bus matrix、crossbar、分层互连、bridge 组合都可以是 BUS 的具体组织方式。
+BUS 不等于一根共享线——就像"交通系统"不等于"一条路"。shared bus、bus matrix、crossbar、分层互连、bridge 组合都可以是 BUS 的具体组织方式。
 
 ## BUS 要回答的设计问题
 
@@ -43,7 +43,7 @@ BUS 不等于一根共享线。shared bus、bus matrix、crossbar、分层互连
 | AXI | 高性能、多 channel、outstanding、burst、异构 IP 接口 |
 | TileLink | 参数化 SoC 生态中的事务与一致性框架 |
 
-协议名不是行为结论。AXI 路径也可能被 bridge、slave slot、return path 限制；APB 路径也可能因为 clear/status 顺序影响软件正确性。
+协议名不是行为结论——就像"高速公路"不代表永远不堵。AXI 路径也可能被 bridge、slave slot、return path 限制；APB 路径虽然"慢"，但 clear/status 顺序出错可能搞崩整个驱动。
 
 ## 系统分工
 

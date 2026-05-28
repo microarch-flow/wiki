@@ -1,6 +1,6 @@
 # 06 典型系统与案例
 
-这一章把 BUS 放回具体系统里看。前面章节讨论 transaction、协议、微架构和调试方法；第 06 章用 MCU/SoC/AI、AXI crossbar、APB 子系统、MMIO hang、DMA completion、IOMMU fault、AXI/TileLink、BUS/NoC 等案例，把抽象概念落到系统判断。
+前面五章学的是交通理论、车辆规格、道路施工和交警技能。第 06 章是**真实案例集**——把理论拿到不同城市（MCU/SoC/AI）、不同路段（AXI crossbar/APB 子系统）和不同事故现场（MMIO 卡死/DMA 丢完成/IOMMU 拒签）里验证。
 
 ## 本章入口
 
@@ -16,7 +16,7 @@
 
 ## 本章主线
 
-脱离系统场景谈 BUS，容易把协议能力和系统需求错配。真正的判断来自具体场景里的 Resource、Topology、Interaction、Capability：共享什么资源，互连如何组织，事务如何闭环，需要哪些协议和调试能力。
+脱离具体城市谈交通规划，就像纸上谈兵——容易把协议能力和系统需求错配。真正的判断来自具体场景里的四个问题：**共享什么资源**（Resource），**路网怎么连**（Topology），**一趟运输怎么闭环**（Interaction），**需要什么级别的基础设施**（Capability）。
 
 | 案例 | 关键判断 |
 | --- | --- |

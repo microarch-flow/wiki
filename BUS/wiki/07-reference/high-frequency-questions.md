@@ -8,9 +8,9 @@
 
 ## 1. BUS 和 NoC 是不是一回事
 
-不是。BUS 强调片上事务互连和软件可见语义，shared bus、bus matrix、crossbar、分层互连都可以落在这个抽象里。NoC 强调大规模节点、拓扑化传输、packet/flit、routing 和可扩展流控。
+不是。BUS 像城市里的**公交系统**——强调站点、时刻表、乘客能看到的到站信息。NoC 像**高铁网络**——强调大规模节点、分布式调度、包裹分拣和可扩展运力。
 
-设计判断：控制寄存器、boot、debug、status、completion 更偏 BUS；tile/HBM/大规模数据交换更偏 NoC。
+设计判断：门禁、配置、状态查询这类"市内通勤"用 BUS；tile 间大批量数据搬运这类"城际货运"用 NoC。
 
 ## 2. AXI 是不是一条“总线”
 
@@ -20,21 +20,21 @@ AXI 是事务协议，不是传统意义上的一根共享线。AXI 可以接在
 
 ## 3. AXI 比 AHB 新，是不是所有地方都应该用 AXI
 
-不是。AXI 提供更强并发和多 channel 能力，也带来 ID、outstanding、return path、验证和时序复杂度。低速控制寄存器、简单外设和小系统未必需要 AXI。
+不是——就像不能因为高铁比公交新，就在小区里修高铁。AXI 提供更强并发和多 channel 能力，也带来 ID、outstanding、return path、验证和时序复杂度。
 
-设计判断：并发和吞吐需求高时选 AXI；低成本、易验证、低速控制路径可以选 AHB/APB 或分层组合。
+设计判断：大货量长距离用高速公路（AXI）；小区内通勤用自行车道（APB）或公交（AHB-Lite），够用、便宜、好维护。
 
 ## 4. APB 慢，是不是就不重要
 
-不是。APB 承载大量配置、状态、interrupt clear、timer、watchdog、debug/status 路径。它不追求高吞吐，但它直接影响软件控制闭环。
+不是——消防报警器不需要跑得快，但如果它不响，整栋楼都有危险。APB 承载大量配置、状态、interrupt clear、timer、watchdog、debug/status 路径。它不追求高吞吐，但它直接影响软件控制闭环。
 
-调试判断：APB PREADY 长等待、PSLVERR、bridge timeout、polling 过多，都可能让 driver 初始化和 ISR 变慢。
+调试判断：APB PREADY 长等待、PSLVERR、bridge timeout 就像消防通道被堵——平时没事，关键时刻要命。
 
 ## 5. Address handshake 成功，是不是事务就完成了
 
-不是。地址握手只表示 request 被接收。读事务要看到最后一个 R beat 和 RLAST；写事务要看到所有 W beat、WLAST 和 B response。
+不是——快递公司说"已揽收"不等于"已送达"。地址握手只表示 request 被接收（揽收）。读事务要看到最后一个 R beat 和 RLAST（签收）；写事务要看到所有 W beat、WLAST 和 B response（确认送达回执）。
 
-波形判断：维护 transaction ledger，记录 AR/AW fire、W beat、R/B response 和 ID slot release。
+波形判断：维护 transaction ledger，就像快递追踪系统——记录每个包裹的揽收、在途、签收状态。
 
 ## 6. Coherent 系统是不是就不需要 barrier
 
@@ -44,15 +44,15 @@ AXI 是事务协议，不是传统意义上的一根共享线。AXI 可以接在
 
 ## 7. DMA 完成数据搬运，是不是软件一定看到 completion
 
-不是。软件可见完成还依赖 completion writeback、cache/coherence、interrupt/polling、status 和 clear/EOI。
+不是——外卖送到你家门口不等于你知道了。骑手还得拍照确认（writeback）、系统要同步状态（cache/coherence）、给你发"已送达"通知（interrupt）、你要点"确认收货"（clear/EOI）。
 
-调试判断：先区分 `data_done` 和 `completion_visible_to_cpu`，再看 interrupt 是否晚于 completion 可见。
+调试判断：先区分 `data_done`（货到了）和 `completion_visible_to_cpu`（你知道了），再看通知是不是比实际送达还早。
 
 ## 8. IOMMU fault 是不是 memory controller 问题
 
-不是。IOMMU fault 发生在翻译和权限层，data request 可能没有到达 memory controller。
+不是——海关拒签不等于目的地城市有问题。IOMMU fault 发生在翻译和权限层（签证审核），data request 可能根本没到达 memory controller（旅客还没出海关）。
 
-调试判断：看 stream ID、context、IOVA、access type、fault stage。descriptor fetch fault、data read fault、completion writeback fault 是不同问题。
+调试判断：看护照号（stream ID）、签证类型（context）、目的地（IOVA）、出行目的（access type）和在哪个窗口被拒的（fault stage）。
 
 ## 9. 平均带宽够，是不是 BUS 就没问题
 
