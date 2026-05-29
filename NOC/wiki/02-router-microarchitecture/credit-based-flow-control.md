@@ -86,6 +86,92 @@ R = forward_link_latency
 
 这里面最容易被忽略的是中间那一项。很多人以为 credit 只和链路长度有关，实际上下游内部拥塞、SA 等待、ejection 慢，都会拉长 slot 被占用的时间，从而拉长 credit 返回。
 
+## R 的参数化分解
+
+为了让 R 不是一个"经验数字"，把上面三项拆到可测量的颗粒度：
+
+### forward_link_latency
+
+```text
+forward_link_latency
+  = wire_propagation_cycles + serialization_cycles + crossing_register_cycles
+
+wire_propagation_cycles  = ceil(link_length_um / (signal_velocity_um_per_cycle))
+serialization_cycles     = ceil(flit_width_bits / phit_width_bits)
+crossing_register_cycles = 同步寄存器级数 (CDC / 长线插入)
+```
+
+在同频同电压短线（≤ 1 mm）场景下，这三项往往都能落到 1 拍以内，合成 `forward_link_latency = 1`。长线、跨 die、跨 voltage island 会按上式叠加。
+
+### downstream_buffer_residency
+
+`buffer_residency` = flit 进入下游 input buffer 到离开 input buffer 的拍数。按 router pipeline 阶段展开：
+
+```text
+buffer_residency
+  = t_BW + t_RC + t_VA_wait + t_SA_wait + t_ST
+
+t_BW  = 1                                    # buffer write
+t_RC  = 1 if HEADER else 0                   # body/tail 不重新 RC
+t_VA_wait = VA_pipeline + VA_contention      # 多数实现 VA_pipeline = 1
+t_SA_wait = SA_pipeline + SA_contention      # 多数实现 SA_pipeline = 1
+t_ST  = 1                                    # switch traversal
+```
+
+`VA_contention` 与 `SA_contention` 是和负载强相关的随机变量。空载下都 = 0，可得 `buffer_residency_min`；满载（每个端口都有竞争者）下两者期望 ≈ `(N_contenders - 1) / 2`，其中 `N_contenders` 是同输出端口/同输出 VC 上的竞争 input VC 数。
+
+一个常用的近似：
+
+```text
+E[buffer_residency] ≈ 3 + E[VA_contention] + E[SA_contention]
+                   ≈ 3 + (P-1)/(2·η_VA) + (P-1)/(2·η_SA)
+```
+
+其中 `P` = router radix（含 local 端口），`η_VA / η_SA` = allocator 效率（separable 0.6~0.8，iSLIP 收敛后接近 1，wavefront 接近 1 但延迟更高）。
+
+### credit_return_latency
+
+```text
+credit_return_latency
+  = credit_pipeline_register_cycles + return_wire_cycles + upstream_credit_table_write
+```
+
+一个常见简化是反向通道与正向通道对称布线，因此 `return_wire_cycles ≈ forward_wire_cycles`。`upstream_credit_table_write = 1` 拍（SRAM/寄存器写）。
+
+### 合成
+
+```text
+R = forward_link_latency
+  + (3 + E[VA_contention] + E[SA_contention])    # downstream residency
+  + credit_return_latency
+```
+
+## 典型数值例子
+
+5-port mesh router、128 bit flit、单 phit、1 GHz、短链（1 拍前向 + 1 拍返向）、4 VC、单端口期望 VA/SA 竞争者 = 1：
+
+| 项 | 取值 |
+|----|------|
+| `forward_link_latency` | 1 |
+| `t_BW + t_RC + t_ST` | 3 |
+| `E[VA_contention]` | 0.5 |
+| `E[SA_contention]` | 0.5 |
+| `credit_return_latency` | 1 + 1 = 2 |
+| **R_total** | **≈ 8 拍** |
+
+把同样参数换到 1 mm 长线、需要 2 级同步寄存器、SA 竞争重（5 个竞争者，iSLIP）：
+
+| 项 | 取值 |
+|----|------|
+| `forward_link_latency` | 1 + 2 = 3 |
+| `t_BW + t_RC + t_ST` | 3 |
+| `E[VA_contention]` | 0.5 |
+| `E[SA_contention]` | 2 |
+| `credit_return_latency` | 3 + 1 = 4 |
+| **R_total** | **≈ 12.5 拍** |
+
+两个数字之间的差异说明：**buffer_depth 不是按拓扑选，而是按 R 选**。同一拓扑不同物理实现，buffer 需求差 1.5 倍是常见的。
+
 ## Buffer 深度为什么至少要覆盖 R
 
 如果一个活跃 VC 的 buffer 深度小于 credit round-trip `R`，上游在还没等到第一个 credit 回来之前就会用光所有 slot，被迫停发，链路出现气泡。
@@ -104,7 +190,45 @@ cycle 3: first credit returns
 
 这说明 buffer depth 不是“存突发流量的桶”而已，它还决定稳态下链路能否被打满。
 
-一个实用经验是：`buffer_depth ≈ R 到 R+2` 常是性价比较高的起点。小于 R 会伤吞吐，远大于 R 往往只是增加面积和在途积压。
+### 推导：使链路饱和的最小 buffer_depth
+
+把"稳态下链路始终有 flit 可发"作为目标，等价于：发送方任意时刻 credit > 0。
+
+```text
+稳态吞吐 = 1 flit / 拍 (单 VC 占满链路)
+in_flight (含 link 上 + 下游 buffer 中) = R
+要求 buffer_depth >= R
+```
+
+更严格的，若一个 input port 上有 `V` 个 VC 轮流发往同一下游端口，每个 VC 只独占链路 `1/V` 拍，则**单 VC** 的 buffer 需求降为：
+
+```text
+per_vc_buffer_depth >= ceil(R / V)
+```
+
+但**所有 VC 加总**的 buffer 总深度仍需 ≥ R，否则下游聚合带宽达不到链路带宽。
+
+实用经验：
+
+| 目标 | 建议 |
+|------|------|
+| 单 VC 打满链路 | `buffer_depth = R + 1~2`（留出 jitter 余量）|
+| V 个 VC 共享链路 | `per_vc_depth = ceil(R/V) + 1`、`Σ ≥ R + V` |
+| 突发吞吐（短突发 + 长空闲）| 再加 `burst_length` 缓冲 |
+| 远大于 R 的深度 | 多数情况下浪费面积，只是把延迟变成在途积压 |
+
+### Buffer 不够时的可观察症状
+
+模拟器里能直接看到的现象，按"buffer 不够"程度依次出现：
+
+| 现象 | buffer 与 R 的关系 |
+|------|--------------------|
+| 稳态吞吐 < 1 flit/拍 | `buffer_depth < R` |
+| stall reason 中 `NO_CREDIT` 占比 > 30% | `buffer_depth ≈ R` 但有 contention jitter |
+| 链路利用率 ≈ 100%，`NO_CREDIT` < 5% | `buffer_depth ≥ R + 2` |
+| 链路利用率 100% 但 packet 平均 latency 偏大 | `buffer_depth >> R`（积压）|
+
+这张表也是 buffer sweep 时的判读基准。
 
 ## Backpressure 是怎样一级级传回去的
 
@@ -168,6 +292,27 @@ credit-based flow control 的本质，是把“下游还有没有空间”从远
 CreditState {
   available_credits_per_downstream_vc[]
 }
+
+LinkParams {
+  forward_link_latency           # 由 wire / serialization / sync 组成
+  return_link_latency
+  flit_width_bits
+  phit_width_bits
+}
+
+RouterParams {
+  t_BW; t_RC; t_VA_pipeline; t_SA_pipeline; t_ST   # 各阶段固定开销
+  allocator_type                                    # separable / iSLIP / wavefront
+  eta_VA; eta_SA                                    # allocator 效率
+  buffer_depth_per_vc; num_vcs
+}
+
+R_components(link, router, contention) =
+  link.forward_link_latency
+  + router.t_BW + router.t_RC + router.t_VA_pipeline + router.t_SA_pipeline + router.t_ST
+  + contention.E_VA + contention.E_SA
+  + link.return_link_latency
+  + 1            # upstream credit table write
 ```
 
 以及事件：
@@ -177,6 +322,8 @@ CreditState {
 - `credit_return_arrive`
 - `injection_blocked_no_credit`
 
-如果只做拓扑层平均带宽比较，可以把 credit 折叠成“链路有效带宽折减因子”；但一旦你关心 backpressure、buffer sizing 或 response tail latency，就必须逐拍建 credit，因为 `R` 和 `buffer_depth` 的关系会直接决定是否出现链路气泡。
+把 `R` 拆成 `(link, router, contention)` 三组参数后，做架构探索时就能正交 sweep：拓扑变了改 link、流水线变了改 router、负载变了改 contention，buffer 需求自动从公式推出，不必每次重跑工程经验。
 
-如果要做 deterministic worst-case latency 分析，还要把 `credit_return_delay` 分解成链路部分和下游占用部分，否则你无法判断最坏时间到底来自物理距离，还是来自局部排队。
+如果只做拓扑层平均带宽比较，可以把 credit 折叠成"链路有效带宽折减因子"；但一旦你关心 backpressure、buffer sizing 或 response tail latency，就必须逐拍建 credit，因为 `R` 和 `buffer_depth` 的关系会直接决定是否出现链路气泡。
+
+如果要做 deterministic worst-case latency 分析，把 `R` 拆成 `link / router_fixed / contention` 三段后取每段的 worst case 相加即可——上面公式天然支持这种拆分。

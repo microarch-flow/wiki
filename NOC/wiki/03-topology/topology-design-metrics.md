@@ -102,6 +102,126 @@ path diversity 回答的是：从一个源到一个目的，是否存在多条�
 | Path diversity | 路由自由度 | 被误当成吞吐本身 |
 | Max wire length | 物理可实现性 | 在纯图论比较里被省略 |
 
+## 各拓扑的闭式公式表
+
+为了让 early-stage screening 可以直接查表，把常见拓扑的六个指标都写成 `N`（节点总数）的闭式表达。约定：
+
+- `W` = 单条 link 带宽（bytes/cycle）
+- `tile_pitch` = 物理单 tile 边长，作为线长单位
+- mesh / torus 默认为 `k × k = N` 二维方阵（`k = √N`）
+- fat-tree 默认 `k` 叉、`L = log_k(N)` 层
+- dragonfly 默认 `a` 个 router 组成一 group、`g` 个 group、`p` 端点/router，`N = a · g · p`
+
+### 1D ring（N 节点）
+
+| 指标 | 公式 | N=16 取值 |
+|------|------|----------|
+| diameter | `⌊N/2⌋` | 8 |
+| average hop | `N/4` | 4 |
+| bisection BW | `2W` | 2W |
+| max radix | `3`（2 个邻居 + 1 local）| 3 |
+| path diversity | `2`（左右两路）| 2 |
+| max wire span | `1 · tile_pitch`（含 wrap）| 1 |
+
+bisection BW 不随 N 增长——这是 ring 在大规模下迅速饱和的根本原因。
+
+### 2D mesh（k × k = N）
+
+| 指标 | 公式 | k=4, N=16 | k=8, N=64 |
+|------|------|-----------|-----------|
+| diameter | `2(k - 1)` | 6 | 14 |
+| average hop | `2k/3`（近似）| 2.67 | 5.33 |
+| bisection BW | `k · W` | 4W | 8W |
+| max radix | `5`（4 邻居 + local）| 5 | 5 |
+| path diversity | `min(Δx, Δy) + 1`（XY 多路）| 1~3 | 1~5 |
+| max wire span | `1 · tile_pitch` | 1 | 1 |
+
+mesh 的招牌特性：radix 恒为 5、线长恒为 1 tile，物理可实现性最稳定。
+
+### 2D torus（k × k = N）
+
+| 指标 | 公式 | k=4, N=16 | k=8, N=64 |
+|------|------|-----------|-----------|
+| diameter | `⌊k/2⌋ + ⌊k/2⌋ = k`（偶数 k）| 4 | 8 |
+| average hop | `k/2`（近似）| 2.0 | 4.0 |
+| bisection BW | `2k · W` | 8W | 16W |
+| max radix | `5` | 5 | 5 |
+| path diversity | `≈ 2·(Δx路 × Δy路)` | 2~4 | 2~8 |
+| max wire span | `(k-1)/2 · tile_pitch`（wrap 折叠后）| 1.5 | 3.5 |
+
+torus 用更长 wrap link 换得 2× bisection 和更小 diameter，物理实现复杂度更高。
+
+### Concentrated mesh（c 个 tile 共享一个 router，c·k² = N）
+
+| 指标 | 公式 | c=4, k=4, N=64 |
+|------|------|---------------|
+| diameter | `2(k-1)` | 6 |
+| average hop | `2k/3 + intra_concentration_cost` | 2.67 + ε |
+| bisection BW | `k · W`（router 间）| 4W |
+| max radix | `4 + c` | 8 |
+| path diversity | 与 mesh 类似 | - |
+| max wire span | `1 · tile_pitch` | 1 |
+
+集中度 c 提升用 router radix 换 hop 数。c=4 时 router 数减为 1/4，节面积但 radix 更大。
+
+### k-ary fat-tree（k 叉、L 层、N = k^L 叶子）
+
+| 指标 | 公式 | k=4, L=3, N=64 |
+|------|------|---------------|
+| diameter | `2L` | 6 |
+| average hop | `≈ 2L · (1 - 1/k)` | 4.5 |
+| bisection BW | `N/2 · W`（满胖度）| 32W |
+| max radix | `2k`（向上向下各 k）| 8 |
+| path diversity | `k^(L-1)`（核心层路径数）| 16 |
+| max wire span | `O(L · spacing)`（核心层最长）| ≫ 1 |
+
+fat-tree 的招牌：bisection BW 随 N 线性增长，是数据中心首选。代价是核心层长线和高 radix switch。
+
+### Dragonfly（a · g · p = N）
+
+| 指标 | 公式 | a=4, g=8, p=4, N=128 |
+|------|------|---------------------|
+| diameter | `3`（local + global + local）| 3 |
+| average hop | `≈ 2 + g/(2·a·(a-1))` | ≈ 2.27 |
+| bisection BW | `N · W / 2`（满 group-to-group）| 64W |
+| max radix | `a - 1 + g - 1 + p` = local + global + endpoint | 14 |
+| path diversity | `g`（global link 多路）| 8 |
+| max wire span | global link `≫ tile_pitch` | large |
+
+dragonfly 的招牌：constant diameter，端点数翻倍 diameter 不变。代价是 global link 物理上极长，且 max radix 随 N 增长。
+
+### 总表（汇总查阅）
+
+按"主要约束"列重新排一遍（数值都按相同 N=64 折算）：
+
+| 拓扑 | diameter | avg hop | bisection | radix | path div | max wire | 主导优势 |
+|------|----------|---------|-----------|-------|----------|----------|----------|
+| Ring (N=64) | 32 | 16 | 2W | 3 | 2 | 1 | 实现极简 |
+| 2D mesh (8×8) | 14 | 5.33 | 8W | 5 | 1~5 | 1 | 物理稳定 |
+| 2D torus (8×8) | 8 | 4 | 16W | 5 | 2~8 | 3.5 | 平衡 hop/BW |
+| Cmesh (c=4) | 6 | 2.67 | 4W | 8 | 1~3 | 1 | 省 router 数 |
+| Fat-tree (k=4,L=3) | 6 | 4.5 | 32W | 8 | 16 | large | 跨区 BW |
+| Dragonfly | 3 | 2.27 | 32W | 14 | 8 | very large | constant diameter |
+
+从这张表可以一眼看出三类设计哲学：
+
+- **mesh/torus** 把 radix 锁死换可实现性
+- **fat-tree** 加 layer 加 radix 换 bisection
+- **dragonfly** 用长 global link 换 constant diameter
+
+没有一种拓扑同时拿满"radix 小 + diameter 小 + bisection 大 + wire 短"——必须在四个维度上做选择。
+
+## 把这些指标接到 NoC 性能公式
+
+闭式公式不是为了好看，是为了**直接代入 collective / GEMM 性能估计**。例如：
+
+```text
+# 一个 N=64 AllReduce 的下界估计（ring algorithm）
+T_lower_bound = 2(N-1) · α_per_hop + 2 · M / B_bisection
+```
+
+代入不同拓扑得到不同的 `α_per_hop` 和 `B_bisection`，可立即排出预期排名而不必跑 simulator。如果实测排名与这里不同，就要回查是 placement、routing 还是 traffic class 偷走了名义带宽。
+
 ## 一个具体例子：4x4 mesh vs 4x4 torus
 
 两者在图论上很接近，但看指标就知道它们在芯片上不是同一种东西。
@@ -133,14 +253,27 @@ topology 指标的作用，不是替你选答案，而是把“距离、吞吐�
 
 ```text
 TopologyMetrics {
-  diameter
+  diameter            # 闭式公式见上文
   average_hops
-  bisection_links
+  bisection_links     # bisection BW 的 link 数
   max_radix
   path_diversity
-  max_wire_span
+  max_wire_span       # 单位：tile_pitch
 }
+
+TopologyClosedForm(topology_type, N, ...) -> TopologyMetrics
 ```
 
-如果只做 analytical baseline，可以先用 `average_hops * per_hop_latency` 估平均延迟，用 `bisection_links * link_bw` 估跨区吞吐上限。  
-如果要进一步接近真实芯片，`max_wire_span` 不能再忽略，因为它会反过来改变 `per_hop_latency` 和 `credit_round_trip`。这时 topology 指标不再是静态图属性，而会进入 router/buffer 参数联动。
+`TopologyClosedForm` 是上面公式表的直接实现。给一个 `(type, N)` 返回六元组，screening 阶段不需要建图也不需要跑 BFS。
+
+如果只做 analytical baseline，可以先用 `average_hops * per_hop_latency` 估平均延迟，用 `bisection_links * link_bw` 估跨区吞吐上限。
+
+如果要进一步接近真实芯片，`max_wire_span` 不能再忽略，因为它会反过来改变 `per_hop_latency` 和 `credit_round_trip`——具体地：
+
+```text
+per_hop_latency(topology) = base_router_delay + ceil(max_wire_span / signal_um_per_cycle)
+R(topology, allocator) = per_hop_latency · 2 + router_internal_residency(allocator, K)
+buffer_depth_min(topology, allocator) = R
+```
+
+这条链条把 topology metric → router 流水 → buffer 需求一路打通：拓扑变了，buffer 自动跟着改，不必工程经验拍数。完整 R 公式见 [credit-based-flow-control](../02-router-microarchitecture/credit-based-flow-control.md#r-的参数化分解)。

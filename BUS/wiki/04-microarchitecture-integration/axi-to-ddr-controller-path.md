@@ -2,7 +2,7 @@
 
 上级：[04 微架构与系统集成](./README.md)
 
-相关：[RAM 控制器、并行度与页策略](../../../RAM/wiki/04-system-architecture/controller-parallelism-page-policy.md)、[AXI 与 DMA 的系统接口](./axi-dma-system-interface.md)、[Read/Write Combine 与 Bus Turnaround](./read-write-combine-turnaround.md)、[Row Locality、Return Path 与 AXI 体验](./row-locality-return-path-axi-experience.md)
+相关：[RAM 控制器、并行度与页策略](../../../RAM/wiki/06-memory-controller/README.md)、[AXI 与 DMA 的系统接口](./axi-dma-system-interface.md)、[Read/Write Combine 与 Bus Turnaround](./read-write-combine-turnaround.md)、[Row Locality、Return Path 与 AXI 体验](./row-locality-return-path-axi-experience.md)
 
 ## 这页在回答什么问题
 

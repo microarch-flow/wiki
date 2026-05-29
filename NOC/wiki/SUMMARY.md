@@ -93,6 +93,7 @@
 - [router-pipeline-pseudocode](./08-simulator-construction/router-pipeline-pseudocode.md)
 - [traffic-injection-and-tracing](./08-simulator-construction/traffic-injection-and-tracing.md)
 - [verification-and-calibration](./08-simulator-construction/verification-and-calibration.md)
+- [parameter-reference](./08-simulator-construction/parameter-reference.md)
 - [implementation-roadmap](./08-simulator-construction/implementation-roadmap.md)
 
 ## 09 Reference

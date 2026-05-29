@@ -19,13 +19,14 @@
 
 ## 这一章的主线
 
-这章主要解决五个问题：
+这章主要解决六个问题：
 
 - simulator 的边界和对象该怎么定
 - event-driven 和 cycle-accurate 应该怎么取舍
 - 核心状态和数据结构该怎么组织
 - router pipeline 在代码里该怎么推进
 - 怎样验证 simulator 至少没有把基础规则写错
+- 全部可调参数应该如何统一管理与对照工业工具
 
 ## 为什么这一章必须放在方法论之后
 
@@ -73,9 +74,10 @@
 
 这一章对应的实现契约至少要固定：
 
-- `object contract`：Packet / Flit / Router / Link / Endpoint / Stats
-- `time contract`：每周期先读什么、再写什么、credit 何时返回
-- `trace contract`：输入流如何进入注入队列
-- `verification contract`：哪些最小场景必须和手算一致
+- `object contract`：Packet / Flit / Router / Link / Endpoint / Stats，见 [core-data-structures](./core-data-structures.md)
+- `time contract`：每周期先读什么、再写什么、credit 何时返回，见 [router-pipeline-pseudocode](./router-pipeline-pseudocode.md)
+- `trace contract`：输入流如何进入注入队列，见 [traffic-injection-and-tracing](./traffic-injection-and-tracing.md)
+- `verification contract`：哪些最小场景必须和手算一致，见 [verification-and-calibration](./verification-and-calibration.md)
+- `parameter contract`：可调参数的默认值、范围和工业对标，见 [parameter-reference](./parameter-reference.md)
 
-这四个契约清楚，仿真器才会越长越稳，而不是越长越乱。
+这五个契约清楚，仿真器才会越长越稳，而不是越长越乱。

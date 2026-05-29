@@ -2,7 +2,7 @@
 
 上级：[04 微架构与系统集成](./README.md)
 
-相关：[RAM Row Locality 与 Page Policy 深化](../../../RAM/wiki/04-system-architecture/row-locality-page-policy-deep-dive.md)、[AXI Burst、对齐与边界](../03-on-chip-protocol-families/axi-burst-alignment-boundary.md)、[AXI 到 DDR Controller 的路径](./axi-to-ddr-controller-path.md)、[Read/Write Combine 与 Bus Turnaround](./read-write-combine-turnaround.md)
+相关：[RAM Row Locality 与 Page Policy 深化](../../../RAM/wiki/06-memory-controller/page-policy-open-close-adaptive.md)、[AXI Burst、对齐与边界](../03-on-chip-protocol-families/axi-burst-alignment-boundary.md)、[AXI 到 DDR Controller 的路径](./axi-to-ddr-controller-path.md)、[Read/Write Combine 与 Bus Turnaround](./read-write-combine-turnaround.md)
 
 ## 这页在回答什么问题
 

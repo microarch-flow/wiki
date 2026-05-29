@@ -91,3 +91,8 @@
 - [BUS 故障复盘模板](./07-reference/bus-debug-postmortem-template.md)
 - [互连方案评估模板](./07-reference/interconnect-evaluation-template.md)
 - [BUS 协议阅读模板](./07-reference/protocol-reading-template.md)
+
+## 08 建模与架构探索
+
+- [首页](./08-modeling/README.md)
+- [BUS 建模参考](./08-modeling/bus-modeling-reference.md)

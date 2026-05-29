@@ -7,6 +7,7 @@
 | 你现在要做什么 | 直接入口 |
 | --- | --- |
 | 5 分钟快速建立判断力 | [BUS 在解决什么问题](./01-overview/problem-statement.md) |
+| 把 BUS 知识落成可仿真的系统模型 | [BUS 建模参考](./08-modeling/bus-modeling-reference.md) |
 | 5 分钟复习整套 BUS 主线 | [BUS 一页版总览](./07-reference/bus-one-page.md) |
 | 第一次系统学习 BUS | [学习路线图](./01-overview/learning-roadmap.md) |
 | 按你的目标选最短阅读路径 | [按目标学习 BUS](./01-overview/goal-oriented-navigation.md) |
@@ -140,6 +141,7 @@
 - [Timeout、Fault 与 Hang 定位框架](./05-performance-debug/timeout-fault-hang-debug-framework.md)
 - [AXI Waveform Debug 方法](./05-performance-debug/axi-waveform-debug-method.md)
 - [BUS 设计检查清单](./07-reference/bus-design-checklist.md)
+- [BUS 建模参考](./08-modeling/bus-modeling-reference.md)
 
 ### 案例
 
@@ -177,4 +179,4 @@
 - 每页尽量只回答一个核心问题
 - 优先区分 `transaction / protocol / interconnect / integration / observability`
 - 优先保留能转化成工程判断和系统分析的内容
-- 与 [DMA Wiki](../../DMA/wiki/README.md)、[NOC Wiki](../../NOC/wiki/README.md)、[RAM Wiki](../../RAM/wiki/README.md) 保持可互相链接的术语体系
+- 与 [DMA Wiki](../../DMA/wiki/README.md)、[NOC Wiki](../../NOC/wiki/README.md)、[RAM Wiki](../../RAM/wiki/01-overview/README.md) 保持可互相链接的术语体系

@@ -72,7 +72,134 @@ VC allocator 可能让 A 和 B 成功，C 失败。此时：
 
 那么参与 switch allocation 的候选上界接近 `P * V`。如果是 5-port、4-VC router，就是 20 个候选者；8-port、8-VC 就到 64 个量级。再加上每个 output port 都要独立仲裁，逻辑深度和布线都不轻。
 
-这也是很多论文在讲“加 VC 提升吞吐”时容易淡化的代价：VC 不是白来的，它会把 allocator 做大，而 allocator 是频率敏感路径。
+这也是很多论文在讲"加 VC 提升吞吐"时容易淡化的代价：VC 不是白来的，它会把 allocator 做大，而 allocator 是频率敏感路径。
+
+## 三种主流 allocator 的参数化模型
+
+第一版 simulator 必须能正交比较 separable / iSLIP / wavefront 三种方案。三者的延迟、复杂度、效率有显著差异，下面给出可直接代入 `R` 公式的参数化形式。
+
+### 通用符号
+
+| 符号 | 含义 |
+|------|------|
+| `P` | router radix（输入/输出端口数） |
+| `V` | 每端口 VC 数 |
+| `N = P · V` | 总候选数 |
+| `t_pipe` | allocator 占用的流水线拍数（决定关键路径深度） |
+| `η` | allocator 效率 = `成功授予数 / 期望最大匹配数`，取值 [0, 1] |
+| `K` | 同一输出端口/输出 VC 的竞争者期望数 |
+
+`η` 是把 allocator 抽象成"匹配问题求解器"后的效率系数：完美匹配 `η = 1`，简单 round-robin 在高负载下可能 `η = 0.5~0.7`。它直接进入 [`credit-based-flow-control.md` 的 R 公式](./credit-based-flow-control.md#downstream_buffer_residency)：
+
+```text
+E[VA_contention] = (K_VA - 1) / (2 · η_VA)
+E[SA_contention] = (K_SA - 1) / (2 · η_SA)
+```
+
+### 1. Separable Allocator
+
+把"N → M 匹配"拆成两级独立仲裁：每个 input 先选一个 request、每个 output 再从被请求自己的 input 里选一个 grant。两级都用并行 round-robin / fixed-priority。
+
+```text
+separable:
+  t_pipe          = 1 cycle (input 端 + output 端串联在同一拍内)
+  gate_depth      ∝ log(P) + log(V)
+  η_VA            ≈ 0.6 ~ 0.75 (依赖请求分布均匀性)
+  η_SA            ≈ 0.65 ~ 0.80
+```
+
+特点：
+- 实现最简单，时序友好，频率可推到 1 GHz+
+- 局部最优不等于全局最优：input0 的本地胜者可能输给别人，input0 上原本可以让另一个 VC 胜出去往不同 output，但本拍机会被浪费
+- η 偏低的根因就是上面这种"丢失的并行匹配机会"
+
+适用：第一版、对面积/频率敏感、deterministic 工作负载。
+
+### 2. iSLIP Allocator
+
+separable 的迭代加强版。每轮里 input 选、output 选、然后用本轮 grant 信息更新优先级；多轮迭代收敛到接近最大匹配。
+
+```text
+iSLIP:
+  t_pipe          = I cycles (典型 I = 1~3 iteration)
+  gate_depth      ∝ I · (log(P) + log(V))
+  η_VA            ≈ 1 - 0.3^I             # 例如 I=2 → η≈0.91, I=3 → η≈0.97
+  η_SA            ≈ 1 - 0.3^I
+```
+
+特点：
+- 多迭代意味着 t_pipe 增长，会直接拉长 R
+- 但 η 显著上升，单 cycle 吞吐更高
+- 在 P · V 很大（高 radix + 多 VC）时收益最大
+
+关键 trade-off：
+
+```text
+R_with_iSLIP = R_fixed + I + E[contention_with_η(I)]
+            ≈ R_fixed + I + (K-1)/(2·(1-0.3^I))
+```
+
+`I=2` 通常是甜点：t_pipe 多 1 拍，但 η 从 0.7 升到 0.91，contention 项的下降通常 > 1 拍。
+
+适用：高 radix（≥ 6 port）、高 VC（≥ 4）、吞吐敏感。
+
+### 3. Wavefront Allocator
+
+把 P×V 候选排成对角线波前，沿对角线串行扫描，每个对角线上的所有候选者并行授予；扫完一遍即得全局最大匹配。
+
+```text
+wavefront:
+  t_pipe          = 1 cycle (但关键路径串行 P+V 级门)
+  gate_depth      ∝ P + V                  # 注意是 +，不是 log
+  η_VA            ≈ 0.95 ~ 1.0             # 接近最优匹配
+  η_SA            ≈ 0.95 ~ 1.0
+```
+
+特点：
+- 1 拍内得全局最优匹配，对低频率系统很有吸引力
+- 关键路径长度 ∝ P + V，时序压力大；P=8 + V=8 = 16 级门通常顶到 600~800 MHz
+- 公平性需要额外的优先级旋转机制配合
+
+适用：对吞吐和公平性要求都很高、但频率不顶天的场景。
+
+### 三者对比表
+
+| 维度 | Separable | iSLIP (I=2) | Wavefront |
+|------|-----------|-------------|-----------|
+| `t_pipe` | 1 | 2 | 1 |
+| 关键路径 | log(P) + log(V) | 2·(log P + log V) | P + V |
+| `η`（典型）| 0.7 | 0.91 | 0.97 |
+| 实现复杂度 | 低 | 中 | 高 |
+| 频率上限（5-port, 4-VC, 14nm）| ~1.5 GHz | ~1.2 GHz | ~800 MHz |
+| 频率上限（8-port, 8-VC）| ~1.0 GHz | ~800 MHz | ~500 MHz |
+| 适合 P·V | ≤ 20 | 20 ~ 64 | 任意，但受频率约束 |
+
+### 把 allocator 模型代回 R
+
+用上面参数把 [credit-based-flow-control](./credit-based-flow-control.md#典型数值例子) 里的"短线 R≈8"和"长线 R≈12.5"重算一遍：
+
+5-port 4-VC、`K=2`：
+
+| Allocator | t_pipe | E[VA+SA contention] | R (短线) |
+|-----------|--------|---------------------|----------|
+| Separable | 1 | `(1)/(2·0.7) · 2 = 1.43` | 1+3+1.43+2 = **7.4** |
+| iSLIP I=2 | 2 | `(1)/(2·0.91) · 2 = 1.10` | 1+3+1.10+2 + (extra pipe) ≈ **8.1** |
+| Wavefront | 1 | `(1)/(2·0.97) · 2 = 1.03` | 1+3+1.03+2 = **7.0** |
+
+8-port 8-VC、`K=4`：
+
+| Allocator | t_pipe | E[VA+SA contention] | R |
+|-----------|--------|-------------------|---|
+| Separable | 1 | `(3)/(2·0.7) · 2 = 4.3` | 1+3+4.3+2 = **10.3** |
+| iSLIP I=2 | 2 | `(3)/(2·0.91) · 2 = 3.3` | 1+3+3.3+2 + 1 = **10.3** |
+| Wavefront | 1 | `(3)/(2·0.97) · 2 = 3.1` | 1+3+3.1+2 = **9.1** |
+
+读法：
+- 低竞争（`K=2`）下 separable 接近最优，iSLIP 多花的拍数不值
+- 高竞争（`K=4`）下三者 R 差异 ~10%，但**频率上限差异 2 倍**，按 `R / frequency` 算实际墙钟时间，separable 反而胜出
+- 这就是为什么大型 router 仍常用 separable + 智能 priority rotation 而非全 wavefront
+
+**结论：allocator 的"最优"是 R × cycle_time 的联合最小**，不是 R 或 frequency 单独最小。架构探索时必须把 frequency 作为 sweep 维度，否则 iSLIP / wavefront 会被错误地推荐。
 
 ## 常见两级 switch allocation
 
@@ -144,4 +271,18 @@ switch_allocate(candidate_flits[], output_port) -> winner | NONE
 - `downstream_vc_free_bitmap`
 - `per_output_requesters`
 
-如果只关心 steady-state 吞吐，可以把 allocator 策略近似成概率服务模型；如果关心 stall attribution、tail latency 或 age-based fairness，就必须逐拍模拟仲裁结果，因为 `VC_UNAVAILABLE` 与 `SWITCH_CONFLICT` 在系统归因上不是一回事。
+allocator 参数化建议落成独立的配置对象，与 router 其他参数解耦：
+
+```text
+AllocatorConfig {
+  type            := SEPARABLE | iSLIP | WAVEFRONT
+  t_pipe          # 1..3
+  iterations      # iSLIP only
+  eta_VA; eta_SA  # 模型层效率系数，由 type 派生
+  priority_rotation := ROUND_ROBIN | OLDEST_FIRST | CLASS_WEIGHTED
+}
+```
+
+如果只关心 steady-state 吞吐，可以把 allocator 策略近似成概率服务模型（用 `η` 直接缩放 contention 项）；如果关心 stall attribution、tail latency 或 age-based fairness，就必须逐拍模拟仲裁结果——因为 `VC_UNAVAILABLE` 与 `SWITCH_CONFLICT` 在系统归因上不是一回事，且 `η` 折叠会把 tail latency 整体压低。
+
+最重要的一条建模约束：**架构探索 sweep 必须把 `(allocator_type, frequency_GHz)` 作为联合维度**。单独 sweep `allocator_type` 会让 iSLIP/wavefront 看上去更优，但它们的 `frequency` 折扣往往把收益抵消。详见上文 [allocator 对比表](#三者对比表) 的频率列。

@@ -2,7 +2,7 @@
 
 上级：[04 微架构与系统集成](./README.md)
 
-相关：[DMA Wiki 首页](../../../DMA/wiki/README.md)、[RAM Wiki 首页](../../../RAM/wiki/README.md)、[AXI 与 DMA 的系统接口](./axi-dma-system-interface.md)、[Doorbell、Completion 与 Interrupt Flow](./doorbell-completion-interrupt-flow.md)、[MMIO、Cache 与 Interrupt 视角](./mmio-cache-interrupt-view.md)
+相关：[DMA Wiki 首页](../../../DMA/wiki/README.md)、[RAM Wiki 首页](../../../RAM/wiki/01-overview/README.md)、[AXI 与 DMA 的系统接口](./axi-dma-system-interface.md)、[Doorbell、Completion 与 Interrupt Flow](./doorbell-completion-interrupt-flow.md)、[MMIO、Cache 与 Interrupt 视角](./mmio-cache-interrupt-view.md)
 
 ## 这页在回答什么问题
 
