@@ -10,15 +10,15 @@
 
 ## 协议选择是在选择复杂度边界
 
-APB、AHB/AHB-Lite、AXI 都属于 ARM AMBA 体系里的片上总线协议族，但它们不是同一把尺子上的“低端、中端、高端”。更准确的理解是：它们把 transaction 生命周期拆开的程度不同，因此适合的系统角色不同。
+APB、AHB/AHB-Lite、AXI 都属于 ARM AMBA 体系里的片上总线协议族，但它们不是同一把尺子上的”低端、中端、高端”——更像是**自行车、公交车和高速公路**，各有各的最佳场景。更准确的理解是：它们把 transaction 生命周期拆开的程度不同，因此适合的系统角色不同。
 
-APB 把一次访问压成低复杂度的寄存器访问流程。它牺牲 burst、pipeline 和多 outstanding 能力，换来简单外设接口、低面积、低功耗和容易验证的控制路径。
+**APB 就像自行车**——把一次访问压成最简单的流程：骑上去，踩踏板，到了。它牺牲 burst、pipeline 和多 outstanding 能力，换来简单外设接口、低面积、低功耗和容易验证的控制路径。小区里骑自行车最方便，不需要考驾照。
 
-AHB/AHB-Lite 把地址 phase 和 data phase 做成流水关系。它比 APB 更适合 SRAM、ROM、简单 DMA 和 MCU 主干访问，但仍保留更强的顺序性和较低实现复杂度。AHB-Lite 去掉多 master 总线仲裁相关复杂度，更适合单 master 或由外部 fabric 已经完成仲裁的子系统。
+**AHB/AHB-Lite 就像公交车**——有固定路线和站点（地址 phase 和 data phase 流水），比骑自行车运力大、更适合通勤（SRAM、ROM、MCU 主干访问），但不像高速公路那样需要复杂的交通管理。AHB-Lite 去掉多 master 总线仲裁（不需要多路公交争抢同一站台），更适合单 master 或由外部 fabric 已经完成仲裁的子系统。
 
-AXI 把读地址、写地址、写数据、读数据、写响应拆成独立 channel，并引入 ID、outstanding、burst 和更丰富属性。它适合 CPU、DMA、accelerator、DDR controller 等高吞吐路径，但代价是更多 buffer、关联状态、ordering 规则、bridge 逻辑和验证状态空间。
+**AXI 就像多车道高速公路**——把读地址、写地址、写数据、读数据、写响应拆成独立车道，引入车牌识别（ID）、同时在途管理（outstanding）、车队编组（burst）。它适合大流量（CPU、DMA、accelerator、DDR controller），但代价是更多基础设施（buffer、关联状态、ordering 规则、bridge 逻辑）和更复杂的交规（验证状态空间）。
 
-所以协议选择不是“谁先进”，而是决定这条路径愿意为多少并发、多少 latency hiding、多少软件可见语义付出多少实现成本。
+所以协议选择不是”谁先进”，而是决定这条路段愿意为多少并发、多少 latency hiding、多少软件可见语义付出多少建设成本。
 
 ## APB 服务低速寄存器语义
 
@@ -52,7 +52,7 @@ AXI 的价值来自更彻底的 transaction 拆分。读和写可以走不同 ch
 
 ## 三者并存是分层设计结果
 
-一个 SoC 内部可以把协议分层写成这个构造示例：
+就像一座城市同时需要高速公路、公交线路和人行道，一个 SoC 内部也需要多种协议各司其职：
 
 | 系统路径 | 更常见协议 | 主约束 | 为什么不用更复杂协议 |
 |---|---|---|---|
@@ -64,7 +64,7 @@ AXI 的价值来自更彻底的 transaction 拆分。读和写可以走不同 ch
 
 这种分层的关键不是“AXI 负责高端，APB 负责低端”，而是让每段路径只承担自己需要的事务能力。高性能主干使用 AXI，到了低速外设前用 bridge 转成 APB；MCU 或局部子系统使用 AHB-Lite，能减少状态机和验证成本；固定数据通路甚至可以绕开通用 BUS，使用专线。
 
-协议桥的存在也说明三者不是孤立选择。AXI-to-APB bridge 把复杂主干事务收束成简单外设访问；AHB-to-APB bridge 把 MCU 主干和寄存器子树隔离；AXI-to-AHB bridge 可以在高性能 fabric 和低复杂度子系统之间建立边界。每个 bridge 都会引入 latency、buffer、ordering 和 error mapping，后续会在 [分层总线与协议分工](./hierarchical-bus-and-protocol-roles.md) 展开。
+协议桥的存在也说明三者不是孤立选择——就像高速公路和城市道路之间需要匝道。AXI-to-APB bridge 是从高速下到小区的匝道；AHB-to-APB bridge 是公交总站到社区小巴的换乘点；AXI-to-AHB bridge 在高性能 fabric 和低复杂度子系统之间建立边界。每个匝道都会引入 latency、buffer、ordering 和 error mapping，后续会在 [分层总线与协议分工](./hierarchical-bus-and-protocol-roles.md) 展开。
 
 ## 对比要看事务能力
 

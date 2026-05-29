@@ -10,9 +10,11 @@
 
 ## Narrow transfer 描述的是 beat 粒度
 
-在 AXI 里，`AxSIZE` 描述每个 data beat 传输多少 byte。如果 `AxSIZE` 对应的传输大小小于数据总线物理宽度，这个 beat 就是 narrow transfer。例如 128-bit data path 物理上有 16 byte lane，`AxSIZE=2` 表示每个 beat 传 4 byte，这就是窄于总线宽度的访问。
+想象一条 8 车道的高速公路（128-bit data path），现在只有一辆摩托车（4 byte 数据）要通过。这就是 narrow transfer——**货物比车道窄得多**。
 
-Narrow transfer 的重点不是 payload 小，而是“每个 beat 的有效传输粒度小于总线宽度”。这会迫使系统回答两个问题：这几个 byte 位于哪些 lane，未被访问的 lane 应该如何保持不变。地址低位、`AxSIZE`、burst 类型和 beat index 会共同决定 lane 选择。
+在 AXI 里，`AxSIZE` 描述每个 data beat 传输多少 byte。如果传输大小小于数据总线物理宽度，这个 beat 就是 narrow transfer。例如 128-bit data path 有 16 个 byte lane，但 `AxSIZE=2` 表示每个 beat 只传 4 byte。
+
+Narrow transfer 的重点不是”货少”，而是”**摩托车占哪条车道**”。系统必须回答：这 4 byte 走的是第 1-4 车道还是第 5-8 车道？没有货物的车道怎么处理？地址低位、`AxSIZE`、burst 类型和 beat index 会共同决定车道选择。
 
 一个 128-bit data path 上的构造例子：
 
@@ -27,7 +29,7 @@ Narrow transfer 的重点不是 payload 小，而是“每个 beat 的有效传�
 
 ## WSTRB 描述的是写 lane 有效性
 
-`WSTRB` 是写数据 channel 上的 byte strobe。每个 bit 对应一个 byte lane，表示当前 `W` beat 中哪个 byte lane 要被写入。`WSTRB=0` 的 lane 不应该更新目标存储或寄存器。
+`WSTRB` 就像**货物装卸单上的勾选框**——8 个车道，哪几个车道上有实际货物需要卸下来，在单子上打勾。没打勾的车道（`WSTRB=0`），目标仓库不应该动那个位置的存货。
 
 Narrow transfer 和 WSTRB 有关联，但不是同一件事：
 
@@ -55,9 +57,9 @@ Narrow transfer 和 WSTRB 有关联，但不是同一件事：
 
 ## MMIO 副作用让局部写变得敏感
 
-普通 memory 的 byte lane 更新相对容易理解：没有打开的 lane 保持原值，打开的 lane 被写入。MMIO 寄存器则不一定能按这个模型处理。某些 bit 写 1 会清状态，某些字段写入会触发动作，某些寄存器读出会清除 pending 状态，某些保留位要求写 0。
+普通仓库（memory）很好理解：你说往第 3 格放货，就放第 3 格，其他格不动。但 MMIO 寄存器更像一个**充满机关的控制面板**——有些按钮按一下就会触发动作，有些开关读一下就会自动复位，有些保留位碰都不能碰。
 
-这会让“宽写再屏蔽”变得危险。若 adapter 为了写 1 byte 而对整个 32-bit 或 128-bit 寄存器做 read-modify-write，读动作本身可能触发 read-to-clear；若错误 lane 被打开，保留位或 control bit 可能被误写；若 slave 忽略 WSTRB，把整字写入，软件的小字段更新会扩大成整个寄存器更新。
+这会让”先读出来、改一部分、再写回去”（read-modify-write）变得危险——就像为了按面板上的一个按钮，你先把整个面板拍了张照，改了一个像素，然后把整张照片印回面板上。读的动作可能已经触发了 read-to-clear（你拍照时有些灯灭了）；如果你不小心碰到了保留按钮，可能触发意想不到的动作；如果 slave 忽略 WSTRB，你本来只想改一个字段，结果整个面板都被重写了。
 
 因此，MMIO slave 必须明确自己接受哪些访问粒度。只接受 32-bit 对齐写的寄存器，不应该默默吞掉 8-bit narrow write；支持 byte write 的寄存器，必须让 WSTRB 和副作用规则一致。bridge 也要决定非法粒度是返回错误、拆分、还是转成受控的下游访问。
 

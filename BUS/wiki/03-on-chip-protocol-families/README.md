@@ -6,9 +6,9 @@
 
 ## 这一章在回答什么问题
 
-当 02 章已经把连接关系、transaction 生命周期、共享约束和时序粒度讲清楚之后，03 章回答：这些抽象如何落到具体片上协议族里，为什么不同路径会选择 AXI、AHB-Lite、APB、TileLink 或 coherent/non-coherent 能力。
+02 章讲的是交通系统的基本原理——什么是路网、什么是出行、什么是交通规则。03 章要回答的是：市面上具体有哪几种交通系统（AXI、AHB-Lite、APB、TileLink），它们各自的设计哲学是什么，为什么不同的路段会选择不同的系统。
 
-本章不把协议规范逐信号重写，而是把协议当成系统设计选择：它支持多少并发，如何拆分事务，如何返回 completion，如何处理 burst、byte lane、错误和 cache 可见性，以及这些能力要付出多少实现和验证成本。
+本章不是把每种协议的信号表逐条翻译，而是把协议当成**设计选择题**：它支持多少并发，如何拆分事务，如何返回 completion，如何处理 burst、byte lane、错误和 cache 可见性，以及这些能力要付出多少实现和验证成本。就像选车不是比谁更贵，而是看你的路况、载客量和预算。
 
 ## 本章阅读顺序
 
@@ -27,7 +27,7 @@
 
 ## 本章核心判断
 
-APB、AHB-Lite 和 AXI 的差异，不是“慢、中、快”的等级差异，而是 transaction 生命周期拆分程度不同。APB 把寄存器访问压成低复杂度流程；AHB-Lite 用 address/data phase 流水支撑 MCU 和局部子系统；AXI 用五通道、ID、outstanding、burst 和 response matching 支撑高并发路径。
+APB、AHB-Lite 和 AXI 的差异，不是”经济舱、商务舱、头等舱”的等级差异，而是**拆解动作的精细程度不同**——就像路边摊老板一个人搞定点单做菜上菜，快餐店把点单和取餐分开，大餐厅把预订、点菜、厨房、上菜、结账全部独立成不同工位。APB 把寄存器访问压成低复杂度流程；AHB-Lite 用 address/data phase 流水支撑 MCU 和局部子系统；AXI 用五通道、ID、outstanding、burst 和 response matching 支撑高并发路径。
 
 AXI 的强大来自解耦，也复杂在解耦。`VALID && READY` 只说明当前 channel 当前 beat 完成交付，不等于整笔 transaction 闭合。写事务要靠 `AW/W/B` 重新闭合，读事务要靠 `AR/R` 和 last beat 闭合；ID 和 outstanding 让多个事务同时在飞，也要求实现维护匹配和释放状态。
 

@@ -10,9 +10,9 @@ TileLink 相比 AXI/AHB/APB 这类更常见的 AMBA 协议族，提供了什么�
 
 ## TileLink 强调参数化互连框架
 
-TileLink 不只是一个固定信号接口，而是一套面向可组合 SoC 的事务互连框架。它把不同复杂度的访问能力放进同一协议族里，让简单外设、uncached memory access、cached memory access 和 coherence 相关路径可以沿同一套生成流程被裁剪和组合。
+如果 AXI 是**标准化的乐高积木**——形状固定、种类丰富、全世界的乐高都能互拼，那 TileLink 更像 **3D 打印的模块化组件**——你可以根据需要定制每个零件的参数，但需要在同一个打印生态里才能无缝组合。
 
-这种设计和 AXI 的出发点不同。AXI 更像工业 IP 生态里的通用高性能接口：规范稳定、第三方 IP 多、bridge 和 verification IP 丰富。TileLink 更贴近生成式 SoC：节点参数、支持能力、地址范围、source ID、sink ID、manager/client 属性都可以随系统结构生成。
+TileLink 不只是一个固定信号接口，而是一套面向可组合 SoC 的事务互连框架。它把不同复杂度的访问能力放进同一协议族里，让简单外设、uncached memory access 和 coherence 相关路径可以沿同一套生成流程被裁剪和组合。
 
 所以比较 TileLink 和 AXI，不应该只问“谁更快”。更有效的问题是：系统是在拼接成熟商用 IP，还是在生成一套可参数化 fabric；互连需要的是标准生态兼容，还是节点能力可组合和一致性语义可裁剪。
 

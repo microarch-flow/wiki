@@ -6,7 +6,7 @@
 
 ## 这页在回答什么问题
 
-DMA 接到 AXI 上后，不只是“多了一个 AXI master”。一个 DMA engine 同时有控制面、descriptor fetch、data read、data write、writeback/completion、interrupt/status 等多条路径。它们可能共用 AXI port，也可能拆成多个 AXI master/slave interface；拆分方式会直接决定吞吐、回压、错误归因和软件可见完成时间。
+DMA 接到 AXI 上不只是”多了一辆车上高速”。它更像一辆**多功能工程车**——同时要：听指挥部调度（控制面）、去工地取图纸（descriptor fetch）、搬运大量建材（data read/write）、回来交工作报告（writeback/completion）、给指挥部发完工通知（interrupt/status）。这些任务可能共用一条路（一个 AXI port），也可能走不同的专用车道（多个 AXI master/slave interface）；怎么分车道直接决定会不会互相堵。
 
 本页关注 DMA 与 AXI 系统接口的建模边界：哪些路径是 CPU 控制 DMA，哪些路径是 DMA 访问 memory，哪些路径负责完成通知，哪些路径会经过 IOMMU/SMMU、cache/coherent fabric、DDR controller 或 APB bridge。
 

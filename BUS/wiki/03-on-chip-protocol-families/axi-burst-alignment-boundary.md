@@ -10,7 +10,7 @@
 
 ## Burst 把多个 beat 绑定成一笔事务
 
-AXI burst 用一次地址请求描述多个 data beat。地址 channel 里会给出起始地址、burst length、每 beat 大小和 burst 类型；数据 channel 逐 beat 传 payload，并用 last 标记结束。这样可以摊薄地址开销，也让 interconnect、slave 和 memory controller 提前知道后续数据规模。
+Burst 就像**团购订单**——你下一次单，告诉快递公司"从 A 地址开始，连续取 8 个包裹，每个包裹 X 大小"。快递公司只需要排一次队、做一次路线规划，然后连续取完所有包裹。比起每个包裹单独下单，这大大摊薄了地址开销，也让系统提前知道后续数据规模。
 
 三个字段是理解 burst 的入口：
 
@@ -44,7 +44,7 @@ AXI burst 用一次地址请求描述多个 data beat。地址 channel 里会给
 
 ## 边界限制保护 decode 和下游语义
 
-AXI burst 不能跨越协议规定的 4KB address boundary。这个规则的目的不是性能优化，而是让一次 burst 不跨越可能不同 decode 目标、保护属性、page 属性或 slave 归属的区域。若一个 burst 能跨过 4KB 边界，interconnect 就可能在同一笔事务中途改变目标或属性，response 和 ordering 语义都会变复杂。
+AXI burst 不能跨越 4KB 地址边界——就像一个快递订单**不能跨越两个不同的行政区**。这个规则的目的不是性能优化，而是保证一笔订单从头到尾都在同一个管辖范围内处理。如果一个 burst 跨过 4KB 边界，就像一个快递单横跨两个城市——中途换快递公司、换配送规则、换投诉渠道，response 和 ordering 语义都会变得极其复杂。
 
 判断 4KB 边界可以用这个口径：
 

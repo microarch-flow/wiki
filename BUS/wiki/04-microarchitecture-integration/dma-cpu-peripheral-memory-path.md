@@ -6,13 +6,13 @@
 
 ## 这页在回答什么问题
 
-BUS 不能孤立成“某个协议接口”来看。一次真实系统行为会同时经过 CPU 控制路径、DMA 取任务路径、数据搬运路径、completion/writeback 路径、interrupt/status 路径，以及 debug/boot/低功耗路径。CPU、DMA、外设和 memory 之间的关系，决定了 BUS 设计是否能支撑软件流程闭环。
+前面的文章像是**分别介绍了城市里的每种基础设施**——道路、桥梁、红绿灯、消防通道、快递站、停车场。这页要做的是**把它们放回一张完整的城市地图里**，看一个真实的业务流程（比如”网购下单到签收”）如何同时经过所有这些设施。
 
-这页作为第 04 章的系统路径收束：把前面讨论的 bridge、MMIO、IOMMU、doorbell、DMA、DDR controller、return path 放回同一个端到端流程里。
+一次真实系统行为会同时经过 CPU 控制路径（指挥中心下达指令）、DMA 取任务路径（快递员取件）、数据搬运路径（运输）、completion/writeback 路径（签收回执）、interrupt/status 路径（通知系统），以及 debug/boot/低功耗路径（消防和保安系统）。
 
 ## 控制路径：CPU 配置设备
 
-控制路径的目标是让软件能配置、启动、查询和恢复硬件。它的流量小，但语义强。
+控制路径就像**指挥中心给前线下达命令**——流量很小（不用搬运物资），但每一条命令都必须准确、按序、有回执。
 
 ```text
 CPU
@@ -32,7 +32,7 @@ CPU
 
 ## 数据路径：DMA 与 Memory 交换数据
 
-数据路径的目标是高吞吐、可并发和可恢复。DMA 作为 master 发起 read/write，目标可能是 DDR、SRAM、外设 FIFO、accelerator local memory 或另一片互连。
+数据路径就像**物流公司的运输主干线**——不再是命令和回执，而是真正的大批量货物搬运。DMA 作为运输车队的调度员发起 read/write，目标可能是大仓库（DDR）、本地暂存区（SRAM）、工厂车间（外设 FIFO/accelerator）或另一个配送中心（另一片互连）。
 
 ```text
 DMA master

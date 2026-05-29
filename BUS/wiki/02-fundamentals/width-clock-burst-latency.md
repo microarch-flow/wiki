@@ -10,25 +10,27 @@
 
 ## 原始带宽只是上限
 
-位宽和时钟频率给出的是原始带宽上限：
+位宽和时钟频率给出的是**理论最大速度**——就像高速公路的设计通行能力：
 
 `raw_bandwidth = data_width_bytes * clock_frequency`
 
-例如 64-bit data path 在 500 MHz 下，每个 cycle 最多传 8 byte，原始带宽是 4 GB/s；128-bit data path 在 1 GHz 下，每个 cycle 最多传 16 byte，原始带宽是 16 GB/s。这个数字只说明“数据通路在每个 cycle 都传满有效 payload”时的上限，不说明系统能持续达到这个上限。
+一条 4 车道高速（64-bit），限速 100km/h（500 MHz），理论上每小时能通过 X 辆车（4 GB/s）。8 车道（128-bit）限速 200km/h（1 GHz），理论通行能力翻四倍（16 GB/s）。但这个数字只说明”每辆车都跑满速、车道永远不空”时的上限——现实中不可能。
 
-有效带宽还要扣掉事务固定开销和空窗：地址 phase、response phase、仲裁等待、backpressure、CDC 同步、width adapter 拆分或合并、burst 边界拆分、slave service gap。更准确的口径是：
+有效带宽还要扣掉**各种”不跑车”的时间**：进站检票（地址 phase）、回程确认（response phase）、等红灯（仲裁等待）、前车刹车（backpressure）、过收费站（CDC 同步）、车道变窄（width adapter）、分流合流（burst 边界拆分）。更准确的口径是：
 
 `effective_bandwidth = payload_bytes / total_elapsed_time`
 
-这里的 `total_elapsed_time` 不是 data beat 数，而是从请求获得服务机会到 completion 被消费之间的完整时间窗口。上一页讨论的仲裁、顺序性和 backpressure，都会把这个窗口拉长。
+这里的 `total_elapsed_time` 不是”车在路上跑”的时间，而是从”车想上高速”到”车到达目的地并停好”的完整时间。上一页讨论的仲裁、顺序性和 backpressure，都会把这个窗口拉长。
 
-这个公式描述的是单笔或单组事务的有效速率，适合解释“这次访问为什么慢”。长期吞吐要换成观测窗口口径：`sustained_bandwidth = sum(payload_bytes) / observation_wall_time`。两者会给出不同答案：单笔速率会被排队延迟显著拉低，长期吞吐则更能反映系统在稳定流量下的持续服务能力。
+这个公式描述的是单程旅行效率，适合解释”这趟为什么慢”。长期吞吐要看整条高速一天能通过多少车：`sustained_bandwidth = sum(payload_bytes) / observation_wall_time`。两者会给出不同答案：单程可能因为堵车很慢，但一天下来高速总通行量可能还不错。
 
-容易误解：位宽乘频率就是系统带宽。实际上，位宽乘频率只是数据相位的物理上限；BUS 的有效吞吐由 payload 时间占总时间的比例决定。
+容易误解：车道数乘限速就是实际通行能力。实际上，位宽乘频率只是物理上限；有效吞吐由”车在跑”的时间占总时间的比例决定。
 
 ## Burst 在摊薄固定开销
 
-Burst 的价值不是让每个 beat 更快，而是把一次地址和调度开销分摊到多个连续 data beat 上。一次 1-beat 访问要付出一次 address、一次 arbitration、一次 response；一次 8-beat burst 仍然只需要一次 request header 和一次事务级 completion，数据阶段却有 8 个 beat。对读路径来说，状态可以随 data beat 返回，但整笔 burst 的闭环要等最后一个 beat 和对应状态都被消费后才成立。
+Burst 的价值就像**拼车**——不是让车跑更快，而是把"叫车、上车、下车"这些固定开销分摊给更多乘客。一个人打车，固定开销（等车 + 上下车）可能比在路上的时间还长；8 个人拼一辆车，同样的固定开销被 8 个人分摊，人均效率大幅提升。
+
+一次 1-beat 访问要付出一次 address（叫车）、一次 arbitration（等车）、一次 response（下车确认）；一次 8-beat burst 仍然只需要叫一次车和确认一次，但车上坐了 8 个人（8 个 data beat）。
 
 下面用一个简化模型说明固定开销如何被摊薄。假设一次访问有 2 cycle 地址/仲裁开销、1 cycle response 开销，数据通路每 cycle 接收 1 beat，且没有额外 backpressure：
 
@@ -40,15 +42,15 @@ Burst 的价值不是让每个 beat 更快，而是把一次地址和调度开�
 
 这张表展示的是 burst 的收益来源：固定开销没有消失，只是被更多 payload 平摊。系统里存在长 memory latency 时，对连续、对齐、可合并的访问，burst 还可以改善 memory controller 调度和 cache-line 访问效率；但它同时增加单笔 transaction 的占路时间、buffer 占用和错误定位复杂度。
 
-Burst 长度存在明确权衡。短 burst 对控制访问、小包流量、低延迟请求更友好；长 burst 对 DMA、frame buffer、NPU tensor 搬运和连续 memory copy 更高效。把所有流量都拉成长 burst，会让短请求排队更久，也会让 backpressure 一次影响更多 beat。AXI 的对齐、4KB 边界和拆分规则会在 [AXI Burst、对齐与边界](../03-on-chip-protocol-families/axi-burst-alignment-boundary.md) 中展开。
+Burst 长度存在明确权衡——就像拼车人数有个甜点。短 burst（2-3 人拼车）对短途、灵活需求更友好；长 burst（坐满一辆大巴）对长途大批量搬运（DMA、frame buffer、NPU tensor）更高效。但如果强制所有人都等大巴坐满才发车，只想跑两站路的人（MMIO 短请求）就要等很久，而且大巴一旦堵在路上（backpressure），影响的乘客也更多。
 
-容易误解：burst 越长越高效。实际上，长 burst 只是在特定连续流量下提高 payload 占比；在共享端口和混合负载下，它会把吞吐收益换成更高尾延迟和更长资源占用。
+容易误解：大巴越大越好（burst 越长越高效）。实际上，长 burst 只是在大批量连续流量下提高载客率；在混合负载下，它会把吞吐收益换成更高尾延迟和更长资源占用——就像在早高峰混合通勤的城市里强制只开大巴，效率反而更差。
 
 ## 位宽是在换取并行数据量
 
-更宽的数据通路能让同样大小的 payload 用更少 beat 完成。64 byte cache line 在 64-bit 通路上需要 8 个 data beat，在 128-bit 通路上需要 4 个 data beat，在 256-bit 通路上需要 2 个 data beat。对大块连续搬运来说，增加位宽可以直接减少占用窗口。
+位宽就像**车道数**。同样搬 64 箱货物（64 byte cache line），单车道（64-bit）要跑 8 趟，双车道（128-bit）跑 4 趟，四车道（256-bit）只要 2 趟。对大批量搬运来说，加车道就是减少占路时间。
 
-位宽的代价也很直接：布线更多，mux 更大，跨层级穿越更困难，时序收敛更难，功耗更高。更宽的通路还会放大窄传输的浪费。如果一个 32-bit 寄存器读走 128-bit data path，payload 只使用 4 byte，剩下 byte lane 在这次访问里没有承载有效数据；写路径还需要 byte enable 或 strobe 指出哪些 lane 真正被更新。
+但加车道的代价也很直接：道路面积更大（布线更多），路口更宽更难管理（mux 更大），跨立交穿越更困难（时序收敛更难），养护成本更高（功耗更高）。而且宽路会放大**小车浪费**：如果一辆摩托车（32-bit 寄存器读）独占四车道高速，三条车道空着跑，payload 只用了 4 byte，其余 byte lane 在这次访问里纯粹浪费；写路径还需要 byte enable 或 strobe 指出"这四条车道里哪条上有实际货物"。
 
 宽窄适配会把位宽问题变成事务重组问题。宽 master 访问窄 slave 时，一个 beat 可能被拆成多个下游 beat；窄 master 访问宽 slave 时，bridge 可能选择单次窄写、合并 buffer，或直接用 byte strobe 写入。只有当目标不能直接支持 byte-lane 写入、或者必须保持更宽粒度的原子更新时，read-modify-write 才会进入路径。每一种选择都会改变 latency、response 组织和 backpressure 位置。
 
@@ -56,25 +58,25 @@ Burst 长度存在明确权衡。短 burst 对控制访问、小包流量、低�
 
 ## 时钟频率不是免费提升
 
-提高 BUS 时钟可以增加每秒 beat 数，但它会压缩每个 cycle 的组合逻辑预算。更高频率可能迫使互连加入 pipeline stage、register slice、skid buffer 或更深 FIFO；这些结构可以帮助时序收敛，却会增加请求到响应的固定延迟。
+提高频率就像**提高限速**——听起来车都跑更快了，但实际上要付出代价。限速从 100 提到 200km/h，路面要更平整（时序更紧），弯道要更缓（pipeline stage 更深），安全距离要更长（register slice、skid buffer），加油站要更大（更深 FIFO）。这些改造让车跑得更快了，但每辆车从进站到出站的**最低固定时间**反而增加了——因为安检、进出站流程变多了。
 
-跨时钟域时，吞吐和延迟都要重新计算。fast-to-slow 路径会受到慢时钟接收速率限制，持续流量最终由慢域消化能力决定；slow-to-fast 路径峰值看起来更宽裕，但异步 FIFO、同步器和 credit/ready 往返仍会带来固定 cycle 开销。频率比还会让 backpressure 呈现成突发：快域可以短时间填满 FIFO，随后被慢域长期消化能力限制。
+跨时钟域就像**从高速公路下到城市道路**。高速上跑 200km/h 的车流涌入限速 60km/h 的城区，持续通行量最终由城区消化能力决定（fast-to-slow）；反方向看，城区车流上高速时看起来宽裕，但上下匝道（异步 FIFO、同步器）仍有固定开销。而且频率比会造成"突发堵车"：高速上的车流可以短时间填满匝道入口，然后被城区慢慢消化。
 
-一个设计从 500 MHz 提到 1 GHz，如果为了收敛多插入 3 级 pipeline，原始带宽可能翻倍，但单笔寄存器读的固定往返延迟也会增加。对大块 DMA，这个延迟可以被 burst 和 outstanding 隐藏；对同步 MMIO poll loop，这个延迟会直接暴露给软件。
+一个设计从 500 MHz 提到 1 GHz，如果为了时序收敛多插入 3 级 pipeline，理论带宽翻倍，但每次"进出站"多了 3 个环节。对大货车车队（大块 DMA），这几个环节的开销可以被车队规模摊薄；对只是过站看一眼的摩托车（MMIO poll），每次都要多等 3 个环节，延迟直接暴露给软件。
 
 容易误解：升频只影响吞吐。实际上，升频会改变 pipeline 深度、CDC 结构和 ready/credit 往返时间；它既可能提高 sustained bandwidth，也可能提高单笔访问延迟。
 
 ## 延迟由固定时间和排队时间共同组成
 
-延迟不是一个单独参数。对一笔 transaction，更有用的拆分是：
+延迟不是一个数字，而是一张**旅行账单**：
 
 `latency = request_wait + header_time + data_service_time + queueing_time + response_time`
 
-`request_wait` 来自仲裁和上游 backpressure；`header_time` 来自地址/control 被接受；`data_service_time` 与 beat 数、位宽和 slave 服务速率有关；`queueing_time` 来自共享资源争用和顺序约束；`response_time` 决定 completion 何时被 master 看见。
+翻译成人话就是：**等红灯**（仲裁和 backpressure）+ **进站检票**（地址被接受）+ **在路上跑**（数据传输，取决于距离和车速）+ **排队等位**（共享资源争用和顺序约束）+ **签收确认送回**（response 返回）。
 
-Burst 会降低每 byte 固定开销，但增加单笔 transaction 的服务时间。位宽会减少 beat 数，但可能引入 width adapter 拆分、byte lane 浪费或更深 pipeline。升频会增加每秒服务窗口，但可能增加跨域和时序 pipeline 固定延迟。这些参数对“平均吞吐”和“单笔尾延迟”的影响方向并不总是一致。
+这里面的微妙之处在于：**这些参数经常互相矛盾**。拼车（burst）降低人均成本，但一车人要等齐了才走，单程时间更长。加车道（位宽）减少趟数，但可能需要过收费站换小路（width adapter）。提限速（升频）增加通行量，但多加了几个安检站（pipeline），单程固定延迟反而增加。
 
-因此，比较两种 BUS 配置时，不能只问“峰值带宽是多少”。更可靠的问题是：目标流量的请求大小分布是什么，连续访问比例有多高，短控制请求能否绕过长 burst，CDC/adapter 在哪里，response 是否会被保序规则挡住，backpressure 到达 master 前有多少 buffer。
+因此，比较两种 BUS 配置时，不能只问”这条路理论上能跑多快”。更可靠的问题是：实际车流是什么样的（请求大小分布），大卡车多还是小轿车多（连续访问比例），小轿车能不能绕过大卡车（短请求能否绕过长 burst），哪里有收费站（CDC/adapter 在哪），回程会不会被排队规则堵住（response 是否被保序挡住），出口前有多少缓冲车道（buffer 深度）。
 
 ## 一句话理解
 

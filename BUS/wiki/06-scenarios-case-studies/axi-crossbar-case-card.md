@@ -6,9 +6,9 @@
 
 ## 这页在回答什么问题
 
-AXI crossbar 的价值不是“看起来高级”，而是减少不相关流量之间的全局串行化。多个 master 同时访问不同 slave 时，crossbar 可以建立多条并行路径；多个 master 访问同一 slave 时，仍然要在目标端口仲裁。
+AXI crossbar 就像一个**多进多出的立交桥**——它的价值不是”看起来高级”，而是让去不同方向的车可以同时走，不用都挤在同一个红绿灯路口排队。但如果多辆车都要去同一个出口，在那个出口处还是得排队。
 
-这个案例卡用 Resource、Topology、Interaction、Capability 四个视角判断一个 AXI crossbar 是否设计得合适，以及它的风险应该在哪些观测点暴露。
+这个案例卡用四个视角——谁在共享什么（Resource）、路怎么连的（Topology）、车怎么走完全程（Interaction）、基础设施够不够（Capability）——判断一个 AXI crossbar 是否设计合理。
 
 ## 案例背景
 

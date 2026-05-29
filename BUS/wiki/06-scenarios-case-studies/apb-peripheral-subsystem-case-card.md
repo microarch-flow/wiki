@@ -6,7 +6,7 @@
 
 ## 这页在回答什么问题
 
-APB peripheral subsystem 的价值不是高吞吐，而是用低复杂度稳定承接大量低速控制访问。UART、SPI、I2C、GPIO、timer、watchdog、interrupt/status block 这类寄存器块，不依赖 AXI 的 burst、outstanding 和多 channel 能力，但需要清晰地址映射、稳定 MMIO 语义和可诊断错误路径。
+APB peripheral subsystem 就像大楼里的**物业管理柜台**——不需要多快（不是高吞吐），但要稳定、可靠、出了事能说清楚。UART、SPI、GPIO、timer、watchdog 这些外设就像门禁卡系统、空调控制、消防报警器，它们不需要 AXI 的高速多车道能力，但需要清晰地址映射、稳定的操作语义和出错时的明确反馈。
 
 这个案例卡关注：什么时候 APB 子系统是合适选择，bridge 如何改变上游 transaction，低速外设如何影响软件可见 latency，以及中断/status/clear 寄存器为什么要特别小心。
 

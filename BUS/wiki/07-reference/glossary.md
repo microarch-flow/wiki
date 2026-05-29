@@ -8,10 +8,10 @@
 
 | 术语 | 定义 | 建模关注点 |
 | --- | --- | --- |
-| BUS | 片上事务互连层，覆盖 shared bus、bus matrix、crossbar、分层互连和 bridge 组合 | 不按“一根线”建模，要按 transaction path 和 service point 建模 |
-| Fabric | 互连结构的宽泛统称，可包含 decoder、arbiter、buffer、bridge、adapter、crossbar | 需要拆出共享点、队列和返回路径 |
-| Master / Initiator | 发起读写请求的一侧，例如 CPU、DMA、debug master | 记录发起能力、ID、outstanding、QoS、属性 |
-| Slave / Target | 接收请求并返回数据、状态或错误的一侧，例如 SRAM、DDR controller、peripheral | 记录 service time、错误行为、backpressure 和 response |
+| BUS | 片上事务互连层（城市交通管理系统），覆盖 shared bus、bus matrix、crossbar、分层互连和 bridge 组合 | 不按”一根线”建模，要按 transaction path 和 service point 建模 |
+| Fabric | 互连结构的宽泛统称（交通基础设施的总称），可包含 decoder、arbiter、buffer、bridge、adapter、crossbar | 需要拆出共享点、队列和返回路径 |
+| Master / Initiator | 发起读写请求的一侧（寄件人），例如 CPU、DMA、debug master | 记录发起能力、ID、outstanding、QoS、属性 |
+| Slave / Target | 接收请求并返回数据、状态或错误的一侧（收件人/服务柜台），例如 SRAM、DDR controller、peripheral | 记录 service time、错误行为、backpressure 和 response |
 | Agent | 跨协议或系统语境下的参与者统称 | 用于不想绑定 master/slave 命名的场景 |
 
 本 wiki 正文优先使用 `master` 和 `slave`，在跨协议或更抽象语境里补充 `initiator` / `target`。
@@ -20,23 +20,23 @@
 
 | 术语 | 定义 | 建模关注点 |
 | --- | --- | --- |
-| Transaction | 一次从 request 到 response/error/completion 的完整访问行为 | 需要闭环到 slot release 或软件可见完成 |
-| Beat | 一次 data channel 上的有效传输单位 | 与 bus width、byte lane、burst length 相关 |
-| Burst | 多个 beat 组成的一组连续或规则访问 | 记录长度、大小、边界、拆分和合并 |
-| Outstanding | 已发出但尚未完成的事务数量 | 受 master slot、ID、slave slot、return path 限制 |
-| Ordering | 多个访问之间必须保持的可见顺序 | 区分同 ID、不同 ID、MMIO、barrier、completion 顺序 |
-| Completion | 硬件任务完成后对软件或上游可见的记录、状态或事件 | 不等同于协议级 response |
+| Transaction | 一次从 request 到 response/error/completion 的完整访问行为（一次快递从下单到签收） | 需要闭环到 slot release 或软件可见完成 |
+| Beat | 一次 data channel 上的有效传输单位（卡车跑一趟） | 与 bus width、byte lane、burst length 相关 |
+| Burst | 多个 beat 组成的一组连续或规则访问（一次团购订单，多趟一起发） | 记录长度、大小、边界、拆分和合并 |
+| Outstanding | 已发出但尚未完成的事务数量（同时在途的快递包裹数） | 受 master slot、ID、slave slot、return path 限制 |
+| Ordering | 多个访问之间必须保持的可见顺序（包裹能不能乱序送达） | 区分同 ID、不同 ID、MMIO、barrier、completion 顺序 |
+| Completion | 硬件任务完成后对软件或上游可见的记录、状态或事件（签收回执到达寄件人手中） | 不等同于协议级 response |
 | Write Response | 协议级写事务完成返回，例如 AXI `B` channel | 与 software completion record 分层建模 |
 
 ## 流控与共享
 
 | 术语 | 定义 | 建模关注点 |
 | --- | --- | --- |
-| Arbitration | 多个请求竞争同一共享资源时的选择规则 | 记录策略、grant、wait、QoS 和 starvation bound |
-| Backpressure | 下游无法接收或完成时向上游传播的节流 | 要追 request path 和 response path 两个方向 |
-| Head-of-Line Blocking | 队头事务阻塞后续本可独立执行的事务 | 取决于队列按 master、target、ID 还是 channel 划分 |
-| QoS | 用 priority、weight、deadline、limit 等机制分配服务能力 | 不是消除争用，而是改变等待分布 |
-| Hotspot | 多个流量集中竞争同一 target、queue、controller 或 return path | 需要 per-target/per-master 指标 |
+| Arbitration | 多个请求竞争同一共享资源时的选择规则（十字路口的红绿灯） | 记录策略、grant、wait、QoS 和 starvation bound |
+| Backpressure | 下游无法接收或完成时向上游传播的节流（堵车从出口一路堵回入口） | 要追 request path 和 response path 两个方向 |
+| Head-of-Line Blocking | 队头事务阻塞后续本可独立执行的事务（排队最前面的人犹豫不决，后面所有人都走不了） | 取决于队列按 master、target、ID 还是 channel 划分 |
+| QoS | 用 priority、weight、deadline、limit 等机制分配服务能力（医院分诊台） | 不是消除争用，而是改变等待分布 |
+| Hotspot | 多个流量集中竞争同一 target、queue、controller 或 return path（网红餐厅门口排长队） | 需要 per-target/per-master 指标 |
 
 ## 互连组件
 

@@ -6,9 +6,9 @@
 
 ## 这页在回答什么问题
 
-doorbell、completion 和 interrupt 是设备驱动里反复出现的一组模式：软件准备任务，写一个 MMIO doorbell 通知设备；设备或 DMA 执行任务后写 completion record 或 status；CPU 通过 polling 或 interrupt 得知完成。
+想象一个**外卖下单流程**：你准备好订单详情，按下"下单"按钮（doorbell）；外卖员送到后在门口放好并拍照（completion record）；你手机收到"已送达"通知（interrupt）；你点击"确认收货"（clear/EOI）。
 
-从 BUS 视角看，这不是三件独立小事，而是一条跨越 cacheable memory、MMIO register、DMA master、interrupt controller 和 CPU ISR 的事件链。正确性取决于三类语义的相对顺序：任务内容先于 doorbell 可见，completion 先于 interrupt 可见，clear/EOI 真正到达设备或中断控制器。
+从 BUS 视角看，这不是三个独立按钮，而是一条跨越 cacheable memory、MMIO register、DMA master、interrupt controller 和 CPU ISR 的**事件链**。正确性取决于顺序：订单详情必须先于"下单"按钮可见（别人看到你按了按钮但不知道你点了啥），照片必须先于通知可见（你收到通知去开门发现外卖还没到），"确认收货"必须真正传到骑手端（不然骑手以为你没收到会再送一次）。
 
 ## 三个对象的职责
 

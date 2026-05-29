@@ -6,9 +6,9 @@
 
 ## 现象
 
-设备或 DMA 发起访问后，IOMMU/SMMU 报 translation fault、permission fault、context fault 或 walk fault。软件看到 DMA 任务失败、设备反复重试、fault interrupt，或者 driver 等待 completion 超时。
+这是**”海关拒签”**场景：DMA（外国旅客）拿着地址（IOVA）要入境，但海关（IOMMU/SMMU）说”你的签证有问题”——可能是护照号码错（context fault）、目的地不在签证范围内（translation fault）、签证权限不够（permission fault），或者签证数据库本身查不到记录（walk fault）。
 
-这个案例的关键不是“DMA 坏了”或“memory 坏了”，而是翻译层拒绝了某个带身份的 DMA 子事务。定位时要先回答：哪一个 stream/context、哪一个 IOVA、哪一类访问、发生在 descriptor fetch、data read、data write 还是 completion writeback。
+软件看到的可能是 DMA 任务失败、设备反复重试、fault interrupt 或 driver 等待超时。关键不是”DMA 坏了”或”memory 坏了”，而是要追问：**哪个旅客**（stream/context）、**去哪里**（IOVA）、**什么签证类型**（读/写/安全级别）、**在哪个环节被拦**（descriptor fetch、data read、data write 还是 completion writeback）。
 
 ## 典型路径
 

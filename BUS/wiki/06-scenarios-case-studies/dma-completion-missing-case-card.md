@@ -6,9 +6,9 @@
 
 ## 现象
 
-DMA 数据面看起来已经搬完：源和目的 buffer 数据正确，DMA 内部状态也可能显示 task done。但软件迟迟收不到 completion，或者 completion 偶发丢失，driver 等待超时。
+这是经典的**"货送到了但签收单没回来"**问题：DMA 数据面看起来已经搬完——源和目的 buffer 数据正确，DMA 内部状态也显示 task done。但软件就是收不到"已完成"的通知，或者通知偶发丢失，driver 等待超时。
 
-这个案例的核心分界是：数据搬运完成不等于软件可见完成。软件看到 completion 需要 writeback、cache/coherence 可见性、status 更新、interrupt/polling 和 clear/EOI 顺序共同成立。
+核心分界就像快递物流：**包裹到达≠签收确认**。签收确认需要一整条链闭合：快递员填回执（writeback）、回执传到系统（cache/coherence 可见性）、系统更新状态（status 更新）、给你发短信（interrupt/polling）、你确认收货（clear/EOI）。任何一环断了，你就一直在等"已送达"通知。
 
 ## 典型路径
 

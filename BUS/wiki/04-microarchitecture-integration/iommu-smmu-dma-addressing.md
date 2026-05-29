@@ -6,9 +6,9 @@
 
 ## 这页在回答什么问题
 
-DMA master 发出的地址不一定是最终 memory physical address。IOMMU/SMMU 把设备侧地址转换成系统物理地址，并在转换过程中检查权限、隔离不同设备或虚拟机、产生 fault、触发 page walk。
+IOMMU/SMMU 就像**海关翻译官加安检员**。DMA（外国旅客）说的地址是”设备语言”（IOVA），不能直接在本国（物理内存）使用。IOMMU 先翻译地址（IOVA → PA），同时检查护照和签证（权限、隔离），确认旅客可以去哪些区域。
 
-对 BUS 建模来说，IOMMU/SMMU 不是“地址旁边多查一张表”。它插在 DMA request path 上，会改变请求延迟、可观察 fault、backpressure、sideband 属性、调试入口和错误归因。一次 DMA read/write 可能先被翻译层接收，然后命中 TLB 继续前进，也可能因为 miss 引出额外 memory transaction 去读页表。
+对 BUS 建模来说，IOMMU 不是”查一下字典”那么简单。它插在 DMA request path 上，就像安检线插在候机楼和登机口之间——翻译快（TLB 命中）就几乎无感，翻译慢（TLB miss → page walk）就要额外跑一趟去查档案（读页表），还可能被拒签（fault）。
 
 ## 为什么 DMA 需要翻译和隔离
 

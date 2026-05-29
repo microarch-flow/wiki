@@ -20,7 +20,9 @@ AXI 的五个 channel 分别承载事务生命周期的不同阶段：`AW` 传�
 
 ## ID 是匹配关系，不是性能魔法
 
-ID 的基本作用是让 request 和 response 能被关联起来。多个读请求进入系统后，返回路径需要告诉 master：这组 `R` data 属于哪个 `AR`。多个写请求进入系统后，`B` response 也要表明它对应哪个写地址上下文。没有这种匹配关系，系统只能依赖严格返回顺序，或者要求 master 一次只放出很少的未完成事务。
+ID 就像餐厅里的**桌号牌**。你同时点了三道菜，厨房做好后端出来——服务员需要看桌号牌才知道这盘红烧肉是 3 号桌的还是 7 号桌的。没有桌号牌，要么所有菜必须按点单顺序上（严格保序），要么一次只能服务一桌（极低并发）。
+
+ID 的基本作用就是让 request 和 response 能被关联起来。多个读请求进入系统后，返回路径需要通过 ID 告诉 master：这组 `R` data 属于哪个 `AR`。
 
 ID 还定义 ordering 边界。AXI 允许系统在满足协议 ordering 规则的前提下，让不同 ID 的事务以更灵活的顺序完成；同一 ID 内部则受到更强的顺序约束。这里的重点不是背规则，而是理解设计交易：ID 越能区分独立流量，系统越有机会把慢路径和快路径分开；但 master、interconnect 和 slave 都要维护更多 tag、buffer 和返回排序状态。
 
@@ -39,9 +41,9 @@ ID 还定义 ordering 边界。AXI 允许系统在满足协议 ordering 规则�
 
 ## Outstanding 是延迟隐藏窗口
 
-Outstanding transaction 指已经被系统接收、但 completion 还没有被 master 消费的事务。AXI 的高吞吐能力很大一部分来自这里：master 可以在等待 DDR、bridge、accelerator 或外设返回时，继续发出新的地址请求，让下游队列和数据路径保持忙碌。
+Outstanding 就像**同时在外卖平台上下多个订单**。如果你一次只能下一单、等送到再下一单，那么每次等外卖的 30 分钟里你什么也干不了。但如果你同时下 5 个订单，5 个商家可以同时做菜、同时配送，你的等待时间就从"5×30 分钟"压缩到接近"30 分钟"。
 
-如果一次 DDR read 从地址接受到数据返回需要 80 cycle，而 master 只能维持 1 笔 outstanding，那么它发出一笔后就要空等 80 cycle。若 master 和系统允许 8 笔 read outstanding，地址可以先填入 memory controller 或 interconnect 队列，后续 `R` data 按服务结果陆续返回。这样并没有缩短单笔 DRAM 物理延迟，但提高了链路和下游资源的利用率。
+AXI 的高吞吐能力很大一部分来自这里。如果一次 DDR read 需要 80 cycle，而 master 只能维持 1 笔 outstanding，它发出一笔后就要空等 80 cycle。若 master 允许 8 笔 read outstanding，8 个地址请求可以先进入 memory controller 队列，后续数据陆续返回。单笔 DRAM 延迟没有缩短（每家餐厅做菜还是要 30 分钟），但管道利用率大幅提升（你在 30 分钟内收到了 5 份外卖而不是 1 份）。
 
 Outstanding 深度的收益有上限。真正的窗口由最小能力决定：master 能发多少，interconnect 接多少，slave 接多少，返回路径能排多少，ID/ordering 是否允许绕过，response 是否被及时消费。任何一处队列满了，backpressure 都会把“理论 outstanding 深度”压成更小的有效深度。
 
