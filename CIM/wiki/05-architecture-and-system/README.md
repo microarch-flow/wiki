@@ -28,6 +28,7 @@ macro
 | [Interconnect and Reduction](./interconnect-and-reduction.md) | macro/tile 间如何通信和归约 | partial sum traffic 和拥塞 |
 | [Memory Hierarchy](./memory-hierarchy-with-cim.md) | on-array、buffer、SRAM、HBM 如何分工 | 容量错配和 reload |
 | [Performance Energy Modeling](./performance-energy-modeling.md) | 如何把 macro 指标推到系统指标 | 口径不统一和隐藏成本 |
+| [Modeling Parameter Schema](./cim-modeling-parameter-schema.md) | 四元组怎样落成可实现参数表与子模型 | 跨层级误比、缺 utilization/included-cost 字段 |
 | [Reliability and Error Tolerance](./reliability-and-error-tolerance.md) | analog/mixed-signal 误差如何进入系统 | calibration、retraining、降级 |
 | [Host Integration](./cim-system-integration-with-host.md) | CIM 如何接入 SoC/PCIe/host | 同步、DMA、driver/runtime |
 
