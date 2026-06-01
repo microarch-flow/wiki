@@ -2,7 +2,7 @@
 
 上级：[04 数据路径、DMA 与中断](./README.md)
 
-相关：[设备 DMA 的读写路径](./device-dma-read-write-flow.md)、[带宽、延迟、Credit、MPS 与 MRRS](../05-performance-debug/bandwidth-latency-credit-mps-mrrs.md)
+相关：[设备 DMA 的读写路径](./device-dma-read-write-flow.md)、[带宽、延迟、Credit、MPS 与 MRRS](../05-performance-debug/bandwidth-latency-credit-mps-mrrs.md)、[PCIe 建模参数与公式速查](../08-reference/pcie-modeling-params.md)
 
 ## 这页在回答什么问题
 
@@ -34,6 +34,28 @@
 ## 最值得记住的判断
 
 PCIe read 性能差，常常不是“带宽不够”，而是 `飞行中的请求数 x 单次 completion 往返延迟` 乘不起来。
+
+## 量化小节（Little's Law）
+
+上面那句判断写成公式就是：
+
+```
+read 吞吐 ≈ (outstanding_requests × bytes_per_request) / RTT
+```
+
+要灌满链路所需的并发深度（带宽时延积）：
+
+```
+所需 outstanding ≥ 链路有效带宽 × RTT / bytes_per_request
+```
+
+三个量分别被这些参数钳制：
+
+- **outstanding_requests** —— Tag 空间上限：默认 32、Extended Tag 256、10-bit Tag 768/1024。
+- **bytes_per_request** —— 受 MRRS 钳制（单 read 最多请求 MRRS 字节）。
+- **RTT** —— RC 往返数百 ns，每过一级 switch +百 ns 量级，IOMMU miss 可加数百 ns ~ µs。
+
+举例：Gen4 x8（~16 GB/s）、RTT=1µs、单请求 512B，则需 `16e9 × 1e-6 / 512 ≈ 31` 个并发请求才能灌满；若 Tag 只有默认的 32 个，几乎没有余量，稍大 RTT 就掉速。完整参数表见 [PCIe 建模参数与公式速查](../08-reference/pcie-modeling-params.md)。
 
 ## 一句话理解
 

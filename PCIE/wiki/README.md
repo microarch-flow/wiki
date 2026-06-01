@@ -29,6 +29,7 @@
 | 看高级主题入口 | [SR-IOV、ATS、PASID、PRI](./07-advanced-topics/sriov-ats-pasid-pri-overview.md) |
 | 做方案或集成评审 | [PCIE 设计检查清单](./08-reference/pcie-design-checklist.md) |
 | 快速查阅 | [PCIE 一页版总览](./08-reference/pcie-one-page.md) / [术语表](./08-reference/glossary.md) |
+| 做量化建模 / 架构探索工具 | [PCIe 建模参数与公式速查](./08-reference/pcie-modeling-params.md) |
 
 ## 快速开始
 
@@ -90,6 +91,7 @@
 - [PCIE 高频问题](./08-reference/high-frequency-questions.md)
 - [PCIE 设计检查清单](./08-reference/pcie-design-checklist.md)
 - [PCIE 调试检查清单](./08-reference/pcie-debug-checklist.md)
+- [PCIe 建模参数与公式速查](./08-reference/pcie-modeling-params.md)
 
 ## 这套 Wiki 的边界
 

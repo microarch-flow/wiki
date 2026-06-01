@@ -2,7 +2,7 @@
 
 上级：[01 概览与问题定义](./README.md)
 
-相关：[链路、分层与事务基础](../02-link-transaction-basics/README.md)、[高级主题](../07-advanced-topics/README.md)
+相关：[链路、分层与事务基础](../02-link-transaction-basics/README.md)、[高级主题](../07-advanced-topics/README.md)、[PCIe 建模参数与公式速查](../08-reference/pcie-modeling-params.md)
 
 ## 这页在回答什么问题
 
@@ -46,6 +46,20 @@
 - reliability / AER
 - performance tuning
 - P2P / switch topology
+
+## 6. 量化 / 可建模维度
+
+如果学 PCIE 的目的是建性能模型，上面五层各自对应一组可量化参数，建模时按这个映射取数（完整表见 [PCIe 建模参数与公式速查](../08-reference/pcie-modeling-params.md)）：
+
+| 分类层 | 对应的可建模量 |
+| --- | --- |
+| 系统角色层 | switch 级数（每级加延迟）、RC 往返延迟 |
+| 协议分层 | 编码效率（8b/10b、128b/130b、FLIT/FEC）、TLP 固定开销 |
+| 资源与寻址层 | IOMMU 翻译命中率、hit/miss 延迟 |
+| 数据路径层 | MPS / MRRS / RCB、Tag 数、credit 池深度 |
+| 系统能力层 | 多 VF 共享带宽、P2P 路径、AER 引发的 replay 开销 |
+
+这样切分的好处是：**模型的每个参数都能落到一个明确的层**，调参时知道动的是协议开销、并发上限还是路径延迟，而不是笼统地调一个「带宽系数」。
 
 ## 为什么这样切分有用
 
