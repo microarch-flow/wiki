@@ -1,6 +1,6 @@
 # DMA Wiki
 
-> `DMA 不是“免 CPU 搬数据”这么简单，而是系统里负责把带宽、时序、并发和数据依赖组织起来的一层执行机制。要真正理解 DMA，必须同时看传输对象、描述符、burst、outstanding、缓存一致性、NoC、local memory、driver/runtime 以及 workload。`
+> DMA 不是"免 CPU 搬数据"这么简单，而是系统里负责把带宽、时序、并发和数据依赖组织起来的一层执行机制。要真正理解 DMA，必须同时看传输对象、描述符、burst、outstanding、缓存一致性、NoC、local memory、driver/runtime 以及 workload。
 
 ## Dashboard
 
@@ -21,6 +21,7 @@
 | 看 DMA 如何嵌入 SoC / AI 系统 | [DMA 与 NoC / Memory System](./05-system-integration/dma-and-noc.md) |
 | 从总线协议理解 DMA 约束 | [AXI / PCIe 视角下的 DMA](./05-system-integration/axi-pcie-view.md) |
 | 开始做性能分析或建模 | [指标、瓶颈与实验设计](./06-performance-modeling/metrics-bottlenecks.md) |
+| 开发架构探索/性能建模工具 | [参数与公式速查](./06-performance-modeling/parameter-reference.md) / [模型数据结构与事件规范](./06-performance-modeling/model-schema.md) |
 | 开始做调试定位 | [观测、计数器与调试路径](./06-performance-modeling/debug-observability.md) |
 | 直接看场景化案例 | [AI 加速器里的 DMA](./07-workloads-case-studies/ai-accelerator-dma.md) |
 | 直接走一遍 AI 芯片完整数据路径 | [HBM 到 Tile 的数据供给链](./07-workloads-case-studies/hbm-to-tile-data-supply-chain.md) |

@@ -2,7 +2,7 @@
 
 上级：[06 性能建模与调优](./README.md)
 
-相关：[DMA 与 NoC](../05-system-integration/dma-and-noc.md)、[AI 加速器里的 DMA](../07-workloads-case-studies/ai-accelerator-dma.md)、[NOC：建模层次](../../NOC/wiki/05-modeling-evaluation/modeling-layers.md)
+相关：[DMA 与 NoC](../05-system-integration/dma-and-noc.md)、[AI 加速器里的 DMA](../07-workloads-case-studies/ai-accelerator-dma.md)、[NOC：建模层次（解析/事件/周期）](../../../NOC/wiki/07-evaluation-methodology/modeling-layers-analytical-event-cycle.md)
 
 ## 这页在回答什么问题
 

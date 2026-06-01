@@ -53,6 +53,10 @@
 - [首页](./06-performance-modeling/README.md)
 - [指标、瓶颈与实验设计](./06-performance-modeling/metrics-bottlenecks.md)
 - [从抽象模型到系统诊断](./06-performance-modeling/modeling-method.md)
+- [参数与公式速查](./06-performance-modeling/parameter-reference.md)
+- [模型数据结构与事件规范](./06-performance-modeling/model-schema.md)
+- [校准与验证](./06-performance-modeling/calibration-validation.md)
+- [旋钮敏感度与耦合](./06-performance-modeling/sensitivity-coupling.md)
 - [优化与调参手册](./06-performance-modeling/optimization-playbook.md)
 - [观测、计数器与调试路径](./06-performance-modeling/debug-observability.md)
 

@@ -2,7 +2,7 @@
 
 上级：[02 基础对象与传输语义](./README.md)
 
-相关：[DMA 引擎的组成](../03-dma-microarchitecture/engine-components.md)、[调度、Outstanding 与回包组织](../03-dma-microarchitecture/scheduling-outstanding.md)、[BUS：AXI Burst、Alignment 与 Boundary](../../BUS/wiki/03-on-chip-protocol-families/axi-burst-alignment-boundary.md)
+相关：[DMA 引擎的组成](../03-dma-microarchitecture/engine-components.md)、[调度、Outstanding 与回包组织](../03-dma-microarchitecture/scheduling-outstanding.md)、[BUS：AXI Burst、Alignment 与 Boundary](../../../BUS/wiki/03-on-chip-protocol-families/axi-burst-alignment-boundary.md)
 
 ## 这页在回答什么问题
 
@@ -16,7 +16,7 @@
 - `logical transfer-level`：软件眼里的一笔搬运任务
 - `transaction-level`：真正落到互连上的 read/write burst 或 packet
 
-很多 DMA 误解都来自把这三层压成一层。一个 descriptor 可以对应一笔逻辑任务，而这笔逻辑任务在 AXI 上会拆成多笔 `AR/AW` 请求和对应的 `R/W/B` 流；在 PCIe 上又可能变成多个 TLP。后面你在 [BUS wiki 的 AXI 五通道](../../BUS/wiki/03-on-chip-protocol-families/axi-five-channels-handshake.md) 看到的通道行为，本质上就是 DMA 把上层任务翻译到底层事务后的样子。
+很多 DMA 误解都来自把这三层压成一层。一个 descriptor 可以对应一笔逻辑任务，而这笔逻辑任务在 AXI 上会拆成多笔 `AR/AW` 请求和对应的 `R/W/B` 流；在 PCIe 上又可能变成多个 TLP。后面你在 [BUS wiki 的 AXI 五通道](../../../BUS/wiki/03-on-chip-protocol-families/axi-five-channels-handshake.md) 看到的通道行为，本质上就是 DMA 把上层任务翻译到底层事务后的样子。
 
 ## 为什么 DMA 会从寄存器编程演化到 descriptor
 
@@ -52,7 +52,7 @@ DMA 性能分析里经常看见“理论上一笔 256B 搬运，为什么硬件�
 - local SRAM bank 或端口映射要求拆分
 - IOMMU 映射把逻辑连续区间切成多个物理段
 
-这正是 descriptor、address mapping 和 burst 行为相互作用的地方。例如 `0x1003 -> 0x2000, 256B` 这笔任务，看上去只是 256B 复制；落到硬件上，可能先做一个 misaligned 头部，再做若干对齐 burst，最后在 page 或 bank 边界处再拆一次。和 [RAM wiki 的地址映射与 row locality](../../RAM/wiki/06-memory-controller/address-mapping-channel-rank-bank-row-col.md) 放在一起看时，这种拆分还会直接改变 DRAM 的 row hit 率。
+这正是 descriptor、address mapping 和 burst 行为相互作用的地方。例如 `0x1003 -> 0x2000, 256B` 这笔任务，看上去只是 256B 复制；落到硬件上，可能先做一个 misaligned 头部，再做若干对齐 burst，最后在 page 或 bank 边界处再拆一次。和 [RAM wiki 的地址映射与 row locality](../../../RAM/wiki/06-memory-controller/address-mapping-channel-rank-bank-row-col.md) 放在一起看时，这种拆分还会直接改变 DRAM 的 row hit 率。
 
 ## Scatter-gather 的价值和代价
 

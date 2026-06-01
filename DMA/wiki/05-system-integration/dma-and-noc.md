@@ -2,7 +2,7 @@
 
 上级：[05 系统集成](./README.md)
 
-相关：[调度、Outstanding 与回包组织](../03-dma-microarchitecture/scheduling-outstanding.md)、[NOC：从 Workload 到 Traffic Trace](../../NOC/wiki/07-evaluation-methodology/from-workload-to-traffic-trace.md)、[NOC：NI / DMA / 存储接口](../../NOC/wiki/04-ai-dataflow-system/ni-dma-memory-interface.md)
+相关：[调度、Outstanding 与回包组织](../03-dma-microarchitecture/scheduling-outstanding.md)、[NOC：从 Workload 到 Traffic Trace](../../../NOC/wiki/07-evaluation-methodology/from-workload-to-traffic-trace.md)、[NOC：NI / 网络接口设计](../../../NOC/wiki/05-system-integration/ni-network-interface-design.md)
 
 ## 这页在回答什么问题
 
@@ -12,7 +12,7 @@
 
 应用或 runtime 描述的是“下一块数据该搬到哪里”；真正注入 NoC 的却是 DMA 按自己的 burst、outstanding、priority、completion 节拍组织出来的 request/response 流。于是 NoC 看到的不是原始 workload，而是一个已经被 DMA 调度器重新塑形过的 traffic trace。
 
-这点和 [NOC wiki 的 traffic trace 抽象](../../NOC/wiki/07-evaluation-methodology/from-workload-to-traffic-trace.md) 直接相连。workload 只给出需求，DMA 决定这些需求以什么粒度、什么节奏、什么方向进入网络。也就是说，DMA 是 NoC 的主动流量源，不是边缘挂件。
+这点和 [NOC wiki 的 traffic trace 抽象](../../../NOC/wiki/07-evaluation-methodology/from-workload-to-traffic-trace.md) 直接相连。workload 只给出需求，DMA 决定这些需求以什么粒度、什么节奏、什么方向进入网络。也就是说，DMA 是 NoC 的主动流量源，不是边缘挂件。
 
 ## DMA 在 NoC 上常表现出哪几类流量形状
 

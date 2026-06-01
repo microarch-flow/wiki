@@ -33,7 +33,7 @@ DMA 最容易学歪的地方，是一开始就扎进驱动接口、寄存器表�
 5. [DMA 与 Local Memory / DDR / HBM](../05-system-integration/dma-and-memory-system.md)
 6. [指标、瓶颈与实验设计](../06-performance-modeling/metrics-bottlenecks.md)
 
-这条路线的核心收益，是把 DMA 从“某个 IP 的接口问题”提升为“软件、互连、内存共同决定的系统问题”。如果你已经完成了 BUS、RAM、NOC 几套 wiki，这条路线会最自然，因为你会不断看到 DMA 如何把 [BUS wiki 的 AXI outstanding](../../BUS/wiki/03-on-chip-protocol-families/axi-channel-id-outstanding.md)、[RAM wiki 的 row locality](../../RAM/wiki/06-memory-controller/address-mapping-channel-rank-bank-row-col.md) 和 NoC traffic pattern 串到一起。
+这条路线的核心收益，是把 DMA 从“某个 IP 的接口问题”提升为“软件、互连、内存共同决定的系统问题”。如果你已经完成了 BUS、RAM、NOC 几套 wiki，这条路线会最自然，因为你会不断看到 DMA 如何把 [BUS wiki 的 AXI outstanding](../../../BUS/wiki/03-on-chip-protocol-families/axi-channel-id-outstanding.md)、[RAM wiki 的 row locality](../../../RAM/wiki/06-memory-controller/address-mapping-channel-rank-bank-row-col.md) 和 NoC traffic pattern 串到一起。
 
 ## 路线 3：面向 AI / 高性能系统深化
 

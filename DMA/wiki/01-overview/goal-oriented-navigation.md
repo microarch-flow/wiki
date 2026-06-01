@@ -65,6 +65,17 @@
 
 这条路径的目的是把外部材料重新投影到统一分析框架里，否则每读一个新 IP、新论文、新产品文档，都只会多记一套新名词。
 
+## 目标 6：开发性能建模 / 架构探索工具
+
+1. [从抽象模型到系统诊断](../06-performance-modeling/modeling-method.md)
+2. [参数与公式速查](../06-performance-modeling/parameter-reference.md)
+3. [模型数据结构与事件规范](../06-performance-modeling/model-schema.md)
+4. [校准与验证](../06-performance-modeling/calibration-validation.md)
+5. [旋钮敏感度与耦合](../06-performance-modeling/sensitivity-coupling.md)
+6. [调度、Outstanding 与回包组织](../03-dma-microarchitecture/scheduling-outstanding.md)
+
+这条路径和"目标 4：性能分析定位"不同——目标 4 是诊断一个已经在跑的系统，这条是从零搭一个可计算、可校准的模型。重点是先定层次，拿到公式与参数范围，统一字段和事件命名，再用 counter 校准并按敏感度剪枝设计空间。读完后你应该能把一个架构想法落成 L1/L2/L3 中合适那一层的模型，并知道它该对到什么误差、该扫哪些旋钮。
+
 ## 常见误解
 
 常见误解：`所有人都应该从 01 一路顺序读到 09`。实际上如果当前工作是 bring-up 或性能定位，按目标切路径更有效，因为你需要的是最短闭环，不是最完整覆盖。

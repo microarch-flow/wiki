@@ -2,7 +2,7 @@
 
 上级：[07 工作负载与案例](./README.md)
 
-相关：[PCIe NIC DMA 案例卡](./pcie-nic-dma-case-card.md)、[AXI / PCIe 视角下的 DMA](../05-system-integration/axi-pcie-view.md), [PCIE: 队列、Doorbell、Completion 与 MSI-X](../../PCIE/wiki/04-data-path-dma-interrupts/queues-doorbells-completions-msix.md)
+相关：[PCIe NIC DMA 案例卡](./pcie-nic-dma-case-card.md)、[AXI / PCIe 视角下的 DMA](../05-system-integration/axi-pcie-view.md), [PCIE: 队列、Doorbell、Completion 与 MSI-X](../../../PCIE/wiki/04-data-path-dma-interrupts/queues-doorbells-completions-msix.md)
 
 ## 这页在回答什么问题
 

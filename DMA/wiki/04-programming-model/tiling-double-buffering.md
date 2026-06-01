@@ -53,7 +53,7 @@ double buffering 的最小结构，是准备两个可轮换的 buffer：A 和 B�
 
 tile 大小既决定 compute 的工作集，也决定 DMA 和 memory system 看到的访问形状。大 tile 常常更有利于长 burst、DDR/HBM row locality 和较低控制开销；但它也要求更大的片上 buffer，使双缓冲代价上升。小 tile 则可能更易调度、更易塞进 SRAM，却会让 DMA 任务碎裂、completion 更频繁、overlap 更难维持。
 
-这正是为什么 tiling 不能只从算子映射角度选，而必须同时看 [RAM wiki 的 row locality](../../RAM/wiki/07-system-architecture/sram-vs-dram-access-pattern.md) 和外存带宽利用率。某些数学上漂亮的 tile，可能在 memory system 视角里非常糟糕。
+这正是为什么 tiling 不能只从算子映射角度选，而必须同时看 [RAM wiki 的 row locality](../../../RAM/wiki/07-system-architecture/sram-vs-dram-access-pattern.md) 和外存带宽利用率。某些数学上漂亮的 tile，可能在 memory system 视角里非常糟糕。
 
 ## 什么情况下需要 N-buffering 或 triple buffering
 

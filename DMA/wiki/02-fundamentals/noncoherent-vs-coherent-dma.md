@@ -2,7 +2,7 @@
 
 上级：[02 基础对象与传输语义](./README.md)
 
-相关：[缓存一致性、IOMMU 与地址空间](./consistency-cache-coherency.md)、[同步、一致性与常见错误](../04-programming-model/synchronization-errors.md)、[BUS：Coherent Bus vs Non-Coherent Bus](../../BUS/wiki/03-on-chip-protocol-families/coherent-bus-vs-noncoherent-bus.md)
+相关：[缓存一致性、IOMMU 与地址空间](./consistency-cache-coherency.md)、[同步、一致性与常见错误](../04-programming-model/synchronization-errors.md)、[BUS：Coherent Bus vs Non-Coherent Bus](../../../BUS/wiki/03-on-chip-protocol-families/coherent-bus-vs-noncoherent-bus.md)
 
 ## 这页在回答什么问题
 

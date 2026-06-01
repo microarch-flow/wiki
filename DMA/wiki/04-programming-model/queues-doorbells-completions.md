@@ -2,7 +2,7 @@
 
 上级：[04 软件栈与编程模型](./README.md)
 
-相关：[软件栈与编程模型](./software-stack.md)、[同步、一致性与常见错误](./synchronization-errors.md)、[PCIE：队列、Doorbell、Completion 与 MSI-X](../../PCIE/wiki/04-data-path-dma-interrupts/queues-doorbells-completions-msix.md)
+相关：[软件栈与编程模型](./software-stack.md)、[同步、一致性与常见错误](./synchronization-errors.md)、[PCIE：队列、Doorbell、Completion 与 MSI-X](../../../PCIE/wiki/04-data-path-dma-interrupts/queues-doorbells-completions-msix.md)
 
 ## 这页在回答什么问题
 

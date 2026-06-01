@@ -2,7 +2,7 @@
 
 上级：[05 系统集成](./README.md)
 
-相关：[Tiling、Double Buffer 与 Overlap](../04-programming-model/tiling-double-buffering.md)、[RAM：地址映射、Channel/Rank/Bank/Row/Col](../../RAM/wiki/06-memory-controller/address-mapping-channel-rank-bank-row-col.md)、[RAM：访问模式与 Row Locality](../../RAM/wiki/07-system-architecture/sram-vs-dram-access-pattern.md)
+相关：[Tiling、Double Buffer 与 Overlap](../04-programming-model/tiling-double-buffering.md)、[RAM：地址映射、Channel/Rank/Bank/Row/Col](../../../RAM/wiki/06-memory-controller/address-mapping-channel-rank-bank-row-col.md)、[RAM：访问模式与 Row Locality](../../../RAM/wiki/07-system-architecture/sram-vs-dram-access-pattern.md)
 
 ## 这页在回答什么问题
 
@@ -31,7 +31,7 @@
 
 ## DDR / HBM 真正卡人的地方不是规格值，而是访问形状
 
-外部 memory 最常见的误解是“规格书带宽够，就应该够”。但 [RAM wiki](../../RAM/wiki/06-memory-controller/address-mapping-channel-rank-bank-row-col.md) 已经说明，DRAM/HBM 的表现高度依赖请求落成什么形状。DMA 的 burst 长度、stride、alignment 和 stream 混合方式，会直接决定：
+外部 memory 最常见的误解是“规格书带宽够，就应该够”。但 [RAM wiki](../../../RAM/wiki/06-memory-controller/address-mapping-channel-rank-bank-row-col.md) 已经说明，DRAM/HBM 的表现高度依赖请求落成什么形状。DMA 的 burst 长度、stride、alignment 和 stream 混合方式，会直接决定：
 
 - row locality 是好是坏
 - bank 并行能否被利用

@@ -2,7 +2,7 @@
 
 上级：[07 工作负载与案例](./README.md)
 
-相关：[AXI / PCIe 视角下的 DMA](../05-system-integration/axi-pcie-view.md)、[地址、描述符与 Burst](../02-fundamentals/address-descriptor-burst.md)、[BUS：AXI Channel、ID 与 Outstanding](../../BUS/wiki/03-on-chip-protocol-families/axi-channel-id-outstanding.md)
+相关：[AXI / PCIe 视角下的 DMA](../05-system-integration/axi-pcie-view.md)、[地址、描述符与 Burst](../02-fundamentals/address-descriptor-burst.md)、[BUS：AXI Channel、ID 与 Outstanding](../../../BUS/wiki/03-on-chip-protocol-families/axi-channel-id-outstanding.md)
 
 ## 这页在回答什么问题
 

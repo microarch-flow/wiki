@@ -2,7 +2,7 @@
 
 上级：[03 DMA 引擎微架构](./README.md)
 
-相关：[DMA 与 NoC](../05-system-integration/dma-and-noc.md)、[指标、瓶颈与实验设计](../06-performance-modeling/metrics-bottlenecks.md)、[BUS：AXI Channel、ID 与 Outstanding](../../BUS/wiki/03-on-chip-protocol-families/axi-channel-id-outstanding.md)
+相关：[DMA 与 NoC](../05-system-integration/dma-and-noc.md)、[指标、瓶颈与实验设计](../06-performance-modeling/metrics-bottlenecks.md)、[BUS：AXI Channel、ID 与 Outstanding](../../../BUS/wiki/03-on-chip-protocol-families/axi-channel-id-outstanding.md)
 
 ## 这页在回答什么问题
 
@@ -59,7 +59,7 @@ DMA 调度不是“先来先服务”这么简单。只要系统有多任务、�
 - writeback/completion 路径与 bulk data 共用瓶颈端口
 - 优先级策略让关键小流量长期被 bulk 流压住
 
-这些现象和 [RAM wiki 的 row locality / controller policy](../../RAM/wiki/06-memory-controller/command-scheduling-fr-fcfs.md) 会形成直接耦合。DMA 看到的是“为什么回得慢”，DRAM controller 看到的是“为什么这些请求被这样排”。
+这些现象和 [RAM wiki 的 row locality / controller policy](../../../RAM/wiki/06-memory-controller/command-scheduling-fr-fcfs.md) 会形成直接耦合。DMA 看到的是“为什么回得慢”，DRAM controller 看到的是“为什么这些请求被这样排”。
 
 ## 常见误解
 

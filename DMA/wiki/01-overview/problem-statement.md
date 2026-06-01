@@ -25,7 +25,7 @@
 
 第一件事是把控制路径和数据路径拆开。CPU 或 runtime 负责声明任务、建立依赖、处理错误；DMA engine 负责按自己的执行节奏去取 descriptor、发请求、收回包、写 completion。这样 CPU 的角色从“每一步都亲手搬”退化为“定义搬运计划并监督执行”。
 
-第二件事是把逻辑任务翻译成系统能承受的事务形状。一个“把这块 tensor 搬到 tile buffer”的软件任务，落到硬件上会变成 burst 长度、对齐拆分、AXI `AR/AW/R/W` 通道上的 request/response 节奏，或者 PCIe 上的 memory read/write TLP。DMA 不是只负责“会搬”，还负责“以什么粒度搬、同时挂多少未完成事务、回包如何组织”，这正是系统是否出现热点、回压和尾延迟的分水岭。这里和 [BUS wiki 的 AXI 通道与 outstanding](../../BUS/wiki/03-on-chip-protocol-families/axi-channel-id-outstanding.md) 直接相连，后面在 `05-system-integration` 会展开。
+第二件事是把逻辑任务翻译成系统能承受的事务形状。一个“把这块 tensor 搬到 tile buffer”的软件任务，落到硬件上会变成 burst 长度、对齐拆分、AXI `AR/AW/R/W` 通道上的 request/response 节奏，或者 PCIe 上的 memory read/write TLP。DMA 不是只负责“会搬”，还负责“以什么粒度搬、同时挂多少未完成事务、回包如何组织”，这正是系统是否出现热点、回压和尾延迟的分水岭。这里和 [BUS wiki 的 AXI 通道与 outstanding](../../../BUS/wiki/03-on-chip-protocol-families/axi-channel-id-outstanding.md) 直接相连，后面在 `05-system-integration` 会展开。
 
 第三件事是为 overlap 创造执行骨架。没有 DMA 时，常见节拍是“先搬、再算、再写回”；有 DMA 后，系统才有机会把“下一块数据搬运”“当前块计算”“上一块结果写回”组织成并行流水。AI 加速器里这件事最明显，但 NIC、NVMe、GPU copy engine 也遵循同一个逻辑。
 

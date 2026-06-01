@@ -17,7 +17,7 @@
 - write completion 通过 `B` 通道闭环
 - outstanding 深度、本地 reorder 能力和 AXI ID 组织共同决定 latency hiding
 
-这正是为什么你必须把 DMA 的 burst 行为映射到 [BUS wiki 的 AXI 五通道](../../BUS/wiki/03-on-chip-protocol-families/axi-five-channels-handshake.md) 和 [ID / outstanding](../../BUS/wiki/03-on-chip-protocol-families/axi-channel-id-outstanding.md) 上去看。DMA 的“并发能力”在 AXI 视角里并不是抽象词，而是具体表现为它能同时挂多少 `AR/AW`、如何接 `R/B`、能否处理乱序返回。
+这正是为什么你必须把 DMA 的 burst 行为映射到 [BUS wiki 的 AXI 五通道](../../../BUS/wiki/03-on-chip-protocol-families/axi-five-channels-handshake.md) 和 [ID / outstanding](../../../BUS/wiki/03-on-chip-protocol-families/axi-channel-id-outstanding.md) 上去看。DMA 的“并发能力”在 AXI 视角里并不是抽象词，而是具体表现为它能同时挂多少 `AR/AW`、如何接 `R/B`、能否处理乱序返回。
 
 ## AXI DMA 最常见的系统约束是什么
 
@@ -43,10 +43,10 @@ AXI DMA 典型地深耦合于片上 memory hierarchy，因此它最常见的约�
 
 如果要系统补齐这条链，建议回看：
 
-- [PCIE: Posted / Non-Posted / Completion 与 Ordering](../../PCIE/wiki/02-link-transaction-basics/posted-nonposted-completion-ordering.md)
-- [PCIE: TLP、DLLP 与 Completion 语义](../../PCIE/wiki/02-link-transaction-basics/tlp-dllp-completion-basics.md)
-- [PCIE: PCIe Read Completion 延迟为什么敏感](../../PCIE/wiki/04-data-path-dma-interrupts/pcie-read-completion-latency.md)
-- [PCIE: 队列、Doorbell、Completion 与 MSI-X](../../PCIE/wiki/04-data-path-dma-interrupts/queues-doorbells-completions-msix.md)
+- [PCIE: Posted / Non-Posted / Completion 与 Ordering](../../../PCIE/wiki/02-link-transaction-basics/posted-nonposted-completion-ordering.md)
+- [PCIE: TLP、DLLP 与 Completion 语义](../../../PCIE/wiki/02-link-transaction-basics/tlp-dllp-completion-basics.md)
+- [PCIE: PCIe Read Completion 延迟为什么敏感](../../../PCIE/wiki/04-data-path-dma-interrupts/pcie-read-completion-latency.md)
+- [PCIE: 队列、Doorbell、Completion 与 MSI-X](../../../PCIE/wiki/04-data-path-dma-interrupts/queues-doorbells-completions-msix.md)
 
 ## 为什么 PCIe DMA 的“完成”更像软件契约问题
 

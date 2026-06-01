@@ -36,7 +36,7 @@ descriptor-based DMA 是为了压低这种重复控制成本才出现的。它�
 
 两个 DMA 都支持 100 GB/s 峰值，仍可能因为并发组织不同而体验天差地别。单通道、小 outstanding 窗口的 DMA 更容易验证，也更利于低功耗；多通道、多队列、大窗口、带 QoS 和重排能力的 DMA 能更好隐藏 latency，但会引入更复杂的回包组织和更高的系统扰动。
 
-这里直接连到 [BUS wiki 的 AXI channel / ID / outstanding](../../BUS/wiki/03-on-chip-protocol-families/axi-channel-id-outstanding.md) 与 [NOC wiki 的流量模式](../../NOC/wiki/07-evaluation-methodology/from-workload-to-traffic-trace.md)。DMA 从来不是“独立吞吐器件”，而是请求注入器、返回流组织器和系统流量塑形器。
+这里直接连到 [BUS wiki 的 AXI channel / ID / outstanding](../../../BUS/wiki/03-on-chip-protocol-families/axi-channel-id-outstanding.md) 与 [NOC wiki 的流量模式](../../../NOC/wiki/07-evaluation-methodology/from-workload-to-traffic-trace.md)。DMA 从来不是“独立吞吐器件”，而是请求注入器、返回流组织器和系统流量塑形器。
 
 ## 一个工程上更有用的分类问法
 

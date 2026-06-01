@@ -2,7 +2,7 @@
 
 上级：[02 基础对象与传输语义](./README.md)
 
-相关：[Non-Coherent vs Coherent DMA](./noncoherent-vs-coherent-dma.md)、[同步、一致性与常见错误](../04-programming-model/synchronization-errors.md)、[PCIE：IOMMU、地址翻译与设备隔离](../../PCIE/wiki/03-configuration-enumeration-addressing/iommu-address-translation-device-isolation.md)
+相关：[Non-Coherent vs Coherent DMA](./noncoherent-vs-coherent-dma.md)、[同步、一致性与常见错误](../04-programming-model/synchronization-errors.md)、[PCIE：IOMMU、地址翻译与设备隔离](../../../PCIE/wiki/03-configuration-enumeration-addressing/iommu-address-translation-device-isolation.md)
 
 ## 这页在回答什么问题
 
