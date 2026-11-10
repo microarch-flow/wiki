@@ -25,4 +25,4 @@
 
 各专题的 `wiki` 是现行内容；`wiki.old` 是历史归档。产业与产品资料具有时效性，需要按原始来源和日期核验。
 
-[九专题基线问题与正文证据](./reviews/2026-11-09-topic-review.md) · [第二轮逐篇评审](./reviews/round-2/README.md)
+[九专题基线问题与正文证据](./reviews/2026-11-09-topic-review.md) · [第二轮逐篇评审](./reviews/round-2/README.md) · [第三轮有限资源盲测](./reviews/round-3/README.md)

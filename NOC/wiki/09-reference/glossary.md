@@ -26,9 +26,9 @@ header 建立路由与下游 VC 绑定，body/tail 跟随。沿途持有 input V
 
 ### `credit`
 
-下游告诉上游“我还有多少 buffer slot 可接收”的计数。
+发送端维护的 slot credit 计数，表示已经获得且尚未使用的下游 buffer slot 预留授权。发送 flit 时扣减；下游移出 flit 后生成返还 credit，发送端收到且到达约定的可用采样点后才加回。它不是下游当前物理空槽数：在途 flit 已预留空槽，返还信用也可能尚不可用。即使物理 buffer 未满，`credit=0` 时仍须等待。
 
-它防的是 overflow，不自动防 deadlock。
+slot credit 与新包的 VC 分配许可分开。它约束逐跳 buffer 的使用，防止 overflow，但不自动防 deadlock。参见 [Credit Based Flow Control](../02-router-microarchitecture/credit-based-flow-control.md)。
 
 ### `VC`
 

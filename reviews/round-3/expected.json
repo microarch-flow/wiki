@@ -1,0 +1,84 @@
+{
+  "S1": [
+    {"t": 0, "accepted": ["A"], "ready": []},
+    {"t": 1, "accepted": ["B", "C"], "ready": []},
+    {"t": 2, "accepted": [], "ready": []},
+    {"t": 3, "accepted": [], "ready": ["A"]},
+    {"t": 4, "accepted": [], "ready": ["B", "C"]}
+  ],
+  "S2": [
+    {"t": 0, "accepted": ["A", "B"], "ready": []},
+    {"t": 1, "accepted": ["C"], "ready": []},
+    {"t": 2, "accepted": [], "ready": []},
+    {"t": 3, "accepted": [], "ready": ["A", "B"]},
+    {"t": 4, "accepted": [], "ready": ["C"]}
+  ],
+  "S3": [
+    {"t": 0, "accepted": ["A"], "ready": []},
+    {"t": 1, "accepted": ["C"], "ready": []},
+    {"t": 2, "accepted": ["B"], "ready": []},
+    {"t": 3, "accepted": [], "ready": ["A"]},
+    {"t": 4, "accepted": [], "ready": ["C"]},
+    {"t": 5, "accepted": [], "ready": ["B"]}
+  ],
+  "D1": {
+    "cmd": [[0, "RD"]],
+    "first_half": 28,
+    "last_half": 35,
+    "end_half": 36
+  },
+  "D2": {
+    "cmd": [[0, "ACT"], [14, "RD"]],
+    "first_half": 56,
+    "last_half": 63,
+    "end_half": 64
+  },
+  "D3": {
+    "cmd": [[0, "PRE"], [14, "ACT"], [28, "RD"]],
+    "first_half": 84,
+    "last_half": 91,
+    "end_half": 92
+  },
+  "D4": {
+    "cmd": [[18, "PRE"], [32, "ACT"], [46, "RD"]],
+    "first_half": 120,
+    "last_half": 127,
+    "end_half": 128
+  },
+  "N1": [
+    {"t": 0, "credit": 2, "forward": 0, "fifo": 0, "reverse": 0, "send": "F0", "pop": null},
+    {"t": 1, "credit": 1, "forward": 1, "fifo": 0, "reverse": 0, "send": "F1", "pop": null},
+    {"t": 2, "credit": 0, "forward": 2, "fifo": 0, "reverse": 0, "send": null, "pop": null},
+    {"t": 3, "credit": 0, "forward": 1, "fifo": 1, "reverse": 0, "send": null, "pop": null},
+    {"t": 4, "credit": 0, "forward": 0, "fifo": 2, "reverse": 0, "send": null, "pop": null},
+    {"t": 5, "credit": 0, "forward": 0, "fifo": 2, "reverse": 0, "send": null, "pop": "F0"},
+    {"t": 6, "credit": 0, "forward": 0, "fifo": 1, "reverse": 1, "send": null, "pop": "F1"},
+    {"t": 7, "credit": 1, "forward": 0, "fifo": 0, "reverse": 1, "send": "F2", "pop": null},
+    {"t": 8, "credit": 1, "forward": 1, "fifo": 0, "reverse": 0, "send": "F3", "pop": null},
+    {"t": 9, "credit": 0, "forward": 2, "fifo": 0, "reverse": 0, "send": null, "pop": null},
+    {"t": 10, "credit": 0, "forward": 1, "fifo": 1, "reverse": 0, "send": null, "pop": "F2"},
+    {"t": 11, "credit": 0, "forward": 0, "fifo": 1, "reverse": 1, "send": null, "pop": "F3"},
+    {"t": 12, "credit": 1, "forward": 0, "fifo": 0, "reverse": 1, "send": null, "pop": null},
+    {"t": 13, "credit": 2, "forward": 0, "fifo": 0, "reverse": 0, "send": null, "pop": null}
+  ],
+  "N2": [
+    {"t": 0, "credit": 2, "forward": 0, "fifo": 0, "reverse": 0, "send": "F0", "pop": null},
+    {"t": 1, "credit": 1, "forward": 1, "fifo": 0, "reverse": 0, "send": "F1", "pop": null},
+    {"t": 2, "credit": 0, "forward": 2, "fifo": 0, "reverse": 0, "send": null, "pop": null},
+    {"t": 3, "credit": 0, "forward": 1, "fifo": 1, "reverse": 0, "send": null, "pop": null},
+    {"t": 4, "credit": 0, "forward": 0, "fifo": 2, "reverse": 0, "send": null, "pop": null},
+    {"t": 5, "credit": 0, "forward": 0, "fifo": 2, "reverse": 0, "send": null, "pop": "F0"},
+    {"t": 6, "credit": 0, "forward": 0, "fifo": 1, "reverse": 1, "send": null, "pop": "F1"},
+    {"t": 7, "credit": 0, "forward": 0, "fifo": 0, "reverse": 2, "send": null, "pop": null},
+    {"t": 8, "credit": 0, "forward": 0, "fifo": 0, "reverse": 2, "send": null, "pop": null},
+    {"t": 9, "credit": 1, "forward": 0, "fifo": 0, "reverse": 1, "send": "F2", "pop": null},
+    {"t": 10, "credit": 1, "forward": 1, "fifo": 0, "reverse": 0, "send": "F3", "pop": null},
+    {"t": 11, "credit": 0, "forward": 2, "fifo": 0, "reverse": 0, "send": null, "pop": null},
+    {"t": 12, "credit": 0, "forward": 1, "fifo": 1, "reverse": 0, "send": null, "pop": "F2"},
+    {"t": 13, "credit": 0, "forward": 0, "fifo": 1, "reverse": 1, "send": null, "pop": "F3"},
+    {"t": 14, "credit": 0, "forward": 0, "fifo": 0, "reverse": 2, "send": null, "pop": null},
+    {"t": 15, "credit": 0, "forward": 0, "fifo": 0, "reverse": 2, "send": null, "pop": null},
+    {"t": 16, "credit": 1, "forward": 0, "fifo": 0, "reverse": 1, "send": null, "pop": null},
+    {"t": 17, "credit": 2, "forward": 0, "fifo": 0, "reverse": 0, "send": null, "pop": null}
+  ]
+}

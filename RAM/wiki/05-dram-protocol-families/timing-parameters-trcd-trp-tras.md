@@ -52,6 +52,8 @@ PRE ---- wait tRP ---- next ACT
 
 下面是 DDR4、BL8、禁用写 CRC、正常时钟，且 CA parity 和 CS-to-CA latency 均关闭的例子（`PL=0`）。`tACT`、`tRD`、`tWR_command` 是命令采样时刻，单位为 CK 周期；`nRAS`、`nRTP`、`nWR` 是按目标器件规格得到的整数 CK 约束。该模式中 `WL = AL + CWL`；`BL` 是数据传输次数，DDR 在每个 CK 传两次，所以 BL8 占 4 CK。不存在某类命令时，忽略对应项。对同一打开行，自 ACT 以来的所有 RD 和 WR 都必须满足约束，不能只看 ACT 或只看最后一类命令。
 
+将 BL8 表示在理想 DQS 半 CK 栅格上。设首个 transfer 的名义时刻为 `t0`，则第 `k` 次为 `t0+k/2`（`k=0..7`），末次为 `t0+3.5`，八个时隙的右开占用窗口为 `[t0, t0+4)`。右端点不是末次 transfer 的时刻。读操作在上述模式下有 `t0=tRD+RL`；`RL=AL+CL` 使用当前模式的生效值。若输入是基础 CL，须先按目标器件的模式换算，例如检查 [Read DBI 的影响](https://www.alliancememory.com/wp-content/uploads/AllianceMemory_AS4C512M16D4B_AS4C1G8D4B_8Gb_DDR4_Datasheet_Rev1.0_Sep2024.pdf#page=203)。该栅格是模型约定，不给出实际 DQS/DQ 相位、数据有效窗口或 CPU load 的完成与退休时刻。
+
 ```text
 PRE_earliest = max(tACT + nRAS,
                    max_over_RD(tRD + AL + nRTP),
@@ -60,7 +62,7 @@ PRE_earliest = max(tACT + nRAS,
 
 其物理原因是：ACT 后要给行感测和恢复时间；RD 后要给列路径规定的读后恢复时间；WR 命令后，写数据要先经过 `WL` 并完成 burst，再留出写恢复时间。DDR4 的 `tWR` 参考沿不是 WR 命令沿。规范通常还会给出 ns 最小值、最小周期数及模式设置；要遵循目标器件对这些值、取整和边沿的定义。
 
-**手算例子，仅为假设**：在上述 `PL=0`、CS-to-CA latency 关闭的模式下，`AL=0`、`CWL=9`、`BL=8`、`nWR=12`，WR 命令在周期 0。`WL=9`，写恢复的参考沿在 `0+9+8/2=13`；因此显式 PRE 不早于周期 `13+12=25`。如果 `tACT+nRAS=28`，则还要等到 28。其他命令总线、bank、刷新、数据总线和模式约束也须满足。改变 parity、CS-to-CA latency、burst 或 CRC 时须查目标器件；auto-precharge 的内部触发也不等于显式 PRE 命令。
+**手算例子，仅为假设**：在上述 `PL=0`、CS-to-CA latency 关闭的模式下，`AL=0`、`CWL=9`、`BL=8`、`nWR=12`，WR 命令在周期 0。`WL=9`；按上述名义栅格，写数据的首、末 transfer 和右开窗口终点分别为 9、12.5、13。写恢复的参考沿在 `0+9+8/2=13`，因此显式 PRE 不早于周期 `13+12=25`。如果 `tACT+nRAS=28`，则还要等到 28。其他命令总线、bank、刷新、数据总线和模式约束也须满足。改变 parity、CS-to-CA latency、burst 或 CRC 时须查目标器件；auto-precharge 的内部触发也不等于显式 PRE 命令。
 
 参考：[Micron 8Gb DDR4 数据手册](https://www.micron-electronic.com/pdf-80/mt40a1g8sa-075-h.pdf)，2017 Rev. M，WRITE Operation 第 239 页 Figure 188；[大学托管版本](https://classes.engineering.wustl.edu/permanant/cse260m/images/0/0c/8Gb_DDR4_SDRAM.pdf)也可供查阅。该资料明确区分写命令、数据结束后的参考沿和写恢复时间。模型实现见 [MC 记分板](../06-memory-controller/mc-modeling-for-simulation.md)。
 
