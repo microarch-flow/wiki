@@ -41,7 +41,8 @@ DMA / device
 | translation fault | page table translation | IOVA 未映射、entry invalid | memory controller 没看到原始访问 |
 | permission fault | permission check | 写只读、非安全访问安全页 | 目标 memory 可能完全正常 |
 | walk fault | page table walk | 页表所在地址不可访问或权限错误 | fault 发生在 page table read |
-| output address fault | translated PA 检查 | PA 超出允许范围或 firewall 拒绝 | 翻译成功但输出路径非法 |
+| SMMU output address-size fault | 翻译输出检查 | 输出地址超出配置的地址宽度 | 与下游访问错误分开定位 |
+| downstream firewall error | 翻译后访问目标 | 输出地址被下游 firewall 拒绝 | SMMU 翻译可能已成功，由下游返回错误 |
 
 fault 的价值是给出明确错误语义。若 fault record 不完整，调试会退化成“DMA 没完成”。
 
@@ -57,14 +58,14 @@ fault 的价值是给出明确错误语义。若 fault record 不完整，调试
 | completion writeback | completion queue / status memory | completion buffer 未映射或写权限缺失 | 数据可能完成，但软件看不到完成 |
 | page walk | page table memory | 页表自身不可访问 | 多个事务连续 fault |
 
-排查时不能只看 fault address。要把 fault address 映射回 DMA 子事务：它是 descriptor 地址、source 地址、destination 地址、completion 地址，还是 page table walk 地址。
+先区分地址域：设备输入 IOVA 属于 descriptor、source、destination 或 completion；SMMU 页表遍历使用页表的 PA，或在多级翻译配置下使用须经后续阶段翻译的 IPA。它不是把页表地址再作为同一设备的普通 IOVA 重做该映射。walk fault 要结合实现记录的 walk 地址和阶段定位，不能把设备 faulting IOVA 直接当作页表物理地址。
 
 ## 排查顺序
 
 | 步骤 | 问题 | 观察点 |
 | --- | --- | --- |
 | 1 | faulting stream/context 是谁 | stream ID、device ID、substream ID |
-| 2 | faulting IOVA 属于哪段 buffer | descriptor/source/destination/completion/page table |
+| 2 | 输入 faulting IOVA 属于哪段设备访问 | descriptor/source/destination/completion；walk 地址另按 PA/IPA 和翻译阶段检查 |
 | 3 | 访问类型是什么 | read/write、secure/non-secure、privileged、cache/shareability |
 | 4 | 页表 entry 是否存在且权限匹配 | mapping、permission、valid bit |
 | 5 | TLB invalidation 是否完成 | stale translation、old permission |

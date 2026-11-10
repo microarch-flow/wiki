@@ -54,10 +54,10 @@ NI 至少受下面三类约束：
 NI 的理论注入上限通常近似于：
 
 ```text
-injection_peak ≈ link_width × frequency
+单端口原始注入上限 (bytes/s) = link_width_bits / 8 × link_frequency_Hz
 ```
 
-但有效注入带宽还会被这些因素压低：
+若 flit 宽于物理 link，一个 flit 需要多个 phit，flit/cycle 不能直接当 1；多端口需分别求容量后按可并行性合并。以上是 wire byte 上限，不是 payload 吞吐。有效注入带宽还会被这些因素压低：
 
 - packet 头尾开销
 - packet 边界带来的气泡
@@ -92,7 +92,7 @@ NoC 内部通常只保证较局部的有序性，例如：
 - 某些 command 必须在前一条完成后再交付
 - 某些 completion 必须对软件或 runtime 可见
 
-这些语义大多由 NI 或其邻近控制逻辑负责兜底，而不是由 router 负责理解。
+例如一个读事务 `(source, transaction_id)` 拆成两片，分别携 `fragment_id, offset, length`。请求/返回可能乱序，NI 用匹配键将每片写入已预留的重组空间，检查重复、范围和错误；全部必需数据到齐且按上层排序可交付后，才向 consumer 提供完整结果。consumer 真正握手后回收重组空间和事务状态；若接口允许分片交付，释放边界按该接口契约定义。容量不足应在接受/发出会产生返回的请求前预留或回压，避免返回无法接收导致依赖死锁。这些语义通常由 NI 或邻近逻辑负责，而不是 router 理解应用事务。
 
 ## deterministic NPU 为什么更依赖 NI 设计
 

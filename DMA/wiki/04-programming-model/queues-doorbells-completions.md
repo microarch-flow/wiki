@@ -22,14 +22,14 @@ queue 的真正价值不在“有个数组能存 descriptor”，而在于它把
 
 ## Completion 解决的是软件世界何时可以继续
 
-queue 和 doorbell 解决的是提交侧，completion 解决的是回收侧。没有 completion，软件就不知道何时可以：
+queue 和 doorbell 解决的是提交侧；设备报告的消费、完成和所有权状态决定回收侧。软件需要根据具体接口判断何时可以：
 
 - 复用 queue entry
 - 回收或复用 buffer
 - 唤醒下游消费者
 - 统计错误并推进状态机
 
-completion 的形式很多：interrupt、polling 命中、completion record、event queue item、status bit。它们在实现上不同，但本质都在定义“哪个完成阶段对软件可见了”。
+completion record、event queue item 或 status bit 表示状态；interrupt 和 polling 是发现状态的方法，可以用于同一个 completion record。中断只是服务提示，软件仍须检查有效状态和具体命令。
 
 ## 必须把三种“完成”区分开
 
@@ -39,13 +39,13 @@ completion 的形式很多：interrupt、polling 命中、completion record、ev
 - `transfer visible`
 - `software completion event`
 
-不同 DMA IP 文档里，`completion` 可能偏向其中任何一种。NIC/NVMe 常把 host 软件可见的完成队列项叫 completion；某些 AXI DMA 文档则可能把 descriptor 消耗或最后一笔 data write 完成直接叫 done。软件若不把这三者区分开，就会在 queue 复用、buffer 生命周期和中断处理上不断踩坑。
+不同 DMA IP 文档里，`completion` 可能偏向其中任何一种。NIC/NVMe 常把 host 软件可见的完成队列项叫 completion；某些 AXI DMA 文档则可能把 descriptor 消耗或最后一笔 data write 完成直接叫 done。设备取走 descriptor 不自动意味着软件可覆盖它：只有接口提供消费确认并明确允许复用时，才可提前回收该 descriptor/SQ 槽；若设备还会回写该槽，就要等契约规定的安全边界。命令的数据 buffer 则须等相关传输完成并完成所有权与可见性交接，即使 descriptor 槽已回收也不能提前复用。参见 [NVMe 命令提交与完成流程](https://nvmexpress.org/wp-content/uploads/NVM-Express-1_1b-1.pdf)和 [AMD AXI DMA 的 descriptor 状态](https://docs.amd.com/r/en-US/pg021_axi_dma/Scatter/Gather-Mode)。
 
 ## Interrupt、polling 和 completion record 的 trade-off
 
 interrupt 的优点是软件空闲时几乎零轮询成本，缺点是高频小任务下开销和抖动都可能很大。polling 的优点是延迟可控、避免中断风暴，缺点是会消耗 CPU 时间并可能制造 cache 干扰。completion record 或 event queue 则更适合高吞吐系统，因为它们把“完成信息”本身结构化了，软件可以批量消费。
 
-所以没有一种 completion 机制天然最好。小频率控制路径喜欢 interrupt；高速 steady-state 更偏 batching + polling 或 completion queue；混合系统则常常用 moderation 策略在两者之间折中。
+因此没有一种发现方式天然最好。低频控制路径常用 interrupt；高速系统可批量轮询 completion queue，也可通过合并中断唤醒后批量消费同一队列。polling/interrupt 是发现方式，批量消费及 interrupt moderation 是可分别配置的策略；混合系统也可在轮询和中断之间切换。
 
 ## 一个简化流程图
 
@@ -57,16 +57,17 @@ CPU/runtime:
 
 DMA engine:
   fetch descriptor
+  -> 按接口契约报告 descriptor 消费（若允许，可提前回收槽位）
   -> execute transfer
   -> record completion
 
 CPU/runtime:
   poll / interrupt
   -> consume completion
-  -> recycle entry/buffer
+  -> 按命令完成和所有权契约回收 data buffer
 ```
 
-这个流程图故意把 `make visible` 单独列出来，因为它正是很多人省略后出 bug 的那一步。
+这个流程图故意把 `make visible` 单独列出来，因为它正是很多人省略后出 bug 的那一步。若接口没有提前回收 descriptor 的保证，就应等接口规定的后续状态，不得仅凭 fetch 推断。
 
 ## 常见误解
 
@@ -84,15 +85,16 @@ queue、doorbell 和 completion 共同定义了 DMA 的软件时序边界，没�
 
 这页适合把软件前端和硬件后端之间的共享队列显式建出来。event-driven 仿真里，至少应显式表示 `queue_fill_level`、`doorbell_pending`、`completion_queue_depth` 和 `software_reclaim_rate`。
 
-一个够用的数据结构是：
+例如 4 槽 submission ring 保留一个空槽，最大可用容量为 3；producer 和已安全回收的 descriptor 索引均按 4 取模，`(prod+1)%4==reclaim` 表示满。初始两者为 0；软件写槽 0、1、2 后 `prod=3`，队列满。设备按契约取走槽 0 并允许 descriptor 复用，软件将 `reclaim=1`，即可再写槽 3、令 `prod=0`；此时再次满。槽号回卷不表示数据 buffer 可复用：buffer 仍须等相应命令完成及所有权/可见性交接。另一方案使用 phase/wrap 位以区分满空，不能仅看 `prod==cons`。
+
+一个模型应把 submission 和 completion 的生产/消费、容量与 phase 分开；下图只是状态草图：
 
 ```text
 DMAQueue {
-  prod_idx
-  cons_idx
-  visible_idx
-  completion_idx
+  sq_capacity; sq_prod; sq_device_cons; sq_reclaim; sq_phase
+  cq_capacity; cq_device_prod; cq_software_cons; cq_phase
+  slot_owners; data_buffer_owners
 }
 ```
 
-如果只关心平均吞吐，可以把 doorbell 和 completion 合并成固定前后处理开销；如果关心正确性、interrupt moderation 或小包/小 tile 高频压力，就必须显式保留这些索引和事件顺序。
+如果只关心平均吞吐，且已经证明通知和 completion 回收不会限制任务槽或 buffer 复用，可以将其等效成固定开销；如果关心正确性、interrupt moderation 或小包/小 tile 高频压力，就必须显式保留这些索引和事件顺序。

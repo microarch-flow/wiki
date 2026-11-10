@@ -6,7 +6,7 @@
 
 ## 这页在回答什么问题
 
-这页回答：NoC 模型应该怎样按层升级，什么时候停在 analytical / event-level 就够，什么时候必须进入 flit-level / cycle-level。
+这页回答：NoC 模型何时采用解析估算，何时在仿真中引入 flow 或 flit 状态粒度，以及何时需要逐周期精度。仿真的时间推进可以使用离散事件或逐拍 tick；时间推进、状态粒度和时间保真度是分别选择的维度。
 
 ## 不要从最复杂模型开始
 
@@ -18,9 +18,9 @@
 - 这个层级能不能回答
 - 升级会多解释哪些现象
 
-## Layer 0: Analytical Upper Bound
+## Layer 0: Analytical Estimate / Bound
 
-这一层通常忽略大部分微观冲突，只保留：
+这一层可用解析估算或界，通常忽略部分微观冲突。只有说明哪些约束被放松、为何所得值必然不低于真实可达吞吐时，才能称吞吐上界；未经证明的近似应称 estimate/proxy。常见输入包括：
 
 - hop / distance
 - bandwidth upper bound
@@ -58,7 +58,7 @@
 - VC / credit 细节
 - per-cycle arbitration 行为
 
-## Layer 2: Event-Level / Flow-Level
+## Layer 2: Flow 状态粒度
 
 这一层开始显式引入：
 
@@ -95,9 +95,11 @@
 
 这通常是“解释现象”的关键层。
 
-## Layer 4: Cycle-Accurate
+## Cycle-Accurate 是时间保真度，不是引擎类别
 
-这一层要求更严格的时间推进和内部状态一致性。
+周期精确要求指定观察边界上每拍状态和规则与目标模型一致；它可用逐拍 tick，也可用按 `(time, phase, stable_id)` 排序的离散事件引擎实现。反过来，tick 推进若只用固定 flow 延迟，也不自动具有 flit/credit 精度。这是与上面状态粒度正交的一条轴。
+
+这种精度要求更严格的事件顺序和内部状态一致性。
 
 它更适合：
 
@@ -129,7 +131,7 @@
 更准确的看法是：
 
 - 价值来自回答问题，不来自状态变量数量
-- analytical / event 层对快速排除错误方案非常有价值
+- 解析或粗 flow 粒度模型对快速筛选方案有价值
 - flit-level 应该在真正需要解释细粒度现象时再引入
 
 ## 一句话理解

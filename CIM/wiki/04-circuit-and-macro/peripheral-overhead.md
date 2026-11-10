@@ -9,7 +9,7 @@
 
 ## Peripheral 包括什么
 
-Peripheral 至少包括 WL driver、precharge、input encoder、DAC 或 pulse generator、SA、ADC、reference、sample/hold、local accumulator、shift-add、output buffer、controller、clocking、calibration storage 和 test logic。
+Peripheral 可能包括 WL driver、precharge、input encoder、DAC 或 pulse generator、SA 或 ADC、reference、sample/hold、local accumulator、shift-add、output buffer、controller、clocking、calibration storage 和 test logic。具体实现不一定同时包含这些电路，SA 与 ADC 也不一定串接。
 
 不同论文对 peripheral 的统计口径差异很大。有人只报 array energy，有人包含 ADC 但不含 DAC，有人包含 macro control 但不含外部 buffer。没有 breakdown 的 TOPS/W 只能作为局部线索，不能作为架构结论。
 
@@ -21,11 +21,9 @@ Digital CIM 的外围重心是 local logic、popcount、shift-add、accumulator�
 
 Mixed-signal CIM 的外围最容易被低估，因为它把 analog array、SA/ADC、数字校正和 buffer 分散在多个模块里。评估时必须统一统计到 macro boundary。
 
-## 为什么会超过 60%
+## 外围占比如何计算
 
-当 array cell 极小、并行列很多、目标精度需要 ADC、或 bit-serial 需要多周期累加时，外围会成为面积和功耗主项。很多 mixed-signal CIM macro 中，ADC、SA、driver、accumulator 和 buffer 合计超过 60% 并不奇怪；这不是实现差，而是 cell 阵列太便宜后，接口和控制变成主成本。
-
-这个比例不能机械套用到所有设计。SRAM digital CIM 的 60% 可能来自 local logic 和 buffer；ReRAM analog CIM 的 60% 可能来自 ADC/DAC/reference；Flash CIM 还要计入 program/verify 和长期校准。
+当 cell 面积小、输出列多、转换精度高或 bit-serial 累加次数多时，外围可能成为主要开销。但面积、瞬时功率和一次任务的能耗是不同分母。应分别记录电路块与测量范围，再计算 `E_peripheral / E_macro`、`A_peripheral / A_macro`。这些比例随架构、活动率、工作点和边界变化，不能假设通用数值。
 
 ## Macro 指标的最低披露要求
 
@@ -40,7 +38,7 @@ Mixed-signal CIM 的外围最容易被低估，因为它把 analog array、SA/AD
 
 ## 与系统互连的边界
 
-Peripheral 不是最后一层开销。macro 输出还要进入 tile buffer、local reduction、NoC、memory-mapped command path 或 host interface。05 章会连接 NoC wiki 的 [memory-centric NoC](../../../NoC/wiki/06-ai-noc-specifics/memory-centric-noc.md)，解释为什么 macro-level saving 会在系统层继续衰减；BUS wiki 的 interconnect 组件则适合理解 activation/result transfer 和 host-visible movement。
+Peripheral 不是最后一层开销。macro 输出还要进入 tile buffer、local reduction、NoC、memory-mapped command path 或 host interface。05 章会连接 NoC wiki 的 [memory-centric NoC](../../../NOC/wiki/06-ai-noc-specifics/memory-centric-noc.md)，解释为什么 macro-level saving 会在系统层继续衰减；BUS wiki 的 interconnect 组件则适合理解 activation/result transfer 和 host-visible movement。
 
 工艺节点也会改变 peripheral 口径。Digital SRAM-CIM 更能跟随主流 CMOS scaling；analog/mixed-signal CIM 受 matching、reference、layout parasitic、低电压 headroom 和 analog-friendly node 约束，不能把 digital PPA scaling 直接套到 ADC/DAC 和 reference 上。
 

@@ -2,7 +2,7 @@
 
 上级：[05 System Integration](./README.md)
 
-相关：[Source Routing For Deterministic Systems](../04-routing-and-flow-control/source-routing-for-deterministic-systems.md)、[Topology Physical Realization](../03-topology/topology-physical-realization.md)、[RAM: address mapping channel rank bank row col](/mnt/e/wiki/RAM/wiki/06-memory-controller/address-mapping-channel-rank-bank-row-col.md)
+相关：[Source Routing For Deterministic Systems](../04-routing-and-flow-control/source-routing-for-deterministic-systems.md)、[Topology Physical Realization](../03-topology/topology-physical-realization.md)、[RAM: address mapping channel rank bank row col](../../../RAM/wiki/06-memory-controller/address-mapping-channel-rank-bank-row-col.md)
 
 ## 这页在回答什么问题
 
@@ -66,7 +66,9 @@ NoC 并不理解“这个 tensor 很重要”这类高层语义。对网络来�
 - locality 和 row-buffer friendliness 可能下降
 - 某些 workload 的 memory behavior 会更难预测
 
-所以 interleaving 不是免费午餐，而是 throughput 与局部性之间的交易。
+例：4 个端口以 64 B stripe 映射，`port=floor(addr/64) mod 4`。地址 0、64、128、192 分别到 port 0、1、2、3；stride 256 B 的访问 0、256、512 全部落在 port 0，仍会产生热点。跨 stripe 的逻辑 burst 应按各 stripe 边界拆成目标子请求；NI 保存事务 ID、子请求序号和 offset，返回后按原接口规则重组及响应，不能把跨端口访问当成一个目标。
+
+更新地址映射或 route table 时，先停止相关注入并 drain 旧包，或为包和表使用 epoch 并保留旧版本至在途包完成；否则旧 route-id 可能按新表误送。interleaving 的收益还取决于 locality、bank 和服务速率。
 
 ## routing table 不是孤立存在的
 

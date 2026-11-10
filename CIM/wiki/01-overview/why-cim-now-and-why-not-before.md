@@ -1,4 +1,4 @@
-# 为什么 CIM 在 1990s 失败、在 2010s 重生
+# 早期 PIM 原型与 AI 时代的新机会
 
 上级：[01 Overview](./README.md)
 相关：[Memory Wall 与 Von Neumann Bottleneck](./problem-statement.md), [两条正交主线](./two-axes-memory-and-paradigm.md)
@@ -9,17 +9,15 @@
 
 ## 早期为什么难以成为主流
 
-1990s 到 2000s 的 processing-in-memory、logic-in-memory、active memory 研究已经看到了 processor-memory gap。但当时主流 workload 更依赖通用控制流、cache hierarchy 和标量/向量程序性能，靠近 memory 放 compute 很容易遇到三个问题。
+1990s 到 2000s 已有 processing-in-memory、logic-in-memory 和 active memory 原型，但这些路线没有普遍成为主流商用系统；不能据此说原型都失败，也不能用后来 AI 技术的缺席解释所有历史案例。
 
-第一，workload 不够规整。CIM/PIM 最喜欢的是可批量映射、数据复用清晰、控制流简单的矩阵/向量类计算。传统通用程序的大量分支、指针追踪、系统调用和复杂 cache 行为，让 memory-side compute 很难形成稳定软件接口。
+例如 UC Berkeley 的 [VIRAM-1 及硬件/编译器协同设计](https://people.eecs.berkeley.edu/~yelick/papers/iram-proc-ieee01.pdf)面向音频、视频和图像等具有数据并行性的媒体程序。它把向量处理器与 embedded DRAM 集成，并设计向量 ISA 和配套编译器；这说明早期已有规整 workload 和软件工具，不能概括为只面对不规整通用程序或没有编译器。它是特定研究原型，不证明整类产品已经规模部署。
 
-第二，数值和软件生态不配合。早期主流计算更强调高精度和通用 ISA 兼容，而 CIM 尤其 analog/mixed-signal CIM 天然更适合低比特、固定模式、容错推理。没有低精度神经网络、QAT、noise-aware training 和 graph compiler，硬件即使能做局部计算，也很难被完整模型使用。
-
-第三，工艺和验证收益不闭环。把逻辑放进 memory process 会牺牲逻辑密度和频率，把 memory 做进 logic process 又牺牲容量和成本。早期系统没有足够强的 AI memory-bound 需求来支付这种工艺、验证、测试和软件代价。
+不同方案的采用还须分别评估：在目标工艺中整合逻辑与存储的面积、时序和制造成本，程序数据布局与可移植性，及与已有处理器和内存系统的端到端收益。公开原型本身不能证明这些因素各自造成了多少商业影响。低位量化、QAT 和模型容错则是后来的 AI 推理设计条件，不是 VIRAM 等早期媒体原型必须具备的前提。
 
 ## 2010s 后发生了什么变化
 
-AI workload 给 CIM/PIM/NMC 提供了更匹配的目标。CNN、DNN、Transformer 中大量核心子图可以降到 MVM/GEMM、dot product、bitwise operation 和 reduction。即使不是整网都适合，某些子图也足够大、足够规整，值得专门优化。
+2010 年代 DNN/CNN 的发展为 CIM/PIM/NMC 提供了更匹配的目标，后来的 Transformer 进一步扩展了工作负载。大量核心子图可以降到 MVM/GEMM、dot product、bitwise operation 和 reduction。即使不是整网都适合，某些子图也足够大、足够规整，值得专门优化。
 
 低精度推理改变了 analog/digital trade-off。INT8、INT4、binary/ternary network、quantization-aware training 和后来的 mixed precision 让“硬件数值不完美但模型可补偿”成为现实。Analog CIM 仍然有精度和校准问题，但模型层开始能吸收一部分硬件噪声。
 
@@ -36,8 +34,8 @@ EDA、硅后测量和硬件软件协同能力也更成熟。现代 SoC 设计已
 ## 一条历史判断线
 
 ```text
-早期 PIM/CIM:
-  通用程序 + 高精度 + 软件接口弱 + 工艺收益不闭环
+早期示例 VIRAM-1:
+  媒体向量程序 + embedded DRAM + 向量 ISA/编译器 + 原型验证
 
 AI 时代 CIM/PIM/NMC:
   规整矩阵子图 + 低精度容忍 + memory-bound 场景 + 异构软件栈
@@ -47,7 +45,7 @@ AI 时代 CIM/PIM/NMC:
 
 ## 常见误解
 
-常见误解：CIM 过去失败只是因为工艺不成熟。实际上，workload、数值精度、软件生态和商业场景同样不成熟。
+常见误解：早期原型未规模采用只因工艺不成熟，或只因缺少 AI 量化工具。实际上须针对具体方案审查应用、工艺、编译器、集成成本及商业证据。
 
 常见误解：AI 时代 CIM 一定会成为主流。实际上，AI 只是提供了更合适的局部场景，系统收益仍然要逐层证明。
 
@@ -55,4 +53,4 @@ AI 时代 CIM/PIM/NMC:
 
 ## 一句话理解
 
-CIM 在 AI 时代重生，是因为 workload 和低精度软件栈终于开始匹配靠近 memory 的计算；它没有在历史上失败一次后突然变简单，难点只是从“能不能算”转移到了“能不能稳定、可编程、可量产地带来系统收益”。
+AI 时代的部分 workload 和低精度软件栈更匹配靠近 memory 的计算；已有原型和应用不意味着历史上的所有方案都失败，难点只是从“能不能算”转移到了“能不能稳定、可编程、可量产地带来系统收益”。

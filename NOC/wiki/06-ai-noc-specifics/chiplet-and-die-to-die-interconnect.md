@@ -2,7 +2,7 @@
 
 上级：[06 AI NOC Specifics](./README.md)
 
-相关：[Topology Physical Realization](../03-topology/topology-physical-realization.md)、[RAM: hbm 2.5d 3d tsv](/mnt/e/wiki/RAM/wiki/08-packaging-integration/hbm-2.5d-3d-tsv.md)
+相关：[Topology Physical Realization](../03-topology/topology-physical-realization.md)、[RAM: hbm 2.5d 3d tsv](../../../RAM/wiki/08-packaging-integration/hbm-2.5d-3d-tsv.md)
 
 ## 这页在回答什么问题
 
@@ -12,12 +12,11 @@
 
 die-to-die 互连和片上 hop 的差别，不只是更长，而是一个不同层级的通路：
 
-- 延迟更高
-- 带宽密度更低
-- 能耗更高
-- 可靠性机制更复杂
+- 可能需要不同的串行化、时钟和封装接口
+- gateway 队列、重组与可选的可靠性机制增加状态
+- 延迟、带宽密度和能耗取决于技术、距离与实现；不能对所有跨 die 和片上路径作绝对排序
 
-因此跨 die 代价通常不是“片上多走几格 mesh”能近似的。
+例如 die A 的 NI 发读请求 packet：本地 NoC 将其送至 gateway；gateway 入队、跨时钟、按 D2D 链路格式分包并串行发送。若链路协议实现 replay，则保存待确认数据、在错误时按该协议重发。die B gateway 接收并重组，再通过本地 NoC 到 memory；返回数据沿反向路径切包、传输、重组并交付请求者。若 A gateway 的待发送队列满，本地 NoC 会经有限缓冲和 credit 逐跳回压。不同 D2D 协议可无 replay 或使用其他粒度，需按实际接口建模。
 
 ## 为什么 AI 系统很容易碰到它
 
@@ -53,7 +52,7 @@ AI 芯片越来越常见：
 
 ## 为什么 deterministic NPU 更要谨慎
 
-对 deterministic 系统而言，跨 die 带来的问题不仅是平均延迟更高，更是：
+对 deterministic 系统而言，若目标实现的跨 die 服务时间或波动更大，问题还包括：
 
 - 时序等级突然断层
 - static schedule 更容易失配

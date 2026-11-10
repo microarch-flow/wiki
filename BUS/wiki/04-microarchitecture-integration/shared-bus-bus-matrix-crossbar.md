@@ -16,8 +16,8 @@
 
 | 组织方式 | 同周期连接能力 | 共享点 | 主要收益 | 主要代价 |
 | --- | --- | --- | --- | --- |
-| shared bus | 一次只服务一条全局传输 | 全局 bus、全局 arbiter | 面积小、控制简单、波形容易解释 | 所有流量串行化，慢事务影响全局 |
-| bus matrix | 多个 master 可同时访问不同 slave，但内部仍有共享点 | 分组 arbiter、局部通道、共享 return path | 局部并发，成本低于 full crossbar | 阻塞关系依赖实现，分析复杂 |
+| shared bus | 共享链路每个传输时隙服务一条流 | 全局 bus、全局 arbiter | 面积小、控制简单、波形容易解释 | 链路传输串行；事务等待是否占线取决于协议 |
+| bus matrix | 多个 master 可同时访问不同 slave，连接能力取决于实现 | 分组 arbiter、局部通道、可能共享 return path | 支持局部并发 | 阻塞范围、面积和成本依连接、缓冲与仲裁实现而变 |
 | full crossbar | 不同 input/output 可并行连接 | 每个输出端口、return path、buffer | 并发上限高，适合多 master 多 slave | 面积、布线、时序、验证状态增加 |
 
 判断互连能力时，不能只看框图上的名字。一个标为 crossbar 的实现，如果每个 master 只有单输入队列，也可能出现 head-of-line blocking；一个 bus matrix 若按目标分队列，对某些流量组合可能接近 crossbar 的表现。
@@ -32,7 +32,7 @@ shared bus 的设计动机是把互连控制做到最小。全局只有一条传
 | 小 MCU 或控制岛 | master 数量少，面积和验证成本更敏感 |
 | debug 或 maintenance path | 可观察性和确定性比吞吐更重要 |
 
-代价是所有请求共享同一个时间轴。一次慢 APB 访问、一次等待中的 flash read、一次长 burst，都可能阻止无关 master 访问其他 slave。模型里必须把 shared bus 当成单 server queue，而不是把每个 slave 独立建模。
+共享链路上的传输占用同一时间轴，但整笔事务是否一直占线取决于协议。本节下表假设**阻塞式总线**：请求占线直到目标完成，因此慢 APB 访问会阻止其他访问。若 split 事务可在目标等待期间释放链路，其他请求可能继续传输；模型应分别表示链路 server、目标服务和未完成事务，而非一律用一个全局事务 server。
 
 | 周期 | 事件 | 全局影响 |
 | --- | --- | --- |
@@ -46,7 +46,7 @@ shared bus 的设计动机是把互连控制做到最小。全局只有一条传
 
 ## Bus Matrix：用局部并发降低全局阻塞
 
-bus matrix 的设计动机是打破“所有请求共用一条路径”的限制，同时避免 full crossbar 的面积和布线成本。它把互连拆成若干输入、输出和局部仲裁点，让访问不同目标的请求可以并行。
+bus matrix 的设计动机是打破“所有请求共用一条路径”的限制；具体连接矩阵和缓冲决定其面积、布线与并发，不能仅按名称断言比 full crossbar 更低成本。它把互连拆成若干输入、输出和局部仲裁点，让访问不同目标的请求可以并行。
 
 | 访问组合 | shared bus | bus matrix |
 | --- | --- | --- |
@@ -90,7 +90,7 @@ crossbar 不等于无限并发。热点 slave 仍是单一服务点；DDR contro
 
 | 问题 | shared bus | bus matrix / crossbar |
 | --- | --- | --- |
-| response 匹配 | 顺序由全局传输隐含 | 需要 ID/source、端口或内部 tag |
+| response 匹配 | 单笔或严格有序时可由顺序隐含；split shared bus 若允许乱序则需要 tag/ID 等匹配 | 需要 ID/source、端口或内部 tag |
 | 返回顺序 | 更容易保持提交顺序 | 可能按目标、ID 或通道交错 |
 | 错误返回 | default slave 或全局错误点 | 错误可能由 decoder、bridge、slave、timeout 多处产生 |
 | backpressure | 全局 stall 直观 | 局部 stall 的扩散范围依赖队列结构 |
@@ -120,10 +120,10 @@ crossbar 不等于无限并发。热点 slave 仍是单一服务点；DDR contro
 
 ## 一句话理解
 
-shared bus、bus matrix 和 crossbar 的差别，是阻塞范围从全局逐步收缩到局部，但每一次收缩都要付出面积、布线、状态和验证成本。
+shared bus、bus matrix 和 crossbar 的阻塞范围由实际连接、协议和队列决定；增加并行路径通常也增加面积、布线、状态和验证成本。
 
 ## 建模启示
 
-互连组织要建模成 service point 和并发矩阵。shared bus 是单一全局 server；bus matrix 是若干局部 server 加共享链路；crossbar 是按输出端口和返回路径组织的多 server 系统。性能模型要记录 master/slave 流量矩阵、可并行组合、热点出口、队列划分、仲裁策略、buffer 深度和 response path 带宽。
+互连组织要建模成 service point 和并发矩阵。阻塞式 shared bus 可用单一全局事务 server；split shared bus 需要分开共享链路与目标等待。bus matrix 和 crossbar 的局部 server、共享链路与返回路径应按实际连接和缓冲配置建立。性能模型要记录 master/slave 流量矩阵、可并行组合、热点出口、队列划分、仲裁策略、buffer 深度和 response path 带宽。
 
 功能模型还要记录 ordering、ID/source 匹配、错误来源、decode miss 路径和 slot 释放条件。事件模型建议显式表达 `request_enqueue`、`route_select`、`output_arbiter_grant`、`hotspot_wait`、`response_route`、`slot_release`。只有把拓扑名称展开成这些状态，才能解释为什么某条路径在 shared bus 上被全局拖慢、在 bus matrix 上局部阻塞、在 crossbar 上仍受热点出口限制。

@@ -23,7 +23,7 @@ wormhole packet 会沿路径持有一串资源：当前 input VC、下游 VC 绑
 
 VC 提供的关键工具是：你可以把不同阶段、不同消息类型、或不同路由规则映射到不同 VC 层次上，从而打断“所有 packet 都在竞争同一圈资源”的局面。
 
-一个典型例子是 dateline 或 escape VC。你并不是 magically 消除了环，而是强迫一类 packet 只能在某个更受限的 VC 子空间里前进，从而让资源依赖图不再闭合。
+Dateline 方法将跨环边前后的通道依赖分层，并限制回退，以消除所选路由的环形依赖。Escape VC 方法则提供一个可达目标、依赖无环的受限子网；仅有该子网还不够，必须证明允许进入 escape 的转移不会重新形成依赖环、所需 escape 资源可取得，且仲裁公平、端点最终服务。允许从 escape 任意回到 adaptive 网络可能重建环。两种方法的证明条件不能混为一句“有 VC 就无死锁”。
 
 所以 VC 的真正价值，不是“有更多 lane”，而是“能把资源依赖拆层”。
 
@@ -51,12 +51,12 @@ VC 多的好处：
 
 VC 多的代价：
 
-- buffer SRAM 线性增长
+- 若每 VC 深度和 flit 宽度固定，buffer bit 数随 VC 数增长；总容量固定时则每 VC 可能更浅
 - VC allocator 规模变大
 - switch allocator 候选增加
 - credit state、binding state、调试复杂度都上升
 
-更关键的是，对 deterministic NPU，这些额外自由度未必总是收益。静态调度系统本来就想减少动态不确定性；如果 workload 规整、traffic class 也有限，2 到 4 个 VC 常已足够。再继续堆 VC，可能只是在扩大硬件状态空间，却没有明显提升可用带宽。
+更关键的是，对 deterministic NPU，这些额外自由度未必总是收益。静态调度系统本来就想减少动态不确定性；所需 VC 数由路由依赖、traffic class、隔离目标和负载决定。必须先证明死锁规避，再用目标流量评估吞吐与面积；不能仅由 NPU 类型推定数量。
 
 ## 一个简单状态图
 
@@ -67,7 +67,7 @@ IDLE
   -> RC
   -> VA
   -> ACTIVE
-  -> IDLE  // tail leaves
+  -> IDLE  // tail 成功离开本 input VC；仅释放本地上下文
 ```
 
 并附带这些状态：
@@ -77,7 +77,7 @@ IDLE
 - `downstream vc binding`
 - `credit count of bound downstream vc`
 
-你可以看出，VC 不是“加个编号”这么简单，它实际上是 router 内部一个小状态机。
+此图只描述本 input VC 的本地上下文。下游 slot credit 和 output VC 的再次分配许可是独立状态。采用严格策略时，即使本地 tail 已离开，上游也要等下游 tail 离开并返回 free 信号，才可把该 output VC 分给后包。具体事件和另一种 FIFO 复用策略见 [核心数据结构](../08-simulator-construction/core-data-structures.md#三种独立状态)。
 
 ## 一个定量直觉
 
@@ -142,7 +142,8 @@ VC {
 - `vc_state_enter_rc`
 - `vc_alloc_request`
 - `vc_alloc_grant`
-- `vc_release_on_tail`
+- `local_context_release_on_tail`
+- `downstream_vc_permission_return`（严格策略下由 tail free 消息触发）
 
 如果只关心 saturation throughput，不关心 worst-case latency 或 deadlock，可以把 `downstream_vc` 简化成静态映射，甚至只统计每个端口的活跃 VC 数。  
 如果关心 deadlock-free 分析，`vc_class`、`dependency_edge` 和 `packet_holds_vc` 这些状态必须保留，因为你要追踪的是资源依赖图，而不只是流量计数。

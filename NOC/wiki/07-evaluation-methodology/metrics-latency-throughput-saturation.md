@@ -24,6 +24,12 @@ injection / offered load
 
 如果这个链条断了，指标就会变成“看起来很多，但解释不了问题”。
 
+## 固定计量边界
+
+在统一 measurement 窗口 `[t0,t1)` 内：offered load 是生成并满足释放条件的 payload bytes / wall time；accepted 是端点成功接纳或首 flit 注入的 bytes / wall time（须声明所选边界）；delivered 是 consumer 成功消费的 payload bytes / wall time。wire bytes 另计 header、padding 和重传，link byte-hop 是各链路传输字节之和。单位可为 B/s 或 flit/cycle，但需给时钟和 flit 大小。
+
+记录 `release→injection` 的源等待、`injection→network arrival` 的网络延迟，以及 `network arrival→consumer completion` 的端点等待。实验须声明 warmup、measurement、drain、随机 seed；窗口末还在途、超时或未消费的数量和年龄要与已完成样本的 P99 一起报告，否则只取完成样本会把最慢请求删掉。
+
 ## latency 要看分布，不只看平均
 
 平均 latency 的问题在于，它会掩盖：
@@ -58,11 +64,11 @@ injection / offered load
 
 ## saturation point 是结构性拐点
 
-`saturation` 的价值不在“这个数是多少”，而在它标记了一件事：
+`saturation` 是由给定流量和资源条件观测到的服务极限；单凭一条延迟曲线突然变陡不能证明。需要看：
 
 - offered load 再增加，系统不再线性响应
 - latency 开始急剧上升
-- queue / stall 开始持续积累
+- 若持续 offered 大于 delivered 且 pending 数随测量窗口增长，系统不稳定；短时 burst 只说明局部积压
 
 因此 saturation 应和下面这些一起看：
 
@@ -110,8 +116,8 @@ per-link / per-router utilization 很重要，但它只能告诉你：
 例如：
 
 - analytical model 适合给粗粒度 throughput / hop / bisection proxy
-- event-level model 适合给 flow-level latency 与 phase overlap
-- flit-level / cycle model 才适合给 credit stall、switch conflict、per-router occupancy
+- flow 粒度模型适合给 flow-level latency 与 phase overlap
+- 显式保留 flit、credit、逐周期仲裁和队列状态的模型可给对应 stall 与 occupancy；event-driven 引擎也可以逐周期准确
 
 如果把这些不加区分地并排比较，结论会很危险。
 

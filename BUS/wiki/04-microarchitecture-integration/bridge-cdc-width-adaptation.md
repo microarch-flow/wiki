@@ -6,7 +6,7 @@
 
 ## 这页在回答什么问题
 
-Bridge 不是简单地把两根管子焊到一起——它更像一个**国际机场的转机大厅**：旅客（transaction）从国际航班（AXI 高速主干）下来，要换乘国内小飞机（APB 低速外设），中间要过海关（协议转换）、调整时区（时钟域跨越）、把大行李箱换成随身背包（位宽适配）。
+Bridge 不是简单地把两根管子焊到一起——它更像一个**国际机场的转机大厅**：旅客（transaction）从国际航班（AXI 高速主干）下来，要换乘国内小飞机（APB 低速外设），中间要过海关（协议转换）、经过跨时钟域接口、把大行李箱换成随身背包（位宽适配）。
 
 这三种转换的共同风险是：国际航班允许的行李规格，国内小飞机不一定能装。建模时必须把 bridge 当成一个有排队区、有安检状态、有登机条件的转机环节，而不是零延迟的”穿墙术”。
 
@@ -38,18 +38,35 @@ bridge 的设计动机是隔离复杂度。高速主互连不该为每个低速�
 
 协议转换的取舍在于：保留更多上游能力，需要更多 buffer、slot 和验证状态；快速收缩能力，逻辑更简单，但会降低吞吐并制造回压。低速配置寄存器路径更偏向简单收缩；DMA 到存储路径若引入过强收缩，会直接伤害带宽。
 
-## CDC：跨时钟域是节奏转换
+## CDC：跨域采样、同步和流控
 
-CDC（Clock Domain Crossing）就像两个**不同时区的办公室之间传递文件**——北京办公室早上 9 点开始工作，纽约办公室晚上 9 点才上班。CDC bridge 的目标不是”让文件飞过去”，而是保证文件在跨时区传递时不丢失、不错乱、不在时差间隙里被遗忘。
+CDC（Clock Domain Crossing）的输入是源域的状态、事件或数据；输出是目标域能够安全使用的对应信息。对于无已知固定相位关系的两个时钟，源信号可能在目标触发器的 setup/hold 采样窗口内变化。触发器可能进入亚稳态，其输出稳定所需时间不能由普通逻辑仿真准确决定。CDC 既要解决采样可靠性，也要保证数据不丢失、不重复和不混合。
 
-| CDC 方案 | 适合路径 | 代价 |
+| 信息 | 实现方式 | 必要条件与限制 |
 | --- | --- | --- |
-| async FIFO | 有持续流量的 data 或 request path | 需要深度规划，满空判断影响回压 |
-| toggle / pulse handshake | 低频控制事件 | 吞吐低，每次传输有固定同步延迟 |
-| multi-flop sync | 单 bit 状态信号 | 不适合多 bit 数据或 transaction payload |
-| credit-based crossing | 长距离或高吞吐链路 | credit 状态和恢复逻辑更复杂 |
+| 稳定单 bit 电平 | 目标域两级或多级触发器同步器 | 源值保持足够长；级数和布局按可靠性目标设计，只降低亚稳态传播概率，不能保证概率为零 |
+| 短脉冲或一次性事件 | toggle 或请求/确认握手 | 脉冲可能完全落在两个目标采样沿之间而漏采；必须满足方案规定的事件间隔、确认和复位约束 |
+| 多 bit 数据和持续事务 | 异步 FIFO；低频数据也可用保持数据稳定的跨域握手 | 不能把普通 payload 的每一位各自同步后直接拼成一个字；不同位的采样延迟可能不同 |
 
-CDC 的性能不是固定加几个周期就能描述。fast-to-slow 方向会因为 slow domain 消化速度形成 FIFO 积压；slow-to-fast 方向可能低延迟返回，但仍受同步器和 response FIFO 影响。reset 也要建模：一个时钟域已出 reset，另一个时钟域还没出 reset 时，bridge 是否接收请求、是否返回错误、是否保持 backpressure，都会影响 boot path 和 debug path。
+异步 FIFO 用写时钟写入、读时钟读出。数据存入可由两域安全访问的存储体；常见设计将读、写指针编码为 Gray code，再通过同步器送入对方时钟域，分别生成本地的 empty/full 判断。指针的跨域同步有延迟，读取已经发生后，写侧也不一定立刻看到空位。Gray code 不是免约束的多 bit 总线：仍需遵守具体实现的指针更新、跨域路径延迟及位间偏差约束。
+
+`credit` 是流控信息，表示接收侧授予的空间或配额；它本身不解决亚稳态。credit 若跨域，仍需通过异步 FIFO、握手或适合该信号的安全 CDC 机制传递。复位释放及两侧 FIFO 初始化也需要明确协调；一侧仍在 reset 时能否接受流量取决于接口契约。
+
+### 一个确定性的边沿例子
+
+这是构造的仿真口径，不是某个 FIFO IP 的固定延迟。假设写时钟上升沿为 `0, 6, 12, … ns`，读时钟上升沿为 `1, 11, 21, … ns`。FIFO 初始为空，复位已完成；写指针用两级读域同步器，读侧用同步后的指针组合判断 empty。只写一次，指针在跨域期间保持稳定；抽象模型规定读请求接受后一个读周期输出有效数据，且读端一直请求。
+
+| 时刻 | 输入和动作 | 读侧可见结果 |
+| ---: | --- | --- |
+| 6 ns | 写域在上升沿接受一个数据，随后更新写指针 | empty 仍为 1 |
+| 11 ns | 读域第一级采到已稳定的写指针 | 第二级仍是旧值，empty 为 1 |
+| 21 ns | 第二级更新；组合 empty 判断随后变化 | empty 变为 0，数据可请求读取 |
+| 31 ns | 读域上升沿接受读请求 | FIFO 弹出一项 |
+| 41 ns | 按本例的一个读周期数据延迟输出 | 读数据有效 |
+
+这里 21 ns 的 empty 变化发生在该沿之后，因此最早在 31 ns 的下一个读沿接受请求。实际 IP 的 empty 与数据有效时间由其同步级数、标志寄存器和读模式决定，不能直接套用这张表。若源边沿靠近目标采样窗口，实际首级可能延后稳定；确定性周期模型只表达选定的抽象延迟、队列和事件，**不模拟亚稳态发生概率或可靠性指标**。需要检查不同相位、延迟与复位情形；电气可靠性还需要基于器件、时序约束和实现评估。
+
+参考：[Cummings，SNUG 2002 异步 FIFO 设计](https://www.researchgate.net/publication/252160343_Simulation_and_Synthesis_Techniques_for_Asynchronous_FIFO_Design)、[AMD XPM_FIFO_ASYNC 读写与标志延迟](https://docs.amd.com/r/2025.2-English/ug1353-versal-architecture-ai-libraries/XPM_FIFO_ASYNC)、[AMD Gray-code CDC 路径约束](https://docs.amd.com/r/en-US/ug949-vivado-design-methodology/Constraints-on-Individual-CDC-Paths)。
 
 ## Width Adapter：数据粒度改变会影响语义
 
@@ -72,22 +89,25 @@ bridge 处理 burst 时要回答两个问题：下游是否支持同样的 burst
 | --- | --- | --- |
 | 4-beat AXI write 到 APB | 4 次 APB write | 全部子写完成后返回 B |
 | 8-beat AXI read 到窄 SRAM | 拆成更多窄读 | 收齐并重组后按 RLAST 返回 |
-| burst 中第 3 个子访问错误 | 停止后续或继续执行取决于 bridge 设计 | 错误映射到整笔 response 或对应 beat |
-| crossing 4KB 边界 | bridge 应拒绝或拆分前保持协议规则 | 不能生成违反下游/上游规则的访问 |
+| burst 中第 3 个子访问错误 | 是否停止后续**下游**子访问取决于设备副作用及 bridge 契约 | 上游 AXI 仍须收齐写数据并返回 B，或返回完整 R burst 和正确 RLAST；将错误映射到响应 |
+| crossing 4KB 边界 | 跨界逻辑请求需在发出 AXI 地址前拆分；不应把非法跨界 burst 作为合法请求 | 不能生成违反下游/上游规则的访问 |
 
 completion 聚合会增加隐藏状态。bridge 需要知道哪些子事务已经发出、哪些已经返回、错误是否已经发生、上游 response 是否可以释放。这个状态直接决定 timeout、flush、reset 和错误恢复的复杂度。
 
 ## 例子：AXI 写 APB 寄存器
 
-下面用一个 64-bit AXI master 写 32-bit APB 寄存器的路径说明 bridge 如何制造额外延迟和状态。
+下面是构造的单时钟例子：64-bit AXI master 向对齐的 32-bit APB 寄存器写一个 beat，`AWADDR=0x1000`、`AWSIZE=2`、`AWLEN=0`、`WLAST=1`、`WSTRB=0x0F`。假设 bridge 在同一个上升沿接收 AW 和 W，再发起一次 APB 写；`BREADY` 在响应阶段为 1。表中每一行描述对应上升沿的采样，注明“沿后”的状态在该沿之后生效。
 
-| 阶段 | AXI 侧 | Bridge 状态 | APB 侧 | 关键建模点 |
-| --- | --- | --- | --- | --- |
-| T0 | AWVALID/WVALID 到达 | 捕获地址、数据、WSTRB | idle | AW/W 是否同时到达，slot 是否可用 |
-| T1 | AWREADY/WREADY 拉高 | 判断只需写低 32-bit lane | PSEL=1, PENABLE=0 | byte lane 映射 |
-| T2 | 等待 B response | APB access active | PSEL=1, PENABLE=1 | PREADY 决定停留周期 |
-| T3 | 等待 B response | 若 PREADY=0，保持 access | APB stall | backpressure 是否影响下一笔 AXI |
-| T4 | BVALID 返回 | PSLVERR 映射为 BRESP | access done | response_match、slot release |
+| 上升沿 | AXI 侧 | Bridge 与 APB 侧 | 结果 |
+| --- | --- | --- | --- |
+| T0 | `AWVALID=WVALID=1`，`AWREADY=WREADY=0` | APB 空闲 | 尚未握手；发送方保持地址、数据、`WSTRB` 与 `WLAST` 稳定 |
+| T1 | AW 与 W 均为 `VALID=READY=1` | 沿后保存地址和数据，开始 APB setup：`PSEL=1, PENABLE=0` | 两个 AXI 通道各接受一次；本例 AW 和 W 同拍接受 |
+| T2 | 等待 B | 沿前仍是 setup；沿后进入 access：`PSEL=1, PENABLE=1` | setup 结束；该沿尚不按 access 接受 `PREADY` |
+| T3 | 等待 B | access：`PREADY=0` | APB 等待；保持 `PSEL/PENABLE`、地址和写数据稳定 |
+| T4 | 沿前 `BVALID=0` | access：`PREADY=1`；采样 `PSLVERR`，沿后生成 `BVALID` 与映射后的 `BRESP` | APB 子写在该沿完成；此前 AW 和全部 W 已接受 |
+| T5 | `BVALID=BREADY=1` | APB 已完成 | B 在该沿握手；释放本例写 outstanding |
+
+B 不会在 T4 因沿后才拉高的 `BVALID` 被提前计为握手；若 `BREADY=0`，bridge 必须保持 `BVALID/BRESP` 稳定直到握手。AXI 允许 AW 与 W 不同拍接受，本表只展示其中一种排列；APB `PREADY` 也可使 access 持续更多拍。实际跨时钟的 bridge 还要在相应时钟域和 CDC 延迟下重新安排这些事件。
 
 若上游 64-bit 写覆盖两个 32-bit APB 寄存器，bridge 还要决定是否拆成两次 APB write。若这两个寄存器有 side effect，拆分顺序和错误处理就不只是性能问题，而是功能语义。
 
@@ -98,18 +118,18 @@ bridge 需要把下游不可用转换成上游可理解的 backpressure 或错�
 | 下游状态 | Bridge 选择 | 上游可见结果 |
 | --- | --- | --- |
 | 下游暂时 busy | 保持 READY 低或填满后回压 | 上游 stall，事务未被接收 |
-| 下游长期不响应 | timeout 后生成错误 response | 上游事务完成但带错误 |
+| 下游长期不响应 | 若实现支持 timeout 收尾，可合成错误响应 | 上游协议响应完整且被消费后才完成；迟到下游响应必须隔离或排空 |
 | 下游返回错误 | 映射成协议 response | 软件或 master 可区分失败 |
 | bridge 内部 FIFO 满 | 阻止新请求进入 | upstream latency 增加 |
 
-错误路径必须释放资源。一个 timeout 若只产生错误但不释放 slot，后续事务会被永久阻塞；一个 reset 若清空子事务但不通知上游，上游会等待永不返回的 completion。bridge 模型要把错误生成和资源释放放在同一个状态机里。
+错误路径必须明确资源生命周期。timeout 检测本身不终止原事务：若 bridge 合成上游响应，须隔离、排空或标记丢弃迟到的下游响应，防止重复完成或误配给新事务。上游写仍须收齐 W，上游读仍须返回约定 beat 数。reset 的作用范围、两侧协调及在途请求如何失败、排空或随整个接口复位，必须由系统契约定义；仅清空内部 FIFO 会使未复位的上游永久等待。
 
 ## 常见误区
 
 | 误区 | 更准确的判断 |
 | --- | --- |
 | bridge 只是 glue logic | bridge 是协议、时钟、位宽、错误和完成语义的转换边界 |
-| CDC 过形式验证就结束 | 形式验证证明跨域安全，不等于吞吐、reset、timeout 和回压已经被建模 |
+| CDC 过形式验证就结束 | 形式验证只覆盖所建模的属性和假设；还需检查电气约束、复位、吞吐与回压 |
 | width adapter 只影响带宽 | byte lane、WSTRB、side effect 和 partial write 都可能改变功能结果 |
 | 上游支持 burst/outstanding 就能保持性能 | bridge 的 slot、FIFO 和下游协议会重新定义有效并发窗口 |
 

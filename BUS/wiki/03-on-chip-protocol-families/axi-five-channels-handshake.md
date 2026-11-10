@@ -30,7 +30,22 @@ AXI 的五个 channel 和 `VALID/READY` 握手到底在定义什么，为什么�
 
 VALID/READY 握手就像**双方伸手的交接仪式**：递东西的人举起手说”我准备好了”（VALID），接东西的人也伸出手说”我能接”（READY），只有两只手同时伸出的那一刻，东西才算交出去。
 
-这个规则的关键在于”**只完成当前这一步**”。服务员把点单递给厨房（`AWVALID && AWREADY`），只说明点单被接收了——菜还没做呢；厨房把一道菜放上传送带（`WVALID && WREADY`），只说明这道菜上了传送带——客人还没吃到呢；客人确认收到账单（`BVALID && BREADY`），这才说明这笔订单闭环了。
+这个规则只完成当前通道的一次交付。`AWVALID && AWREADY` 表示 slave 接收写地址；`WVALID && WREADY` 表示 master 的一个写数据 beat 被接收；`BVALID && BREADY` 表示 master 接收 slave 的写响应，接口写事务才闭合。
+
+同步接口在时钟上升沿采样。只有该上升沿 `VALID=1` 且 `READY=1`，才传输一个 beat。发送方一旦拉高 `VALID`，在握手前必须保持 `VALID` 和该通道的全部 payload 稳定；包括地址属性、数据、strobe、ID、response 和 last 等适用信号。接收方可以先拉高或拉低 `READY`。复位规则另行处理。
+
+发送方不能以接收方先拉高本通道 `READY` 为前提才拉高 `VALID`。接收方则可以等待看到 `VALID` 再拉高 `READY`，也可以提前拉高。这是避免握手死锁的依赖规则；发送方仍可因自身数据或协议依赖未准备好而暂不发送。
+
+反例：发送方内部已有待发 beat，但错误地等 `READY=1` 才发 `VALID`；接收方合法地等 `VALID=1` 才给 `READY`。双方都会保持 0，握手永远不发生。正确实现由发送方独立提出 `VALID`，接收方再按容量决定 `READY`。
+
+| 上升沿 | VALID | READY | payload | 结果 |
+|---:|---:|---:|---|---|
+| 0 | 1 | 0 | A | stall，保持 A |
+| 1 | 1 | 0 | A | stall，仍保持 A |
+| 2 | 1 | 1 | A | 传输 A；之后才可换下一 beat |
+| 3 | 1 | 1 | B | 传输 B |
+
+两个信号在上升沿之间同时为高，不构成额外传输。依据：[Arm IHI 0022H](https://developer.arm.com/-/media/Arm%20Developer%20Community/PDF/IHI0022H_amba_axi_protocol_spec.pdf?hash=6325311012DDADF238C35A6C0FD734E520754F82&la=en&revision=71bd7c57-2ed7-487b-bc3e-68c4ab56fa5f)，channel handshake 规则。
 
 VALID/READY 的设计交易很明确。它给每条流提供局部弹性，接收方可以在 buffer 满、内部状态不足、下游阻塞时拉低 `READY`；发送方可以在没有新数据时拉低 `VALID`。但这种局部弹性也会制造跨 channel 脱节，迫使实现者增加 FIFO、计数器、skid buffer 和关联状态。
 
@@ -47,12 +62,12 @@ VALID/READY 的设计交易很明确。它给每条流提供局部弹性，接�
 | 0 | `AWVALID && AWREADY` | - | - | 写地址和属性进入系统 |
 | 1 | - | `W beat0` handshake | - | 写数据开始占用 data path |
 | 2 | - | `W beat1` handshake | - | burst 继续 |
-| 3 | - | `WREADY=0` | - | 写地址已接收，但事务未完成 |
+| 3 | - | `WVALID=1, WREADY=0`，beat2 保持稳定 | - | 写地址已接收，但事务未完成 |
 | 4 | - | `W beat2` handshake | - | backpressure 解除 |
 | 5 | - | `W beat3 && WLAST` | - | payload 到齐，slave 可以闭合写语义 |
 | 6 | - | - | `BVALID && BREADY` | 写 response 被消费，事务完成 |
 
-这张表里，cycle 0 不是“写完成”，cycle 5 也不一定是 master 可见的完成；对 master 来说，写事务要等 `B` response 被消费后才闭环。若 `BREADY=0`，slave 或 interconnect 的 response buffer 可能被占住，并反压新的写事务。
+这张表里，cycle 0 不是“写完成”，cycle 5 也不一定是 master 可见的完成；对 master 来说，AXI 写事务要等 `B` response 被消费后才闭环。`B` 的具体完成点取决于访问属性及系统路径；它本身不保证数据已写入 DRAM，也不自动保证对 CPU cache 可见。若 `BREADY=0`，slave 或 interconnect 的 response buffer 可能被占住，并反压新的写事务。
 
 容易误解：`AW` handshaked 之后，后续只是数据搬运。实际上，写事务的完成语义在 `B` channel；没有 `B`，master 无法释放对应 outstanding 状态。
 

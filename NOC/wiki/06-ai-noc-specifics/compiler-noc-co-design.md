@@ -56,6 +56,12 @@ compiler 并不能自动解决：
 - compiler 决定主要结构
 - hardware 负责局部安全、隔离和保底前进
 
+## 一个可检查的计划契约
+
+输入为通信 DAG、tile/memory placement、消息长度、依赖、链路/端点容量和时钟；输出为每个 flow 的源、目的、字节数、route、class、允许注入窗口与依赖完成事件。例：A 的 2 flit 和 B 的 2 flit 都要经过每拍 1 flit 的 L，再分别触发 C 和 D。若 A/B 同时计划占 L 的 cycle 0–1，则容量约束被违反；编译器可将 A 放 0–1、B 放 2–3，或为 B 选择已验证的另一条路径。C/D 必须等待各自 consumer-ready，而不是仅等待发出。
+
+硬件仍要验证 route 合法、有限 buffer/credit 和端点服务；实际服务不及计划时反馈 stall、missed slot 或 fault，由 runtime 按契约重排或停止。编译器的 intent 不是硬件资源预留或完成保证。
+
 ## 为什么这会影响 DSL
 
 如果 DSL 只会描述物理连线，不会描述：

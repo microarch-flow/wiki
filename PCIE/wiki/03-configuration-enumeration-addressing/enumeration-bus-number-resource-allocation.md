@@ -12,11 +12,10 @@
 
 枚举过程通常要完成：
 
-1. 发现拓扑中的设备和 bridge
-2. 分配 bus number / device / function 视角
-3. 读取配置空间信息
-4. 为 BAR 分配地址资源
-5. 打开需要的功能，例如 bus mastering、MSI-X 等
+1. 从上游扫描配置空间，发现已有的 device/function 和 bridge；BDF 是它们在拓扑中的标识，软件不是凭空分配设备功能。
+2. 为桥设置下级 bus number 范围，使配置请求能转发到下游。
+3. 读取 Function 的标识、BAR 和 capability；分配 BAR 地址并配置上游桥资源窗口。
+4. 驱动按需使能 Memory Space、Bus Master 和所选中断模式。MSI-X 不是枚举或 DMA 的必选项。
 
 ## 它为什么本质上是系统资源组织
 
@@ -35,7 +34,7 @@
 - 某级 bridge 窗口没打开
 - capability 配置不完整
 
-这些问题表面像“设备不工作”，本质上常是资源组织没闭环。
+这些问题表面像“设备不工作”，本质上常是资源组织没闭环。诊断时分别记录：①配置读是否能发现 BDF；②BAR 已分配且桥窗口与 Memory Space Enable 是否允许 MMIO；③Bus Master Enable、DMA 映射及设备状态是否允许设备发起 DMA。第二或第三项失败时，第一项仍可能成功；下游总线号超出桥转发范围则可能连配置发现都失败。
 
 ## 一句话理解
 

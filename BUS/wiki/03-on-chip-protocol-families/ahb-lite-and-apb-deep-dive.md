@@ -35,8 +35,8 @@ AHB-Lite 的等待和完成主要通过 `HREADY` 与 `HRESP` 表达。`HREADY` �
 |---:|---|---|---|
 | 0 | 发出 `HADDR=A0` | 上一笔 data phase | read 请求进入地址阶段 |
 | 1 | 下一笔地址可准备 | `HREADY=0` | slave 未完成，流水停住 |
-| 2 | 保持或等待 | `HREADY=1, HRDATA=D0` | read data 有效，transfer 闭合 |
-| 3 | 发出下一笔有效地址 | - | 流水继续 |
+| 2 | 下一有效地址 A1 已稳定 | `HREADY=1, HRDATA=D0` | 采样沿完成 A0，且可同时接收 A1 地址 |
+| 3 | 后续地址 | A1 的 data phase | 流水继续 |
 
 这张表说明 AHB-Lite 比阻塞寄存器总线更有流水能力，但它的 stall 会直接拉住后续 transfer。没有 AXI 那种独立 `AR/R` 或 `AW/W/B` channel，慢访问更容易把后续访问串起来。
 
@@ -48,6 +48,8 @@ APB 就像**自动售货机**——操作极其简单：第一步选商品投币
 
 APB 的定位是低复杂度外设寄存器访问，不是高性能数据搬运。setup 阶段选择外设并给出地址、方向和写数据；access 阶段拉起 `PENABLE`，等待 `PREADY` 表示完成，必要时用 `PSLVERR` 表示错误。
 
+以下采用 APB3 及以后版本的 `PREADY/PSLVERR` 接口。一次访问仅在时钟采样沿 `PSEL && PENABLE && PREADY` 同时为 1 时完成；access 等待期间地址、方向、选择和写数据等控制必须保持稳定。完成后若还有下一次访问，即使仍选同一外设，也先回到 `PENABLE=0` 的 setup，再进入 access。
+
 APB 的典型信号语义可以这样看：
 
 | 信号 | 作用 |
@@ -56,7 +58,7 @@ APB 的典型信号语义可以这样看：
 | `PENABLE` | 进入 access phase |
 | `PADDR/PWRITE/PWDATA` | 地址、方向、写数据 |
 | `PRDATA` | 读数据 |
-| `PREADY` | peripheral 完成当前访问 |
+| `PREADY` | access 阶段与 `PSEL/PENABLE` 同时有效时表示可在采样沿完成 |
 | `PSLVERR` | peripheral 返回错误状态 |
 
 APB 的交易是把并发能力降到最低，换取外设端小面积、低功耗、低验证成本和清楚的软件可见语义。UART、GPIO、timer、watchdog、clock/reset controller、status register、interrupt controller 配置窗口都适合这种模型。

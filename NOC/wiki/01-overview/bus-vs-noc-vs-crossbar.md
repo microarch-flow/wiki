@@ -69,11 +69,11 @@ NoC 的核心设计决定，是放弃“所有端点都像直连”的目标，�
 
 | 场景 | 更适合 BUS | 更适合 Crossbar | 更适合 NoC |
 | --- | --- | --- | --- |
-| 寄存器配置 / doorbell / completion | 是 | 否 | 否，最多只承载内部传播 |
-| cluster 内少量 tile 与本地 SRAM | 否 | 是 | 规模稍大时也可能是 concentrated mesh |
-| 全芯片 tile-to-tile 数据流 | 否 | 一般不划算 | 是 |
-| HBM port 到大量 tile 的大规模扇出 | 否 | 很难扩到全局 | 是 |
-| 广播 / 多播 / reduction overlay | 否 | 小局部可用 | 常需要 NoC 或其专用叠加网络 |
+| 寄存器配置 / doorbell / completion | 定义地址、顺序、错误和响应语义 | 可作为访问路径 | 可用 packetized AXI-over-NoC 或控制 NoC 运输 |
+| cluster 内少量 tile 与本地 SRAM | 可提供事务接口 | 局部 crossbar 是候选 | concentrated mesh 等也可实现 |
+| 全芯片 tile-to-tile 数据流 | 可封装事务或流接口 | 需评估布线和端口成本 | 多跳网络是候选 |
+| HBM port 到大量 tile 的扇出 | 需明确端点事务语义 | 局部结构可用 | 多跳/多播可按负载评估 |
+| 广播 / 多播 / reduction overlay | 事务接口可描述任务 | 小范围实现可行 | NoC 或专用叠加网络均可 |
 
 这和 [AI 芯片里的 BUS vs NoC](../../../BUS/wiki/06-scenarios-case-studies/bus-vs-noc-in-ai-chip.md) 的判断一致：BUS 与 NoC 不是替代关系，而是系统分层；crossbar 则常是介于两者之间的局部互连工具。
 
@@ -118,7 +118,8 @@ BUS 负责把事务语义讲清楚，crossbar 负责在小规模内维持单跳�
 
 ```text
 InterconnectSpec {
-  kind  // BUS, CROSSBAR, NOC
+  protocol_semantics  // AXI, TileLink, custom stream 等
+  topology_kind       // shared, crossbar, mesh 等
   num_endpoints
   per_port_bw
   arbitration_model
@@ -126,6 +127,6 @@ InterconnectSpec {
 }
 ```
 
-如果 `kind=BUS`，第一版模型要显式保留 `shared_bandwidth`、`arb_queue_len`、`response_order_constraint`。如果 `kind=CROSSBAR`，要保留 `port_conflict_matrix` 和 `crossbar_radix`。如果 `kind=NOC`，至少要继续展开到 `topology_graph`、`route_policy`、`link_bandwidth`。
+协议语义和运输拓扑可组合：AXI over mesh 同时需要 `response_order_constraint`、`topology_graph`、`route_policy` 与 `link_bandwidth`；crossbar 需记录端口冲突矩阵，shared 拓扑需记录共享资源和仲裁队列。
 
 事件层面可以统一成 `request_issue`、`grant`、`transfer_start`、`transfer_finish`，但只对 NoC 再细化出 `hop_advance`、`credit_return`、`route_blocked`。这样做的好处是：你能先在系统层比较“哪类互连更像瓶颈”，再决定是否进入 flit-level，而不是一开始就把所有方案都建成同一种复杂度。

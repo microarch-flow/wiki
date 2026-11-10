@@ -46,14 +46,12 @@ NIC DMA 的复杂度恰恰来自这几个机制必须同时稳定工作。包流
 
 ## 延迟要怎么拆
 
-NIC DMA 最好至少拆成四段看：
+分别按设备视角记录方向：
 
-- ring submit 到 DMA issue
-- DMA 数据搬运本身
-- completion 对 host 软件可见
-- interrupt moderation / polling 带来的额外等待
+- **RX**：主机发布空缓冲 descriptor → NIC 收到网络包 → 设备用 PCIe Memory Write 写 payload → 发布 CQE/status → 可选 MSI-X 或轮询 → 主机按 DMA API 同步并消费。
+- **TX**：主机发布待发 buffer → NIC 发 PCIe Memory Read 并收齐 CplD → MAC 发送 → 按设备契约写 CQE/status → 主机消费并回收。
 
-如果这四段不拆，很多“网卡抖一下”的问题都会被误判成“PCIe 不稳定”。
+TX completion 若定义为设备不再读取 host buffer，可允许该 buffer 复用，但不自动证明远端已收到或可靠交付。CQE 是状态，interrupt/polling 是发现方式；中断可以覆盖多个 CQE。一个 moderation 策略例如首个完成启动定时器，累计到门限或定时到期触发通知；不同设备的计时起点与重触发规则可能不同，应在 profile 明确。
 
 ## 常见误解
 

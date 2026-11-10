@@ -1,7 +1,7 @@
 # CNN：CIM 的标准应用场景及其上限
 
 上级：[07 Workloads](./README.md)
-相关：[Dataflow Mapping](../05-architecture-and-system/dataflow-mapping-on-cim.md), [Weight Mapping](../06-software-stack/weight-mapping-to-arrays.md), [NoC: Workload GEMM](../../../NoC/wiki/06-ai-noc-specifics/workload-gemm-on-noc.md), [RAM: NPU Memory Hierarchy](../../../RAM/wiki/09-ai-chip-memory-architecture/npu-memory-hierarchy.md), [BUS: DMA Path](../../../BUS/wiki/04-microarchitecture-integration/dma-descriptor-fetch-data-move-writeback.md)
+相关：[Dataflow Mapping](../05-architecture-and-system/dataflow-mapping-on-cim.md), [Weight Mapping](../06-software-stack/weight-mapping-to-arrays.md), [NoC: Workload GEMM](../../../NOC/wiki/06-ai-noc-specifics/workload-gemm-on-noc.md), [RAM: NPU Memory Hierarchy](../../../RAM/wiki/09-ai-chip-memory-architecture/npu-memory-hierarchy.md), [BUS: DMA Path](../../../BUS/wiki/04-microarchitecture-integration/dma-descriptor-fetch-data-move-writeback.md)
 
 ## 这页在回答什么问题
 
@@ -15,7 +15,7 @@ CNN 也更容易接受低比特推理和 QAT。许多 edge vision/audio 模型�
 
 ## 上限在哪里
 
-im2col 会扩大 activation traffic，可能把 array 友好性换成 buffer 和 NoC 压力。depthwise convolution、small channel layer、residual connection 和 normalization 不一定适合 CIM。整网部署还要处理 pooling、activation、resize、post-processing 和 host fallback。
+显式物化 im2col 会因重叠窗口复制逻辑元素并读写更大的中间矩阵；隐式 lowering 可按需取窗而不写出矩阵。比如长度 4 输入的两个长度 3 窗口有 6 个逻辑元素，但若原始输入在所选边界只读一次，实际仅搬 4 个元素；若缓存未命中则可更多。depthwise convolution、small channel layer、residual connection 和 normalization 不一定适合 CIM。整网部署还要处理 pooling、activation、resize、post-processing 和 host fallback。
 
 CNN benchmark 也不能代表全部 AI workload。它证明规整固定模型可行，但不能自动外推到 Transformer、LLM decode、MoE routing 或动态场景。
 
@@ -35,4 +35,4 @@ CNN 是 CIM 最友好的标准场景，但它的价值来自规整低比特高�
 
 ## 建模启示
 
-CNN 建模要记录 layer shape、kernel size、channel count、feature map size、batch、tiling、lowering/direct mapping 策略、weight reuse、activation buffer、activation expansion、partial-sum merge point 和 non-CIM op。Resource 可抽象为 macro/tile/buffer，Topology 是 activation broadcast 与 reduction，Interaction 是 lowering 后 tensor movement，Capability 是支持的 bit-width、kernel pattern 和 error tolerance。具体 WL pulse 可折叠，但 im2col expansion、partial-sum merge 和 fallback 不能折叠。
+CNN 建模要记录 layer shape、kernel size、channel count、feature map size、batch、tiling、lowering/direct mapping 策略、weight reuse、activation buffer、activation expansion、partial-sum merge point 和 non-CIM op。Resource 可抽象为 macro/tile/buffer，Topology 是 activation broadcast 与 reduction，Interaction 是 lowering 后 tensor movement，Capability 是支持的 bit-width、kernel pattern 和 error tolerance。具体 WL pulse 可折叠，但实际物化或按需取窗产生的边界流量、所需 partial-sum merge 和 fallback 不能漏计。

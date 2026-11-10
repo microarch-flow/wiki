@@ -37,7 +37,8 @@ Marvell 在 `2025-01-06` 和 `2025-03-31` 两次官方公开材料中，把两�
 
 - 在 custom XPU 架构中引入 CPO，提升 AI server scale-up 互连能力
 - 推进 silicon photonics light engine family
-- 2025 年公开展示 `1.6T light engine`，并强调其家族还包括 `6.4T light engine for CPO`
+- [2025-03-31 公告](https://www.marvell.com/company/newsroom/marvell-demonstrates-silicon-photonics-light-engine-for-low-power-rack-scale-interconnect-in-ai-networks.html)：单个 `1.6T light engine` 用于 OFC 2025 的 1.6T OSFP LPO 模块演示，8 条 200 Gb/s 光通道；同家族 `6.4T` 单引擎面向 CPO，已在 OFC 2024 展示
+- [2025-01-06 公告](https://www.marvell.com/company/newsroom/marvell-co-packaged-optics-architecture-custom-ai-accelerators.html)描述的是 custom XPU CPO 架构；不能把 LPO 模块演示直接当成该 XPU 的部署或系统时延
 
 更重要的是，Marvell 的公开表述经常把：
 

@@ -1,7 +1,7 @@
 # CIM 编译流程总览：模型到算子再到 Macro 映射
 
 上级：[06 Software Stack](./README.md)
-相关：[Dataflow Mapping](../05-architecture-and-system/dataflow-mapping-on-cim.md), [BUS: MMIO and Interrupt](../../../BUS/wiki/04-microarchitecture-integration/mmio-cache-interrupt-view.md), [RAM: SRAM Array](../../../RAM/wiki/02-sram-foundations/sram-array-organization.md), [NoC: Tile Architecture](../../../NoC/wiki/06-ai-noc-specifics/tile-architecture-and-noc.md), [FAB: Process Variation](../../../FAB/wiki/02-front-end-fabrication/process-nodes-and-ppa-tradeoffs.md)
+相关：[Dataflow Mapping](../05-architecture-and-system/dataflow-mapping-on-cim.md), [BUS: MMIO and Interrupt](../../../BUS/wiki/04-microarchitecture-integration/mmio-cache-interrupt-view.md), [RAM: SRAM Array](../../../RAM/wiki/02-sram-foundations/sram-array-organization.md), [NoC: Tile Architecture](../../../NOC/wiki/06-ai-noc-specifics/tile-architecture-and-noc.md), [FAB: Process Variation](../../../FAB/wiki/02-front-end-fabrication/process-nodes-and-ppa-tradeoffs.md)
 
 ## 这页在回答什么问题
 
@@ -32,7 +32,7 @@ Analog CIM 需要 IR 表达 ADC bit、scale、noise profile、calibration table 
 
 真实模型很少整网都适合 CIM。GEMM、MVM、Conv lowering 后的矩阵乘、Transformer projection 和 FFN 更自然；softmax、normalization、sampling、动态控制流和小粒度 scalar op 常需要 CPU/GPU/NPU fallback。
 
-partition 粒度越细，理论利用率越高，但 host synchronization、DMA、layout conversion 和 cache pollution 越重。BUS wiki 的 doorbell、completion、DMA 路径会直接影响这个边界。
+较细 partition 增加候选映射自由度，却不保证实际利用率单调提高。例如相邻算子原可融合并在本地传中间结果；拆开后若必须经过一次 DMA transfer 与 fence，等待、尾块和格式转换可降低利用率。应遍历候选分区，按支持的融合、传输、同步与资源冲突评估。BUS wiki 的 doorbell、completion、DMA 路径会直接影响这个边界。
 
 ## PIM/NMC 编译边界
 

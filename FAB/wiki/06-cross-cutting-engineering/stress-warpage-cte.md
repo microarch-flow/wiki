@@ -9,18 +9,20 @@ CTE mismatch、热应力和 warpage 是什么关系，为什么它们会影响 R
 
 ## 最简因果链
 
-CTE 是热膨胀系数。不同材料在温度变化下膨胀或收缩幅度不同，被绑定在一起后就会互相拉扯。
+材料 CTE 差异和温度变化是两个输入。近似常 CTE 时，自由热应变差为 `Δε_free = (α₁ − α₂) × ΔT`。未受约束的两件材料可以各自伸缩；粘结和结构约束才将不相容变形转化为应力。
 
 ```mermaid
 flowchart LR
-    A[temperature change] --> B[different expansion]
-    B --> C[CTE mismatch]
-    C --> D[thermal stress]
-    D --> E[local crack / delamination]
-    D --> F[global warpage]
+    A[材料 CTE 差异] --> D[自由热应变差]
+    B[相对参考温度变化] --> D
+    D --> C[粘结和结构约束]
+    C --> E[应力分布]
+    E --> F[翘曲和对位偏差]
+    E --> G[循环疲劳或界面裂纹]
+    F --> H[测试或键合接触窗口]
 ```
 
-CTE mismatch 是原因之一，热应力是中间机制，warpage 是结构尺度上的表现之一。
+具体应力还取决于几何、刚度、温度梯度和循环历史，不能只由 CTE 差判断失效。
 
 ## 为什么先进封装更敏感
 

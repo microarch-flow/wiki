@@ -33,6 +33,8 @@
 3. 再看 queue、outstanding 和 batching
 4. 再看 IOMMU / memory / interrupt 路径
 
+同一时间窗记录任务提交率、队列占用、读 Tag 占用、完整 Completion RTT、方向吞吐和各段拥塞计数。若设备待发队列经常为空且链路空闲，先检查 CPU 提交、doorbell 和描述符供给；反例是队列空但上一个任务仍在长时间计算，此时不能只归因软件。若读任务排队、Tag 长期满且最终 CplD RTT 上升，先检查返回路径、翻译和内存服务；反例是 Tag 满而 RTT 稳定时，可能只是槽数不足，仍需与吞吐和路径计数一起判断。
+
 ## 一句话理解
 
 PCIE 性能问题通常是整条 host-device 链路的协同问题，不是单独某一级“带宽不够”。

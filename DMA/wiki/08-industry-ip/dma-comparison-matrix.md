@@ -16,14 +16,16 @@ DMA 对照表最容易滑向一种错误用法：拿不同系统里的 DMA 做�
 
 ## 对照矩阵
 
-| 类型 | 典型位置 | 主要路径 | 最核心约束 | 最关键能力 |
-| --- | --- | --- | --- | --- |
-| SoC AXI DMA | 片上互连 | DDR/SRAM/外设 | burst、仲裁、memory return path | 高效片上事务组织 |
-| Peripheral DMA | 外设旁 | FIFO <-> memory | 实时性、稳定节拍、低复杂度 | 低 CPU 介入与周期稳定 |
-| PCIe NIC DMA | 设备侧 | host <-> NIC buffer | ring、小包压力、completion/moderation | batching 与 steady-state |
-| NVMe DMA | 设备侧 | host <-> storage queue | 深队列、completion 回收、块导向稳态 | completion 驱动的高并发 |
-| GPU Copy Engine | GPU 内外边界 | host <-> device / device <-> device | copy-compute overlap、stream 争用 | 异步执行图中的 copy 通路 |
-| AI Local DMA | tile/cluster 附近 | HBM/NoC/SRAM/tile | bank/port、buffer flip、供数节拍 | 与 compute 强耦合的局部供数 |
+| 类型 | 典型位置 | payload 主要路径 | 常见控制模式 | 最核心约束 | 代表性完成边界 |
+| --- | --- | --- | --- | --- | --- |
+| SoC AXI DMA | 片上互连 | DDR/SRAM/外设 | 寄存器配置启动或 descriptor/SG | burst、仲裁与返回 | 单笔读在接受预期最后 R beat 及 RLAST 时完成，写在 B 握手时完成；DMA 任务状态另定义 |
+| Peripheral DMA | 外设旁 | FIFO ↔ memory | 寄存器或 descriptor 配置，外设请求控制节拍 | 实时节拍、有限 FIFO | half/full 状态及 buffer ownership |
+| PCIe NIC DMA | 设备侧 | host ↔ NIC buffer | host ring 提交、doorbell 通知设备 | ring、包率、moderation | CQE/status 与 host 回收；PCIe CplD 另计 |
+| NVMe DMA | 设备侧 | host buffer ↔ 设备介质侧 buffer/controller | host SQ 提交命令、doorbell 通知 controller | I/O 大小、介质服务与回收 | NVMe CQE；SQ/CQ 是控制路径，不是 payload 目的地 |
+| GPU Copy Engine | GPU 内外边界 | host ↔ device / device ↔ device | 驱动/runtime 提交 copy 命令及 stream 依赖 | 依赖、copy/compute 资源 | copy event 后的 buffer 生命周期 |
+| AI Local DMA | tile/cluster 附近 | HBM/NoC/SRAM/tile | 本地命令或 descriptor，token 表达依赖 | bank/port、buffer flip | local consumer-ready 和 release token |
+
+表中控制模式是常见例子，不代表所有同类 IP 均提供相同接口；任务完成也不能从单笔总线事务自动推出。
 
 ## 怎么用这张表
 
@@ -60,10 +62,12 @@ DMA 对照表最容易滑向一种错误用法：拿不同系统里的 DMA 做�
 ```text
 DMATypeMatrixRow {
   type
+  system_position
   dominant_path
+  control_mode
   dominant_bottleneck
   completion_boundary
 }
 ```
 
-如果只做横向比较，这四项就足够；如果要进入架构探索或 IP 评审，再分别展开到更细的状态和能力项。
+横向比较至少要记录上述画像与主要瓶颈；如果要进入架构探索或 IP 评审，再分别展开到更细的状态和能力项。

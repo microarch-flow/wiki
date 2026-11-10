@@ -1,21 +1,23 @@
 # 命令调度：FR-FCFS 及其变体
 
 上级：[Memory Controller](./README.md)
-相关：[为什么说 DRAM 的实际性能由 MC 决定](./why-mc-is-the-real-bottleneck.md), [Open、close、adaptive page policy 的权衡](./page-policy-open-close-adaptive.md)
+相关：[Memory controller 如何影响 DRAM 的实际性能](./why-mc-is-the-real-bottleneck.md), [Open、close、adaptive page policy 的权衡](./page-policy-open-close-adaptive.md)
 
 ## 这页在回答什么问题
 
-为什么 FR-FCFS 会成为 DRAM 控制器里最经典、最常被引用的调度策略，以及它为什么一方面几乎天然有效，另一方面又几乎天然不公平。更重要的是，它到底在利用什么物理结构，又在哪些场景下会把某些请求饿得很惨。
+FR-FCFS 如何利用已打开行，以及在什么条件下改变吞吐或请求等待。收益和公平性都取决于候选命令、到达时序与资源约束。
 
-## 正文
+## 就绪命令选择与等待代价
 
-一旦你接受了上一页的判断：DRAM 的真实性能高度取决于 controller 如何在 row/bank/timing 约束下选择下一条命令，那么下一个自然问题就是“什么样的选择才算好”。FR-FCFS，也就是 `First-Ready, First-Come-First-Serve`，之所以经典，不是因为它名字漂亮，而是因为它正好抓住了 DRAM 最值钱的一点局部性：如果某个请求已经 ready，尤其是已经命中当前 open row，那么先服务它往往能立刻省掉 activate/precharge 这笔大成本。
+FR-FCFS，即 `First-Ready, First-Come-First-Serve`，利用当前打开行的局部性。若有多个合法候选，优先服务 row-hit 可能避免一部分 PRE/ACT；实际效果取决于其他请求、总线和时序。只有一个候选，或所有候选都命中同一行时，本页规则可能与 FCFS 选择相同命令。
 
-先把名字拆开。`First-Ready` 的意思是，在当前时刻所有排队请求中，优先挑那些其下一步命令已经满足 timing guard、而且最容易立即发出的请求。对 DRAM 来说，这通常意味着 row-hit 请求天然占优，因为它们往往只差一个 RD/WR 就能继续，而 row-conflict 请求还得等 PRE、ACT 等一串前置动作。`FCFS` 的部分则是说，在同样 ready 的请求之间，再用先来先服务作为次级排序依据。换句话说，FR-FCFS 不是简单的到达顺序队列，而是“先看谁最能立刻利用当前 bank/open-row 状态，再在这些候选里看谁来得早”。
+这里的 ready 包括完整的命令合法性。对 PRE，须同时检查 ACT、同 bank 的 RD 和 WR 所形成的下界；参见 [MC PRE 记分板](./mc-modeling-for-simulation.md#同-bank-pre-记分板)。
 
-这个策略为什么有效，其实几乎是 DRAM 物理结构直接推出来的。row hit 的边际成本远低于 row miss / row conflict，因此只要你优先服务 row hit，请求平均成本就会下降，总线空洞也更少，bank 利用率通常更高。FR-FCFS 不是在玩复杂启发式，而是在非常直接地说：既然某些请求已经踩在当前 open row 上，那就别急着切走，先把便宜的活干完。这就像超市收银员看到已经排好队、商品已经扫完的客人，先让他们结账走人，而不是为了"公平"把他们推开，先去帮另一个还在找钱包的客人。对于大量存在行局部性的 workload，这种选择几乎一定能提高吞吐。
+本文使用一个明确的 FR-FCFS 变体。先根据当前 bank 状态，为每个请求生成下一条必需命令；再过滤掉不满足所有 timing、模式和共享资源 guard 的命令。在剩余合法候选中，优先发目标行已打开的 RD/WR；同类候选按请求到达时间排序。PRE 和 ACT 是非 row-hit 候选，即使它们为某个未来请求做准备，也不能算当前 row-hit。没有合法候选时等待下一事件，之后重新计算。
 
-一个简单例子最能说明它为什么“天然有效”。假设同一 bank 当前 open row 是 `R10`，队列里有三笔请求：
+在相同资源和调度条件下，row hit 通常省去本次请求的 PRE/ACT；多个候选可选时优先服务它可能减少切行并提高吞吐。具体收益取决于流量、数据总线和其他约束，也可能增加其他请求的等待。对有行局部性的 workload，应通过仿真或测量检查吞吐、尾延迟和公平性。
+
+一个条件化例子说明它可能如何减少切行。假设当前时刻不早于周期 12，同一 bank 的 open row 是 `R10`，队列里有三笔请求，且当前 A/C 的 RD 和 B 的 PRE 均合法：
 
 ```text
 Req A: bank0, row10, col1   arrival=10
@@ -29,15 +31,15 @@ Req C: bank0, row10, col9   arrival=12
 PRE(row10) -> ACT(row22) -> RD(B)
 ```
 
-之后如果还要回到 `Req A/C`，又得再切回 row10，代价更高。FR-FCFS 则会优先看 ready 的 row-hit：
+之后如果还要回到 `Req A/C`，又得再切回 row10。按本页规则先发 A 的 RD；若 A 之后 C 的 RD 在 B 的 PRE 可发之前成为下一条合法命令，则可得到：
 
 ```text
 RD(A) -> RD(C) -> PRE(row10) -> ACT(row22) -> RD(B)
 ```
 
-这条顺序显然更便宜，因为同一 row 的开行成本被摊薄了。这就是 FR-FCFS 长期有效的根因：它把 DRAM 的“状态相关便宜机会”尽量吃干净。
+在该时序下，两次 row10 访问共享开行，减少切行。若 C 的 RD 尚不合法，而 B 的 PRE 已合法，调度器可先发 PRE；不能把示意顺序当作所有 timing 配置的必然结果。
 
-但这个策略也几乎注定会伤害公平性。因为只要请求流里源源不断出现新的 row-hit，请求队列中那些命不中当前 open row 的访问就会不断被推后。你可以把它理解成：FR-FCFS 天生喜欢”顺手、便宜、现在就能做”的请求，而不喜欢那些需要先清场再开新局的请求。就像一个出租车司机在机场候客区——他总是先拉已经站在面前、行李也上好了的乘客，而不是先去停车场接一个还在找行李的人。这让他一天能拉更多趟，但总被跳过的那位行李多的乘客可能等到天黑。从系统吞吐角度，这非常合理；从个体请求视角，这可能非常残酷。常见误解是觉得 FR-FCFS 只是“稍微偏向 row-hit”；实际上，在高压负载下，它完全可能形成明显的 starvation 倾向。
+持续竞争时，该规则可能增加非 row-hit 请求的等待。是否发生饥饿还取决于合法候选何时出现、资源占用、请求流及是否存在 aging 或服务上限；不能仅凭策略名称断言不公平。
 
 再看一个更尖锐的例子。假设 bank1 当前 open row 是 `R5`，某个流 `S` 连续不断地访问 row5 的不同列；同时另一个流 `T` 偶尔访问 bank1 的 row9。队列可能持续呈现：
 
@@ -50,7 +52,7 @@ S4: bank1 row5
 ...
 ```
 
-在 FR-FCFS 下，只要 row5 hit 还在不断补进来，`T1` 就会反复被压后，因为一旦为了它切到 row9，当前 row5 的便宜窗口就被放弃了。于是：
+假设每次存在发射机会时都有合法 row5 RD 与 T1 的 PRE 竞争，其他时刻 T1 的 PRE 不合法或没有发令机会，并且没有 aging、连续命中上限或其他强制服务机制。此时 row-hit 会反复获选：
 
 ```text
 RD(S1) -> RD(S2) -> RD(S3) -> RD(S4) -> ...
@@ -60,50 +62,63 @@ RD(S1) -> RD(S2) -> RD(S3) -> RD(S4) -> ...
 
 这就是为什么 FR-FCFS 虽然经典，却很少会在真实系统里原封不动裸跑。很多控制器会在它外面叠加各种“变体保护”：老化机制、服务计数、最大连续 row-hit 数限制、read/write 分级队列、per-thread/per-master fairness cap，或者直接在 QoS 场景里为高优先级流保底。所有这些变体的核心目标都一样：保住 FR-FCFS 对 row locality 的利用，但别让它把某些请求永远饿在门外。
 
-这里还需要把 FR-FCFS 和 page policy 的关系说清。FR-FCFS 喜欢 row-hit，本质上是在利用“当前 open row 仍值得留着”这个前提；而这个前提是否成立，又取决于 controller 的 page policy。如果你走 close-page，很多请求根本没机会形成连续 hit，FR-FCFS 的优势就会被削弱；如果你走 open-page，它的局部性收益更大，但公平性和冲突问题也更明显。也就是说，FR-FCFS 不是独立策略，而是天然和“你愿意让 open row 活多久”绑在一起。
+FR-FCFS 的候选还取决于 page policy：close-page 可能减少连续 hit 的机会；open-page 可能保留更多复用，也可能延长冲突请求的等待。实际差异要看访问和命令合法时刻，不能仅由策略名决定。
 
 它还和地址映射高度耦合。若地址映射把相关请求分散到不同 bank，FR-FCFS 也许更容易在多 bank 间交织，既吃 row-hit 又保并行；若映射让某些流集中撞到同一 bank，则 FR-FCFS 会更像“偏爱某一小撮幸运行”的策略。因此，看到 FR-FCFS 表现好或差，不应只评价调度本身，还要问：请求流是怎么被映射成 row/bank 结构的。
 
-从建模角度再压缩一下，FR-FCFS 的本质可以理解成一个很直接的目标函数：`maximize immediate readiness and row reuse`。这让它成为极其强的吞吐优化器，但也自然让它对个体公平性缺乏内在关心。只要系统目标更偏吞吐，它几乎总会是强基线；只要系统开始看重 QoS、实时性或多租户隔离，它就必须被修剪、约束或与更高层策略结合。
+从建模角度看，本页变体先过滤合法命令，再按 row-hit 和到达时间排序。它可作为吞吐基线；若目标包括 QoS、实时性或隔离，需要检验等待分布，并在需要时加入明确的服务约束。
 
-所以，本页真正要建立的不是“FR-FCFS 是经典算法”这句标签，而是更具体的判断：它之所以经典，是因为 DRAM 的物理结构直接奖励 row-hit 与 ready-first；它之所以危险，也是因为同一物理结构会让不命中当前 open row 的请求天然处于被牺牲的位置。理解这一点，后面 page policy、QoS 和建模决策就都有了出发点。
+可用候选不同、且选择会影响未来切行或排队时，row-hit 优先才可能改变结果。相同候选顺序、单候选或无持续等待压力时，它可以与 FCFS 表现相同。
 
 ## 一句话理解
 
-FR-FCFS 天然有效，是因为它优先兑现当前 DRAM 状态里最便宜的 row-hit 机会；它天然不公平，也是因为同样的策略会持续推迟那些需要切行才能服务的请求。
+本页 FR-FCFS 变体在合法候选中优先 row-hit，再按到达顺序选择。它可能减少切行，也可能在持续竞争下增加其他请求的等待；两者都要看具体请求流和时序。
 
 ## 建模启示
 
-在建模里，FR-FCFS 不需要被写成很复杂的算法，但必须至少保留两个排序维度：`是否 ready` 和 `是否 row-hit`。如果直接按到达顺序出队，就会严重低估 controller 对吞吐的优化能力；如果只按 row-hit 排序，又会高估它对公平性的忽视程度。一个最小实现通常是三层优先级：ready row-hit > ready non-row-hit > not-ready。
+模型先按完整 guard 过滤，再对合法候选按 row-hit 和到达时间排序。not-ready 命令不能发射；row-hit 必须在每次仲裁时依据目标 bank 当前打开行和下一命令重新判断。
 
 一个简化的调度伪码可以写成：
 
 ```text
-candidates = requests whose next_cmd is timing-legal
-rank by:
-  1. row_hit first
-  2. earlier arrival first
-pick top candidate
+candidates = []  # 每次仲裁重新构造
+for req in pending_requests:
+    bank = bank_state[req.bank_id]
+    cmd = next_required_command(req, bank)
+    if cmd is not NONE and all_guards_allow(cmd):
+        hit = cmd in {RD, WR} and bank.open_row == req.target_row
+        candidates.append({req, cmd, hit})
+if candidates is empty:
+    wait_until_next_event()
+else:
+    chosen = min(candidates, key=lambda c: (not c.hit,
+                                            c.req.arrival_cycle,
+                                            c.req.stable_id))
+    issue_if_still_legal_and_update_state_atomically(chosen)
+# 下一次仲裁重新生成候选；PRE/ACT 可能改变其他请求的行状态
 ```
 
-如果要把 starvation 风险也带进模型，可以加一个简单 aging 项：
+`next_required_command` 对已经发出列命令、仅等待数据或响应的请求返回 `NONE`，防止重复发射。若原子发射时 guard 已被其他同刻动作改变，则不发出旧候选，依据新状态重新仲裁。
+
+若要探索 starvation 缓解，可先过滤合法候选，再使用 aging 作为另一种策略：
 
 ```text
-priority = row_hit_bonus + ready_bonus + age_weight * waiting_cycles
+priority = row_hit_bonus_if_applicable + age_weight * waiting_cycles
 ```
 
 一个够用的数据结构草图可以是：
 
 ```text
 SchedReq {
+  stable_id: id
   arrival_cycle: cycle
-  bank_id: int
+  bank_id: (channel, rank, bank_group, bank)
   target_row: row_id
-  row_hit: bool
-  ready: bool
+  row_hit: bool  # 每次根据当前状态重新计算
+  ready: bool    # 当前下一命令是否满足全部 guard
   waiting_cycles: cycle
   source_master: MasterId
 }
 ```
 
-如果只关心平均吞吐，纯 FR-FCFS 可能已经够用；但只要你要评估 tail latency、QoS 或多 master 场景，就最好显式加入 aging/fairness 机制。因为 FR-FCFS 的问题不在于它“不聪明”，而在于它太忠实地在优化 DRAM 物理结构最喜欢的那一类请求。
+评估 tail latency、QoS 或多 master 场景时，应比较原规则与 aging/fairness 变体。单独设置 aging 权重不自动证明等待上界；还需约束到达、不可抢占占用、刷新和资源服务。

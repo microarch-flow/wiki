@@ -82,11 +82,11 @@ source routing 的工程吸引力就在这里。
 
 如果这些接口没有设计好，系统并不会更简单，只会更分散。
 
-## 它仍然需要 VC 和仲裁
+## 共享 packet-switched 模型中的 VC 和仲裁
 
 source routing 只决定路径，不消除共享资源竞争。
 
-即使路径完全静态，仍然需要：
+在本文共享 wormhole、packet-switched 基线中，即使路径静态，通常仍需按依赖和共享情况设计：
 
 - VC 隔离不同 message class
 - output arbitration 决定谁先过
@@ -94,7 +94,9 @@ source routing 只决定路径，不消除共享资源竞争。
 
 原因很简单：两条静态路径仍可能在某个链路或端口相交。
 
-所以 source routing 绝不等于“不要仲裁”或“不要 flow control”。
+若采用预先验证、无冲突的静态 TDM 或电路式调度，可以不做动态 SA/VC 分配，但仍须证明时隙、容量、时钟、端点及失步处理；source routing 本身不提供这些保证。
+
+例如 route header 为 `[E,E,N]`，每跳消费一个方向，最终应到指定目的地。源端或装载时应验证每跳端口合法、总 hop 有界、终点匹配且路径满足安全规则。更新 route table 时可先停止注入并 drain 旧包，或让每个包携 epoch 并保留对应版本直到旧包离网，避免旧 route-id 被新表误解释。
 
 ## 它也不天然无死锁
 

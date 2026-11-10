@@ -1,14 +1,10 @@
 # NoC Wiki
 
-本目录是按新结构重建的 NoC wiki。
+本 wiki 从互连问题、router 资源与流控出发，延伸到拓扑、系统集成、AI 流量、评估和仿真器构建。[完整目录](./SUMMARY.md) 列出所有章节和正文。
 
-当前阶段只完成骨架搭建，用于确认目录、命名和章节边界；正文将在你确认骨架后按 `01 → 09` 顺序逐篇重写。
+首次学习可依次阅读：[问题与目标](./01-overview/problem-statement.md)、[Packet / Flit / Phit](./02-router-microarchitecture/packet-flit-phit-hierarchy.md)、[VC 基础](./02-router-microarchitecture/virtual-channel-fundamentals.md)、[Credit 流控](./02-router-microarchitecture/credit-based-flow-control.md) 和 [Mesh 与 Torus](./03-topology/mesh-and-torus.md)。
 
-## 当前状态
-
-- 旧内容已备份到 [wiki.old](/mnt/e/wiki/NOC/wiki.old)
-- 新目录只包含占位文件
-- 尚未开始正式内容重写
+要实现或检查模型，可从 [核心数据结构](./08-simulator-construction/core-data-structures.md)、[Router 逐拍伪代码](./08-simulator-construction/router-pipeline-pseudocode.md) 和 [验证场景](./08-simulator-construction/verification-and-calibration.md) 入手。时序表属于文中指定的模型，不是硬件实测结果。
 
 ## 章节入口
 

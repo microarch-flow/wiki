@@ -62,9 +62,9 @@
 
 至少要先固定这些规则：
 
-- flit 占用下游 buffer slot 时 credit 立即减少
-- buffer slot 真正释放时 credit 才返回
-- tail 释放 packet 占用的 path / VC
+- 跨 router 发送时立即扣上游 credit，预留对应下游 slot，包含 forward pipe 中的 flit
+- 下游 input slot 出队时生成 credit；返回事件到期并在拍末提交后，下一拍才可使用
+- tail 成功离开时释放本地上下文；严格策略下，下游 VC 许可等 tail free 返回后释放，见 [状态契约](./core-data-structures.md#三种独立状态)
 - packet 到达目的 router 不等于任务完成，还要经过 ejection / NI / local consumer
 - 当周期的读状态和写状态边界要清楚
 
@@ -72,12 +72,7 @@
 
 ## 推荐的主循环语义
 
-推荐统一为两阶段或双缓冲语义：
-
-1. 收集本周期输入：arriving flit、returning credit、new injection event
-2. 基于旧状态做分配、转发、ejection、credit generation，再写入新状态
-
-核心目的是避免“同一周期既读又写同一状态”导致的隐式抢跑。
+统一使用 [时间与快照契约](./router-pipeline-pseudocode.md#时间与快照契约)：所有 router/endpoint 从 `S(t)` 计算候选与仲裁；成功动作和到期 flit、credit、注入在拍末提交为 `S(t+1)`，本拍不得使用新到输入。发送 t 时 `L≥1` 的 flit 在 `t+L` 拍末进入下游 FIFO，最早 `t+L+1` 前进；credit 同样按返回延迟在拍末提交。这样避免遍历顺序造成同拍抢跑。
 
 ## traffic class 的最低要求
 
@@ -95,7 +90,7 @@
 
 simulator 不应只吐一堆文本。至少应支持结构化输出：
 
-- packet latency distribution
+- packet 的 network-arrival 与 consumer-complete latency distribution，以及全局 protocol-quiescent 时间
 - per-link utilization
 - per-class throughput
 - per-node / per-class stall

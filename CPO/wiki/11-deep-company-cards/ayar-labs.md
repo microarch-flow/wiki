@@ -24,7 +24,7 @@ Ayar Labs 是当前公开路线里最鲜明地把：
 
 组合成清晰产品叙事的公司之一。
 
-截至 `2025-09-11` Alchip 官方新闻稿和 Ayar Labs 官方产品页，这条路线已经和：
+[Alchip 2025-09-08 合作公告](https://www.alchip.com/public/index.php/jp/Newsroom/AyarLabsandAlchiptoScaleAIInfrastructure)与 Ayar Labs 产品资料涉及：
 
 - TSMC COUPE
 - UCIe
@@ -44,16 +44,16 @@ Ayar Labs 是当前公开路线里最鲜明地把：
 - 把 optical I/O 做成可被 package 接纳的 chiplet
 - 把热敏感的光源尽量从最热封装域拿出去
 
-这比传统“做一个更高级光模块”的逻辑更像下一代系统 I/O 子系统。
+各版本的电侧接口、光侧波长数、端口数和传输方向应分别从对应规格取数。UCIe、外置光源和不同封装平台并非天然属于同一个已部署配置。
 
 ## 它的公开合作关系
 
 截至公开官方材料，可以明确看到的关键关系包括：
 
-- Alchip：design and packaging collaboration
+- Alchip：2025-09-08 的设计和封装战略合作；公告不等于稳定批量供货
 - TSMC：COUPE / SoIC / advanced packaging ecosystem
-- AMD：投资关系，且截至 `2025-05-28` AMD 也在加强 photonics 能力
-- NVIDIA、Intel、GlobalFoundries 等投资/生态背景在 Ayar Labs 官方公开材料中可见
+- AMD Ventures、NVIDIA、Intel Capital：Ayar Labs [2024-12-11 融资公告](https://ayarlabs.com/news/ayar-labs-155m-series-d-to-address-ai-infrastructure-includes-amd-intel-capital-nvidia/)列出的投资参与方；投资不证明采购或部署
+- GlobalFoundries：该公告列出的既有投资方
 
 这里最重要的不是“名单好看”，而是说明 Ayar Labs 的路线与主平台生态存在明确耦合。
 

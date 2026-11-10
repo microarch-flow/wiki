@@ -70,7 +70,8 @@ DMA 的分类关键不是名字，而是 `路径谁在搬、任务谁在描述�
 DMAClass {
   path_type: mem2mem | periph2mem | host2dev | local2local
   control_model: register | linked_list | ring | cmd_queue
-  coherence_mode: noncoherent | coherent | iommu_backed
+  coherence_mode: noncoherent | coherent
+  address_translation: direct | iommu_backed
   concurrency_model: {channels, queues, max_outstanding}
 }
 ```

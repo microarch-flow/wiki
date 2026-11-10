@@ -51,3 +51,11 @@ CP 是把前道制造结果转成 wafer map 和 KGD 决策的风险控制节点�
 如果我在架构阶段选择多 chiplet 或 HBM package，必须同时定义测试前移策略。否则模型只看到“小 die 良率更高”，却没有看到每个 package 需要多个 KGD、多个中间测试点和更复杂的失效隔离。
 
 一个具体例子：4 个 compute chiplet 加 8 个 HBM stack 的 package，不应只按 12 个对象的 nominal 良率相乘，还要问每类对象在进入 assembly 前能否被足够筛选，哪些 defect 只能在 package 后暴露，以及暴露时损失了多少封装成本。
+
+## 本章正文
+
+- [CP 测试的方法和典型流程](./cp-test-methodology.md)
+- [KGD:HBM/3DIC 时代的必要前提](./kgd-known-good-die.md)
+- [测试覆盖率与成本的权衡](./test-cost-vs-coverage-tradeoff.md)
+- [为什么必须在 wafer 阶段测试](./why-wafer-sort-exists.md)
+- [良率与缺陷密度:从工艺到经济的桥](./yield-and-defect-density.md)

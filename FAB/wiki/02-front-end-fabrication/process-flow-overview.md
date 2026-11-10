@@ -53,7 +53,7 @@ MOL 把 transistor 连接到上方金属互联。它包括 contact、local inter
 
 BEOL 负责多层金属互联。底层金属细密，服务标准单元内部和局部连接；中间层服务模块级 routing；顶层金属更厚，服务长距离互联、时钟、供电和封装接口。BEOL 不是“连线而已”，它决定 NoC、BUS、SRAM 周边、clock tree、PDN 和 top-level floorplan 的物理代价。
 
-和 BUS wiki 的 [互连组件与数据路径分解](../../BUS/wiki/04-microarchitecture-integration/interconnect-components.md) 对应，逻辑上的 decoder、arbiter、buffer 和 return path 最终都需要落到 BEOL 金属资源上。宽总线和复杂 NoC 如果忽略物理 routing，会在时序、功耗和拥塞上付出代价。
+和 BUS wiki 的 [互连组件与数据路径分解](../../../BUS/wiki/04-microarchitecture-integration/interconnect-components.md) 对应，逻辑上的 decoder、arbiter、buffer 和 return path 最终都需要落到 BEOL 金属资源上。宽总线和复杂 NoC 如果忽略物理 routing，会在时序、功耗和拥塞上付出代价。
 
 ## PPA 影响表
 

@@ -1,90 +1,26 @@
-# 阵列 sizing:systolic array 多大、register file 多大
+# 阵列 sizing：容量、供数与利用率
 
-上级:[03 · systolic array](./README.md)
-相关:[为什么要 systolic array](./why-systolic-array.md)、[dataflow 分类](./dataflow-taxonomy.md)、[GPU = 平铺的 TPU](../07-chip-organization/gpu-as-tiled-tpu.md)
-主线:[计算 / 通信比](../01-overview/compute-communication-ratio.md)——本篇是"大粒度摊薄固定成本"的量化:阵列越大,RF 成本摊得越薄。
+上级：[03 · systolic array](./README.md)
+相关：[阵列复用](./why-systolic-array.md)、[顶层组织](../07-chip-organization/gpu-as-tiled-tpu.md)
 
----
+## 输入与决策
 
-## 这页在回答什么问题
+给定工作量形状、精度、dataflow、频率、面积及功耗预算，选择阵列行列数、RF 容量与端口、输入输出带宽。输出应包括有效吞吐、延迟、面积、能耗及每个存储边界的流量。大阵列的峰值并行度可能更高，但不保证有效性能更高。
 
-systolic array 把比值翻转成 y(阵列行数)。那是不是阵列越大越好?本篇回答最核心的一对耦合 sizing 决策:**systolic array 多大 vs register file 多大**——它们抢同一份面积,而阵列越大,RF 成本摊得越薄,但灵活性和利用率会受限。
+## 固定 RF 假设下的面积摊销
 
----
+假设两个方阵列分别有 `64×64` 与 `128×128` 个 PE，且服务它们的 RF 面积恰好相同、供数能力充足。RF 面积除以 PE 数，后者是前者的四分之一。这只是条件化的面积/PE 比较；实际上为更大阵列供数可能需要增加 RF 端口、容量和布线。这个比值也不是 MAC/byte。
 
-## 1. 一对抢面积的耦合变量
+## 利用率与边界带宽
 
-阵列和它周边的 register file / vector unit 抢同一片硅:
+例如映射只需要 `32×32` 个 PE 的工作到 `128×128` 阵列，在所有其他行列不做有效工作的静态映射假设下，空间填充为 `1/16`。运行时利用率还受启动、排空、数据供给、依赖与调度影响。切分矩阵或运行多个独立工作也可能改变利用率。
 
-```
-面积预算(固定)
-  ├── systolic array(做 MAC,分子)        ← 越大,比值越高(§why-systolic 的 y)
-  └── register file / vector unit(喂数,分母) ← 越大,越灵活,但吃掉阵列的面积
-```
+跨阵列、RF、NoC 和片外存储分别记录字节与带宽。阵列边界较窄可能限制供数，但是否成为瓶颈取决于数据复用、时钟和实际流量。不能仅从边长推断实测带宽。
 
-- **大 RF** → 更灵活、application-level 性能更高(能缓存更多操作数、支持更复杂的数据重排),但吃掉本可给阵列的面积。
-- **大阵列** → 比值更高(y 更大)、单位面积算力更高,但灵活性低,且对小矩阵利用率差(PE 空转)。
+## 硬件例子与比较边界
 
-**常用方法:给数据搬运设一个面积预算**(比如"RF 占 10%、阵列占 90%"),再据此反推 RF 大小。这把一个模糊的"多大合适"变成一个可执行的预算分配。
-
----
-
-## 2. 为什么大阵列摊薄 RF 成本
-
-关键论点(会在 [GPU vs TPU](../07-chip-organization/gpu-as-tiled-tpu.md) 再现):**阵列越大,同一份 RF 喂的 PE 越多,RF 的固定成本被摊得越薄。**
-
-```
-小阵列(64×64):   一份 RF 喂 4096 个 PE,RF 成本 / PE 高
-大阵列(128×128): 一份 RF 喂 16384 个 PE,RF 成本 / PE 降到 1/4
-                  ───────────────────────────────────────
-                  RF(分母的一部分)固定,PE(分子)翻 4 倍 → 比值更高
-```
-
-**因为** RF / vector unit 是一份相对固定的开销,**所以** 让它服务更多 PE,就把这份分母摊到更多分子上——这是"大粒度摊薄固定成本"在阵列层级的体现,和 [systolic 上提循环摊薄 mux](./why-systolic-array.md) 是同一个道理,只是粒度更大一层。
-
-> **真实硬件锚点**:老 TPU 是 **128×128** 的这种阵列,是已知最高效的矩阵乘电路。这个尺寸不是随便定的——它在"摊薄 RF""利用率""单阵列布线可控"之间取了一个被验证有效的点。
-
----
-
-## 3. 大阵列的代价:利用率与跨边界布线
-
-阵列不是越大越好,有两个反向约束:
-
-### 3.1 利用率:小矩阵喂大阵列,PE 空转
-
-⚠️ 常见误解:以为大阵列总是更快。**当矩阵小于阵列时,多出的 PE 空转,分子缩水但分母(布线、RF)不变,比值反而下降。** 128×128 阵列处理一个 32×32 的矩阵,只有 1/16 的 PE 在干活。所以阵列尺寸要和典型 workload 的矩阵尺寸匹配——这又是 COMPUTE↔Workload 的接口。
-
-### 3.2 跨边界布线:大阵列的进出口变窄(相对)
-
-阵列越大,内部 PE 越多,但跨边界(顶部灌输入、底部出输出)的线数只随边长 x 线性增长。大阵列意味着**大量数据要挤过相对更窄的边界**——这正是 [GPU vs TPU 那张表](../07-chip-organization/gpu-as-tiled-tpu.md#92-粗粒度-vs-细粒度的-trade-off) 里"TPU 只有 2 条边界线"的来源。粗粒度大阵列摊薄了 RF,但代价是 vector↔matrix 数据通路变成瓶颈。
-
----
-
-## 4. sizing 是一个 Pareto 决策,不是单一最优
-
-把 §1–§3 合起来,阵列 sizing 没有唯一最优解,而是一条 Pareto 前沿:
-
-| 选择 | 比值(摊薄 RF) | 利用率(小矩阵) | 数据通路灵活性 | 适合 |
-|---|---|---|---|---|
-| 大阵列(TPU 式 128×128) | 高 | 对小矩阵差 | 跨边界窄(瓶颈) | 大而规则的矩阵乘 |
-| 小阵列(GPU SM 内) | 低 | 对小矩阵好 | 跨边界宽、距离短 | 不规则、需局部灵活 |
-| splittable(MatX) | 想两者都要 | 可切分适配 | 可大可小 | 见 [gpu-as-tiled-tpu §9.3](../07-chip-organization/gpu-as-tiled-tpu.md#93-matx-的方向splittable-systolic-array) |
-
-**取舍判断**:workload 是大而规则的矩阵乘(大 batch 推理、大 GEMM)→ 大阵列摊薄 RF 的收益压倒利用率损失;workload 不规则、矩阵尺寸多变(小 batch、动态 shape)→ 小阵列保利用率和灵活性。**splittable systolic array 就是想在这张表上"两列都要"**——大阵列的 RF 摊薄 + 小阵列的灵活性。
-
----
-
-## 5. 本篇在主线上的位置
-
-阵列 sizing 是[计算 / 通信比](../01-overview/compute-communication-ratio.md)主线的一个核心 sizing 旋钮:把阵列做大,用"大粒度摊薄固定成本"把 RF 这份分母摊到更多 PE 上,抬高比值——但受利用率(小矩阵 PE 空转)和跨边界布线(vector↔matrix 瓶颈)两个反向约束。最优点不是端点,而是 Pareto 前沿上一个匹配 workload 矩阵尺寸的位置。这条"大阵列摊薄 RF"的逻辑会在 [§07 顶层布局](../07-chip-organization/gpu-as-tiled-tpu.md) 升级为"粗粒度 TPU vs 细粒度 GPU"的全局决策。
-
----
+第一代 TPU 的矩阵单元是 256×256，见 [Jouppi 等，2017](https://arxiv.org/abs/1704.04760)。TPU v3 的 MXU 为 128×128，见 [Google 训练芯片介绍](https://hc32.hotchips.org/assets/program/conference/day2/HotChips2020_ML_Training_Google_Norrie_Patil.v01.pdf)。这些是不同代的配置，不证明某一尺寸对所有负载最优。
 
 ## 建模启示
 
-- **阵列边长与 RF 大小应是一个显式的、耦合的探索维度。** 它们抢同一面积预算,是 archax microarchitecture 层 Pareto 前沿的一个坐标轴。
-- **必须显式建模的状态变量**:`array_edge N`(边长)、`RF_entries`、`RF_ports`、`area_budget_split`(RF vs array 的面积分配比)、每周期跨 RF 边界的字节数。
-- **核心派生量**:`RF_cost_per_PE = RF_area / N²`(随阵列变大而下降)与 `utilization = min(matrix_dim, N)² / N²`(随阵列变大、矩阵变小而下降)。两者反向,比值的最优点在二者乘积最大处。
-- **关心面积账时必须保留**:RF 端口数和深度——它决定 RF 面积,也决定能同时喂多少 PE。
-- **关心利用率时必须保留**:典型 workload 的矩阵尺寸分布——它和 `array_edge` 一起决定填充率。小矩阵多的 workload,大阵列的比值优势被利用率吃掉。
-- **事件/数据结构草图**:`ArraySizing{N, RF_entries, RF_ports} → {area, RF_cost_per_PE, peak_macs = N²}`;配合 workload 的矩阵尺寸分布算出 `effective_macs = peak_macs · utilization`。这正是 [splittable array](../07-chip-organization/gpu-as-tiled-tpu.md) 想优化的目标:让 N 可变以最大化 effective_macs。
+对每个候选阵列统计面积、频率、有效 MAC、bank/端口使用、每个边界的流量、等待和能量。用相同工作量和约束比较 Pareto 点。若实现支持可切分阵列，还要计切分控制、额外互连、可用模式及切换代价。

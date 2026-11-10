@@ -97,14 +97,14 @@ AXI ID 可以用来区分 DMA 内部 channel、queue、descriptor flow 或 data 
 
 | 映射方式 | 收益 | 风险 |
 | --- | --- | --- |
-| 所有流量共用一个 ID | 保序简单 | outstanding 并发受限，head-of-line blocking 明显 |
+| 所有流量共用一个 ID | 保序简单 | 同方向响应受保序约束，慢请求可能阻挡快请求；同 ID 仍可承载多笔在途 |
 | descriptor/data/writeback 分 ID | 降低互相阻塞 | 需要定义 completion 与 data 的顺序 |
 | per channel 分 ID | 多队列并行 | response 匹配和错误归因更复杂 |
 | ID remap by interconnect/SMMU | 节省系统 ID 空间 | 内部 slot 耗尽会反向 backpressure |
 
 ID 不是性能开关。增加 ID 只能帮助互连和 slave 区分事务流，不能突破目标端口、SMMU translation queue、DDR controller 或 DMA 内部 buffer 的限制。模型要同时记录 ID space 和每个 service point 的 slot。
 
-## 例子：双 Port DMA 的任务流
+## 例子：三类独立 Master Port 的 DMA 任务流
 
 一个 DMA 有 register slave port、descriptor read port、data read/write port、writeback port。一次任务可以拆成下面的 BUS 事件：
 

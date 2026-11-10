@@ -21,7 +21,7 @@ RDL 的关键是“redistribution”：把原来不适合直接出封装或互�
 
 ## 截面结构
 
-简化的 RDL 截面可以理解为多层 build-up：
+下图是常见多层 build-up 示例：
 
 ```mermaid
 flowchart TB
@@ -31,7 +31,7 @@ flowchart TB
     D --> E[next Cu routing layer]
 ```
 
-它不是单层金属，而是 polymer dielectric、via、Cu trace、pad 反复堆叠形成的封装级互连网络。
+RDL 的定义在于重新映射焊盘，而不取决于层数。简单扇出可以只用一层导体；交叉或高密度布线可使用多层导体、介质和层间过孔。材料与实际 RC、制造良率需按结构和版图确定。
 
 ## 制造主线
 
@@ -39,12 +39,12 @@ flowchart TB
 | --- | --- |
 | 准备承载表面 | die+mold 重构表面、carrier 或 interposer 表面 |
 | 形成介质层 | 提供绝缘和层间支撑 |
-| 开 via | 建立上下层接触窗口 |
-| 形成 Cu routing | 图形化并电镀形成走线和 pad |
-| 重复 build-up | 增加 routing 层数和互连能力 |
+| 按结构形成接触窗口 | 在需要穿过介质接触 pad 或其他导体层时开口 |
+| 形成导体布线 | 图形化形成走线与 pad；铜及电镀是常见实现 |
+| 按需重复 build-up | 需要额外布线层时增加介质、层间连接和导体 |
 | 形成最终接口 | 连接 bump、substrate 或下一层封装结构 |
 
-实际平台的材料和顺序会变化，但骨架离不开介质、通孔、铜互连和层层堆叠。
+具体材料、工艺顺序和层数取决于平台。单层导体即可实现部分扇出；只有需要连接多个导体层时才需要相应层间过孔和重复 build-up。
 
 ## 为什么 RDL 难
 
@@ -64,7 +64,7 @@ Fan-out 依赖 RDL 扇出 I/O，CoWoS-R 使用 RDL interposer，CoWoS-L 和 brid
 
 ## 一句话理解
 
-RDL 是封装级多层金属互连网络，用来重映射 I/O、连接 die、承载 power/signal routing，并把工艺难度推向应力、细线和良率控制。
+RDL 是重映射 I/O 的互连结构，可由一层或多层导体实现，也可连接 die 并承载电源和信号；具体结构需评估应力、细线和良率。
 
 ## 架构师启示
 

@@ -18,13 +18,13 @@
 1. [Memory Wall 与 Von Neumann Bottleneck](./problem-statement.md)
 2. [CIM/PIM/NMC 的严格区分](./cim-pim-nmc-taxonomy.md)
 3. [两条正交主线](./two-axes-memory-and-paradigm.md)
-4. [为什么 CIM 在 1990s 失败、在 2010s 重生](./why-cim-now-and-why-not-before.md)
+4. [早期 PIM 原型未规模采用与 AI 时代的新机会](./why-cim-now-and-why-not-before.md)
 5. [CIM 整体分类体系](./taxonomy.md)
 6. [学习路径与章节依赖关系](./learning-roadmap.md)
 
 ## 本章对后续章节的约束
 
-后续每篇提到 CIM、PIM、NMC 时，都必须先问计算位置和物理参与度，而不是沿用论文或公司宣传的命名。后续每篇提到 SRAM-CIM、ReRAM-CIM、DRAM-PIM、analog CIM、digital CIM、mixed-signal CIM 时，都必须能落回 memory technology 和 compute paradigm 两个坐标。
+后续每篇提到 CIM、PIM、NMC 时，都必须先问计算位置和物理参与度，而不是沿用论文或公司宣传的命名。阵列参与计算的 CIM 再用 memory technology 和 analog/digital/mixed-signal CIM 范式描述；独立 PIM/NMC 单元记录执行方式、局部存储与接口。
 
 ## 一句话理解
 

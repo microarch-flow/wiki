@@ -1,7 +1,7 @@
 # CIM Macro 的基本原语：Array、Driver、Sense、Accumulator
 
 上级：[04 Circuit And Macro](./README.md)
-相关：[SRAM-CIM 深入](../02-memory-technologies/sram-cim-deep-dive.md), [Digital CIM 深入](../03-compute-paradigms/digital-cim-deep-dive.md), [RAM: Wordline Bitline Sense Amp](../../../RAM/wiki/02-sram-foundations/wordline-bitline-sense-amp.md), [NoC: Reduction Networks](../../../NoC/wiki/06-ai-noc-specifics/reduction-and-collective-networks.md)
+相关：[SRAM-CIM 深入](../02-memory-technologies/sram-cim-deep-dive.md), [Digital CIM 深入](../03-compute-paradigms/digital-cim-deep-dive.md), [RAM: Wordline Bitline Sense Amp](../../../RAM/wiki/02-sram-foundations/wordline-bitline-sense-amp.md), [NoC: Reduction Networks](../../../NOC/wiki/06-ai-noc-specifics/reduction-and-collective-networks.md)
 
 ## 这页在回答什么问题
 
@@ -15,9 +15,11 @@ input register / encoder
   -> bitcell array
   -> bitline / source line / local reduction path
   -> sense amplifier / comparator / ADC
-  -> local accumulator / shift-add / output buffer
-  -> macro controller
+  -> local accumulator / shift-add / output buffer -> tile / consumer
+macro controller --控制/状态--> driver、array、sense、accumulator、buffer
 ```
+
+controller 是控制路径：发出预充和驱动，在稳定时间满足后采样，结果可写入输出 buffer；buffer 反压可阻止后续发射。数据不会串行经过 controller。
 
 这个链路中，array 只是一部分。CIM 的收益来自把一部分 multiply、bitwise operation 或 reduction 推进 cell、bitline、sense path；如果计算主要发生在 output buffer 后的普通 MAC array，就不应称为 CIM。
 

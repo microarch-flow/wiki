@@ -33,7 +33,7 @@
 这会直接减少：
 
 - 源端出口压力
-- 总 flit 数
+- 源注入 flit 和重复的全网 flit-hop 数
 - 某些主干路径的重复占用
 
 ## 哪些 AI 场景最需要它
@@ -75,9 +75,6 @@ multicast 的价值不在“少发几条命令”，而在“别让同一份数�
 
 ## 建模启示
 
-第一版建模最实用的方法是做上下界：
+记录源注入 flit、每条边的 flit-hop、复制 buffer、branch 状态和每个目的地的唯一投递。例：一次 fork 到 A/B，A 有 credit、B 无 credit。原子 fork 必须两分支都能接收才发送；逐分支 fork 可先发 A，并记录 `sent={A}`，B 恢复后只发 B，避免向 A 重复发送。packet 在所有必需分支被接收后才释放复制状态；fork 的持有/等待关系还需纳入死锁证明。
 
-- 上界：multiple-unicast
-- 下界：理想 shared-path multicast tree
-
-只要这两者的差距足够大，就说明硬件 multicast 可能有架构价值；如果差距很小，说明问题不在这里。
+在相同路由资源且忽略 fork 额外成本时，可比较多份 unicast 与理想共享树的总 flit-hop；multiple-unicast 不是任意实现的延迟或吞吐上界，实际 fork 排队、复制和反压可能更慢。

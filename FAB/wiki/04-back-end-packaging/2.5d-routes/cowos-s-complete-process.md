@@ -1,11 +1,11 @@
-# CoWoS-S 完整制造流程
+# CoWoS-S 简化制造对象流
 
 上级:[2.5D 路线](README.md)
 相关:[Si Interposer:第一代主流 2.5D](si-interposer-fundamentals.md), [KGD:HBM/3DIC 时代的必要前提](../../03-wafer-test-and-cp/kgd-known-good-die.md), [HBM stack 是怎么制造出来的](../hbm-as-case-study/hbm-stack-manufacturing.md)
 
 ## 这页在回答什么问题
 
-CoWoS-S 不是一个单步封装动作，而是一条多对象、多阶段的系统集成流程。本页按对象流转解释它从设计、物料准备、interposer、组装到测试的完整路径。
+CoWoS-S 不是一个单步封装动作，而是一条多对象、多阶段的系统集成流程。下列 Step 0–8 是便于理解的简化对象流，不是厂商逐线 recipe。具体装配顺序、临时载体、材料、返修和中测覆盖依产品而异。TSMC [平台资料](https://3dfabric.tsmc.com/english/dedicatedFoundry/technology/cowos.htm)与[技术论文摘要](https://research.tsmc.com/chinese/research/interconnect/publish-time-2.html)说明 Si interposer 和 TSV 的平台结构。
 
 ## 先分清对象
 
@@ -86,7 +86,7 @@ flowchart TB
 
 ## Step 8:中间测试、final test 与可靠性验证
 
-CoWoS-S 的测试不能只放在终点。流程中需要在 die、HBM stack、interposer module、final package 等阶段设置拦截点，降低坏件进入后续高成本环节的概率。测试策略本质上是组合良率管理。
+具体项目可在 die、HBM stack、中间 module 和 final package 设置筛测。Final test 对出货件逐件判定；qualification 则对规定样本施加应力，支持该配置的资格判断。不能把样本认证当作每颗出货件都要经历的工序。
 
 ## 一句话理解
 

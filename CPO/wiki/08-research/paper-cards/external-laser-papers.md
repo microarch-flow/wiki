@@ -54,14 +54,14 @@
 
 - 标题：TeraPHY Optical I/O Chiplet / SuperNova External Light Source
 - 作者 / 单位：Ayar Labs
-- 时间：当前产品/方案页
+- 时间：动态产品/方案页，核阅于 2026-11-09
 - 类型：公司一手方案材料
 - 链接：
   - https://ayarlabs.com/teraphy/
   - https://ayarlabs.com/optical-io-products/
 - 核心问题：如何把 optical I/O chiplet 和 external light source 解耦
 - 关键贡献：把光 I/O chiplet 和多波长外置光源分成两类部件，强调 RAS、可维护性和系统扩展
-- 关键代价：这是公司方案材料，不等于同行评审论文；适合用来理解产品化思路，不适合单独当学术定论
+- 关键代价：这是公司方案材料，不等于同行评审论文。若缺分光损耗、冗余及功率数据，不能从光源分离推算每比特能耗；动态页面更新后须重新核对版本。
 - 我最该记住的一句话：把光源从最热封装域拿出去，是一条非常现实的系统工程路线
 
 ### 卡片 C：阅读提示

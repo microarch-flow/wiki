@@ -21,7 +21,7 @@
 
 ## 多维地址生成真正节省了什么
 
-它节省的首先是软件控制流。软件不必再为每一行、每一面、每一个 tile 都单独提交一笔线性任务。更重要的是，它节省了系统级碎片化：原本会被展开成很多小 descriptor 的规则访问，现在可以在硬件里保持为一条更大的逻辑任务，从而给 burst 组织、outstanding 维持和 completion 聚合留出空间。
+它节省的首先是软件控制流。软件不必再为每一行、每一面、每一个 tile 都单独提交一笔线性任务。它也可以减少 descriptor 和 completion 的控制碎片，但底层每行仍受协议、对齐和目标边界约束；事务数不一定减少。硬件有机会跨行优化，前提是地址连续、允许合并且不改变副作用。
 
 把 stride DMA 想成按楼层和房间号自动派送比较贴切。软件不必每送一间房就重新写一次路线，只需要告诉系统“每层送多少间、层间隔多大、总共送几层”。这个类比的边界很明确：它只解释规则地址生成，不解释底层 burst 如何因 page、bank 或协议边界被拆分。
 
@@ -30,10 +30,23 @@
 一个最小 2D DMA 通常至少要表达：
 
 - `active bytes`：每行真正要搬的数据量
-- `row stride / pitch`：相邻两行起始地址差
+- `src_pitch / dst_pitch`：源和目的分别相邻两行的起始地址差
 - `repeat count`：总共重复多少行
 
 3D 或更高维会继续叠加 plane stride、depth count 等字段。关键不是字段越多越强，而是表达能力是否刚好覆盖目标 workload 的规则性。表达过弱，软件仍要展开；表达过强，硬件验证和边界处理复杂度急剧上升。
+
+## 2D 地址与边界例
+
+对第 `r` 行，`src=s0+r×src_pitch`、`dst=d0+r×dst_pitch`，搬 `L` 个有效字节。例：`s0=0x1000,d0=0x2000,L=4,rows=3,src_pitch=8,dst_pitch=6`，三行分别是 `0x1000→0x2000`、`0x1008→0x2006`、`0x1010→0x200C`，每行搬 4 B；源分别跳过 4 B padding，目的跳过 2 B。
+
+```text
+for r in [0, rows):
+  s = checked_add(s0, checked_mul(r, src_pitch))
+  d = checked_add(d0, checked_mul(r, dst_pitch))
+  split_and_transfer(s, d, L)  # 分别满足接口边界、权限与 byte mask
+```
+
+`rows=0` 或 `L=0` 的行为须由 IP 契约定义；若定义为空操作，不应产生数据访问。负 stride 仅在字段编码和实现支持时合法，需用有符号宽运算检查下溢/溢出。源目的区间重叠时，普通 DMA 未必具有 memmove 语义；除非设备明确保证方向与读取顺序，否则应拒绝或由软件处理。每一行还须按源目的边界分别拆分。
 
 ## 为什么它和 memory system 有强耦合
 
@@ -72,10 +85,10 @@
 
 ```text
 StridedTransfer {
-  base
-  active_bytes
-  stride
-  repeat
+  src_base; dst_base
+  active_bytes_per_row
+  src_pitch; dst_pitch
+  row_count
 }
 ```
 

@@ -8,16 +8,16 @@
 
 这页回答：为什么 decode with KV cache 是 AI NoC 里最典型的 memory-centric、response-sensitive 场景之一。
 
-## decode 的核心不是总量，而是依赖链
+## decode 同时受流量和依赖链约束
 
 decode 的典型特点是：
 
-- 一步生成一个 token
-- 下一步要等上一步
+- 常见逐 token decode 的每一步为每个序列生成一个 token；批处理和投机解码可改变调度
+- 同一序列的后续步骤依赖先前结果
 - KV cache 读取频繁
 - 小量 control / sync 很关键
 
-这意味着它最怕的不是“平均带宽略低”，而是：
+总 KV/权重字节数及实际服务带宽会决定搬运时间，逐 token 依赖也会使关键路径延迟影响下一步。context、batch、缓存命中和映射不同，主导因素可能不同。除测量服务带宽外，还需观察：
 
 - 关键 response 晚一点点就层层放大
 - barrier / completion 被拖慢
@@ -37,14 +37,13 @@ KV cache 路径通常会带来：
 - memory port 离 compute 多远
 - local endpoint 能否及时接收返回
 
-## QoS 在这里比纯吞吐更重要
+## KV 带宽和依赖延迟都可能主导
 
-对 decode 而言，一个非常典型的设计结论是：
+若每个 decode step 对每层读取完整历史 K/V，忽略新 token、自身缓存命中、压缩和额外元数据，读取字节约为：
 
-- 给 response / control 更明确的保护
-- 往往比再增加一点平均 data throughput 更有价值
+`2 × batch × layers × context × KV_heads × head_dim × dtype_bytes`。
 
-因为 token latency 更取决于关键小流是否被准时交付，而不是整个 data plane 的平均吞吐数字。
+例如 batch=1、layers=32、context=4096、KV_heads=8、head_dim=128、FP16=2 B，约 536,870,912 B = 512 MiB/step。GQA 使用 KV head 数而不是 query head 数；分片只改变各端口负载，不自动减少总字节。若大 context 或 batch 使 KV 流量占据关键路径，持续带宽很重要；小 batch/短 context 也可能被单次返回、同步和依赖延迟主导。应同时测 KV payload 服务率、关键 response 延迟和 token time，再判断 QoS 与带宽的价值。
 
 ## placement 在这里特别值钱
 
@@ -59,13 +58,13 @@ KV cache 路径通常会带来：
 ## 它和 prefill 的最关键区别
 
 prefill 更像 bulk distribution；
-decode 更像 critical response orchestration。
+decode 有逐 token 依赖，KV 返回也可能是大数据流。
 
 这就是为什么同一个芯片上，适合 prefill 的设计不一定天然适合 decode。
 
 ## 一句话理解
 
-decode 的关键不是“流量大不大”，而是“卡住下一步的那条 memory response 能不能一直准时回来”。
+decode 同时依赖 KV/权重数据供给与关键路径响应；两者的相对重要性由 context、batch、缓存和映射决定。
 
 ## 建模启示
 
@@ -81,6 +80,7 @@ decode 模型至少要显式区分：
 
 - response latency
 - tail latency
+- KV payload bytes 和各瓶颈端口的有效服务率
 - completion-to-next-step gap
 - workload token time
 

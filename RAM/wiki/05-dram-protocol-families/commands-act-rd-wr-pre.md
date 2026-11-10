@@ -7,9 +7,11 @@
 
 为什么 DRAM 的外部接口不可能像 SRAM 那样近似为一个“给地址，读数据”的黑盒，而必须显式拆成 ACT、RD、WR、PRE 这样的阶段性命令。更关键的是，这些命令并不是接口层的人为发明，而是上一章里那条物理访问路径在协议层的直接投影。
 
-## 正文
+## 命令如何改变 bank 和行状态
 
-如果只从软件语义出发，内存访问似乎应该很简单：给一个地址，读或写对应数据即可。DRAM 之所以没有长成这种接口，不是因为标准喜欢复杂，而是因为底层阵列根本不支持”直接按地址随机抓取一个小字”。这就像你不能对一个巨型冷冻仓库说”帮我拿第 3 排第 7 层的那盒冰淇淋”然后它瞬间出现——你得先把整个冷柜推出来（ACT），然后从里面找到那一盒（RD），用完之后把冷柜推回去（PRE）。上一章已经说明了这一点：1T1C cell 很弱，必须先整行接入位线、由 sense amp 放大并恢复；sense amp 形成当前 open row 的工作副本后，列访问才有意义；切换到别的行前，还必须释放当前行状态并把位线回到可再次感测的预充条件。因此，DRAM 的命令集本质上是在把这一长串必经的物理阶段显式暴露给控制器。
+如果只从软件语义出发，内存访问似乎应该很简单：给一个地址，读或写对应数据即可。DRAM 之所以没有长成这种接口，不是因为标准喜欢复杂，而是因为底层阵列根本不支持”直接按地址随机抓取一个小字”。这就像你不能对一个巨型冷冻仓库说”帮我拿第 3 排第 7 层的那盒冰淇淋”然后它瞬间出现——你得先把整个冷柜推出来（ACT），然后从里面找到那一盒（RD），用完之后把冷柜推回去（PRE）。上一章已经说明了这一点：1T1C cell 很弱，先整行接入位线并感测；达到列访问时限后可访问，cell 恢复继续并须在关行前满足相应约束；切换到别的行前，还必须释放当前行状态并把位线回到可再次感测的预充条件。因此，DRAM 的命令集本质上是在把这一长串必经的物理阶段显式暴露给控制器。
+
+## ACT、RD、WR、PRE 的职责
 
 `ACT`，也就是 activate，对应的就是“先开行”这件事。它不是一个抽象授权动作，而是实打实地让某个 bank 中目标 row 的 wordline 拉高，使该行所有 cell 接到位线，随后整排 sense amp 开始检测并放大微弱差分，再把恢复后的逻辑状态维持在 row buffer 一侧。控制器一旦发出 ACT，并不是只打开了“一个地址入口”，而是把这整个 bank 的当前工作副本换成了目标 row。也正因为 ACT 的代价大、范围宽，后续多次命中同一 row 时才有机会把这笔成本摊薄。
 
@@ -23,6 +25,8 @@
 ACT  ->  RD / WR  ->  PRE
 开行     列访问       释放并预充
 ```
+
+## 行命中、关闭行和行冲突
 
 对于最常见的三类访问情形，这条命令链会长成不同样子：
 
@@ -49,6 +53,10 @@ Row conflict (different row already open):
 
 所以，这一页真正要建立的结论是：DRAM 命令集之所以长这样，不是因为协议层人为把一笔读写事务拆碎了，而是因为底层阵列本来就必须经历“开行、访问、释放”的多阶段过程。协议只是把这个过程原样交给了系统，并允许 controller 在这个显式状态机上做优化。
 
+## PRE 不是列命令发出后立即可用
+
+在下述 DDR4 BL8、禁用写 CRC、CA parity 及 CS-to-CA latency 的例子中，显式 PRE 既要满足 ACT 后的 `tRAS`，也要满足同 bank 的 RD 后 `AL+nRTP` 和 WR 后 `WL+BL/2+nWR`。写恢复的起点在数据 burst 后的指定参考沿，不是 WR 命令边沿。控制器要对这些下界取最大值，再检查其他总线和模式约束。完整前提见 [DDR4 PRE 下界](./timing-parameters-trcd-trp-tras.md#ddr4-同-bank-显式-pre-的完整下界)；改变模式须查目标器件。auto-precharge 使用另一套接口语义，不应直接当成同一个显式命令。
+
 ## 一句话理解
 
 ACT、RD、WR、PRE 不是人为拆碎的一笔内存请求，而是 DRAM 底层“开行、在已打开行上列访问、再释放预充”这条物理访问路径的显式接口化。
@@ -68,18 +76,28 @@ BankState {
 }
 ```
 
-访问分解框架可以直接写成：
+以下为单请求分解示意。其他请求可能在等待时使用合法资源；所有分支都要检查 guard。假设 DDR4 CA parity 关闭（PL=0）且 CS-to-CA latency 关闭，AL 非零时外部列命令可提前发出，内部列动作仍须满足 tRCD；外部命令到首读数据的名义延迟为 RL=AL+CL，写延迟为 WL=AL+CWL。开启 CA parity 后的具体器件示例见 [timing 正文](./timing-parameters-trcd-trp-tras.md)。
 
 ```text
-if bank.open_row == target_row:
-    emit(RD or WR)
-elif bank.open_row == INVALID:
-    emit(ACT)
-    emit(RD or WR)
-else:
-    emit(PRE)
-    emit(ACT)
-    emit(RD or WR)
+column_issued = false
+while not column_issued:
+    # 每次重新读取 bank 状态；等待期间其他请求可能改变 open_row
+    if bank.open_row == target_row:
+        candidate = RD or WR
+    elif bank.open_row == INVALID:
+        candidate = ACT
+    else:
+        candidate = PRE
+    if not legal_now(candidate, bank, rank, CA, DQ, mode):
+        yield_to_scheduler_until_next_event()
+        continue  # 不保留过期候选，重新计算
+    if issue_if_still_legal_and_update_atomically(candidate):
+        if candidate is RD or WR:
+            column_issued = true
+            schedule_data_burst_and_request_completion()
+            break  # 后续完成事件不会重新发该列命令
 ```
+
+列命令成功发出后，请求仍可能等待数据传输和响应；完成事件与命令发射分开。调度器必须在原子发射前重新核对状态与 guard，以处理等待期间的换行或资源竞争。
 
 如果只关心粗粒度平均延迟，可以把这几步折叠成 row-hit / row-miss / row-conflict 三种代价表；但只要你要建模命令重排、page policy 或多 bank 交织，最好显式保留命令队列和 bank 状态机。因为“能不能把两个请求调换顺序”，本质上取决于这些命令级状态是否兼容。

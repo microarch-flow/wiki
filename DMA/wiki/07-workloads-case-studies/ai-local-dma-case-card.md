@@ -33,6 +33,20 @@ AI local DMA 通常位于 cluster 或 tile 附近，连接 cluster SRAM、tile b
 
 这里不要默认它一定由 CPU/driver 高频 submit。很多 local DMA 更常见的是由编译器、runtime 计划，甚至硬件依赖链自动触发。
 
+## 两个 buffer 的可检查时序
+
+假设 A、B 位于同一个单端口 bank，每拍只能接受一个读或写；每个 tile 有 2 个 beat。DMA 和 compute 使用 ready/release token，而不是软件 CQ：
+
+| Cycle | 动作 | 状态和依赖 |
+| --- | --- | --- |
+| 0–1 | DMA 向 A 写两个 beat | A 为 FILLING，compute 不可读取 |
+| 2 | 发布 `A_ready` | 完整写入且可消费后，A 可被 compute 占用 |
+| 3–4 | compute 从 A 读两个 beat | DMA 想写 B 但同 bank 单端口已被占用，须等待 |
+| 5 | compute 发布 `A_release`；DMA 写 B beat 0 | A 才可复用，B 为 FILLING |
+| 6–7 | DMA 写 B beat 1，再发布 `B_ready` | 之后 compute 才可消费 B |
+
+这是假设控制 token 不占 SRAM 数据端口的构造例。若 A 尚未 ready，提前读会读到部分数据；若 A 未 release，DMA 覆盖会破坏计算。多个 bank/端口或不同流水允许其他调度，但必须检查实际冲突与释放条件。
+
 ## 最常见瓶颈
 
 最常见的问题通常包括：

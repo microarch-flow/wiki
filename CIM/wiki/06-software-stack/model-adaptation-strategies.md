@@ -1,7 +1,7 @@
 # 模型适配：Noise-Aware Training、QAT、Retraining
 
 上级：[06 Software Stack](./README.md)
-相关：[Reliability and Error Tolerance](../05-architecture-and-system/reliability-and-error-tolerance.md), [Quantization for CIM](./quantization-for-cim.md), [BUS: DMA Path](../../../BUS/wiki/04-microarchitecture-integration/dma-descriptor-fetch-data-move-writeback.md), [NoC: Reduction Networks](../../../NoC/wiki/06-ai-noc-specifics/reduction-and-collective-networks.md)
+相关：[Reliability and Error Tolerance](../05-architecture-and-system/reliability-and-error-tolerance.md), [Quantization for CIM](./quantization-for-cim.md), [BUS: DMA Path](../../../BUS/wiki/04-microarchitecture-integration/dma-descriptor-fetch-data-move-writeback.md), [NoC: Reduction Networks](../../../NOC/wiki/06-ai-noc-specifics/reduction-and-collective-networks.md)
 
 ## 这页在回答什么问题
 

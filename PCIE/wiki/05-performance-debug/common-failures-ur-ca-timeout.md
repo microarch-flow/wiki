@@ -20,11 +20,11 @@ PCIE bring-up 和调试里最常见的几类错误，通常各自意味着什么
 - 下游状态不完整
 - 某段资源配置或功能使能没有闭环
 
-## Timeout 常提示什么
+## 区分 PCIe Completion Timeout 和软件超时
 
-- 请求发出后没等到预期返回
-- 链路、路由或下游设备卡住
-- 也可能是软件观察点等待错对象
+PCIe Completion Timeout 指 requester 为 non-posted 请求等待所需事务返回，超过规定时间窗口仍未完成。例如配置读或 Memory Read 没有收到全部所需 Completion，可能涉及路由、链路或目标；应检查 requester 错误状态和路径。UR、CA 则可作为这些请求的 Completion Status 返回，收到它们是有返回的错误证据。
+
+软件等待 CQE 超时是另一观察点：即使配置访问和 DMA 的 PCIe 事务均正常，设备执行未完成、CQE 未发布或软件消费队列错误也会使等待超时。普通 posted Memory Write 不收到与该写对应的常规错误 Completion，其错误须通过适用的报告机制定位。
 
 ## 调试时不要直接跳结论
 

@@ -8,7 +8,7 @@
 这页回答：CIM 领域最容易被论文、新闻稿和公司材料混用的问题，应该如何快速判定。
 
 **PIM 是 CIM 的一种吗？**  
-不是。CIM 要求 cell 或 array path 参与计算；PIM 只要求 processing unit 在 memory die/bank 内。Samsung HBM-PIM 和 SK hynix AiM/AiMX 都是 PIM，不是 CIM。
+在本专题互斥的术语约定中，CIM 要求 cell 或 array path 参与计算；PIM 指同 memory die/bank 内独立处理单元。Samsung HBM-PIM 和 SK hynix AiM/AiMX 属于后者。其他文献可能用广义 PIM 包含阵列内计算，比较前须核对定义。
 应该去读：[CIM/PIM/NMC 分类](../01-overview/cim-pim-nmc-taxonomy.md)。
 
 **名字里有 in-memory computing，就一定是 CIM 吗？**  
@@ -44,7 +44,7 @@ CNN 的卷积权重复用和规则数据流更适合 array-resident weights。Tr
 应该去读：[LLM decode and CIM](../07-workloads/llm-decode-and-cim.md)。
 
 **HBM-PIM 为什么不能和 ReRAM-CIM 的 TOPS/W 横比？**  
-HBM-PIM 是 PIM，关注 energy/byte、bandwidth utilization、host offload 和 system speedup；ReRAM-CIM 是 array-level CIM，关注 energy/MAC、ADC、conductance drift 和 macro efficiency。指标层级不同。
+HBM-PIM 的 system speedup 与 ReRAM-CIM 的 macro TOPS/W 单位和层级不同，不能直接横比；若对相同任务、精度、测量窗口和系统边界获得端到端数据，则可比较。
 应该去读：[09 指标术语表](../09-research-frontier/metrics-glossary.md)。
 
 **PIM/NMC 和传统 GPU/NPU + HBM 的差别在哪里？**  
@@ -56,7 +56,7 @@ HBM-PIM 是 PIM，关注 energy/byte、bandwidth utilization、host offload 和 
 应该去读：[研究视角与产业视角](../09-research-frontier/research-vs-industry-perspective.md)。
 
 **UPMEM 到底算什么？**  
-本 wiki 把 UPMEM 归为 NMC 对照，不是 CIM；官方材料常使用 PIM 口径，但正文分类以 01 taxonomy 为准。08 的 UPMEM 卡片用于讨论 DIMM/server 形态、host+DPU 编程和 near-data 产品化。
+UPMEM 的 DPU 和 DRAM bank 在同一 die，执行独立 DPU 代码，数据在 MRAM 与私有 WRAM 间显式 DMA；本 wiki 归 PIM，不是 CIM。DIMM/server 是交付形态，host 负责分发与回收。其他文献可能使用更宽的 near-memory 或 PIM 术语。
 应该去读：[UPMEM card](../08-industry-and-products/company-cards/nmc-companies-upmem.md)。
 
 **什么时候应该选择传统 NPU/GPU，而不是 CIM/PIM/NMC？**  
@@ -70,3 +70,7 @@ HBM-PIM 是 PIM，关注 energy/byte、bandwidth utilization、host offload 和 
 ## 维护原则
 
 FAQ 只回答最容易误判的问题，每个答案都要给短答、原因和下一步链接。新增问题时避免展开成教程；如果需要长解释，应新建或链接到 02-09 的正文页。
+
+## ADC 共享会减少转换总数吗？
+
+不会自动减少。八个独立样本可均衡路由到两个 ADC 时，每轮各转一个，需要四轮、八次转换；均衡路由到四个 ADC 时需要两轮，仍是八次转换。固定映射时轮数是每个 ADC 所承担样本数的最大值。例如四个样本都只能去 ADC 0 时，共有四个 ADC 仍需四轮。零样本无需转换；有样本而无 ADC 时不可服务。ADC latency 与启动间隔可以不同。若模拟路径在转换前实际合并样本，应按合并后的独立样本重新计数，同时计入误差和动态范围。详见[参数字典](../05-architecture-and-system/cim-modeling-parameter-schema.md#adc-样本转换次数与共享)。

@@ -2,7 +2,7 @@
 
 上级：[04 Routing And Flow Control](./README.md)
 
-相关：[Allocator Design VC Switch](../02-router-microarchitecture/allocator-design-vc-switch.md)、[QoS And Priority Classes](./qos-and-priority-classes.md)、[BUS: 争用、QoS 与可观测性](/mnt/e/wiki/BUS/wiki/05-performance-debug/contention-qos-observability.md)
+相关：[Allocator Design VC Switch](../02-router-microarchitecture/allocator-design-vc-switch.md)、[QoS And Priority Classes](./qos-and-priority-classes.md)、[BUS: 争用、QoS 与可观测性](../../../BUS/wiki/05-performance-debug/contention-qos-observability.md)
 
 ## 这页在回答什么问题
 
@@ -32,7 +32,7 @@
 
 ### Round-Robin
 
-轮询是最常见默认值。
+轮询是常见默认值。例：3 个候选 A/B/C 均持续有效且每次均可服务，按 flit RR，指针先指 A，成功 grant 顺序为 A、B、C；每次成功后指向胜者下一位，某候选最多等待另外 `N−1=2` 次成功 grant。若一个候选因无 credit 不可服务，可按实现跳过并记录；该候选恢复可服务后再参与。只有每次服务时间有界、下游持续可服务且指针在成功后推进，成功 grant 次数界才可转换为时间界；永久阻塞时 RR 不能保证到达。
 
 优点：
 
@@ -57,7 +57,7 @@
 缺点：
 
 - 低优先级可能被长期压制
-- 如果 bulk data 持续注入，低优 starvation 风险会很真实
+- 若更高优先级候选持续有效且可服务，低优可能饥饿；bulk 是否造成该问题取决于它的优先级和实际服务状态
 
 ### Age-Based
 

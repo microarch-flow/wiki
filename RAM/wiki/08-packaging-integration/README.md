@@ -7,7 +7,7 @@
 
 为什么封装和集成方式已经不能再被看成“芯片设计完成之后的后端落地细节”，而必须被视为内存系统本身的一部分。更具体地说，DIMM、PoP、MCP、HBM stack、2.5D/3D 这些形态，是怎样直接改写互连距离、I/O 宽度、每 bit 能耗、可扩展性和成本边界的。
 
-## 正文
+## 封装如何改变存储接口边界
 
 如果只站在逻辑或协议层看内存系统，似乎很多问题已经解释完了：SRAM 和 DRAM 各自的物理代价是什么，DDR/LPDDR/GDDR/HBM 在协议层各自怎么取舍，controller 如何调度请求，系统为何分层。但一旦你继续追问“这些位宽和带宽到底是怎么在真实产品里落下来的”，就会发现封装不是附录，而是变量本身。线有多长、能拉多少根、信号要穿过多少介质、热从哪里走、测试怎么做、良率风险落在哪一级，这些都会直接改变你前面所有理论上的最优点。就像建筑设计——图纸上的完美户型，到了施工阶段可能因为承重墙位置、管线走向和地基条件而不得不做出根本性妥协。封装就是芯片世界的"施工约束"。
 
@@ -50,13 +50,17 @@
 ```text
 MemoryIntegrationNode {
   family: enum { DDR, LPDDR, GDDR, HBM }
-  form: enum { DIMM, SODIMM, POP, MCP, HBM_STACK, INTERPOSER_2P5D, STACKED_3D }
-  reach_mm_norm: float
+  module_form: enum { NONE, DIMM, SODIMM, PACKAGE }
+  die_stack: enum { NONE, STACKED_DIE }
+  integration: enum { PCB, POP, MCP, INTERPOSER_2P5D, STACKED_3D }
+  reach_mm: float  # 实际互连长度，单位 mm
   io_width_norm: float
   io_energy_per_bit_pJ: float
   package_complexity_norm: float
   serviceability_norm: float
 }
 ```
+
+堆叠和集成可同时成立，例如 HBM stack 与 2.5D interposer。带 `_norm` 的量需规定无量纲的基准和范围；`reach_mm` 是实测或布局估计的物理长度。
 
 如果只关心 very-high-level 性能路线，你也许可以只看 `io_width_norm` 和 `io_energy_per_bit_pJ`；但只要开始讨论产品落地、成本或不同系统为何不选同一路线，`package_complexity_norm` 和 `serviceability_norm` 就必须保留。因为从这章开始，系统最优点已经不再只是器件参数函数，而是 `器件 × 集成方式` 的联合函数。

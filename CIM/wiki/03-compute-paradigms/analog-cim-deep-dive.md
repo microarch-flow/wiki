@@ -16,6 +16,8 @@ circuit: DAC error / ADC quantization / SA offset / reference noise
 system: calibration drift / mapping mismatch / model accuracy loss
 ```
 
+模拟时需区分误差的相关性：器件固定失配在同一 cell 多次推理间保持；写偏差在每次 program/verify 后更新；读噪声可按每次评估重采样；drift 随时间和温度演化。不能把所有偏差每次独立重抽成白噪声，否则会低估持续性误差。
+
 在 ReRAM-CIM 中，device 层的 conductance 分布和 drift 是核心；在 SRAM charge/current-domain CIM 中，PVT、read disturb、bitline mismatch 和 sense margin 更关键；在 Flash CIM 中，threshold drift、program variation 和长期 retention 更突出。
 
 ## Analog Paradigm 的 Memory 落点

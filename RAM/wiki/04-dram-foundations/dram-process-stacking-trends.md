@@ -7,7 +7,7 @@
 
 DRAM 为了继续提高容量密度、带宽和每 bit 能效，为什么工艺路线会从长期的平面阵列逐步走向更深的堆叠和 3D 方向。这里关注的不是系统封装方案本身，而是 DRAM die 这一层为什么越来越难只靠传统平面缩放继续前进。
 
-## 正文
+## 密度扩展与电容约束
 
 到这一章前面为止，DRAM 的主线已经很清楚了：它靠 1T1C 单元和整行感测机制赢得了密度，却也背上了 refresh、row buffer、bank 并行和接口桥接这些复杂性。接下来再往前推一步，自然会遇到另一个问题：既然 DRAM 的价值很大程度上来自“单位面积塞下更多 bit”，那它是否可以像早期逻辑工艺那样，靠一代代平面缩小不断线性提升？现实是，这条路越来越难走，原因不只是制造更难，而是 DRAM 的核心目标本身把它推向了和逻辑工艺不同的优化方向。
 
@@ -43,7 +43,10 @@ DRAM 走向堆叠和 3D，不是因为“3D 更先进”这句空话，而是因
 
 ```text
 DramTechnologyModel {
-  organization: enum { PLANAR, STACKED_DIE, STACKED_3D }
+  cell_geometry: enum { PLANAR_CAPACITOR, STACKED_CAPACITOR, TRENCH, OTHER }
+  arrays_per_die_layers: int  # 单片内部层数，具体工艺决定
+  die_count_per_package: int
+  integration: enum { PCB, POP, INTERPOSER_2P5D, STACKED_3D }
   capacity_per_package_GB: float
   io_density_norm: float
   energy_per_bit_pJ: float
@@ -57,8 +60,9 @@ DramTechnologyModel {
 更进一步，如果要把这页与后续 `08` 章连接起来，可以把 DRAM die 技术路线与系统封装路线分成两层对象，而不要混成一个标签：
 
 ```text
-MemoryDieTech = { PLANAR_DRAM, STACKED_DRAM }
-PackageIntegration = { DIMM, POP, INTERPOSER_2P5D, STACKED_3D }
+CellGeometry = { PLANAR_CAPACITOR, STACKED_CAPACITOR, TRENCH, OTHER }
+DieOrganization = { arrays_per_die_layers, die_count_per_package }
+PackageIntegration = { PCB, POP, INTERPOSER_2P5D, STACKED_3D }
 ```
 
 这能避免模型里出现“HBM = 一种单一物理东西”的混淆。更准确的做法，是分别表达 die 组织和系统集成，再在后续产品路线里组合它们。

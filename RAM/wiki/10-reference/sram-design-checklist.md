@@ -7,7 +7,7 @@
 
 当需要做 SRAM 规格定义、IP 选型或架构评审时，应该按哪些问题逐项检查，才能不漏掉端口、容量、Vmin、banking 和功耗这些关键约束。
 
-## 正文
+## 规格、接口与并发检查顺序
 
 这份 checklist 的目标不是替你完成 SRAM 设计，而是避免在规格定义、IP 选型、架构评审和模型抽象时漏掉最容易晚爆雷的约束。SRAM 相关问题最常见的失败模式，不是完全不知道某件事，而是只看了容量和名义延迟，就过早假设“这块 SRAM 大概能用”。真正到后面实现时，才发现端口数爆了、bank 冲突压不住、Vmin 不过、retention 状态没想清、或者这块 SRAM 的系统角色和它的组织方式根本不匹配。这就像装修房子——不能只看户型面积够不够大，还得检查水电管线走向、承重墙位置、采光朝向和消防通道。少检查任何一项，都可能在住进去之后才发现大问题。
 
@@ -81,8 +81,9 @@
 
 先回答：
 
-- 这块 SRAM 的读写时延能否固定成常数？
-- 同拍读写冲突语义是什么？
+- 读写分别从哪个采样沿到哪个可见端点？读写 latency 和 initiation interval（II）各是多少？
+- 端口是 1RW、1R1W 还是其他类型？哪些 bank、出口和 DMA 共享？
+- 同拍同址读写返回旧值、新值、禁止还是未定义？未定义时上层如何避免？
 - 是否允许更深流水来换频率？
 - 上层是否依赖严格一拍返回，还是能接受调度器插空？
 
@@ -161,7 +162,13 @@ SramReviewItem {
   scope: enum
   read_bw_Bps: float
   write_bw_Bps: float
-  latency_cycles: int
+  read_latency_cycles: int
+  write_visibility_cycles: int
+  read_ii_cycles: int
+  write_ii_cycles: int
+  sampling_and_visible_endpoints: str
+  physical_port_types: list
+  same_address_collision_semantics: str  # 可为未定义
   low_power_modes: set
   wakeup_cycles: int
   observability_features: set

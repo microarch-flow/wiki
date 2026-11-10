@@ -35,21 +35,21 @@
 
 ## trace 最少字段
 
-为了让注入保持稳定，trace 最少建议保留：
+v1 事件按类型保留字段：
 
-- `time`
-- `src`
-- `dst`
-- `traffic_class`
-- `bytes`
-- `flow_id`
-- `dependency`
+- 共用：`kind`、唯一字符串 `id`、非负整数 `release_time`、`depends_on`；依赖为前驱 ID 数组，按 all-of 等待约定完成事件。
+- `flow`：`src_node`、数组 `dst_set`、`traffic_class`、`payload_bytes`。
+- `compute`：`node`、`duration_cycles`；完成时释放后继。
+- `barrier`：没有网络端点，所有前驱完成后释放后继。
+- 可选的阶段标记统一使用 `phase`，与 GEMM 生成器一致。
+
+与 [v1 workload schema](../07-evaluation-methodology/from-workload-to-traffic-trace.md#输入输出与完成边界) 一致。flow 默认等所有目的 consumer 完成；network arrival 不足以释放依赖。compute/barrier 也有 ID 和完成事件。加载时检查重复 ID、未知 class、无效 node、死引用和 DAG 环，拒绝非法输入；在依赖满足且 release_time 已到后才进入 ready 队列。
 
 如需更进一步，可以再加：
 
 - `route_hint`
 - `memory_context`
-- `phase_id`
+- `phase`
 
 ## packetization 不应被省略成隐式常数
 
@@ -60,7 +60,7 @@
 - wormhole path 占用时间
 - ejection burst 形状
 
-所以 simulator 最好至少把 packetization 作为一个显式步骤，而不是静默吞掉。
+每 packet 的 `num_flits=ceil((payload_bytes+header_bytes+tail_bytes)/flit_bytes)`，并记录 padding；具体格式可将 tail 信息包含在 header 或 payload，不得重复计数。单 flit 包用 `HEAD_TAIL`。单播基线若将 multicast 展开为多个单播，要按展开结果重新统计；只有实现 fork 状态的扩展才可使用共享树。计时分别记录 release、首 flit 注入、tail 网络到达和 consumer 完成。
 
 ## synthetic 和 workload trace 最好共用接口
 
@@ -82,7 +82,7 @@
 
 流量类别和依赖关系不应等到进入 router 才临时猜。最好在 trace / packet 生成阶段就固定好：
 
-- class
+- `traffic_class`（flow 字段）
 - release condition
 - route hint
 

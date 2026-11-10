@@ -26,9 +26,9 @@ Mixed-signal 是更现实的落点。array 内用 analog current 完成局部 MV
 
 ## 权重表示的几个硬问题
 
-第一，正负权重不能由单个无符号电导自然表示。常见方案是差分对：一组 cell 表示正权重，另一组表示负权重，输出取差。代价是容量翻倍、匹配误差增加，读出链路也更复杂。
+第一，正负权重不能由单个无符号电导自然表示。常见方案是差分对：一组 cell 表示正权重，另一组表示负权重，输出取差。固定物理 cell 数时，若每个权重从一个 cell 改为 G+、G− 两个 cell，有效权重数约减半；固定权重数则约需两倍 cell，并需取差，匹配误差与读出代价也要计入。
 
-第二，多比特权重不等于一个 cell 稳定保存任意多级。论文会报告 2-bit、3-bit 或更多 conductance levels，但可产品化的有效位数取决于写入分布、retention drift、read noise、temperature 和校准频率。层级越多，conductance window 越窄，可靠性越难。
+第二，多比特权重不等于一个 cell 稳定保存任意多级。标称 b bit 对应理想 `2^b` 个可区分 conductance level，例如 2 bit 为 4 级；实际有效级数和位数由分布重叠及目标错误率决定，但可产品化的有效位数取决于写入分布、retention drift、read noise、temperature 和校准频率。层级越多，conductance window 越窄，可靠性越难。
 
 第三，写入不是免费操作。ReRAM write 需要 set/reset pulse 和 verify，写入延迟、能耗与 endurance 会限制它用于频繁更新的模型。固定权重 inference 比 training 或高频在线更新更自然。
 

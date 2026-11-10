@@ -3,7 +3,7 @@
 本章先回答三个问题：
 
 1. CPO 到底在解决什么系统问题
-2. CPO 和 pluggable optics、NPO、OIO 是什么关系
+2. CPO 和 pluggable optics、NPO、OBO、optical I/O 是什么关系
 3. 学习时应该先看系统，再看器件，还是先看封装
 
 建议顺序：

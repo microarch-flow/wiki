@@ -1,7 +1,7 @@
 # HBM:先进封装的标志性应用
 
 上级:[后道封装](../README.md)
-相关:[2.5D 路线](../2.5d-routes/README.md), [3D 路线](../3d-routes/README.md), [CoWoS-S 完整制造流程](../2.5d-routes/cowos-s-complete-process.md)
+相关:[2.5D 路线](../2.5d-routes/README.md), [3D 路线](../3d-routes/README.md), [CoWoS-S 简化制造对象流](../2.5d-routes/cowos-s-complete-process.md)
 
 ## 这页在回答什么问题
 
@@ -40,11 +40,11 @@ HBM 不是“更快的外部 DRAM”。它把内存带宽问题从板级通道�
 | 架构问题 | HBM 带来的变化 |
 | --- | --- |
 | Memory bandwidth | 从拉高单线速率转向更宽并行接口 |
-| Power-per-bit | 依赖更短互连和更低寄生 |
+| 能量/bit | 短互连可能降低能耗；以约定边界的平均功率 W 除以同窗口有效速率 bit/s，得到 J/bit |
 | NoC / memory controller | 需要在片上组织更高并发的访存入口 |
 | Package layout | HBM stack 数量和位置成为 floorplan 约束 |
 | Thermal design | 高功耗 logic 与 HBM 邻近导致热耦合 |
-| Test/yield | HBM stack 和 logic 都是高价值 KGD |
+| Test/yield | logic KGD 与经 stack-level 筛选的 HBM 组件分别计入 |
 
 这里的 RAM/内存层级问题不再只在芯片架构图里解决，NoC 与 memory controller 的带宽需求会落到 package 中的物理互连密度、供电和热路径上。
 
@@ -55,3 +55,10 @@ HBM 把存储带宽问题变成先进封装问题：memory 自己要 3D 堆叠�
 ## 架构师启示
 
 架构师定义 HBM 系统时，必须同时定义 memory controller/NoC 带宽、HBM stack 数量、package 布局、interposer/RDL 能力、KGD 策略和热设计。只在逻辑架构层写“接入 HBM”是不够的，因为 HBM 的价值只有在封装互连、供电和热路径闭合后才能释放。
+
+## 本章正文
+
+- [AI GPU + HBM 封装的完整对象关系](./ai-gpu-hbm-package-architecture.md)
+- [HBM 代际演化与封装路线的耦合](./hbm-evolution-hbm2-hbm3-hbm4.md)
+- [HBM stack 是怎么制造出来的](./hbm-stack-manufacturing.md)
+- [HBM 如何把产业逼向 2.5D 和 3D](./why-hbm-forces-2.5d-3d.md)

@@ -15,11 +15,13 @@ Channel-level 或 die-level PIM 把 compute 放在更共享的位置，能用更
 
 这个 trade-off 类似 NoC 中“局部 reduction vs 全局 reduction”的问题：越局部，数据少搬但逻辑受限；越集中，逻辑灵活但搬运增加。
 
+假设两个 bank 的本地操作各有独立 CU 且无共享端口，二者可并发；若两 bank 共用一个 CU 或数据接口，则必须仲裁、排队。局部计算后若频繁把中间结果回传 host，链路与 host 等待可能抵消部分收益。不同产品的共享范围必须以硬件图为准。
+
 ## 与 Analog/Digital/Mixed-Signal 的关系
 
 DRAM/HBM/GDDR-PIM 的主线是 memory die/bank 内独立 digital processing。它可以支持整数、浮点或定制低比特格式，但这些数值格式属于 PIM execution unit 的设计，不属于 analog/digital/mixed-signal CIM 纵轴。
 
-Analog DRAM-CIM 研究可以利用 DRAM cell/bitline charge sharing 做逻辑或近似计算，但那是 in-DRAM bitline compute，不是本篇 HBM/GDDR-PIM 主线。Mixed-signal 在 PIM 语境中更多体现为 memory-side digital compute 与 analog DRAM I/O、sense path、PHY 的系统协同，也不是 array-native CIM macro 的 mixed-signal paradigm。
+Analog DRAM-CIM 研究可以利用 DRAM cell/bitline charge sharing 做逻辑或近似计算，但那是 in-DRAM bitline compute，不是本篇 HBM/GDDR-PIM 主线。常规 DRAM 感测或 I/O PHY 含模拟电路，并不使独立数字 ALU 的计算成为 mixed-signal CIM。只有模拟量参与计算求值并与数字处理组合时，才按实际电路讨论混合信号。
 
 ## HBM-PIM 的系统价值
 

@@ -21,7 +21,7 @@
 8. [Digital CIM 基础](../03-compute-paradigms/digital-cim-fundamentals.md)
 9. [Paradigm × Memory Crossmap](../03-compute-paradigms/paradigm-memory-crossmap.md)
 
-这条路径的目标是先建立分类直觉：看到一个对象时，能判断它是 CIM、PIM 还是 NMC，属于哪条 memory technology，采用哪种 compute paradigm。
+这条路径的目标是先建立分类直觉：看到一个对象时，先判计算位置和 memory technology；若阵列参与计算，再判断 CIM 的求值与转换范式；若是独立 PIM/NMC 单元，则查执行单元、局部存储和接口。
 
 ## 架构建模路径
 

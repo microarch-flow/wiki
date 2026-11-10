@@ -7,7 +7,9 @@
 
 一行被激活之后，到底应该尽量继续保持打开，还是尽快预充关掉，为下一次潜在访问让路。更准确地说，page policy 的本质不是一个简单开关，而是 controller 在对未来访问模式下注——就像赌场里押大押小：你是赌”后面还会继续命中当前 row”（押大，open-page），还是赌”更可能很快要换别的 row”（押小，close-page）。押对了赚便宜，押错了赔更多。
 
-## 正文
+## 打开行的保留与关闭决策
+
+## 行驻留与后续请求
 
 理解 page policy，最稳的起点是先记住 row buffer 的本质：它不是一个独立小 cache，而是当前 bank 已打开行的工作副本。只要这一行还开着，后续命中它的请求就能走便宜得多的 row-hit 路径；但只要未来请求更可能落到别的 row，那么继续留着当前 open row 反而可能制造 row conflict，让下一笔访问多出 `PRE -> ACT` 这条昂贵切换链。于是 controller 面前会一直存在一个无法回避的问题：`当前这行还值不值得继续留？`
 
@@ -18,14 +20,11 @@
 这两者的胜负，根本不在策略本身高不高级，而在未来访问模式到底长什么样。可以用一个简单对照把直觉拉清：
 
 ```text
-If next requests are likely same row:
-  open-page wins
-  ACT cost is amortized across many column accesses
-
-If next requests are likely different rows:
-  close-page wins
-  future switch pays less leftover row conflict penalty
+同一行后续访问可复用打开状态；异行访问若有足够空闲时间，
+提前 PRE 可隐藏一部分关行等待。实际结果取决于到达时刻和 guard。
 ```
+
+例如仅为手算：bank 的当前行在 cycle 12 才允许 PRE，tRP=4 拍，ACT 到 RD 的限制为 3 拍，其他 guard 均已满足。close-page 在 12 发 PRE，16 完成；新异行请求 20 到达时可在 20 发 ACT、23 发 RD。open-page 到 20 才发 PRE，24 发 ACT、27 发 RD。若 20 到达的是同一行，open-page 可在 20 发 RD；已关行的 close-page 则在 20 发 ACT、23 发 RD。请求若早于 16 到达，预关闭只能隐藏部分甚至无法隐藏 tRP；不能仅凭异行就断言一定获益。
 
 这里最容易犯的错误，是把 open-page 理解成“总是更聪明”，因为它更会利用 row-hit；或者把 close-page 理解成“总是更保守”，因为它把行早早关掉。实际上，两者都只是在不同 workload 假设下做最优响应。常见误解是觉得 row-hit 总是越多越好；但如果为了守住当前 row 而让其他更急、更广泛的请求不断形成 conflict，系统整体可能反而更差。
 
@@ -62,6 +61,10 @@ else:
 
 当然，真实实现可能更复杂，会看更长历史、分 bank 统计、按源流分类、甚至配合 QoS 目标。但其底层思想都一样：不要用一种固定 belief 去解释所有 future access pattern。
 
+close-page 只表达尽快关闭的策略，不会取消同 bank 的 ACT、RD 和 WR 对 PRE 的时间约束。具体记分板见 [MC 建模](./mc-modeling-for-simulation.md#同-bank-pre-记分板)。
+
+## 策略与 auto-precharge 的区别
+
 这里还必须把“open/close”与“auto-precharge”区分开。open-page/close-page 是策略层概念，讨论的是 controller 整体想保留还是尽快释放 row 状态；auto-precharge 则是某些具体命令发出时附带的接口机制，用来在某次列访问后自动安排预充。前者是更高层的行为倾向，后者是实现这个倾向的一种工具。常见误解是把它们混成同一层。
 
 从系统性能角度看，page policy 直接塑造了三个指标：row-hit-rate、row-conflict-rate 和尾延迟形状。open-page 通常提升第一项，但若工作负载不配合，第二和第三项会恶化；close-page 则可能牺牲一些命中收益，换来更稳定、更不易长尾的访问分布。对于强调吞吐的 GPU/NPU 大流量访问，若映射和访问模式可控，open-page 往往很有吸引力；对于随机控制流、混合多 master 或实时敏感流量，过于激进的 open-page 可能反而把系统拖进难看的 conflict 与 starvation 模式。
@@ -70,7 +73,7 @@ else:
 
 ## 一句话理解
 
-Page policy 的本质，是 controller 在赌未来访问究竟会继续重用当前 row，还是更可能很快切到别的 row；open-page 赢在行局部性强，close-page 赢在行切换频繁。
+Page policy 的本质，是 controller 在赌未来访问究竟会继续重用当前 row，还是更可能很快切到别的 row；open-page 可受益于行局部性；close-page 只有在请求到来前存在可利用的合法预充时间时，才能隐藏全部或部分换行等待。若异行请求在 earliest-PRE 前已到，两种策略可能同刻 PRE，提前关行没有时间收益。
 
 ## 建模启示
 
@@ -92,7 +95,7 @@ PagePolicy {
 if mode == OPEN:
     keep row open until conflict or explicit close
 elif mode == CLOSE:
-    precharge after service completes
+    precharge only when policy requests it AND all bank timing guards allow it
 else:
     precharge based on recent row-hit evidence / queue lookahead
 ```

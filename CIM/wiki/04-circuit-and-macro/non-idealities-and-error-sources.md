@@ -33,7 +33,7 @@ DRAM/HBM/GDDR-PIM 也有 DRAM refresh、retention、timing 和 PHY 问题，但�
 
 ## 校准的代价
 
-校准不是免费按钮。它需要 reference、测试向量、存储校准参数、运行时更新策略和模型侧适配。小阵列切分可降低 IR drop 和 variation，却增加 ADC、buffer、controller 和 interconnect 数量。差分编码可抑制 common-mode error，却把 cell 数翻倍或增加读出次数。
+校准不是免费按钮。它需要 reference、测试向量、存储校准参数、运行时更新策略和模型侧适配。缩短物理线长可降低 I·R 压降和线长相关的空间误差，但器件固有阈值/电导失配不会仅因切分而重抽或自动变小；切分还可能增加 ADC、buffer、controller 和归并开销。写入偏差在 program/verify 时产生并持续到下次写入，不应当作每读一次的新噪声。差分编码可抑制 common-mode error，却把 cell 数翻倍或增加读出次数。
 
 ## 一句话理解
 

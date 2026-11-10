@@ -61,9 +61,9 @@ interrupt signal 本身可以是专用线、消息、中断控制器输入或更
 | T0 | CPU 写 DMA descriptor | CPU -> cache/memory path | descriptor 可能仍在 cache 中 |
 | T1 | CPU 写 DMA start MMIO | CPU -> interconnect -> DMA register | start write 需要在 descriptor 可见之后发生 |
 | T2 | DMA 读取 descriptor | DMA -> DDR/SRAM | 若非 coherent，需要依赖 clean/barrier |
-| T3 | DMA 写 completion status | DMA -> memory 或 MMIO status | 写入是否对 CPU 可见 |
-| T4 | DMA 触发 interrupt | DMA -> interrupt controller | interrupt 不应早于 completion 可见 |
-| T5 | CPU ISR 读取 status | CPU -> MMIO 或 memory | MMIO read 可能清状态，memory read 可能需要 invalidate |
+| T3 | DMA 写 completion status | DMA -> memory 或设备内部 status | 达到设备契约规定的通知前可观察点 |
+| T4 | DMA 触发 interrupt | DMA -> interrupt controller | 设备保证完成写与通知的规定顺序 |
+| T5 | CPU ISR 获取并读取 status | CPU -> MMIO 或 memory | 非一致 DMA 映射按 API 同步给 CPU，再读取；MMIO 可能有读副作用 |
 | T6 | CPU 写 clear/EOI | CPU -> MMIO | clear write 是否真正到达设备 |
 
 这个例子把三类路径放到一起：descriptor 和 completion 是 memory 语义，DMA start 和 clear 是 MMIO 语义，interrupt 是异步通知。正确性依赖它们之间的 ordering，而不是依赖某一条路径单独正确。
@@ -75,7 +75,7 @@ interrupt signal 本身可以是专用线、消息、中断控制器输入或更
 | 软件意图 | BUS 需要表达的约束 | 缺失后的症状 |
 | --- | --- | --- |
 | descriptor 先于 DMA start 可见 | memory write 完成后再发 MMIO start | DMA 读取旧 descriptor |
-| status 写入先于 interrupt 可见 | DMA write completion 后再触发 event | ISR 读不到完成状态 |
+| status 写入先于通知 | 设备保证写达到约定观察点后发 event；CPU 按 DMA 契约同步 | ISR 读不到完成状态 |
 | 清中断写必须到达设备 | MMIO write 不被无限延后 | 中断反复进入 |
 | MMIO read 不能被预取 | device/non-cacheable 属性 | 读取触发意外副作用 |
 | 多寄存器配置保持顺序 | ordered device access 或 barrier | 设备进入非法中间状态 |

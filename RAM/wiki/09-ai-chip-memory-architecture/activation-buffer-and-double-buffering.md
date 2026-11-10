@@ -7,7 +7,7 @@
 
 activation buffer 为什么经常决定流水能不能跑满；double buffering 又是在什么条件下真的隐藏了外层访存，而不是只是把容量翻倍。
 
-## 正文
+## activation 的生产、消费与缓冲
 
 如果说 weight buffer 更多是在解决“某块权重值不值得多留一会儿”，那么 activation buffer 更直接地在解决另一件事：`下一块将被计算消耗的数据，能不能准时到位`。这两件事看起来都属于片上 SRAM，但系统含义完全不同。权重更像读主导、重用拉长的驻留对象；activation 更像一条持续向前推进的输入流，它既要被搬进来，又要被按下游节拍稳定地消耗掉。于是 activation buffer 往往比 weight buffer 更直接决定流水线能不能跑满。
 

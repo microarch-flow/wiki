@@ -18,11 +18,11 @@
 | Benchmark 真实性 | 全部 | 小模型、满载阵列、理想 mapping 容易高估收益 |
 | Testing/yield modeling | CIM/PIM | 研究论文很少完整覆盖 DFT、坏点、PVT、长期漂移和量产测试时间 |
 
-一个问题是否属于 open problem，要看它是否跨层。比如“把 ADC 从 6 bit 降到 4 bit”本身是电路优化；如果它牵动模型精度、training、calibration、array size、throughput 和 software fallback，就变成系统级 open problem。
+判断 open problem 应先列已有证据、尚未知晓的机制、约束及可验证的成功标准。单器件耐久或漂移机制也可能是开放问题；多层权衡若已有充分表征和可行解，可能只是常规工程优化。比如 ADC 位宽变化若仍缺满足误差、吞吐及能耗约束的可验证解，可形成跨层研究问题。
 
 为了避免把工程优化都写成 research frontier，可以用下面的区分：
 
-| 单点工程优化 | 变成真 open problem 的条件 |
+| 候选优化 | 可能仍开放的具体条件 |
 | --- | --- |
 | 降低某个 ADC 的能耗 | ADC 精度、面积、throughput、模型精度和 calibration 无法同时满足 |
 | 调整 SRAM-CIM array size | array size 牵动 folding、NoC/reduction、buffer 容量和外部 DRAM 访问 |
@@ -40,7 +40,7 @@
 
 ## 一句话理解
 
-CIM/PIM/NMC 的 open problems 大多不是单点电路问题，而是跨 device、macro、architecture、software 和 workload 的闭环问题。
+CIM/PIM/NMC 的开放问题可局限于器件或跨越多个层级；是否仍开放取决于问题和证据，而非层级数量。
 
 ## 研究启示
 

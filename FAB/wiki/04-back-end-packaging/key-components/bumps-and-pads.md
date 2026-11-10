@@ -1,7 +1,7 @@
 # 凸点与焊盘:从 C4 到 micro-bump
 
 上级:[关键工艺组件](README.md)
-相关:[Micro-bump vs Hybrid Bonding](../3d-routes/micro-bump-vs-hybrid-bonding.md), [CoWoS-S 完整制造流程](../2.5d-routes/cowos-s-complete-process.md), [失效模式目录](../../06-cross-cutting-engineering/failure-modes-catalog.md)
+相关:[Micro-bump vs Hybrid Bonding](../3d-routes/micro-bump-vs-hybrid-bonding.md), [CoWoS-S 简化制造对象流](../2.5d-routes/cowos-s-complete-process.md), [失效模式目录](../../06-cross-cutting-engineering/failure-modes-catalog.md)
 
 ## 这页在回答什么问题
 

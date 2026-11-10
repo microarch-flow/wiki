@@ -7,7 +7,7 @@
 
 同样都建立在 SRAM 之上，为什么 register file、cache、scratchpad、TCM 和 NPU buffer 会长成完全不同的系统对象。这一章要回答的不是“它们都用 SRAM 做”，而是“底层约束相同的情况下，上层为什么会演化出不同的管理语义、端口组织和数据流角色”。
 
-## 正文
+## 不同系统角色如何使用 SRAM
 
 上一章把 SRAM 作为物理与阵列基础讲完后，一个很自然的下一问是：如果底层都是 6T cell、字线位线、bank 切分和 retention 约束，为什么系统里还会出现这么多名字不同、接口不同、成本结构也不同的”片上存储”？这就像面粉只决定了你能做面食，但做成面包、馒头、面条还是披萨，取决于你要喂什么人、配什么菜、用什么烤箱。SRAM 只决定了底层介质的大方向，系统真正关心的，往往不是”这是不是 SRAM”，而是”谁来决定里面放什么、什么时候访问、并发语义多强、是否允许不确定命中、是否接受冲突、恢复代价多大”。
 
@@ -49,7 +49,10 @@ SramBackedResource {
   role: enum { REGFILE, CACHE, SCRATCHPAD, TCM, STREAM_BUFFER }
   allocation_policy: enum { FIXED, HW_MANAGED, SW_MANAGED, DMA_SCHEDULED }
   miss_semantics: enum { NONE, STALL, REFILL, SOFTWARE_VISIBLE }
-  concurrency_semantics: enum { MULTI_PORT, BANKED, PIPELINED, DETERMINISTIC }
+  service_structure: { port_types, bank_count, shared_resources }
+  read_ii_cycles: int
+  write_ii_cycles: int
+  arbitration_and_guarantees: object
 }
 ```
 

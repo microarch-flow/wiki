@@ -55,12 +55,12 @@
 
 - 标题：Co-Packaged Optics (CPO) Technology Full Module Test Vehicle Demonstrations
 - 作者 / 单位：John U. Knickerbocker 等 / IBM Research
-- 时间：2025
+- 时间：2025-05-27
 - 类型：ECTC 论文
 - 链接：https://research.ibm.com/publications/co-packaged-optics-cpo-technology-full-module-test-vehicle-demonstrations
 - 核心问题：如何把 PIC、polymer optical waveguide、ferrule 等做成完整 CPO 模块，并验证 reflow 与可靠性兼容性
-- 关键贡献：给出了 full module test vehicle、两种装配顺序、JEDEC 可靠性应力测试，以及 50 μm pitch 接口和更小 pitch 可行性的结果
-- 关键代价：证明了“模块级可行”，但不代表已经解决所有系统级散热和运维问题
+- 关键贡献：比较 PIC–PWG 先装与后装两种顺序，并在回流前后测光链路。每个 PIC 的 12 通道试件在 PIC–PWG 界面采用 50 μm pitch；完整模块还经过预处理和深温循、低温/高温存储及高温高湿应力。
+- 关键代价：小于 25 μm pitch 的可行性来自模型和聚合物波导原型，不能当作同一 12 通道试件的实测结果。摘要未给量产良率或完整系统热与运维结果。
 - 我最该记住的一句话：真正有价值的 CPO 论文，会开始谈完整模块、装配顺序和 JEDEC 可靠性，而不是只谈单一器件
 
 ### 卡片 C：`Co-packaged optics module with single mode polymer waveguide`
@@ -71,6 +71,6 @@
 - 类型：IEDM 邀请报告
 - 链接：https://research.ibm.com/publications/co-packaged-optics-module-with-single-mode-polymer-waveguide
 - 核心问题：单模 polymer waveguide 能否支持更高 lane density、较低插损和 optics-last assembly
-- 关键贡献：报告了两种 substrate 配置、机械/热机械可靠性测试，以及 `<1.2–2.0 dB` 插损和 optics-last assembly 可行性
-- 关键代价：依然主要集中在封装与接口工程层，不直接回答大规模系统部署收益
+- 关键贡献：2025-12-06 摘要报告两种 substrate 配置的机械及热机械测试、插损 `<1.2–2.0 dB`；三端口 cut-out substrate 样机展示 optics-last 装配可行性。
+- 关键代价：摘要未给该插损各配置的完整参考面、样本和条件，不能当作通用光纤链路预算或制造良率；也不直接证明部署收益。
 - 我最该记住的一句话：封装路线一旦开始讨论 optics-last assembly，说明它在认真面对量产流程问题

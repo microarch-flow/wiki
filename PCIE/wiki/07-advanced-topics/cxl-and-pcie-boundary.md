@@ -23,8 +23,11 @@ CXL 不是绕开 PCIE 凭空出现的新世界，它建立在 PCIE 物理和部�
 
 ## 两者边界怎么抓
 
-- 传统 PCIE 更偏 `设备互连和 DMA 契约`
-- CXL 更偏 `一致性、内存池化、内存扩展`
+- 传统 PCIE 更偏 `设备互连和 DMA 契约`。
+- `CXL.io` 提供发现、配置和 I/O 管理；`CXL.cache` 支持设备一致地访问和缓存主机内存；`CXL.mem` 支持主机访问设备连接的内存。各自的请求对象与方向不同。
+- 例如 Type 3 内存扩展设备使用 CXL.io 和 CXL.mem，主机可按配置访问其设备内存；不能因此假定该设备用 CXL.cache 缓存主机内存。
+
+仅有普通 PCIe 物理连接不足以产生 CXL 一致性事务。主机和设备必须支持相应 CXL 协议与设备类型，链路须协商进入支持的模式，软件还要配置可访问资源。参见 [CXL 3.0 规范](https://computeexpresslink.org/wp-content/uploads/2024/02/CXL-3.0-Specification.pdf) 的设备类型和协议说明。
 
 ## 一句话理解
 

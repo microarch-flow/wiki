@@ -7,7 +7,7 @@
 
 当 CPU、DMA、GPU、NPU 或其他外设的多个 master 同时访问 DRAM 时，controller 如何在总吞吐、公平性、实时性和隔离性之间取舍。更关键的是，为什么 QoS 不是“再加一层优先级”这么简单，而是直接决定谁可以把自己的延迟和带宽风险转嫁给别人。
 
-## 正文
+## 请求干扰、公平性与隔离
 
 单一请求流下的 DRAM 调度已经很复杂，但真正让 controller 从“性能优化器”变成“系统治理者”的，是多 master 场景。只要多个 master 共用同一套 channel、bank、总线和 refresh 预算，控制器面对的就不再只是“如何提高平均 row-hit-rate”，而是“谁先过、谁让路、谁可以稳定拿到服务、谁必须接受波动”。这时候，吞吐、公平、实时性和隔离性不可能同时最优，QoS 的本质就是决定优先保哪几个。这就像一家医院的急诊分诊——你不能让所有病人按挂号顺序排队，因为心脏骤停的患者等不起。但你也不能让急诊永远插队，否则普通发烧的病人可能等到天亮都看不上。分诊护士做的，就是 QoS。
 
@@ -36,7 +36,7 @@ Serve A row-hit burst -> continue A -> drain C writes opportunistically -> B wai
 从 bus utilization 看很漂亮，但 B 的单次等待可能非常难看。若 controller 为 B 设定高优先级保底，则行为可能变成：
 
 ```text
-Serve A row-hit burst -> preempt for B critical read -> resume A/C
+完成已发出的命令和不可中断的数据 burst -> 在下一合法命令边界选择 B 的关键读 -> 再选择 A/C
 ```
 
 这时总吞吐略降，但 CPU 控制流稳定多了。QoS 就是在决定这类牺牲值不值得。
@@ -73,7 +73,7 @@ Serve A row-hit burst -> preempt for B critical read -> resume A/C
 MasterQosPolicy {
   base_priority: int
   min_bandwidth_share: float
-  max_wait_cycles: cycle
+  wait_threshold_cycles: cycle  # 观测阈值/提升仲裁优先级，不自动保证上界
   latency_sensitive: bool
 }
 ```
@@ -88,7 +88,7 @@ score(req) =
   + aging_bonus(req.waiting_cycles)
 ```
 
-如果只关心平均吞吐，可能可以忽略 `max_wait_cycles`；但只要你要看 tail latency、关键控制流、DMA backpressure 或 AI 系统控制面/数据面的相互干扰，这个字段就不应省略。因为很多“系统为什么卡死”并不是因为总带宽不够，而是因为某个低带宽关键流长期抢不到服务。
+`wait_threshold_cycles` 可触发告警或加权 aging，不等于已证明的最大等待。要证明上界，还需限制各 master 到达率和突发、队列深度、非抢占 burst、刷新占用、时序约束并规定公平仲裁；不满足这些前提时只报告实测等待分布和超阈次数。关注 tail latency、关键控制流或 DMA backpressure 时不应省略这些状态。因为很多“系统为什么卡死”并不是因为总带宽不够，而是因为某个低带宽关键流长期抢不到服务。
 
 一个更接近系统目标的观测量集合可以是：
 

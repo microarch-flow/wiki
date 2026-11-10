@@ -13,7 +13,7 @@ Analog CIM 的能效来自省掉局部数字乘法器和加法树，让电流、
 
 Digital CIM 的能效来自减少 array read-out 和局部搬运，而不是消除数字计算。它仍然需要 logic、popcount、accumulator，但可以避免把每个 bit 都搬到远端 MAC array。
 
-真实边界在 ADC。低比特 analog 可能更强，高比特 analog 会被 ADC、DAC、reference 和校准稀释。一个 4-bit column ADC 在小 macro 中可能占掉约 30-60% macro 能耗或面积预算；8-bit ADC 的比较次数、参考精度和布局开销会更快上升，常常足以抵消理想 crossbar MVM 的能效优势。Digital 的峰值不如理想 analog 激进，但面积和能耗增长更可预测。
+真实边界在 ADC。低比特 analog 可能更强，高比特 analog 会被 ADC、DAC、reference 和校准稀释。ADC 的面积与能耗取决于其架构、精度、采样率和统计边界；高精度可能增加参考与转换成本。需要用目标设计的数据判断是否抵消阵列收益。Digital 的峰值不如理想 analog 激进，但面积和能耗增长更可预测。
 
 ## 维度二：精度与可扩展性
 
@@ -33,7 +33,7 @@ Digital CIM 能更直接跟随先进 CMOS 节点。Analog CIM 不一定从先进
 
 ## 维度五：可重构性与动态权重
 
-Digital CIM 更适合频繁切换模型、动态 sparsity、可变 bit-width 和在线更新，因为权重和 partial sum 都以离散状态管理。Analog CIM 更适合固定权重或低频更新场景；ReRAM/Flash/PCM 的写入、verify、drift 和 endurance 会让动态权重成本明显上升。
+模型切换成本由存储介质、写机制、驻留/重映射及实现共同决定。数字求值若使用 Flash/ReRAM，仍需 program/verify；模拟 SRAM 宏若支持普通写口，也可较快更新。动态 sparsity 和可变位宽是否获益还取决于门控、跳过与调度能力，而不能由 analog/digital 标签推出。
 
 ## 维度六：可靠性与误差容忍
 

@@ -7,13 +7,13 @@
 
 DRAM 从 memory controller 到最终的 cell，中间经过了 channel、rank、chip、bank group、bank、row、column 这一连串层级。这些层级各自隔离了什么、共享了什么，以及一个典型配置下每一层的数量级是多少。
 
-## 正文
+## 接口资源与器件层次
 
 前面几页讨论的 row buffer、bank、bank group 都发生在单颗 DRAM chip 内部。但一颗 chip 的数据引脚宽度通常只有 x4、x8 或 x16，远不够填满系统需要的总线宽度。从 controller 到 cell 的完整路径上，还有 channel、rank 和 chip 这几个层级在单颗 chip 之外组织并行和复用关系。把这条完整的层级链理清楚，后面看地址映射、带宽计算和多通道调度时才不会混淆。
 
 ### Channel
 
-Channel 是一条独立的数据总线，包含自己的命令/地址线和数据线。两个 channel 之间的命令和数据传输完全独立、互不阻塞。这是 DRAM 系统中最粗粒度的并行边界：跨 channel 的两笔访问不存在任何资源争用。
+Channel 是一条独立的数据总线，包含自己的命令/地址线和数据线。若两个 channel 的 CA 和 DQ 域独立，它们在这些接口上可并行；上游请求队列、NoC、控制逻辑、电源或其他共享资源仍可能争用。
 
 Channel 和 memory controller 的对应关系并不固定。最经典的配置是一个 controller 管一个 channel，比如桌面 CPU 的双通道就是两个独立 controller 各管一条 channel。但也存在一个 controller 内部管理多条 channel 的设计，常见于服务器和 AI 芯片——它们共享调度逻辑但数据通路独立。判断是否为独立 channel 的标准不在于 controller 数量，而在于命令和数据总线是否互不阻塞。
 
@@ -33,7 +33,7 @@ Rank 是挂在同一 channel 上、通过 CS (chip select) 信号分时选中的
 
 ```text
 System
-  └── Channel          ← 独立总线，完全并行，互不阻塞
+  └── Channel          ← 若 CA/DQ 独立，可在接口上并行
         └── Rank       ← 同一 channel 上分时复用，CS 选中
               └── Chip ← 并联拼总线宽度，每颗贡献 x4/x8/x16
                     └── Bank Group  ← 跨 group 访问间隔更短
@@ -46,7 +46,7 @@ System
 
 | 层级 | 隔离了什么 | 共享了什么 |
 |------|-----------|-----------|
-| Channel | 命令总线、数据总线、全部时序 | 无（完全独立） |
+| Channel | 各自 CA、DQ 和该域时序 | 可能共享上游队列、互连和电源 |
 | Rank | bank 状态、row buffer 状态 | 命令/地址总线、数据总线（分时） |
 | Chip | 内部阵列 | 命令/地址线（同 rank 内同时响应） |
 | Bank Group | 部分内部数据通路 | 命令接口、I/O 边界逻辑 |
@@ -54,7 +54,7 @@ System
 
 ### 典型数量级
 
-以一颗 DDR4 8Gb x8 chip 为例：
+以容量为 8 Gibit（8 × 2^30 bit）的 DDR4 x8 chip 的示意组织为例：
 
 | 参数 | 典型值 |
 |------|-------|
@@ -64,20 +64,20 @@ System
 | Rows per bank | 65536 (2^16) |
 | Columns per row | 1024 (2^10) |
 | 每个 column 位置宽度 | 8 bit (x8 chip) |
-| **一行数据量** | 1024 × 8 bit = 8 Kbit = **1 KB** |
-| Row buffer 大小 | 1 KB（= 一行） |
+| **一行数据量** | 1024 × 8 bit = 8 Kibit = **1 KiB** |
+| Row buffer 大小 | 1 KiB（= 一行） |
 
-一个 rank 由 8 颗这样的 x8 chip 并联组成，拼出 64-bit 数据总线。一次 ACT 命令会让 rank 内所有 chip 同时打开同一行号，但每颗 chip 各自打开的是自己阵列中的那一行。一次 BL8 burst 从每颗 chip 取出 8 × 8 bit = 64 bit，8 颗 chip 合计 512 bit = 64 Byte，恰好一条 cache line。
+一个 rank 由 8 颗这样的 x8 chip 并联组成，拼出 64-bit 数据总线。一次 ACT 命令会让 rank 内所有 chip 同时打开同一行号，但每颗 chip 各自打开的是自己阵列中的那一行。一次 BL8 burst 从每颗 chip 取出 8 × 8 bit = 64 bit，8 颗 chip 合计 512 bit = 64 B；若系统 cache line 为 64 B 且对齐，恰好覆盖一行。该 rank 的 payload 容量为 8 × 8 Gibit / 8 = 8 GiB，不计 ECC。
 
 ### 怎样用这张层级表
 
 理解这张层级表最重要的不是记住每层有多少个，而是明确每层的并行性质：
 
-- **Channel 间**：完全独立并行，加 channel 直接加带宽
+- **Channel 间**：独立 CA/DQ 时接口峰值可相加；有效带宽还受流量分布和上游资源限制
 - **Rank 间**：增加容量和 bank 并行度，但共享数据总线，不加峰值带宽
 - **Bank group 间**：同一 channel/rank 内，跨 group 访问可以更紧密交错（tCCD_S < tCCD_L）
 - **Bank 间**：各自独立的 row buffer 状态，可以流水线化隐藏 ACT/PRE 延迟
-- **Row 间**：同一 bank 内切换 row 代价高（PRE + ACT），row hit 则几乎免费
+- **Row 间**：同一 bank 内切换 row 代价高（PRE + ACT），row hit 免去本次换行，但仍占用列命令和 DQ，并受 tCCD、方向切换等限制
 
 后面看地址映射时，controller 把物理地址的不同 bit 段分配给 channel、rank、bank group、bank、row、column，本质上就是在决定"连续地址的访问落在这张层级表的哪一层展开并行"。
 
@@ -103,4 +103,4 @@ DramHierarchy {
 }
 ```
 
-从这组参数可以直接推导出：单次 burst 传输量 = `device_width × devices_per_rank × burst_length`，总容量 = `channels × ranks × banks × rows × cols × device_width`。如果模型要分析 bank-level parallelism 或 rank turnaround 的影响，就需要在调度逻辑中显式区分"同 bank group"和"跨 bank group"、"同 rank"和"跨 rank"的时序差异。
+从这组参数可以直接推导出：定义 `device_width` 为每 chip 的 payload bit 数，`banks_per_chip = bank_groups_per_chip × banks_per_group`，且每个 rank 的 devices 在各自 DQ 位上并行响应：单次 burst payload = `device_width × devices_per_rank × burst_length / 8` B；总 payload 容量 = `channels × ranks_per_channel × devices_per_rank × banks_per_chip × rows_per_bank × cols_per_row × device_width / 8` B。以上排除 ECC 设备及不可寻址开销，并假定各 rank 同构。如果模型要分析 bank-level parallelism 或 rank turnaround 的影响，就需要在调度逻辑中显式区分"同 bank group"和"跨 bank group"、"同 rank"和"跨 rank"的时序差异。

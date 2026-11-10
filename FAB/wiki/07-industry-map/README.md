@@ -58,3 +58,14 @@ AI/HPC 先进封装不是单点外包问题，而是系统定义、先进逻辑�
 ## 架构师启示
 
 架构师评估封装路线时，也在评估产业链可得性。一个架构需要 HBM、CoWoS-like 2.5D、大尺寸 substrate 和高密度测试时，任何一个环节供给不足都会反向改变产品定义和上市节奏。
+
+## 本章正文
+
+- [设备厂商版图](./equipment-vendors.md)
+- [代工厂版图:TSMC/Intel/Samsung](./foundry-landscape-tsmc-intel-samsung.md)
+- [全球产业链全景图](./industry-chain-overview.md)
+- [大陆先进封装:材料、基板、设备分别卡在哪](./mainland-china-bottlenecks.md)
+- [大陆 vs 台积电:在 AI 封装上的真实差距](./mainland-china-vs-tsmc-real-gap.md)
+- [材料供应链](./materials-supply-chain.md)
+- [OSAT 版图:ASE/Amkor/JCET/通富/华天](./osat-landscape-ase-amkor-jcet-tongfu.md)
+- [基板与载板供应](./substrate-and-carrier-supply.md)

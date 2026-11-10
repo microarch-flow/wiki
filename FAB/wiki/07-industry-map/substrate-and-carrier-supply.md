@@ -35,9 +35,9 @@ ABF build-up substrate 是高性能处理器封装中的关键基板类型。ABF
 
 Carrier 多用于制造过程中的临时支撑。Fan-out、RDL-first、thin wafer、temporary bonding/debond 等流程需要 carrier 提供平整加工基准。Carrier 不一定进入最终产品，但会影响 RDL overlay、die shift、thin die handling 和 debond 良率。
 
-## 供应链为什么紧
+## 哪些条件限制供货
 
-高端 substrate 不是简单 PCB。它需要材料、层压、激光加工、微孔、铜镀、翘曲控制、测试和大尺寸良率共同成立。AI/HPC package 放大后，substrate 的面积、层数、平整度和交付节奏都会成为瓶颈。
+大尺寸或高层数基板需要复核层间对位、细线、翘曲和良率；临时 carrier 的脱粘窗口也影响工序产出。它们是潜在限制，不等于某时段实际短缺。判断短缺需要指定产品、地区、期间的供需或交期数据。
 
 ## 一句话理解
 

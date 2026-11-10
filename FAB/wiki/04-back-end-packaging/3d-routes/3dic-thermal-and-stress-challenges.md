@@ -38,10 +38,15 @@ temperature change
 
 ```mermaid
 flowchart TB
-    A[hot top die] --> B[heat through stack]
-    B --> C[bottom die / interconnect]
-    C --> D[package thermal path]
+    H[顶盖冷源] --- R1[顶盖及 TIM 热阻]
+    R1 --- T[上层 die 热源]
+    T --- R2[层间热阻]
+    R2 --- B[下层 die 热源]
+    B --- R3[基板热阻]
+    R3 --- C[板侧冷源]
 ```
+
+图表示可能的并行热通路，不预设热只能向下。顶盖冷却时近盖 die 可直接向上散热；底面或双面冷却时，热流由温差和各路径热阻分配。热应力可能导致翘曲或键合失效；运行降频则另需产品传感器、阈值和控制动作。
 
 因此 3DIC 的 floorplan 不是只看信号距离，也要看热从哪里出去。
 
@@ -66,7 +71,8 @@ Warpage 不是外观问题。它会压缩 bonding、贴装、underfill、测试�
 KGD before stack
   -> bonding inspection / intermediate test
   -> package final test
-  -> reliability qualification
+
+抽取规定样本 -> reliability qualification
 ```
 
 测试策略和热机械设计在 3DIC 中是同一个良率问题的两面。

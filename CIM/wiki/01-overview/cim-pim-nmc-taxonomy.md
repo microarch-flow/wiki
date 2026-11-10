@@ -22,8 +22,8 @@
 | 类别 | 计算位置 | Cell/array path 是否参与计算 | 典型对象 | 本 wiki 归类 |
 | --- | --- | --- | --- | --- |
 | CIM | cell 内或紧邻 cell 的 array path | 是 | SRAM bitline compute、ReRAM crossbar MVM、Flash analog CIM | CIM |
-| PIM | DRAM/HBM/GDDR memory die 或 bank 内的独立 compute | 否 | Samsung HBM-PIM、SK hynix GDDR6-AiM/AiMX 的 memory-die processing 语境 | PIM |
-| NMC | memory 附近但在 memory die 外 | 否 | HBM base die compute、UPMEM、CXL memory-side accelerator、interposer/logic-side near-memory compute | NMC |
+| PIM | DRAM/HBM/GDDR memory die 或 bank 内的独立 compute | 否 | Samsung HBM-PIM、SK hynix GDDR6-AiM/AiMX 的 memory-die processing、UPMEM 同 die DPU | PIM |
+| NMC | memory 附近但在 memory die 外 | 否 | HBM base die compute、CXL memory-side accelerator、interposer/logic-side near-memory compute | NMC |
 
 ## 边界案例怎么判
 
@@ -31,11 +31,11 @@ HBM base die 上的 compute 在本 wiki 中归 NMC，因为它不在 memory die 
 
 SRAM array 附近加 digital logic 也要细分。如果只是传统 SRAM buffer 旁边放一个 MAC array 或 accumulator，它不是 CIM；只有 SRAM cell、read bitline、wordline activation、sense amplifier 等 array path 参与 bitwise compute、popcount、charge sharing 或 current-domain accumulation，它才进入 SRAM-CIM 的讨论。local accumulator 可以是 CIM macro 的结果路径，但不能单独作为 CIM 判据。
 
-DRAM subarray 内部做 RowClone、Ambit 类位操作与 HBM-PIM 不是同一类。前者如果利用 DRAM cell/bitline 物理行为执行逻辑，更接近 DRAM-CIM 或 in-DRAM bitline compute；后者在本 wiki 语境下指 DRAM/HBM 体系内加入独立 processing unit，更接近 PIM。为了避免混乱，本 wiki 的 02 主线把 DRAM/HBM 重点放在 DRAM-PIM，而不是把所有 DRAM 内计算都叫 CIM。
+RowClone 利用 DRAM 子阵列机制进行行级复制/初始化，减少外部搬运；Ambit 利用多行激活及感测实现布尔逻辑。它们的操作和流量不同，不能合称同一种位运算。后者若阵列读路径参与逻辑，在本书归 CIM；HBM-PIM 在 DRAM die 加独立 processing unit，归 PIM。为了避免混乱，本 wiki 的 02 主线把 DRAM/HBM 重点放在 DRAM-PIM，而不是把所有 DRAM 内计算都叫 CIM。
 
 ## 为什么这个区分重要
 
-术语错误会直接导致比较错误。把 Samsung HBM-PIM 与 ReRAM crossbar 放在同一个 “CIM 能效表” 中比较，就会把 system-level memory bandwidth optimization 和 array-level analog MVM 混成一个指标问题。把 UPMEM 这类 NMC 对照误写成 CIM，又会低估 host interface、memory module、programming model 的系统代价。
+术语错误会直接导致比较错误。把 Samsung HBM-PIM 与 ReRAM crossbar 放在同一个 “CIM 能效表” 中比较，就会把 system-level memory bandwidth optimization 和 array-level analog MVM 混成一个指标问题。把 UPMEM 这类 PIM 对照误写成 CIM，又会低估 host interface、memory module、programming model 的系统代价。
 
 正确分类后，读者才能问正确的问题：CIM 要问 cell 稳定性、ADC/peripheral、array mapping 和 macro-to-system 衰减；PIM 要问 memory command、bank/channel 粒度、host offload 和 workload memory-bound 程度；NMC 要问离 memory 还有多远、软件接口如何表达、与 CPU/GPU/NPU 的协同成本是否低于搬运收益。
 
@@ -43,7 +43,7 @@ DRAM subarray 内部做 RowClone、Ambit 类位操作与 HBM-PIM 不是同一类
 
 Samsung HBM-PIM、SK hynix AiM/AiMX：归 PIM，不归 CIM。公司卡片使用 `pim-companies-*` 前缀。
 
-UPMEM：归 NMC，用作 CIM/PIM 的对照。公司卡片使用 `nmc-companies-*` 前缀。
+[UPMEM](https://www.usenix.org/system/files/atc21-nider.pdf) 的 DPU 与 DRAM bank 位于同一 DRAM die，DPU 以独立指令管线计算，通过显式 DMA 在 MRAM 与私有 WRAM 间搬数据；本书归 PIM。DIMM 是交付形态。其他文献可能用广义 near-memory/PIM 包括它，比较时须说明口径；旧文件名前缀仅为兼容链接。
 
 Mythic、Axelera：按具体实现归 CIM。Mythic 是 Flash-based analog CIM 的商业化教训；Axelera 作为 SRAM-CIM/digital-friendly 商业化样本处理。
 

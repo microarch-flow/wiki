@@ -13,17 +13,29 @@
 - waveguide / fiber：传输光
 - photodetector：把光转回电
 - driver：驱动调制器
-- TIA：把探测器微弱电流放大并恢复信号
+- TIA：把探测器电流转换为模拟电压并放大；后续接收电路再均衡、恢复时钟与判决
 
 ## 最小链路
 
 发送端可以抽象成：
 
-`SerDes -> driver -> modulator -> waveguide/fiber`
+`SerDes -> driver -> modulator -> waveguide/fiber`，光源向调制器供光。也存在直接调制激光器等路线，不能把所有光链路都画成同一结构。
 
 接收端可以抽象成：
 
-`fiber/waveguide -> photodetector -> TIA -> electrical interface`
+`fiber/waveguide -> photodetector -> TIA -> 均衡 / 时钟恢复 / 判决 -> electrical interface`
+
+探测器把接收光功率变化转成电流变化。TIA 把电流转成模拟电压；后级才根据时钟和判决门限恢复比特。不同产品可以把多个功能集成在同一芯片，功能边界仍须区分。
+
+例如假设响应度 `0.8 A/W`，入射光功率变化 `100 µW`，则光电流变化 `80 µA`。若理想 TIA 跨阻增益为 `1 kΩ`，输出电压变化约 `80 mV`。这只是低频线性近似：实际带宽、噪声、饱和和偏置会改变眼图，不能只由 `80 mV` 推出 BER。
+
+## 光功率预算怎样比较
+
+明确发送和接收两端的参考平面，并把它们之间的损耗计入预算；在相同波长、测量指标和目标 BER 条件下比较发送与接收规格。平均功率、OMA（光调制幅度）、接收灵敏度和 stressed sensitivity 不能不加说明地混用。若已经采用包含特定损伤条件的 stressed sensitivity，就不能再重复扣除同一 penalty。dBm 是绝对光功率，dB 是比值或损耗；转换与预算必须保持口径一致。
+
+一个有公开出处的例子是 [CWDM4 MSA Rev. 1.1 表 2-5](https://www.cwdm4-msa.org/wp-content/uploads/2015/12/CWDM4-MSA-Technical-Spec-1p1-1.pdf)：在其最大 TDP 条件下，示例 power budget 为 `8 dB`，分配给 channel insertion loss `5 dB` 和 penalties `3 dB`，剩余 `8 − 5 − 3 = 0 dB`。若其他条件不变，额外增加 `1 dB` 未计入的损耗，余量为 `−1 dB`，表示超出该预算。例如标准表 2-3 的 `OMA − TDP ≥ −5 dBm`，在 TDP 为最大值 `3 dB` 时要求发送 OMA 至少 `−2 dBm`；表 2-4 给出的每 lane OMA 接收灵敏度最差限值为 `−10 dBm`，对应链路 BER `5×10⁻⁵` 的规定条件。两者差值为 `8 dB`。这里使用的是同一 OMA 口径；BER 是 FEC 前的链路条件，标准另要求主机启用 FEC。表中的 5 dB 分配按脚注可包含最多 1 dB 的 MPI loss penalty，不能再次重复扣除。
+
+这是 CWDM4 特定接口的示例，不是通用 CPO 规格。余量为零或负值本身不能给出具体 BER；必须看同一标准的发射、接收和链路条件。CPO 设计应使用实际接口的参考面和目标 BER，分别计入耦合、连接、传播、器件及惩罚。
 
 ## 为什么光链路对 CPO 有吸引力
 

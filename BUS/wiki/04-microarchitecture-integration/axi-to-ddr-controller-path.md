@@ -86,11 +86,13 @@ AXI read 的完成由 R data 返回决定；AXI write 的完成由 B response �
 | 路径 | AXI 侧完成 | DDR/controller 侧含义 | 建模风险 |
 | --- | --- | --- | --- |
 | read | R beat / RLAST 返回 | 数据已从 memory path 返回 | return path buffer 会影响 latency |
-| write | B response 返回 | controller 接收并满足其完成定义 | B 可能早于真正 DRAM array 持久化，取决于系统定义 |
+| write | B response 返回 | controller 接收并满足其完成定义 | B 可能早于 DRAM 阵列写入或可读回点，取决于系统定义 |
 | posted-like write | 上游较早释放 | 下游继续 drain | 错误或 power loss 语义需要定义 |
 | write followed by read same address | 需要 read-after-write 正确性 | controller/ordering 处理要保证可见性 | 模型要记录 hazard |
 
-write response 不是简单“DDR 写完了”的同义词。系统要定义 B response 的完成点：写入 controller buffer、写入 memory controller domain、还是确认到 DRAM 阵列。不同定义会影响 barrier、power-down、reset 和错误恢复。
+write response 不是简单“DDR 写完了”的同义词。系统要定义 B response 的完成点：写入 controller buffer、写入 memory controller domain，还是确认到 DRAM 阵列的可读回点。DRAM 通常不是持久介质，阵列写入不等于断电持久化。
+
+若 B 已在缓冲接收点返回，之后发现的 DRAM 错误不能对同一 AXI 事务再发第二个 B，必须使用实现定义的异步错误记录、中断或其他恢复路径。对受顺序规则约束的同地址后续读，controller 必须按系统契约从尚未排空的写缓冲转发或等待写入，避免返回旧值。完成点还影响 barrier、power-down、reset 和错误恢复。
 
 ## 例子：两个 AXI Master 访问 DDR
 

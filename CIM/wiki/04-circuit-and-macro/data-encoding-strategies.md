@@ -7,15 +7,15 @@
 
 同样标称 INT4 或 INT8，为什么不同 CIM macro 的面积、周期、能耗和误差完全不同？因为数据编码决定输入如何进入 array、权重如何放进 cell、partial sum 如何形成，以及外围要补多少账。
 
-## 四类常见编码
+## 数值表示与时间展开
 
-Binary encoding 用少量 bit 表达数值，密度高，适合 digital CIM 和 SRAM bit-serial 路线。代价是多比特乘法需要 bit-plane 展开、shift-add 和更宽 accumulator。
+Binary、unary 和 stochastic 描述表示方式；bit-serial 描述时间展开，两轴可以组合。Binary encoding 用少量 bit 表达数值，密度高，适合 digital CIM 和 SRAM bit-serial 路线。若采用位串行实现，多比特乘法可逐 bit-plane 展开并执行移位累加，累加器还须覆盖所需范围。位并行乘法器可以并行生成部分积并用压缩树归约；同一二进制编码不要求逐拍展开或显式 shift-add。
 
-Unary encoding 用多个相同权重的单位表示数值，线性和鲁棒性好，适合某些 analog 或 stochastic 方案。代价是面积、周期或脉冲数增加，难以支撑高精度大模型。
+Unary encoding 用多个相同权重的单位表示数值，例如无符号整数 x 使用 x 个单位脉冲，线性和鲁棒性好，适合某些 analog 或 stochastic 方案。代价是面积、周期或脉冲数增加，难以支撑高精度大模型。
 
-Bit-serial encoding 把 activation 或 weight 拆成多个 bit plane，多周期送入 array。它让 SRAM digital CIM 更容易实现可变精度，但 latency 和 energy 随位宽上升。
+Bit-serial 将多位 activation 或 weight 拆成多个 bit plane，按实现分拍送入阵列；只有硬件实际减少循环和活动时降低位宽才节省对应周期和能耗。
 
-Stochastic encoding 用 bitstream 的概率表达数值，乘法可以变简单，但需要长 bitstream 才能降低方差。它在研究中有价值，产品化受吞吐、随机源和验证成本限制。
+Stochastic encoding 用 bitstream 中 1 的概率表达数值。两个独立 Bernoulli 流分别以 p、q 为 1 时，按位 AND 的期望为 pq；若共享完全相同且 p=q=0.5 的流，AND 的期望为 0.5 而非 0.25。估计误差还依流长和相关性变化，流长增加会增加周期或并行资源。它在研究中有价值，产品化受吞吐、随机源和验证成本限制。
 
 ## 三条 Paradigm 的编码差异
 

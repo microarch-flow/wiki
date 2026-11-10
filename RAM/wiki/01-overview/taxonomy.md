@@ -7,7 +7,7 @@
 
 RAM 相关名词到底该按哪些维度分类，才能避免用一个词同时指代“存储单元”“协议家族”“系统位置”或“封装形态”。如果这件事不先做干净，后面几乎每个讨论都会出现层级错位。
 
-## 正文
+## 区分单元、组织、接口、角色和封装
 
 存储器领域最常见的混乱，不是某个术语难懂，而是不同层级的术语被放进同一句话里直接比较。比如”HBM 比 SRAM 更先进””DDR 是一种颗粒””cache 和 LPDDR 谁更快”这类表述，就像问”篮球比红色更圆吗”——乍看像在比较，实际上比较双方根本不在同一分类轴上。要把问题讲清楚，第一步不是背更多名词，而是先把分类坐标系搭起来。
 
@@ -19,7 +19,7 @@ RAM 相关名词到底该按哪些维度分类，才能避免用一个词同时�
 
 第三维是 `接口与协议家族`。这一维回答的是：存储器如何被片外系统访问，以及为了某个目标暴露了什么命令、时序和电气约束。这里的主角是 `DDR`、`LPDDR`、`GDDR`、`HBM`。这四者本质上都站在 DRAM 单元之上，但它们为不同系统目标重新布置了带宽、功耗、距离和封装的最优点。也正因为它们属于协议家族，所以讨论它们时应该关注 `ACT/RD/WR/PRE`、timing、功耗状态、I/O 宽度、速率和接口距离，而不是把它们当作新的存储物理类别。常见误解：“HBM 是不是一种和 DRAM 平行的新存储器？” 实际上，HBM 仍然是 DRAM 路线，只是协议和封装路线都更激进。
 
-第四维是 `系统角色`。这一维回答的是：某段存储在系统里承担什么功能。典型角色包括 `register file`、`cache`、`scratchpad`、`TCM`、`main memory`、`stacked high-bandwidth memory`。这个维度最容易和前面几维混掉，因为某些系统角色确实强烈偏好某类物理实现，例如 cache 往往由 SRAM 实现，main memory 往往由 DRAM 实现。但“往往”不是“定义上”。cache 讲的是一种由硬件管理的层次化数据复用语义；scratchpad 讲的是一种由软件或编译器管理的局部存储语义；main memory 讲的是地址空间中的主承载层。它们首先是系统角色，其次才讨论通常用什么介质去实现。
+第四维是 `系统角色`。这一维回答的是：某段存储在系统里承担什么功能。典型角色包括 `register file`、`cache`、`scratchpad`、`TCM`、`main memory`。这个维度最容易和前面几维混掉，因为某些系统角色确实强烈偏好某类物理实现，例如 cache 往往由 SRAM 实现，main memory 往往由 DRAM 实现。但“往往”不是“定义上”。cache 讲的是一种由硬件管理的层次化数据复用语义；scratchpad 讲的是一种由软件或编译器管理的局部存储语义；main memory 讲的是地址空间中的主承载层。它们首先是系统角色，其次才讨论通常用什么介质去实现。
 
 第五维是 `封装与集成形态`。这一维回答的是：这些存储 die 最终怎样被放进系统。这里会出现 `DIMM`、`SODIMM`、`PoP`、`MCP`、`HBM stack`、`2.5D interposer`、`3D integration` 这些词。注意这批词自己内部也不完全在同一层。`DIMM` 更接近模块级交付形态，`PoP/MCP` 更接近封装级组织，`HBM stack` 描述的是内存 die 的堆叠形态，`2.5D/3D` 描述的是更高层的集成路线。它们可以一起被放进“封装与集成”这个大类里讨论，但不能假装它们彼此完全等价。常见误解是说“HBM 是一种封装”；更准确的说法应该是：HBM 是一种 DRAM 协议与产品路线，通常依赖堆叠和先进封装去落地。
 
@@ -35,7 +35,7 @@ RAM 相关名词不能放在一个平面上硬比，至少要先分清它是在�
 
 ## 建模启示
 
-这页对应的核心建模价值，是告诉你“标签系统必须多维，而不是单标签”。如果把一个对象只命名成 `HBM` 或 `cache`，模型很快就会因为缺失层级信息而无法扩展。更稳妥的做法是把每个内存对象拆成多个正交属性，让 `primitive`、`organization`、`interface_family`、`system_role`、`package_form` 分开编码。
+这页对应的核心建模价值，是告诉你“标签系统必须多维，而不是单标签”。如果把一个对象只命名成 `HBM` 或 `cache`，模型很快就会因为缺失层级信息而无法扩展。更稳妥的做法是把每个内存对象拆成多个正交属性，让 `primitive`、`organization`、`interface_family`、`system_role`、堆叠形态和系统集成方式分开编码。
 
 一个最小可扩展的数据结构草图可以是：
 
@@ -44,8 +44,10 @@ MemoryDescriptor {
   primitive: enum { SRAM, DRAM }
   organization: enum { RF, TAG_ARRAY, DATA_ARRAY, BANKED_SPM, DRAM_BANKED }
   interface_family: enum { NONE, DDR, LPDDR, GDDR, HBM }
-  system_role: enum { REGISTER_FILE, CACHE, SCRATCHPAD, TCM, MAIN_MEMORY, BW_MEMORY }
-  package_form: enum { ON_DIE, DIMM, SODIMM, POP, MCP, HBM_STACK, INTERPOSER_2P5D, STACKED_3D }
+  system_role: enum { REGISTER_FILE, CACHE, SCRATCHPAD, TCM, MAIN_MEMORY }
+  module_form: enum { NONE, DIMM, SODIMM, PACKAGE }
+  die_stack: enum { NONE, STACKED_DIE }
+  integration: enum { ON_DIE, PCB, POP, MCP, INTERPOSER_2P5D, STACKED_3D }
 }
 ```
 

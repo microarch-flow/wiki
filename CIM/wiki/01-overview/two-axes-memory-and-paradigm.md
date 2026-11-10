@@ -5,7 +5,7 @@
 
 ## 这页在回答什么问题
 
-为什么只按 SRAM、ReRAM、DRAM 分类不够，按 analog、digital、mixed-signal 分类也不够？CIM/PIM/NMC 的设计空间必须同时看 memory technology 横轴和 compute paradigm 纵轴，否则会把物理介质、计算机制和产品路线混成一团。
+为什么只按 SRAM、ReRAM、DRAM 分类不够，按 analog、digital、mixed-signal 分类也不够？CIM 的设计空间需要同时看 memory technology 横轴和 compute paradigm 纵轴；PIM/NMC 的独立计算单元另按执行方式描述，否则会把物理介质、计算机制和产品路线混成一团。
 
 ## 横轴：Memory Technology
 
@@ -29,6 +29,8 @@ Flash、PCM、MRAM 会在 02 章作为 NVM 分支处理。Flash CIM 更像 niche
 | Digital CIM | 用 bitwise logic、bit-serial、popcount、local digital accumulation 执行 | 精度可控、验证友好、CMOS 流程兼容 | 面积和布线增加，能效上限不如理想 analog 激进 |
 | Mixed-signal CIM | 阵列内保留 analog/charge/current 域收益，外围做数字控制、转换和累加 | 在能效和可控性之间折中 | 边界复杂，指标容易被外围口径美化 |
 
+模拟阵列经 ADC 接数字累加时，阵列求值为模拟，含两种域的宏可称 mixed-signal；这是不同观察层，不是互斥标签。
+
 PIM 不应直接塞进 analog/digital/mixed-signal CIM 三分法，因为 PIM 的 compute unit 可以是独立 digital processing block。它仍然需要讨论数值格式和软件栈，但它不是“array-native compute paradigm”的同一层问题。HBM base die、interposer、package-side logic 上的 near-memory compute 不属于这里的 DRAM/HBM/GDDR-PIM 横轴，而应作为 NMC 边界案例处理。
 
 ## 交叉矩阵
@@ -39,13 +41,13 @@ PIM 不应直接塞进 analog/digital/mixed-signal CIM 三分法，因为 PIM �
 | ReRAM-CIM | 最自然，电导态与 Ohm/Kirchhoff 对 MVM 贴合 | 存在但会削弱 multi-level conductance 的密度/并行优势 | 常见，array analog MVM 加数字校准/累加 | ReRAM 的吸引力主要来自 analog/mixed-signal MVM |
 | Flash-CIM | Mythic 类路线代表，用浮栅/电荷状态表达权重 | 不主流，失去 Flash 多状态模拟存储优势 | 需要数字外围和校准 | niche，适合固定权重 edge 推理叙事 |
 | PCM/MRAM-CIM | PCM 有 analog multi-level 潜力，MRAM 更偏 binary/可靠存储 | MRAM 更容易走 binary/digital-like 路线 | 取决于 device 和读出链路 | 仍偏研究/特定场景 |
-| DRAM/HBM/GDDR-PIM | 不是主线，DRAM cell analog 计算不是本 wiki DRAM-PIM重点 | memory die/bank 内 processing unit 多为 digital | memory-side digital compute 加系统协同 | 重点是 PIM 系统路线，不是 CIM paradigm；base-die/interposer compute 归 NMC |
+| DRAM/HBM/GDDR-PIM | 不适用 CIM 范式 | 独立 CU 可用数字指令，但不是 Digital CIM | 系统协同本身不是 mixed-signal 求值 | 独立 CU 按执行单元和接口描述；base-die/interposer compute 归 NMC |
 
 ## 为什么两条轴必须同时出现
 
 只说 SRAM-CIM 不够，因为 SRAM-CIM 可以是 digital bitwise，也可以是 charge-domain/mixed-signal；这两者在 ADC、精度、测试、可量产性上差别很大。只说 analog CIM 也不够，因为 ReRAM analog MVM 和 SRAM current-domain CIM 的 device variation、写入方式、容量和工艺路线完全不同。
 
-后续 02 章从横轴出发：每篇 memory technology 都必须说明它主要适合哪条 compute paradigm，以及另外两条为什么弱。后续 03 章从纵轴出发：每篇 compute paradigm 都必须说明它主要落在哪些 memory technology 上，以及在其他 memory 上为什么不自然。
+后续 02 章从存储介质出发：若阵列读路径参与 CIM 求值，说明该实现的 analog/digital 范式和宏级转换；若是独立 PIM/NMC 单元，记录其 ISA、数值格式、局部存储与接口，不强制选择 CIM 范式。03 章再从 CIM 的求值方式出发，讨论适用介质及电路条件。
 
 ## 与其他 wiki 的连接
 
@@ -57,4 +59,4 @@ DRAM/HBM-PIM 要连接 RAM wiki 的 [bank organization](../../../RAM/wiki/04-dra
 
 ## 一句话理解
 
-Memory technology 决定“计算依附在哪里”，compute paradigm 决定“计算如何发生”；CIM/PIM/NMC 的真实判断必须同时落在这两个坐标上。
+先按物理位置和阵列是否参与求值分类。对 CIM，再用 memory technology 与求值方式描述；对独立 PIM/NMC CU，则记录 ISA、数值、存储和接口。

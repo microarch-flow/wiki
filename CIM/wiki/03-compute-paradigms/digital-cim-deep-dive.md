@@ -11,7 +11,7 @@ Digital CIM 的精度和吞吐如何形成？同样标称 INT8，bit-serial、bi
 
 Bit-serial 把多比特输入或权重拆成 bit plane，多周期在 array path 中执行，再由外围或局部 accumulator 按位权累加。它的好处是 cell 和 read path 简单，支持可变精度；代价是 latency 和 energy 随位宽增加。
 
-以 INT8 × INT8 为例，如果权重和激活都按 bit-serial 展开，周期数和 partial sum 管理会迅速上升。实际设计会利用 weight stationary、bit-plane reuse、稀疏性或低比特量化降低开销。
+以 INT8 × INT8 为例，若每拍只计算一组输入和权重 bit-plane、无并行或跳过，8×8 共需 64 次平面组合，另计供数和归约。二补码符号位权重为负：`x=-2^7*x7+sum(2^i*xi, i=0..6)`，乘积符号及移位累加须按该权重处理。实际设计会利用 weight stationary、bit-plane reuse、稀疏性或低比特量化降低开销。
 
 ## Bit-Parallel
 
@@ -19,9 +19,9 @@ Bit-parallel 用更多 cell、更多列、更多 read path 或更宽 local logic
 
 ## Popcount 路径
 
-Binary/ternary network 和 XNOR-popcount 是 digital CIM 的经典形态。XNOR 可以在 cell/read path 或局部逻辑中完成，popcount 负责把 bitwise match 数量转成 partial sum。这个路线适合低比特模型，但对现代 INT8/FP8/FP16 workload 的覆盖有限。
+对编码为 ±1 的长度 K 二值向量，XNOR 的匹配数 m 给出点积 `2*m-K`；三值含 0 时须用零掩码排除无效项并以有效项数替代 K。XNOR-popcount 是 digital CIM 的经典形态。XNOR 可以在 cell/read path 或局部逻辑中完成，popcount 负责把 bitwise match 数量转成 partial sum。这个路线适合低比特模型，但对现代 INT8/FP8/FP16 workload 的覆盖有限。
 
-如果 popcount 完全在远离 array 的外围做，CIM 属性会变弱；如果 sense path、bitline grouping 或 local reduction tree 与 array 紧密耦合，才更符合 digital CIM。
+分类看阵列路径是否参与计算：即使 popcount 位于外围，若 XNOR 已在 cell/read/sense path 实现，仍是 CIM；若阵列只普通读出并由独立外围完成全部 XNOR 和 popcount，则不是 CIM。
 
 ## 典型 Macro 数据路径
 

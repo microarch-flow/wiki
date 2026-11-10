@@ -16,18 +16,13 @@
 
 ## 真正的难点是 request 和 response 必须一起看
 
-很多分析只盯 request injection，这往往不够。DMA 看起来“发得很猛”，并不代表系统真的在前进。forward progress 取决于更完整的一条链：
+很多分析只盯 request injection，这往往不够。不同协议的请求、数据、响应和资源释放形成不同的偏序；不能把它们画成通用的 `request → response → data_commit → completion → slot_release`。
 
-```text
-descriptor ready
-  -> request issued
-  -> response returned
-  -> data placed / written
-  -> completion recorded
-  -> resource slot released
-```
+AXI4 读：AR 握手后返回 R beat。每个成功接收的 beat 可以分别写入目标或 response buffer；最后一个 R beat 不必早于之前 beat 的落位。AXI4 写：AW 与 W 可先后或交错握手；AW 和最后 W beat 均被接收后才允许生成 B。部分写数据可在 B 前处理。B 完成该接口的写响应，不单独保证 DRAM 落位或 CPU cache 可见。
 
-只要这条链中间任何一段卡住，前面的 aggressive issue 都可能只是把拥塞往后推。最典型的现象是：request 发得出去，但 response 被 NoC return path、memory controller 或 destination ejection 卡住；或者 data 已经写完，completion queue 仍然因为顺序或可见性要求没有释放 slot。
+PCIe Memory Read 等待一个或多个带数据的 Completion；posted Memory Write 不返回对应的事务 Completion。链路 ACK、发送缓存释放、目标可见性和 DMA completion 是不同事件。DMA 的完成条件由设备契约指定，不能凭一个协议响应推定所有数据可供 CPU 使用。
+
+例如 AXI 读的 R beat 0 已写入 SRAM，但 beat 1 仍在返回；response buffer 可因 beat 0 消费而释放一个槽，读 outstanding 通常要等最后 R beat 握手才释放。completion queue 和 descriptor 槽则由各自契约释放。具体事件和偏序见 [模型数据结构与事件规范](../06-performance-modeling/model-schema.md#规范事件与偏序canonical-event-taxonomy)。
 
 ## 调度器至少在决定三件事
 
@@ -77,14 +72,6 @@ DMA 的性能不是把请求尽量发满，而是把 `发请求、收回包、�
 
 这一页是性能模型的核心。event-driven 仿真里至少应显式追踪 `outstanding_count`、`oldest_inflight_age`、`response_queue_occupancy`、`completion_backlog` 四类状态。
 
-建议最少定义这些事件：
+至少记录 descriptor 受理、按协议区分的请求与数据握手、目标域的 data commit、DMA completion，以及带 `resource_kind` 的独立资源释放事件。posted write 不产生 read-style completion，不能把 `response_arrive` 设为每个子事务的必经事件。
 
-```text
-request_issue
-response_arrive
-data_commit
-completion_record
-slot_release
-```
-
-如果只关心吞吐，可以把 `data_commit` 和 `completion_record` 合并；如果关心 tail latency、软件 timeout 或 hang，就绝不能合并，因为很多真实问题正是“数据已到，completion 未见”。
+模型可以按目标折叠事件，但必须先证明折叠不会改变所关心的依赖和可见性。要分析 tail latency、软件 timeout 或 hang，就需要分别记录设备承诺的传输完成点、completion 可见点、所需 cache 同步和 consumer-ready；这些边界是否存在严格顺序取决于设备与软件契约。

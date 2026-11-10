@@ -14,9 +14,7 @@
 
 **Non-coherent** 就像每个人各自下载一份文档到本地编辑。快递系统（interconnect）负责把你的修改”寄回去”、把别人的版本”寄给你”，但它**不管大家看到的版本是否一致**——你可能还在改旧版本，别人已经改了新的。同步是你自己的事（软件 cache maintenance）。
 
-**Coherent** 就像 Google Docs——系统自动保证每个人打开文档时看到的都是最新版本。谁在编辑、谁有修改权、谁的副本需要更新，系统全部自动维护。代价是需要更复杂的服务器端逻辑（snoop、directory、state tracking）。
-
-这个差异是系统语义差异，不是性能等级差异。下载编辑可以很快（non-coherent 路径可以很高吞吐），Google Docs 在多人冲突时也可能很慢。
+**Coherent** 硬件按一致性协议维护同一 cache line 的权限和副本，使参与者对该地址的读写满足协议的一致性约束。它不自动提供所有地址的全局顺序，也不代替锁、屏障和软件同步。代价是更复杂的 snoop、directory 和状态跟踪。
 
 这个差异是系统语义差异，不是性能等级差异。Non-coherent 路径可以很快，coherent 路径也可能因为 snoop、目录、状态转换和冲突而变慢。选择哪一种，取决于软件和硬件是否需要自动维护 cache-line 可见性。
 
@@ -32,9 +30,11 @@ Non-coherent DMA 的典型问题就像**两个人各自编辑同一份文档的�
 
 | 方向 | 风险 | 需要建立的可见性 |
 |---|---|---|
-| CPU -> DMA/device | CPU 写仍停在 cache | clean/flush 后 device 才能读到新数据 |
-| DMA/device -> CPU | CPU cache 仍有旧副本 | invalidate 后 CPU 才能重新取到 device 写回 |
-| CPU 写 descriptor 后敲 doorbell | doorbell 先被 device 看见 | descriptor 可见性要早于 MMIO doorbell |
+| CPU -> DMA/device | CPU 写仍停在 cache | 按 DMA_TO_DEVICE 映射和所有权交接 API，同步到设备可观察点 |
+| DMA/device -> CPU | CPU cache 仍有旧副本 | 设备结束后按 DMA_FROM_DEVICE 映射 API 同步给 CPU，再读取 |
+| CPU 写 descriptor 后敲 doorbell | doorbell 先被 device 看见 | 按映射类型和平台契约发布描述符，再用规定 MMIO 访问器通知 |
+
+上述同步可能由平台实现 clean/invalidate，维护点与指令序列依架构和映射而异，不能把表当作通用手写指令。coherent 映射仍需适用的排序；见 [Linux DMA API 指南](https://docs.kernel.org/core-api/dma-api-howto.html)。
 
 Barrier 只能约束顺序，不能凭空把脏 cache line 变成 device 可见；IOMMU/SMMU 解决地址翻译和权限，也不自动解决 cache coherence。把这些机制混成一件事，是 non-coherent DMA bug 的主要来源。
 

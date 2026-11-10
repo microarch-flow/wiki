@@ -2,7 +2,7 @@
 
 上级：[NOC Wiki](../README.md)
 
-相关：[Router Microarchitecture](../02-router-microarchitecture/README.md)、[Topology](../03-topology/README.md)、[System Integration](../05-system-integration/README.md)、[BUS: 仲裁、顺序性与 Backpressure](/mnt/e/wiki/BUS/wiki/02-fundamentals/arbitration-ordering-backpressure.md)
+相关：[Router Microarchitecture](../02-router-microarchitecture/README.md)、[Topology](../03-topology/README.md)、[System Integration](../05-system-integration/README.md)、[BUS: 仲裁、顺序性与 Backpressure](../../../BUS/wiki/02-fundamentals/arbitration-ordering-backpressure.md)
 
 ## 这页在回答什么问题
 
@@ -21,7 +21,7 @@
 - `routing`：决定下一跳候选集合
 - `flow control`：决定在下游没空位时能不能继续发送
 - `arbitration`：决定多个候选里谁拿到端口、VC 或注入口
-- `deadlock avoidance`：限制资源获取顺序，保证 forward progress
+- `deadlock avoidance`：限制资源依赖，排除所证明范围内的依赖死锁；最终到达还需要公平仲裁、避免 livelock 和端点持续服务
 - `QoS`：按 traffic class 改变服务顺序或隔离方式
 
 这几个机制会同时作用在同一个 packet 身上，但它们不是同一件事。比如：
@@ -60,7 +60,7 @@ AI/NPU 设计通常不是在追求“任意流量下都很灵活”，而是在�
 读完后，你应该能独立回答这些问题：
 
 - 为什么 XY routing 能防某类 deadlock
-- 为什么 source routing 不等于不需要 VC
+- 为什么共享 packet-switched source routing 仍可能需要 VC 和仲裁
 - 为什么 adaptive routing 的收益取决于 path diversity 和 traffic unpredictability
 - 为什么 fixed-priority 能解决一部分 latency 问题，但也可能制造 starvation
 - 为什么 request/response/control/bulk data 需要分 message class
@@ -84,3 +84,14 @@ AI/NPU 设计通常不是在追求“任意流量下都很灵活”，而是在�
 - 为什么某些流量一直走同一热点链路
 - 为什么平均负载不高但 tail latency 很差
 - 为什么系统不是拥塞，而是不前进
+
+## 本章其余正文
+
+- [Adaptive Routing Tradeoffs](./adaptive-routing-tradeoffs.md)
+- [Arbitration Policies](./arbitration-policies.md)
+- [Deadlock Avoidance Turn Model](./deadlock-avoidance-turn-model.md)
+- [Deadlock Livelock Starvation](./deadlock-livelock-starvation.md)
+- [Dimension-Order Routing](./dimension-order-routing.md)
+- [QoS And Priority Classes](./qos-and-priority-classes.md)
+- [Routing Algorithm Classes](./routing-algorithm-classes.md)
+- [Source Routing For Deterministic Systems](./source-routing-for-deterministic-systems.md)

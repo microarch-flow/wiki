@@ -6,7 +6,7 @@
 
 ## 这页在回答什么问题
 
-AXI transaction 不只携带"去哪里、搬什么"，还携带一张**旅行须知卡**——写着"这件行李能不能寄存（cache）？能不能和别人的行李合并（combine）？能不能调换顺序（reorder）？需不需要安检（secure）？走 VIP 通道还是普通通道（QoS）？有没有'必须等前面的人到了再出发'这种约束（barrier）？"
+AXI transaction 不只携带地址和数据，也携带适用接口定义的属性，例如缓存、缓冲、安全和 QoS。系统还需根据 ISA、互连和协议版本处理 barrier 顺序；普通 AXI4 不自动携带通用 barrier 事务。
 
 这些属性决定一笔访问的处理方式。DMA descriptor、data buffer、completion、MMIO doorbell 和 interrupt clear 虽然都是地址访问，但它们需要的"旅行须知"完全不同——就像普通旅客和外交信使走同一个机场，规则天差地别。
 
@@ -19,10 +19,12 @@ AXI transaction 不只携带"去哪里、搬什么"，还携带一张**旅行须
 | cacheable / non-cacheable | 是否允许进入 cache hierarchy | DMA 看不到 CPU 写入，或 CPU 看不到 DMA 写回 |
 | bufferable / gatherable | 是否允许缓冲、合并、延后写入 | MMIO 写被延后或合并，改变设备行为 |
 | device / normal memory | 是否有 side effect 和强顺序需求 | 寄存器被预取、重排或按普通 memory 优化 |
-| shareable / non-shareable | 是否参与 coherence 或共享域 | 多 master 可见性错误 |
+| shareable / non-shareable | 定义共享和排序适用的域 | 多 master 的同步和可见性假设错误；不自动使未接入一致性路径的 agent coherent |
 | secure / non-secure | 是否能访问安全资源 | 权限绕过或合法访问被拒绝 |
 | privileged / user | 访问权限级别 | 用户态或设备访问越权 |
 | QoS / priority | 调度优先级 | 实时流被饿死，或 debug/DMA 干扰 CPU |
+
+CPU ISA 的 Normal/Device、shareability 等内存类型由页表和架构定义；`AxCACHE` 是 AXI 接口的属性编码，两者通过处理器和系统映射相联系，不能逐项当成同一个字段。普通 AXI4 不携带 ACE 的通用 barrier 事务；CPU 执行 barrier 通过架构及互连实现顺序约束，不意味着普通 AXI4 自动发出 barrier 包。shareable 属性也不能让未连接一致性路径的 DMA 自动 snoop CPU cache。参见 [Arm IHI 0022H](https://developer.arm.com/-/media/Arm%20Developer%20Community/PDF/IHI0022H_amba_axi_protocol_spec.pdf?hash=6325311012DDADF238C35A6C0FD734E520754F82&la=en&revision=71bd7c57-2ed7-487b-bc3e-68c4ab56fa5f)。
 
 属性的设计动机是让互连、cache、bridge、memory controller 和设备用一致方式理解访问。代价是属性要在多个层级保持一致：CPU 页表、DMA/IOMMU mapping、AXI sideband、bridge 映射、目标寄存器语义都要对齐。
 
@@ -35,8 +37,8 @@ AXI transaction 不只携带"去哪里、搬什么"，还携带一张**旅行须
 | normal cacheable memory | 可 cache、可预取、可合并，受 coherence/order 规则约束 | 不能忽略权限和 shareability |
 | non-coherent DMA buffer | 软件显式 clean/invalidate 或使用 non-cacheable mapping | 不能只靠 barrier 建立数据可见性 |
 | coherent DMA buffer | 参与 coherence domain | 仍不能忽略 descriptor/doorbell 顺序 |
-| MMIO register | device/non-cacheable，保留访问顺序和 side effect | 不能预取、合并、缓存或随意拆写 |
-| completion/status memory | CPU 和 DMA 都要有明确可见性规则 | 不能让 interrupt 早于 completion 可见 |
+| 有副作用的 MMIO register | 按设备和平台规定的 Device 属性访问 | 禁止会改变副作用的预取、合并、缓存或拆写；允许 gathering 的 Device-GRE 或 write-combining 窗口按其契约处理 |
+| completion/status memory | CPU 和 DMA 都要有明确可见性规则 | 设备按约定排序通知，CPU 按映射契约同步后读取 |
 
 把 MMIO 标成 cacheable，会让寄存器访问进入完全错误的优化空间；把普通 memory 标成 device，会牺牲吞吐并破坏合理的 burst/merge；把 DMA buffer 标错，会让软件和设备看到不同版本的数据。
 
@@ -49,7 +51,7 @@ DMA 提交和完成路径里，descriptor、data buffer、completion buffer 的�
 | descriptor fetch | CPU 写，DMA 读 | CPU 写后要对 DMA 可见；non-coherent 需要 clean | DMA 使用旧地址、旧长度 |
 | source data read | CPU/设备准备，DMA 读 | 源数据要对 DMA 可见 | DMA 搬旧数据 |
 | destination data write | DMA 写，CPU/设备读 | CPU 读取前要看到 DMA 写入；non-coherent 需要 invalidate | CPU 读旧目的 buffer |
-| completion writeback | DMA 写，CPU 读 | completion 先于 interrupt 可见 | ISR 看到空队列或旧状态 |
+| completion writeback | DMA 写，CPU 读 | 设备在约定观察点发布后通知；CPU 同步后读取 | ISR 看到空队列或旧状态 |
 | MMIO doorbell/clear | CPU 写 device register | device/non-cacheable，不能缓存或合并 | DMA 未启动或中断未清 |
 
 cacheability 是正确性问题，不只是性能问题。一个 non-coherent DMA buffer 若缺少 clean/invalidate，BUS 上可能没有任何错误 response；系统只是静默地使用旧数据。
@@ -80,7 +82,7 @@ barrier 的设计取舍是局部限制重排来换取确定性。过少 barrier 
 | T3 | CPU 写 MMIO doorbell | device/non-cacheable，触发 DMA |
 | T4 | DMA 读 descriptor | 读取到 T0/T1 的内容 |
 | T5 | DMA 写 destination buffer 和 completion | completion 不早于 data write 完成语义 |
-| T6 | DMA 触发 interrupt | interrupt 不早于 completion 可见 |
+| T6 | DMA 触发 interrupt | 设备完成写达到约定观察点后通知；CPU 仍须在读取前同步 |
 | T7 | CPU ISR invalidate/read completion | CPU 看到 DMA 写入的 completion |
 | T8 | CPU 写 clear/EOI | device/non-cacheable，清除通知状态 |
 

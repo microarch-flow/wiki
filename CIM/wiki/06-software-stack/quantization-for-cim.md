@@ -27,11 +27,20 @@ DRAM/HBM/GDDR-PIM 的量化属于 PIM compute unit 的数据格式和 memory-sid
 
 ## 非对称与校准
 
-非对称量化常带来 zero-point 处理。数字硬件可以用加法和偏置处理；analog CIM 可能需要 offset current、reference shift、差分编码或额外校正。每种方式都会改变 array 能耗或外围复杂度。
+设归约段长度为 K，且该段内输入与权重的 `sx、sw、zx、zw` 均固定，`x_i=sx*(qx_i-zx)`，`w_i=sw*(qw_i-zw)`。实值点积为：
+
+```text
+y = sx*sw * [sum(qx_i*qw_i) - zw*sum(qx_i)
+             - zx*sum(qw_i) + K*zx*zw]
+```
+
+固定权重和 zero-point 时 `sum(qw_i)` 可预计算；`sum(qx_i)` 随输入变化，若 `zw != 0` 不能只用常量 bias 替代。若沿 K 采用块量化，每块 g 有各自的 `sx_g、sw_g、zx_g、zw_g` 和长度 `K_g`，则对各块先按上式算整数部分和，再乘该块的 `sx_g*sw_g` 并累加；不同分组边界时先切成参数均固定的共同分段。例：两块的整数部分和均为 2，scale 乘积分别为 0.5 和 1，结果为 `2*0.5+2*1=3`，不能合并后只乘 0.5。
+
+数字硬件须执行或预计算这些项；analog CIM 可能需要 offset current、reference shift、差分编码或额外校正。每种方式都会改变 array 能耗或外围复杂度。
 
 Calibration 不只是 post-training quantization 的统计步骤。CIM calibration 还包括 ADC reference、cell conductance、temperature drift、bad column 和 tile health。量化工具需要知道校准参数何时生成、存在哪里、是否会随运行时间变化。
 
-host-visible tensor format 也要一致。若 runtime、DMA 或 fallback 单元看到的是 INT8 tensor，而 CIM macro 内部使用 bit-serial、differential pair 或 asymmetric scale，compiler 必须在边界插入 format conversion，并按 BUS/cacheability/ordering 规则管理可见数据。
+host-visible tensor format 也要一致。若 runtime、DMA 或 fallback 单元看到的是 INT8 tensor，而 CIM macro 内部使用 bit-serial、differential pair 或 asymmetric scale，只有跨界双方实际表示或编码不兼容时才需插入 format conversion；设备内部可透明完成 bit-serial 或差分编码，不必强迫 host 转换。实际跨设备数据仍须按 BUS/cacheability/ordering 规则管理可见性。
 
 ## 常见误解
 

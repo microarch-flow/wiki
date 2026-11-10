@@ -6,14 +6,14 @@
 
 CIM（Compute-in-Memory）领域最大的困难不是单点技术难，而是**术语、层级和指标极易混淆**：有人把 HBM-PIM 叫 CIM，有人把 SRAM 旁加逻辑也叫 CIM，有人用 macro 级 TOPS/W 直接论证系统收益。这份 wiki 的目标是建立一套**不会混乱的坐标系**，让器件、电路、架构、软件、workload 和产业的判断都落在同一套定义上，从而能正确比较路线、论文和产品。
 
-本 wiki 面向把 CIM 知识用于**架构探索与建模**的读者：每一章末尾都有「建模启示 / 研究启示」，把该层知识折叠成可参数化的 Resource / Topology / Interaction / Capability 四元组。如果你的目的是给架构探索工具建模，先读[建模参数字典](./05-architecture-and-system/cim-modeling-parameter-schema.md)，它把散落各章的建模提示汇总成一张可直接实现的参数表。
+本 wiki 面向把 CIM 知识用于**架构探索与建模**的读者：每一章末尾都有「建模启示 / 研究启示」，把该层知识折叠成可参数化的 Resource / Topology / Interaction / Capability 四元组。如果你的目的是给架构探索工具建模，先读[建模参数字典](./05-architecture-and-system/cim-modeling-parameter-schema.md)，它汇总参数和明确前提的一阶模型；数字必须按目标设计校准，不能直接当作实测规格。
 
 ## 全 wiki 的两个锚点
 
 整份 wiki 由两件事钉死，后续所有命名和比较都必须落回它们：
 
 1. **计算位置三分** — [CIM/PIM/NMC 的严格区分](./01-overview/cim-pim-nmc-taxonomy.md)：CIM 指计算发生在 memory cell 内或紧邻 cell 的 array path 中；PIM 指 memory die/bank 内加独立 compute unit；NMC 指 compute 靠近 memory 但不在 memory die 上。
-2. **两条正交主线** — [Memory Technology × Compute Paradigm](./01-overview/two-axes-memory-and-paradigm.md)：横轴是权重/计算依附的 memory 物理对象（SRAM / ReRAM / Flash / PCM / MRAM / DRAM），纵轴是乘加发生的形式（analog / digital / mixed-signal）。
+2. **两条正交主线** — [Memory Technology × Compute Paradigm](./01-overview/two-axes-memory-and-paradigm.md)：横轴是权重/计算依附的 memory 物理对象（SRAM / ReRAM / Flash / PCM / MRAM / DRAM），对阵列参与计算的 CIM，纵轴描述求值与转换形式（analog / digital / mixed-signal）。独立 PIM/NMC 单元另记录 ISA、数值格式、局部存储与接口，不强制套用该 CIM 轴。同一设计可有模拟阵列求值和含 ADC/数字累加的混合信号宏。
 
 任何指标还必须标注**系统层级**（cell / macro / tile / chip / package / card / system）和**证据来源**（silicon / post-layout / simulation / analytical / vendor demo），否则不可横比。详见 [指标术语表](./09-research-frontier/metrics-glossary.md)。
 

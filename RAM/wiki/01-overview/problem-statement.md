@@ -7,7 +7,7 @@
 
 为什么计算系统里的很多性能问题，最后都不是算力问题，而是存储器问题。更具体地说，为什么存储器总是在同时承受物理、电气、时序、封装、控制器和工作负载六个方向的拉扯。
 
-## 正文
+## 存储器约束如何跨层耦合
 
 体系结构里有很多复杂模块，但存储器之所以特别难，不是因为它的局部机制最多，而是因为它最容易把不同层级的约束耦合到同一个结果变量上。打个比方：如果你家水龙头出水慢，原因可能是水厂供水不足、主管道老化、小区泵站压力低、入户管径太窄，甚至是你的水龙头滤芯堵了。存储器问题也是如此——你看到的一次 load miss、一次 DMA stall、一次 NPU pipeline 气泡，表面上都是”数据没及时到”，但它们背后可能分别对应完全不同的根因：片上 SRAM bank 冲突、DRAM row conflict、memory controller 调度失配、封装带宽不够、甚至 workload 自身没有提供足够的数据复用。存储器问题天然不接受单层解释。
 
@@ -51,7 +51,9 @@ MemoryRequest {
   source: MasterId
   arrival_cycle: uint64
   mapped_channel: int
-  mapped_bank: int
+  mapped_rank: int
+  mapped_bank_group: int
+  mapped_bank: int  # 与 channel/rank/bank_group 共同确定 bank
   mapped_row: int
   service_state: enum
 }

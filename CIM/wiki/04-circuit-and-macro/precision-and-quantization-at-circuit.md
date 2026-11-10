@@ -1,7 +1,7 @@
 # 精度与量化在电路层的实现约束
 
 上级：[04 Circuit And Macro](./README.md)
-相关：[Data Encoding Strategies](./data-encoding-strategies.md), [Analog vs Digital Tradeoff Map](../03-compute-paradigms/analog-vs-digital-tradeoff-map.md), [RAM: SRAM Applications](../../../RAM/wiki/03-sram-applications/README.md), [NoC: Reduction Networks](../../../NoC/wiki/06-ai-noc-specifics/reduction-and-collective-networks.md)
+相关：[Data Encoding Strategies](./data-encoding-strategies.md), [Analog vs Digital Tradeoff Map](../03-compute-paradigms/analog-vs-digital-tradeoff-map.md), [RAM: SRAM Applications](../../../RAM/wiki/03-sram-applications/README.md), [NoC: Reduction Networks](../../../NOC/wiki/06-ai-noc-specifics/reduction-and-collective-networks.md)
 
 ## 这页在回答什么问题
 
@@ -31,7 +31,7 @@ Mixed-signal CIM 的精度来自边界协同：array 内保留低比特 analog �
 
 CIM 的量化必须下沉到电路约束。scale 是否对称、zero-point 是否需要 offset current、signed weight 是否用 differential pair、outlier 是否触发 saturation、partial sum 是否溢出，都会改变 macro 设计。
 
-对于 ReRAM/Flash，multi-level state 的可分辨数量和 drift 决定 weight quantization 的真实上限。对于 SRAM，bit-serial 周期和 accumulator 宽度决定精度代价，相关存储背景可对照 RAM wiki 的 [SRAM applications](../../../RAM/wiki/03-sram-applications/README.md)。对于 DRAM/HBM/GDDR-PIM，量化约束来自 PIM compute unit 的数据格式和 memory-side bandwidth，而不是 CIM macro 的 cell/bitline 精度；若 compute 位于 HBM base die、interposer 或 package-side logic，则属于 NMC 边界。partial sum 离开 macro 后还会进入 tile reduction 和互连，可连接 NoC wiki 的 [reduction networks](../../../NoC/wiki/06-ai-noc-specifics/reduction-and-collective-networks.md)。
+对于 ReRAM/Flash，multi-level state 的可分辨数量和 drift 决定 weight quantization 的真实上限。对于 SRAM，bit-serial 周期和 accumulator 宽度决定精度代价，相关存储背景可对照 RAM wiki 的 [SRAM applications](../../../RAM/wiki/03-sram-applications/README.md)。对于 DRAM/HBM/GDDR-PIM，量化约束来自 PIM compute unit 的数据格式和 memory-side bandwidth，而不是 CIM macro 的 cell/bitline 精度；若 compute 位于 HBM base die、interposer 或 package-side logic，则属于 NMC 边界。partial sum 离开 macro 后还会进入 tile reduction 和互连，可连接 NoC wiki 的 [reduction networks](../../../NOC/wiki/06-ai-noc-specifics/reduction-and-collective-networks.md)。
 
 ## 常见误解
 
@@ -39,7 +39,9 @@ CIM 的量化必须下沉到电路约束。scale 是否对称、zero-point 是�
 
 常见误解：模型能 QAT，就能吸收任何硬件误差。实际上，QAT 只能吸收统计上稳定、可建模的误差；温漂、retention、随机 write noise 和 aging 仍需要硬件校准或运行时保护。
 
-常见误解：peak precision、effective number of bits 和 model accuracy 是同一件事。实际上，peak precision 是电路或格式宣称的上限，effective precision 是带非理想性后的数值质量，model accuracy 是 workload 对这些误差的最终响应。三者必须分开报告。
+ADC ENOB 需在指定输入频率、幅度、采样率、带宽和测试方法下由 SINAD 换算（常用正弦测试 `ENOB=(SINAD_dB-1.76)/6.02`）；它不是完整点积误差或模型 accuracy。点积可报告相对理想值的 RMSE、偏差与饱和率；模型 accuracy 再在明确数据集和任务上测量。
+
+例：ADC 输入量程上限为 1 V，两个理想点积分别对应 0.9 V 和 1.2 V；后者截顶至 1 V，增加 ADC 位数也不能恢复超量程信息。另一个独立问题是数字累加溢出：无符号 8-bit 累加 250+10，回绕为 4，饱和为 255；两种语义须分别记录。
 
 ## 一句话理解
 

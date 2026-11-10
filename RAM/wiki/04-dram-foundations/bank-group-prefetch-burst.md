@@ -7,7 +7,7 @@
 
 为什么 DRAM 在容量继续做大、接口继续提速的过程中，会演化出 prefetch、burst 和 bank group 这些看起来很“协议味”的结构。更准确地说，这些机制到底在桥接什么矛盾，为什么它们不是可有可无的增强项，而是 cell 速度与 I/O 速度脱节之后的必然结果。
 
-## 正文
+## 阵列与高速接口之间的速率匹配
 
 到了这一章这里，DRAM 的基本矛盾已经很清楚了。1T1C cell 提供了高密度，但 cell 很弱；整行感测和 row buffer 提供了访问窗口，但 row 打开成本高；bank 提供了阵列级并行，但并不自动等于高速接口吞吐。接下来会出现的 prefetch、burst 和 bank group，本质上是在处理另一层越来越尖锐的矛盾：`DRAM core`，也就是 cell、sense amp 和 row buffer 这一侧的工作节奏，并不能简单线性跟上外部 I/O 接口的提速需求。
 
@@ -15,7 +15,7 @@
 
 先看 `prefetch`。这里的 prefetch 不是 CPU 里那种“猜未来地址”的预取，而是 DRAM 内部的一种宽度转换机制。它表达的是：当一行已经被打开，core 并不是每次只从 row buffer 中取出最窄那一点点数据直接送到引脚，而是先在内部取出一个更宽的块，比如 4n、8n、16n 这类粒度，再交给 I/O 边界逻辑。这样做的结果，是外部接口可以在更高的 transfer rate 下持续输出数据，而内部阵列不需要按同样高的频率重新访问 row buffer。常见误解是把 prefetch 读成”缓存更多未来数据”；实际上，它更像一个齿轮箱——自行车的前齿轮大、后齿轮小，前面蹬一圈慢慢的，后面轮子转好几圈快快的。prefetch 就是 DRAM 内部的”大齿轮到小齿轮”的转换：内部慢慢取出一大块，外部快快分拍送出去。
 
-这里容易产生一个疑问：一次取出这么宽的数据，万一其中大部分不是我要的，岂不是浪费带宽？答案是不会，因为 prefetch 取的是从你请求的列地址开始的连续数据，不是随机猜测的。而且整个存储层级是协同设计的：CPU cache 的最小操作单位是 cache line（通常 64B），即使程序只读 1 个字节，cache miss 时 memory controller 发给 DRAM 的也是一整条 cache line 的请求。DRAM 这边的总线宽度、prefetch 深度和 burst length 恰好被设计成让一次 burst 送出的总字节数对齐 cache line 大小——比如 DDR4 的 8B 总线宽度 × BL8 = 64B，刚好一条 cache line。也就是说，prefetch 取出来的每一个字节都是 cache 需要的，真正的”多取”发生在更上层（cache line 用空间局部性赌你会访问相邻数据），而不是在 DRAM prefetch 这一层。这种 cache line 与 burst 粒度的对齐不是巧合，而是 CPU 架构先根据局部性收益、tag 开销和总线效率确定 cache line 大小，DRAM 再通过调整 prefetch 倍数和 burst length 去匹配它的结果。
+内部宽取和外部 burst 不保证每个字节都对程序有用。假设一个非 ECC 的 DDR4 rank 提供 64 个 payload DQ，BL8 表示 8 次数据传输，则一次完整 burst 为 `8×64/8=64 B`。若系统的 cache line 是 64 B 且未跨界，它可匹配一次 burst；程序只使用其中 1 B 时，其余字节对该次程序访问仍是过取。不同总线宽度、burst 模式、对齐、ECC、子行访问和请求合并会改变物理事务数与有效字节。内部 prefetch 深度不是要再乘一次的事务数。
 
 再看 `burst`。一旦内部已经取出这样一个更宽的数据块，外部接口自然不会一拍只送其中一小部分然后停住，而会连续若干拍把它吐完。这个连续发送窗口就是 burst。也就是说，burst 不是独立于 prefetch 的另一个随机特性，而是 prefetch 在引脚侧的时间展开形式。内部先攒一块，外部再顺着这块连续发出去，二者是一体两面。你可以把 prefetch 看成“空间上一次取更宽”，把 burst 看成“时间上连续发多拍”。
 
@@ -55,9 +55,9 @@ Prefetch、burst 和 bank group 本质上都是在桥接 DRAM core 慢而宽、I
 
 ```text
 DramTransferModel {
-  core_prefetch_words: int
-  burst_length: int
-  io_words_per_beat: int
+  core_prefetch_words: int  # 内部每次宽取包含的外部字数
+  burst_length: int        # 每个 burst 的外部 transfer 数
+  dq_payload_bits: int     # 不含 ECC 的 DQ 位数
   bank_groups: int
   same_group_gap_cycles: int
   cross_group_gap_cycles: int
@@ -73,4 +73,4 @@ event BurstBeat(req_id, beat_idx)
 event BurstTransferDone(req_id)
 ```
 
-如果只关心非常粗粒度带宽，可以把 `core_prefetch_words * burst_length` 折成一个平均事务大小；但只要你要分析 cache line 对齐、数据总线占用、或者不同 bank/bank group 的交错效率，就最好显式保留 burst 级事件。因为很多“理论带宽”落不到实测带宽的问题，正是发生在这层宽度与时间的桥接上。
+外部完整 burst 的 payload 字节数为 `burst_length * dq_payload_bits / 8`，实际有用字节须按请求覆盖范围和有效掩码统计。内部 prefetch 与外部 burst 是同一批数据的两种表示，不能直接相乘；若接口支持 burst chop，还要按该模式定义数据及时间。但只要你要分析 cache line 对齐、数据总线占用、或者不同 bank/bank group 的交错效率，就最好显式保留 burst 级事件。因为很多“理论带宽”落不到实测带宽的问题，正是发生在这层宽度与时间的桥接上。

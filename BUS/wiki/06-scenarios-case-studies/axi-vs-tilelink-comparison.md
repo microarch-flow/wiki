@@ -27,10 +27,12 @@ AXI 的强项是生态兼容和工程普及；TileLink 的强项是生成式系�
 | --- | --- | --- |
 | Resource | master/slave、ID、channel、outstanding、QoS | client/manager、source/sink、region、capability |
 | Topology | crossbar/matrix/bridge 由集成者搭建 | manager graph、adapter、fragmenter、buffer 可生成组合 |
-| Interaction | 独立 AW/W/B/AR/R channel，ID 匹配 | A/B/C/D/E channel，source/sink 和 acquire/release 语义 |
+| Interaction | 独立 AW/W/B/AR/R channel，ID 匹配 | TL-UL/UH 用 A/D；TL-C 用 B Probe、C ProbeAck/Release、D Grant/Data 和 E GrantAck |
 | Capability | burst、outstanding、attributes、response | TL-UL/TL-UH/TL-C 能力层级，参数化支持 |
 
-这个比较说明，AXI 更强调接口边界清楚，TileLink 更强调系统内部能力随拓扑生成和检查。
+例如 uncached Get 由 client 在 A 发出，manager 在 D 返回 AccessAckData；source 标识关联请求。TL-C 中 manager 可对其他 client 发 B Probe，client 以 C ProbeAck/Data 回应；处理权限后 manager 在 D 发 Grant/Data，获授 client 在 E 返回携带 sink 的 GrantAck。具体顺序依事务和实现，不是把 B→C→D→E 当作所有访问必经链路。
+
+TileLink 定义协议；Diplomacy 是可协商节点能力和生成互连的框架。两者可配合使用，但不是同一规范。
 
 ## AXI 的适用优势
 

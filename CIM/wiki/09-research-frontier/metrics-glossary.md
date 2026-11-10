@@ -12,7 +12,9 @@
 | 指标 | 必须补充的口径 | 常见误读 |
 | --- | --- | --- |
 | TOPS | MAC 算 1 op 还是 2 ops、INT 几比特、peak 还是 effective | 把 low-bit peak 当真实模型吞吐 |
-| GOPS/bit-op | binary/ternary/bit-serial operation 的定义 | 把 bit-level operation 直接等价成 INT8/FP16 MAC |
+| bit-op | 一次定义明确的位级操作，单位为次数 | 把一次 bit-op 等价成 INT8/FP16 MAC |
+| Gbit-op/s | 每秒十亿次所定义的位级操作 | 和不含每秒的 bit-op 混用 |
+| GOPS | 每秒十亿次所定义的 operation | 未说明 op 定义便跨精度比较 |
 | MVM/MAC count | matrix-vector size、sparsity、batch、accumulation depth | 把小矩阵满载 MVM 当任意 GEMM 性能 |
 | TOPS/W | 是否包含 ADC/DAC/SA/buffer/NoC/DRAM/host | 把 macro energy 当 system energy |
 | TFLOPS/W | FP8/FP16/BF16/FP32，是否是等效换算 | 把 mixed precision 等效值当通用浮点性能 |
@@ -22,6 +24,8 @@
 | TOPS/mm2 | 面积是否含外围、controller、buffer、I/O | 只算 array 面积后横比 chip |
 | accuracy drop | baseline、dataset、calibration、retraining | 用单模型精度代表所有模型 |
 | system speedup | baseline、kernel 范围、host stall、batch size | 把 kernel speedup 当端到端 speedup |
+
+在相同边界和工作点，`TOPS/W = 10^12 ops/J`。若 η 以 TOPS/W 计且 1 MAC = 2 ops，则 `E_MAC = 2/(η × 10^12)` J/MAC；必须使用对应精度、利用率及包含项的 η。`system speedup = T_baseline / T_new`，两者需处理同一任务且时间端点一致。accuracy 从 90% 降到 88% 是下降 2 个百分点，相对下降约 2.22%；两者不能混写。
 
 层级定义：
 

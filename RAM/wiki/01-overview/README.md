@@ -7,7 +7,7 @@
 
 开始学存储器时，最容易出错的不是“不懂某个术语”，而是把不同层级的问题揉成一团。这个章节的任务，就是先把 RAM 拆成几条清晰主线，再说明后面的章节为什么要按现在这个顺序展开。
 
-## 正文
+## 从存储器问题到章节依赖
 
 想象你面前有一座城市的交通系统。你不能只盯着某一条高速公路去理解拥堵问题，因为拥堵可能源自匝道设计、红绿灯策略、停车场容量、甚至是早高峰的通勤模式。存储器在体系结构中扮演的角色类似——它不是一个可以独立理解的模块，而是一张牵一发动全身的网。这一章的任务，就是先把这张网的主要经线和纬线理清楚。
 
@@ -49,7 +49,9 @@
 MemoryNode {
   name: string
   primitive: enum { SRAM, DRAM }
-  role: enum { RF, CACHE, SCRATCHPAD, MAIN_MEMORY, STACKED_MEMORY }
+  role: enum { RF, CACHE, SCRATCHPAD, MAIN_MEMORY }
+  package_stack: enum { NONE, STACKED_DIE }
+  integration: enum { ON_DIE, MODULE, PACKAGE, INTERPOSER_2P5D }
   interface: enum { NONE, DDR, LPDDR, GDDR, HBM }
   parent_links: list<MemoryNodeId>
   key_constraints: list<string>

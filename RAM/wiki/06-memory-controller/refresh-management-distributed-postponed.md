@@ -7,13 +7,13 @@
 
 既然 refresh 无法取消，memory controller 还能在哪些地方争取调度灵活性。更具体地说，distributed refresh、postponed refresh、bank-level refresh 这些策略分别在交换什么，以及它们怎样影响吞吐、尾延迟和控制复杂度。
 
-## 正文
+## 刷新时限与调度选择
 
 上一章已经把 refresh 的物理本质讲清了：它不是业务访问，而是 DRAM 为了不让数据自然蒸发而持续缴纳的系统税。到了 controller 这一层，问题就变成了另一句更现实的话：既然这笔税一定要交，能不能挑个没那么痛的时候交，或者至少别每次都把整块阵列最关键的服务窗口一起锁死。refresh 管理的全部意义，都在这里。
 
 最朴素的 refresh 实现方式，是把刷新严格按固定节拍触发，到点就发，发完再继续服务正常请求。这样的实现简单、易验证，也最接近“物理 deadline 到了就立即处理”的直觉。但它的问题也同样直接：它对请求流形状完全不敏感。无论当前 bank/rank 空不空、读请求急不急、是不是刚好处在热点窗口，refresh 都会硬插进来。对平均带宽也许还能接受，对 tail latency 和 QoS 则往往很不友好。
 
-`Distributed refresh` 的思路，是把必须完成的刷新工作更均匀地摊开，而不是让更大块的刷新集中砸在少数时刻。你可以把它理解成把税款拆成更多小笔定期支付——就像把一年的物业费从"年底一次性交 12000"改成"每月交 1000"。每次交钱时你手头的现金流压力更小，但你也需要每个月都记着这件事。这样做的收益是：单次 blocking 窗口更容易控制，请求流更不容易被某个超长刷新区间一次性打断；功耗峰值也更平滑。代价则是 controller 必须更持续地关心 refresh 节奏，系统更频繁地进入“虽然每次不长，但经常要让路”的状态。换句话说，distributed refresh 优化的是刷新干扰的波形形状，而不是刷新总成本本身。
+`Distributed refresh` 的思路，是把必须完成的刷新工作更均匀地摊开，而不是让更大块的刷新集中砸在少数时刻。你可以把它理解成把税款拆成更多小笔定期支付——就像把一年的物业费从"年底一次性交 12000"改成"每月交 1000"。每次交钱时你手头的现金流压力更小，但你也需要每个月都记着这件事。对同一 REF 类型，将多条原本集中发出的命令分散，可以减少连续阻塞区间，但不会缩短每条 REF 自身的 tRFC。若器件另支持更细刷新粒度，单条占用和命令频率可能变化，须按该模式时序重算；功耗峰值也须实测。代价则是 controller 必须更持续地关心 refresh 节奏，系统更频繁地进入“虽然每次不长，但经常要让路”的状态。换句话说，distributed refresh 优化的是刷新干扰的波形形状，而不是刷新总成本本身。
 
 `Postponed refresh`，也就是推迟刷新，背后的逻辑更像是“deadline 还没彻底到，先把眼前这一小段高价值请求流服务掉”。因为 DRAM 规范通常会给 refresh 一定的灵活窗口，而不是要求绝对每个固定时刻立刻执行，所以 controller 有机会在受限范围内往后拖几次 refresh，把一些 bursty 的 row-hit 请求、关键读请求或高优先级流量先送过去。这样做的好处很明显：controller 获得了一点对 workload 相位的感知能力，不再被 refresh 节拍完全牵着走。坏处也同样明显：你只是把 debt 往后挪，不是消灭它；如果后面一直繁忙，被推迟的 refresh 会积压成更集中的压力，甚至在更糟时刻一起回来。
 
@@ -44,7 +44,7 @@ R -> R -> REF -> R -> R
 
 ```text
 Distributed refresh:
-  优点：单次阻塞更平滑
+  优点：相同 REF 分散后，连续阻塞区间可能变短；单条 tRFC 不变
   代价：更频繁打断普通服务
 
 Postponed refresh:
@@ -60,7 +60,7 @@ Bank-level refresh:
 
 这里最重要的控制器视角，是把 refresh 看成一种 `deadline-constrained background task`，而不是一种硬编码中断。它和普通请求不同，因为它没有“业务价值”，却有硬 deadline；它和纯后台任务也不同，因为拖过 deadline 就是错误。于是 controller 的工作，不是问“要不要 refresh”，而是问“在 deadline 允许的自由度里，怎么让 refresh 和正常服务相撞得更少”。这也是为什么 refresh 管理天然会和写排空、page policy、QoS 一起形成耦合：你在某个时刻让 refresh 先走，就改变了后面总线、bank 和延迟分布。
 
-refresh 管理对尾延迟尤其敏感。平均吞吐层面，很多策略看起来差异没那么夸张，因为总税额变化不大；但对单请求延迟分布来说，策略差异会非常明显。把 refresh 分散开，会让每次被挡住的时间短一些，但被挡住的概率更高；把 refresh 推后，会让大多数时刻更顺，却可能在后面某个时刻形成更重的堵塞。对追求 QoS 或实时性的平台，这意味着 refresh policy 不能只看平均带宽，还必须看它把阻塞“切成什么形状”。
+refresh 管理对尾延迟尤其敏感。平均吞吐层面，很多策略看起来差异没那么夸张，因为总税额变化不大；但对单请求延迟分布来说，策略差异会非常明显。分散同一类 REF 可能缩短连续阻塞区间，但单条 tRFC 不变，命中概率取决于流量和时序；把 refresh 推后，会让大多数时刻更顺，却可能在后面某个时刻形成更重的堵塞。对追求 QoS 或实时性的平台，这意味着 refresh policy 不能只看平均带宽，还必须看它把阻塞“切成什么形状”。
 
 这也是为什么 LPDDR、HBM 等路线会对 refresh 管理更敏感。LPDDR 更在意待机和背景功耗，因此自刷新、部分阵列保持和低功耗状态切换会更重要；HBM stack 的热条件和堆叠复杂性又会让 refresh 规划更加棘手。虽然这些具体家族机制各有不同，但 controller 层的根问题一样：如何让“不可取消的保命任务”尽量少打断真正想做的业务访问。
 
@@ -98,10 +98,15 @@ event RefreshComplete(scope_id)
 一个最小调度判定可以是：
 
 ```text
-if refresh_due and postpone_budget_remaining and critical_reads_present:
-    postpone_refresh()
+ # due、postponement 和 legal guard 均按目标器件与 scope 定义
+if not refresh_due:
+    schedule_normal_legal_command()
+elif postponement_is_legal and critical_reads_present:
+    postpone_refresh_and_account_debt()
+elif refresh_command_legal_now:
+    issue_refresh_and_update_deadline_and_busy_until()
 else:
-    issue_refresh()
+    issue_required_legal_preparatory_command_or_wait()
 ```
 
 如果只关心平均吞吐，可以把 refresh 近似成每个作用域周期性损失固定服务窗口；但只要你要看 QoS、tail latency 或多 bank 并行利用率，就最好显式保留 `scope` 和 `postpone_budget`。因为 refresh policy 的价值，恰恰体现在“同样总税额，不同冲击形状”。

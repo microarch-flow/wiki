@@ -24,7 +24,7 @@ ID 就像餐厅里的**桌号牌**。你同时点了三道菜，厨房做好后�
 
 ID 的基本作用就是让 request 和 response 能被关联起来。多个读请求进入系统后，返回路径需要通过 ID 告诉 master：这组 `R` data 属于哪个 `AR`。
 
-ID 还定义 ordering 边界。AXI 允许系统在满足协议 ordering 规则的前提下，让不同 ID 的事务以更灵活的顺序完成；同一 ID 内部则受到更强的顺序约束。这里的重点不是背规则，而是理解设计交易：ID 越能区分独立流量，系统越有机会把慢路径和快路径分开；但 master、interconnect 和 slave 都要维护更多 tag、buffer 和返回排序状态。
+ID 还定义 ordering 边界。以 AXI4 为例，同一 master 的同读 ID 的多个 AR，其 R 事务按请求顺序返回；同写 ID 的多个 AW，其 B 响应按顺序返回。读 ID 和写 ID 是独立方向的命名空间，相同数值不自动要求读写交叉保序。同一 ID 可以同时有多笔在途，所以须用该 ID 的请求队列及序号匹配，不能把 ID 值当作唯一事务号。AXI4 的 W 通道没有 WID，不允许不同写事务的数据交织；W 按写地址顺序关联，即使 W 先到也须暂存并等待地址上下文。不同 ID 可以在规则允许时更灵活地完成。这里的重点不是背规则，而是理解设计交易：ID 越能区分独立流量，系统越有机会把慢路径和快路径分开；但 master、interconnect 和 slave 都要维护更多 tag、buffer 和返回排序状态。
 
 一个构造例子可以说明 ID 的价值：
 
@@ -55,7 +55,7 @@ Outstanding 深度的收益有上限。真正的窗口由最小能力决定：ma
 
 例如，一个 DMA master 以不同 ID 发出多个 read burst，`AR` channel 很快接受了请求，但 slave 端只有 2 个内部 request slot。第三笔请求会被 interconnect 或 slave 反压，`ARREADY` 拉低。若 `R` channel 被 master 端 backpressure 堵住，slave 的 response buffer 释放不了，又会进一步限制新的 `AR` 接收。此时问题表面上出现在 `ARREADY`，根因可能在 `RREADY` 或返回 path FIFO。
 
-写路径也有类似耦合。`AW` 被接受只说明写地址进入系统；`W` beat 可能还在路上，`B` response 也要等写数据和 slave commit 完成后返回。若实现只按 `AW` 计数，不检查 `W` buffer 和 `B` response 队列，就可能接收超过自己能闭合的写事务。
+写路径也有类似耦合。`AW` 被接受只说明写地址进入系统；`W` beat 可能还在路上，对于 AXI4，`BVALID` 需等该事务的 AW 和最后 W beat 已被接收；`B` 不必等数据写入 DRAM 或对 CPU cache 可见。若实现只按 `AW` 计数，不检查 `W` buffer 和 `B` response 队列，就可能接收超过自己能闭合的写事务。
 
 下面是一个简化读路径窗口，展示 outstanding 如何被返回路径限制：
 

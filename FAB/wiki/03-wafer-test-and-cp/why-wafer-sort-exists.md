@@ -11,7 +11,7 @@
 
 前道完成后，wafer 上同时存在好 die、坏 die、边缘风险 die、速度不同的 die 和漏电不同的 die。若不在 wafer 阶段筛选，坏 die 会继续消耗切割、贴装、基板、interposer、RDL、HBM stack、underfill、molding 和终测资源。
 
-测试前移的经济逻辑可以写成：
+以下不等式只示意不可返修且后续组装投入较高时，晚发现缺陷可能造成的累计损失；它不是各测试的检测成本必然排序：
 
 ```text
 cost of finding defect
@@ -54,4 +54,4 @@ Wafer sort 存在的根本原因是把坏 die 尽量拦在封装前，用较低�
 
 如果我选择 D2W 3DIC 或多 chiplet 封装，就必须关心 CP 覆盖率。D2W 的优势是能先筛 KGD 再贴装；如果 CP 无法有效发现关键 defect，这个优势会缩水，组合良率会被坏 die 漏检拖垮。
 
-一个具体决策例子：若某 chiplet 只有封装后才能测到关键高速 D2D PHY defect，那么它进入 package 前并不是真正的 KGD。架构师需要推动 DFT 或 wafer-level test access，让关键接口在封装前至少被部分覆盖。
+例如，某 chiplet 的关键高速 D2D PHY 只能在封装后完整测试。若现有筛选达到项目规定的 KGD 判据，它仍可称为该判据下的 KGD，但必须记录盲区与残余风险。风险超过项目限值时，可拒收、增加 loopback 或安排后续补测。

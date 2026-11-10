@@ -4,4 +4,4 @@
 
 入口见 [wiki/README.md](./wiki/README.md) ，知识地图见 [wiki/SUMMARY.md](./wiki/SUMMARY.md)。
 
-原始素材保留在 [chat.md](./chat.md)。
+从 [wiki 入口](./wiki/README.md) 可按器件、电路、系统和建模目标选择阅读路径。

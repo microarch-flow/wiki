@@ -21,6 +21,12 @@ mesh 家族的逻辑是：保持低 radix，让路径多走几跳。flattened bu
 
 如果只看这些指标，它们会像“明显更先进的 topology”。
 
+## 可复现的连接例子
+
+二维 flattened butterfly 的 router 可标成 `(x,y)`，同一行任意两点直连，同一列任意两点直连。例如 3×2 图中 `(0,0)` 连接 `(1,0)`、`(2,0)` 和 `(0,1)`；到 `(2,1)` 可走 `(0,0)→(2,0)→(2,1)`。每 router 网络 radix 为 `(3−1)+(2−1)=3`，本地端点口另计。它不是仅指“局部高 radix 节点”。
+
+经典 dragonfly 的一个构造：每组 `a=2` 个 router 相互直连，每 router 有 `p=1` 个端点和 `h=1` 个 global 端口，组数 `g=3=ah+1`。组 A 的 router 0 连 B 的 router 0，A1 连 C0，B1 连 C1。每 router radix 为 `p+(a−1)+h=3`。不同组间路径可先组内到 global 端口，再跨组及组内到目标；这是一个明确连边例，不能由端点数单独推断所有 dragonfly 的平均距离、切面或面积。原始参数见 [dragonfly 论文](https://research.google.com/pubs/archive/34926.pdf)。
+
 ## 片上系统里真正的问题：高 radix 不是抽象参数
 
 在片上，高 radix 意味着：
@@ -89,7 +95,7 @@ dragonfly 的关键思路是：先组局部团，再用较少的全局高带宽�
 实际上：HPC 和片上系统的代价结构不同；片上把高 radix 转成了更重的 crossbar、allocator 和布线问题。
 
 常见误解：这类拓扑对 NPU 没意义。  
-实际上：它们非常有意义，但常是思想意义和上界意义，不是照搬意义。
+实际上：它们非常有意义，但常是思想意义和比较意义，不是照搬意义。
 
 ## 一句话理解
 

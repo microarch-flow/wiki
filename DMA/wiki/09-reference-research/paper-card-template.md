@@ -13,7 +13,8 @@
 
 ## 基本信息
 
-- 年份：
+- 作者、年份、会议/期刊及论文 URL/DOI：
+- 对应章节/页码与引用日期：
 - 场景：
 - 系统类型：
 - 主要路径：
@@ -33,8 +34,11 @@
 - 与 NoC / memory / cache 的关系：
 - observability / debug 方法：
 
-## 关键指标
+## 实验与关键指标
 
+- baseline、workload、输入规模、硬件/配置、模型保真度：
+- 时间窗、字节口径、完成边界、误差或统计区间：
+- 作者报告的结果与独立复现结果分别记录；未复现则明确标记：
 - 吞吐：
 - completion visible latency：
 - tail latency：

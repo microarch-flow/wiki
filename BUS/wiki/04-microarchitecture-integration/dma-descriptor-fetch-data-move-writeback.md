@@ -6,9 +6,9 @@
 
 ## 这页在回答什么问题
 
-一次 DMA 任务就像一次**快递取件 + 送件 + 回执**的完整流程：快递员先去取件点拿到包裹单（descriptor fetch），然后去发件人那里取货、送到收件人那里（data move），最后回来填写送达回执并通知调度中心（writeback/completion）。
+在 descriptor 模式下，一次 DMA 任务就像一次**快递取件 + 送件 + 回执**的完整流程：快递员先去取件点拿到包裹单（descriptor fetch），然后去发件人那里取货、送到收件人那里（data move），最后回来填写送达回执并通知调度中心（writeback/completion）。
 
-把 DMA 拆成这三段，是为了精准定位”哪里出了问题”——不能笼统地说”快递慢”。是取包裹单的路上堵了（descriptor fetch 慢）？还是搬货过程中遇到大件需要多趟（data move 受限）？还是送达后回执一直没交回调度中心（writeback/completion 路径出问题）？
+直接寄存器编程模式可从配置寄存器取得任务，不需要 descriptor fetch；状态或通知的具体形式也依设备而定。把 descriptor 模式拆成这三段，是为了精准定位”哪里出了问题”——不能笼统地说”快递慢”。是取包裹单的路上堵了（descriptor fetch 慢）？还是搬货过程中遇到大件需要多趟（data move 受限）？还是送达后回执一直没交回调度中心（writeback/completion 路径出问题）？
 
 ## 三段链路的责任边界
 
@@ -119,23 +119,23 @@ error completion 不只是调试信息。它是驱动状态机继续前进的条
 | descriptor fetch | CPU 写 descriptor 后需要对 DMA 可见 | descriptor IOVA 要有 read permission | descriptor visible 先于 doorbell |
 | data move read | source buffer 对 DMA 可见 | source mapping 和权限正确 | source read 完成先于对应 write |
 | data move write | destination buffer 可被 DMA 写 | destination mapping 和权限正确 | write response 决定数据写入完成语义 |
-| writeback | completion 对 CPU 可见 | completion buffer mapping 正确 | completion visible 先于 interrupt |
-| CPU consume | CPU invalidate 或 coherent read | CPU 使用自己的地址视图 | ISR/poll 不能早于 completion 可见 |
+| writeback | 写达到设备规定的通知前观察点 | 启用翻译时 completion buffer 映射正确 | 设备保证写和通知顺序 |
+| CPU consume | 按 DMA API 同步或按一致性契约排序后读取 | CPU 使用自己的地址视图 | ISR/poll 在同步后消费 |
 
-IOMMU 解决地址和权限，cache maintenance 解决可见性，barrier 解决顺序。三者缺一项，DMA 任务都可能表现为“偶发错误”。
+所需机制取决于平台：启用 IOMMU 时要建立正确映射和权限；无需翻译的平台可使用合法设备地址。非一致 streaming 映射按方向和所有权使用 DMA API 同步；coherent 映射可省显式缓存维护，但仍须遵守所需发布顺序。缺少该路径实际需要的机制才可能导致访问错误或旧数据。
 
 ## 常见误区
 
 | 误区 | 更准确的判断 |
 | --- | --- |
-| DMA start 后就进入数据搬运 | DMA 还要先 fetch descriptor，且 fetch 可能 fault 或被阻塞 |
+| DMA start 后一定先 fetch descriptor | descriptor 模式先取描述符；直接寄存器编程模式可用寄存器中的地址和长度启动，不需要该阶段 |
 | data move 完成就是软件可见完成 | writeback、status、interrupt 和 cache 可见性还要成立 |
 | DMA 慢就是 DDR 慢 | descriptor、SMMU、bridge、writeback 和 interrupt path 都可能是瓶颈 |
 | error completion 可有可无 | 没有 error completion，软件无法可靠释放任务和 buffer |
 
 ## 一句话理解
 
-DMA 任务是一条 `提交任务 -> 读取任务 -> 搬运数据 -> 写回完成 -> 通知软件` 的 BUS 状态机，每段都有独立的路径、属性和失败模式。
+descriptor 模式可分为 `提交任务 -> 读取描述符 -> 搬运数据 -> 写回/通知`；直接寄存器模式省去描述符读取。各适用阶段都有独立路径、属性和失败模式。
 
 ## 继续阅读
 

@@ -1,250 +1,248 @@
 # COMPUTE Wiki 自测问题列表
 
-总共 64 题。使用方式:从头到尾过一遍,能立刻答上来的跳过,犹豫的标记下来回 wiki 查证。
-所有题目不附答案,每题指明对应的 wiki 文件名,查不出来时去源文件确认。
+本表有 64 道编号题和 4 道跨章节综合题。使用方式:从头到尾过一遍,能立刻答上来的跳过,犹豫的标记下来回 wiki 查证。
+所有题目不附答案。每题附有现行 wiki 的参考正文。
 
 题目分层标记:[F] = 事实回忆,[T] = 理解迁移,[J] = 架构判断力。
 
-> 贯穿全表的一根线:几乎每道题最终都能归到一个问题——**这个机制把"有用计算 / 数据搬运"这个比值往哪个方向推?** 答不出主线位置的,就是没真懂。纲领见 `01-overview/compute-communication-ratio.md`。
+> 分别说明资源、工作量、边界和单位。查阅 [计算与通信指标](./wiki/01-overview/compute-communication-ratio.md)。
 
 ---
 
 ## 01-overview(7 题)
 
-1. [F] 为什么 COMPUTE 域衡量算力单元好坏用的是一个**比值**而不是绝对算力(FLOP)?分子和分母各是什么?
-   `01-overview/compute-communication-ratio.md`
+1. [F] 算术强度、有效吞吐、面积和能耗各使用什么单位？比较前为什么要固定工作量和统计边界？
+   [参考正文](./wiki/01-overview/compute-communication-ratio.md)
 
-2. [T] 同一个 trade-off 在比特精度、datapath、systolic array、pipeline、FPGA/ASIC、顶层布局六个层级各出现一次。任意给你一层,你能说出它的"分子项""分母项"和"抬比值的手段"吗?
-   `01-overview/compute-communication-ratio.md`
+2. [T] RF、阵列和片外存储边界分别统计哪些字节？同一字节穿过多个边界时，为什么不能把这些计数的和叫作片外流量？
+   [参考正文](./wiki/01-overview/compute-communication-ratio.md)
 
-3. [J] 为什么 Strassen 算法(把矩阵乘的乘法数从 O(n³) 降到 O(n^2.81))从不用于 AI?给出两层原因,并说明它为何是本域主线的最纯反证。
-   `01-overview/compute-communication-ratio.md`
+3. [J] 比较 Strassen 与直接矩阵乘时，哪些运算、数据移动、临时存储和数值误差前提可能改变结论？
+   [参考正文](./wiki/01-overview/compute-communication-ratio.md)
 
-4. [F] 在一个 8-entry RF + 一个 MAC 的裸 datapath 上,数据搬运门数和计算门数的比例大约是多少?这个数从哪来?
-   `01-overview/problem-statement.md`
+4. [F] 假设三路 8:1、p 位 mux 的成本代理各为 8p，乘法器核心代理为 4p，两项代理之比是多少？为什么这不是实芯片面积份额？
+   [参考正文](./wiki/01-overview/problem-statement.md)
 
-5. [T] 有人说"AI 加速器快是因为乘法器更多更强"。你会用哪几个"砍分母"的例子反驳这个说法?
-   `01-overview/problem-statement.md`
+5. [T] 一个阵列峰值 MAC/s 很高但任务吞吐低，你会从哪些供数、利用率和时序条件查起？
+   [参考正文](./wiki/01-overview/problem-statement.md)
 
-6. [J] 为什么通用 CPU 躲不掉那 24p 的灵活性税,而 AI 负载能系统性地把它砍掉?哪两个 workload 结构性特征是前提?
-   `01-overview/problem-statement.md`
+6. [J] 如何比较具有不同选择网络和本地存储的两个 datapath？为何不能直接用门数代理之比推断 MAC/byte 或能耗？
+   [参考正文](./wiki/01-overview/problem-statement.md)
 
-7. [F] 为什么 COMPUTE 域的"分母"恰好是 RAM/NOC/DMA/FAB 各域的主体?这对建模时的职责切分意味着什么?
-   `01-overview/taxonomy-and-roadmap.md`
+7. [F] COMPUTE、RAM、NOC、DMA、FAB 分别提供哪些信息？建模时如何标明它们共同涉及的资源边界？
+   [参考正文](./wiki/01-overview/taxonomy-and-roadmap.md)
 
 ---
 
-## 02-datapath-foundations(13 题)
+## 02-datapath-foundations（14 题）
 
-8. [F] 为什么 MAC(而非单独的乘法或加法)是 AI 芯片的天然原语?它是从什么结构里"长出来"的?
-   `02-datapath-foundations/multiply-accumulate-from-gates.md`
+8. [F] 矩阵乘的计算中乘法和累加如何组合？MAC 的输入、输出和累加状态是什么？
+   [参考正文](./wiki/02-datapath-foundations/multiply-accumulate-from-gates.md)
 
-9. [T] "累加要高精度"有两个**独立**的理由,数值范围只是其一。另一个是什么?为什么它更本质?
-   `02-datapath-foundations/multiply-accumulate-from-gates.md`
+9. [T] 两个无符号 4 bit 最大乘积相加时，需要多少位才能精确保存？8 bit 溢出与舍入有何不同？
+   [参考正文](./wiki/02-datapath-foundations/multiply-accumulate-from-gates.md)
 
-10. [F] 一个 full adder 是几进几出?它"不是软件里的 32-bit 加法器",那它本质在做什么?
-   `02-datapath-foundations/multiply-accumulate-from-gates.md`
+10. [F] 一个 full adder 的输入、输出分别是什么？它与一个多位加法器有何区别？
+   [参考正文](./wiki/02-datapath-foundations/multiply-accumulate-from-gates.md)
 
-11. [J] `full adder 数 = p×q` 这个代数闭合很优雅,但它是精确恒等式还是首阶估计?为什么这个区分对建模诚实性重要?
-   `02-datapath-foundations/multiply-accumulate-from-gates.md`
+11. [J] 乘法器部分积数量能说明什么，不能直接说明什么？压缩器数量为何不是 p×q 的恒等式？
+   [参考正文](./wiki/02-datapath-foundations/multiply-accumulate-from-gates.md)
 
-12. [T] 为什么压缩树要用 carry-save 而不是逐列等进位传播?这把加法树的延迟从什么量级压到什么量级?
-   `02-datapath-foundations/dadda-and-adder-trees.md`
+12. [T] carry-save 为什么能推迟跨列进位传播？压缩树为何通常先输出两行，再由末级进位传播加法器产生结果？
+   [参考正文](./wiki/02-datapath-foundations/dadda-and-adder-trees.md)
 
-13. [J] Wallace 和 Dadda 都把比特山压到高度 2,关键路径层数相同。那它们到底差在哪?什么场景你会选 Dadda?
-   `02-datapath-foundations/dadda-and-adder-trees.md`
+13. [J] Wallace 与 Dadda 压缩树在归约调度和硬件成本方面如何比较？比较时需固定哪些条件？
+   [参考正文](./wiki/02-datapath-foundations/dadda-and-adder-trees.md)
 
-14. [J] 压缩树最后那个 vector-merge 加法器(final CPA)的进位结构(ripple/CLA/Kogge-Stone)什么时候是面积问题,什么时候升级成频率上限问题?
-   `02-datapath-foundations/dadda-and-adder-trees.md`
+14. [J] ripple、CLA 和 prefix 进位结构可能如何影响面积与路径延迟？怎样判断其中一条路径是否限制时钟？
+   [参考正文](./wiki/02-datapath-foundations/dadda-and-adder-trees.md)
 
-15. [F] 乘法器面积为什么 ∝ 位宽² 而非 ∝ 位宽?位宽减半,面积降到几分之几?
-   `02-datapath-foundations/quadratic-bitwidth-scaling.md`
+15. [F] 在生成全部部分积的整数乘法结构中，p×q 表示什么？双操作数位宽减半时，这个代理如何变化？
+   [参考正文](./wiki/02-datapath-foundations/quadratic-bitwidth-scaling.md)
 
-16. [T] Nvidia 在 B300 之前按"位宽减半→FLOP 翻倍"标 spec。为什么说这个线性假设其实偏保守?B300 改标成多少?
-   `02-datapath-foundations/quadratic-bitwidth-scaling.md`
+16. [T] 为什么不能从整数部分积数量直接推导 FP4 相对 FP8 的产品吞吐或面积比？
+   [参考正文](./wiki/02-datapath-foundations/quadratic-bitwidth-scaling.md)
 
-17. [J] 浮点为什么拿不到完整的 4× 二次缩放收益?列出至少两个不随 mantissa 位宽二次缩小的项。
-   `02-datapath-foundations/number-formats-for-ai.md`
+17. [J] 浮点乘加除了尾数乘法，还需要哪些处理？累加精度为何不能忽略？
+   [参考正文](./wiki/02-datapath-foundations/number-formats-for-ai.md)
 
-18. [T] FP16 和 bf16 都是 16 位,行为却差很远。bf16 把位押在哪、砍在哪?这服从了训练负载的什么数值特性?
-   `02-datapath-foundations/number-formats-for-ai.md`
+18. [T] FP16 与 bf16 的 S/E/M 字段如何分配？它们在 1 上方的相邻可表示数间隔及指数范围有何区别？
+   [参考正文](./wiki/02-datapath-foundations/number-formats-for-ai.md)
 
-19. [J] MX(microscaling)格式的价值"很大一部分是搬运账,不只是算力账"。共享 exponent 如何同时拨动主线的分子和分母两端?
-   `02-datapath-foundations/number-formats-for-ai.md`
+19. [J] OCP MXFP4 的 32 元素块分别包含哪些元素字段和共享 scale？无对齐填充时，与裸 FP4、裸 FP8 各需多少字节？
+   [参考正文](./wiki/02-datapath-foundations/number-formats-for-ai.md)
 
-20. [J] "FP4 算力 = 2× FP8"为什么不是一个干净的物理常数?把这个 k 拆成三个来源。
-   `02-datapath-foundations/number-formats-for-ai.md`
+20. [J] 同为 FP8，OCP E4M3 与 E5M2 在 1 附近的间隔、有限范围和 Inf/NaN 支持有何不同？性能比较还需什么条件？
+   [参考正文](./wiki/02-datapath-foundations/number-formats-for-ai.md)
 
-21. [F] "选第 3 号寄存器"在硬件上是什么电路?一个 n 输入、p 位的 mux 成本大约几个门?
-   `02-datapath-foundations/mux-and-data-movement-cost.md`
+21. [F] n:1、p 位 mux 的输入、选择信号和输出是什么？其实际面积还取决于哪些实现因素？
+   [参考正文](./wiki/02-datapath-foundations/mux-and-data-movement-cost.md)
 
 ---
 
 ## 03-systolic-array(11 题)
 
-22. [F] systolic array 相对裸 datapath,compute 涨多少、communication 涨多少?净赚的"y 倍"是什么的量级?
-   `03-systolic-array/why-systolic-array.md`
+22. [F] 在 3 行、2 列阵列上完成一个长度为 3 的矩阵向量乘，共有多少次 MAC？指定阵列边界和数据位宽后，如何计算 MAC/byte？
+   [参考正文](./wiki/03-systolic-array/why-systolic-array.md)
 
-23. [T] 有人说 systolic array 的优势是"PE 多、并行度高"。为什么这是表象?真正的优势是什么?
-   `03-systolic-array/why-systolic-array.md`
+23. [T] PE 并行度、局部数据复用与阵列有效吞吐分别是什么？为什么增加 PE 数不保证任务加速？
+   [参考正文](./wiki/03-systolic-array/why-systolic-array.md)
 
-24. [J] systolic array 的权重就地驻留看起来很像存内计算。它和 CIM 的边界精确在哪一句话上?
-   `03-systolic-array/why-systolic-array.md`
+24. [J] systolic array 的权重本地驻留与 CIM 的计算位置有何区别？如何按实际 cell、array path 和算术单元判断？
+   [参考正文](./wiki/03-systolic-array/why-systolic-array.md)
 
-25. [F] weight-stationary、output-stationary 各自让哪个张量驻留、消除哪个张量的搬运?
-   `03-systolic-array/dataflow-taxonomy.md`
+25. [F] weight-stationary 与 output-stationary 分别倾向让哪个张量驻留？还需要统计哪些数据跨边界移动？
+   [参考正文](./wiki/03-systolic-array/dataflow-taxonomy.md)
 
-26. [J] 一个 reduction 维度很深、部分和精度很高的 GEMM,你倾向 weight- 还是 output-stationary?为什么?
-   `03-systolic-array/dataflow-taxonomy.md`
+26. [J] 对深 reduction、高精度部分和的 GEMM，如何比较 weight- 与 output-stationary 的流量、容量和归约代价？
+   [参考正文](./wiki/03-systolic-array/dataflow-taxonomy.md)
 
-27. [J] 为什么说"选对 dataflow 就能保证高比值"是错的?小 batch / decode 场景下瓶颈退回到哪里,此时换 dataflow 为什么无济于事?
-   `03-systolic-array/dataflow-taxonomy.md`
+27. [J] 为什么 dataflow 的选择不能单独保证高吞吐？batch、阵列填充、权重驻留和带宽分别可能产生什么影响？
+   [参考正文](./wiki/03-systolic-array/dataflow-taxonomy.md)
 
-28. [T] 卷积的 sliding window 让相邻输出共享大量输入。哪种 dataflow 专为榨取这种三重局部性设计?
-   `03-systolic-array/dataflow-taxonomy.md`
+28. [T] 卷积的 sliding window 可以形成哪些输入、权重和部分和的复用？row-stationary 如何尝试利用它们？
+   [参考正文](./wiki/03-systolic-array/dataflow-taxonomy.md)
 
-29. [F] 权重载入为什么"只在乎窄,不在乎慢"?优化目标是带宽还是延迟,为什么?
-   `03-systolic-array/weight-loading-and-trickle-feed.md`
+29. [F] 为什么首块冷权重和换 tile 时的加载需要计时间、能量和带宽？窄通道的潜在收益是什么？
+   [参考正文](./wiki/03-systolic-array/weight-loading-and-trickle-feed.md)
 
-30. [T] trickle-feed 如何用 y 个周期、x 宽的通道,灌满一个 x×y 的阵列?它用什么换了什么?
-   `03-systolic-array/weight-loading-and-trickle-feed.md`
+30. [T] 每拍注入 x 个权重且 y 行同步移位时，灌满需要多少拍？为什么不能在这些拍之后再重复加 y−1 拍？
+   [参考正文](./wiki/03-systolic-array/weight-loading-and-trickle-feed.md)
 
-31. [J] "配置流 vs 数据流"是两种语义完全不同的数据移动。把权重载入按稳态流建模会犯什么错?MoE 频繁切权重时这个区分为什么会失效?
-   `03-systolic-array/weight-loading-and-trickle-feed.md`
+31. [J] 单 bank 与双 bank 分别需要满足哪些条件才能加载下一 tile？如果加载长于当前计算，等待如何产生？
+   [参考正文](./wiki/03-systolic-array/weight-loading-and-trickle-feed.md)
 
-32. [J] 为什么阵列不是越大越好?给出"大阵列摊薄 RF"和"小矩阵 PE 空转"这一对反向力,说明最优点为何在 Pareto 前沿而非端点。
-   `03-systolic-array/array-sizing-tradeoff.md`
+32. [J] 比较 64×64 与 128×128 阵列时，RF 面积固定的摊销假设、供数需求、填充和真实利用率应如何分别检查？
+   [参考正文](./wiki/03-systolic-array/array-sizing-tradeoff.md)
 
 ---
 
 ## 04-clocking-and-pipeline(11 题)
 
-33. [F] 芯片为什么用全局时钟同步而不用软件式的 mutex?时钟周期由什么决定?
-   `04-clocking-and-pipeline/global-clock-synchronization.md`
+33. [F] 同步寄存器何时采样？为什么时钟沿不表示整片芯片每拍都暂停？
+   [参考正文](./wiki/04-clocking-and-pipeline/global-clock-synchronization.md)
 
-34. [T] 把 2 GHz 的周期翻译成门深:TSMC 基本门 ~10ps,0.5ns 大约是多少个门延迟的预算?为什么实际每周期只塞 10–30 门?
-   `04-clocking-and-pipeline/global-clock-synchronization.md`
+34. [T] 同一时钟域反馈路径完整 setup 要求为 1.0 ns、前馈路径为 1.4 ns；假设没有更慢路径，周期和频率上限如何计算？
+   [参考正文](./wiki/04-clocking-and-pipeline/global-clock-synchronization.md)
 
-35. [J] 时序为什么"不是赌一个概率"?25% margin 的工程含义是什么?唯一真要算概率的边缘情况是什么?
-   `04-clocking-and-pipeline/global-clock-synchronization.md`
+35. [J] setup 与 hold 各检查最大还是最小路径延迟？PVT、时钟偏斜和 uncertainty 应如何进入时序判断？
+   [参考正文](./wiki/04-clocking-and-pipeline/global-clock-synchronization.md)
 
-36. [F] 为什么同一工艺节点的两颗芯片可以有不同时钟频率?频率到底由什么决定?
-   `04-clocking-and-pipeline/global-clock-synchronization.md`
+36. [F] 同一工艺下，逻辑、布线、时钟树与工作点为何可能使不同设计的频率上限不同？
+   [参考正文](./wiki/04-clocking-and-pipeline/global-clock-synchronization.md)
 
-37. [T] 从中间切一团逻辑云、插一个 register,为什么频率能翻倍?代价是什么?这是一笔怎样的交易?
-   `04-clocking-and-pipeline/pipeline-register-insertion.md`
+37. [T] 前馈路径插入寄存器后，周期、事务 latency、II、面积和功耗可能如何变化？为何频率不一定翻倍？
+   [参考正文](./wiki/04-clocking-and-pipeline/pipeline-register-insertion.md)
 
-38. [J] "插 register 提频"在两种情况下失效。它们分别是什么?哪一个是 trade-off、哪一个是硬约束?
-   `04-clocking-and-pipeline/pipeline-register-insertion.md`
+38. [J] 哪些功能依赖、寄存器和布线开销会限制继续切分流水级？跨时钟域还要单独检查什么？
+   [参考正文](./wiki/04-clocking-and-pipeline/pipeline-register-insertion.md)
 
-39. [F] 在一个累加器(running sum)的反馈环中间插 register,会发生什么?为什么这是正确性问题而非性能问题?
-   `04-clocking-and-pipeline/feedback-loop-clock-constraint.md`
+39. [F] 在累加器反馈路径上直接插入一拍，会如何改变状态递推？为何要重新验证计算语义？
+   [参考正文](./wiki/04-clocking-and-pipeline/feedback-loop-clock-constraint.md)
 
-40. [J] 反馈环不能插 register,那它还能怎么提频?为什么这把压力传回到了 final CPA 的进位结构选择?
-   `04-clocking-and-pipeline/feedback-loop-clock-constraint.md`
+40. [J] 缩短反馈路径、交错累加和改变归约树各需付出什么代价？浮点或饱和运算重排还要验证什么？
+   [参考正文](./wiki/04-clocking-and-pipeline/feedback-loop-clock-constraint.md)
 
-41. [T] 累加精度 `acc_bits` 同时进入哪两个模型?为什么"高精度累加"在频率维度有隐藏代价?
-   `04-clocking-and-pipeline/feedback-loop-clock-constraint.md`
+41. [T] 累加位宽如何同时影响数值范围与路径实现？时钟域的频率是否只由反馈路径决定？
+   [参考正文](./wiki/04-clocking-and-pipeline/feedback-loop-clock-constraint.md)
 
-42. [J] 一个 register + 一个 AND 门的极小环能跑 5–6 GHz。为什么这恰恰是低吞吐?把"吞吐 = 面积效率 × 频率"展开解释。
-   `04-clocking-and-pipeline/frequency-is-not-throughput.md`
+42. [J] 单位面积吞吐与总吞吐分别如何计算？提高频率时，面积、有效工作量和 II 变化为何也要评估？
+   [参考正文](./wiki/04-clocking-and-pipeline/frequency-is-not-throughput.md)
 
-43. [T] "频率推到极致"和"batch 压到 1"为什么是同一张力的两个面孔?它们都落在延迟-吞吐平面的哪个角?
-   `04-clocking-and-pipeline/frequency-is-not-throughput.md`
+43. [T] 改变频率或 batch 时，如何按具体实现测量延迟和吞吐？为何不能预先断定二者的 Pareto 位置？
+   [参考正文](./wiki/04-clocking-and-pipeline/frequency-is-not-throughput.md)
 
 ---
 
 ## 05-fpga-vs-asic(5 题)
 
-44. [F] FPGA 第一颗成本和 ASIC 一次 tape-out 的量级各是多少?FPGA 存在的唯一理由是什么?
-   `05-fpga-vs-asic/lut-mux-and-10x-overhead.md`
+44. [F] FPGA 与 ASIC 的选择涉及哪些一次性成本、单位成本、产量及更新需求？为什么不能套固定报价？
+   [参考正文](./wiki/05-fpga-vs-asic/lut-mux-and-10x-overhead.md)
 
-45. [T] "muxes all the way down" 是什么意思?配置一块 FPGA 本质上是在配置什么?
-   `05-fpga-vs-asic/lut-mux-and-10x-overhead.md`
+45. [T] 可配置互连和 LUT 的配置分别控制什么？FPGA 中还有哪些可影响映射的硬块？
+   [参考正文](./wiki/05-fpga-vs-asic/lut-mux-and-10x-overhead.md)
 
-46. [F] 一个 4 输入 LUT 本质是一个怎样的 mux?为什么 4 输入是 sweet spot,而不是越多越好?
-   `05-fpga-vs-asic/lut-mux-and-10x-overhead.md`
+46. [F] 4 输入 LUT 的真值表有多少个输出位？输入如何选出当前函数值？
+   [参考正文](./wiki/05-fpga-vs-asic/lut-mux-and-10x-overhead.md)
 
-47. [J] 四路 AND 在 ASIC 上 3 个门、在 FPGA 上 ~32 个门。这 ~10× 的根本来源是什么?(不是"工艺差"或"时钟慢")
-   `05-fpga-vs-asic/lut-mux-and-10x-overhead.md`
+47. [J] 一个 AND 函数的门级表达与 LUT 真值表能说明什么结构差异？为什么不能从它们的抽象元件数推出统一面积或功耗倍数？
+   [参考正文](./wiki/05-fpga-vs-asic/lut-mux-and-10x-overhead.md)
 
-48. [J] 给定一个 workload 的改动频率和量产规模,你如何用 $10k / $3000万 两个 NRE 算出"ASIC 才划算"的量产门槛?
-   `05-fpga-vs-asic/lut-mux-and-10x-overhead.md`
+48. [J] 若已知两种实现各自的 NRE 与单位成本，怎样求产量交点？还应比较哪些性能、功耗和生命周期因素？
+   [参考正文](./wiki/05-fpga-vs-asic/lut-mux-and-10x-overhead.md)
 
 ---
 
 ## 06-memory-discipline(5 题)
 
-49. [F] 为什么 cache 是 CPU 运行时间非确定性的最大来源?命中与否取决于哪些运行时因素?
-   `06-memory-discipline/cache-vs-scratchpad.md`
+49. [F] cache 的命中与服务时间可能依赖哪些初始状态、地址流、替换和仲裁规则？
+   [参考正文](./wiki/06-memory-discipline/cache-vs-scratchpad.md)
 
-50. [T] scratchpad 如何用"两条不同的指令"获得确定性延迟?这把"数据放置决策"从运行时搬到了什么时候?
-   `06-memory-discipline/cache-vs-scratchpad.md`
+50. [T] scratchpad 由软件显式放置数据；为什么地址已知仍不能保证整笔访问的完成时间？
+   [参考正文](./wiki/06-memory-discipline/cache-vs-scratchpad.md)
 
-51. [J] 为什么说"确定性是更简单的起点,非确定性是 CPU 主动加进去的"?这对理解 Groq 全静态架构意味着什么?
-   `06-memory-discipline/cache-vs-scratchpad.md`
+51. [J] 单 bank、单读端口每拍接纳一次，两个请求周期 0 同时到达，服务延迟一拍。不同仲裁选择如何影响各自完成时刻？
+   [参考正文](./wiki/06-memory-discipline/cache-vs-scratchpad.md)
 
-52. [J] 为什么 AI 加速器适合 scratchpad(设计局部性)而 CPU 通用负载适合 cache(赌局部性)?分界线在哪个 workload 特征上?
-   `06-memory-discipline/cache-vs-scratchpad.md`
+52. [J] 什么 workload 特征可能使显式 scratchpad 管理有利？容量不足、动态访问或争用可能带来什么代价？
+   [参考正文](./wiki/06-memory-discipline/cache-vs-scratchpad.md)
 
-53. [T] `ScratchpadAccess` 和 `CacheAccess` 在仿真里为什么必须走不同代码路径?各自需要哪些状态变量?哪些属于 RAM 域职责不该在 COMPUTE 模型里重复实现?
-   `06-memory-discipline/cache-vs-scratchpad.md`
+53. [T] 确定性模拟 cache 和 scratchpad 分别需要哪些状态、事件与资源规则？何时才使用有前提的统计近似？
+   [参考正文](./wiki/06-memory-discipline/cache-vs-scratchpad.md)
 
 ---
 
 ## 07-chip-organization(8 题)
 
-54. [F] CPU core 比 GPU core 大,真正的大头不是 cache/RF/ALU,而是什么?GPU 有对应物吗?
-   `07-chip-organization/cpu-vs-gpu-core-area.md`
+54. [F] 比较 CPU 与 GPU 的资源组织时，应列出哪些控制、算术、寄存器和存储资源？为什么不能假定通用面积占比？
+   [参考正文](./wiki/07-chip-organization/cpu-vs-gpu-core-area.md)
 
-55. [T] branch predictor 在解决什么物理矛盾?(提示:~5ns 取指 vs GHz 时钟)为什么 AI 负载能砍掉它几乎无损?
-   `07-chip-organization/cpu-vs-gpu-core-area.md`
+55. [T] 分支预测试图隐藏什么依赖或等待？其收益和代价为何取决于工作负载与具体实现？
+   [参考正文](./wiki/07-chip-organization/cpu-vs-gpu-core-area.md)
 
-56. [J] 把 CPU→GPU/TPU 的专门化总结成一个统一逻辑。它砍掉了哪三类"AI 不需要的分母"?
-   `07-chip-organization/cpu-vs-gpu-core-area.md`
+56. [J] 专用计算结构如何改变可支持的工作、资源配置和软件映射？如何在相同工作量下比较，而非假定某类资源没有价值？
+   [参考正文](./wiki/07-chip-organization/cpu-vs-gpu-core-area.md)
 
-57. [F] 芯片能耗的主体是动态功耗还是静态功耗?一个 bit 的能耗主要发生在什么时刻?
-   `07-chip-organization/brain-vs-chip-power.md`
+57. [F] 功率和能量的单位分别是什么？动态功率的简化模型中，活动率、电容、电压和频率怎样关联？
+   [参考正文](./wiki/07-chip-organization/brain-vs-chip-power.md)
 
-58. [J] 把 GPU 从 GHz 降到 MHz,能不能拿到脑那样的能效?降频省的是"总能量"还是"单次运算能效"?为什么这是两回事?
-   `07-chip-organization/brain-vs-chip-power.md`
+58. [J] 固定电压、同一任务、相同有效翻转次数下，频率减半并使时间翻倍时，动态功率和动态任务能量如何变化？
+   [参考正文](./wiki/07-chip-organization/brain-vs-chip-power.md)
 
-59. [J] "空转几乎不耗能"这个论证在什么工艺节点会失效?为什么先进节点的 leakage 会侵蚀降频的能效收益?
-   `07-chip-organization/brain-vs-chip-power.md`
+59. [J] 若运行时间增加而静态功率不变，静态任务能量怎样变化？时钟门控、DVFS 和外围行为为何可能改变估计？
+   [参考正文](./wiki/07-chip-organization/brain-vs-chip-power.md)
 
-60. [T] "GPU = 一堆平铺的小 TPU" 这个等价怎么理解?SM 里的什么部件类比 TPU 的 MXU?
-   `07-chip-organization/gpu-as-tiled-tpu.md`
+60. [T] 比较大共享阵列与多个局部阵列时，供数、归约、外围复制和利用率分别应检查什么？
+   [参考正文](./wiki/07-chip-organization/gpu-as-tiled-tpu.md)
 
-61. [J] 粗粒度 TPU 用大阵列摊薄了 RF,代价是什么新瓶颈?细粒度 GPU 在 SM 内便宜,代价又是什么?splittable systolic array 想在这张表里得到什么?
-   `07-chip-organization/gpu-as-tiled-tpu.md`
-
----
-
-## 08-modeling-for-archax(4 题)
-
-62. [J] 为什么计算/通信比应做成"可在任意聚合粒度(PE/array/core/chip)求值的派生量",而不只在顶层算一次?给一个 PE 粒度高、chip 粒度低的例子。
-   `08-modeling-for-archax/modeling-insights.md`
-
-63. [T] 把 7 条建模启示分别归到 archax 的哪个抽象落点(Execution IR / Capability / microarch M1 / Interaction / Topology-S1)?哪两条都落在 Interaction?
-   `08-modeling-for-archax/modeling-insights.md`
-
-64. [J] 时钟/流水层大多可在 M2 之下折叠,但有一个必须保留的例外。它是什么?为什么把反馈环当前馈处理会高估频率上限?
-   `08-modeling-for-archax/modeling-insights.md`
+61. [J] 可切分阵列可能适配哪些工作块？需要如何验证额外互连、分区、切换与带宽代价？
+   [参考正文](./wiki/07-chip-organization/gpu-as-tiled-tpu.md)
 
 ---
 
-## 跨章节综合题(自检主线是否真的贯通)
+## 08-modeling-for-archax（3 题）
 
-> 以下题目不挂单一文件,答不出来说明主线还没串成一条线。
+62. [J] 如何分别计算阵列、RF 和片外存储边界的 MAC/byte？跨多个边界计数为何不能直接视为单个片外流量？
+   [参考正文](./wiki/08-modeling-for-archax/modeling-insights.md)
 
-- **A.** [J] 从一个逻辑门(p×q)到整片芯片的跨单元带宽,"大粒度摊薄固定成本"这个论点出现了至少三次。把这三级递进按顺序说出来。
-  (`02 mux-cost` → `03 array-sizing` → `07 gpu-as-tiled-tpu`)
+63. [T] 将资源、连接、事件和能力用于模型设计时，哪些内容属于建议，哪些必须通过目标实现验证？
+   [参考正文](./wiki/08-modeling-for-archax/modeling-insights.md)
 
-- **B.** [J] 全域共有三类"抬比值的根本动作":降低分子单位成本、放大粒度摊薄分母、把分母从运行时随机变确定。各举一个具体机制。
-  (`01 compute-communication-ratio` §3)
+64. [J] 同一时钟域前馈和反馈路径怎样共同约束频率？为什么还要分别记录 hold、事务延迟与 II？
+   [参考正文](./wiki/08-modeling-for-archax/modeling-insights.md)
 
-- **C.** [T] 列出全表里所有被 ⚠️ 标注的常见误解,逐一说出"误解是什么、真相是什么"。
-  (散落各篇的 ⚠️ 小节)
+---
 
-- **D.** [J] `bytes_moved`、`theoretical_macs`、`reuse_rate` 这三个量,如果只定义一次、在 Topology 每个聚合节点递归求值,如何天然实现"计算/通信比是任意粒度可求的派生量"?
-  (`08 modeling-insights` 文末实现建议)
+## 跨章节综合题（4 题）
+
+- **A.** [J] 对同一个工作量，如何分别估算 datapath 面积、阵列边界 MAC/byte 和单位面积吞吐？这些指标为什么不能互相替代？
+  参考：[mux 面积代理](./wiki/02-datapath-foundations/mux-and-data-movement-cost.md)、[阵列边界例子](./wiki/03-systolic-array/why-systolic-array.md)、[吞吐](./wiki/04-clocking-and-pipeline/frequency-is-not-throughput.md)。
+
+- **B.** [J] 对一个 MXFP4 矩阵任务，如何同时统计块 scale、尾块填充、权重加载、数据复用和结果输出？
+  参考：[数字格式](./wiki/02-datapath-foundations/number-formats-for-ai.md)、[权重加载](./wiki/03-systolic-array/weight-loading-and-trickle-feed.md)。
+
+- **C.** [T] 为什么显式 scratchpad 放置与一个通过 setup 的时钟约束，仍不足以证明每个请求的完成时间？
+  参考：[存储争用](./wiki/06-memory-discipline/cache-vs-scratchpad.md)、[时钟路径](./wiki/04-clocking-and-pipeline/global-clock-synchronization.md)。
+
+- **D.** [J] 同一字节依次跨 RF、阵列和外存边界时，如何分别计数、选择统计窗口并避免将层间计数误当片外流量？
+  参考：[计算与通信指标](./wiki/01-overview/compute-communication-ratio.md)、[建模建议](./wiki/08-modeling-for-archax/modeling-insights.md)。

@@ -20,7 +20,7 @@ NVMe controller 位于设备侧，通过 PCIe 与 host memory 交互，并和 su
 - 大量并发 I/O 的稳定推进
 - 尽量减少 CPU 参与每次数据移动
 
-与网络 DMA 相比，NVMe 更少受到极端小包节拍和中断风暴影响，但更强依赖深队列 steady-state 和 completion 回收效率。
+I/O 大小、queue depth、轮询和中断策略由应用与设备决定。4 KiB、低 queue depth 的延迟敏感读也是有效场景；不能默认 NVMe 总是大数据、深队列或比 NIC 中断少。
 
 ## 核心机制
 
@@ -31,7 +31,9 @@ NVMe controller 位于设备侧，通过 PCIe 与 host memory 交互，并和 su
 - DMA read / write host memory
 - host 软件消费 completion queue
 
-它的“数据大、队列深、完成驱动强”这三个特征，会直接决定实验和建模方法。
+例如 host 发布 SQE 并敲 doorbell，控制器 DMA read 获取命令及 PRP/SGL。NVMe Read 从介质侧取数据，通常用 PCIe posted Memory Write 写主机 buffer；NVMe Write 则发 Memory Read 并接收一个或多个 CplD，读取主机数据后处理介质写。命令结束后控制器写 CQE，主机通过轮询或可选 MSI-X 发现并消费 CQE，再按接口更新 CQ head 以回收位置。PCIe CplD 是事务返回，CQE 是存储命令状态。
+
+命令完成并不无条件等于断电持久：具体取决于设备 volatile write cache、命令 FUA/flush 和设备契约。实验需分别定义控制器接收、介质/持久域及软件可见的边界。Flush 的适用范围和写缓存语义见 [NVM Express Base Specification 2.2](https://nvmexpress.org/wp-content/uploads/NVM-Express-Base-Specification-Revision-2.2-2025.03.11-Ratified-1.pdf)。
 
 ## 最常见瓶颈
 
@@ -46,13 +48,13 @@ NVMe controller 位于设备侧，通过 PCIe 与 host memory 交互，并和 su
 
 ## 为什么它和 NIC 类似但不相同
 
-两者都依赖 queue、host memory、completion 和 PCIe completion path，但 NIC 更怕小包率和 moderation，NVMe 更怕 completion 回收速度与深队列稳态不匹配。网络流量更偏连续包流，存储流量更偏块导向和 I/O 并发。
+两者都依赖 queue、host memory 和 completion，但 NIC 的包率与 NVMe 的 I/O 大小、介质服务及 queue depth 有不同分布；具体瓶颈须依 workload 测量。
 
 所以它们适合共用某些抽象，但不适合共用全部调优直觉。
 
 ## 常见误解
 
-常见误解：`NVMe DMA 的重点是单次传输极限速度`。实际上它更强调深队列下的 steady-state completion。
+常见误解：`NVMe 必须依赖深队列`。实际上低队列深度的单次延迟和高并发 steady-state 都是合法目标。
 
 常见误解：`storage DMA 和 network DMA 调优一样`。实际上两者对小包/小 I/O、moderation 和 completion 回收的敏感点不同。
 

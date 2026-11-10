@@ -47,3 +47,10 @@ package route
 ## 架构师启示
 
 架构师定义封装时，不应只写“采用 2.5D”或“采用 3DIC”。更可执行的规格要落到组件层：需要多少 RDL 层、什么 bump pitch、基板承载多少电流、underfill 是否能支撑热循环、哪些界面最怕 delamination。
+
+## 本章正文
+
+- [凸点与焊盘:从 C4 到 micro-bump](./bumps-and-pads.md)
+- [Molding 与 Underfill:机械保护层](./molding-and-underfill.md)
+- [RDL:截面结构与制造流程](./rdl-redistribution-layer.md)
+- [基板与载板:被忽视但关键的一环](./substrate-and-carrier.md)

@@ -1,77 +1,39 @@
-# 全局时钟同步:为什么整片芯片每 ~1ns 暂停一次
+# 时钟同步：采样边沿与时序约束
 
-上级:[04 · 时钟与流水](./README.md)
-相关:[pipeline register 插入](./pipeline-register-insertion.md)、[反馈环的时钟约束](./feedback-loop-clock-constraint.md)、[频率 ≠ 吞吐](./frequency-is-not-throughput.md)
-主线:[计算 / 通信比](../01-overview/compute-communication-ratio.md)——本篇:同步是纯分母开销,register 是它的物理载体。
+上级：[04 · 时钟与流水](./README.md)
+相关：[pipeline register 插入](./pipeline-register-insertion.md)、[反馈环](./feedback-loop-clock-constraint.md)、[频率与吞吐](./frequency-is-not-throughput.md)
 
----
+## 时钟域与数据路径
 
-## 这页在回答什么问题
+同步电路用时钟沿定义寄存器何时采样。一个寄存器发出数据，经组合逻辑和布线到达下一个寄存器。两个时钟沿之间，组合电路仍在传播信号，不是整个芯片暂停。时钟树有偏斜和抖动；不同域可以有不同频率、相位和门控状态。跨域路径需要按具体时钟关系约束，并按 CDC 协议、同步器或异步 FIFO 处理。
 
-一颗芯片 ~1000 亿晶体管、极度并行。这么多单元怎么"对上拍"?本篇回答:为什么芯片用**全局时钟**而非软件式的锁同步;时钟周期由什么决定;以及为什么"算完一条路径"不是赌概率而是有 margin 的工程确定性。这是后面所有流水/频率讨论的物理基础。
-
----
-
-## 1. 为什么要全局时钟同步
-
-芯片极度并行,核心问题是**不同单元何时握手**——A 算出的结果什么时候能安全地被 B 读走?
-
-软件的解法是 mutex:一个线程抢锁、改完通知另一个线程。但这很贵(一次锁操作几十到几百周期)。**因为** 芯片上有上亿个单元每拍都要握手,**所以** 用不起软件那种逐对协商的同步。
-
-芯片的解法:**每 ~1ns 让全部电路暂停一瞬、整体同步到下一拍。** 这就是时钟周期。整片芯片近乎 lockstep 推进——所有单元在时钟沿那一刻一起把结果锁存,一起进入下一周期。机制上由 **register** 介导:逻辑云的输出在时钟沿被打入 register,下一周期作为稳定输入供给下游。
-
-```
-        逻辑云 A ──▶│reg│──▶ 逻辑云 B ──▶│reg│──▶ ...
-                    ▲                    ▲
-                    └──── 时钟沿同时触发所有 register ────┘
-        每个时钟沿:所有 register 同时锁存,全片对齐到下一拍
+```text
+launch register -- t_cq --> logic + wire -- t_setup --> capture register
+         launch clock edge                    capture clock edge
 ```
 
-> register 不计算任何东西,它只负责"对拍"。它是同步这件事的纯物理成本——这正是为什么它是分母,见 [频率≠吞吐](./frequency-is-not-throughput.md#2-极端案例频率推到极致面积全花在同步上)。
+## Setup 上界与 hold 下界
 
----
+对同域、同沿、单周期路径，设 `t_skew = capture_clock_arrival - launch_clock_arrival`，且 setup uncertainty 已单列。一个常用简化条件是：
 
-## 2. 时钟周期由最长关键路径决定
-
-时钟周期长度 = **最长关键路径的逻辑延迟**。想跑某频率,**任何一条**逻辑路径都必须在一个周期内稳定:
-
-```
-想跑 2 GHz → 周期 = 0.5 ns → 每条逻辑路径必须在 0.5 ns 内算完并稳定
+```text
+T >= t_cq_max + t_logic_wire_max + t_setup + t_uncertainty_setup - t_skew
 ```
 
-把这个 0.5 ns 翻译成门数会更具体。**真实硬件锚点**:先进 TSMC 节点上,基本门(AND、full adder)的延迟在 **~10 ps 量级**。所以:
+最大延迟决定 setup 所需的周期下界。hold 则检查最短数据路径，简化为：
 
+```text
+t_cq_min + t_logic_wire_min >= t_hold + t_uncertainty_hold + t_skew
 ```
-0.5 ns / 10 ps ≈ 50 个门延迟的预算
-典型每周期逻辑深度:~10–30 个门延迟
-```
 
-**所以** 设计一个流水级时,要把组合逻辑切到 ~10–30 级门深以内,才能在多 GHz 下稳定。一条逻辑路径如果门深超了,它就是关键路径,拖慢整片时钟——这把抽象的"关键路径"变成了一个可数的门深预算。
+上式使用同一偏斜定义。真实 STA 还需按库、时钟路径、相关性和约束确定 setup/hold 的 launch/capture 边沿、时钟偏斜及 uncertainty，避免重复计入。多周期路径、不同相位及跨域关系不能直接套这两个简式。AMD 的 [UG906 setup 边沿关系](https://docs.amd.com/r/2024.1-English/ug906-vivado-design-analysis/Setup/Recovery-Relationship)说明了 launch/capture 边沿和 setup slack 的关系。
 
----
+## PVT 与工程证据
 
-## 3. 不是赌概率:25% margin 与"永远满足时序"
-
-⚠️ 常见误解:以为时序是"赌一个概率,看这一拍能不能算完"。**不是。** 标准做法是 margin 到**提前 ~25% 周期完成**——把路径设计成在 0.375 ns(而非 0.5 ns)就稳定,留 25% 余量。
-
-**因为** 工艺、电压、温度(PVT)波动会让实际延迟浮动,留 25% 余量后,违例概率落到多个标准差之外,**所以** 实际工程上视为**永远满足时序**,不当概率事件处理。
-
-唯一真要算概率的是 **clock domain crossing(跨时钟域)**:两个不同频率/相位的时钟域之间传数据,无法保证采样点稳定,这才是真正的亚稳态概率问题(用同步器降低、但无法消灭概率)。
-
-> 这也解释了一个常见疑问:**为什么同一工艺节点的两颗芯片可以有不同时钟频率?** 因为频率取决于**关键路径优化得多干净**——同样的晶体管,把关键路径的门深压得更短、布线更优,就能跑更高频。频率不是工艺单独决定的,是工艺 × 设计质量。
-
----
-
-## 4. 本篇在主线上的位置
-
-时钟同步是[计算 / 通信比](../01-overview/compute-communication-ratio.md)里**纯分母**的一项:register 不做任何有用计算,只为"让上亿单元对上拍"付出面积和功耗。本章接下来三篇都是在这个分母上做文章:[插 register 换频率](./pipeline-register-insertion.md)(花更多分母换更高频)、[反馈环约束](./feedback-loop-clock-constraint.md)(哪里不能插)、[频率≠吞吐](./frequency-is-not-throughput.md)(分母花过头反而降吞吐)。本篇确立的是:**同步有代价,代价由关键路径(门深预算)定量。**
-
----
+每条路径都要在约定的工艺、电压、温度（PVT）、模式和约束角下检查。库、布线、时钟树、芯片老化和目标可靠性影响裕量。没有适用于所有设计的固定 25% 裕量，也不能从某个名义角通过推断所有器件永远满足时序。需要记录设计覆盖的条件、STA 报告与实际验证范围。
 
 ## 建模启示
 
-- **时钟同步在系统级性能建模里大多可折叠成一个频率参数 `f`。** 但 `f` 不是自由参数——它由最长关键路径的门深决定。若 archax 要给出**可信的频率估计**,必须对关键路径的门深(或等效 ns)建模,而非把 `f` 当输入常数。
-- **必须显式建模的状态变量**:`critical_path_gate_depth`(或 `critical_path_ns`)、`gate_delay`(工艺给定,~10 ps 量级)、`timing_margin`(~25%)。频率 `f = 1 / (critical_path_ns / (1 - margin))`。
-- **可折叠**:register 的内部结构、时钟树分布 → 折叠成"register ≈ 6–10 门当量面积"和一个频率上限。
-- **关心频率上限时必须保留**:关键路径的门深——尤其当它落在反馈环上时(见 [feedback-loop-clock-constraint](./feedback-loop-clock-constraint.md)),因为那是无法靠插 register 绕过的硬下界。
-- **事件/数据结构草图**:`ClockDomain{f, critical_path_ns, margin}`;`critical_path_ns` 由各逻辑块的 `gate_depth · gate_delay` 取最大得到。跨域传数据标记为 `CDC`,单独处理亚稳态(唯一的真概率事件)。
+每个时钟域分别记录所有有效前馈和反馈路径的 setup 周期要求，并取最大值。hold 是独立的最小延迟检查，不会由降低频率自动解决。输入、输出和跨域路径也需各自约束。
+
+例如，假设同一域内反馈路径完整 setup 要求是 1.0 ns，前馈路径是 1.4 ns，二者已经含寄存器和时钟修正，则 `T >= max(1.0, 1.4)=1.4 ns`，频率上限约 714 MHz。该数值是假设，不是硅片实测。另一域若有独立时钟，需要单独分析。频率只是吞吐的一项，还需知道每个工作流的启动间隔（II）与延迟。

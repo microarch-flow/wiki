@@ -15,35 +15,24 @@ AI/HPC 先进封装需要同时具备：先进逻辑 die、HBM stack、高密度
 logic + HBM + advanced package + substrate + materials + equipment + test
 ```
 
-大陆的短板更像系统链条不均衡，而不是某一个环节完全为空。
+各环节可能形成项目约束；是否存在能力差距，须按同一产品、工艺条件和时间核验。
 
-## 材料瓶颈
+## 按产品核验约束
 
-材料瓶颈集中在高端 substrate dielectric、RDL dielectric、underfill/mold、temporary bonding adhesive、hybrid bonding 表面体系、TIM 和可靠性材料。高端材料难点在一致性、工艺窗口、可靠性数据和客户认证周期。
+下表是目标项目的核验问题，不是对整个地区能力或短缺的结论。对每个供应商，应记录型号、工厂、年份、目标结构、测试条件及客户资格状态；未披露不等于没有能力。
 
-| 材料方向 | 影响 |
-| --- | --- |
-| ABF/build-up dielectric | 高端 substrate 层数、细线和稳定性 |
-| RDL dielectric | fine line/space、warpage、cracking |
-| Underfill/mold | bump fatigue、delamination、warpage |
-| Bonding materials/surface | hybrid bonding 界面质量 |
-| TIM | 高功耗 package 热路径 |
+| 对象 | 工程作用 | 同口径核验问题 |
+| --- | --- | --- |
+| 材料 | dielectric、underfill、TIM 与键合表面影响 SI、应力和热 | 目标线宽、介电损耗、附着、温循寿命及一致性是否有报告？ |
+| 基板 | 承载互连、PDN 与机械支撑 | 指定尺寸、层数、线宽、翘曲和电流下的合格率及交期是什么？ |
+| 设备 | 曝光、电镀、贴装、键合、量测及测试 | 指定材料和节拍下的对位精度、稳定性和线体验证是否满足？ |
+| HBM 与客户导入 | memory stack、接口和 qualification | 指定代际、温窗、接口、测试与客户认证阶段是否公开？ |
 
-## 基板瓶颈
-
-高端 AI/HPC package 需要大尺寸、高层数、高 I/O、高电流、低 warpage 的 substrate。大陆 substrate 能力在中低端和部分高端方向持续推进，但 AI/HPC 顶级封装需要的 ABF substrate、交付一致性和大尺寸良率仍是关键门槛。
-
-## 设备瓶颈
-
-先进封装设备包括 RDL 图形化和电镀、TSV、thin wafer handling、die bonder、TCB、hybrid bonding、inspection/metrology、ATE 和可靠性设备。瓶颈不只在“有没有设备”，还在设备精度、稳定性、吞吐、recipe 生态和与材料的联合调试。
-
-## HBM 与客户导入瓶颈
-
-高端 AI package 需要 HBM 配套。若 HBM stack 供给、测试、接口协同和客户导入不完整，即使封装平台具备部分能力，也难进入最高价值产品。客户导入带来的量产数据反馈同样重要，它会持续改善良率、热机械模型和测试策略。
+只有实际交付、良率分母和目标期间的供需或交期数据，才能判断特定项目的供应约束。
 
 ## 一句话理解
 
-大陆先进封装的瓶颈不是单点“会不会封装”，而是材料、基板、设备、HBM、客户导入和系统协同能否共同支撑 AI/HPC 级量产闭环。
+具体项目可能同时受材料、基板、设备、HBM 和客户资格约束；需逐项核验，不能从地区推导供货状态。
 
 ## 架构师启示
 

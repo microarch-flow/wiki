@@ -22,7 +22,9 @@ ReRAM CIM 的核心吸引力是非易失、高密度和 conductance-based MAC。
 
 东大这个案例有研究价值，是因为它把“大容量化”和“长期保持”放在一起处理。官方发布说明该工作用 MLC 技术提高容量，同时提出补偿 ReRAM reliability degradation 导致的 MAC 变化，目标是在 10 年以上保持期内维持高 AI 推理精度。这个问题比单次阵列读写更接近产品化前必须面对的可靠性闭环。
 
-读这类论文不能只看“10 年保持”这一个结论。需要继续问：温度条件是什么、状态数是多少、conductance window 如何分布、是否需要 periodic calibration、补偿是在电路端还是模型端完成、推理精度是在什么模型和数据集上测得、是否包含 ADC/DAC 和 peripheral energy。
+[原论文](https://doi.org/10.1109/ESSERC66193.2025.11214081)使用 40nm、4 Mbit TaOx 芯片，研究 S0–S3 四个电阻态（2 bit/cell）。在 150°C 与 190°C 测量 cell 电流分布；190°C 的 12.9 小时按 Arrhenius 模型、氧空位扩散激活能 1.2 eV 换算为 85°C 下 10 年等效时间。S1/S2 中间态电流漂移较 S3 明显。此为加速测量与模型换算，不是系统在 85°C 实际运行十年的证明。
+
+作者用 S3 replica cell 的平均实测电流预测补偿因子 α，缩放 MAC 值；模型侧还使用 ELU 和 retention-aware training。文中根据实测保持数据估计 ResNet32 推理精度，而不是完整系统连续运行十年的实测。准确率、外设能耗和其他 workload 的外推须保留各自实验条件；[东大发布及原图](https://www.t.u-tokyo.ac.jp/hubfs/press-release/2025/0911/002/text.pdf)说明等效保持背景。
 
 对 taxonomy，它是典型 CIM：存储介质和计算物理同混，ReRAM cell 的电导状态直接参与 MAC。它和 PIM/NMC 的差异很清楚：PIM/NMC 主要研究数据搬移和 host/memory 协同，ReRAM CIM 研究首先要解决器件状态是否能长期、可重复地代表权重。
 

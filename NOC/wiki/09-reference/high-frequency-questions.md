@@ -12,7 +12,7 @@
 
 ### 1. NoC 是不是“更高级的总线”？
 
-不是。BUS、crossbar、NoC 是三种不同的系统组织方式。NoC 的关键新增维度是路径空间和分布式资源竞争，而不只是“带宽更大”。
+BUS 描述事务接口和语义，crossbar 是一种连接拓扑，NoC 常提供多跳运输与分布式资源管理。它们可组合，例如 AXI-over-NoC；协议响应和 ordering 仍须闭合。
 
 ### 2. credit 能不能解决 deadlock？
 
@@ -33,7 +33,7 @@
 
 ### 5. source routing 是不是就不用仲裁了？
 
-不是。source routing 决定路径，资源交汇处仍然需要仲裁。
+source routing 只决定路径。在共享 packet-switched 基线中，资源交汇处通常仍需仲裁；预先验证的无冲突 TDM 或电路式方案可不做动态仲裁，但需保证时隙、容量和时钟。
 
 ### 6. adaptive routing 一定更好吗？
 
@@ -54,8 +54,8 @@
 
 因为它们对 NoC 提的问题不同：
 
-- prefill 更偏 bulk throughput
-- decode 更偏 response-sensitive / memory-centric
+- prefill 可有较高并行度和 bulk traffic，但短 prompt 也可能受延迟或权重供给限制
+- decode 有逐步依赖；长 context 的 KV response 也可能受持续带宽限制
 
 ### 9. MoE 为什么比 GEMM 更“折磨” NoC？
 
@@ -70,7 +70,7 @@
 
 ### 11. NoC 模型是不是一上来就该做 cycle-accurate？
 
-不一定。先看问题是否真的需要 flit / credit / arbitration 级解释力。很多一阶结构问题停在 analytical 或 event 层就够。
+不一定。先看问题是否真的需要 flit / credit / arbitration 级解释力。一阶结构问题可用解析或粗 flow 模型；event-driven 是推进方式，也能逐周期精确模拟 flit、credit 和仲裁。
 
 ### 12. 第一版 simulator 最该先验证什么？
 

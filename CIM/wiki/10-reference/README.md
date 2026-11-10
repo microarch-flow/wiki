@@ -24,4 +24,4 @@
 
 ## 维护原则
 
-参考章的价值不在于提供更多材料，而在于降低误读成本。新增术语时先对齐 [01 taxonomy](../01-overview/cim-pim-nmc-taxonomy.md)，新增公司时先判 CIM/PIM/NMC 和产品层级，新增指标时先链接到 [09 指标术语表](../09-research-frontier/metrics-glossary.md)，新增路线时先落到 memory technology × compute paradigm 矩阵。
+参考章的价值不在于提供更多材料，而在于降低误读成本。新增术语时先对齐 [01 taxonomy](../01-overview/cim-pim-nmc-taxonomy.md)，新增公司时先判 CIM/PIM/NMC 和产品层级，新增指标时先链接到 [09 指标术语表](../09-research-frontier/metrics-glossary.md)，新增路线时先查计算位置：阵列参与的 CIM 再填 memory technology × compute paradigm；独立 PIM/NMC 则记录执行单元、die 边界与产品层级。

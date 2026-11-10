@@ -49,13 +49,7 @@ mesh、torus、ring、tree、fat-tree、crossbar、concentrated mesh 都属于�
 
 routing 回答的是“从源到目的地允许走哪些路径，以及具体怎么选路径”。它不改变物理连接图，只在既有图上定义路径策略。
 
-常见子类包括：
-
-- deterministic routing
-- oblivious routing
-- adaptive routing
-- source routing
-- dimension-order routing
+路由有多个正交维度：**决策位置**可以是 source routing 或逐 router 分布式决策；**选路策略**可以是固定确定路径、忽略实时拥塞的 oblivious 多路径，或依据拥塞的 adaptive 选择。dimension-order routing 是路径约束的一种，可由不同决策位置实现。source routing 既可以选择固定路径，也可以从多条路径中按策略选一条。
 
 这里最重要的判断是：routing 的收益，永远受 topology 提供的路径空间约束。一个 path diversity 很低的网络，adaptive routing 的潜力就小；一个物理长线极贵的网络，source routing 即使可行，也可能在 header 编码和静态调度上引入额外代价。
 
@@ -85,7 +79,7 @@ flow control 回答的是“发送方如何知道下游能不能继续接收”�
 - ready/valid 式短距握手
 - credit-based flow control
 
-这一维和 BUS 最容易被误类比。BUS 里你熟悉的是 `VALID/READY`；NoC 里你更常见的是 credit。两者都是 backpressure 机制，但不在同一层。BUS 上的 ready/valid 常常在一个通道、一个局部接口内闭合；NoC 上的 credit 需要跨多跳、多周期链路处理 buffer 可用性，因此必须显式计数和回传。
+这一维和 BUS 最容易被误类比。BUS 里你熟悉的是 `VALID/READY`；NoC 里你更常见的是 credit。两者都是 backpressure 机制，但不在同一层。BUS 上的 ready/valid 常常在一个通道、一个局部接口内闭合；NoC credit 通常只反馈相邻一跳的下游 buffer slot；该跳的发送、消费和 credit 返回可能跨多个周期。各跳分别计数，阻塞可逐跳向源端传播，并不是一个 credit 跨越整条多跳路径。
 
 ## 第六维：按资源隔离与服务策略分
 

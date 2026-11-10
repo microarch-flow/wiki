@@ -20,7 +20,7 @@
 
 ## Point-to-Point 适合固定关系
 
-Point-to-point 就像两栋楼之间的**专用天桥**——只连接固定的两端，没有红绿灯、没有岔路口、不用排队。两个模块之间的带宽、时序和协议语义都可以量身定制：producer 到 consumer 的 streaming path、固定 DSP pipeline、一个 controller 到专用 SRAM，都可以不引入全局地址 decode 和复杂仲裁。
+Point-to-point 就像两栋楼之间的**专用天桥**——只连接固定的两端，不需要多目标路由；端点忙或链路容量不足时仍可能排队。两个模块之间的带宽、时序和协议语义都可以量身定制：producer 到 consumer 的 streaming path、固定 DSP pipeline、一个 controller 到专用 SRAM，都可以不引入全局地址 decode 和复杂仲裁。
 
 它的设计交易很明确：用低通用性换低延迟、低面积和可预测行为。只要天桥两端的用户不变，就不需要回答”第三栋楼的人怎么过来””回程怎么走””多个目的地怎么选”这些问题。
 
@@ -84,7 +84,7 @@ Point-to-point 解决固定专线问题，BUS 解决共享地址和事务语义�
 
 建模时不要先问“这是 BUS 还是 NoC”，而要先记录连接关系：端点数量、是否共享目标、是否需要统一地址空间、是否有返回匹配、是否存在多跳路径、是否需要软件可见 completion。连接关系决定模型里要放 mux、arbiter、queue、router、credit，还是简单 service edge。
 
-Point-to-point 模型可以压得很轻：在固定端点、固定服务路径和局部流控条件下，固定 latency、固定吞吐、局部 backpressure、少量 buffer 就能表达主要行为。只要没有共享目标和可变路由，就不需要引入全局仲裁和 response matching。
+Point-to-point 模型可以压得很轻：在固定端点、固定服务路径和局部流控条件下，固定 latency、固定吞吐、局部 backpressure、少量 buffer 就能表达主要行为。没有共享目标和可变路由时可省去相应的全局仲裁；但是否需要 response matching 取决于并发和返回顺序。例如固定两端仍可发多笔乱序完成的请求，此时需 tag 等上下文匹配。仅允许一笔在途，或严格按序返回并以顺序队列匹配时，才可采用更简单的关联机制。
 
 BUS 模型至少要保留 transaction 状态：address decode、仲裁点、burst beat、outstanding、ordering、response 和 backpressure。它的性能风险来自共享资源和事务闭环之间的等待时间。
 

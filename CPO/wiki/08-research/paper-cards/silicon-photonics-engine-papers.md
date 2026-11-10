@@ -40,8 +40,8 @@
 - 类型：OFC 论文
 - 链接：https://opg.optica.org/abstract.cfm?uri=OFC-2025-Th3H.2
 - 核心问题：如何把 optical I/O chiplet 做成更稳健、可扩展的连接方案，并引入 known good chiplet 思路
-- 关键贡献：把 connectorized in-package optical I/O chiplet 和被动光纤连接、KGD 流程联系起来，直接对接 AI/HPC 的可制造性问题
-- 关键代价：仍然主要集中在连接与封装工程，并不自动证明系统级部署问题已经都解决
+- 关键贡献：V 槽为光纤提供几何定位基准，可支持被动对准和连接器化，从而在芯粒装配前接入并筛测。论文摘要报告用 TeraPHY 演示 known-good chiplet 流程。
+- 关键代价：摘要未给筛选覆盖率和批次数据，不能据此推算系统良率或量产结果。
 - 我最该记住的一句话：chiplet 级 optical I/O 的关键，不只是带宽，还有连接和已知良品流程
 
 ### 卡片 C：如何理解这类论文

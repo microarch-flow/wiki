@@ -21,22 +21,20 @@ OSAT 的价值不只在产能，也在工艺窗口、材料协同、测试能力
 
 ## 国际 OSAT
 
-| 公司 | 公开平台/方向 | 产业位置 |
+| 公司 | 公开对象与证据 | 能支持的结论 |
 | --- | --- | --- |
-| ASE | VIPack、FOCoS、FOCoS-Bridge、2.5D/3D、CPO | 高端 OSAT 平台型玩家 |
-| Amkor | SWIFT、S-SWIFT、S-Connect、advanced SiP | Fan-out、bridge-like、高密度多芯片封装 |
-
-ASE 的 VIPack 把 FOCoS、FOCoS-Bridge、FOPoP、FOSiP、2.5D/3D 和 CPO 放入一个先进封装平台叙事中。Amkor 的 S-SWIFT 强调 fan-out on substrate、RDL 缩短 D2D 连接、高 I/O 密度和 interposer-less 方向。
+| ASE | [2022-06-01 VIPack 公告](https://ase.aseglobal.com/press-room/vipack/) | 厂商当日列出 FOCoS、FOCoS-Bridge、FOPoP、FOSiP、TSV 2.5D/3D 和 CPO 等平台组成；不证明某客户良率 |
+| Amkor | [2022-09-22 S-SWIFT 资料](https://amkor.com/blog/heterogeneous-ic-packaging-optimizing-performance-and-cost/) | 当时描述 substrate 上的高密度 fan-out 工艺及资格验证阶段；后续量产状态另查 |
 
 ## 大陆 OSAT
 
-| 公司 | 公开方向 | 判断重点 |
+| 公司 | 公开对象与证据 | 待核验 |
 | --- | --- | --- |
-| JCET | XDFOI、Fan-out、高密度异构集成、部分 2.5D/3D 表达 | 平台表达完整度、客户导入、量产深度 |
-| 通富微电 | 高性能处理器封装、Chiplet、2.5D/3D 布局 | 高端客户经验、AI/HPC 相关承接能力 |
-| 华天科技 | WLP、Fan-out、2.5D/3DIC 平台建设 | 先进封装平台上移和量产窗口 |
+| JCET 长电科技 | [2024 年报](https://www.jcetglobal.com/uploads/%26e9%2695%26bf%26e7%2694%26b5%26e7%26a7%2691%26e6%268a%26802024%26e5%26b9%26b4%26e5%26b9%26b4%26e6%268a%26a5.pdf)披露 XDFOI 系列进入量产及应用领域 | 具体客户、产品、批量和合格率未在本表确立 |
+| 通富微电 | 待核实具体产品与原厂披露 | 指定工艺、资格阶段、交付与良率 |
+| 华天科技 | 待核实具体产品与原厂披露 | 指定工艺、资格阶段、交付与良率 |
 
-大陆 OSAT 的关键问题不是“有没有先进封装项目”，而是是否能在 AI/HPC 高价值场景中形成稳定良率、完整材料设备配套、客户导入和中间测试闭环。
+平台声明、研发、样片、资格和持续出货分别是不同证据层级。比较必须使用同一产品类别、时间与良率分母。
 
 ## OSAT 与 foundry packaging 的差异
 

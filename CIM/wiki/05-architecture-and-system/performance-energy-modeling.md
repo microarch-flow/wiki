@@ -1,7 +1,7 @@
 # 性能与能效建模：从 Macro 到 System 的指标推导
 
 上级：[05 Architecture And System](./README.md)
-相关：[Metrics Glossary](../09-research-frontier/metrics-glossary.md), [RAM: Memory Bound vs Compute Bound](../../../RAM/wiki/09-ai-chip-memory-architecture/memory-bound-vs-compute-bound.md), [NoC: Architecture Exploration Loop](../../../NoC/wiki/07-evaluation-methodology/architecture-exploration-loop.md)
+相关：[Metrics Glossary](../09-research-frontier/metrics-glossary.md), [RAM: Memory Bound vs Compute Bound](../../../RAM/wiki/09-ai-chip-memory-architecture/memory-bound-vs-compute-bound.md), [NoC: Architecture Exploration Loop](../../../NOC/wiki/07-evaluation-methodology/architecture-exploration-loop.md)
 
 ## 这页在回答什么问题
 
@@ -19,18 +19,23 @@ E_total =
   + E_hbm_dram
   + E_control
   + E_calibration
+  + E_weight_write_reload
+  + E_background
   + E_host_sync
 ```
+
+权重写入/重装按实际写入和 NVM program/verify 重试次数计能量；背景能耗按选定任务窗口积分，包括等待时的漏电与维持功耗。若已包含在 array、buffer 或 calibration 中则不重复计。一次性训练或校准只按明确的部署寿命和任务数摊销，不能未经说明计入每次推理。
 
 这个公式不是追求晶体管级精确，而是强迫分析者把隐藏成本显式列出。ReRAM analog CIM 若只给 `E_array_compute`，不能和 SRAM digital CIM 的 full macro energy 比；DRAM/HBM/GDDR-PIM 若给 system offload energy，也不能和 CIM macro TOPS/W 横比。HBM base die、interposer 或 package-side compute 属于 NMC，应以 die-to-die/package bandwidth、energy per byte、host offload latency 和 accelerator utilization 建模。
 
 ## 最小性能模型
 
 ```text
-T_total = max(T_compute, T_input_supply, T_reduction, T_memory, T_host) + T_sync + T_calibration
+steady_state_II >= max(II_compute, II_adc, II_input, II_reduction, II_memory)
+# 单次 T_total 由数据依赖、排队、启动/排空及同步决定
 ```
 
-CIM 的峰值并行度只影响 `T_compute`。如果 activation supply、partial sum reduction、HBM access 或 host synchronization 成为瓶颈，继续提高 macro peak TOPS 没有系统价值。
+这个 `max` 只是充分缓冲且阶段可重叠时的稳态下界；各 II 必须对应同一工作量单位，且包含该工作量的全部转换和资源占用。不能将它当作一般的单次任务延迟；应按事件依赖求时间。ADC 的转换次数、并行轮数、latency 和 II 的手算例子见[参数字典](./cim-modeling-parameter-schema.md#adc-样本转换次数与共享)。如果 activation supply、partial sum reduction、HBM access 或 host synchronization 成为瓶颈，提高 macro peak TOPS 未必改善整体性能。应检查依赖、负载和资源占用后再判断。
 
 ## 三条 Paradigm 的建模差异
 

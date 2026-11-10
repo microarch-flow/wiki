@@ -61,3 +61,13 @@
 - `experiment contract`：baseline、变量、观察项、结论口径如何统一
 
 没有这些契约，后面的 simulator 再精细，也很难持续产出稳定洞察。
+
+## 本章其余正文
+
+- [Architecture Exploration Loop](./architecture-exploration-loop.md)
+- [Case Card Template](./case-card-template.md)
+- [From Workload To Traffic Trace](./from-workload-to-traffic-trace.md)
+- [Metrics Latency Throughput Saturation](./metrics-latency-throughput-saturation.md)
+- [Modeling Layers Analytical Event Cycle](./modeling-layers-analytical-event-cycle.md)
+- [Power Area Modeling](./power-area-modeling.md)
+- [Stall Taxonomy And Attribution](./stall-taxonomy-and-attribution.md)

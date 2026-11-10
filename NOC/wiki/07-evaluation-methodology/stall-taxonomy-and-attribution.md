@@ -30,7 +30,9 @@
 
 ### NO_CREDIT
 
-下游没有空 buffer slot。
+队首 flit 所需的下游 VC 在发送端记录的可用 credit 为 0，因而本拍不能按该 credit 契约发送。这不等于此刻下游物理 buffer 必然已满：下游可能已出队并腾出槽，但返回的 credit 仍在途；也可能有已发送 flit 正在前向链路上，占用了槽的预留额度。
+
+例如单 VC 深度为 `B`，每个发送的 flit 恰好预留一个槽，且每次出队恰好返回一个 credit。在无丢失或重复的前提下，可核对 `发送端可用 credit + 前向在途 flit + 下游已占槽 + 返回在途 credit = B`。不同实现若有额外预留或批量返回，还须将相应状态计入守恒式。排查时应同时观察 buffer occupancy、前向在途和返回 credit 延迟。
 
 它更接近：
 
@@ -48,9 +50,9 @@
 - arbitration / class policy
 - path 汇聚过强
 
-### LINK_BUSY
+### LINK_BLOCKED
 
-链路被长期占用。
+队首已具备其他条件，但所需链路本拍不能接收，例如正在发送其他 flit 的 phit 或 serializer 尚未释放。该原因与仲裁失败分开计数。
 
 它更接近：
 
@@ -76,11 +78,11 @@ packet 还没真正进入网络，就在源端被卡住。
 
 ### ROUTE_BLOCKED
 
-路径受限、VC 不可用、合法出口暂不可用。
+当前上下文没有合法或可选择的路由。合法输出已经确定但下游 VC 许可不可用时，使用独立的 `VC_ALLOC_FAIL`，不记为 route blocked。
 
 它更接近 routing / class / path restriction 问题。
 
-### WAITING_FOR_OTHER_STREAM
+### WAITING_FOR_DEPENDENCY
 
 这类 stall 很关键，因为它提醒你：
 
@@ -91,9 +93,10 @@ packet 还没真正进入网络，就在源端被卡住。
 
 一个可用的 simulator 最好满足：
 
-- 每个周期只归一个主 stall reason
-- stall 可以按 packet、class、router、endpoint 聚合
-- 网络 stall 和系统依赖 stall 明确区分
+- 统计对象定义为每个非空 input VC 队首的 `flit-router-cycle`，每对象每拍最多一个主因；无活动时不计 stall
+- endpoint 的注入等待以 `endpoint-cycle` 单独计数，workload 依赖未满足记 `WAITING_FOR_DEPENDENCY`，不混进 router 分母
+- 同一队首同时无 credit 且竞争输出时，按固定优先级例如 `ROUTE_BLOCKED → VC_ALLOC_FAIL → EJECTION_BLOCKED/NO_CREDIT → LINK_BLOCKED → SWITCH_CONFLICT` 只计一个主因；其他条件可存在次因 bitset
+- 链路占用或 serialization 与输掉 SA 的竞争分别记录，避免对同一对象同一周期重复累加；分母与聚合方式随结果一起报告
 
 这样你才能回答：
 
@@ -131,7 +134,7 @@ packet 还没真正进入网络，就在源端被卡住。
 
 - 把所有 stall 都叫 congestion
 - 看到 NO_CREDIT 就只想加 buffer
-- 看到 WAITING_FOR_OTHER_STREAM 还只盯着 router
+- 看到 WAITING_FOR_DEPENDENCY 还只盯着 router
 
 更准确的看法是：
 

@@ -46,14 +46,14 @@ body:   BW ---------> SA -> ST/LT
 tail:   BW ---------> SA -> ST/LT -> release VC
 ```
 
-这就是为什么 tail 不是“最后一个普通 flit”。它在语义上承担了释放长期资源的责任。
+这里的 release 指 tail 成功离开后释放本 router 的输入上下文。下游 VC 的分配许可何时释放取决于协议；严格策略要等下游 tail 离开并返回 free 信号。详细规则见 [VC 状态](../08-simulator-construction/core-data-structures.md#三种独立状态)。
 
 ## 一个 cycle-by-cycle 例子
 
 假设：
 
-- 每级 1 cycle
-- link traversal 单独占 1 cycle
+- 每级 1 cycle，示意图合并表示 ST/LT
+- 示例是教学流水线，不采用第 08 章的单拍 RC/VA/SA/ST 快照口径
 - credit 足够，下游 VC 可分配
 
 则一个 4-flit packet 过一个 router 的时间线可写成：
@@ -96,9 +96,9 @@ cycle T:
 
 没有 pipeline，这些动作就必须串行执行；有了 pipeline，你得到的是吞吐，不是单个 flit 的魔法零延迟。
 
-## 为什么 VA 和 SA 必须分开
+## 为什么 VA 和 SA 的资源语义必须区分
 
-这是 router pipeline 最值得强调的地方。
+这是 router pipeline 最值得强调的地方。两者可以在硬件中联合或投机分配，不一定分成独立流水级，但模型必须区分长期 VC 许可与逐 flit switch grant。
 
 `VA` 分配的是下游 router 的一个 VC，它是 packet 生命周期级别的长期资源。header 一旦申请成功，该 packet 通常会一直占着这条逻辑通道直到 tail 离开。
 
@@ -114,7 +114,7 @@ cycle T:
 - crossbar 宽，ST 路径时序太差
 - link 长，需要单独 pipeline LT
 
-代价很直接：单 hop latency 变大。收益也很直接：频率更高，长线更可收敛。
+代价可能是单 hop 所需 cycle 增加；更深流水也可能提高可实现频率。墙钟延迟要比较 `cycles/frequency`，不能仅凭级数判断。
 
 所以“几级 pipeline”不是纯微架构审美问题，而是频率、线长和吞吐的硬 trade-off。很多 NPU 宁愿接受多 1 到 2 cycle 的 hop latency，也要把全局链路频率保住，因为一旦时钟掉下来，全网所有 path 都会受影响。
 
@@ -134,7 +134,7 @@ BUS 里你熟悉的是 channel handshake。那套机制更像局部接口的交�
 实际上：只有 header 需要完整经历控制阶段，body/tail 通常复用 header 已建立的绑定。
 
 常见误解：pipeline 深一点一定更慢。  
-实际上：单 hop latency 确实更长，但如果它换来了更高频率和可实现的长线，全系统吞吐可能反而更好。
+实际上：增加级数可增加 cycle 数，但频率也可能提高；例如 3 cycle/500 MHz 为 6 ns，4 cycle/1 GHz 为 4 ns。实际频率和吞吐需要实现与测量。
 
 ## 一句话理解
 

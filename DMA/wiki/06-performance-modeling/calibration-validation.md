@@ -2,81 +2,36 @@
 
 上级：[06 性能建模与调优](./README.md)
 
-相关：[从抽象模型到系统诊断](./modeling-method.md)、[参数与公式速查](./parameter-reference.md)、[模型数据结构与事件规范](./model-schema.md)、[观测、计数器与调试路径](./debug-observability.md)
+相关：[参数与公式速查](./parameter-reference.md)、[模型数据结构与事件规范](./model-schema.md)、[观测、计数器与调试路径](./debug-observability.md)
 
-## 这页在回答什么问题
+## 核心原则
 
-[modeling-method](./modeling-method.md) 讲了模型分几层，[debug-observability](./debug-observability.md) 讲了硬件该有哪些 counter，但两者中间缺一座桥：**怎么用真实 counter 把模型参数标定出来？标到什么误差才算可信？什么时候该从 L2 升到 L3？** 没有这一步，模型只是"能跑"，不是"可信"。对架构探索工具尤其关键——你拿模型做选型决策，前提是它在已知点上对得上实测。
+校准在已知配置和 workload 上估计参数；验证使用未参与拟合的工作点，检查趋势、误差与未完成样本。记录测量域、时钟、计数口径、配置版本和数据来源。一个端到端结果可能由多组参数解释，拟合成功不代表参数可唯一识别。
 
-## 校准的基本回路
+## 观测如何约束参数
 
-```text
-真实运行 / RTL 仿真
-   └─ 采集 counter & 事件时间戳（按 model-schema 的规范事件）
-        └─ 反推模型参数（下表）
-             └─ 用同一 workload 跑模型
-                  └─ 比对 Metrics，算误差
-                       └─ 误差超预算 → 升层 / 补状态，回到上一步
-```
-
-关键纪律：**先校准、再外推**。模型只有在至少一个已知工作点上对齐过，才有资格去预测没跑过的设计点。
-
-## counter → 参数 反推表
-
-这张表是本页核心：把 [debug-observability](./debug-observability.md) 里的可观测量，映射回 [parameter-reference](./parameter-reference.md) 里的模型参数。
-
-| 想标定的参数 | 用什么 counter / 观测 | 反推方式 |
+| 待估计量 | 所需证据 | 可得结论和限制 |
 | --- | --- | --- |
-| `interconnect_RTT` / `dram_return_latency` | response latency histogram | 取分布，不是均值；P50 做主延迟，P95/P99 做尾部建模 |
-| `max_outstanding`(有效值) | outstanding occupancy 高水位 | 实际高水位常低于配置值，用实测水位 |
-| `efficiency`(公式 3) | read/write bytes 与 burst 分布 | useful/(useful+overhead)，按 burst 长度分布加权 |
-| `row_hit_prob`(公式 4) | DRAM row hit/miss counter（若 MC 暴露） | 直接读；无 counter 时由 stride+地址映射推 |
-| `completion_visibility_latency` | completion visible delay / backlog | `completion_visible - data_commit` 事件差 |
-| `submit_latency` | descriptor submitted vs accepted | 两个 counter 时间差 |
-| `boundary_split_penalty` | subreq_count / descriptor 数 | 实际子事务数 ÷ 理论事务数 - 1 |
-| `sram_port` 冲突率 | queue full / port busy cycles | busy cycle 占比 |
+| submit latency | 同一 task 的提交和接收关联时间戳 | 计算逐任务时间差；两个累积 counter 的差是数量，不是时间 |
+| 事务 RTT | 同一子事务 issue 与最终 response 时间戳 | 得到端到端分布；不能仅凭它分解 interconnect 与 DRAM，需分段 trace 或受控实验 |
+| 窗口容量 | 配置/手册，或足够供给下的饱和实验 | 占用高水位只是已使用容量下界；注入不足时远低于硬件上限 |
+| burst 效率 | 同资源有效字节与实际占用周期、方向和协议 | AXI 通道可并行，不能将各通道开销直接相加 |
+| 边界拆分 | 每逻辑任务的实际和无边界基线子事务计数及服务时间 | `实际/基线−1` 是额外子事务相对数，可大于 1；不是带宽损失比例 |
+| bank/port 冲突 | 同拍候选地址、仲裁输家及端口可用性 | port busy 表示工作，不等于冲突；需比较有需求但未获服务 |
+| row hit/尾部 | MC 的行命中、排队及关联时间戳 | 没有观测时给拟合范围，避免把相关延迟拆成独立分布 |
+| completion 延迟 | 同任务的相应域 transfer、通知和 CPU 同步时间 | 仅在设备契约保证顺序时将差值解释为等待；其他情况分别报告事件 |
 
-无对应 counter 时的兜底：用 [parameter-reference](./parameter-reference.md) 的量级范围做先验，再用端到端带宽/延迟做整体拟合——但要在模型里标注该参数是"拟合得到"而非"实测得到"，因为它会成为外推时的主要不确定性来源。
+例如占用水位最高为 4，可能是设备只有 4 槽，也可能是软件每次只发 4 笔。控制提交速率、任务大小、目标服务和 completion 回收，再改变可配置槽数；若缺少可控条件，记录容量区间而不是断言上限。
 
-## 各层的误差预算与代价
+## 误差与模型层级
 
-模型不是越精细越对，每一层有它**该达到的精度**和**该付的代价**。低于精度说明状态缺失，远高于精度说明白做了细节。
+解析模型、事务模型和系统模型的误差取决于问题、参数和负载，没有层次固有的 ±百分比。项目可以在实验前为特定负载与指标定义验收目标，例如稳态吞吐误差不超过某值并要求 P99 和未完成数达标；它是该项目目标，不是通用精度。尾部拟合应保留队列、请求大小、row 状态与延迟的相关性；独立抽样边缘分布可能破坏长尾。
 
-| 层次 | 典型用途 | 合理误差预算 | 主要代价 | 校准需要的最少 counter |
-| --- | --- | --- | --- | --- |
-| L1 上界 | 量级筛选、sanity check | 端到端带宽 ±30~50% | 几乎为零 | bytes、端点峰值带宽 |
-| L2 队列-事务 | 解释 stall、定 outstanding/queue | 带宽 ±15%，P95 ±30% | 中等 | response latency 分布、outstanding 水位、completion delay |
-| L3 系统耦合 | 多流冲突、尾延迟、供数断流 | 带宽 ±10%，P99 ±20% | 高（需地址映射/端口/路径） | 上述 + bank/port 冲突、row hit、ejection stall |
+若单流匹配、多流不匹配，先用控制实验区分端口、NoC、bank 和完成回收，再添加必要状态。若平均正确而 P99 不对，检查分布、超时/未完成样本和事件关联，不要直接指定某个唯一根因。模型达到当前任务的验收目标后仍须在留出点验证；是否增加细节取决于接下来要回答的问题。
 
-误差预算是**判据，不是承诺**：达到即停，别为了把 L2 误差从 12% 压到 8% 而盲目加 L3 细节——那通常意味着你该换工作点验证，而不是加状态。
+## 验证流程
 
-## 什么时候该从 L2 升到 L3
-
-不要凭"感觉模型不够细"升层，用量化触发器：
-
-- **L2 误差超预算且偏差有结构**：误差不是随机噪声，而是随某个变量单调漂移（如随并发数增大系统性低估延迟）→ 缺的多半是冲突/热点，升 L3。
-- **single-stream 准、multi-stream 崩**：L2 在单流对得上、多流误差骤增 → 必须显式建 NoC 注入/ejection 或 bank/port 冲突（[dma-and-noc](../05-system-integration/dma-and-noc.md)、[dma-and-memory-system](../05-system-integration/dma-and-memory-system.md)）。
-- **平均对、尾部错**：均值 ±10% 但 P99 偏差 >50% → 缺 row-hit 分布或 return path 长尾，升 L3 并保留延迟分布而非均值。
-- **改一个旋钮，模型方向都不对**：扫 outstanding/burst 时模型给出的趋势和实测相反 → 缺关键耦合状态，见 [sensitivity-coupling](./sensitivity-coupling.md)。
-
-反向也成立：如果 L2 已在多个工作点稳定落在预算内，**就不该升 L3**——多出来的细节只会拖慢探索且更难解释。
-
-## 验证（不止校准）
-
-校准是"在已知点对齐"，验证是"在没校准过的点仍然对"。两者必须用不同数据：
-
-1. **留出验证集**：校准用一组 workload/配置，验证用另一组，不能重叠。
-2. **趋势验证优先于点值验证**：架构探索更看重"扫 burst/outstanding 时拐点位置和单调性对不对"，而不是某个单点带宽精确到 1%。
-3. **外推标注不确定性**：预测远离校准点的设计时，明确哪些参数是拟合来的、外推区间多大。
-
-## 常见误解
-
-常见误解：`模型对了一个点就可信`。实际上那只是校准；可信要靠未校准点的验证。
-
-常见误解：`误差越小越好，所以一律上 L3`。实际上每层有合理误差预算，达到即停，超细节是浪费且更难解释。
-
-常见误解：`用均值校准延迟就够`。实际上尾延迟问题必须用分布校准，均值会把长尾问题藏掉。
-
-## 一句话理解
-
-校准是用 counter 把模型参数标到实测、并在留出点上验证趋势；模型的可信度来自"未校准点仍对"，而升层与否由误差预算和偏差结构决定，不由直觉。
+1. 将工作点分为校准与留出验证集，固定相同字节、时间窗和完成边界。
+2. 对参数做可识别性检查：单独改变输入或资源，观察是否能区分多组候选参数；否则报告范围。
+3. 比较吞吐、延迟分布、队列水位、超时/未完成数及参数扫描趋势。
+4. 报告拟合参数、测量不确定性、验证范围和外推假设。不得把校准点命中当作独立验收或硬件性能保证。

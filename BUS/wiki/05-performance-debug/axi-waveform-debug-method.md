@@ -16,7 +16,7 @@ AXI 读写通道解耦，读问题和写问题的闭环不同。
 
 | 问题类型 | 重点通道 | 闭环条件 |
 | --- | --- | --- |
-| read | `AR` -> `R` | `ARVALID && ARREADY` 后，所有 `R` beat 返回并看到 `RLAST` |
+| read | `AR` -> `R` | `ARVALID && ARREADY` 后，接受 `ARLEN+1` 个 R beat，且最后一拍 `RVALID && RREADY && RLAST` |
 | write | `AW` + `W` -> `B` | 地址和全部写数据被接收后，`BVALID && BREADY` 完成 |
 | write data stall | `W` | `WVALID && !WREADY` 或 W beat 与 AW 配对异常 |
 | write response missing | `AW/W/B` | AW/W 已闭合，但 B 不返回 |
@@ -36,7 +36,7 @@ AXI 的黄金法则：**只有两只手同时伸出来的那一刻，东西才�
 | `RVALID=1` 但 `RREADY=0` | slave 慢 | master/return path 接收侧在反压 |
 | `BVALID=0` | 写没发生 | 需要先确认 AW 和全部 W beat 是否已被接收 |
 
-第一轮波形标注建议只标 `*_fire = VALID && READY`，避免被持续高电平误导。
+第一轮波形在每个上升沿标 `*_fire = VALID && READY`，避免把沿间高电平当作额外传输。`VALID=1 && READY=0` 时，发送方必须保持 VALID 与该通道 payload 稳定到握手上升沿；详见 [握手规则和逐拍例子](../03-on-chip-protocol-families/axi-five-channels-handshake.md#validready-定义的是局部交付)。
 
 ## 第三步：读路径检查
 
@@ -47,10 +47,10 @@ AXI 的黄金法则：**只有两只手同时伸出来的那一刻，东西才�
 | AR fire | `ARVALID && ARREADY` 是否发生 | 未发生则 request 未进入下游 |
 | AR payload | `ARADDR/ARLEN/ARSIZE/ARBURST/ARID` | 地址、burst、ID 是否符合预期 |
 | outstanding | AR fire 后对应 ID 是否占 slot | slot 满会阻止后续 AR |
-| R first beat | `RVALID && RREADY` 是否出现 | 不出现则看 slave/controller/return path |
-| R beats count | beat 数是否等于 `ARLEN+1` | 少 beat 是协议或桥接问题 |
-| RLAST | 最后一 beat 是否带 `RLAST` | 无 RLAST 则 transaction 未闭环 |
-| RRESP | 是否 OKAY/SLVERR/DECERR 等 | 错误要追 fault source |
+| R first beat | `RVALID && RREADY` 是否出现 | 不出现则区分未产生响应与接收侧反压 |
+| R beats count | 接受的 beat 数是否等于 `ARLEN+1` | 少 beat 或计数不符需检查协议和桥接 |
+| RLAST | 最后接受的 beat 是否同时满足 `RVALID && RREADY && RLAST` | 仅看到 RLAST 高而未握手，事务尚未闭环 |
+| RRESP | 每次 R fire 的响应是 OKAY/SLVERR/DECERR 等 | 接受错误 beat 后追 fault source；多拍事务仍须接收剩余 beat |
 
 若 `AR` 已 fire 但 `R` 不来，不要只盯 R channel。要向下游看 slave 是否收到 request、bridge 是否发出子事务、DDR/controller 是否返回数据、return FIFO 是否被反压。
 
@@ -62,11 +62,11 @@ AXI 的黄金法则：**只有两只手同时伸出来的那一刻，东西才�
 | --- | --- | --- |
 | AW fire | `AWVALID && AWREADY` 是否发生 | 写地址是否进入下游 |
 | W fire | 每个 `WVALID && WREADY` beat 是否发生 | 写数据是否完整进入下游 |
-| WLAST | 最后一 beat 是否带 `WLAST` | 无 WLAST 则写数据未闭环 |
+| WLAST | 最后接受的 W beat 是否带 `WLAST` | 未在 W fire 时接受 WLAST，则写数据未闭环 |
 | AW/W 配对 | 地址长度与 W beat 数是否匹配 | mismatch 会导致 bridge/slave 等待 |
 | WSTRB | byte lane 是否符合访问 | partial write/MMIO side effect 风险 |
 | B fire | `BVALID && BREADY` 是否发生 | 写事务完成 |
-| BRESP | response 是否 OKAY 或错误 | 错误要追 slave/bridge/decoder |
+| BRESP | B fire 时 response 是否 OKAY 或错误 | 接受错误响应后追 slave/bridge/decoder |
 
 若 `BVALID` 不来，先确认 AW 已 fire、所有 W beat 已 fire、WLAST 正确。若 AW/W 都已完成但 B 不来，再看 slave 是否生成 response、bridge 是否聚合子事务、return path 是否反压。
 
@@ -82,7 +82,7 @@ AXI 的难点不是单笔事务，而是多笔 outstanding 的匹配。
 | 某个 ID response 不回 | 该 ID slot 泄漏或下游事务未闭环 |
 | bridge 改写 ID | 需要看内部 remap slot 和 response 匹配 |
 
-调试时要维护一个小表：每次 AR/AW fire 记录 ID、地址、长度、时间；每次 RLAST/B fire 删除对应项。表里长期不消失的 entry，就是下一步追踪对象。
+维护 transaction ledger：以 `(master, 读/写方向, ID, 该 ID 的请求序号)` 标识每笔请求，AR/AW fire 时按方向和 ID 入队。R beat fire 时按 RID 找对应读队列的队首并计数，只有最后 beat 的 `RVALID && RREADY && RLAST` 才完成该项；B fire 按 BID 完成对应写队列队首。读写 ID 是不同命名空间，同 ID 可有多笔在途。AXI4 W 没有 WID，先到的 W 须暂存并按 AW 顺序关联；`WLAST` 也只在 W fire 时计数。VALID 被反压期间看到 last 高电平不等于完成。长期不消失的条目是追踪对象。
 
 ## 第六步：把波形翻译成系统语言
 
@@ -95,7 +95,8 @@ AXI 的难点不是单笔事务，而是多笔 outstanding 的匹配。
 | RVALID 有空洞 | DDR row conflict、turnaround、return arbiter 或 RREADY 反压 |
 | AW/W fire 后无 B | write response 未生成或未返回 |
 | WVALID 长期等 WREADY | write data path 或 width/bridge 下游拥塞 |
-| RRESP/BRESP 错误 | fault/error path 已闭环，追错误源 |
+| R fire 接受错误 RRESP | 已接受一个错误读 beat；仍须按计数接收至最后 R fire，才能闭合读事务 |
+| B fire 接受错误 BRESP | 写事务收到错误响应；继续追 slave/bridge/decoder 和软件错误处理 |
 
 这一步把 waveform debug 和系统 debug 连接起来。否则波形只能说明某个信号变化，不能解释为什么软件看到 timeout、fault 或 hang。
 
@@ -107,7 +108,7 @@ AXI 的难点不是单笔事务，而是多笔 outstanding 的匹配。
 | T1 | 之后没有 `RID=3` 的 R beat | response missing |
 | T2 | 下游 slave 侧也看到 request fire | interconnect 已转发 |
 | T3 | slave 内部 busy，未产生 response | slave/controller 是 no-progress 点 |
-| T4 | fabric timeout 后返回 `RRESP=SLVERR` | hang 被 timeout 包装成 fault/timeout |
+| T4 | 假设此请求只有 1 beat：fabric timeout 后接受 `RVALID && RREADY && RLAST`，且 `RRESP=SLVERR` | 总线事务以错误响应闭合；软件如何报告错误取决于系统 |
 
 若 T4 不发生，软件会看到 read hang；若 T4 发生，软件看到的是错误或异常。根因可能相同，观察入口不同。
 
@@ -128,7 +129,7 @@ AXI 的难点不是单笔事务，而是多笔 outstanding 的匹配。
 | --- | --- |
 | READY 低就是接收方 bug | READY 低可能是合法 backpressure，要追下游原因 |
 | READY 高就说明路径空闲 | source 可能因 outstanding、ordering 或上游状态没发 |
-| 地址握手完成代表事务完成 | 读要等 RLAST，写要等 B response |
+| 地址握手完成代表事务完成 | 读要接受全部 R beat 和最后的 RLAST，写要接受 B response |
 | R/B 没回来就只看返回通道 | 也要确认下游是否收到 request、是否生成 response |
 | 不同 ID 返回乱序就是错误 | 不同 ID 允许交错，关键是 RID/BID 匹配和同 ID 约束 |
 
@@ -140,4 +141,4 @@ AXI 波形调试要按 `分读写 -> 标握手 -> 闭环 transaction -> 查 ID/o
 
 AXI waveform debug 的模型核心是 transaction ledger。每次 `AR/AW/W/R/B` handshake 都要变成 ledger 事件：request 进入、data beat 进入、response 返回、slot 释放。性能模型要记录每笔 transaction 的 wait、service、response latency 和 outstanding age。功能模型要记录 ID 匹配、burst beat count、WLAST/RLAST、WSTRB、RRESP/BRESP 和错误映射。
 
-事件模型建议显式表达 `ar_fire`、`aw_fire`、`w_fire`、`wlast_seen`、`r_fire`、`rlast_seen`、`b_fire`、`id_slot_allocate`、`id_slot_release`、`response_error_seen`、`forward_progress_lost`。这些事件能把波形从信号变化转成可复盘的 transaction 状态。
+事件模型建议显式表达 `ar_fire`、`aw_fire`、`w_fire`、`wlast_fire`、`r_fire`、`rlast_fire`、`b_fire`、`id_slot_allocate`、`id_slot_release`、`response_error_seen`、`forward_progress_lost`。其中 `wlast_fire` 仅在同一采样沿 `WVALID && WREADY && WLAST` 为 1 时发生；`rlast_fire` 仅在同一采样沿 `RVALID && RREADY && RLAST` 为 1 时发生。LAST 在反压时保持为高不产生该事件。它们能把波形从信号变化转成可复盘的 transaction 状态。

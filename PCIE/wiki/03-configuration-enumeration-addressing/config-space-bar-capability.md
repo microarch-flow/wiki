@@ -28,7 +28,7 @@ BAR 描述的是设备希望暴露给主机的一段地址资源，常见用于�
 - device local memory window
 - doorbell / queue register
 
-BAR 的关键价值不是“寄存器放哪”，而是把 `device resource` 映射进主机地址视角。
+BAR 给出资源类型、所需大小等信息；系统为其分配总线地址，并配置沿途 bridge 的转发窗口。比如配置空间已可读，但内存 BAR 没有得到地址，或桥窗口不覆盖该地址，CPU 的相应 MMIO 就不能按预期到达设备。即使地址已分配，Function 的 Memory Space Enable 关闭时也不会正常译码该内存 BAR。BAR 分配、桥转发和 Function 译码是三个可分别检查的条件。
 
 ## Capability 为什么重要
 
@@ -38,6 +38,8 @@ Capability 让设备能声明更多能力，而不把基本头部无限膨胀。
 - PCIe capability 本身
 - power management
 - SR-IOV 等高级功能
+
+例如 Capability 声明 MSI-X，只表示设备提供该机制；软件还须配置表项的消息地址/数据及屏蔽状态，并在选择该中断模式后使能。可发现能力不等于已经配置或正在使用。
 
 ## 一句话理解
 

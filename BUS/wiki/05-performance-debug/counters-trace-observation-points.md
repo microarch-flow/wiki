@@ -25,6 +25,8 @@ BUS observability 就像交通系统的**监控摄像头和数据记录仪**。�
 | timeout_count | timeout wrapper 触发次数 | 不等于软件等待超时次数 |
 | fault_count | 原生 fault source 记录次数 | 不等于最终软件异常次数 |
 
+每个 counter 还须定义位宽、回绕或饱和、清零方式和采样窗口。增量按实现的回绕规则计算；跨清零或缺失采样的窗口要标记，不能直接相减。
+
 语义清楚后，counter 才能成为模型变量。否则“latency counter 变大”无法说明是 request wait、service time、response wait 还是 completion visibility 变慢。
 
 ## Counter 要能分类
@@ -72,6 +74,8 @@ Counter 告诉你"今天这个路口通过了 10 万辆车、平均等待 3 秒"
 | timeout/fault | timestamp、source、addr/ID、fault type | 错误归因 |
 | completion/interrupt | timestamp、task/channel、status | 连接硬件完成和软件可见性 |
 
+跨时钟域 trace 要记录 clock domain、原始周期或时间戳，并给出同步基准和转换误差，才能比较事件先后。同 ID 可同时有多笔请求：记录 `(master, 方向, ID, 序号)` 和 beat 序号，不能仅凭 ID 闭合事务。若硬件无法提供唯一序号，应说明重建依赖的 FIFO/顺序规则及歧义。
+
 Trace 的设计动机是补 counter 的因果缺口。Counter 告诉你发生了多少次，trace 告诉你哪一次、按什么顺序发生。
 
 ## 触发与 Snapshot
@@ -97,7 +101,7 @@ snapshot 应记录“最后 N 个关键事件”，而不是只记录触发瞬�
 | T1 | descriptor fetch request/response counter | DMA 是否拿到任务 |
 | T2 | data read/write completion counter | 数据面是否完成 |
 | T3 | completion write accepted trace | writeback 是否发出 |
-| T4 | completion visible / memory write response | CPU 是否应看到 completion |
+| T4 | memory write response；再记录 CPU 侧同步/读取 | B 仅证明接口定义的写完成点；非一致 cache 仍需按 DMA API 同步，不能直接证明 CPU 已看到 |
 | T5 | interrupt assert trace | 设备是否发通知 |
 | T6 | interrupt clear/EOI trace | ISR 是否正确清理 |
 

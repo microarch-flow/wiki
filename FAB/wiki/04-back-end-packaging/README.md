@@ -43,8 +43,10 @@
 | 互连密度 | interposer、RDL、bridge、bump、hybrid bonding | D2D 带宽、power-per-bit、接口宽度 |
 | Package 尺寸 | substrate、interposer、RDL panel/wafer | HBM 数量、reticle/stitching、warpage 风险 |
 | 供电路径 | substrate、top metal、interposer/RDL、decap | IR drop、瞬态响应、峰值频率 |
-| 热路径 | die placement、TIM、lid、stack、substrate | 功耗密度、HBM 温度、throttling |
+| 热路径 | die placement、TIM、lid、stack、substrate | 热源与冷却边界决定温度及工作点可行性；只有已知控制策略才可建模 throttling |
 | 测试节点 | CP、KGD、中间模块、final test | 组合良率、失效定位、报废成本 |
+
+缺少热模型或控制策略时，仅报告目标额定温度/功率范围与适用性，不自动注入降频事件。
 
 ## 与前面章节的连接
 
@@ -61,3 +63,9 @@
 如果我在定义一个 AI 加速器，封装路线不能等 floorplan 之后再定。HBM stack 数量、compute die 是否拆分、D2D 接口宽度、package 功耗和目标热设计会共同决定需要传统 substrate、2.5D interposer/RDL/bridge，还是进一步进入 3D 堆叠。
 
 一个具体决策例子：若模型要求多个 compute chiplet 间 TB/s 级互连，架构师必须同时问封装能否提供对应 pitch、routing density、KGD 策略和热路径。否则 D2D 带宽只是逻辑指标，不是可制造产品能力。
+
+## 本章正文
+
+- [从传统封装到先进封装:演化逻辑](./packaging-from-traditional-to-advanced.md)
+- [先进封装分类框架:2D/2.5D/3D](./packaging-taxonomy.md)
+- [摩尔定律放缓如何把封装推到前台](./why-advanced-packaging-now.md)

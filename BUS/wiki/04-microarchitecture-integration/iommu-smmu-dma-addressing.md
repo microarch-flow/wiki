@@ -18,7 +18,7 @@ IOMMU/SMMU 就像**海关翻译官加安检员**。DMA（外国旅客）说的�
 | --- | --- | --- |
 | 设备隔离 | device 可写错地址或越权访问 | 按 device/stream 限制可访问范围 |
 | 虚拟化 | guest 不能直接暴露 host physical address | IOVA/GPA 到 PA 的受控转换 |
-| buffer 管理 | DMA buffer 必须物理连续或受限 | 可映射分散 physical pages |
+| buffer 管理 | 单段连续设备地址通常要求连续可达物理范围；支持 scatter-gather 时可用多个物理段，或采用中转 | 可把分散 physical pages 映射为设备可用地址范围 |
 | fault 诊断 | 越界 DMA 可能破坏 memory 后才暴露 | fault 可定位到 device、地址和权限 |
 | 热迁移/重映射 | device 地址视图僵硬 | 软件可更新映射和权限 |
 
@@ -88,9 +88,9 @@ IOMMU fault 表示翻译层拒绝或无法完成地址转换。它和 memory con
 | permission fault | 权限位不允许 | 写只读页、非安全访问安全页 |
 | context fault | stream/context 配置错误 | device ID 没有对应上下文 |
 | walk fault | page table read 失败 | 页表所在 memory 或权限有问题 |
-| output address fault | translated PA 不被下游允许 | firewall 或 physical range 限制 |
+| output address-size fault | 翻译输出地址超出 SMMU 支持的宽度 | 翻译输出不合法；下游 firewall 拒绝则应作为另一个输出路径错误归因 |
 
-fault 的设计取舍是“返回给 device、上报给 CPU、还是让任务停住”。高可靠系统需要 fault record、interrupt、status register 和可恢复流程；简单系统可能把 fault 映射成 DMA engine error。BUS 模型要写清 fault 是否占用 response path、是否释放 DMA outstanding、是否触发 interrupt，以及 fault record 的 MMIO 可见性。
+fault 的设计取舍是“返回给 device、上报给 CPU、还是让任务停住”。高可靠系统需要 fault record、interrupt、status register 和可恢复流程；简单系统可能把 fault 映射成 DMA engine error。BUS 模型要写清 fault 是否占用 response path、是否释放 DMA outstanding、是否触发 interrupt，以及 fault record 的存放位置与软件读取路径。SMMUv3 等实现可将 event queue 写入内存，寄存器和中断用于队列管理/通知，不能一律建成 MMIO 记录。
 
 ## 例子：Descriptor Fetch 触发 Translation Fault
 
@@ -104,7 +104,7 @@ fault 的设计取舍是“返回给 device、上报给 CPU、还是让任务停
 | T3 | TLB miss，发起 page walk | page walk outstanding | DDR 上出现页表 read |
 | T4 | 页表 entry invalid | fault record 生成 | descriptor read 被拒绝 |
 | T5 | DMA engine 收到错误或停止任务 | outstanding release | completion 可能变成 error |
-| T6 | CPU 通过 MMIO 读取 fault status | fault visible | 软件看到 faulting IOVA、stream ID、类型 |
+| T6 | CPU 按实现读取 fault status 或内存 event queue | fault visible | 软件看到可用的 faulting IOVA、stream ID 和类型 |
 
 这个例子说明：descriptor fetch fault 不是 DDR 没返回 descriptor，也不是 DMA data path 失败。故障发生在 translation path，且真正的 data memory request 没有发出。调试时若只看 memory controller，会找错层级。
 

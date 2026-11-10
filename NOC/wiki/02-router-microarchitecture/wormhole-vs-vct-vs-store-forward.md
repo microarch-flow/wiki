@@ -51,7 +51,7 @@ VCT 的关键改动是：header 一旦看见下游有足够空间容纳整个 pa
 
 wormhole 再往前一步：header flit 先建路，后续 body/tail flit 只要前面的路径资源还占着，就可以持续跟进。router 不再需要容纳整包，只需容纳少量 flit。
 
-名字很形象，但真正值得记住的是它的资源行为：packet 像一条虫一样横跨多个 router，每一段身体占着一段缓冲和链路。
+名字很形象，但真正值得记住的是它的资源行为：packet 可横跨多个 router，占用沿途的 input VC 上下文和 flit buffer slot。物理 crossbar/link 通常逐 flit 竞争，不必被整包锁住；若实现允许，来自其他 VC 的 flit 可以在间隙交织。
 
 好处：
 
@@ -69,7 +69,7 @@ wormhole 再往前一步：header flit 先建路，后续 body/tail flit 只要�
 
 ## 一个三跳例子
 
-仍假设 64B packet、128b 链路、4 flit。
+仍假设 64B 是含头尾的线上总包长、128b 链路、4 flit。以下 wormhole 时间线采用无争用、每跳每周期可传一 flit、每个 router 的头部转发为一拍的教学模型；它使用不同于第 08 章拍末快照的采样口径，实际 RC/VA/SA 和链路流水会增加延迟。
 
 store-and-forward：
 
@@ -151,6 +151,6 @@ SwitchingPolicy = STORE_FORWARD | VCT | WORMHOLE
 
 - `STORE_FORWARD`: `packet_fully_buffered == true`
 - `VCT`: `downstream_can_accept_full_packet == true`
-- `WORMHOLE`: `header_bound && credit_available`
+- `WORMHOLE`: 队首有 flit；header 已完成路由/VC 分配且下游 credit 足够；本拍还须赢得 SA，链路及本地输出可用
 
 若只关心结构趋势，`VCT` 常可忽略不单建；但如果你想解释“为什么 buffer 从 packet 级缩到 flit 级之后，VC 和 credit 立刻变关键”，那 VCT 这个中间态非常有助于把演化链讲清楚。

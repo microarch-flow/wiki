@@ -1,13 +1,13 @@
 # Bank 为什么是 DRAM 并行性的最小单位
 
 上级：[DRAM 基础](./README.md)
-相关：[Row buffer：DRAM 内部的小 cache](./row-buffer-as-cache.md), [为什么说 DRAM 的实际性能由 MC 决定](../06-memory-controller/why-mc-is-the-real-bottleneck.md)
+相关：[Row buffer：DRAM 内部的小 cache](./row-buffer-as-cache.md), [Memory controller 如何影响 DRAM 的实际性能](../06-memory-controller/why-mc-is-the-real-bottleneck.md)
 
 ## 这页在回答什么问题
 
 为什么 DRAM 的并行性不是从 channel 才开始，而是先从 bank 这个内部组织单位开始。更具体地说，bank 到底隔离了哪些状态、共享了哪些资源，以及为什么“bank 数量更多”并不自动等于“真实带宽就更高”。
 
-## 正文
+## 独立 bank 状态与共享资源
 
 一旦理解了 row buffer 和 open row 这套机制，接下来的自然问题就是：如果 DRAM 每次只能在一个打开行上便宜访问，那它如何支撑系统所需的高吞吐？答案之一就是 bank。bank 的核心作用，不是单纯把容量切块，而是把”打开行状态”和一部分阵列操作状态复制出多份，让不同访问流有机会在 DRAM 内部并行推进。想象一家只有一个灶台的餐厅——无论来多少客人，厨师一次只能炒一道菜，换菜还得先刷锅。bank 就相当于给餐厅装了多个独立灶台：灶台 A 炒宫保鸡丁的同时，灶台 B 可以煮麻辣烫，互不等待。没有 bank，DRAM 会几乎退化成一个只能围绕单一 open row 来回切换的大阵列，row conflict 会频繁到难以忍受。
 
@@ -28,22 +28,18 @@ bank 存在的另一个重要目的，是让 row 冲突的损失局部化。假�
 一个简单的多 bank 交织时序，可以帮助理解它为什么重要：
 
 ```text
-Cycle     0      1      2      3      4      5
-Req A     ACT A -------- RD A -----------------
-Req B            ACT B -------- RD B ----------
-Req C                           ACT C --- RD C
-
-Bank 0    open row x -> busy -> col access -> ready
-Bank 1           open row y -> busy -> col access -> ready
-Bank 2                          open row z -> busy -> ready
+时间从左向右；以下间隔仅示意，不代表合法时钟周期
+Bank 0    ACT A ------------ RD A ---------->
+Bank 1         ACT B ------------ RD B ----->
+Bank 2                    ACT C ------- RD C
 ```
 
-这个图想表达的不是精确 JEDEC timing，而是“一个 bank 在做 activate 时，另一个 bank 仍可推进自己的状态”。如果所有请求都打在同一个 bank，上面的交错基本不成立，系统会退化成严格串行的 `PRE/ACT/RD` 流；只有当请求被合理分散，bank 级并行才会浮现。
+这个图想表达的不是精确 JEDEC timing，而是“一个 bank 在做 activate 时，另一个 bank 仍可推进自己的状态”。同一个 bank 不可同时保持两个打开行。若请求都命中已打开的同一行，可连续发多条 RD/WR，无须每次 PRE/ACT；若换行，则先满足关行和重新 ACT 的时序。分散到不同 bank 才能同时维持不同行，但命令及 DQ 等共享约束仍须检查。
 
 再看一个反例也很重要。假设相邻地址被映射得过于集中，四个连续请求都落到同一 bank 的不同行，即便器件内部有很多 bank，controller 看到的仍然可能是：
 
 ```text
-Req0: PRE/ACT/RD on bank 0
+Req0: [若已有其他打开行则 PRE] / ACT / RD on bank 0
 Req1: PRE/ACT/RD on bank 0
 Req2: PRE/ACT/RD on bank 0
 Req3: PRE/ACT/RD on bank 0

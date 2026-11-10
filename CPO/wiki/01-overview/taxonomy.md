@@ -21,9 +21,10 @@
 - `Pluggable optics`：光模块仍在前面板或板边，通过较长电通道连接交换芯片
 - `NPO / Near-packaged optics`：光引擎离芯片更近，但还不是严格同封装
 - `CPO / Co-packaged optics`：光引擎与交换 ASIC 进入同一封装域或紧邻共封装域
-- `OIO / On-board optics`：光器件主要位于板上，不一定与 ASIC 同封装
+- `OBO / On-Board Optics`：板载光学，光模块或引擎位于板上，不一定与 ASIC 共封装。参见 [COBO On-Board Optics Specification 1.1](https://www.advanced-photonics.org/_files/ugd/7bc1dc_b061c0efc5a04d5cb4451ecc450f0817.pdf)。
+- `Optical I/O`：光输入/输出的功能描述，可以采用板载、封装内 chiplet 等不同位置；它不等于 OBO。文献中的 `OIO` 缩写可能因作者而异，应核对原文，此处避免把它固定解释为板载光学。
 
-这里最重要的问题不是名字，而是“高速电通道被缩短到什么程度”。
+NPO 和 OBO 可能在具体产品位置上重叠；二者不一定是同义词。CPO 的封装边界和板载组件的具体连接应按产品定义核实。这里最重要的问题是“高速电通道被缩短到什么程度”。
 
 ## 维度二：按光源位置分
 

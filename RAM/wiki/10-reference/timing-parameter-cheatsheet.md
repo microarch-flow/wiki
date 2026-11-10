@@ -7,23 +7,23 @@
 
 如果只想快速回忆主要 timing 参数分别约束哪段行为、影响哪类冲突，这页应该提供怎样的紧凑对照。
 
-## 正文
+## 按参考动作查找时序约束
 
-这一页不重复解释所有物理细节，而是把最常见的 DRAM timing 参数压成一个能快速拿来用的对照表。读法很简单：先看“它在约束哪两个动作之间”，再看“它本质上在等什么物理过程完成”，最后看“如果它变大或撞上了，会把哪类访问变贵”。
+这一页不重复解释所有物理细节，而是把最常见的 DRAM timing 参数压成一个对照表。除特别说明，以下 DDR4 外部命令简式假设 CA parity 关闭（PL=0）且 CS-to-CA latency 关闭。开启其他模式须按器件手册定义采样沿和 guard，不能机械给每个命令间隔加 PL。
 
 ## 核心参数
 
 `tRCD`
 
 - 全称：`Row to Column Delay`
-- 约束：`ACT -> RD/WR`
+- 约束：DDR4 的 `ACT -> 内部 RD/WR`；外部列命令可提前 AL，仍需满足其他命令规则
 - 在等什么：开行后整行感测和 row buffer 稳定到可列访问
 - 主要影响：row miss 的首个列访问成本
 
 `tCL`
 
 - 全称：`CAS Latency`
-- 约束：`RD -> first data out`
+- 约束：在上述 PL=0 模式下，外部 `RD -> first data out` 的名义延迟是 `RL = AL + CL`，且 AL=0 时等于 CL。Alliance Memory AS4C512M8D4A 的 CA parity 模式为 `RL=AL+CL+PL`，`WL=AL+CWL+PL`；AL=0、CL=11、PL=4 的读例为 15 CK。见[原厂手册表 29 注 3 与 Burst Read 示例](https://www.alliancememory.com/wp-content/uploads/AllianceMemory_4Gb_DDR4_AS4C512M8D4A-75BCN_75BIN_Aug2022_Ver1.0.pdf)。
 - 在等什么：列路径、内部预取、I/O 启动把首拍数据推出去
 - 主要影响：读请求从列命令到外部可见数据的返回时间
 
@@ -44,7 +44,7 @@
 `tWR`
 
 - 全称：`Write Recovery Time`
-- 约束：`WR -> PRE`
+- 约束：写数据 burst 结束后的指定参考沿到 PRE；并非 `WR` 命令沿直接加 `tWR`
 - 在等什么：写入后数据真正写回 cell 并稳定
 - 主要影响：写后不能立刻关行，写密集场景会受影响
 
@@ -55,10 +55,16 @@
 - 在等什么：一次 refresh 操作完整占用并释放相关阵列资源
 - 主要影响：refresh 对正常请求的阻塞长度
 
+`tRTP`
+
+- 全称：`Read to Precharge`
+- 约束：DDR4 显式 PRE 对同 bank 外部 RD 的下界含 `RD + AL + nRTP`；还要同时满足 `ACT + nRAS` 等约束。参考沿及可用值以器件模式为准。
+- 主要影响：读后最早关行时刻，不是首数据返回时刻。
+
 `tCCD`
 
 - 全称：`Column to Column Delay`
-- 约束：相邻列命令之间的最小间隔
+- 约束：所选 DDR4 模式下同 rank 的连续同向 RD→RD 或 WR→WR 列命令间隔；同 bank group 的 tCCD_L 与跨组 tCCD_S 分开。读写反向切换另检查方向、rank 和 DQ 时序
 - 在等什么：列访问管线和数据总线节奏
 - 主要影响：连续 burst 的列吞吐节拍
 
@@ -72,14 +78,14 @@
 `tRRD`
 
 - 全称：`Row to Row Delay`
-- 约束：相邻 `ACT` 之间的最小间隔
+- 约束：DDR4 同 rank 不同 bank 的相邻 `ACT` 最小间隔；同 bank group 用 tRRD_L，跨组用 tRRD_S。相同 bank 的再次 ACT 另受 tRC/PRE 等约束
 - 在等什么：开行相关的瞬时资源和电流冲击限制
 - 主要影响：多 bank 并行开行速度
 
 `tFAW`
 
 - 全称：`Four Activate Window`
-- 约束：一个时间窗口内允许的 `ACT` 数量上限
+- 约束：同 rank 的滚动 tFAW 时间窗内至多四次 ACT；第五次 ACT 的时刻不早于前四次中最早 ACT + tFAW，且仍须满足 tRRD 等其他约束
 - 在等什么：功耗/电流峰值约束，而不是单条命令逻辑依赖
 - 主要影响：密集多 bank 开行时的并行度
 
@@ -88,9 +94,10 @@
 如果你只想先抓主干，优先记下面这组：
 
 - `tRCD`：开行后多久能列访问
-- `tCL`：读命令后多久看到第一拍数据
+- `RL=AL+CL`：外部读命令后首数据的名义时刻（CK 周期）
 - `tRAS`：一行至少要开多久
 - `tRP`：关行后多久能开下一行
+- `tRTP / tWR`：读后和写数据后何时能关行；参考沿不同
 - `tRFC`：一次 refresh 会挡多久
 
 只靠这五条，你已经能解释很多最基本的现象：
@@ -102,20 +109,23 @@
 
 ## 把它们串成脑内时序
 
-你可以把整个过程想象成去银行保险柜取东西：先让工作人员打开保险柜（ACT，等 tRCD），然后找到你的格子取出物品（RD，等 tCL），取完后工作人员要锁好保险柜（PRE，等 tRP），你才能请求打开另一个保险柜。如果你要取的东西在同一个已打开的保险柜里，就省掉了开锁和关锁的时间——这就是 row hit 快的原因。
+你可以把整个过程想象成去银行保险柜取东西：先让工作人员打开保险柜（ACT，等 tRCD），然后找到你的格子取出物品（RD，等 RL=AL+CL），取完后工作人员要锁好保险柜（PRE，等 tRP），你才能请求打开另一个保险柜。如果你要取的东西在同一个已打开的保险柜里，就省掉了开锁和关锁的时间——这就是 row hit 快的原因。
 
-最常见的一条读路径可以先记成：
+下面的命令示意假设 `AL=0`、PL=0 且 CS-to-CA latency 关闭：
 
 ```text
-ACT --tRCD--> RD --tCL--> first data
+ACT --tRCD--> RD --RL=AL+CL--> first data
 ACT ---------tRAS--------> PRE --tRP--> next ACT
 ```
 
-写路径只要再多补一条：
+DDR4 BL8、禁用写 CRC、PL=0 且 CS-to-CA latency 关闭的显式 PRE 必须同时满足。时间戳、AL、CWL、nRAS/nRTP/nWR 均以 CK 周期计；BL 是传输次数，BL8 占 4 CK：
 
 ```text
-WR --tWR--> PRE
+PRE >= max(tACT+nRAS, tRD+AL+nRTP, tWR_command+WL+BL/2+nWR)
+WL = AL + CWL
 ```
+
+若 `AL=0, CWL=9, nWR=12, WR@0`，写恢复参考沿为 `13`，PRE 不早于 `25`；仍须满足 `tACT+nRAS` 及其他约束。没有 RD 或 WR 时忽略对应项；同一打开行有多次命令时取各命令约束的最大值。模式、burst 长度、CRC 和参考沿由目标规格决定。详见 [完整推导](../05-dram-protocol-families/timing-parameters-trcd-trp-tras.md#ddr4-同-bank-显式-pre-的完整下界)。
 
 refresh 则可以脑内记成：
 
@@ -127,8 +137,8 @@ REF --tRFC--> normal requests can fully resume
 
 如果你的请求主要是：
 
-- `row miss`：更敏感 `tRCD + tCL`
-- `row conflict`：更敏感 `tRP + tRCD + tCL`
+- `row miss`：AL=0 时更敏感 `tRCD + RL`
+- `row conflict`：AL=0 时更敏感 `tRP + tRCD + RL`
 - `write-heavy`：更敏感 `tWR`
 - `many-bank parallel ACT`：更敏感 `tRRD / tFAW`
 - `refresh-sensitive workload`：更敏感 `tRFC`
@@ -160,14 +170,14 @@ row_conflict_cost
 refresh_block_cost
 ```
 
-如果要再细一点，就至少把下面这些 guard 保留下来：
+如果要再细一点，在本页所述 PL=0 且 CS-to-CA latency 关闭的模式下，至少把下面这些 guard 保留下来：
 
 ```text
-ACT -> RD/WR guarded by tRCD
-RD -> data visible guarded by tCL
+external RD/WR + AL >= ACT + nRCD  # 同时检查其他命令规则
+RD -> nominal first data after RL=AL+CL; check AC timing window
 ACT -> PRE guarded by tRAS
 PRE -> next ACT guarded by tRP
-WR -> PRE guarded by tWR
+PRE guarded by max(ACT+nRAS, each RD+AL+nRTP, each WR+WL+BL/2+nWR)
 REF blocks service for tRFC
 ```
 

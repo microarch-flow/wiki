@@ -24,6 +24,12 @@ MoE 典型特征是：
 
 而不只是总字节数大。
 
+## 从 gating 到网络流量
+
+MoE gating 根据 token 选择 top-k expert；这是模型层目的地选择，不是 NoC 的逐跳 routing。假设 100 个 token、hidden=1024、FP16=2 B、top-k=2，且每个选择都接受、不压缩，dispatch 逻辑 payload 为 `100×1024×2×2 = 409,600 B`；若两个 expert 各返回同尺寸结果，combine 回传同量。实际容量限制可能丢弃、重路由或排队 token；本地 expert 的数据不一定经过 NoC。expert 放置和 gating 偏斜决定流向。
+
+若某 expert 集中收到大量 token，其计算队列满会反压接收端；改变网络路径不能突破该 expert 的计算能力。网络链路竞争则表现为中途 queue/credit/SA stall。trace 应分别记录每 token 的 expert 选择、发送/到达、expert 入队和完成、回传及各段等待，才能区分两种热点。
+
 ## 为什么它会挑战 deterministic 方案
 
 如果热点位置和 expert 负载分布会明显变化，那么纯静态 route plan 的优势会下降，因为：

@@ -30,7 +30,7 @@
 | 理解 MMIO、cache、interrupt 如何映射到 BUS | [MMIO、Cache 与 Interrupt 视角](./04-microarchitecture-integration/mmio-cache-interrupt-view.md) |
 | 看启动阶段总线是怎么被拉起来的 | [Boot Path 与地址映射初始化](./04-microarchitecture-integration/boot-path-address-map-initialization.md) |
 | 看 debug master 如何接入系统 | [Debug Path 与 System Access](./04-microarchitecture-integration/debug-path-system-access.md) |
-| 理解 DMA 地址为何离不开 IOMMU/SMMU | [IOMMU、SMMU 与 DMA 寻址](./04-microarchitecture-integration/iommu-smmu-dma-addressing.md) |
+| 理解 DMA 何时需要地址翻译与隔离 | [IOMMU、SMMU 与 DMA 寻址](./04-microarchitecture-integration/iommu-smmu-dma-addressing.md) |
 | 串起 doorbell、completion 和 interrupt | [Doorbell、Completion 与 Interrupt Flow](./04-microarchitecture-integration/doorbell-completion-interrupt-flow.md) |
 | 看 AXI 和 DMA 是怎样真正连起来的 | [AXI 与 DMA 的系统接口](./04-microarchitecture-integration/axi-dma-system-interface.md) |
 | 看 descriptor fetch / data move / writeback 三段链路 | [DMA Descriptor Fetch、Data Move 与 Writeback](./04-microarchitecture-integration/dma-descriptor-fetch-data-move-writeback.md) |

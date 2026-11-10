@@ -13,12 +13,12 @@
 | 本 wiki 分类 | CIM |
 | 技术路线 | Flash/analog memory 中存储权重，并在 analog compute-in-memory array 中执行矩阵乘法 |
 | compute paradigm | analog CIM + digital control/software workflow |
-| 产品层级 | M1076 是 chip/product page 口径；2025-2026 公告更多是 roadmap、funding、joint development 和 acquisition 口径 |
+| 产品层级 | M1076 是单芯片口径；2025-2026 公告更多是 roadmap、funding、joint development 和 acquisition 口径 |
 | 目标市场 | edge vision、defense、automotive、robotics，2025 后也强调 data center/LLM inference 方向 |
 
 Mythic 符合 CIM 的原因是：权重存储和 MAC 运算发生在 analog memory/array 平面内，计算不是放在独立 DRAM bank compute unit，也不是放在 package-side accelerator。它和 [Flash CIM](../../02-memory-technologies/flash-cim-niche.md) 的关系很直接：Flash 提供非易失、高密度权重存储，analog array 提供高能效矩阵乘法；代价是写入校验、漂移、ADC/SA、模型 retraining 和测试覆盖都进入产品闭环。
 
-官方 M1076 页面给出的产品口径是：M1076 单芯片最高 25 TOPS，集成 76 个 AMP tiles，可存储最多 80M weights，无需外部 DRAM 执行模型，典型复杂模型功耗 3-4 W，并通过 graph compiler 把 PyTorch/Caffe/TensorFlow 模型优化、量化和部署到 AMP 上。来源：[Mythic M1076 product page](https://mythic.ai/products/m1076-analog-matrix-processor/)。
+[Mythic 2021 年发布稿](https://www.prnewswire.com/news-releases/mythic-expands-product-lineup-with-new-scalable-power-efficient-analog-matrix-processor-for-edge-ai-applications-301306344.html)称 M1076 单芯片最高 25 TOPS、3 W 功耗档；16 芯片 PCIe 卡最高 400 TOPS、1.28 billion weights、75 W 是板卡口径，不能当单芯片数据。模型仅在算子、权重与中间数据满足设备容量和映射条件时才可能不依赖外部 DRAM；超容量、跨芯片和 host fallback 会产生额外传输。原 M1076 产品页已失效，具体阵列、功耗与不需外部存储的范围须以可核验的型号资料为准。
 
 Mythic 的公司状态不能只按早期 M1076 解读。2023 年 3 月，Mythic 官方宣布完成 1300 万美元融资，并明确说资金将用于把下一代 M2000 series 带向市场；同一公告称 M1076 已向 Lockheed Martin 等客户 shipping，但这仍应理解为公司公告口径，不等同于公开可验证的大规模量产。来源：[Mythic 2023 funding announcement](https://mythic.ai/whats-new/mythic-raises-13-million-to-bring-its-next-generation-analog-computing-solution-to-market/)。
 

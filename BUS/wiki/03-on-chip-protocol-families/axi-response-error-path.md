@@ -49,7 +49,7 @@ AXI response 不是根因报告系统。`DECERR`、`SLVERR`、`OKAY`、`EXOKAY` 
 
 写事务的 completion 在 `B` channel。写地址 `AW` 被接受、写数据 `W` 被接收，都不代表写成功；slave 或 interconnect 必须在 `B` channel 上返回状态。一个写 burst 即使所有 `W` beat 都 handshaked，也要等 `BRESP` 被 master 消费后，master 才能释放对应 outstanding。
 
-读事务的状态随 `R` channel 返回。读 burst 可能有多个 `R` beat，每个 beat 携带 `RRESP`，最后一个 beat 还承担 burst completion 的边界。实现和调试时要关注：错误是否出现在某个 beat，错误 beat 是否仍然满足 last/ID 语义，master 是否消费了这些 beat。
+读事务的状态随 `R` channel 返回。读 burst 的每个 beat 携带 `RRESP`；即使中途某 beat 报错，也必须完成约定数量的 R beat，并在最后一拍正确携带 `RLAST`，不能提前截断。写事务即使已知失败，也须接收约定的全部 W beat 后再返回 B。实现应在握手时计数并保持 ID/last 匹配。若 timeout wrapper 合成上游错误响应，必须隔离、排空或按系统契约丢弃迟到的下游响应，防止同一事务二次完成。
 
 一个构造写错误路径：
 
@@ -68,7 +68,7 @@ AXI response 不是根因报告系统。`DECERR`、`SLVERR`、`OKAY`、`EXOKAY` 
 
 这就像快递系统里**"超时赔付"和"彻底失联"**的区别。
 
-如果快递公司有超时机制——包裹 7 天没送到，系统自动退款（合成一个错误 response）。寄件人知道这笔交易失败了，可以重新处理。但如果快递公司没有超时机制，或者退款通知被邮件系统堵住了，寄件人就会陷入**永远等待**——这就是 hang / no progress。
+如果快递公司有支持收尾的超时机制——包裹 7 天没送到，系统可以按契约退款（合成一个错误 response）。单独的超时检测并不保证原事务已终止。寄件人知道这笔交易失败了，可以重新处理。但如果快递公司没有超时机制，或者退款通知被邮件系统堵住了，寄件人就会陷入**永远等待**——这就是 hang / no progress。
 
 因此调试要先问两个问题：
 

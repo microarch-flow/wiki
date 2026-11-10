@@ -26,7 +26,9 @@ DMA 的难点在于问题跨越软件、互连、memory 和 completion 路径。
 - completion backlog 或 completion visible delay
 - error / retry / timeout count
 
-这组计数器的价值在于，它们把“提交不够、发不出去、回不来、完成不见”四类问题拆开了。
+定义每个 counter 的事件和分母：submitted 为软件提交、accepted 为设备实际接收、completed 为指定完成域的事件；分别按任务 ID 计数。read/write bytes 要注明逻辑 payload 还是包含协议开销的 wire bytes。outstanding 应周期采样直方图及高水位；queue full cycles 与“有待发请求且因满而 stall”的 demand-stall cycles 分开。高水位仅证明用到至少这么多槽，不证明硬件容量上限。
+
+Trace 要以 `(task_id, subtransaction_id, 方向, 序号)` 关联发出和返回，ID 可复用时不能仅靠协议 ID；跨时钟域须记录时钟域、时间换算和误差。固定 counter 位宽、回绕/饱和、清零与快照一致性；跨清零区间不能直接求差。设备侧通常不能直接观察 CPU cache 中的可见时刻，须用驱动同步点/CPU trace 或明确的代理事件，标明观察域。
 
 ## 最值得有的状态观测
 

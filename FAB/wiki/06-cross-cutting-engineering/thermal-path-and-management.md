@@ -32,6 +32,10 @@ flowchart LR
 
 风险不只在 logic die 自己过热，还在于 logic 主热点把 HBM 拖入更高温区。HBM 温度会影响带宽稳定性、刷新、可靠性和系统节流策略。
 
+例如，固定冷却边界时，logic 和 HBM 都发热，可用经校准的稳态互热阻估算 `T_HBM = T_ambient + R_HBM,logic × P_logic + R_HBM,HBM × P_HBM + …`。logic 功率升高会通过热耦合抬高 HBM 温度；瞬态则还需热容或热 RC，不能直接套稳态值。
+
+若器件或控制器明确规定传感器、阈值、采样、滞回和刷新/调频动作，模型才按该策略改变行为。缺少策略时仅报告温度及是否超出额定条件，不虚构刷新或降频事件。
+
 ## 3DIC 的热问题
 
 3DIC 把 die 垂直堆叠，缩短互连，也让中间层更难散热。热源可能被其他 die、bonding interface 或 base die 包住，温度梯度更强。

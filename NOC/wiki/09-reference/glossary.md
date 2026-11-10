@@ -20,7 +20,7 @@
 
 ### `wormhole`
 
-header 先开路，body/tail 跟随，占用沿途资源直到 tail 释放。
+header 建立路由与下游 VC 绑定，body/tail 跟随。沿途持有 input VC 上下文和 flit slot，物理链路通常逐 flit 共享；tail 离开某 input 只释放该处本地上下文。严格策略中，下游 VC 许可须等该处 tail 离开并返回 free 后才可复用。
 
 它的核心后果是：buffer 可以浅，但 backpressure 和 path coupling 会被放大。
 
@@ -66,7 +66,7 @@ header 先开路，body/tail 跟随，占用沿途资源直到 tail 释放。
 
 ### `deterministic routing`
 
-给定 `src-dst`，路径规则固定，可预测。
+给定 `src-dst`，路径规则固定；排队和端点服务仍会变化，因此不等同固定完成时间。
 
 ### `source routing`
 
@@ -78,7 +78,7 @@ header 先开路，body/tail 跟随，占用沿途资源直到 tail 释放。
 
 ### `deadlock / livelock / starvation`
 
-- `deadlock`：互相等待，系统永久不前进
+- `deadlock`：一组持有资源的 packet 形成无法自行解除的等待，至少该组永久不前进；其他系统部分仍可运行
 - `livelock`：一直在动，但某些 packet 长期不收敛
 - `starvation`：有路也有系统活动，但你长期抢不到服务
 

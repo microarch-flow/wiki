@@ -26,7 +26,7 @@ package success
      x assembly_success
 ```
 
-这个公式不是精确模型，但能说明方向：对象越多、单个对象越贵、assembly 越不可逆，KGD 越重要。坏 die 漏进 package，不只是浪费自己，还会拖累其他 good die 和封装资源。
+上述乘法使用独立且口径一致的事件概率；若存在同批相关缺陷，应改用条件概率，不能无条件相乘。这里的 die 概率应是已通过筛测后的真良品概率，不能再次乘入同一 CP 通过率。对象越多、单个对象越贵、assembly 越不可逆，KGD 越重要。坏 die 漏进 package，不只是浪费自己，还会拖累其他 good die 和封装资源。
 
 ## D2W 为什么依赖 KGD
 
@@ -38,7 +38,7 @@ W2W 是 wafer-to-wafer，对规则、高良率、尺寸匹配结构有吞吐优�
 
 HBM stack 本身由多层 DRAM die、TSV、micro-bump 或其他连接、base die 和热机械结构组成。它进入 logic + HBM package 前，已经是一个高价值 3D memory component。HBM stack 的测试和筛选决定后续 2.5D package 的风险底线。
 
-对 AI/HPC 系统，KGD 不只针对 compute die，也针对 HBM stack、I/O die、interposer module 或中间 assembly 阶段。每个对象都要尽量在进入下一层价值更高的组合前完成筛选。
+`KGD` 的对象是 die：例如通过规定筛选的 compute die 或 DRAM die。堆叠完成并通过 stack-level 筛选的 HBM 是已筛 stack，不再是一颗 die；interposer module 是已测中间子装配件。记录每类对象的测试人口和残余缺陷，不能把已筛 stack 再乘一次内部 die 的原始筛选率。W2W 依靠 wafer map 和位置配对评估坏片，不要求逐颗挑选 KGD。
 
 ## KGD 的难点
 

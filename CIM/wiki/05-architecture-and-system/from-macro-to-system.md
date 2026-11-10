@@ -1,7 +1,7 @@
-# 从 Macro 到 System：Tile、Bank、Chip 三级组织
+# 从 Cell 到 System：Macro、Tile 与 Chip 的层级
 
 上级：[05 Architecture And System](./README.md)
-相关：[Macro Design Framework](../04-circuit-and-macro/macro-design-tradeoff-framework.md), [Peripheral Overhead](../04-circuit-and-macro/peripheral-overhead.md), [NoC: Tile Architecture](../../../NoC/wiki/06-ai-noc-specifics/tile-architecture-and-noc.md)
+相关：[Macro Design Framework](../04-circuit-and-macro/macro-design-tradeoff-framework.md), [Peripheral Overhead](../04-circuit-and-macro/peripheral-overhead.md), [NoC: Tile Architecture](../../../NOC/wiki/06-ai-noc-specifics/tile-architecture-and-noc.md)
 
 ## 这页在回答什么问题
 
@@ -19,7 +19,7 @@ macro-level TOPS/W 为什么不能直接外推成 chip-level 能效？因为每�
 
 cell 到 macro 的第一道损耗来自外围和阵列规模。单个 SRAM bitline、ReRAM cell 或 Flash threshold state 能参与计算，不代表大阵列中的 driver、SA/ADC、IR drop、variation 和 calibration 已经闭合。
 
-macro 到 tile 的第一道损耗来自 buffer 和 local reduction。一个 256x256 macro 可以高效完成局部 MVM，但完整 layer 往往需要切块、重复输入、合并 partial sum 和处理边界碎片。
+macro 到 tile 的第一道损耗来自 buffer 和 local reduction。沿 K 切到多个宏会产生同一输出的部分和归并；沿 N 切则各宏写不同输出，不必归并。若多个宏共享一个 bank/端口，还须计仲裁等待。一个 256x256 macro 可以高效完成局部 MVM，但完整 layer 往往需要切块、重复输入、合并 partial sum 和处理边界碎片。
 
 tile 到 chip 的第二道损耗来自 NoC、global buffer 和同步。CIM 把部分计算压进 array，不代表全局通信消失；多 tile 的 partial sum、activation broadcast 和 weight reload 仍会形成 traffic。
 

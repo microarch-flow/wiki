@@ -2,7 +2,7 @@
 
 上级：[04 Routing And Flow Control](./README.md)
 
-相关：[Arbitration Policies](./arbitration-policies.md)、[Virtual Channel Fundamentals](../02-router-microarchitecture/virtual-channel-fundamentals.md)、[Multiple Physical Networks](../05-system-integration/multiple-physical-networks.md)、[BUS: 争用、QoS 与可观测性](/mnt/e/wiki/BUS/wiki/05-performance-debug/contention-qos-observability.md)
+相关：[Arbitration Policies](./arbitration-policies.md)、[Virtual Channel Fundamentals](../02-router-microarchitecture/virtual-channel-fundamentals.md)、[Multiple Physical Networks](../05-system-integration/multiple-physical-networks.md)、[BUS: 争用、QoS 与可观测性](../../../BUS/wiki/05-performance-debug/contention-qos-observability.md)
 
 ## 这页在回答什么问题
 
@@ -47,7 +47,7 @@ QoS 的本质是资源分配优先级。
 价值：
 
 - 减少 HOL blocking
-- 避免 request/response/control 互相堵死
+- 为 request/response/control 的隔离提供资源基础；仍需证明消息和端点依赖不会形成死锁
 - 给后续仲裁和统计留出独立抓手
 
 这往往是 QoS 的第一层基础，而不是附加优化。
@@ -120,7 +120,7 @@ QoS 并不免费。
 
 所以 QoS 设计不是“谁重要就一直压别人”，而是“哪些流必须被保护，保护到什么程度为止”。
 
-## 什么时候 VC 不够、必须上多网络
+## 什么时候比较多网络与带宽预留
 
 当下面几种情况出现时，通常说明仅靠 VC 隔离已接近极限：
 
@@ -129,7 +129,7 @@ QoS 并不免费。
 - 不同 class 的 burst 结构和方向性差异极大
 - debug 与验证需要非常清楚的因果边界
 
-这时把 control/data 或 read/write 物理分离，往往比继续堆 QoS 规则更干净。
+物理分离可以减少链路间干扰，但增加布线、router 和闲置容量。另一选择是在共享链路使用 TDMA 或预留服务：例如每 8 cycle 为 control 保留 2 个可用 slot，且输入 burst 受限、每跳和端点服务有界时，可推导等待上界。若这些条件不成立，VC 或时隙标签本身都不能保证延迟；应比较整形、时钟、端点和成本，再选择物理隔离或共享资源。
 
 ## 常见误区
 

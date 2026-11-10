@@ -21,10 +21,12 @@
 
 ### 路线 1：第一次看 CPO
 
-1. [CPO 一页版总览](./13-one-page-summary/cpo-one-page.md)
-2. [CPO 在解决什么问题](./01-overview/problem-statement.md)
-3. [CPO 分类框架](./01-overview/taxonomy.md)
-4. [学习路线图](./01-overview/learning-roadmap.md)
+1. [电路到时序的共用基础](../../electrical-timing-foundations.md)
+2. [光链路基础与功率预算](./04-optical-engine/optical-link-basics.md)
+3. [激光器、调制器和探测器](./04-optical-engine/laser-modulator-detector.md)
+4. [CPO 在解决什么问题](./01-overview/problem-statement.md)
+5. [CPO 分类框架](./01-overview/taxonomy.md)
+6. [带宽、功耗与热](./05-electrical-thermal-reliability/bandwidth-power-thermal.md)
 
 ### 路线 2：想系统学透
 

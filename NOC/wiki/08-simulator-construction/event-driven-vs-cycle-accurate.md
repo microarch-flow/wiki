@@ -1,112 +1,26 @@
-# Event Driven Vs Cycle Accurate
+# Event Driven 与 Cycle Accurate
 
 上级：[08 Simulator Construction](./README.md)
 
-相关：[Modeling Layers Analytical Event Cycle](../07-evaluation-methodology/modeling-layers-analytical-event-cycle.md)、[Verification And Calibration](./verification-and-calibration.md)
+相关：[Modeling Layers](../07-evaluation-methodology/modeling-layers-analytical-event-cycle.md)、[Verification And Calibration](./verification-and-calibration.md)、[Router Pipeline Pseudocode](./router-pipeline-pseudocode.md)
 
 ## 这页在回答什么问题
 
-这页回答：NoC simulator 应该做成 event-driven 还是 cycle-accurate，这两种路线分别适合什么问题，第一版该怎么取舍。
+仿真推进方式和模型保真度是两条独立轴。event-driven 指按事件时间跳转；tick-driven 指逐拍执行。cycle-accurate 则要求所选接口和内部状态的每拍行为符合目标时间契约，不能由引擎名称推断。
 
-## 先把问题问对
+| 执行引擎 | 粗 flow 状态 | flit/credit 与逐拍仲裁状态 |
+| --- | --- | --- |
+| tick-driven | 每拍检查 flow 的粗模型，可能做很多无效工作 | 可按每拍快照实现 cycle-accurate |
+| event-driven | 按 flow 到达和完成时间推进 | 也可在每个有变化的周期处理候选、grant、flit 和 credit，达到同一逐拍语义 |
 
-真正的问题通常不是“哪种更高级”，而是：
+例如事件按 `(cycle, phase, stable_id)` 确定次序；对同拍 router，仍要从统一 `S(t)` 快照计算候选，在拍末统一提交，不能因事件遍历顺序让 flit 同拍走多跳。模型应遵守 [时间与快照契约](./router-pipeline-pseudocode.md#时间与快照契约)。
 
-- 当前要解释的现象是否依赖 per-cycle 资源竞争
-- 是否需要精确表达到达次序和 backpressure 传播
-- 是否更看重速度，还是更看重微观可解释性
+## 何时可快进
 
-如果问题本身不要求细粒度时序，过早进入 cycle-accurate 往往只是拖慢开发。
+仅在下一事件之前没有会改变结果的外部输入、时钟边沿、计时器、仲裁指针、队列、credit 或消费状态时，才能跳过空闲时间。若一个等待候选每拍都可能获 grant，就不能只跳到下个 packet 到达而漏掉仲裁。事件队列节省的是无状态变化的空拍，不自动降低模型精度，也不保证更快。
 
-## event-driven 的优势
+## 选择与验证
 
-event-driven 更适合：
+先决定需要观察 flow、packet、flit、credit 或信号级状态，再选 tick 或事件实现。粗 flow 模型适合快速筛选，但不能解释未建模的 VC 和逐拍回压；细粒度模型有更高状态和验证成本。
 
-- flow / phase 级问题
-- request / response 粗粒度时序
-- 快速参数探索
-
-优点：
-
-- 状态较少
-- 运行更快
-- 更容易承载大批量 sweep
-
-局限：
-
-- 很难自然表达细粒度 VC / credit / switch 冲突
-- 对 tail latency 和 stall taxonomy 的解释力有限
-
-## cycle-accurate 的优势
-
-cycle-accurate 更适合：
-
-- credit 回传
-- wormhole path 占用
-- ejection blocked
-- class / VC / arbitration 的真实交互
-
-优点：
-
-- 可以稳定解释细粒度 stall
-- 对 backpressure 链更有解释力
-
-代价：
-
-- 实现复杂度更高
-- 性能更低
-- 更容易因为状态更新顺序出错
-
-## 对 AI NoC 的现实建议
-
-对 AI NoC，一个务实的路线通常不是二选一，而是分层共存：
-
-- 上层：event-driven / flow-level 做 trace 和 phase 分析
-- 下层：cycle/flit-level 解释关键场景和热点
-
-这样可以同时得到：
-
-- 足够快的探索速度
-- 足够强的现象解释力
-
-## 第一版为什么常常还是建议按周期推进
-
-因为一旦你想稳定回答下面这些问题：
-
-- `NO_CREDIT` 到底是不是主因
-- ejection blocked 怎样传播回 source
-- QoS / priority 是否真的在冲突点改变结果
-
-就很难绕开明确的 per-cycle 状态推进。
-
-所以即使整体工作流有 event-driven 层，第一版核心 NoC 内核通常仍然值得按 cycle/flit 组织。
-
-## 什么时候 event-driven 就够
-
-如果当前只在回答：
-
-- topology / placement 一阶差异
-- workload phase overlap
-- HBM port 大致是否过热
-
-那 event-driven 层可能已经够了。
-
-## 一句话理解
-
-event-driven 擅长快，cycle-accurate 擅长解释细节；AI NoC 常常需要两层并存，而不是盲目二选一。
-
-## 建模启示
-
-实现上建议尽量把：
-
-- traffic source / trace engine
-- NoC core timing engine
-
-解耦。
-
-这样未来可以：
-
-- 用同一批 trace 驱动不同层级模型
-- 用 event 层筛选，再用 cycle 层深挖
-
-这会显著提高 simulator 体系的可扩展性。
+用同一 trace、seed 和快照规则运行 tick 与 event 两个内核，逐拍比较发送、credit/free、队列、grant、消费和统计。测试同拍多事件、空闲快进、下游阻塞及恢复；只有在目标场景对齐后，才可声称两实现等价。两者都不自动等同 RTL 签核。

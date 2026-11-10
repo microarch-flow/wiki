@@ -15,7 +15,7 @@
 4. [Paradigm crossmap](../03-compute-paradigms/paradigm-memory-crossmap.md)
 5. [高频问题](high-frequency-questions.md)
 
-读完应能回答：一个对象是 CIM/PIM/NMC 哪类，属于哪条 memory technology 和 compute paradigm，哪些宣传指标不能横比。
+读完应能回答：一个对象按物理位置属于 CIM/PIM/NMC 哪类；CIM 查阵列求值范式，独立 PIM/NMC 查指令、存储及接口，并识别哪些宣传指标不能横比。
 
 **目标：理解电路和 macro。**
 
@@ -74,7 +74,7 @@
 4. [近期研究主题](../09-research-frontier/recent-progress-themes.md)
 5. [Open problems](../09-research-frontier/open-problems.md)
 
-读完应能回答：下一篇论文解决的是单点优化还是真 open problem，指标是否可比较。
+读完应能回答：下一篇论文的未知机制、约束与证据是什么，指标是否可比较；单点问题和跨层问题都可能仍开放。
 
 如果时间很少，只读四篇：[CIM/PIM/NMC 的严格区分](../01-overview/cim-pim-nmc-taxonomy.md)、[两条正交主线](../01-overview/two-axes-memory-and-paradigm.md)、[Workload characterization](../07-workloads/workload-characterization-for-cim.md)、[指标术语表](../09-research-frontier/metrics-glossary.md)。这四篇能避免大多数误判。
 

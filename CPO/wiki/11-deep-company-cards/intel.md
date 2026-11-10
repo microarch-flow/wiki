@@ -18,7 +18,7 @@ Intel 在 CPO 生态里的核心位置，是 `volume-proven silicon photonics pl
 
 ## 为什么现在值得跟踪
 
-截至 `2026-05-04` 的 Intel 官方 Silicon Photonics 页面，Intel 明确公开了三层能力：
+Intel 于 [2024-06-26 发布的 OCI 演示公告](https://download.intel.com/newsroom/archive/2025/en-us-2024-06-26-intel-demonstrates-first-fully-integrated-optical-io-chiplet.pdf)和当时平台资料涉及：
 
 - `Optical Compute Interconnect (OCI)`
 - `High-Speed Photonics Components`
@@ -26,9 +26,9 @@ Intel 在 CPO 生态里的核心位置，是 `volume-proven silicon photonics pl
 
 其中最关键的公开信号包括：
 
-- OCI chiplet 第一代支持 `4 Tbps` 双向带宽
-- 官方表述其可与 `CPU / GPU / IPU / SoC` 共封装
-- 官方强调已累计出货 `800 万+ PIC` 与 `3200 万+ on-chip lasers`
+- 第一代 OCI 实现上限为双向聚合 `4 Tb/s`；公告列每方向 64 条 32 Gb/s 通道，不是每方向 4 Tb/s 的有效吞吐
+- 演示芯粒与 Intel CPU 共封装，并提出可与 CPU / GPU / IPU / SoC 集成
+- 同一公告的 `800 万+ PIC` 与 `3200 万+ on-chip lasers` 是既有硅光平台累计出货，不是 OCI 芯粒出货
 
 这说明 Intel 的路线不是纯概念演示，而是试图把现有量产硅光平台延伸到更深度的 package optical I/O。
 
@@ -40,7 +40,7 @@ Intel 当前最值得跟踪的公开路线是：
 - 通过 `OCI chiplet` 把 optical I/O 前移到 compute package
 - 采用集成 `DWDM lasers + SOA + PIC + EIC` 的方式，强调无需 external laser
 
-这一点和 Ayar Labs 的 remote light source 路线形成了非常清晰的对照。
+DWDM 用不同波长在同一光纤中承载多路信号；SOA 是半导体光放大器，用于补偿光功率损失。链路入模时仍需指定方向、通道占用率和业务口径，不能把双向聚合值直接当单向有效速率。
 
 所以研究 Intel 时，关键不是问“它会不会做 CPO”，而是问：
 

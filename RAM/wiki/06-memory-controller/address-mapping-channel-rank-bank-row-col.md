@@ -1,13 +1,13 @@
 # 地址映射：物理地址到 channel、rank、bank、row、col 的拆分艺术
 
 上级：[Memory Controller](./README.md)
-相关：[为什么说 DRAM 的实际性能由 MC 决定](./why-mc-is-the-real-bottleneck.md), [多通道、多 socket、NUMA：扩展带宽的代价](../07-system-architecture/numa-multi-channel-multi-socket.md)
+相关：[Memory controller 如何影响 DRAM 的实际性能](./why-mc-is-the-real-bottleneck.md), [多通道、多 socket、NUMA：扩展带宽的代价](../07-system-architecture/numa-multi-channel-multi-socket.md)
 
 ## 这页在回答什么问题
 
 为什么物理地址到 channel、rank、bank、row、column 的映射，不是一个低层实现细节，而是直接决定 DRAM 请求流最终长成什么冲突形状和并行形状的系统级策略。更具体地说，同一串程序地址在不同映射下，为什么会表现出完全不同的 row locality、bank hotspot 和通道均衡结果。
 
-## 正文
+## 地址位如何选择通道、bank 和行
 
 很多人第一次看到 DRAM 地址映射，会把它想成一个“把若干位切给 channel/bank/row/col”的工程表格，好像只要切对了能寻址就行。这个视角最大的问题，是把映射当成被动翻译。真实系统里，地址映射远不只是把线接对，而是在决定：程序产生的一维地址流，最终会被投影成怎样的多维 DRAM 访问图形。这就像一个剧院的座位分配系统——同一批观众（地址流），按编号顺序坐（映射 A）可能让前三排挤满、后面空荡荡；按奇偶分散坐（映射 B）则每排都坐几个人。观众是同一批，但座位分配策略完全改变了剧院的拥挤分布。投影方式不同，row-hit-rate、bank parallelism、channel balance、refresh 受扰形状，甚至不同 master 之间是否互相踩踏，都会跟着变。
 
@@ -15,31 +15,19 @@
 
 如果把更多低位分给 `column`，那么连续地址更容易留在同一 row 内，只是列偏移在变化。这通常有利于提升 row locality，因为顺序访问更可能形成长 row-hit 序列。但代价是，如果 workload 本身已经流式且并行度高，你可能把太多流量都压在少数 bank 上，导致 bank hotspot。反过来，如果把一些较低位更早切给 `bank` 或 `channel`，相邻地址会更快被打散到不同 bank/channel，bank-level parallelism 和 channel balance 可能更好，但同一 row 连续命中的机会会减少。也就是说，地址映射天然是在 `row reuse` 和 `resource striping` 之间做 trade-off。
 
-举一个极简对照会最直观。假设有一串顺序 cache line 访问：
+考虑 4 bank、每行 8 个 cache-line 列，访问 line index `0..7`，初始全部关行，按序服务并采用 open-page。令 `a` 为 line index。两个映射均使用全部地址位且可逆：
 
 ```text
-A0, A1, A2, A3, A4, A5, ...
+Map X: col=a[2:0], bank=a[4:3], row=a[其余高位]
+Map Y: bank=a[1:0], col=a[4:2], row=a[其余高位]
+访问      0    1    2    3    4    5    6    7
+X bank    0    0    0    0    0    0    0    0
+X col     0    1    2    3    4    5    6    7
+Y bank    0    1    2    3    0    1    2    3
+Y col     0    0    0    0    1    1    1    1
 ```
 
-在映射 `Map X` 下，也许它们变成：
-
-```text
-A0 -> bank0 row10 col0
-A1 -> bank0 row10 col1
-A2 -> bank0 row10 col2
-A3 -> bank0 row10 col3
-```
-
-这意味着极强的 row locality，但并行度较低。另一种 `Map Y` 下，也许同样序列被打散为：
-
-```text
-A0 -> bank0 row10 col0
-A1 -> bank1 row22 col0
-A2 -> bank2 row7  col0
-A3 -> bank3 row18 col0
-```
-
-此时 bank parallelism 很好，但单 bank 内 row hit 机会明显更少。哪种更优，根本取决于你的 workload、controller 策略和系统目标，而不是哪种“更先进”。
+所有 row 均为 0。X 的 bank0 先 miss、后 7 hit；Y 的每个 bank 各先 miss、后 1 hit，总共 4 hit。Y 让四个 bank 有并行机会，但该序列的 hit 数较少；能否更快还取决于命令/DQ 共享和到达时序。若使用 XOR hash，也须证明地址变换可逆或有等价的完整寻址规则，避免不同物理地址别名。
 
 这也解释了为什么映射必须和 FR-FCFS、page policy 一起理解。FR-FCFS 喜欢 row hit，如果映射天然保住了更多同 row 连续性，它就更容易吃到收益；close-page 或随机访问负载下，过强的 row-local 映射反而可能把大量请求压在少数 bank 上，让冲突更严重。换句话说，地址映射不是单独的预处理步骤，而是在决定 controller 后续能看到什么样的优化机会。
 

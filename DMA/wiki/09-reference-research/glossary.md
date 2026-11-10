@@ -16,9 +16,9 @@
 - `DMA IP`：可作为产品/IP 集成和评估对象的一类 DMA 实现
 - `descriptor`：描述一次或一组 DMA 任务的数据结构，属于任务描述层
 - `logical transfer`：软件眼里的一笔搬运任务，不等于单笔总线事务
-- `transaction`：真正落到 AXI/PCIe/NoC 上的 read/write/burst/TLP
+- `transaction`：某协议定义的一次请求及其响应/完成语义；一个 PCIe Memory Read 可对应多个 CplD TLP，不能把每个 TLP 都称作一笔请求事务
 - `scatter-gather`：把多个离散段组织成一条逻辑传输任务的方式
-- `burst`：总线或互连上的连续事务粒度
+- `burst`：按地址生成规则组织的一笔事务中的多个 beat；地址可以 FIXED、INCR 或 WRAP，不等于多个连续事务
 - `outstanding`：已发出但尚未完成闭环的 in-flight 事务数量
 - `completion`：必须结合上下文看，可能指 descriptor consumed、data visible 或 software-visible completion event
 - `doorbell`：软件通知硬件“可以去看新任务”的触发机制，不等于任务内容一定已可见
@@ -28,7 +28,7 @@
 - `coherent DMA`：与 CPU cache 共享更一致数据视图的 DMA 模式
 - `non-coherent DMA`：需要软件显式管理 cache 可见性和 ownership 的 DMA 模式
 - `IOMMU / SMMU`：为设备提供地址翻译和隔离的单元
-- `completion visibility latency`：数据完成后，到软件真正能观察到 completion 的延迟
+- `completion visibility latency`：指定事件和观察域之间的时间差；只有设备契约保证 `transfer_done` 先于 completion 可见时才将其差值解释为等待。不同完成域或提前通知时分别记录，见 [规范事件与偏序](../06-performance-modeling/model-schema.md#规范事件与偏序canonical-event-taxonomy)
 - `consumer-ready latency`：软件或下游计算真正可以继续推进的延迟
 - `double buffering`：用至少两块 buffer 让搬运和消费形成可重叠节拍
 - `observability`：通过计数器、状态快照、trace 或直方图观察 DMA 内部行为的能力

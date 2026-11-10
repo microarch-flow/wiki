@@ -11,20 +11,26 @@
 
 ```mermaid
 flowchart TD
-    A[产品需求] --> B{单 die 是否满足面积/良率/功耗?}
-    B -- 是 --> C[单 die + 传统 flip-chip/substrate]
-    B -- 否 --> D{是否需要超高带宽 memory?}
-    D -- 否 --> E{D2D 带宽是否很高?}
-    E -- 否 --> F[传统 MCM / substrate / 中低复杂度多 die]
-    E -- 是 --> G{高带宽是否局部集中?}
-    G -- 是 --> H[Embedded bridge / local silicon interconnect]
-    G -- 否 --> I[Fan-out / RDL interposer]
-    D -- 是 --> J{HBM 与 logic 横向集成是否可满足?}
-    J -- 是 --> K{需要全局硅级密度?}
-    K -- 是 --> L[Si interposer / CoWoS-S-like]
-    K -- 否 --> M[RDL interposer / CoWoS-R-like / bridge-like]
-    J -- 否 --> N[3DIC / hybrid bonding / stacked logic]
+    A[记录单 die 面积良率和功耗] --> B[独立记录 HBM、D2D、尺寸和 I/O 需求]
+    B --> C{单 die 可行且 I/O 压力不高?}
+    C -- 是 --> D[传统 flip-chip 可列为候选]
+    C -- 否 --> E[考虑多 die 和异构集成]
+    B --> F{需要 HBM 或高密度 D2D?}
+    F -- 是 --> G[提出 Si interposer、RDL 或 bridge 候选]
+    F -- 否 --> H[比较传统 MCM、fan-out 和基板]
+    D --> I[复核热、PI、SI、面积、测试与供货]
+    E --> I
+    G --> I
+    H --> I
+    I --> J{横向方案有合格候选?}
+    J -- 是 --> K[详细设计与验证]
+    J -- 否 --> L[检查 3D 的键合、热和测试可行性]
+    L --> M{3D 可行?}
+    M -- 是 --> K
+    M -- 否 --> N[调整规格或报告无可行方案]
 ```
+
+单逻辑 die 的面积和良率可行，不排除同时需要 HBM。所有分支给出候选，不能以工艺名称直接推断时延或频率。
 
 ## 决策问题
 

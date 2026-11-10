@@ -7,7 +7,7 @@
 
 为什么同样被叫作“随机访问存储器”，SRAM 和 DRAM 对访问模式的反应却完全不同。更准确地说，什么样的访问流是在顺着 SRAM 工作，什么样的访问流是在顺着 DRAM 工作；反过来，什么样的访问流会把两者各自最痛的代价全逼出来。
 
-## 正文
+## 局部访问与行状态依赖
 
 到这里再回头看 SRAM 和 DRAM，最值得收住的一点已经不是“一个快一个大”，而是它们对访问模式的成本函数根本不同。SRAM 的访问成本相对局部、相对稳定，主要受端口冲突、bank 冲突、阵列尺寸和时钟窗口影响；DRAM 的访问成本则高度上下文相关，强烈依赖 row 是否命中、bank 是否繁忙、总线方向是否切换、refresh 是否在挡路。也就是说，系统眼中的“随机访问”这个词，在 SRAM 和 DRAM 上其实对应的是两种完全不同的物理现实。
 
@@ -68,17 +68,13 @@ SRAM 的成本主要看“当前本地资源是否冲突”，DRAM 的成本主�
 一个非常直接的并列抽象可以写成：
 
 ```text
-SramAccessCost(req) =
-  base_latency
-  + port_conflict_penalty
-  + bank_conflict_penalty
-
-DramAccessCost(req) =
-  row_state_cost
-  + queue_delay
-  + turnaround_penalty
-  + refresh_penalty
+SRAM: accept_time = earliest time with legal bank + compatible port + shared output
+      completion = accept_time + interface_latency
+DRAM: each command issues at earliest selected time satisfying all state/timing guards
+      completion = data-return time after the scheduled command/burst
 ```
+
+同一周期可能同时存在 bank 冲突、端口占用和刷新等待；不能把重叠时间直接相加。若需要归因，按互斥时间片或等待区间并集计数，并说明优先级。
 
 如果你在系统模型里把两者都近似成固定 latency，很容易得到错误结论：比如误以为把更多访问直接打到 DRAM 只是“平均慢一点”，而忽略它其实会因为 row conflict 和状态切换把尾延迟拉得很难看。反过来，如果你把 SRAM 也建成强历史依赖资源，就会错误高估它对访问顺序的敏感度。
 

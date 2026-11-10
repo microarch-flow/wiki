@@ -16,7 +16,7 @@
 | 先把 ordering 和请求类型看懂 | [Posted / Non-Posted / Completion 与 Ordering](./02-link-transaction-basics/posted-nonposted-completion-ordering.md) |
 | 理解设备是怎么被发现和配置出来的 | [配置空间、BAR 与 Capability](./03-configuration-enumeration-addressing/config-space-bar-capability.md) |
 | 串起枚举和资源分配主线 | [枚举、总线号与资源分配](./03-configuration-enumeration-addressing/enumeration-bus-number-resource-allocation.md) |
-| 快速分清 MMIO / PIO / DMA 地址视角 | [MMIO、配置访问、DMA 地址空间视角](./03-configuration-enumeration-addressing/mmio-config-dma-address-view.md) |
+| 快速分清配置访问、BAR/MMIO 与 DMA 地址 | [MMIO、配置访问、DMA 地址空间视角](./03-configuration-enumeration-addressing/mmio-config-dma-address-view.md) |
 | 理解 PCIE 与 IOMMU 的交界 | [IOMMU、地址翻译与设备隔离](./03-configuration-enumeration-addressing/iommu-address-translation-device-isolation.md) |
 | 看设备 DMA 是怎么跑起来的 | [设备 DMA 的读写路径](./04-data-path-dma-interrupts/device-dma-read-write-flow.md) |
 | 串起 queue、doorbell、completion 和 MSI-X | [队列、Doorbell、Completion 与 MSI-X](./04-data-path-dma-interrupts/queues-doorbells-completions-msix.md) |
@@ -91,6 +91,7 @@
 - [PCIE 高频问题](./08-reference/high-frequency-questions.md)
 - [PCIE 设计检查清单](./08-reference/pcie-design-checklist.md)
 - [PCIE 调试检查清单](./08-reference/pcie-debug-checklist.md)
+- [PCIe 故障复盘模板](./08-reference/pcie-debug-postmortem-template.md)
 - [PCIe 建模参数与公式速查](./08-reference/pcie-modeling-params.md)
 
 ## 这套 Wiki 的边界

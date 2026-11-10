@@ -1,11 +1,11 @@
 # Transformer：Attention 与 KV Cache 给 CIM 带来的新挑战
 
 上级：[07 Workloads](./README.md)
-相关：[Model Adaptation](../06-software-stack/model-adaptation-strategies.md), [NoC: Attention Prefill](../../../NoC/wiki/06-ai-noc-specifics/workload-attention-prefill.md), [NoC: Attention Decode KV Cache](../../../NoC/wiki/06-ai-noc-specifics/workload-attention-decode-kv-cache.md)
+相关：[Model Adaptation](../06-software-stack/model-adaptation-strategies.md), [NoC: Attention Prefill](../../../NOC/wiki/06-ai-noc-specifics/workload-attention-prefill.md), [NoC: Attention Decode KV Cache](../../../NOC/wiki/06-ai-noc-specifics/workload-attention-decode-kv-cache.md)
 
 ## 这页在回答什么问题
 
-Transformer 适不适合 CIM？不能整模型回答，必须拆成 projection、FFN、attention score、softmax、normalization、KV cache 和 sampling；这些子模块的瓶颈完全不同。
+Transformer 适不适合 CIM？不能整模型回答，必须拆成 projection、FFN、QKᵀ score、mask/softmax、PV/context、normalization、KV cache 和 sampling；这些子模块的瓶颈完全不同。
 
 ## 子模块拆解
 
@@ -13,17 +13,23 @@ Transformer 适不适合 CIM？不能整模型回答，必须拆成 projection�
 | --- | --- | --- |
 | Q/K/V projection | 中高 | GEMM 规整，但精度和 tiling 要闭合 |
 | FFN | 中高 | 大 GEMM，传统 NPU/GPU 也很强 |
-| attention score | 中 | 动态数据、mask、reduction、softmax |
-| softmax / normalization | 低 | 非线性、归约和数值稳定 |
+| QKᵀ score | 中 | Q 和 K 随序列更新，沿每个 head 的特征维 d_k 归约 |
+| mask / softmax | 低 | 掩码、非线性、归约和数值稳定 |
+| PV / context | 中 | softmax 概率 P 与历史 V 均为动态操作数，沿 key 序列维 T_k 归约 |
+| normalization | 低 | 独立归约与数值稳定 |
 | residual / layer glue | 低到中 | tensor movement、format conversion、fallback boundary |
 | KV cache | CIM 不自然，PIM/NMC 更自然 | 大容量 memory access 和 token latency |
 | sampling / control | 低 | 标量控制和 host/runtime |
+
+单 head 的形状为 `Q[T_q,d_k] × K[T_k,d_k]ᵀ -> score[T_q,T_k]`，沿 `d_k` 求和；经 mask/softmax 得 `P[T_q,T_k]`，再算 `P[T_q,T_k] × V[T_k,d_v] -> context[T_q,d_v]`，沿 `T_k` 求和。实现可融合步骤并避免物化 P，但数学依赖不变。
+
+Q/K/V 投影的模型权重可跨 token 复用；QKᵀ 与 PV 的操作数随序列更新。若将动态操作数映射到需编程的 NVM 权重阵列，还要计 program/verify；softmax 是独立归约和非线性步骤。
 
 ## Prefill 与 Decode 不同
 
 Prefill 阶段大 GEMM 多，batch 或 sequence 较大，成熟 GPU/NPU 利用率高。CIM 只有在权重驻留、低比特和数据搬运明显受益时才有竞争力。
 
-Decode 阶段 batch 小、逐 token 迭代，KV cache 和权重读取更突出。这里的机会更偏 DRAM/HBM/GDDR-PIM 或 NMC，因为瓶颈靠近大容量 memory-side access，而不是小 CIM macro 的局部 MVM。NMC 在这里指 HBM base die、interposer 或 package-side compute，不是 memory die/bank 内 PIM。
+Decode 按 token 序列迭代；在小 batch、长上下文且 KV/权重未被近端充分命中的服务配置下，KV cache 和权重读取可能更突出。连续批处理与驻留状态会改变这一结论。这里的机会更偏 DRAM/HBM/GDDR-PIM 或 NMC，因为瓶颈靠近大容量 memory-side access，而不是小 CIM macro 的局部 MVM。NMC 在这里指 HBM base die、interposer 或 package-side compute，不是 memory die/bank 内 PIM。
 
 ## 三条 Paradigm 的 Transformer 差异
 
@@ -39,4 +45,4 @@ Transformer 不是一个 CIM workload，而是一组瓶颈不同的子图；proj
 
 ## 建模启示
 
-Transformer 建模必须按 phase 和子模块拆分：prefill/decode、Q/K/V projection、head count、hidden size、FFN expansion、attention score、softmax、normalization、residual、KV cache、sampling 分别记录 sequence length、batch、compute intensity、memory footprint、precision sensitivity、fallback ratio、tensor transfer、NoC traffic、latency target、energy target 和 synchronization。可折叠单个 macro 细节，但不能折叠 phase boundary、KV traffic、residual/fallback boundary 和 unsupported op。
+Transformer 建模必须按 phase 和子模块拆分：prefill/decode、Q/K/V projection、head count、hidden size、FFN expansion、QKᵀ score、mask/softmax、PV/context、normalization、residual、KV cache、sampling 分别记录 sequence length、batch、compute intensity、memory footprint、precision sensitivity、fallback ratio、tensor transfer、NoC traffic、latency target、energy target 和 synchronization。可折叠单个 macro 细节，但不能折叠 phase boundary、KV traffic、residual/fallback boundary 和 unsupported op。

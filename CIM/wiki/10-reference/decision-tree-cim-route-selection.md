@@ -7,13 +7,14 @@
 
 这页回答：面对一个 workload、产品目标或研究问题时，应该优先考虑 SRAM-CIM、ReRAM/Flash CIM、DRAM/HBM-PIM 还是 NMC。
 
-第一步：判断目标是不是 cell/array-level compute。
+第一步：判断已知架构中的计算位置和阵列参与程度。
 
 | 判断 | 下一步 |
 | --- | --- |
 | 需要权重驻留在 array 内，并让 array path 直接做 MAC/bitwise compute | 进入 CIM 路线 |
-| 主要想减少 processor 与 HBM/GDDR/DRAM 之间的数据搬移 | 进入 PIM 路线 |
-| compute 在 memory 附近但可以独立放在 module/package/base die/host-visible accelerator | 进入 NMC 路线 |
+| 独立 compute unit 位于 memory die 内 | 本书归 PIM，检查 ISA/命令与局部存储 |
+| 独立 compute 位于 memory die 外的 module/package/base die/near-memory accelerator | 本书归 NMC，检查互连接口 |
+| 只知道目标是减少 processor 与 memory 间搬运，位置未知 | 仅列 CIM/PIM/NMC 候选，不能据目标断定分类 |
 | 只是 SRAM buffer 旁边放 MAC | 不按 CIM 讨论，回到传统 AI accelerator |
 
 第二步：在 CIM 内选 memory technology。
@@ -23,7 +24,7 @@
 | 标准 CMOS、验证友好、较快产品化、edge AI | SRAM digital/mixed-signal CIM | 容量有限、面积大、大模型需要 folding |
 | 极端低功耗、固定权重、高密度 | ReRAM/Flash analog CIM | drift、retention、write-verify、ADC、校准难 |
 | 新器件研究、非易失、多值状态 | ReRAM/PCM/MRAM CIM | 工艺集成和可靠性证据不足 |
-| 想研究 memory-bound system speedup | 不选 CIM，优先 PIM/NMC | 研究问题从 MAC 能效转到 data movement |
+| 想研究 memory-bound system speedup | CIM、PIM/NMC 均为候选，按受限边界、容量与支持算子筛选 | CIM 权重常驻可能减少外存字节；还须计转换、重装、互连、fallback 并比较端到端收益 |
 
 第三步：按 workload 过滤。
 
@@ -46,7 +47,7 @@
 
 ## 一句话理解
 
-路线选型先问“要减少哪种移动”，再问“能承受哪类工程风险”。
+对既有方案先核实物理位置及阵列参与，再按目标流量、精度和工程风险筛选候选。
 
 ## 维护原则
 

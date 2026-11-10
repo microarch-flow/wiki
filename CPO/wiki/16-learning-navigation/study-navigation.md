@@ -19,10 +19,12 @@
 
 推荐顺序：
 
-1. [CPO 一页版总览](../13-one-page-summary/cpo-one-page.md)
-2. [CPO 在解决什么问题](../01-overview/problem-statement.md)
-3. [CPO 分类框架](../01-overview/taxonomy.md)
-4. [阶段性研究结论](../12-conclusions-competition/interim-conclusions.md)
+1. [电路到时序的共用基础](../../../electrical-timing-foundations.md)
+2. [光链路基础与功率预算](../04-optical-engine/optical-link-basics.md)
+3. [激光器、调制器、探测器](../04-optical-engine/laser-modulator-detector.md)
+4. [CPO 在解决什么问题](../01-overview/problem-statement.md)
+5. [CPO 分类框架](../01-overview/taxonomy.md)
+6. [带宽、功耗与热](../05-electrical-thermal-reliability/bandwidth-power-thermal.md)
 
 读完后你应该能回答：
 
@@ -136,4 +138,4 @@
 
 ## 一句话总结
 
-整套 wiki 最有效的读法，不是按目录从 1 读到 17，而是先明确你要解决的是概念、技术、论文、产业还是中国机会，再走对应路径。
+整套 wiki 最有效的读法，不是机械地按全部章节顺序阅读，而是先明确你要解决的是概念、技术、论文、产业还是中国机会，再走对应路径。

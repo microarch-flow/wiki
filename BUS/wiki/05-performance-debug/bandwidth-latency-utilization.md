@@ -19,6 +19,8 @@
 | utilization | 某个 link、queue、slave、controller 忙了多久 | 忙不等于有效，可能是 stall 或低效 burst |
 | congestion | 请求在哪个共享点排队并传播回压 | 拥塞点不一定在报慢的 master 附近 |
 
+先固定统计边界：有效带宽以指定端口和方向在同一观测窗口内实际完成的 payload byte 除以 wall time，单位例如 GB/s；transaction/s 需另列。handshake 利用率为 `VALID && READY` 的采样周期数除以总周期数；资源 busy/占用和 `VALID && !READY` stall 分别计数，不能合并为同一利用率。延迟需声明起点（如首次 issue 或 address fire）与终点（如最后 R fire、B fire 或软件消费），二者不应混用。p99 只统计已完成请求时，还须同时报告窗口末未完成数量、各请求年龄和 timeout 数；否则被排除的长等待会让尾延迟虚假变好。
+
 带宽是**结果**（今天跑了多少车），延迟是**体验**（你等了多久），利用率是**路况**（路面忙不忙），拥塞是**病因**（哪个路口堵了）。只看其中一个，就像只看"今天全市车流量正常"就说交通没问题——你堵在路上的 2 小时不会同意。
 
 ## 带宽：总量与分布要分开

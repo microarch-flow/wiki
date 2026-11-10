@@ -4,51 +4,25 @@
 
 相关：[生态关系图与协作逻辑](../02-industry/ecosystem-relationships.md)
 
-## 一张公开关系图
+## 公开关系图：关系类型与证据
 
 ```mermaid
-graph TD
-    A[Hyperscaler / AI Demand] --> B[Broadcom]
-    A --> C[NVIDIA]
-    A --> D[Cisco]
-    A --> E[Marvell]
-    A --> F[AMD]
-
-    B --> G[Corning]
-    B --> H[Delta Electronics]
-    B --> I[Foxconn Interconnect Technology]
-    B --> J[Micas Networks]
-
-    C --> K[TSMC]
-    C --> L[Coherent]
-    C --> G
-    C --> I
-    C --> M[Lumentum]
-    C --> N[SENKO]
-    C --> O[SPIL]
-    C --> P[Sumitomo Electric]
-    C --> Q[Fabrinet]
-
-    R[Ayar Labs] --> K
-    R --> S[Alchip]
-    S --> K
-
-    F --> R
-    F --> T[Enosemi]
-
-    D --> U[Luxtera]
-    D --> V[Acacia]
+graph LR
+    B[Broadcom] -->|2025 伙伴披露| G[Corning]
+    B -->|2025 伙伴披露| H[Delta]
+    B -->|2025 伙伴披露| I[Foxconn Interconnect Technology / FIT]
+    B -->|2025 伙伴披露| J[Micas]
+    C[NVIDIA] -->|2025 生态名单| K[TSMC]
+    C -->|2025 生态名单| F[Foxconn]
+    C -->|2025 生态名单| L[Coherent 等伙伴]
+    R[Ayar Labs] -->|2025 战略合作| S[Alchip]
+    V[AMD Ventures] -->|2024 投资| R
+    A[AMD] -->|2025 收购| T[Enosemi]
+    D[Cisco] -->|2018 宣布收购| U[Luxtera]
+    D -->|2021 完成收购| W[Acacia]
 ```
 
-## 这张图怎么读
-
-这不是精确股权图，也不是全部供应商清单，而是根据公开材料抽出的“研究优先关系图”。
-
-重点看的是三类关系：
-
-- 平台主导方和组件/封装伙伴的关系
-- optical I/O / silicon photonics 创新方和制造平台的关系
-- 系统厂商通过收购或合作把 optics 能力拉到体内的关系
+边的标签区分生态名单、合作、投资和收购。名单不证明每个公司的具体供货、稳定采购或客户部署规模。Foxconn 与 FIT 在图中分开：NVIDIA 公告写 Foxconn；Broadcom 公告写 FIT，不能互换。来源：[Broadcom 2025-05-15](https://investors.broadcom.com/news-releases/news-release-details/broadcom-announces-third-generation-co-packaged-optics-cpo)、[NVIDIA 2025-03-18](https://nvidianews.nvidia.com/news/nvidia-spectrum-x-co-packaged-optics-networking-switches-ai-factories)、[Alchip 2025-09-08](https://www.alchip.com/public/index.php/jp/Newsroom/AyarLabsandAlchiptoScaleAIInfrastructure)、[Ayar Labs 2024-12-11 投资公告](https://ayarlabs.com/news/ayar-labs-155m-series-d-to-address-ai-infrastructure-includes-amd-intel-capital-nvidia/)、[AMD 2025-05-28](https://www.amd.com/en/blogs/2025/amd-acquires-enosemi-to-accelerate-co-packaged-optics-innovation.html)。
 
 ## 当前最值得跟踪的几条公开主线
 
@@ -62,7 +36,7 @@ graph TD
 - Foxconn Interconnect Technology 提供 socket、laser source cage 和 connector 相关部件
 - Micas Networks 参与系统侧交付
 
-这条线的特点是：更接近“交换机平台量产路线”。
+公告将 TH5-Bailly 称为 volume-production，并分别描述伙伴进展；不提供客户现场部署数量。
 
 ### NVIDIA 主线
 
@@ -104,7 +78,7 @@ Cisco 更值得从“长期光学能力内化”角度看：
 
 ### AMD 主线
 
-截至 2025 年 5 月公开材料，AMD 已收购 Enosemi，以加速 AI 系统中的 photonics / CPO 能力。  
+AMD 于 2025-05-28 公告收购 Enosemi，以加强 AI 系统中的 photonics / CPO 能力。AMD Ventures 对 Ayar Labs 的投资是另一种关系，不能据此推断供货。
 这更像是：AMD 正在补齐自身在 optical interconnect / photonics 方向上的能力拼图。
 
 ## 研究时要注意

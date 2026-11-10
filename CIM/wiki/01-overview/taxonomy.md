@@ -76,7 +76,8 @@ Workload 不是最后才看的应用标签，而是反过来决定前面所有�
 
 1. 计算位置 -> CIM / PIM / NMC
 2. Memory technology -> SRAM / ReRAM / Flash / PCM / MRAM / DRAM-HBM-GDDR
-3. Compute paradigm -> analog / digital / mixed-signal
+3. 若是 CIM -> 阵列求值 analog/digital；宏是否包含模拟转换与数字处理另描述
+   若是独立 PIM/NMC -> 执行单元 ISA、数值格式、存储与接口
 4. 系统层级 -> cell / macro / tile / chip / system
 5. Workload -> CNN / Transformer / LLM decode / edge / HPC / others
 ```
@@ -85,4 +86,4 @@ Workload 不是最后才看的应用标签，而是反过来决定前面所有�
 
 ## 一句话理解
 
-本 wiki 的 taxonomy 是多维坐标，不是一棵简单树；先判计算位置，再判 memory、paradigm、层级和 workload，才能避免把完全不同的对象放进同一类结论。
+本 wiki 的 taxonomy 是多维坐标，不是一棵简单树；先判计算位置，再按分支检查 memory、求值或独立执行单元、层级和 workload，才能避免把完全不同的对象放进同一类结论。

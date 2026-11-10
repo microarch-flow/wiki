@@ -30,6 +30,12 @@ camera、audio、UART、SPI、Ethernet MAC、storage controller 这类外设都�
 
 所以不要把“MCU DMA”和“服务器 DMA”看成完全不同的知识体系。它们的复杂度不同，但都在回答同一个本质问题：如何把数据流稳定地从一端送到另一端，而不让 CPU 逐次介入。
 
+## 不可回压外设与循环 buffer
+
+camera 或 audio 源可能不能停。若产生速率 R B/cycle，DMA 最长连续无法服务 L cycle，且停顿开始时 FIFO 已积压 Q B，则容量至少需要 `Q+R×L` B 才能吸收该次停顿；还要考虑突发、采样相位和恢复后的排空能力。例：每周期 2 B、已有 4 B、最长停 5 cycle，至少需 14 B；12 B FIFO 会 overrun，数据可能被丢弃。平均服务率不低于平均产生率仍不保证有限 FIFO 能覆盖最长停顿。反向播放时 DMA 供数不足会 underrun，设备可能输出静音或重复样本，具体行为依 IP。
+
+循环双半区中，DMA 写满前半区后发布 half-transfer，软件获得该半区并按非一致 DMA 契约同步；DMA 可写后半区。软件须在 DMA 回卷前处理完并归还前半区，否则覆盖尚未消费的数据。full-transfer 是另一半区的交接，IRQ 只负责通知，状态和 ownership 仍需检查。非一致映射的交接应遵循平台 DMA API，参见 [Linux DMA 映射指南](https://docs.kernel.org/core-api/dma-api-howto.html)。
+
 ## 它和高性能 DMA 的差异到底在哪
 
 差异首先在任务形状。外设 DMA 的数据单位常是采样流、包或帧片段，强调的是节拍连续和丢包/欠采样不能发生；AI local DMA 或 PCIe DMA 更常处理大块 buffer、multi-queue 和复杂 completion 契约。

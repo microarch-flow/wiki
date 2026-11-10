@@ -12,7 +12,7 @@
 
 主线是五个决策：
 
-1. 用哪条统一 transaction 状态机（`request_accept` 与 `completion_visible` 必须分开）
+1. 用什么统一事件词汇与按协议构建的依赖图（request acceptance、协议完成和软件可见完成分开）
 2. 选哪一层保真度（容量估算 / 近似时序 AT / 周期精确）
 3. 每个组件带哪些参数（master / arbiter / bridge / slave / 拓扑 / DDR 边界）
 4. 用哪些公式定容量（Little's Law / bandwidth-delay product / 服务时间模型）

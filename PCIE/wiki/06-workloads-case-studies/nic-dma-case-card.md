@@ -16,9 +16,9 @@
 
 ## 最关键的三条主线
 
-- descriptor / ring 如何喂给设备
-- DMA write 如何把包写进主机内存
-- completion 和 interrupt moderation 如何平衡吞吐与 CPU 开销
+- **RX**：主机在 RX ring 发布空缓冲描述符；NIC 收包后以 DMA write 把载荷写入主机，再发布完成状态。若可用描述符耗尽，设备可能丢包或暂停，具体计数与策略由 NIC 定义。
+- **TX**：主机发布待发送缓冲描述符；NIC 以 DMA read 取主机载荷，再向网络发送并发布完成状态。设备 DMA read 的 PCIe Completion 与软件完成记录不同。
+- **通知**：小包使每包 descriptor 和 CQE 处理占比增大。中断合并可在累计门限或定时后通知，减少每秒中断数，但首个完成可能等待更久；轮询也能消费已发布的完成。
 
 ## 最常见瓶颈
 

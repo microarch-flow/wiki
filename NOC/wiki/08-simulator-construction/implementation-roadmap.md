@@ -47,7 +47,7 @@
 验收标准：
 
 - packet 能沿固定路径逐跳到达
-- 3-hop 单 packet 延迟与手算一致
+- 3-hop 单 packet 的每拍动作与 [权威手算表](./verification-and-calibration.md) 一致
 
 ## Phase 2: Buffer 与 Credit
 
@@ -69,7 +69,7 @@
 
 - header 建路
 - body 跟随
-- tail 释放路径和 VC 状态
+- tail 离开本 input 时释放本地上下文；严格策略下，下游 VC 许可等 tail free 返回后释放
 
 验收标准：
 
@@ -102,7 +102,7 @@
 验收标准：
 
 - per-class latency / stall 可统计
-- control / response 不会在最简单场景里被 bulk 完全淹没
+- 仅标签不提供服务保证。构造指定 class→VC 映射、RR 或预留份额、有限 burst 和端点可服务的测试，验证该配置下 control/response 的 grant 与等待界；无这些条件不声称不被淹没
 
 ## Phase 6: Workload Trace
 

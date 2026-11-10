@@ -18,8 +18,12 @@
 
 - 多队列并发
 - MMIO doorbell 提交
-- DMA 读命令、写结果
-- MSI-X 或轮询完成
+- 控制器 DMA read 主机 SQE 取命令；数据方向由命令决定
+- 控制器向 CQ 写 CQE，主机通过 MSI-X 或轮询处理
+
+例如 NVMe **Read** 从存储介质取数据，控制器通常以 PCIe DMA write 将数据写到主机缓冲；NVMe **Write** 则通常以 DMA read 从主机取数据，再写入存储介质。两种命令都可在执行后写 CQE，并按配置发中断或由软件轮询。
+
+这里的 NVMe Read/Write 是存储命令；设备 DMA read 收到的 PCIe Completion 是事务返回；CQE 是命令完成状态。三个对象不能互相代替。
 
 ## 为什么它值得学
 

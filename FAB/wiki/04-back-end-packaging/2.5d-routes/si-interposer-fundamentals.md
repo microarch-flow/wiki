@@ -1,7 +1,7 @@
 # Si Interposer:第一代主流 2.5D
 
 上级:[2.5D 路线](README.md)
-相关:[CoWoS-S/R/L 的真正差别](cowos-s-r-l-comparison.md), [CoWoS-S 完整制造流程](cowos-s-complete-process.md), [TSV](../3d-routes/tsv-through-silicon-via.md)
+相关:[CoWoS-S/R/L 的真正差别](cowos-s-r-l-comparison.md), [CoWoS-S 简化制造对象流](cowos-s-complete-process.md), [TSV](../3d-routes/tsv-through-silicon-via.md)
 
 ## 这页在回答什么问题
 

@@ -12,7 +12,7 @@ TileLink 相比 AXI/AHB/APB 这类更常见的 AMBA 协议族，提供了什么�
 
 如果 AXI 是**标准化的乐高积木**——形状固定、种类丰富、全世界的乐高都能互拼，那 TileLink 更像 **3D 打印的模块化组件**——你可以根据需要定制每个零件的参数，但需要在同一个打印生态里才能无缝组合。
 
-TileLink 不只是一个固定信号接口，而是一套面向可组合 SoC 的事务互连框架。它把不同复杂度的访问能力放进同一协议族里，让简单外设、uncached memory access 和 coherence 相关路径可以沿同一套生成流程被裁剪和组合。
+TileLink 是定义通道、消息与事务规则的协议族；Rocket Chip 的 Diplomacy 是可用于协商节点能力和生成互连的框架，两者不是同一个东西。协议提供不同层级，生成框架可按节点支持能力组合简单外设、uncached 和 coherence 路径。
 
 所以比较 TileLink 和 AXI，不应该只问“谁更快”。更有效的问题是：系统是在拼接成熟商用 IP，还是在生成一套可参数化 fabric；互连需要的是标准生态兼容，还是节点能力可组合和一致性语义可裁剪。
 
@@ -35,6 +35,20 @@ TileLink 可以按能力层次理解：
 ## 角色和能力比信号名更重要
 
 TileLink 语境里，client、manager、source、sink 这些角色比“总线两端接了什么信号”更关键。Client 发起请求，manager 管理地址范围和响应；source ID 用来区分 client 侧未完成事务，sink ID 在某些返回和授予路径中帮助匹配后续状态。
+
+TL-UL 和 TL-UH 使用 A/D 请求与响应；TL-C 还使用 B/C/E 完成一致性事务：
+
+| 通道 | 方向 | 典型消息和职责 |
+|---|---|---|
+| A | client → manager | Get、Put、Acquire 请求 |
+| B | manager → client | Probe，请求检查或撤销权限 |
+| C | client → manager | ProbeAck/ProbeAckData；也可主动 Release |
+| D | manager → client | AccessAck/Data、ReleaseAck、Grant/Data |
+| E | client → manager | GrantAck，携带 sink 确认授予 |
+
+普通 Get 的 `source` 在请求尚未获得响应期间必须唯一，包括首个 D 响应 beat 被接受的那个周期。TileLink v1.8.1 将消息的首 beat 握手定义为消息 received；因此四拍 AccessAckData 的 D0 握手后，下一周期可用同一 source 发新的 Get。旧响应的其余 beat 仍按 D 通道消息顺序接收，接收方必须保留旧 burst 的上下文。实现也可保守地等到末拍后才复用。规范依据为 [SiFive TileLink v1.8.1](https://sifive.cdn.prismic.io/sifive/7bef6f5c-ed3a-4712-866a-1a2e0c6b7b13_tilelink_spec_1.8.1.pdf) §5.1、§6.4。
+
+TL-C 的 Grant/Data 使用 sink 标识授予，client 发 E GrantAck，manager 还须等待相应 Grant 数据全部传送与确认后回收授予状态。B Probe 由 C ProbeAck/Data 应答；它不是软件完成队列。
 
 这和 AXI 的 master/slave、ID/outstanding 有相似目标：都要解决 request/response 匹配和并发状态。但 TileLink 更强调在生成时把能力参数描述清楚，例如某个 manager 支持哪些 opcode、最大 transfer size、是否支持 acquire、是否 cacheable、是否要求 FIFO ordering。
 
@@ -80,6 +94,6 @@ TileLink 的核心价值是把简单访问、高能力 uncached 访问和 cohere
 
 对 TL-UL/TL-UH 路径，模型重点接近普通 request/response：请求队列、source 匹配、manager 服务时间、response 返回和 backpressure。对 TL-C 路径，模型必须增加 coherence 状态：cache-line permission、probe、release、grant、ownership 和可能的数据转发。
 
-与 AXI 做性能对比时，要先把能力对齐。AXI ID/outstanding 和 TileLink source concurrency 不是一一等价；AXI response ordering 和 TileLink FIFO/order 参数也不能直接互换。比较应落到端点能力、队列、返回匹配、coherence 范围和 bridge 成本上。
+与 AXI 和 PCIe 对比时，要先把能力对齐。TileLink 的 source 在首响应 beat 接受后的下一周期可重用，并不代表旧 burst 数据已经收完；AXI 可以有多个同 ID 在途事务，其响应匹配与同 ID 顺序规则另行约束，不能照搬 TileLink source 生命周期。PCIe non-posted Request 的 Tag 需跟踪该请求的 Completion，直到数据完整或终止状态结束，见 [PCIe Completion](../../../PCIE/wiki/04-data-path-dma-interrupts/pcie-read-completion-latency.md)。比较应落到端点能力、队列、返回匹配、coherence 范围和 bridge 成本上。
 
 如果系统边缘通过 bridge 连接 AXI/APB，模型还要保留协议转换带来的 latency、error mapping、burst/size/mask 转换和 ordering 改变。TileLink 的参数化优势只在边界被正确建模时才会反映到系统行为里。

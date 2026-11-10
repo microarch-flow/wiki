@@ -53,7 +53,7 @@ integrate multiple valuable dies
 
 先进封装的价值来自改变数据移动路径。HBM 不是通过板级长走线提供带宽，而是通过 stack 和 2.5D/3D 集成把超宽接口拉到 logic die 附近。Chiplet 不是简单把 die 摆在一起，而是用 package 内互连重建单 die 内部曾经由 BEOL 承担的部分通信。
 
-这和 NoC wiki 的 [chiplet 与 die-to-die 互连](../../NOC/wiki/06-ai-noc-specifics/chiplet-and-die-to-die-interconnect.md) 直接相关：跨 die 通信不是片上多几个 hop，而是换了物理层级。package 互连的带宽密度、延迟、功耗、可靠性和测试机制都不同。
+这和 NoC wiki 的 [chiplet 与 die-to-die 互连](../../../NOC/wiki/06-ai-noc-specifics/chiplet-and-die-to-die-interconnect.md) 直接相关：跨 die 通信不是片上多几个 hop，而是换了物理层级。package 互连的带宽密度、延迟、功耗、可靠性和测试机制都不同。
 
 ## 常见误解
 

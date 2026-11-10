@@ -14,12 +14,14 @@
 | 对象 | Samsung HBM-PIM / Aquabolt-XL |
 | 论文/会议 | ISSCC 2021: `A 20nm 6GB function-in-memory DRAM based on HBM2 with a 1.2TFLOPS programmable computing unit using bank-level parallelism for machine learning applications`；Hot Chips 33 / 2021: `Aquabolt-XL: Samsung HBM2-PIM with in-memory processing for ML accelerators and beyond` |
 | 作者/机构 | Samsung Electronics / Samsung Memory 相关团队；Hot Chips 记录列出 J. H. Kim、S. H. Kang、S. Lee 等作者 |
-| 技术路线 | HBM DRAM bank 内加入 DRAM-optimized AI engine |
+| 技术路线 | PIM-DRAM die 的一对 even/odd bank 共用独立 PCU；stack 还包含普通 DRAM die 和 buffer die |
 | 本 wiki 分类 | PIM，不是 CIM |
 | 层级 | memory-die/bank-level PIM architecture + accelerator evaluation |
 | 来源 | [Samsung Global Newsroom, 2021-02-17](https://news.samsung.com/global/samsung-develops-industrys-first-high-bandwidth-memory-with-ai-processing-power), [Samsung Semiconductor HBM-PIM tech blog](https://semiconductor.samsung.com/news-events/tech-blog/hbm-pim-cutting-edge-memory-technology-to-accelerate-next-generation-ai/), [Hot Chips 33 record](https://experts.illinois.edu/en/publications/aquabolt-xl-samsung-hbm2-pim-with-in-memory-processing-for-ml-acc/) |
 
-研究视角下，HBM-PIM 的核心问题不是“DRAM cell 能不能做 MAC”，而是“把可编程/专用计算单元放进 HBM bank 后，memory-bound workload 的系统效率如何变化”。Samsung 官方材料说 HBM-PIM 在每个 memory bank 内放置 DRAM-optimized AI engine，使 parallel processing 更接近数据，并在其口径下给出系统性能和能耗改善。研究阅读时要把这些数字看作 workload- and system-dependent result，而不是 macro-level CIM 指标；也要区分 ISSCC 的 device/architecture paper、Hot Chips 的 system-oriented presentation、后续 IEEE Micro/系统论文中的软件栈和 benchmark 口径。
+研究视角下，HBM-PIM 的核心问题不是“DRAM cell 能不能做 MAC”，而是“把可编程/专用计算单元放进 HBM bank 后，memory-bound workload 的系统效率如何变化”。[Samsung Hot Chips 2021 原始演示](https://www.hc33.hotchips.org/assets/program/conference/day1/20210813_HC33_Aquabolt-XL_PIM_Jin_Kim_slide.pdf)的微架构图给 PCU 配置 even/odd bank 接口；一对 bank 共享一个 PCU，不能按每 bank 独立复制计算和带宽。stack 图区分普通 DRAM die、PIM-DRAM die 与 buffer die，只有 PIM-DRAM 层含该执行单元。研究阅读时要把这些数字看作 workload- and system-dependent result，而不是 macro-level CIM 指标；也要区分 ISSCC 的 device/architecture paper、Hot Chips 的 system-oriented presentation、后续 IEEE Micro/系统论文中的软件栈和 benchmark 口径。
+
+原演示报告用未修改的 HBM controller 验证；U280 FPGA 示例调整 controller 配置，保证 PIM 命令顺序并禁用 auto-precharge。其操作机制分模式：普通模式下 RD/WR 执行存储访问；进入 AB-PIM 模式后，外部 RD/WR 这类 CAS 命令触发预先装入 command register file（CRF）的指令，CRF 程序计数与控制流随之推进。PCU 使用通用/标量寄存器和所选 bank 的 row buffer 作为操作数，以 16-lane FP16 SIMD 执行支持的乘、加等操作。模式转换使用兼容标准的 DRAM 命令序列；因此既有 controller 硬件可发出承载这些动作的命令，但软件与配置仍须正确组织顺序。调度须记录模式、同一 even/odd bank 对共享的 PCU、CRF 状态及命令 guard；不能假设每个 bank 都能独立发射。
 
 这个案例特别适合训练 CIM/PIM 边界判断。它把 compute 放进 high-performance memory，因此比传统 NMC 更近；但 compute 与 DRAM cell 分离，不是 cell/bitline/sense path 直接计算，所以不属于 CIM。它研究的是 memory command、bank-level offload、host stall、data movement、controller/runtime 和 kernel mapping。
 

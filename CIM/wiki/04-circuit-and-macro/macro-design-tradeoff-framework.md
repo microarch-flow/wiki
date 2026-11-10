@@ -25,7 +25,7 @@ workload numeric / reuse / update rate
 
 Array size 越大，parallelism 和 peripheral amortization 越好，但 IR drop、variation、read disturb、ADC range 和 yield 风险上升。ReRAM crossbar 尤其受 array size 约束；SRAM-CIM 则要平衡 bitline load、WL driver 和 local logic。
 
-ADC/DAC 位宽越高，模型精度越容易保留，但能耗、面积和 latency 非线性上升。低比特 ADC 配合 QAT 和数字累加更现实；高等效精度需要证明外围没有吞掉收益。
+固定转换架构、采样率和量程时，增加位宽可减小理想量化步长；如果噪声或饱和主导，结果精度未必改善。能耗、面积、latency 和 II 随 ADC/DAC 架构、带宽及工作点变化，不能套用统一的非线性规律。低比特 ADC 配合 QAT 和数字累加更现实；高等效精度需要证明外围没有吞掉收益。
 
 Accumulator width 越大，partial sum 安全性越高，但 local register、adder、routing 和 buffer 成本上升。Digital CIM 的 INT8 支持尤其要检查这一项。
 

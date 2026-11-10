@@ -40,3 +40,11 @@ learning goal -> roadmap
 ## 架构师启示
 
 架构师做路线判断时，不应只凭记忆使用术语。用参考层先统一词义、指标和决策树，再回到主体章节检查热、PI、SI、良率、测试和产业链约束。
+
+## 本章正文
+
+- [工艺与封装选型决策树](./decision-tree-process-and-package.md)
+- [术语表](./glossary.md)
+- [高频问题:最容易混淆的概念](./high-frequency-questions.md)
+- [关键指标速查表](./key-metrics-table.md)
+- [按目标的学习路径](./reading-roadmap-by-goal.md)

@@ -50,17 +50,11 @@ credit 反映链路级可接收能力。它告诉你：
 
 **链路名义带宽**（单向、每 lane，已扣编码开销）：Gen3 ~985 MB/s、Gen4 ~1.97 GB/s、Gen5 ~3.94 GB/s，乘 lane 数即可。例：Gen5 x16 ≈ 63 GB/s。
 
-**MPS 决定 TLP 开销折扣**：每个 TLP 固定开销约 24 字节（framing + seq + header + LCRC），于是
+**实际 payload 决定开销占比**：Non-Flit 模式下，假设每个有数据 TLP 实际载荷 `P`，并假设非载荷占用 `24 B`，效率为 `P/(P+24)`。例如 `P=128 B` 时约 84%。这里的 24 B 是示例模型，不是所有 TLP 的固定开销；header、可选字段、framing、重传和链路模式会改变结果。MPS 只是上限，不是 P。已计入的开销不能重复扣除。
 
-```
-有效吞吐 = 名义带宽 × MPS / (MPS + 24)
-```
+**MRRS / MPS / RCB 与 completion**：MRRS 限制请求大小，MPS 限制带数据 TLP 大小，RCB 限制允许拆分的位置，不限制单个 CplD 为 64/128 B。若 read 为 256 B 且地址 256 B 对齐、MRRS≥256 B、MPS=256 B、RCB=64 B，可以返回一个 256 B CplD，也可以返回四个 64 B CplD。实际数量取决于 completer。
 
-MPS=128 → ~84%，MPS=256 → ~91%，MPS=512 → ~95%。这才是「包头开销占比」的量化形式。
-
-**MRRS / RCB 决定 completion 拆分**：单个 read 最多请求 MRRS 字节，返回数据在 RCB（64/128 字节）边界拆成多个 completion，每个各带一份 header 开销 —— 拆得越碎，read 路径有效效率越低。
-
-**credit 是可计算的背压**：Posted / Non-Posted / Completion 各有独立信用池，data credit 单位 = 16 字节（4DW）。某类信用耗尽即停发，与链路是否空闲无关。
+**credit 与缓冲**：Posted / Non-Posted / Completion 分别流控，传统 data credit 单位为 16 B。某类有限信用不足可阻止对应 TLP；对于通告无限 completion credit 的 Endpoint，requester 仍要保障实际 completion 缓冲。详见[建模速查](../08-reference/pcie-modeling-params.md)。
 
 ## 一句话理解
 

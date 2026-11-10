@@ -7,7 +7,7 @@
 
 面对通用服务器、移动设备、独立 GPU 和 AI/HPC 系统，DDR、LPDDR、GDDR、HBM 这四条 DRAM 路线各自把最优点放在哪里，又分别接受了什么代价。更重要的是，为什么它们不是一个从低到高的“先进性排行榜”，而是在不同系统边界下各自成立的局部最优。
 
-## 正文
+## 四类接口的目标与代价
 
 到这一章前面为止，四条路线的个体逻辑已经分别建立起来了。DDR 更偏通用主存和容量生态，LPDDR 更偏移动低功耗与近封装集成，GDDR 更偏在外置显存形态下榨高带宽，HBM 则通过超宽近距 I/O 改写了接口假设。现在最需要做的，不是再重复一遍它们各自的定义，而是把它们放到同一张决策地图里，看清每条路线到底在优化哪组变量。
 
@@ -111,7 +111,11 @@ SystemPriority {
 然后做一个简单的 route scoring：
 
 ```text
-score(route) = dot(route_metrics, system_priority_weights)
+benefit_i = (x_i - min_i) / (max_i - min_i)       # 越大越好的指标
+cost_utility_i = (max_i - x_i) / (max_i - min_i) # 越小越好的指标
+score(route) = sum(nonnegative_weight_i * utility_i)
 ```
+
+比较前先以容量、持续带宽、功率和平台兼容性筛掉不满足硬约束的路线。归一化上下界须对所有候选固定，`max_i > min_i`；相同值的指标可省略。上述 utility 无量纲，权重反映同一决策的偏好；改变候选集合或权重可能改变排名，不能视为客观物理定律。
 
 这当然不是精确工程决策，但它至少比“谁带宽更高就选谁”要接近真实得多。尤其在后面的 NPU/AI 芯片场景里，这种多维 route model 会比单一带宽指标更有解释力。

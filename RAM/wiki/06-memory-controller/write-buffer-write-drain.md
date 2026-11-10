@@ -7,7 +7,7 @@
 
 为什么很多 DRAM 控制器几乎都会默认“读优先”，并把写请求先积累进 write buffer，等到合适时机再集中排空。更准确地说，这不是经验偏好，而是由读请求的系统敏感度和总线方向切换代价共同推出来的策略。
 
-## 正文
+## 写队列与总线方向切换
 
 如果只从功能语义上看，读和写似乎都是普通内存请求：一个要把数据取回来，一个要把数据送出去，排队公平一点似乎最合理。真实 DRAM 系统很少这样做。大多数控制器会明显偏向读请求，把写请求先缓存在 write buffer 中，只在写积累到一定程度、或者满足某些时机条件时，才进入所谓 `write drain` 阶段集中服务。这种设计并不是“写不重要”，而是在承认读写在系统影响和总线代价上并不对称。
 
@@ -34,14 +34,13 @@ Write drain style:
 一个简单的状态机可以这样理解：
 
 ```text
-if read queue busy and write buffer below high watermark:
-    prefer reads
-
-if write buffer above high watermark:
-    switch to write-drain mode
-
-if write buffer falls below low watermark:
-    switch back to read-preferred mode
+if an urgent write is pending:
+    enter WRITE_DRAIN and keep its service commitment until its WR is issued
+elif write buffer reaches high watermark or writes exist with no reads ready:
+    enter WRITE_DRAIN
+elif in WRITE_DRAIN and buffer is at/below low watermark and reads are ready:
+    return to READ_PREF
+# 各命令仍须满足 bank、CA、DQ 与 refresh 的合法时刻
 ```
 
 这里最关键的是 `high watermark / low watermark` 这种滞回式设计。没有滞回，controller 可能会在读优先和写排空之间来回抖动，方向切换优势反而被削弱。滞回让“读模式”和“写排空模式”各自能维持一个足够长的片段，从而真的减少 turnaround 次数。
@@ -70,6 +69,7 @@ WriteDrainModel {
   write_buffer_occupancy: int
   high_watermark: int
   low_watermark: int
+  urgent_write_id: ReqId | NONE  # 锁定需保证前进的写
   bus_direction: enum { READ, WRITE, TURNAROUND }
 }
 ```
@@ -77,11 +77,31 @@ WriteDrainModel {
 对应切换逻辑可以写成：
 
 ```text
-if mode == READ_PREF and write_buffer_occupancy >= high_watermark:
-    mode = WRITE_DRAIN
+if urgent_write_id is NONE and an_unissued_write_nears_deadline():
+    urgent_write_id = select_urgent_write()
 
-if mode == WRITE_DRAIN and write_buffer_occupancy <= low_watermark:
+if urgent_write_id is not NONE:
+    mode = WRITE_DRAIN  # 高于低水位退出条件，直至该请求 WR 发出
+elif not writes_pending:
     mode = READ_PREF
+elif mode == READ_PREF and (write_buffer_occupancy >= high_watermark or not reads_ready):
+    mode = WRITE_DRAIN
+elif mode == WRITE_DRAIN and write_buffer_occupancy <= low_watermark and reads_ready:
+    mode = READ_PREF
+
+resolve_overlapping_read_after_write_by_forwarding_or_ordering()
+if urgent_write_id is not NONE:
+    select_required_legal_PRE_ACT_or_WR_for(urgent_write_id)
+else:
+    select_legal_command_according_to_mode()
+if selected_command_is_legal_under_all_guards():
+    issue_and_update_state_atomically()
+    if urgent_write_id is not NONE and issued_WR_for(urgent_write_id):
+        urgent_write_id = NONE
 ```
+
+例如低水位为 2、队列中有一笔将到期写，同时有就绪读：控制器锁定该写并保持 write-drain，先发所需合法 PRE/ACT，随后发 WR；不能因占用 1 而立即切回读。锁定只保证策略不会自行撤销承诺；若 refresh、其他优先请求或依赖可无限阻塞，仍不能据此证明 deadline 一定满足。
+
+接收写入 buffer、对其他访问可见、以及到达持久性域是三个不同完成点，具体应由协议和系统契约定义。例：较旧写覆盖地址 X 的 1 B，随后读覆盖该字节；控制器必须正确转发该字节并合并未覆盖字节，或等待写按顺序完成，不能直接返回旧 DRAM 数据。空闲排空和写时限避免低水位以下写入无限滞留。
 
 如果只关心粗粒度平均性能，可以把 turnaround 折成一个读写切换惩罚；但只要你要分析 tail latency、DMA backpressure 或混合读写 workload，就最好显式保留 `WRITE_DRAIN` 这一模式。因为很多系统不是“写更慢”，而是“写被故意延后到某些时间片集中完成”。

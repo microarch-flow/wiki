@@ -7,7 +7,7 @@
 
 逻辑晶体管一代代缩小，为什么 SRAM 却越来越难同时把面积、最低工作电压和稳定性一起缩下去。更具体地说，先进制程究竟先卡住了 SRAM 的哪几个物理量，以至于“节点前进 = bitcell 自然变优”这条直觉逐渐失效。
 
-## 正文
+## bitcell 缩放、Vmin 与变异
 
 在很多架构讨论里，工艺进步常被默认理解为一个统一利好：晶体管更小、速度更高、功耗更低、面积更省，于是片上 SRAM 似乎也应该跟着同步受益。这就像假设”缩小所有零件就能做出更小更好的手表”——对齿轮和发条来说或许成立，但对游丝和摆轮这种依赖精密平衡的部件，缩小反而更容易失准。SRAM 正是芯片里的”游丝”。它不是一个只看单个器件开关速度的逻辑门，而是一个依赖器件强弱平衡、噪声容限和最坏角稳定性的双稳态模拟边界问题。逻辑路径能跑通，不代表 SRAM cell 就能稳住。
 
@@ -47,17 +47,20 @@ SramNodeModel {
   leakage_scale_vs_prev: float
   min_operating_voltage_mV: int
   retention_voltage_mV: int
-  max_stable_capacity_per_macro_KB: int
+  characterized_macro_configs: set<(capacity, banks, voltage, frequency, PVT, yield_target)>
 }
 ```
 
-其中最容易被忽略的是 `min_operating_voltage_mV` 和 `max_stable_capacity_per_macro_KB`。前者会限制 DVFS 和低功耗模式，后者虽然是粗化参数，但能在系统探索里表达一个现实：大容量 SRAM 宏并不会无限大而不付出频率、良率和组织代价。
+`min_operating_voltage_mV` 限制 DVFS 和低功耗模式，具体值依工作模式和 PVT 而变。宏配置表应来自目标库的时序、保持和良率表征；单一最大容量只能作为指定库、工作点和目标良率下的粗略筛选。
 
 如果要做事件级性能模型，这篇不要求你显式模拟 SNM 或 Monte Carlo 失配，但至少可以保留一类“模式切换约束”：
 
 ```text
 guard supply_voltage >= min_operating_voltage_mV
-guard macro_capacity <= max_stable_capacity_per_macro_KB or requires_extra_banking = true
+guard (capacity, banks, supply_voltage, frequency, PVT, yield_target)
+      in characterized_macro_configs
 ```
+
+分 bank 可能改变线长、外围和局部工作点，但不是稳定性的自动豁免。若 N 个 cell 独立且每个失效率为 p，无修复时全部正确的概率为 `(1-p)^N`；保持 N 和 p 不变，仅重新分 bank 不改变该概率。冗余修复、相关失效或电路变化须另行建模。
 
 如果忽略这些约束，模型很容易得出一种不现实的最优解：把片上 SRAM 无限做大、无限降压、同时还保持高频。这类解在真实 silicon 上通常先被 SRAM 打回去。

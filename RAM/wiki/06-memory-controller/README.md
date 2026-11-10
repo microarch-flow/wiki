@@ -5,21 +5,21 @@
 
 ## 这页在回答什么问题
 
-如果前两章已经把 DRAM 的物理约束和协议约束讲清，那么这一章要回答的就是：为什么同一套 DRAM 颗粒，在不同系统里会表现出完全不同的有效带宽、平均延迟和尾延迟。答案通常不在颗粒宣传参数本身，而在 memory controller 如何把那些底层债务翻译成调度、映射、仲裁和状态管理策略。
+这一章讨论：相同 DRAM 器件在不同请求流和系统中，为什么可能表现出不同的有效带宽、平均延迟和尾延迟。器件时序、上游供给、地址映射和 controller 策略都可能影响结果，需要按实际观测定位。
 
-## 正文
+## 命令合法性与调度策略
 
-很多人把 DRAM 看成“外面一排内存芯片，里面性能已经基本写死”，于是系统能做的似乎只剩下换更高代颗粒或多加几个 channel。这个看法最大的问题，是低估了 memory controller 在整套 DRAM 系统中的地位。到这里你已经知道，DRAM 不是一个近似固定延迟的黑盒，而是一个带显式命令、timing guard、open-row 状态、refresh deadline 和 bank 并行结构的状态机阵列。既然底层对象是状态机，系统真正的性能表现就不可能只由器件标称值决定，而一定高度依赖“谁在什么时刻发什么命令、让哪些请求先过、把哪些地址分到哪些 bank”。
+DRAM 不是一个固定延迟的黑盒，而是带显式命令、timing guard、open-row 状态、refresh deadline 和 bank 并行结构的系统。当同一资源有多个合法且代价不同的候选，或请求发生争用时，命令次序和地址映射可能影响结果。若只有一条无排队依赖链，或者 DQ 已饱和，更换调度策略可能不改变观测；应分别检查器件时间、队列与总线利用率。
 
-换句话说，memory controller 是协议世界和系统世界之间的翻译层。就像一个机场的航班调度中心——飞机（DRAM 颗粒）的起降能力是固定的，跑道规则（协议 timing）也不能改，但航班调度（controller 策略）直接决定了每天能实际起降多少架次、哪些航班准点、哪些被延误。对上，它面对的是来自 CPU、DMA、GPU、NPU 或其他 master 的读写请求流；这些请求只知道自己要访问某个物理地址、希望尽快完成，并不会自带 row locality、bank 均衡或 refresh 友好性。对下，controller 面对的是一套并不宽容的 DRAM 状态机：某个 bank 当前是否 open，下一条命令是否合法，什么时候必须 refresh，读写切换会不会打断总线，哪些请求可以交错、哪些必须等待。这一上一下之间的张力，正是 controller 存在的全部意义。
+Memory controller 连接请求接口和 DRAM 协议。对上，它接收来自 CPU、DMA、GPU、NPU 等 master 的地址和操作；对下，它检查 bank 的打开行、命令合法性、refresh 时限和读写切换约束，再选择可发命令。多个候选竞争时，选择顺序可能改变各请求的等待与资源利用；没有竞争时，其他路径可能主导结果。
 
-这一章的结构会沿着 controller 真正要做的几类决策展开。`why-mc-is-the-real-bottleneck.md` 先把总判断立住：理论峰值只是上限，实际性能首先取决于 controller 如何利用 row locality、bank parallelism 和总线时间片。`command-scheduling-fr-fcfs.md` 进入最经典的调度核心，说明为什么 row-hit 优先策略能提高吞吐，又为什么它会天然伤害公平性。`page-policy-open-close-adaptive.md` 继续追问：一行打开后应不应该继续留着，controller 到底是在押注未来局部性还是在提前为下一次切换清场。
+这一章按 controller 的决策展开。`why-mc-is-the-real-bottleneck.md` 说明 controller 如何与器件、请求流及上游共同影响实际性能。`command-scheduling-fr-fcfs.md` 说明：有多个合法候选时，row-hit 优先可能减少切行；持续竞争时，它也可能增加其他请求的等待。是否影响吞吐和公平性取决于候选、到达和资源约束。`page-policy-open-close-adaptive.md` 继续讨论何时保留或提前关闭一行。
 
 后面的 `refresh-management-distributed-postponed.md`、`write-buffer-write-drain.md`、`address-mapping-channel-rank-bank-row-col.md` 和 `qos-multi-master-arbitration.md`，则分别对应 controller 另外几类长期绕不过去的问题。refresh 不是背景噪声，而是要被调度的 deadline 事件；写请求不能无限和读请求一视同仁，因为总线方向切换有真实代价；地址映射不是位切分细节，而是 row locality 和 bank hotspot 的根源；多 master 仲裁更不是公平性口号，而是在吞吐、实时性和隔离性之间做硬选择。最后的 `mc-modeling-for-simulation.md` 会把这整章收束到建模视角，明确哪些状态与事件在 cycle-level 仿真里必须保留。
 
 这章还有一个阅读边界需要先讲清。它讨论的是“如何在既定 DRAM family 与协议约束下调度和组织请求”，而不是重新定义 DRAM 协议本身。也就是说，这里默认 `ACT/RD/WR/PRE`、timing 参数、bank 结构等都已经存在；controller 的工作，是在这些既定规则下尽量把 workload 翻译成更少冲突、更高 row-hit-rate、更平滑的总线利用和更可控的尾延迟。因此，controller 的聪明之处，不在打破底层规则，而在借着这些规则露出来的缝隙做优化。
 
-从系统性能角度看，controller 之所以关键，还因为它经常是“同一颗 DRAM 为什么有时很快、有时很慢”的直接分界点。一个访问流如果被映射得好、调度得顺、refresh 插得巧，可能大量命中 open row，实际带宽接近峰值；同样的颗粒，在另一种映射或调度下，可能 constantly 触发 row conflict、读写反复翻转、refresh 碰上关键窗口，结果有效带宽和 tail latency 完全是另一张脸。也就是说，controller 决定的不只是平均数值，而是 workload 能不能和 DRAM 的物理结构对齐。
+例如同一器件上的访问流，在一种映射和调度下可能大量命中 open row；另一种安排可能增加 row conflict、方向切换或 refresh 干扰。其吞吐和尾延迟是否因此改变，仍取决于到达时序、上游供给及共享资源。应通过候选、排队和 DQ 利用率观测判断，不能只由策略名称推出结果。
 
 对 AI 芯片和架构探索来说，这个章节尤其重要。因为很多系统在讨论“内存带宽够不够”时，只看到了 channel 数和 MT/s，却没看见 controller 本身是否允许关键 master 拿到稳定服务、是否把地址打散到了正确粒度、是否把 refresh 和 write drain 管理得足够聪明。只要这些问题答得不好，外存就很容易在系统模型里被高估。后面进入 `07-system-architecture/` 和 `09-ai-chip-memory-architecture/` 时，这一章提供的，正是“外存不是纯资源量，而是调度资源”的核心视角。
 
@@ -27,7 +27,7 @@
 
 建议按下面顺序阅读本目录：
 
-1. [为什么说 DRAM 的实际性能由 MC 决定](./why-mc-is-the-real-bottleneck.md)
+1. [Memory controller 如何影响 DRAM 的实际性能](./why-mc-is-the-real-bottleneck.md)
 2. [命令调度：FR-FCFS 及其变体](./command-scheduling-fr-fcfs.md)
 3. [Open/close/adaptive page policy 的权衡](./page-policy-open-close-adaptive.md)
 4. [Refresh 调度：分散刷新、推迟刷新、bank-level refresh](./refresh-management-distributed-postponed.md)
@@ -40,7 +40,7 @@
 
 ## 一句话理解
 
-Memory controller 的本质，是把 workload 的地址流和时序需求翻译成一串在 DRAM 状态机上尽可能高效、尽可能可控的命令序列，因此它决定的不是理论峰值，而是实际可兑现性能。
+Memory controller 按协议把请求转换并调度为命令序列。存在可选择的合法候选或资源争用时，策略可能改变可兑现性能和等待分布；器件、上游供给和工作负载也共同决定结果。
 
 ## 建模启示
 

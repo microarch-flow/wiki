@@ -24,11 +24,14 @@ architecture intent
   -> wafer sort / CP
   -> die singulation
   -> package assembly
-  -> package-level test / burn-in / reliability qualification
+  -> final test（逐件出货判定；按策略可做 burn-in）
   -> module / board / system product
+
+另行抽取样本 -> reliability qualification（按配置、应力和判据）
+出现异常 -> failure analysis -> 设计 / 制造反馈
 ```
 
-这条路径里每一步都在筛选风险。前道把设计规则、晶体管、金属互联和缺陷密度变成 die 的 PPA 与良率；CP 在 wafer 阶段尽早筛掉坏 die；封装把一个或多个 known-good die 组合成 package；终测和可靠性验证再确认它能在目标电压、温度、机械和寿命条件下工作。
+前道形成 die，CP 筛选晶圆上的 die，封装再组合裸片与其他组件。逐件终测决定哪些成品符合出货判据；按策略可增加 burn-in。资格验证使用规定样本和应力，支持特定配置的可靠性判断，并不证明每件成品的现场寿命。
 
 对架构师最重要的结论是：后续阶段不是“实现细节”，而是设计约束的回声。一个过大的 monolithic die 会把良率风险压到前道；一个多 chiplet 设计会把风险转移到 die-to-die 互连、KGD 和封装良率；一个 HBM 方案会把内存带宽问题转化为 2.5D/3D 集成、供电、热和测试问题。
 
@@ -60,3 +63,12 @@ architecture intent
 架构师不需要掌握每一道工艺 recipe，但必须知道哪些设计选择会把风险推给制造和封装。如果我在定义一颗 AI 加速器，单 die、chiplet、HBM 数量和封装路线不能分开定：单 die 可能受 reticle 与良率约束，chiplet 需要付出 D2D 互连和封装测试代价，HBM 则会把系统推向 2.5D/3D 集成、强 PDN 和严格热设计。
 
 一个实用做法是，在架构评审里把“制造与封测问题”前置成四个问题：目标节点能否支撑面积与 SRAM 密度；封装能否支撑所需带宽密度；热和供电路径是否有物理闭合方案；测试和 KGD 策略是否能把组合良率压到可接受范围。
+
+## 本章正文
+
+- [一片 wafer 到一颗成品芯片的完整路径](./from-wafer-to-product.md)
+- [前道与后道:产业分工和技术差异](./front-end-vs-back-end.md)
+- [学习路径与各章节依赖关系](./learning-roadmap.md)
+- [为什么架构师必须懂工艺与封装](./problem-statement.md)
+- [工艺节点、封装路线、测试阶段的命名体系](./taxonomy.md)
+- [为什么工艺红利在让位于封装红利](./why-process-and-packaging-matter-now.md)

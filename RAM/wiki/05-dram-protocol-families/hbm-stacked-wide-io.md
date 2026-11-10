@@ -7,7 +7,7 @@
 
 HBM 为什么不应该被理解成“更高频、更快的 DDR”或“更高级的 GDDR”。更准确地说，HBM 真正改写的不是某几个速率参数，而是内存接口设计中关于距离、位宽和每 pin 压力的基本假设。
 
-## 正文
+## 宽 I/O、距离与堆叠约束
 
 如果沿着 DDR -> GDDR 的路线继续想象“更高带宽的 DRAM”，很容易得出一个直觉：是不是只要把单 pin 数据率继续往上推、协议继续做强、训练继续做细，就能一直往更高带宽走？HBM 给出的答案其实是否定的。它的核心思路不是”继续把每条线跑得更快”，而是”改变你对一条线必须承担多少任务、线与计算 die 之间有多远、总接口到底该有多宽的默认假设”。如果说 GDDR 是给一条双车道高速公路上的车装涡轮增压，那 HBM 的思路完全不同：与其让每辆车跑得更快（更高 pin-rate），不如直接修一条 128 车道的短距离高架桥——每辆车不用跑太快，但同时过桥的车太多了，总通行量远超任何双车道能达到的极限。这就是它与 DDR/GDDR 最根本的分叉点。
 
@@ -43,8 +43,9 @@ HBM 的核心不是把每根线跑得更快，而是把内存拉得更近、总�
 
 ```text
 HbmModel {
-  channels: int
-  channel_width_bits: int
+  stacks: int
+  channels_per_stack: int
+  channel_payload_width_bits: int
   io_rate_mtps: int
   peak_bw_GBps: float
   io_energy_per_bit_pJ: float
@@ -53,7 +54,7 @@ HbmModel {
 }
 ```
 
-如果只关心峰值带宽，`channels * channel_width_bits * io_rate_mtps` 已经能给出第一近似；但只要你要比较系统路线，`io_energy_per_bit_pJ` 和 `package_coupling` 也必须显式存在。因为 HBM 的真正价值，不是“规格更高”，而是用不同的互连假设换来了不同的能效与带宽密度曲线。
+若各 stack 的 channel 接口独立，且 `io_rate_mtps` 为每数据引脚每秒百万次二值传输，则 `peak_GBps = stacks × channels_per_stack × channel_payload_width_bits × io_rate_mtps / 8000`。例如 1 stack、8 个 128-bit channel、2000 MT/s 为 256 GB/s，排除 ECC 与协议损耗；上游共享瓶颈会降低有效带宽。但只要你要比较系统路线，`io_energy_per_bit_pJ` 和 `package_coupling` 也必须显式存在。因为 HBM 的真正价值，不是“规格更高”，而是用不同的互连假设换来了不同的能效与带宽密度曲线。
 
 一个实用的比较框架可以写成：
 

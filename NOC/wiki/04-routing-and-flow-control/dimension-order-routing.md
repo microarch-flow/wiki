@@ -50,13 +50,13 @@ YX: (0,0) -> (0,1) -> (0,2) -> (1,2) -> (2,2) -> (3,2)
 
 理解关键在“资源获取顺序”。
 
-在 XY routing 中，packet 只能先占用 `X` 方向相关资源，再占用 `Y` 方向相关资源，不能从 `Y` 再回到 `X`。这等价于给通道资源加了一种偏序关系：
+以下证明限定有限、非环绕二维 mesh，且每维只朝目标单调前进，不允许 U-turn。在 XY routing 中，packet 只能先占用 `X` 方向相关资源，再占用 `Y` 方向相关资源，不能从 `Y` 再回到 `X`。这等价于给通道资源加了一种偏序关系：
 
 ```text
 all X-channel dependencies < all Y-channel dependencies
 ```
 
-如果每个 packet 都只能沿着这个顺序申请资源，就不能形成“拿了高序资源又回头等低序资源”的环。因此一大类 channel dependency cycle 被消掉了。
+在上述前提下，同一维沿坐标单调前进，有限 mesh 没有 wrap，因此无法在该维形成环；结合 X→Y 的维度顺序，可证明相应 channel dependency graph 无环。torus 单维自身是环，单靠维序不够。因此一大类 channel dependency cycle 被消掉了。
 
 这里要非常小心边界：
 
@@ -95,11 +95,7 @@ all X-channel dependencies < all Y-channel dependencies
 - 横向链路短、纵向链路长
 - 或横向更容易布线、纵向更容易成为时序瓶颈
 
-那么优先走哪个维度就不只是逻辑问题，还会影响：
-
-- 平均链路能耗
-- 关键路径上的拥塞
-- 哪些物理通道更容易成为热点
+那么两条路径经过的具体链路不同，可能影响拥塞和能耗。如果每条对应链路长度、能耗和负载完全相同，两条同 hop 路径不会仅因 XY/YX 顺序就改变能耗；差异需来自非均匀物理链路、竞争或资源活动。
 
 因此 `XY 还是 YX` 应该结合 floorplan 和 traffic map 决定，而不是把 XY 当成唯一标准答案。
 
@@ -110,7 +106,7 @@ all X-channel dependencies < all Y-channel dependencies
 - 整体仍然遵守 dimension-order 或某种受限路径规则
 - 但具体某个 flow 是 XY、YX，或走哪条 segment，由编译器决定
 
-这其实是一种“受约束的 source routing”。它保留了：
+这是一种受约束的 source routing，但把 XY 与 YX 混在同一个 VC 池时，联合 channel dependency graph 可能形成环。需要分离 VC 并限制转换，或直接证明联合图无环；分别证明 XY、YX 各自无环并不足够。参见 [通道依赖分析](https://authors.library.caltech.edu/records/fd0yr-br438)。它可以保留：
 
 - 静态规划能力
 - 易验证的路径空间

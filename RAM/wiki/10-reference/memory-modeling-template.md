@@ -7,7 +7,7 @@
 
 如果要把一种存储层建成可用于架构探索的抽象模型，应该至少列出哪些资源、状态、事件、约束和统计量。
 
-## 正文
+## 模型边界与统一骨架
 
 这一页的目标，是把前面整套 wiki 里分散出现的“建模启示”收成一个统一模板。它不试图告诉你唯一正确的 memory model 长什么样，而是回答一个更实用的问题：`如果你现在要做架构探索，最少该保留哪些对象，模型才不至于把关键矛盾压没`。因为存储器建模最容易走向两个极端。一个极端是过度详细，把模型做成几乎要替代 RTL；另一个极端是过度粗糙，把一整套层次、状态和共享关系压成几个均值参数。前者太重，后者太盲。就像画地图——如果要精确到每棵树，你画不完也读不了；但如果只画一个点代表"某个城市"，你根本无法用它规划路线。好的模型应该像城市交通图：省掉了建筑细节，但保留了道路、交叉口和瓶颈位置。真正有用的模板，应该允许你按问题裁剪，但始终保留那些会改变结论形状的骨架。
 
@@ -96,8 +96,8 @@ MemoryState {
   bank_busy_until[resource_id][bank_id]: cycle
   port_busy_until[resource_id][port_id]: cycle
 
-  open_row[channel_id][bank_id]: row_id | INVALID
-  bank_mode[channel_id][bank_id]: enum { idle, active, precharging, refreshing }
+  open_row[(channel_id, rank_id, bank_group_id, bank_id)]: row_id | INVALID
+  bank_mode[(channel_id, rank_id, bank_group_id, bank_id)]: enum { idle, active, precharging, refreshing }
 
   bus_direction[channel_id]: enum { read, write, turnaround }
   refresh_due[channel_or_rank]: cycle
@@ -160,7 +160,7 @@ ConstraintGuard {
 典型 guard 包括：
 
 - SRAM bank / port 冲突
-- DRAM `tRCD / tRAS / tRP / tWR / tRFC`
+- DRAM `tRCD / tRAS / tRP / tRTP / tWR / tRFC`，以及所选模式的 `AL / WL / BL / PL` 和 CS-to-CA latency；显式 PRE 使用[指定模式的下界](../05-dram-protocol-families/timing-parameters-trcd-trp-tras.md#ddr4-同-bank-显式-pre-的完整下界)，其他模式按器件定义重算
 - 读写方向切换窗口
 - refresh 占用窗口
 - low-power 唤醒窗口
@@ -253,12 +253,16 @@ MemoryModel {
 while running:
   collect_new_requests()
   update_completed_events()
-  build_legal_actions_from_state_and_guards()
-  choose_actions_according_to_policy()
-  apply_actions()
+  for each independently schedulable domain in deterministic_order:
+    actions = build_legal_actions_from_current_state_and_guards(domain)
+    action = choose_action_according_to_policy(actions)
+    if action exists: atomically_reserve_resources_and_apply(action)
+    # 之后的同刻选择必须看到更新后的共享 guard
   update_metrics()
   advance_time()
 ```
+
+同一时间可从独立 CA 域各选动作；共享 DQ、队列或其他资源须在同刻原子预留。另一实现可联合求解一组互不冲突的动作，再原子提交。相同局部 bank 编号在不同 rank/BG 下不是同一状态。
 
 真正决定模型价值的，不是这个循环本身，而是 `legal_actions` 和 `policy` 是不是建立在正确的资源、状态和拓扑之上。
 

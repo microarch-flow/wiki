@@ -23,7 +23,7 @@ Narrow transfer 的重点不是”货少”，而是”**摩托车占哪条车�
 | `0x1000` | 2 | 4 byte | lane 0-3 | 低 32-bit lane |
 | `0x1004` | 2 | 4 byte | lane 4-7 | 中间 32-bit lane |
 | `0x100C` | 2 | 4 byte | lane 12-15 | 高 32-bit lane |
-| `0x1003` | 2 | 4 byte | lane 3-6 | 非自然对齐，lane 处理更复杂 |
+| `0x1003` | 2 | 首拍最多 1 byte | lane 3 | 非对齐起点到 4-byte 对齐边界 |
 
 容易误解：narrow transfer 只是“数据少一点”。实际上，它改变的是每个 beat 的 lane 映射和访问粒度，直接影响 adapter、slave 和验证状态。
 
@@ -39,11 +39,24 @@ Narrow transfer 和 WSTRB 有关联，但不是同一件事：
 | WSTRB | `W` channel 上的 byte strobe | 定义写 beat 中哪些 byte lane 真正更新 |
 | Partial write | WSTRB 只打开部分 lane | 定义写入掩码，可能发生在窄写或宽写里 |
 
-一个 128-bit data path 上，4-byte narrow write 到 `0x1004`，合理的 `WSTRB` 可能只打开 lane 4-7。若实现错误地打开 lane 0-15，就会把不属于这次访问的 byte 一起写掉；若 lane 偏移算错，就会把数据写进错误字段。
+一个 128-bit data path 上，对齐的 4-byte narrow write 到 `0x1004`，允许 lane 为 4-7；`WSTRB` 可以打开其中全部或一部分，但不能打开允许范围以外的 lane。若实现错误地打开 lane 0-15，就会把不属于这次访问的 byte 一起写掉；若 lane 偏移算错，就会把数据写进错误字段。
 
 读路径没有 `RSTRB`。读 narrow transfer 的有效 byte 由地址和 `ARSIZE` 推导，slave 或 adapter 返回的数据必须让 master 能取到对应 byte。建模时不能把“写有 WSTRB”推广成“读也有 strobe”；读侧的关键是 data alignment、lane extraction 和 response。
 
 容易误解：WSTRB 就等于 narrow transfer。实际上，WSTRB 只描述写 lane 是否更新；narrow transfer 描述 beat 传输粒度。在小粒度写入宽数据通路时，两者会同时影响同一个 beat，但语义边界不同。
+
+## 非对齐 INCR：首拍不会跨越 transfer-size 边界
+
+下面假设 AXI4、64-bit 数据总线（8 个 byte lane）、`AWBURST=INCR`、`AWSIZE=2`（4 byte）、`AWLEN=1`（2 beat），且地址对应 lane 为 `地址 mod 8`。`AWADDR=0x1003`，向下对齐地址为 `0x1000`。
+
+| beat | 地址 | 协议允许的 byte 地址 | 允许的 lane | 全部写入时 WSTRB |
+|---:|---:|---|---|---:|
+| 0 | `0x1003` | `0x1003` | 3 | `0x08` |
+| 1 | `0x1004` | `0x1004`–`0x1007` | 4–7 | `0xF0` |
+
+首拍从起始地址到其所在 4-byte 对齐块的末尾，因此只有 1 byte。第二拍从下一个对齐块开始。`WSTRB` 可以关闭允许范围内的 lane；不能把首拍扩成 lane 3–6。若软件希望覆盖 `0x1003`–`0x1006`，第二拍可以只使能 lane 4–6。读没有 `RSTRB`，接收方按相同地址和大小规则提取有效 byte。
+
+该例的边界判断见 [AXI Burst、对齐与边界](./axi-burst-alignment-boundary.md)。协议依据：[Arm IHI 0022H，AXI and ACE Protocol Specification](https://developer.arm.com/-/media/Arm%20Developer%20Community/PDF/IHI0022H_amba_axi_protocol_spec.pdf?hash=6325311012DDADF238C35A6C0FD734E520754F82&la=en&revision=71bd7c57-2ed7-487b-bc3e-68c4ab56fa5f)，传输地址及 byte lane 规则。
 
 ## Width adapter 会把 lane 语义重写成子访问
 
@@ -51,7 +64,7 @@ Narrow transfer 和 WSTRB 有关联，但不是同一件事：
 
 例如，128-bit AXI master 对 32-bit APB 寄存器子树写 4 byte。上游看起来是一笔 128-bit data path 上的窄写，下游却可能变成一次 32-bit APB 写。adapter 必须把地址低位、WSTRB、write data lane 和 response 重新组织。如果 WSTRB 指示的 lane 与目标 APB 字对不齐，adapter 要么拒绝/报错，要么拆分成更小粒度访问，具体取决于系统支持的语义。
 
-反方向也有风险。32-bit master 写 128-bit slave 的一个字段，如果 slave 原生支持 byte strobe，adapter 可以直接转发 lane 掩码；如果 slave 只支持 128-bit 全宽写，adapter 可能需要 read-modify-write。只有在目标不能直接做 byte-lane 写，或者必须保持更宽粒度原子更新时，read-modify-write 才是合理路径；它会增加读延迟、临时 buffer 和错误处理复杂度。
+反方向也有风险。32-bit master 写 128-bit slave 的一个字段，如果 slave 原生支持 byte strobe，adapter 可以直接转发 lane 掩码；如果 slave 只支持 128-bit 全宽写，adapter 可以在目标语义允许时考虑 read-modify-write：先读完整字，修改选中字节，再写回完整字。但普通 RMW 不是原子操作。若另一 master 在读和写之间更新其他字节，回写会覆盖它的更新；要保证更宽粒度原子性，必须有覆盖所有竞争者的互斥，或目标提供可用的原子机制。MMIO 的 read-to-clear、write-one-to-clear 或其他副作用若不允许额外读写，就不能执行 RMW，应按接口契约拒绝或返回错误。RMW 还增加延迟、缓冲和错误处理。
 
 容易误解：width adapter 只是改变数据线宽。实际上，它还要维护地址偏移、WSTRB、response、ordering 和副作用边界。
 

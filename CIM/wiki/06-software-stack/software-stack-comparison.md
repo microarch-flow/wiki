@@ -1,7 +1,7 @@
 # 不同 CIM/PIM 路线的软件栈差异
 
 上级：[06 Software Stack](./README.md)
-相关：[CIM/PIM/NMC Taxonomy](../01-overview/cim-pim-nmc-taxonomy.md), [RAM: DRAM Commands](../../../RAM/wiki/05-dram-protocol-families/commands-act-rd-wr-pre.md), [NoC: Memory-Centric NoC](../../../NoC/wiki/06-ai-noc-specifics/memory-centric-noc.md), [BUS: DMA Interface](../../../BUS/wiki/04-microarchitecture-integration/axi-dma-system-interface.md), [FAB: Test Methodology](../../../FAB/wiki/05-final-test-and-reliability/final-test-methodology.md)
+相关：[CIM/PIM/NMC Taxonomy](../01-overview/cim-pim-nmc-taxonomy.md), [RAM: DRAM Commands](../../../RAM/wiki/05-dram-protocol-families/commands-act-rd-wr-pre.md), [NoC: Memory-Centric NoC](../../../NOC/wiki/06-ai-noc-specifics/memory-centric-noc.md), [BUS: DMA Interface](../../../BUS/wiki/04-microarchitecture-integration/axi-dma-system-interface.md), [FAB: Test Methodology](../../../FAB/wiki/05-final-test-and-reliability/final-test-methodology.md)
 
 ## 这页在回答什么问题
 
@@ -15,7 +15,7 @@
 | SRAM mixed-signal CIM | 中等 | scale、SA/ADC、local correction | calibration metadata | PVT 与校准状态进入 runtime |
 | ReRAM/Flash analog CIM | 重 | weight programming、variation-aware mapping | write/verify、drift、ADC、QAT | 模型适配和硅后差异 |
 | PCM/MRAM CIM | 研究性强 | 特定 read/sense-path 或 resistance-state | health/remap 复杂 | 成熟度和场景很窄 |
-| DRAM/HBM/GDDR-PIM | 依赖 memory vendor | memory command、bank/channel offload | host runtime、result return | 生态、controller、算子能力 |
+| DRAM/HBM/GDDR-PIM | 依赖 memory vendor | 命令型 bank offload；或 UPMEM 式 DPU 指令及显式 MRAM↔WRAM DMA | host 分发、同步、result return | 生态、controller、算子能力 |
 | NMC | 接近 accelerator SDK | data placement、DMA、package bandwidth | coherency/offload latency | 和 GPU/NPU/CPU 协同成本 |
 
 ## 三条 Paradigm 的软件成熟度
@@ -28,7 +28,7 @@ Mixed-signal CIM 介于两者之间。它希望保留 analog 局部能效，同�
 
 ## CIM/PIM/NMC 边界
 
-Samsung HBM-PIM、SK hynix AiM/AiMX 这类 DRAM/HBM/GDDR memory-side processing 属于 PIM，不是 CIM compiler 后端。它们的软件重点是 memory-side command、controller/runtime、bank/channel scheduling 和 host offload。UPMEM、HBM base die、interposer 或 package-side compute 属于 NMC 对照，软件上更像靠近 memory 的 accelerator。
+Samsung HBM-PIM、SK hynix AiM/AiMX 这类 DRAM/HBM/GDDR memory-side processing 属于 PIM，不是 CIM compiler 后端。它们的软件重点是 memory-side command、controller/runtime、bank/channel scheduling 和 host offload。UPMEM 的 DPU 与 DRAM bank 同 die，按本书也归 PIM，但其指令式 DPU 和显式 DMA 不同于 Samsung 的命令型模式。HBM base die、interposer 或 package-side compute 属于 NMC。
 
 SRAM buffer + MAC、memory 旁边 ALU、普通 HBM-adjacent accelerator 不算 CIM；只有 cell、bitline、wordline、sense path 或紧邻 array path 参与计算，CIM software 才需要处理本章的 array mapping、encoding 和 calibration。
 

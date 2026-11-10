@@ -1,13 +1,13 @@
 # DRAM 系统调试 checklist
 
 上级：[参考资料](./README.md)
-相关：[为什么说 DRAM 的实际性能由 MC 决定](../06-memory-controller/why-mc-is-the-real-bottleneck.md), [峰值带宽 vs 有效带宽：损失发生在哪里](../07-system-architecture/effective-bandwidth-vs-peak.md)
+相关：[Memory controller 如何影响 DRAM 的实际性能](../06-memory-controller/why-mc-is-the-real-bottleneck.md), [峰值带宽 vs 有效带宽：损失发生在哪里](../07-system-architecture/effective-bandwidth-vs-peak.md)
 
 ## 这页在回答什么问题
 
 当 DRAM 系统出现带宽不达标、尾延迟异常或 QoS 失衡时，应该按什么顺序排查访问模式、地址映射、page policy、refresh 和仲裁。
 
-## 正文
+## 调试顺序与问题范围
 
 这份 checklist 的目标，不是把所有 DRAM 细节都列一遍，而是给你一个不容易走偏的排障顺序。DRAM 系统出问题时，最常见的失败模式不是“完全没有线索”，而是太快跳到错误层级。看到带宽不够，就先怪颗粒不行；看到尾延迟高，就先怪 refresh；看到 QoS 差，就先改优先级。结果真正的问题也许是 row locality 被地址映射毁了，或者写排空把读请求切碎了，或者上游请求形状根本就喂不饱 controller。
 

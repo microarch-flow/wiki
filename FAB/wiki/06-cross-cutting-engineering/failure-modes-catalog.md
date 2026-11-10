@@ -7,16 +7,17 @@
 
 先进封装常见失效模式有哪些，它们分别和哪些结构、路线和测试节点相关。本页把失效模式整理成工程索引。
 
-## 六类常见失效
+## 机理、症状与测试判定
 
-| 类别 | 典型表现 | 相关结构 |
+| 类别 | 机理或物理变化 | 可见症状与验证 |
 | --- | --- | --- |
-| 互连失效 | bump fatigue、micro-bump 开路、bonding defect | bump、hybrid bonding、TSV |
-| RDL/金属失效 | RDL cracking、via/trace 开裂 | Fan-out、RDL interposer、CoWoS-R/L |
-| 界面失效 | delamination、underfill/mold 界面剥离 | underfill、mold、adhesive、die surface |
-| 热机械失效 | warpage、薄 die 形变、热循环疲劳 | large package、3DIC、HBM package |
-| 电性能失效 | PI droop、SI error、高速接口误码 | PDN、RDL、interposer、substrate |
-| 测试与筛选失效 | 坏件太晚发现、内部缺陷不可见 | KGD、中测、final test、FA |
+| 互连 | bump 疲劳、键合缺陷 | 接触电阻变化或开路；用连续性测试与截面分析 |
+| RDL/金属 | 金属裂纹、via 开裂 | 某路径电阻增加；定位后显微及截面验证 |
+| 界面/热机械 | 脱层、翘曲或循环疲劳 | 热阻、接触或形貌变化；超声、热测和截面核验 |
+| 电性症状 | PDN droop、眼图恶化 | 电压跌落或误码；需结合负载与测量参考面定位根因 |
+| 测试判定 | 漏测或测试接触不良 | 漏检坏件或误判好件；复测接触、pattern 和测试条件 |
+
+例如 delamination 使散热界面热阻增大，导致相同功率下局部温度升高，进而可能出现电性异常。超声检查和热阻复测可协助验证；一个器件的多种症状不能当作多个独立故障计数。目录只提供候选机制；故障率需批次分母、暴露时间及 FA。
 
 ## 路线与失效模式
 
@@ -42,7 +43,8 @@ structure + material + thermal load + process window
 | 测试/分析节点 | 更容易捕捉的问题 |
 | --- | --- |
 | CP / wafer sort | die 内功能和参数问题 |
-| KGD screening | 高价值 die 或 stack 的早期筛选 |
+| KGD screening | 按规定判据筛选 die |
+| Stack-level screening | 按规定判据筛选已组装的 HBM stack 或其他堆叠组件 |
 | Intermediate test | assembly 或 bonding 后的模块问题 |
 | Final Test | package 级功能、接口、分档问题 |
 | Stress / reliability | 热循环、疲劳、界面和寿命问题 |

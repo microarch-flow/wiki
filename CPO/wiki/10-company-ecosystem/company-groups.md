@@ -31,7 +31,7 @@
 - NVIDIA 更偏 AI 工厂网络与系统级规模牵引
 - Cisco 更偏系统、网络设备与 optics/silicon 协同
 - Marvell 更偏互连平台、定制 AI 加速器与开放生态
-- AMD 目前更像正在加强 photonics/CPO 能力的追赶者和平台扩展者
+- AMD 于 2025-05-28 披露收购 Enosemi；后续产品和采用规模仍待观察，见 [AMD 深卡](../11-deep-company-cards/amd.md)
 
 ## 第二组：optical I/O / silicon photonics / optical engine 代表方
 
@@ -70,7 +70,7 @@
 
 ### 这一组的关键价值
 
-在 CPO 里，foundry 和 advanced packaging 平台不只是代工角色，很多时候也是“生态组织者”。
+TSMC 提供晶圆制造和封装平台；Alchip 是无晶圆厂 ASIC 设计与封装协同方，不能把它等同于晶圆代工厂。具体交付物以[双方合作公告](https://www.alchip.com/public/index.php/jp/Newsroom/AyarLabsandAlchiptoScaleAIInfrastructure)为准。
 
 ## 第四组：fiber、connector、laser、材料与连接结构供应方
 

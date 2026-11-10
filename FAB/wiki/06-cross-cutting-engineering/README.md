@@ -51,3 +51,13 @@ architecture target
 ## 架构师启示
 
 架构师要把这些横向变量当成早期设计输入，而不是后期收尾项。若系统目标依赖 HBM、chiplet、2.5D 或 3DIC，那么热、PI、SI、warpage、KGD 和失效隔离必须和架构分解一起进入决策。
+
+## 本章正文
+
+- [失效模式总览](./failure-modes-catalog.md)
+- [从架构需求反推工艺与封装选型](./from-architecture-to-process-selection.md)
+- [PI、PDN、Decap:供电完整性](./power-delivery-pi-pdn-decap.md)
+- [封装内的信号完整性](./signal-integrity-in-package.md)
+- [应力、Warpage、CTE 失配:机械可靠性的核心](./stress-warpage-cte.md)
+- [先进封装中的热路径与管理](./thermal-path-and-management.md)
+- [良率经济学:前道、中测、封装、终测的良率累积](./yield-economics-across-stages.md)

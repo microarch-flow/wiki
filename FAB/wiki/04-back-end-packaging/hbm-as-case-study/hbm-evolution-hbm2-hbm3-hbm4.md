@@ -16,14 +16,24 @@ HBM 代际升级围绕几个方向展开：更高 stack 带宽、更高容量、
 | 单 stack 带宽提高 | logic-to-HBM routing 和 SI/PI 更难 |
 | Stack 数量增加 | interposer/RDL 面积、substrate、热耦合压力增加 |
 | 容量密度提高 | stack 内部层数、TSV、薄 die 和测试更难 |
-| Power-per-bit 下降 | 更短互连、更低寄生、更强 PDN |
+| 目标能量/bit 降低 | 需按接口、功率边界和有效速率测量，短距与 PDN 是候选因素 |
 | 接口并发增加 | memory controller、NoC 和 package 布局共同受约束 |
 
 因此 HBM 代际不是孤立 memory roadmap，而是 package roadmap 的驱动因素。
 
+## 接口位宽、通道与带宽
+
+| 对象 | 每栈外部 DQ 位宽 | 独立通道 | 证据和边界 |
+| --- | --- | --- | --- |
+| HBM2 例 | 1024 bit | 8 | [Samsung HBM2](https://semiconductor.samsung.com/news-events/tech-blog/high-bandwidth-memory-is-catching-on-for-data-intensive-computing/)、[Micron 对照](https://sg.micron.com/products/memory/hbm/hbm3e) |
+| HBM3 例 | 1024 bit | 16 | [Samsung 产品页](https://semiconductor.samsung.com/dram/hbm/)的 HBM3；[接口说明](https://www.synopsys.com/designware-ip/interface-ip/hbm/hbm3-phy.html) |
+| HBM4 例 | 2048 bit | 32 | [Samsung 产品页](https://semiconductor.samsung.com/dram/hbm/hbm4/)和 [Siemens 接口说明](https://blogs.sw.siemens.com/semiconductor-packaging/2026/04/24/hbm3e-hbm4-ic-design-guide/)，核阅 2026-11-09 |
+
+固定速率下，每栈单方向原始峰值带宽为 `DQ 位宽 × 每 pin bit/s ÷ 8`，单位为 B/s；读和写共享该数据接口，不能把两方向峰值相加当持续带宽。例：1024 bit、6.4 Gb/s/pin 为 819.2 GB/s。HBM2 到 HBM3 的外部 DQ 位宽没有翻倍；独立通道数改变。堆叠层数主要影响容量，不能按每层增加一套外部 DQ 计算。实际利用率、速率、stack 数和方向取目标产品与负载。
+
 ## 从 HBM2 到 HBM3
 
-HBM2 到 HBM3 的系统意义是带宽需求进一步上升，AI/HPC logic die 对多个 HBM stack 的依赖更强。封装需要提供更多并行互连、更稳定供电和更好的热路径。
+HBM2 到 HBM3 的系统意义是带宽需求进一步上升，AI/HPC logic die 对多个 HBM stack 的依赖更强。封装须支持目标通道布局、信号和供电条件；外部 DQ 位宽并未因代际变化而自动增加。
 
 对架构来说，这意味着 memory controller 和 NoC 不能只按“有更快 memory”理解。它们要把更高并发访问组织到物理 HBM 位置、通道分布和封装互连能力上。
 
@@ -31,7 +41,7 @@ HBM2 到 HBM3 的系统意义是带宽需求进一步上升，AI/HPC logic die �
 
 HBM4 继续把系统推向更宽接口、更高单 stack 带宽和更强封装协同。它会进一步放大几个问题：logic die 与 HBM 的连接密度，interposer/RDL 平台尺寸，substrate 电流承载，HBM 邻近热耦合，以及 stack 级测试和 KGD。
 
-这里不需要死记某个代际数字。更重要的是理解趋势：单 stack 能力越强，封装越不能只是连接器，而会成为 memory bandwidth delivery system。
+更宽接口改变封装连接预算，但目标产品仍须核对具体速率与可用通道。
 
 ## 路线耦合
 
@@ -40,7 +50,7 @@ HBM4 继续把系统推向更宽接口、更高单 stack 带宽和更强封装�
 | HBM stack 更多 | 更大 interposer/RDL、CoWoS-S/R/L 类路线 |
 | 局部密度更高 | Si interposer、local silicon interconnect |
 | Package 尺寸更大 | RDL interposer、bridge-like 混合平台 |
-| 更低 power-per-bit | 更短互连、hybrid bonding、3DIC |
+| 更低能量/bit 的目标 | 比较具体 PHY、短互连和堆叠结构的实测或模型 |
 | 热耦合更强 | package thermal co-design、die placement 调整 |
 
 2.5D 会继续承担 logic + HBM 的主集成形态；当局部带宽密度和能效继续逼近上限时，3DIC 和 hybrid bonding 会获得更大价值。

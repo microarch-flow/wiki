@@ -1,13 +1,15 @@
 # Dataflow 在 CIM 上的映射：Weight Stationary 的天然契合与边界
 
 上级：[05 Architecture And System](./README.md)
-相关：[Data Encoding Strategies](../04-circuit-and-macro/data-encoding-strategies.md), [RAM: Data Movement First Principle](../../../RAM/wiki/09-ai-chip-memory-architecture/data-movement-first-principle.md), [NoC: Broadcast Multicast Tree](../../../NoC/wiki/06-ai-noc-specifics/broadcast-multicast-tree.md)
+相关：[Data Encoding Strategies](../04-circuit-and-macro/data-encoding-strategies.md), [RAM: Data Movement First Principle](../../../RAM/wiki/09-ai-chip-memory-architecture/data-movement-first-principle.md), [NoC: Broadcast Multicast Tree](../../../NOC/wiki/06-ai-noc-specifics/broadcast-multicast-tree.md)
 
 ## 这页在回答什么问题
 
 CIM 为什么常被说成适合 weight-stationary dataflow？因为权重可以驻留在 cell/array 内，输入流过阵列并产生 partial sum。但这个优势只在权重复用、阵列利用率和归约成本同时成立时才保留。
 
-## 三种 Dataflow
+## 三种驻留视角
+
+这些名称必须绑定存储层和循环范围，并非全系统互斥。例如权重跨多个输入在阵列驻留，同时输出 partial sum 在本地累加器跨 K 块驻留，可在不同层和循环上同时满足 WS 与 OS；只有同一输出沿 K 分布到多个 tile 才需跨 tile 合并。
 
 Weight-stationary 把权重固定在 array 内，activation 流过 macro。它适合 SRAM/ReRAM/Flash CIM 的 MVM/GEMM 和固定权重 edge inference；代价是 activation broadcast、partial sum reduction 和 layer 间调度仍然存在。
 
@@ -27,7 +29,7 @@ Mixed-signal CIM 要在映射中显式处理边界：哪些 partial sum 在 anal
 
 GEMM/MVM 是最自然对象。权重矩阵按 array shape 切块，activation 广播到多个 macro，partial sum 在 local accumulator、tile 或 NoC 上合并。
 
-Conv 可通过 direct convolution 或 lowering 映射。im2col 会提高矩阵化程度，却增加 activation buffer 和重复数据搬运；direct mapping 保留局部复用，但控制更复杂。
+Conv 可通过 direct convolution 或 lowering 映射。显式物化 im2col 会写出展开矩阵并增加该边界读写；隐式 lowering 可按需取窗口而不物化，原始输入的重读仍取决于 cache 和复用；direct mapping 保留局部复用，但控制更复杂。
 
 Transformer 要拆开看。Projection 和 FFN 更接近 GEMM；attention score、softmax、normalization 和 KV cache 访问常常需要 fallback 或不同硬件路径。把整个 Transformer 都称为适合 CIM 是过度概括。
 

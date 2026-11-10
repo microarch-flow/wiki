@@ -6,11 +6,11 @@
 
 ## 为什么 write 常比 read 更容易跑满
 
-因为 read 依赖 completion 返回路径，容易被往返延迟和 outstanding 深度限制。write 是 posted，发出去不等返回，只要 credit 足够就能连续发；read 是 non-posted，吞吐受 `outstanding × bytes / RTT` 封顶。
+普通 Memory Read 是 non-posted，依赖事务 Completion，容易被最终返回的往返延迟和在途深度限制。普通 Memory Write 是 posted，无需等待逐笔事务 Completion；但要连续发送，还须有持续的上游数据供给、足够 credit、可用链路及下游服务能力，也可能受仲裁和拥塞限制。稳态读吞吐受 `平均在途数 × 每请求平均字节 / 平均完整 RTT` 等资源共同约束。
 
 ## BAR 和 DMA 地址有什么区别
 
-BAR 是主机访问设备资源的窗口；DMA 地址是设备访问主机内存时使用的地址视角。
+BAR 定义设备暴露的目标资源窗口，主机常用 MMIO 访问它。DMA 地址是平台提供给发起设备访问已映射资源的地址：常见路径的目标是主机内存；在拓扑、平台和驱动支持的 P2P 路径中，也可以是对端设备允许访问的 BAR 资源。目标窗口与请求者所用地址及翻译不能假定数值相同，见 [P2P 与拓扑约束](../07-advanced-topics/p2p-switch-topology-constraints.md)。
 
 ## 为什么设备明明支持 DMA，却还要看 IOMMU
 
@@ -34,16 +34,16 @@ BAR 是主机访问设备资源的窗口；DMA 地址是设备访问主机内存
 
 ### MPS 到底影响多少带宽
 
-按每 TLP 固定开销 ~24 字节算，有效吞吐 = 名义带宽 × MPS/(MPS+24)：MPS=128 → ~84%，256 → ~91%，512 → ~95%。MPS 越大固定开销摊得越薄，但受路径最小公共值钳制，常见实际值 128/256。
+MPS 是上限，实际 payload 可以更小。只在 Non-Flit 模式的示例假设中，若每包非 payload 占用 24 B，且实际有效数据为 128 B，则效率为 `128/(128+24) ≈ 84.2%`。实际包格式、DLLP、重传及链路模式会改变效率；不要重复计算已经包含的开销。
 
 ### read 要多少并发才能灌满链路
 
-`所需 outstanding ≥ 名义带宽 × RTT / bytes_per_request`。例：Gen4 x8（~16 GB/s）、RTT=1µs、单请求 512B，需 ~31 个并发。若 Tag 只有默认 32 个，几乎没余量，RTT 稍大就掉速。
+`所需 outstanding ≥ ceil(目标有效吞吐 × 平均 RTT / 每请求平均有效字节)`。假设 Gen4 x8 的目标 `12.8 GB/s`、RTT `1 µs`、每请求 `512 B`，需要 25 个。目标还必须低于链路有效带宽；更高 RTT 或较小请求会增加需要的并发。
 
 ### Tag 上限是多少
 
-默认 5-bit = 32，Extended Tag = 256，10-bit Tag = 768/1024。这是 read 并发深度的硬上限。
+5-bit 通常最多 32，Extended Tag 已使能时最多 256。10-bit Tag 已使能并且目标支持时，针对单个 completer 最多 768；实际还受 requester 的槽数、缓冲、目标能力及 Tag 分配限制。10-bit 字段有 1024 个位模式，不等于 1024 个可用于单目标的请求。
 
 ### 一个 read 会被拆成几个 completion
 
-由 MRRS（单请求上限）和 RCB（64/128 字节返回边界）决定，`ceil(request_size / completion_payload)`。每个 completion 各带一份 header 开销，拆得越碎 read 路径效率越低。
+不能只由 RCB 算出。MRRS 限制请求长度，MPS 限制数据包长度，RCB 限制允许的拆分位置；实际分包还取决于地址和 completer。对齐的 256 B read，在 MRRS≥256、MPS=256、RCB=64 的条件下，可以是一个 256 B CplD，也可以是四个 64 B CplD。

@@ -33,7 +33,7 @@
 - Broadcom
 - NVIDIA
 
-这是最接近近期规模化信号的一条主线。
+截至 2025-05-15，Broadcom [公告](https://investors.broadcom.com/news-releases/news-release-details/broadcom-announces-third-generation-co-packaged-optics-cpo)对 TH5-Bailly 使用 volume-production 表述；NVIDIA 的 [2025-03-18 公告](https://nvidianews.nvidia.com/news/nvidia-spectrum-x-co-packaged-optics-networking-switches-ai-factories)描述平台目标和当时计划。两者不构成相同量纲的部署排名。
 
 ### 主线 B：package optical I/O 子系统化
 
@@ -43,15 +43,15 @@
 
 这条线的潜力在于，它可能不只服务交换机，还可能进入更广义的加速器和 scale-up fabric。
 
-## 次主线：更保守但更容易被接受的过渡路线
+## 其他可并存的选项
 
 包括：
 
 - 更近的 near-package optics
 - 更强的 pluggable + coherent / high-speed evolution
-- 更强调 external laser 和 serviceability 的折中型路线
+- 可选的 external laser 和 serviceability 设计
 
-这些路线不一定最性感，但在商业上可能更容易被逐步接受。
+光源位置与光电转换位置互相独立：平台化 CPO 也可用外置激光。是否便于维护取决于可替换单元、供光和分光路径；不能由光源位置直接决定链速或商业顺序。
 
 ## 一句话判断
 

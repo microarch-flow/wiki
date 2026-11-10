@@ -24,7 +24,7 @@
 - 端到端带宽上限
 - 可能的重叠上界
 
-这一层适合做上界估算，也适合快速判断某个方案是否在数量级上可行。但它几乎解释不了 stall，因为它没有 queue、没有 outstanding、没有 return path、也没有 completion。
+这一层适合做上界估算，也适合快速判断某个方案是否在数量级上可行。应先按路径逐一计算资源服务需求；读写共享半双工链路时，一 byte 复制可能占用两 byte 链路服务。单次和有限批次还要计入流水填充与排空，见 [参数与公式速查](./parameter-reference.md)。但它几乎解释不了 stall，因为它没有 queue、没有 outstanding、没有 return path、也没有 completion。
 
 ## 第二层：事务与队列模型
 

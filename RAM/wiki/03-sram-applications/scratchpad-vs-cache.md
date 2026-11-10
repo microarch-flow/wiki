@@ -7,7 +7,7 @@
 
 当底层介质都还是 SRAM，为什么 scratchpad 和 cache 会在可预测性、面积效率、编程模型和性能风险上呈现完全不同的性格。真正需要回答的问题不是“哪个更快”，而是谁在负责管理局部性，谁在为局部性判断失误承担代价。
 
-## 正文
+## 地址管理与数据放置方式
 
 Scratchpad 和 cache 最容易被混淆，是因为两者表面上都像”离计算很近的一小块 SRAM”——就像自动挡和手动挡的车表面都是”能开的汽车”。如果只看介质，这个判断没错；但如果把系统语义也纳入，就会发现它们几乎站在两种相反的设计哲学上。cache 是自动挡：硬件替你决定什么时候换挡（哪些数据值得暂存），你只管踩油门。scratchpad 是手动挡：什么时候换挡、换几挡，完全由你自己控制。两者的根本差异，不在 cell，不在 bank，而在”谁管理局部性”。
 
@@ -68,4 +68,4 @@ event DmaFillDone(buf_id, tile_id)
 event ScratchpadRead(buf_id, bank_id, tile_id)
 ```
 
-如果只关心粗粒度平均性能，cache 可以先被折成 `hit_rate * hit_latency + miss_rate * miss_penalty`；但 scratchpad 不能这样折，因为它的关键问题往往不是平均命中率，而是某次 tile 是否按时搬到位、某几个 bank 是否被同时打爆。反过来，如果把 cache 也建成“只要软件安排好就总命中”，模型就会严重高估它在通用负载上的稳定性。
+若每次请求从发出到数据返回独立统计，且 `miss_penalty` 定义为 miss 相比 hit 的增量，则平均访问时间可写为 `hit_latency + miss_rate * miss_penalty`；若 `miss_latency` 是 miss 的完整耗时，则等价写成 `hit_rate * hit_latency + miss_rate * miss_latency`，其中 `hit_rate + miss_rate = 1`。该平均式不能直接相加为重叠的程序 stall 时间，也不包含未计入的排队或并发影响。scratchpad 的关键问题通常也不是用命中率表达，因为它的关键问题往往不是平均命中率，而是某次 tile 是否按时搬到位、某几个 bank 是否被同时打爆。反过来，如果把 cache 也建成“只要软件安排好就总命中”，模型就会严重高估它在通用负载上的稳定性。

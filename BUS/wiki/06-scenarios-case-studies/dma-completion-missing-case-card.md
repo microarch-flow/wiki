@@ -12,6 +12,8 @@
 
 ## 典型路径
 
+下表假设设备接口要求 completion 写先达到指定观察点，再发出通知；该观察点不必是 CPU cache。若接口允许通知提前，则驱动必须依赖该接口规定的可靠重试或 polling，不能直接套用表中的顺序。
+
 ```text
 CPU prepares descriptor
   -> doorbell/start
@@ -27,9 +29,9 @@ CPU prepares descriptor
 | T0 | DMA data move 完成 | 数据完成但 writeback 尚未发生 |
 | T1 | DMA 发出 completion write | writeback port 被 data write 堵住 |
 | T2 | completion write response 返回 | B response 不回，slot 不释放 |
-| T3 | completion 对 CPU 可见 | non-coherent cache 未 invalidate |
-| T4 | device/assert interrupt | interrupt 早到、未到或被 mask |
-| T5 | CPU 读 completion/status | 读旧缓存、read side effect、状态未稳定 |
+| T3 | completion 写达到设备约定的通知前观察点 | 设备须满足写与通知顺序 |
+| T4 | device/assert interrupt | interrupt 未到或被 mask |
+| T5 | CPU 按设备契约取得所有权，并按 DMA 映射要求同步后读取 | 一致映射仍需规定的顺序；MMIO 可能有读副作用 |
 | T6 | CPU clear/EOI | clear 顺序错误导致重复或丢事件 |
 
 ## 根因矩阵
@@ -40,7 +42,7 @@ CPU prepares descriptor
 | writeback 与 data write 共路被排队 | completion 偶发延迟很长 | 性能长尾 |
 | completion write fault | fault/error status 存在 | fault |
 | CPU cache 仍有旧 completion | memory 已写，软件读旧值 | 可见性错误 |
-| interrupt 早于 completion visible | ISR 读到空队列 | ordering 错误 |
+| interrupt 早于设备规定的写观察点，或 CPU 未同步 | ISR 读到空队列 | 设备 ordering 或软件可见性错误 |
 | interrupt 被 mask 或 pending 丢失 | polling 可见 completion，但 ISR 不来 | interrupt path 问题 |
 | clear/EOI 顺序错误 | 重复中断或丢新 completion | 软件/寄存器语义问题 |
 | queue pointer 更新顺序错误 | completion record 存在但 driver 不消费 | queue metadata 错误 |
@@ -54,25 +56,27 @@ CPU prepares descriptor
 | 1 | 数据搬运是否真的完成 | data read/write response、DMA internal done |
 | 2 | completion write 是否发出 | writeback AW/W 或等价 trace |
 | 3 | completion write 是否收到 response | B response、writeback slot release |
-| 4 | completion 是否对 CPU 可见 | memory snoop、cache invalidate、coherent read |
-| 5 | interrupt 是否在 completion 可见后触发 | interrupt assert timestamp |
-| 6 | CPU 是否正确读取和清理 | ISR read、clear/EOI write、queue pointer |
+| 4 | 写是否达到设备规定的观察点 | 写响应定义、memory/互连 trace |
+| 5 | interrupt 是否按接口契约在该点后触发 | interrupt assert timestamp |
+| 6 | CPU 是否取得所有权并按 DMA API 同步后读取和清理 | ISR sync/read、clear/EOI write、queue pointer |
 | 7 | error path 是否释放资源 | fault status、DMA channel slot |
 
 这个顺序先区分“硬件没写 completion”和“软件没看见 completion”。这两个问题的修复方向完全不同。
 
-## 例子：Interrupt 早于 Completion 可见
+## 例子：通知早于设备约定的观察点
+
+假设接口要求先写后通知，completion queue 使用一致 DMA 映射，且软件通过有效位检查 entry。
 
 | 阶段 | 事件 | 结果 |
 | --- | --- | --- |
 | T0 | DMA data write 完成 | 数据面完成 |
 | T1 | DMA 写 completion record | writeback 进入 interconnect |
 | T2 | DMA 立即 assert interrupt | CPU 被唤醒 |
-| T3 | CPU ISR 读取 completion queue | completion write 尚未对 CPU 可见 |
+| T3 | CPU ISR 检查有效位 | completion write 尚未到达约定观察点，entry 仍无效 |
 | T4 | ISR 认为没有 completion | 软件可能睡回去或报错 |
 | T5 | completion record 稍后可见 | 没有新的 interrupt，表现为丢 completion |
 
-修复点不是“多发一次 interrupt”这么简单，而是建立 ordering：completion visible 必须先于 interrupt assert，或者 ISR 必须有可靠的 retry/polling 规则。
+修复要让设备按接口契约先将 completion 写达到规定观察点再通知，并让 CPU 在读取前按 DMA API 同步。若接口允许通知先于最终消费，驱动还需要设备支持的可靠 retry/polling 契约。
 
 ## 例子：Non-Coherent Completion Buffer
 
@@ -116,9 +120,9 @@ CPU prepares descriptor
 | 误区 | 更准确的判断 |
 | --- | --- |
 | 数据已经搬完就说明任务完成 | 软件可见完成还依赖 writeback、cache、interrupt/status |
-| interrupt 到了就说明 completion 已可读 | interrupt 只是通知，必须晚于 completion 可见 |
+| interrupt 到了就说明 completion 已可读 | interrupt 是通知。先确认设备是否保证写先达到指定观察点；CPU 还须按映射契约取得所有权并同步，允许提前通知的接口须有可靠重试 |
 | completion 小，不会被堵 | 共用 write path 时，小 completion 也会排队 |
-| coherent 系统不需要顺序约束 | coherence 不替代 completion-before-interrupt 的 ordering |
+| coherent 系统不需要顺序约束 | coherence 不替代设备接口规定的 ordering，也不替代提前通知时的重试契约 |
 
 ## 一句话理解
 

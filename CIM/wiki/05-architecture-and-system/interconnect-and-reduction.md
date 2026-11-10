@@ -1,11 +1,11 @@
 # CIM 阵列间的互连与 Reduction：与 NoC 的关系
 
 上级：[05 Architecture And System](./README.md)
-相关：[NoC: Reduction Networks](../../../NoC/wiki/06-ai-noc-specifics/reduction-and-collective-networks.md), [NoC: Memory-Centric NoC](../../../NoC/wiki/06-ai-noc-specifics/memory-centric-noc.md), [Peripheral Overhead](../04-circuit-and-macro/peripheral-overhead.md)
+相关：[NoC: Reduction Networks](../../../NOC/wiki/06-ai-noc-specifics/reduction-and-collective-networks.md), [NoC: Memory-Centric NoC](../../../NOC/wiki/06-ai-noc-specifics/memory-centric-noc.md), [Peripheral Overhead](../04-circuit-and-macro/peripheral-overhead.md)
 
 ## 这页在回答什么问题
 
-CIM 已经在 array 内做了局部计算，为什么还需要关心 NoC 和 reduction？因为大矩阵、batch、multi-head attention 和多 tile 并行都会产生跨 macro 的 activation broadcast、partial sum merge 和 result movement。
+CIM 已经在 array 内做了局部计算，为什么还需要关心 NoC 和 reduction？跨 macro 通信取决于切分轴，而不是大矩阵、batch 或多 head 本身必然产生归并。沿 K 把同一输出拆到 P 个宏，须合并 P 份部分和；沿 N 切分时各宏写不同输出，不需跨宏归并，但可能需要向多个宏广播相同 activation。batch/head 各自独立时也不自动归并。
 
 ## Traffic 类型
 
@@ -30,7 +30,7 @@ Mixed-signal CIM 的互连压力取决于 analog/digital 边界。边界越靠�
 
 ## 拓扑选择
 
-小规模 tile 可用局部 bus、tree 或 crossbar；大规模 chip 需要 NoC、hierarchical reduction 或 multicast tree。NoC wiki 的 [broadcast multicast tree](../../../NoC/wiki/06-ai-noc-specifics/broadcast-multicast-tree.md) 和 [tile architecture](../../../NoC/wiki/06-ai-noc-specifics/tile-architecture-and-noc.md) 可作为背景。
+小规模 tile 可用局部 bus、tree 或 crossbar；大规模 chip 需要 NoC、hierarchical reduction 或 multicast tree。NoC wiki 的 [broadcast multicast tree](../../../NOC/wiki/06-ai-noc-specifics/broadcast-multicast-tree.md) 和 [tile architecture](../../../NOC/wiki/06-ai-noc-specifics/tile-architecture-and-noc.md) 可作为背景。
 
 选择拓扑时要看 traffic 方向。如果 activation 是一对多，broadcast tree 有价值；如果 partial sum 是多对一，reduction tree 更合适；如果 workload 频繁 fallback 或多层流水，general NoC 的灵活性更重要。
 

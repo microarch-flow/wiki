@@ -16,7 +16,7 @@ PCIE 拓扑里最核心的几个角色分别在系统里承担什么职责，它
 
 ## 这三个角色不是平替关系
 
-- Root Complex 决定主机如何发 config、MMIO 和 DMA 相关事务
+- Root Complex 连接主机域并承接配置、MMIO 及设备 DMA 路径；设备 DMA 的请求通常由 Endpoint 发起
 - Switch 决定拓扑扩展能力、P2P 可行性和部分隔离边界
 - Endpoint 决定设备侧 DMA、queue、interrupt 和本地缓冲行为
 
@@ -42,6 +42,8 @@ PCIE 拓扑不是背景板，它直接影响：
 - P2P 能否成立
 - 带宽共享和拥塞位置
 - 热插拔和可管理性
+
+例如 `EP A → Switch → 上行口 → RC → host memory` 和 `EP B → Switch → 同一上行口 → RC → host memory` 同时执行设备向主机的 DMA 写时，会在该上行口的同一方向竞争。相反，若平台允许 `EP A → Switch → EP B 的 BAR` 本地 P2P 转发，该载荷不经过这个上行口。能否本地转发仍取决于 ACS、映射和平台策略。
 
 ## 一句话理解
 

@@ -2,7 +2,7 @@
 
 上级：[NOC Wiki](../README.md)
 
-相关：[Routing And Flow Control](../04-routing-and-flow-control/README.md)、[AI 芯片里的 BUS vs NoC](/mnt/e/wiki/BUS/wiki/06-scenarios-case-studies/bus-vs-noc-in-ai-chip.md)、[RAM: memory hierarchy as system](/mnt/e/wiki/RAM/wiki/07-system-architecture/memory-hierarchy-as-system.md)
+相关：[Routing And Flow Control](../04-routing-and-flow-control/README.md)、[AI 芯片里的 BUS vs NoC](../../../BUS/wiki/06-scenarios-case-studies/bus-vs-noc-in-ai-chip.md)、[RAM: memory hierarchy as system](../../../RAM/wiki/07-system-architecture/memory-hierarchy-as-system.md)
 
 ## 这页在回答什么问题
 
@@ -85,3 +85,13 @@ NoC 只有放回 `NI + DMA + address map + memory system + multi-network` 这个
 - 低估 tail latency
 - 错把 endpoint stall 当成网络拥塞
 - 错把地址布局问题当成 routing 问题
+
+## 本章其余正文
+
+- [Address Map And Routing Table](./address-map-and-routing-table.md)
+- [DMA Engine NOC Interaction](./dma-engine-noc-interaction.md)
+- [Multiple Physical Networks](./multiple-physical-networks.md)
+- [NI Network Interface Design](./ni-network-interface-design.md)
+- [NOC Meets Memory System](./noc-meets-memory-system.md)
+- [NOC Vs Bus Revisited](./noc-vs-bus-revisited.md)
+- [Traffic Patterns And Characterization](./traffic-patterns-and-characterization.md)

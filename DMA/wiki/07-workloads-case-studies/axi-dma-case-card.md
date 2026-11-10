@@ -26,12 +26,18 @@ AXI DMA 通常位于片上互连上，连接 DDR、片上 SRAM、外设 FIFO 或
 
 一张最小画像通常包含：
 
-- descriptor / linked-list 或简单 ring
+- 直接寄存器编程，或 descriptor / linked-list / ring 模式
 - AXI read / write burst
 - multiple outstanding transaction
 - interrupt 或 polling completion
 
 这里最关键的判断是：AXI DMA 的瓶颈往往不是“会不会搬”，而是 burst 是否够长、对齐与边界拆分是否合理、read/write 回包是否能稳定闭环。
+
+## 一个 32 B 搬运例
+
+假设这是支持 memory-to-memory 的通用 AXI4 DMA，任务可由寄存器直接提供；它不特指某个仅有 AXI-Stream 数据路径的产品。源地址 `0x0FF0`、目的 `0x2000`、长度 32 B、beat 8 B，目标均支持该粒度。源跨 4KB：先发 `AR 0x0FF0, LEN=1`，接收 2 个 R beat；再发 `AR 0x1000, LEN=1`，接收 2 个 R beat。假设先收齐、检查状态并放入 DMA buffer，再向对齐目的发 `AW 0x2000, LEN=3` 和 4 个 W beat，最后接收 B。实际实现可重叠或把目的侧再拆分，但仍须满足各接口顺序和边界。
+
+若某 R beat 报错，DMA 仍须按 AXI 接收该 burst 的全部 R beat，处理其他已在途响应；本例因尚未写目的，可终止后续写并发布失败状态。若写已被接受，必须收发完整 W/B 并按设备契约报告部分更新。B 是目标接口的写响应，不自动代表 CPU 缓存或软件任务已可消费。
 
 ## First bring-up 最值得先看什么
 
@@ -80,4 +86,4 @@ AXIDMAProfile {
 }
 ```
 
-在 `07-workloads-case-studies` 里，这类 profile 最适合映射到 `Interaction` 与 `Capability`。若只关心吞吐，可以忽略 completion mode；若关心软件行为和尾延迟，就必须保留。
+在 `07-workloads-case-studies` 里，这类 profile 最适合映射到 `Interaction` 与 `Capability`。若只关心吞吐，且已证明 completion 回收和槽位不限制注入，才可折叠 completion mode；若关心软件行为和尾延迟，就必须保留。

@@ -39,6 +39,10 @@ AXI DMA 典型地深耦合于片上 memory hierarchy，因此它最常见的约�
 - read 结果通过 completion TLP 返回
 - 软件侧 completion interrupt / completion queue 是另一层语义，不能与 PCIe completion 混同
 
+普通 PCIe Memory Write 是 posted，不产生与该写对应的事务级 Completion；Non-Flit 的逐跳 DLL ACK 只确认链路接收，不证明目标软件可消费。Memory Read 为 non-posted，一个请求可分成多个 CplD，必须收齐所需数据或按错误处理结束才释放读 Tag。AXI B 表示接口定义的写响应点，不自动证明数据已对 CPU cache 或下游消费者可见。
+
+AXI4 INCR burst 最多 256 beat，不得跨 4KB；其他 burst 类型有不同长度与对齐规则。PCIe Memory Read 的请求大小受 MRRS 与 4KB 边界等限制，带 payload 的 TLP 受 MPS 约束，Tag 限制在途读。具体模式和设备能力还须验证。详情见 [AXI burst](../../../BUS/wiki/03-on-chip-protocol-families/axi-burst-alignment-boundary.md) 和 [PCIe 建模参数](../../../PCIE/wiki/08-reference/pcie-modeling-params.md)。
+
 这里必须明确区分两种 completion。PCIe 协议里的 completion 是“read request 在事务层得到了返回”；DMA 软件栈里的 completion 是“这笔数据移动对软件可见且可以推进状态机”。两者相关，但绝不是同一个概念。
 
 如果要系统补齐这条链，建议回看：

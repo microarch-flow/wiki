@@ -2,7 +2,7 @@
 
 上级：[05 System Integration](./README.md)
 
-相关：[Bus Vs Noc Vs Crossbar](../01-overview/bus-vs-noc-vs-crossbar.md)、[BUS: AI 芯片里的 BUS vs NoC](/mnt/e/wiki/BUS/wiki/06-scenarios-case-studies/bus-vs-noc-in-ai-chip.md)、[Multiple Physical Networks](./multiple-physical-networks.md)
+相关：[Bus Vs Noc Vs Crossbar](../01-overview/bus-vs-noc-vs-crossbar.md)、[BUS: AI 芯片里的 BUS vs NoC](../../../BUS/wiki/06-scenarios-case-studies/bus-vs-noc-in-ai-chip.md)、[Multiple Physical Networks](./multiple-physical-networks.md)
 
 ## 这页在回答什么问题
 

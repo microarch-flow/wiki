@@ -35,7 +35,7 @@ process concept
 
 ## Hybrid bonding 设备
 
-Hybrid bonding 要求表面平坦度、洁净度、对位精度和界面控制都很高。公开设备资料中，Besi 把 hybrid bonding 平台定位在高密度互连和 3D integration，强调洁净概念、光学对位、高精度和高吞吐。
+Hybrid bonding 要求表面平坦度、洁净度、对位精度和界面控制。以 Besi [Datacon 8800 CHAMEO ultra plus AC 规格](https://www.besi.com/products-technology/product-details/product/datacon-8800-chameo-ultra-plus-ac/)为例（核阅 2026-11-09）：厂商给出最差角 GOG 对位 `100 nm @ 3σ`，吞吐 `最高 2,000 CPH` 为 dry cycle。前者是指定测量条件下的对位指标，后者不含完整工艺节拍；不能外推客户整线良率或合格品吞吐。材料、产品尺寸及实际流程改变时需重新验证。
 
 这类设备不是单独决定路线成败，但它会决定高密度 3DIC 的量产窗口能不能稳定打开。
 

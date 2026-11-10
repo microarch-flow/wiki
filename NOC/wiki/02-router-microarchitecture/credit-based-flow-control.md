@@ -15,7 +15,7 @@ router input buffer 是有限的。上游如果不管下游有没有空位，就
 
 所以 flow control 的本质很朴素：发送方在每个时刻都要知道自己还能不能安全地继续发。
 
-## 为什么 ready/valid 不适合跨多跳网络
+## 为什么长链路需要处理反馈延迟
 
 `VALID/READY` 在 BUS 和局部 pipeline 里非常好用，因为它表达的是本地交付：这一拍接收方能不能收。
 
@@ -36,7 +36,7 @@ cycle 1: B learns it
 cycle 2: A learns it
 ```
 
-这两拍里，A 如果还按本地 `READY` 旧值继续发，就可能把中间 buffer 冲满。你当然可以继续给 `READY` 路径插更多同步逻辑，但问题会退化成：为了表达多跳 buffer 状态，你在做一条长距离反向时序关键路径。这通常不是一个好交换。
+这两拍里，A 如果还按本地 `READY` 旧值继续发，就可能把中间 buffer 冲满。也可以采用逐跳 ready/valid，并用寄存器与 skid buffer 容纳反馈延迟期间在途的数据。这样不必把 READY 组合地穿越全部 hop；但必须保证每级预留足够容量。credit 是另一种显式记录远端可用容量的选择。
 
 这和 [AXI 五通道与 VALID/READY](../../../BUS/wiki/03-on-chip-protocol-families/axi-five-channels-handshake.md) 的场景不同。AXI 的 `READY` 更多是局部 channel handshaking；NoC 要处理的是网络中间资源的延迟可见性。
 
@@ -59,7 +59,7 @@ credit-based flow control 的做法是：
 
 credit 返回的含义不是“你的 flit 已经送达最终目的地”，而是“我这里腾出了一个 buffer slot，你又可以多发一个 flit 了”。
 
-也就是说，credit 只对局部 hop 有语义。它保证的是逐跳 buffer 安全，不是端到端事务完成。
+也就是说，credit 只对局部 hop 有语义。它保证的是逐跳 buffer 安全，不是端到端事务完成。credit 记录空槽，不等同于 output VC 的分配许可；严格策略还需跟踪尾部 free 信号，见 [VC 状态](../08-simulator-construction/core-data-structures.md#三种独立状态)。
 
 这和 BUS response 完全不同。BUS response 在语义上更接近 transaction completion；credit 只是流控节奏信号。
 
@@ -67,7 +67,7 @@ credit 返回的含义不是“你的 flit 已经送达最终目的地”，而�
 
 什么时候回一个 credit？不是“flit 到达下游”时，而是“flit 离开下游 input buffer”时。
 
-一个典型时序：
+一个示意时序（假设到达后下一拍可转发、返回后该拍可用；不是第 08 章的快照时序）：
 
 ```text
 cycle 0: upstream sends flit
@@ -92,85 +92,61 @@ R = forward_link_latency
 
 ### forward_link_latency
 
-```text
-forward_link_latency
-  = wire_propagation_cycles + serialization_cycles + crossing_register_cycles
+先固定观测边界：发送端在时钟沿启动第一个 phit；接收端在时钟沿采样最后一个 phit。`t_path` 在本例包含 clock-to-Q、组合逻辑、导线传播、接收端 setup 与不利 skew/jitter 裕量。假设同频，序列化后每拍启动一个 phit，没有等待；记 `K = ceil(flit_width_bits / phit_width_bits)`。
 
-wire_propagation_cycles  = ceil(link_length_um / (signal_velocity_um_per_cycle))
-serialization_cycles     = ceil(flit_width_bits / phit_width_bits)
-crossing_register_cycles = 同步寄存器级数 (CDC / 长线插入)
-```
+若每个 phit 按接口契约在**下一时钟沿**采样，必须满足 `t_path ≤ clock_period`，并满足 hold 条件。于是最后 phit 的接收沿相对首 phit 发射沿为 `K` 拍。单 phit 且 `t_path=0.2T` 时延迟为 1 拍；导线传播与同一周期内的发射过程重叠，不能分别向上取整再相加。若 `t_path=1.2T`，这个下一沿采样设计不满足时序，不能用 `ceil(1.2)=2` 自动把它当成合法两拍链路。
 
-在同频同电压短线（≤ 1 mm）场景下，这三项往往都能落到 1 拍以内，合成 `forward_link_latency = 1`。长线、跨 die、跨 voltage island 会按上式叠加。
+若实现明确支持 `d` 拍后采样，或插入了有定义的流水级，则按其 valid/ready、采样相位、setup/hold、时钟和容量契约推导时序。只有在各 phit 的数据有效窗口覆盖对应采样沿、下一 phit 不覆盖待采样数据、连续发射满足接口约束时，最后 phit 延迟才可以写为 `(K-1)+d`。实际序列化有空拍时必须把空拍加进去。CDC 需要单独建同步与时钟域语义。
 
 ### downstream_buffer_residency
 
-`buffer_residency` = flit 进入下游 input buffer 到离开 input buffer 的拍数。按 router pipeline 阶段展开：
+`buffer_residency` 是 flit 写入下游 input buffer 后，到它成功离开该 buffer 的时间。它包含实际经过的路由、VC 分配、switch 分配、排队与转发，但阶段可能重叠，也可能仅由 header 执行。应按实现测量边界，不可同时把重叠阶段的完整延迟相加。
 
-```text
-buffer_residency
-  = t_BW + t_RC + t_VA_wait + t_SA_wait + t_ST
-
-t_BW  = 1                                    # buffer write
-t_RC  = 1 if HEADER else 0                   # body/tail 不重新 RC
-t_VA_wait = VA_pipeline + VA_contention      # 多数实现 VA_pipeline = 1
-t_SA_wait = SA_pipeline + SA_contention      # 多数实现 SA_pipeline = 1
-t_ST  = 1                                    # switch traversal
-```
-
-`VA_contention` 与 `SA_contention` 是和负载强相关的随机变量。空载下都 = 0，可得 `buffer_residency_min`；满载（每个端口都有竞争者）下两者期望 ≈ `(N_contenders - 1) / 2`，其中 `N_contenders` 是同输出端口/同输出 VC 上的竞争 input VC 数。
-
-一个常用的近似：
-
-```text
-E[buffer_residency] ≈ 3 + E[VA_contention] + E[SA_contention]
-                   ≈ 3 + (P-1)/(2·η_VA) + (P-1)/(2·η_SA)
-```
-
-其中 `P` = router radix（含 local 端口），`η_VA / η_SA` = allocator 效率（separable 0.6~0.8，iSLIP 收敛后接近 1，wavefront 接近 1 但延迟更高）。
+例如，假设某 router 将无竞争情况下的相关工作重叠后，header 的基准 residency 为 3 拍；VA 与 SA 分别再等待 `w_va`、`w_sa` 拍，且二者等待不重叠，则本例 `residency = 3 + w_va + w_sa`。这个 3 是示例模型参数，不是通用 router 的最小值。VA 等待受下游 VC 释放影响，可能跨多个 flit 时间；不能仅凭竞争者个数推断固定的等待期望。
 
 ### credit_return_latency
 
 ```text
 credit_return_latency
   = credit_pipeline_register_cycles + return_wire_cycles + upstream_credit_table_write
+  # 此式仅用于这些阶段被定义为不重叠且逐段计拍的模型
 ```
 
-一个常见简化是反向通道与正向通道对称布线，因此 `return_wire_cycles ≈ forward_wire_cycles`。`upstream_credit_table_write = 1` 拍（SRAM/寄存器写）。
+即使反向与正向通道对称布线，也不能直接把两者的完整延迟当成相等：两者载荷大小、序列化、寄存器与采样点可能不同。下面数值例子明确假设返向总链路为 1 拍、credit 表写入再占 1 拍。
 
 ### 合成
 
 ```text
 R = forward_link_latency
-  + (3 + E[VA_contention] + E[SA_contention])    # downstream residency
+  + (3 + E[VA_contention] + E[SA_contention])    # 仅用于上面的特定示例
   + credit_return_latency
 ```
 
 ## 典型数值例子
 
-5-port mesh router、128 bit flit、单 phit、1 GHz、短链（1 拍前向 + 1 拍返向）、4 VC、单端口期望 VA/SA 竞争者 = 1：
+5-port mesh router、128 bit flit、单 phit、1 GHz、短链（1 拍前向 + 1 拍返向）、4 VC；假设与上面相同的 3 拍基准 residency，且实测或模型给出平均 VA、SA 额外等待均为 0.5 拍：
 
 | 项 | 取值 |
 |----|------|
 | `forward_link_latency` | 1 |
-| `t_BW + t_RC + t_ST` | 3 |
+| 无竞争 residency（含重叠的各阶段）| 3 |
 | `E[VA_contention]` | 0.5 |
 | `E[SA_contention]` | 0.5 |
 | `credit_return_latency` | 1 + 1 = 2 |
-| **R_total** | **≈ 8 拍** |
+| **R_total** | **≈ 7 拍** |
 
 把同样参数换到 1 mm 长线、需要 2 级同步寄存器、SA 竞争重（5 个竞争者，iSLIP）：
 
 | 项 | 取值 |
 |----|------|
 | `forward_link_latency` | 1 + 2 = 3 |
-| `t_BW + t_RC + t_ST` | 3 |
+| 无竞争 residency（含重叠的各阶段）| 3 |
 | `E[VA_contention]` | 0.5 |
 | `E[SA_contention]` | 2 |
 | `credit_return_latency` | 3 + 1 = 4 |
 | **R_total** | **≈ 12.5 拍** |
 
-两个数字之间的差异说明：**buffer_depth 不是按拓扑选，而是按 R 选**。同一拓扑不同物理实现，buffer 需求差 1.5 倍是常见的。
+两个数字之间的差异说明：**buffer_depth 不是按拓扑选，而是按 R 选**。同一拓扑的不同物理实现可以产生不同需求；示例是构造值，不能当作芯片实测。
 
 ## Buffer 深度为什么至少要覆盖 R
 
@@ -190,45 +166,13 @@ cycle 3: first credit returns
 
 这说明 buffer depth 不是“存突发流量的桶”而已，它还决定稳态下链路能否被打满。
 
-### 推导：使链路饱和的最小 buffer_depth
+### 推导：单 VC 持续发送需要多少 slot
 
-把"稳态下链路始终有 flit 可发"作为目标，等价于：发送方任意时刻 credit > 0。
+假设单 VC 每拍总有一个待发 flit，链路及下游都能每拍服务一个，返回周期固定为整数 `R`。这里规定：拍 `t` 发送占用 slot 后，credit 在拍 `t+R` 仲裁**之前**可用。连续每拍发送需要 `buffer_depth ≥ R`；在发出第 R 个 flit 后计数可暂时为 0，只要下一次仲裁前有 credit 到达即可。若 credit 要到仲裁之后才可用，同一设计可能需要 `R+1` 个 slot。
 
-```text
-稳态吞吐 = 1 flit / 拍 (单 VC 占满链路)
-in_flight (含 link 上 + 下游 buffer 中) = R
-要求 buffer_depth >= R
-```
+守恒口径必须包括正向在途 flit、下游 FIFO 和反向在途 credit；不能只数前两项。若 `V` 个 VC 严格轮流发送，每个 VC 间隔 `V` 拍，固定 `R` 与相同采样规则下每个 VC 至少需要 `ceil(R/V)` 个 slot。它是该理想调度的条件，不保证不均匀仲裁、空流、VC 分配等待或延迟抖动下也能满速。
 
-更严格的，若一个 input port 上有 `V` 个 VC 轮流发往同一下游端口，每个 VC 只独占链路 `1/V` 拍，则**单 VC** 的 buffer 需求降为：
-
-```text
-per_vc_buffer_depth >= ceil(R / V)
-```
-
-但**所有 VC 加总**的 buffer 总深度仍需 ≥ R，否则下游聚合带宽达不到链路带宽。
-
-实用经验：
-
-| 目标 | 建议 |
-|------|------|
-| 单 VC 打满链路 | `buffer_depth = R + 1~2`（留出 jitter 余量）|
-| V 个 VC 共享链路 | `per_vc_depth = ceil(R/V) + 1`、`Σ ≥ R + V` |
-| 突发吞吐（短突发 + 长空闲）| 再加 `burst_length` 缓冲 |
-| 远大于 R 的深度 | 多数情况下浪费面积，只是把延迟变成在途积压 |
-
-### Buffer 不够时的可观察症状
-
-模拟器里能直接看到的现象，按"buffer 不够"程度依次出现：
-
-| 现象 | buffer 与 R 的关系 |
-|------|--------------------|
-| 稳态吞吐 < 1 flit/拍 | `buffer_depth < R` |
-| stall reason 中 `NO_CREDIT` 占比 > 30% | `buffer_depth ≈ R` 但有 contention jitter |
-| 链路利用率 ≈ 100%，`NO_CREDIT` < 5% | `buffer_depth ≥ R + 2` |
-| 链路利用率 100% 但 packet 平均 latency 偏大 | `buffer_depth >> R`（积压）|
-
-这张表也是 buffer sweep 时的判读基准。
+`NO_CREDIT` 高可能说明 credit loop 长或 buffer 浅，但也可能来自下游拥塞、仲裁和端点停顿。链路吞吐低也可能由注入不足或 switch 竞争造成。诊断要同时观察 credit 往返分布、队列、每拍 grant 和实际注入；不能从某个固定百分比单独反推出深度。
 
 ## Backpressure 是怎样一级级传回去的
 
@@ -286,44 +230,10 @@ credit-based flow control 的本质，是把“下游还有没有空间”从远
 
 ## 建模启示
 
-模型至少要显式维护：
+模型至少要记录每个下游 VC 的 `available_credit`、占用队列、分配许可，以及 forward 和 return link 的容量与时序。每次 credit loop 记录 `send_cycle`、`downstream_arrival_cycle`、`buffer_slot_release_cycle` 和 `credit_available_cycle`，并固定它们相对于仲裁和提交的采样点。由同一个样本的 `credit_available_cycle - send_cycle` 得到该样本的 `R`，而非先把可能重叠的阶段机械相加。
 
-```text
-CreditState {
-  available_credits_per_downstream_vc[]
-}
-
-LinkParams {
-  forward_link_latency           # 由 wire / serialization / sync 组成
-  return_link_latency
-  flit_width_bits
-  phit_width_bits
-}
-
-RouterParams {
-  t_BW; t_RC; t_VA_pipeline; t_SA_pipeline; t_ST   # 各阶段固定开销
-  allocator_type                                    # separable / iSLIP / wavefront
-  eta_VA; eta_SA                                    # allocator 效率
-  buffer_depth_per_vc; num_vcs
-}
-
-R_components(link, router, contention) =
-  link.forward_link_latency
-  + router.t_BW + router.t_RC + router.t_VA_pipeline + router.t_SA_pipeline + router.t_ST
-  + contention.E_VA + contention.E_SA
-  + link.return_link_latency
-  + 1            # upstream credit table write
-```
-
-以及事件：
-
-- `flit_send_consumes_credit`
-- `buffer_slot_released`
-- `credit_return_arrive`
-- `injection_blocked_no_credit`
-
-把 `R` 拆成 `(link, router, contention)` 三组参数后，做架构探索时就能正交 sweep：拓扑变了改 link、流水线变了改 router、负载变了改 contention，buffer 需求自动从公式推出，不必每次重跑工程经验。
+事件包括 `flit_send_consumes_credit`、`buffer_slot_released`、`credit_return_arrive` 和 `injection_blocked_no_credit`。拓扑、流水线和仲裁策略改变后，必须重新计算或测量等待分布；负载依赖项不能直接当作独立常数。逐拍模型及 slot 守恒见 [模拟器核心数据结构](../08-simulator-construction/core-data-structures.md#断言与守恒)。
 
 如果只做拓扑层平均带宽比较，可以把 credit 折叠成"链路有效带宽折减因子"；但一旦你关心 backpressure、buffer sizing 或 response tail latency，就必须逐拍建 credit，因为 `R` 和 `buffer_depth` 的关系会直接决定是否出现链路气泡。
 
-如果要做 deterministic worst-case latency 分析，把 `R` 拆成 `link / router_fixed / contention` 三段后取每段的 worst case 相加即可——上面公式天然支持这种拆分。
+做 worst-case latency 分析时，先证明流量到达、仲裁公平性、下游服务及 endpoint 消费都有有限上界，并说明各项能否同时发生。若 consumer 可永久停顿或仲裁可饥饿，则有限 buffer 本身不提供有限延迟上界。

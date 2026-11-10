@@ -7,7 +7,7 @@
 
 GDDR 为什么会成为独立 GPU 和很多高带宽加速卡的主流外存路线。更准确地说，它为了把单 pin 速率和总带宽推高，主动放弃了哪些功耗、距离、封装和系统通用性边界。
 
-## 正文
+## 高带宽目标与 I/O 代价
 
 如果把 LPDDR 看成“为了功耗和移动集成重排 trade-off”的路线，那么 GDDR 可以看成另一种非常鲜明的选择：为了尽可能榨高外部带宽，尤其是单位引脚上的传输能力，愿意在功耗、信号完整性和系统边界上付出更激进的代价。它依然站在 DRAM 的物理基础上，也仍然要面对 refresh、row buffer、prefetch、burst 这些底层约束；但它不再像通用 DDR 那样优先考虑容量扩展和生态通用性，也不像 LPDDR 那样优先压低待机与 I/O 能耗，而是把重心明确押在图形渲染、GPU 访存和高吞吐并行负载所需要的总带宽上。
 
@@ -51,13 +51,15 @@ GDDR 的本质，是在保留外置显存和较长板级互连前提下，通过
 ```text
 GddrModel {
   peak_bw_GBps: float
-  io_rate_mtps: int
+  decoded_payload_bits_per_second_per_pin: float  # 数据编码解码后
   io_energy_per_bit_pJ: float
   sustained_bw_efficiency: float
   board_signal_integrity_complexity_norm: float
   package_distance: enum { OFF_DIE_BOARD_LEVEL }
 }
 ```
+
+按数据手册将实际调制和编码换算为每数据引脚的已解码 payload bit/s 后，`peak_GBps = payload_DQ_pins × decoded_payload_bits_per_second_per_pin / (8 × 10^9)`。例如已给出 32 Gb/s/pin、32 个 payload 引脚，合计 1024 Gb/s，换算为 128 GB/s；不要再乘一次 PAM 编码因子。若资料给的是 symbol/s，须先按该代协议的编码规则转换，不能把 GDDR6 的 NRZ 与 GDDR7 的 PAM3 符号率直接视为相同的 bit/s。
 
 如果只关心吞吐上限，`peak_bw_GBps` 和 `sustained_bw_efficiency` 可能已经够用；但只要你要做系统功耗、散热或路线选型比较，`io_energy_per_bit_pJ` 和 `board_signal_integrity_complexity_norm` 就不应该省。因为 GDDR 的真正代价，不是“协议更复杂一点”，而是高带宽在较长互连距离上的实现成本。
 

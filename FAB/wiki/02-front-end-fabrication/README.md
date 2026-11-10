@@ -55,3 +55,16 @@ FEOL 决定晶体管开关能力、漏电、阈值、电压和密度基础；MOL
 如果我在早期模型里把 SRAM 容量、NoC 宽度和频率目标一起上调，前道章节提醒我这不是三个独立参数。SRAM 可能不随逻辑等比例缩小，NoC 宽度会增加 BEOL 拥塞和功耗，频率目标会推高电压与 IR/thermal 压力。
 
 架构评审中应把节点选择写成“节点 + 库 + SRAM compiler + 金属栈 + IP + 良率假设”的组合，而不是只写 N5/N3/2nm 这类节点名。
+
+## 本章正文
+
+- [Design Rule 和 PDK:架构师与工艺的接口](./design-rule-and-pdk.md)
+- [掺杂与离子注入:让硅变成器件](./doping-and-ion-implantation.md)
+- [刻蚀、薄膜沉积、CMP:三大支柱工艺](./etching-deposition-cmp.md)
+- [EUV 与多重曝光:7nm 之下的两条路](./euv-and-multi-patterning.md)
+- [BEOL 的金属互联:从 M0 到 redistribution](./interconnect-stack-beol.md)
+- [光刻:把版图变成芯片的核心步骤](./photolithography-fundamentals.md)
+- [前道工艺的整体节奏:FEOL/MOL/BEOL](./process-flow-overview.md)
+- [工艺节点演化与 PPA 取舍](./process-nodes-and-ppa-tradeoffs.md)
+- [器件演化:Planar -> FinFET -> GAAFET](./transistor-evolution-planar-finfet-gaa.md)
+- [一切的起点:wafer 是什么、怎么来的](./wafer-the-substrate.md)

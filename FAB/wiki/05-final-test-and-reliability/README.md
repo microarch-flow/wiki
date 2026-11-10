@@ -5,24 +5,15 @@
 
 ## 这页在回答什么问题
 
-封装完成后为什么还需要 final test、burn-in、stress test、reliability qualification 和 failure analysis。本章回答芯片如何从“封装完成”变成“可以交付、可长期工作的产品”。
+封装完成后为什么还需要 final test、burn-in、stress test、reliability qualification 和 failure analysis。本章回答芯片如何从“封装完成”变成“按判据筛选和验证的产品”。
 
 ## 终测不是全部测试点
 
-前面的 `03-wafer-test-and-cp` 已经解释了 wafer sort、CP、binning 和 KGD。先进封装里，测试不能只放在最后，因为 logic die、HBM stack、interposer、substrate 和组装步骤都很贵。越晚发现坏件，损失越大。
+逐件出货路径：CP 筛选 → 装配及可选中测 → 按产品策略可选 burn-in → final test 和出货判定。具体顺序由产品测试计划定义。
 
-本章关注封装完成后和产品认证阶段的测试与可靠性：
+抽样资格路径：选择代表性样本 → 在规定应力与时间下试验 → 按判据形成该配置的 qualification 证据。样本测试不保证每一颗器件的现场寿命。
 
-```text
-wafer sort / CP
-  -> KGD
-  -> assembly and intermediate checks
-  -> final test
-  -> burn-in / stress / qualification
-  -> failure analysis and feedback
-```
-
-Final test 是出货前的重要关口，但它不是整条风险控制链的全部。
+失效反馈路径：出现异常 → 复测与 failure analysis → 反馈设计、工艺和测试。普通工作负载不会经过这些制造测试节点。
 
 ## 本章结构
 
@@ -56,8 +47,15 @@ more objects
 
 ## 一句话理解
 
-终测与可靠性把封装后的芯片从“能点亮”推进到“可筛选、可认证、可交付、可长期工作”的产品状态。
+终测支持逐件出货判定；资格验证与失效分析分别提供样本证据和改进反馈，不能保证单件现场寿命。
 
 ## 架构师启示
 
 架构师不能把可靠性留给最后的测试团队。若架构使用多 HBM stack、3DIC、fine-pitch RDL 或 hybrid bonding，就必须在早期考虑 DFT、测试访问、热循环、失效隔离和中间测试节点，否则 final test 很难补救结构性风险。
+
+## 本章正文
+
+- [Burn-in 与应力测试](./burn-in-and-stress-test.md)
+- [失效分析的工程流程](./failure-analysis-flow.md)
+- [Final Test 的方法与流程](./final-test-methodology.md)
+- [JEDEC 标准与可靠性认证](./reliability-jedec-standards.md)

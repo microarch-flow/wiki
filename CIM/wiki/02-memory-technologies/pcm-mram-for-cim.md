@@ -17,7 +17,7 @@ PCM 通过材料相态改变电阻，理论上可以表达多级电导，因此�
 
 MRAM 通过磁态保存信息，优势是非易失、耐久和与 CMOS 集成潜力。按 01 章 taxonomy，MRAM 只有在 cell/read path、sense path 或 array-level current/voltage behavior 参与 bitwise operation、comparison、accumulation 或 sensing-based compute 时，才进入 MRAM-CIM 讨论。
 
-如果只是把 MRAM 当低泄漏非易失存储，再在旁边接数字 MAC、ALU 或 accumulator，那是 near-array compute 或 NMC-like 对照，不是 CIM。MRAM 不是不能做 analog/multi-level 研究，但它的主流优势不在稳定多级 analog conductance。把 MRAM 强行推向 ReRAM 式 analog MVM，可能会丢掉它在 endurance、retention 和二值可靠性上的优势。
+如果 MRAM 只作普通存储并由独立 MAC/ALU 读取后计算，则不是 CIM。独立 CU 若在 memory die 内，本书按 PIM；若在 memory die 外近封装逻辑，本书按 NMC；普通 SoC 中的缓冲与独立 MAC 仍是常规计算，不能仅凭“旁边”归类。MRAM 不是不能做 analog/multi-level 研究，但它的主流优势不在稳定多级 analog conductance。把 MRAM 强行推向 ReRAM 式 analog MVM，可能会丢掉它在 endurance、retention 和二值可靠性上的优势。
 
 ## 与 ReRAM 的共性和差异
 
@@ -30,7 +30,7 @@ MRAM 通过磁态保存信息，优势是非易失、耐久和与 CMOS 集成潜
 | Memory | Analog | Digital | Mixed-signal |
 | --- | --- | --- | --- |
 | PCM | 有 multi-level 潜力，但 drift 重 | 可做但不突出 | 更现实，用数字校正补偿 drift |
-| MRAM | 不自然，除非特殊研究路线 | 只有 read/sense path 参与 bitwise compute 时才算 CIM | 若外围不属于 array path，则应归 near-array/NMC-like 对照 |
+| MRAM | 不自然，除非特殊研究路线 | 只有 read/sense path 参与 bitwise compute 时才算 CIM | 若只作普通读出后独立计算，则不是 CIM，按 die 位置判断 PIM/NMC 或普通 SoC |
 | ReRAM | 最自然 | 存在但削弱主要优势 | 主流研究落点 |
 
 ## 一句话理解

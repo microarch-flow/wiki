@@ -20,7 +20,7 @@
 
 - pluggable optics
 - NPO
-- OIO
+- OBO 和 optical I/O
 - CPO
 - external laser
 

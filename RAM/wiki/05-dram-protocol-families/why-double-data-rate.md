@@ -7,7 +7,7 @@
 
 为什么“双倍数据率”会成为 DRAM 接口扩带宽的主流手段，以及它到底解决了什么问题。更关键的是，DDR 不是一句“时钟上升沿和下降沿都传数据”那么简单，而是在不让核心阵列同步疯狂提速的前提下，提高引脚带宽的一种桥接策略。
 
-## 正文
+## 双沿传输与核心访问节拍
 
 如果把内存带宽写成一个最粗糙的公式，通常会得到：
 
@@ -80,7 +80,10 @@ peak_bw = io_clock_MHz * transfers_per_clock * bus_width_bits / 8
 而内部能否喂满这条带宽，还取决于：
 
 ```text
-core_supply_bw = core_clock_MHz * prefetch_factor * internal_data_width_bits / 8
+core_supply_MBps = core_clock_MHz * internal_chunk_bits / 8
+external_peak_MBps = io_clock_MHz * transfers_per_clock * dq_payload_bits / 8
 ```
+
+`internal_chunk_bits` 已包含一次内部访问取出的所有位；若内部每次取 N 个外部字，才有 `internal_chunk_bits=N*dq_payload_bits`，不能再额外乘 N。示例：core 200 MHz、每次取 8×64=512 bit，对应 12,800 MB/s；I/O 800 MHz、DDR 两次/拍、64-bit payload 也为 12,800 MB/s。此为连续满载的理想上界，实际还受命令、bank 和转换空隙限制。
 
 如果只关心接口侧峰值，这个模型已经够用；但只要你要解释“为什么 MT/s 提高了，真实吞吐却没同比增长”，就必须同时看 `transfers_per_clock` 和 core 侧是否跟得上。DDR 的关键价值，正是帮你把这两层区分开来，而不是把一切都折成单一频率数字。

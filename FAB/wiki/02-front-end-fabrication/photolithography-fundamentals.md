@@ -1,7 +1,7 @@
 # 光刻:把版图变成芯片的核心步骤
 
 上级:[前道工艺](./README.md)
-相关:[EUV 与多重曝光:7nm 之下的两条路](./euv-and-multi-patterning.md), [Design Rule 和 PDK:架构师与工艺的接口](./design-rule-and-pdk.md), [工艺节点演化与 PPA 取舍](./process-nodes-and-ppa-tradeoffs.md)
+相关:[EUV 与多重图形化的工艺路线](./euv-and-multi-patterning.md), [Design Rule 和 PDK:架构师与工艺的接口](./design-rule-and-pdk.md), [工艺节点演化与 PPA 取舍](./process-nodes-and-ppa-tradeoffs.md)
 
 ## 这页在回答什么问题
 
@@ -15,13 +15,15 @@
 wafer surface prepared
   -> photoresist coating
   -> alignment to previous layer
-  -> exposure through mask
+  -> mask pattern projected onto resist
   -> develop resist pattern
   -> etch / implant / deposit according to pattern
   -> strip resist and clean
 ```
 
 光刻不是单独制造电路，它给后续加工定义空间边界。每一层都要和前一层对准；每一层的线宽、间距、角落、via、contact 都必须落在工艺能稳定复制的窗口内。设计规则本质上就是把这些可制造窗口翻译成设计团队可用的几何约束。
+
+示意中的曝光是通用投影过程。DUV 常用透射掩模；EUV 使用反射掩模和反射光学，不能理解为光直接透过 EUV 掩模。
 
 ## 为什么光刻决定 scaling 节奏
 

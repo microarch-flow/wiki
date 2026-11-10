@@ -1,7 +1,7 @@
 # 权重到 Array 的映射：Tiling、Duplication、Folding
 
 上级：[06 Software Stack](./README.md)
-相关：[Dataflow Mapping](../05-architecture-and-system/dataflow-mapping-on-cim.md), [Memory Hierarchy with CIM](../05-architecture-and-system/memory-hierarchy-with-cim.md), [RAM: SRAM Array](../../../RAM/wiki/02-sram-foundations/sram-array-organization.md), [NoC: Reduction Networks](../../../NoC/wiki/06-ai-noc-specifics/reduction-and-collective-networks.md)
+相关：[Dataflow Mapping](../05-architecture-and-system/dataflow-mapping-on-cim.md), [Memory Hierarchy with CIM](../05-architecture-and-system/memory-hierarchy-with-cim.md), [RAM: SRAM Array](../../../RAM/wiki/02-sram-foundations/sram-array-organization.md), [NoC: Reduction Networks](../../../NOC/wiki/06-ai-noc-specifics/reduction-and-collective-networks.md)
 
 ## 这页在回答什么问题
 
@@ -9,7 +9,7 @@
 
 ## 三个基本动作
 
-Tiling 把大矩阵切成符合 array shape 的块。切得太大，IR drop、variation、ADC range 或 SRAM bitline load 变重；切得太小，macro 数、NoC traffic 和 peripheral amortization 变差。
+设计时选择物理阵列大小会改变线长、外围实例和 IR drop；编译时逻辑 tiling 在既有硬件上不会改变物理线长或已实例化的 macro 数。它可改变活动行列、电流、ADC 转换和利用率。沿 K 折叠需合并部分和，沿 N 切分可能重播或广播输入；实际成本由映射、门控和互连决定。
 
 Duplication 复制权重以提高并行度或降低 activation broadcast。它适合高复用 fixed-weight inference，但会增加 on-array capacity 需求和 write/program 成本。
 

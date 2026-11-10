@@ -67,9 +67,11 @@ HBM latency、NoC return path、SRAM bank、tile buffer ready、writeback 回压
 
 ```text
 HBMToTilePipeline {
-  stage: hbm_fetch | noc_transit | sram_fill | tile_ready | compute | writeback
-  in_flight_tiles
+  per_tile_events: hbm_fetch, noc_transit, sram_fill, tile_ready, compute, writeback
+  buffer_owner[tile]; dependencies[tile]; resource_queues
 }
 ```
 
-在 `07-workloads-case-studies` 里，这种 pipeline 最适合映射到 `Topology` 与 `Interaction`。若只关心峰值吞吐，可以折叠成最慢 stage；若关心断供和 bubble，就必须显式保留各 stage 切换。
+每个 tile 保持自身阶段和依赖，不是整个系统只有一个 `stage`。同一 buffer 的 fill 达到 consumer-ready 才能计算，计算完成并 release 后才能覆盖；不同 tile 可并行，只要资源允许。
+
+只有各 stage 使用独立资源、稳态可完全重叠且每资源没有重复服务需求时，间隔才可近似为最慢 stage。反例：每 tile 从 HBM 读 100 B、写回 100 B，读写共用同一个总服务能力 100 B/cycle 的 MC。即使读和写各需 1 cycle，MC 每 tile 的总服务需求至少 2 cycle，不能取 `max(1,1)=1`。方向切换和其他竞争可能更慢。

@@ -38,6 +38,28 @@ coherent DMA 把一部分复杂度推给互连和缓存协议。软件更容易�
 - 关心低复杂度、可预测性和功耗面积时，non-coherent 往往更值。
 - 关心端到端性能时，不能只盯 coherence 标签，必须把 traffic pattern、buffer 生命周期和系统共享程度一起看。
 
+## Linux 示例：映射、可见性和所有权
+
+硬件路径是否参与 cache coherence，与 Linux 的 coherent mapping、streaming mapping 是不同维度。`dma_alloc_coherent()` 给出的 coherent mapping 由 DMA API 提供 CPU 与设备的共享可见性；这不保证硬件实现方式，也不消除顺序与并发访问规则。streaming mapping 以方向和交接为接口，即使底层硬件具备一致性，也仍须遵守 DMA API 的 mapping 和同步契约。
+
+以下是构造示例。前提是设备文档规定：descriptor 的 `valid` 是设备可读取的所有权标志；设备观察到它后才读取其他字段；completion 表示相应 DMA 写入已完成。设备的实际 doorbell、状态位和总线顺序规则必须另查手册。
+
+### Coherent descriptor：可见性不等于顺序
+
+1. 驱动用 `dma_alloc_coherent()` 分配 descriptor ring，检查分配结果；记录 CPU 地址和设备 DMA 地址。
+2. CPU 写 descriptor 地址、长度等字段，执行适用于该协议的写屏障，再发布 `valid/owner`。若设备用 MMIO doorbell 通知，还要按 Linux MMIO accessor 与设备契约保证 descriptor 发布先于 doorbell；必要时处理 posted write。
+3. 设备处理后按其协议发布 completion。CPU 观察完成标志后，按该协议执行必要的读顺序约束，再读取设备写入的其他字段；直到设备已放弃所有权才复用该槽位。
+
+关键点：coherent mapping 让双方可观察更新，但 CPU 仍可能重排 descriptor 字段的写入。用 `wmb()` / `dma_wmb()` 还是其他同步原语，取决于共享对象和平台接口；不能把屏障当成 cache 维护，也不能假设 doorbell 自带所有设备所需的顺序。见 [Linux DMA API 指南](https://docs.kernel.org/core-api/dma-api-howto.html) 和 [Linux memory barriers](https://docs.kernel.org/core-api/wrappers/memory-barriers.html)。
+
+### Streaming 接收 buffer：设备写、CPU 读
+
+1. 准备可供 DMA 映射的 buffer，调用 `dma_map_single(dev, buf, len, DMA_FROM_DEVICE)` 并用 `dma_mapping_error()` 检查。成功后把返回的 `dma_addr_t` 交给设备；它不必等于 CPU 虚拟地址或物理地址。设备拥有 buffer 期间，CPU 不读写该区域。
+2. 等待设备定义的、确实保证数据写入完成的 completion。若保留映射并由 CPU 读取，先调用 `dma_sync_single_for_cpu(dev, dma_addr, len, DMA_FROM_DEVICE)`，再由 CPU 消费数据。
+3. 若继续复用保留的 streaming mapping，CPU 访问结束后，按 DMA API 调用 `dma_sync_single_for_device()` 再交回设备。若不复用映射，则在设备活动结束后调用 `dma_unmap_single()`；保持原设备、长度和方向匹配。设备再次使用前必须重新映射或按 API 重新交接。
+
+这是方向为 `DMA_FROM_DEVICE` 的例子；`DMA_TO_DEVICE` 是 CPU 写完数据并通过 map 或 `sync_for_device` 交给设备读取。`DMA_BIDIRECTIONAL` 必须满足双向访问的同步要求。不要把 `sync` 当成等待 DMA 完成：先有设备完成契约，再执行同步。非一致性系统还应避免 DMA buffer 与不相关 CPU 数据共享 cache line，防止缓存维护影响邻近数据。具体接口以 [Linux DMA API 指南](https://docs.kernel.org/core-api/dma-api-howto.html) 为准。
+
 ## 常见误解
 
 常见误解：`coherent DMA 一定更快`。实际上 coherent 可能引入额外 snoop 和一致性流量，速度取决于系统共享模式，而不是名字。

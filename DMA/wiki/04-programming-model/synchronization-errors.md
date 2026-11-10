@@ -47,6 +47,8 @@
 - DMA 写回的数据对 CPU cache 还不可见
 - 当前所谓 done 只代表 descriptor 被接收，而不是数据已经安全消费
 
+具体的 coherent descriptor 与 streaming 接收 buffer 交接流程见 [Linux DMA 映射示例](../02-fundamentals/noncoherent-vs-coherent-dma.md#linux-示例映射可见性和所有权)。
+
 所以 DMA 同步问题不能只画一条“CPU -> DMA -> CPU”的箭头，必须把 memory visibility、ownership 和 completion source 一起标出来。
 
 ## 排查顺序为什么很重要

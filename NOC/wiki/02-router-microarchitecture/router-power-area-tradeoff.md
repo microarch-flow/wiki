@@ -20,7 +20,7 @@ router 的性能、面积和功耗之间到底是谁在主导，以及为什么�
 
 `RC` 这类纯组合比较逻辑通常占比反而不大。它当然重要，但更像“决定能否工作”；真正决定是否贵的，常是为工作付出的存储和布线代价。
 
-## Buffer：面积第一大头
+## Buffer：容量与实际面积
 
 buffer 会吃面积，原因不是抽象的“SRAM 也要硅面积”，而是它同时乘上了多个维度：
 
@@ -29,7 +29,7 @@ buffer bits
   = ports * vcs_per_port * depth_per_vc * flit_width
 ```
 
-任何一项翻倍，buffer 总量就跟着翻倍。一个 5-port router，从 4 VC 增到 8 VC，其他参数不变，buffer 面积几乎直接倍增。
+在其他项固定时任一项翻倍，逻辑 buffer bit 数翻倍。例如 5-port router 从 4 VC 增至 8 VC 且深度不变，容量翻倍。实际宏面积还取决于 SRAM/寄存器实现、端口、外围电路和工艺，不能由 bit 数直接断言翻倍或它一定是最大面积项。
 
 功耗上，buffer 既有动态访问能耗，也有 leakage。对长时间活跃的大流量 NoC，动态部分会很明显；对先进制程和大规模全网 router，leakage 也不再能忽略。
 
@@ -61,14 +61,9 @@ allocator 的面积未必像 buffer 那样压倒性，但它经常是时序敏�
 
 ## 链路宽度不是白给吞吐
 
-把 link 做宽，看起来最直接：每拍搬更多位。但它会同时抬高：
+把物理 link 做宽会改变驱动和布线成本。只有同时把内部 flit 宽度按一比一方式加宽时，buffer 和 crossbar 位宽才随之增加；若内部 flit 宽度固定，改变 link 宽度主要改变每 flit 的 phit 数和 serialization，buffer bit 数可不变。
 
-- buffer 宽度
-- crossbar 位宽
-- driver 切换能耗
-- 布线占用
-
-所以 link width 从 128b 到 256b，不是在“白送一倍带宽”；它可能同时让 router buffer、crossbar 和物理线成本一起显著上升。
+所以 link 从 128b 增至 256b 并不保证端到端吞吐翻倍；要同时记录内部 flit 宽、序列化、频率和物理实现成本。
 
 这就是为什么很多 NPU 不会无限加宽单条链路，而会在 `多条较窄链路 / 更规则 topology / 更强局部复用` 之间重新平衡。
 

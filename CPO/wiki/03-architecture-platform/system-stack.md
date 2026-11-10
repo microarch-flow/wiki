@@ -8,7 +8,9 @@
 
 可以把一条高速链路抽象成：
 
-`Switch ASIC -> SerDes -> package escape / substrate -> driver -> modulator -> fiber -> detector -> TIA -> electrical interface`
+`本端 ASIC → SerDes → 电通道 → driver → modulator → 光纤 → 远端 detector → TIA → 远端电接口`
+
+SerDes 做串并转换；driver 驱动调制器；远端 detector 把光转为电流，TIA 再将电流转为电压。retimer 可恢复并重发信号，gearbox 可重组通道或速率，是否使用取决于具体链路。采用外置 CW 光源时，另有一条供光支路送未调制光至本端调制器；它不是数据接收支路。
 
 不同方案的差异，主要在于光电转换发生在这条链路的什么位置。
 
@@ -31,6 +33,8 @@
 - 光纤更早进入系统链路
 
 系统本质变化是：原本“芯片到模块”的电通道，变成更短的“芯片到光引擎”的电通道。
+
+例如，包长和单方向有效速率相同、端口配置不变时，缩短电段可能降低链路能量，但不会仅因此提高每包服务率。模型分别计入路径长度与群速度决定的传播时延、包长除以该方向有效速率的序列化时延，以及实际启用器件的处理时延和能耗。
 
 ## CPO 不只是少走一点线
 

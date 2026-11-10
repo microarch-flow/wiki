@@ -16,15 +16,15 @@
 | 机构 | TSMC Corporate Research、National Tsing Hua University、ITRI 等 |
 | 技术路线 | 16nm gain-cell CIM macro，支持 MX/INT/FP multi-mode |
 | 层级 | macro-level fabricated silicon，不是完整 chip/system |
-| 来源 | [TSMC Research AI page](https://research.tsmc.com/page/artificial-intelligence/1.html), [DOI/abstract record](https://colab.ws/articles/10.1109%2Fisscc49661.2025.10904606) |
+| 来源 | [TSMC Research AI page](https://research.tsmc.com/page/artificial-intelligence/1.html), [ISSCC 论文 DOI](https://doi.org/10.1109/ISSCC49661.2025.10904606), [作者 JSSC 论文 DOI](https://doi.org/10.1109/JSSC.2025.3617944) |
 
-这个案例的研究价值不是“TSMC 在卖 CIM 产品”，而是它展示了 foundry research 如何把先进工艺、gain-cell macro、microscaling data format 和多模式 MAC 放进同一篇电路论文。TSMC 页面给出的口径是 16nm、216kb、188.4 TOPS/W、133.5 TFLOPS/W；摘要记录进一步说明它面向 MX-INT-FP multi-mode CIM，尝试把 FP-to-MX conversion、shared-scale processing、adder tree energy 和 accumulation-aware dataflow 放进 macro 内部处理。
+这个案例的研究价值不是“TSMC 在卖 CIM 产品”，而是它展示了 foundry research 如何把先进工艺、gain-cell macro、microscaling data format 和多模式 MAC 放进同一篇电路论文。ISSCC 标题报告 16nm、216kb、188.4 TOPS/W 和 133.5 TFLOPS/W，不能将两个数字视为同一模式。作者后续 [JSSC 论文摘要](https://scholars.nthu.edu.tw/esploro/outputs/journalArticle/A-Microscaling-Multi-Mode-Gain-Cell-Computing-in-Memory-Macro/9957829937806774)将 133.5 TFLOPS/W 明确对应 MXINT8 输入、MXINT8 权重、FP32 输出；BF16 输入、BF16 权重、FP32 输出的 FP-MAC 为 91.9 TFLOPS/W。188.4 TOPS/W 的具体工作模式需查 ISSCC 原文后单独标注，不能代填给 BF16 或任意浮点计算。论文面向 MX-INT-FP multi-mode CIM，尝试把 FP-to-MX conversion、shared-scale processing、adder tree energy 和 accumulation-aware dataflow 放进 macro 内部处理。
 
 它回答的研究问题是：CIM macro 能否不只服务固定 INT8 CNN，而是支持更复杂的低比特/浮点混合格式。传统 CIM macro 如果只支持单一 INT mode，面对 Transformer/edge AI 中不同 layer 的动态范围会很硬；M2-CIM 这类 multi-mode 设计把格式转换和 shared-scale 处理下沉到 macro 内，减少 system-to-CIM 数据往返。
 
 它不能回答的问题同样重要。216kb macro 不能说明整颗 chip 的 global buffer、NoC、host interface、external DRAM access、compiler/runtime 都已解决；188.4 TOPS/W 或 133.5 TFLOPS/W 也不能直接外推成系统能效。读这类论文必须问：是否包含 ADC/SA、adder tree、format conversion、local buffer、data write path；是否是 peak macro metric；测试 workload 是 synthetic MAC 还是完整模型。
 
-对本 wiki 的 taxonomy，它属于 CIM macro research：计算发生在 memory macro/array 近侧，且不是 Samsung HBM-PIM 这类 memory-die PIM。它更接近 SRAM/gain-cell digital/mixed-signal CIM 路线，而不是 ReRAM analog crossbar 路线。
+对本 wiki 的 taxonomy，这项工作由 gain-cell 阵列及其计算路径参与 MAC，属于 CIM macro research；仅凭“array 近侧”不能判定 CIM。其 gain cell 是动态存储节点，保持时间有限，需按实际工作点维护，与锁存式 6T SRAM 不同。它不是 Samsung HBM-PIM 的独立 memory-die CU，也不是 ReRAM analog crossbar。
 
 ## 一句话理解
 

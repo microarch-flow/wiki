@@ -2,327 +2,118 @@
 
 上级：[08 Simulator Construction](./README.md)
 
-相关：[Router Pipeline Stages](../02-router-microarchitecture/router-pipeline-stages.md)、[Core Data Structures](./core-data-structures.md)、[Verification And Calibration](./verification-and-calibration.md)
+相关：[Core Data Structures](./core-data-structures.md)、[Verification And Calibration](./verification-and-calibration.md)、[Router Pipeline Stages](../02-router-microarchitecture/router-pipeline-stages.md)
 
-## 这页在回答什么问题
+## 目标与时间契约
 
-这页回答：一个最小但正确的 router tick 应该怎样组织——
-- 哪些阶段顺序不能乱
-- 每一拍的资源释放时机如何明确
-- ejection blocked / injection blocked 这些边界事件如何在伪代码里被显式触发
-- backpressure 如何从目的端一路传回源端
+这里给出一种明确的教学实现。它支持单播、一个周期内完成 RC/VA/SA/ST、每个输出每拍最多发送一个 flit。模型输入是 router、link、endpoint 状态及 workload；输出是提交后的状态和事件。其他流水线结构可行，但必须重新计算验证表。
 
-字段和不变量沿用 [Core Data Structures](./core-data-structures.md)。每段伪代码里出现的字段（如 `output_credit`、`output_vc_busy`、`active_packet_id`）都在那篇里有明确定义。
+## 时间与快照契约
 
-## 核心原则
+`S(t)` 是拍 `t` 开头的已提交状态。所有 router 和 endpoint 从同一份 `S(t)` 读取；候选和仲裁结果在本拍内部计算；成功动作写入 `next`，最后统一提交。到期 flit、credit、注入 flit 也在拍末写入 `next`，本拍不能参与路由和仲裁。禁止按 router 遍历顺序把刚写入的队列用于另一个 router。
 
-router tick 最容易出错的地方不是算法，而是时序：
+发送发生在 `t` 时，`forward_latency=L≥1` 的 flit 在 `t+L` 拍末进入下游 FIFO，最早在 `t+L+1` 前进。输入槽在 `t` 释放时，`return_latency=R≥1` 的 credit 在 `t+R` 拍末加入上游计数，最早在 `t+R+1` 使用。消费 ejection FIFO 和本地输出都读取 `S(t)`；本拍刚消费腾出的空间，下一拍才能用于弹出。这些边界是本模型的定义，不是所有硬件的规定。
 
-- 什么时候读旧状态
-- 什么时候更新 route / VC / switch 结果
-- credit 何时返回
-- tail 何时释放资源
-- backpressure 何时形成、何时消解
+RC、VA、SA 可在一次候选计算中完成，且分配的 output VC 可供该候选当拍使用。对同一个 output VC，分配器在 `S(t)` 的许可和本拍候选中保证互斥。已成功分配但未赢得 SA 的包保留该许可。信用和 free 消息到期后本拍末才生效。
 
-这几件事只要顺序模糊，结果就会飘。
-
-## 推荐的单 router 逻辑顺序
-
-一个稳定的顺序是：
-
-1. **接收阶段**：吸收上游送来的 flit、吸收下游回传的 credit
-2. **本地状态更新**：local ejection queue 是否能腾出空位
-3. **路由计算 (RC)**：对每个待路由 HEADER 计算 `next_output_port`
-4. **VC 分配 (VA)**：HEADER 申请下游 input VC
-5. **Switch 请求 (SA req)**：所有可前进的 head-of-VC flit 发出 SA 请求
-6. **Switch 仲裁 (SA)**：决出本拍 grant 集合
-7. **Flit 推进 (ST/LT)**：被 grant 的 flit 从 input buffer 进 link
-8. **Credit 调度**：被释放的 buffer slot 安排 credit 回传
-9. **Tail 释放**：TAIL 离开后清空 input VC 与 output VC 占用
-
-## 为什么这个顺序重要
-
-阶段顺序不是实现风格问题，是模型语义问题。常见的反例：
-
-- 在 flit 真正离开前就返回 credit → 高估吞吐
-- tail 太早释放 path → 后包错误抢跑同一 output VC，wormhole 互斥破坏
-- ejection 状态未先更新 → 目的端阻塞判断错误，credit 链失真
-- credit 回传与本拍 SA 看到同一状态 → 同周期既读又写，出现"鬼速"前进
-
-## 最小 tick 伪代码（骨架）
+## 单拍流程
 
 ```text
-tick_router(router, now):
-  # 1. 接收
-  accept_arriving_flits(router, now)
-  accept_returning_credits(router, now)
-
-  # 2. 本地状态
-  update_local_ejection_state(router, now)
-
-  # 3. RC
-  for (ip, iv) in all_input_vcs(router):
-    s = router.input_vcs[ip][iv]
-    if not s.queue.empty() and head(s).flit_type in {HEADER, HEAD_TAIL} and not s.routed:
-      compute_route(router, ip, iv)             # 写 s.output_port, s.routed=true
-
-  # 4. VA
-  for (ip, iv) in all_input_vcs(router):
-    s = router.input_vcs[ip][iv]
-    if s.routed and s.output_vc == -1:
-      request_vc_allocation(router, ip, iv)
-  run_vc_allocator(router)                       # 写 s.output_vc, output_vc_busy/holder
-
-  # 5. SA 请求
-  for (ip, iv) in all_input_vcs(router):
-    s = router.input_vcs[ip][iv]
-    if can_advance(router, ip, iv, now):
-      request_switch(router, ip, iv, s.output_port)
-    else:
-      record_stall(s, reason_for_blocking(router, ip, iv))
-
-  # 6. SA 仲裁
-  run_switch_allocator(router)
-
-  # 7. 推进
-  for (ip, iv) where sa_grant[ip][iv]:
-    move_flit(router, ip, iv, now)               # 出 input buffer，进 link 或 ejection queue
-
-  # 8. credit 回传
-  for each released_slot:
-    schedule_credit_return(router, ip, iv, now)  # 进入 Link.return_pipe
-
-  # 9. tail 释放
-  for (ip, iv) where moved_flit.flit_type in {TAIL, HEAD_TAIL}:
-    release_path_state(router, ip, iv)
+tick(t):
+  current = S(t); next = copy(current)
+  # 每个 endpoint 从 current 取至多 consumer_rate 个已在队列中的 flit
+  plan_consumer_drain(current, next)
+  # 每个非空 input VC 只考察队首；空 VC 不计 stall
+  candidates = route_and_allocate(current, next)
+  eligible, blocked = check_resources(candidates, current)
+  grants, losers = arbitrate(eligible)  # 每 input/output 的硬件限制显式检查
+  for candidate in grants:
+    commit_move(candidate, current, next, t)
+  for blocked or losers:
+    record_one_primary_stall_per_head_per_tick(reason)
+  plan_injection(current, next, t)
+  stage_due_link_arrivals_and_credits(current, next, t)
+  validate_capacity_and_invariants(next)
+  S(t+1) = next
 ```
 
-## can_advance 的精确语义
+每个非空队首每拍至多记录一个主因；可用固定优先级，例如 `ROUTE_BLOCKED → VC_ALLOC_FAIL → EJECTION_BLOCKED/NO_CREDIT → LINK_BLOCKED → SWITCH_CONFLICT`。多因诊断可以另存 bitset，但不能把同一个 flit 的一个 stall 周期重复累加。计数范围是 flit-router-cycle；endpoint 注入失败另记，避免与 router 计数混用。
 
-`can_advance(router, ip, iv, now)` 是 SA 请求的看门。它必须同时满足：
+## 先检查，再提交
 
 ```text
-can_advance(router, ip, iv, now):
-  s = router.input_vcs[ip][iv]
-  if s.queue.empty():                            return false
-  f = head(s.queue)
-
-  # head 必须已经被 RC、HEADER 必须已经被 VA
-  if f.flit_type in {HEADER, HEAD_TAIL}:
-    if not s.routed:        record_stall(s, HEADER_NOT_ROUTED); return false
-    if s.output_vc == -1:   record_stall(s, VC_ALLOC_FAIL);    return false
+check_resources(candidate, current):
+  s, f = input_context_and_head(candidate)
+  if no_valid_route_or_context: return BLOCKED(ROUTE_BLOCKED)
+  if output == LOCAL:
+    if current.ejection_fifo.full: return BLOCKED(EJECTION_BLOCKED)
+    return ELIGIBLE                       # 无下游 VC / 跨路 credit
+  if f is HEADER or HEAD_TAIL:
+    if not candidate.owns_output_vc and not allocation_granted_to_candidate:
+      return BLOCKED(VC_ALLOC_FAIL)       # busy 属于本包时可继续
   else:
-    # body / tail：复用 VC 必须存在
-    if s.output_vc == -1:   record_stall(s, HEADER_NOT_ROUTED); return false
+    assert candidate.owns_output_vc      # BODY/TAIL 沿用本包已持有的绑定
+  if current.output_credit[output][vc] == 0: return BLOCKED(NO_CREDIT)
+  if link_cannot_accept: return BLOCKED(LINK_BLOCKED)
+  return ELIGIBLE
 
-  # 下游 credit 必须 > 0
-  if router.output_credit[s.output_port][s.output_vc] == 0:
-    s.vc_state = BLOCKED_NO_CREDIT
-    record_stall(s, NO_CREDIT); return false
-
-  # 本拍 SA 还没授予过同 output port（双缓冲下由 allocator 决）
-  return true
-```
-
-注意：`NO_CREDIT` 在这里就被显式归因。stats 里 `stall_cycles[NO_CREDIT]` 的来源**就是这里**，不要散落在别处。
-
-## move_flit 的精确语义
-
-```text
-move_flit(router, ip, iv, now):
-  s = router.input_vcs[ip][iv]
-  f = s.queue.pop_front()
-
-  # 7.1 credit 扣减必须发生在 flit 真正进入下游之前/同拍
-  router.output_credit[s.output_port][s.output_vc] -= 1
-  assert router.output_credit[s.output_port][s.output_vc] >= 0
-
-  # 7.2 选择目的地：local ejection 还是 link
-  if s.output_port == LOCAL_PORT:
-    enqueue_to_ejection(router, f, now)
+commit_move(candidate, current, next, t):
+  f = pop(next.input_fifo)                # 仅被授权的成功动作进入这里
+  if output == LOCAL:
+    next.ejection_fifo.push(f)
+    if f is TAIL or HEAD_TAIL: record network_arrival_cycle = t
+    # 不访问 link，不扣跨路 credit，不增加 hop
   else:
-    link = link_of(router, s.output_port)
-    link.forward_pipe[0] = f                     # 进入链路头一拍
-    link.utilization_bytes += f.size_bytes
-
-  # 7.3 hop 与统计
-  f.hop_count += 1
-  f.assigned_vc = s.output_vc                    # 写下游 input VC 编号
-  f.enter_current_router_cycle = now + link.forward_latency_cycles
-
-  # 7.4 标记本 input buffer slot 已释放，留给 schedule_credit_return
-  mark_slot_released(router, ip, iv)
+    next.output_credit[output][vc] -= 1
+    outgoing = copy(f)                     # 独立事件载荷，不修改快照对象
+    outgoing.assigned_vc = vc
+    outgoing.hop_count += 1
+    schedule_forward(link, outgoing, vc, t + forward_latency)
+  schedule_slot_credit_to_input_upstream(t + return_latency,
+                                         free=(f is TAIL or HEAD_TAIL))
+  if f is TAIL or HEAD_TAIL:
+    clear_local_input_context(next)       # 不提前清下游 VC 分配许可
 ```
 
-要点：
-- `output_credit` 的扣减点决定了 credit-loop 的精度；如果放到 `accept_arriving_flits` 才扣，等价于零延迟传播，会严重高估吞吐
-- `f.assigned_vc` 在这里**重写**为下游 VC——下一跳的 `accept_arriving_flits` 直接用它入队
+跨路发送前构造独立的 flit 事件载荷，先更新下游 VC 和 hop，再排入 link。即使事件队列按值复制，接收端也能看到更新后的 hop；排队后再改局部对象并不可靠。
 
-## release_path_state 的精确语义
+目的端 `LOCAL` 只检查 ejection FIFO 和 switch 资源。失败时 flit 仍在原 FIFO，不产生 slot credit/free，不释放上下文，不计 hop。成功后才释放输入槽，向该输入槽的**上游**返回 credit；这是本 router 的输入信用，不是向不存在的本地 link 扣 credit。源 router 的 LOCAL 输入由 endpoint 信用接口承接同样的返回规则。
+
+## 注入与 VC 生命周期
 
 ```text
-release_path_state(router, ip, iv):
-  s = router.input_vcs[ip][iv]
-  p, v = s.output_port, s.output_vc
-
-  # wormhole 互斥的释放：output VC 必须先被这条 input VC 占着
-  assert router.output_vc_busy[p][v] == true
-  assert router.output_vc_holder[p][v] == (ip, iv)
-
-  router.output_vc_busy[p][v] = false
-  router.output_vc_holder[p][v] = (-1, -1)
-
-  s.active_packet_id = 0
-  s.routed = false
-  s.output_port = -1
-  s.output_vc = -1
-  s.vc_state = IDLE if s.queue.empty() else ROUTING
+inject(ep, current, next, t):
+  pkt = current.current_packet or select_ready_packet(current)
+  if no pkt: return
+  if no pinned_vc_for(pkt):
+    reserve_one_free_injection_vc_for_packet_and_pin(pkt)
+    if none available: record_one_endpoint_stall(INJECTION_BLOCKED); return
+  assert injection_permission_owned_by(pkt)  # busy 但归当前包，不阻止后续 flit
+  if current.injection_credit[pinned_vc] == 0:
+    record_one_endpoint_stall(INJECTION_BLOCKED); return
+  f = next_flit(pkt)
+  enqueue_for_next_snapshot(source_router.input_vc[pinned_vc], f)
+  next.injection_credit[pinned_vc] -= 1
+  if f is first: pkt.injection_cycle = t
+  if f is last: clear_current_packet_handle_after_success()
 ```
 
-注意三件事：
-1. **顺序**：TAIL 已经被 `move_flit` 推走，**这一拍**释放；后包要等下一拍才能 VA 抢同一 output VC——这道屏障是 wormhole 不交错的保证
-2. **断言**：`output_vc_holder == (ip, iv)` 是不变量 4 的最直接的运行时检查
-3. **input VC 后续状态**：如果 buffer 里还有下一 packet 的 HEADER（流水排队），状态进入 `ROUTING` 等下一拍 RC；否则回到 `IDLE`
+同一 packet 的每个 flit 固定使用已选注入 VC。源接口的 VC 许可也采用严格策略：源 router 的尾 flit 成功离开后，free 信号返回并提交，后包才可获得许可。若当前包选中时还无法获得许可，可以等到许可可用再固定；不能逐 flit 重选。workload 未满足依赖不进入 ready 注入队列，另以 workload 对象记 `WAITING_FOR_DEPENDENCY`，不计 router 的 `ROUTE_BLOCKED`。
 
-## ejection 不是特殊小事
+跨路 output VC 的本地 holder 可以在尾 flit 离开本 router 时解除，但指向下游 VC 的分配许可要保持 busy。下游真正移出该尾 flit时，返回 slot credit 并携带 free；该消息提交后才允许新包分配。目的 LOCAL 没有下游 output VC，只有本地 input 上下文。严格策略与可证明 FIFO 复用的取舍见 [核心状态](./core-data-structures.md#三种独立状态)。
 
-目的端最容易被简化错的场景：
+## Backpressure 如何逐跳传播
 
-> flit 到了目的 router，但 `local_ejection_queue.size() == ejection_depth`
+consumer 停止后，ejection FIFO 先满。目的 router 的队首因此无法移出，其输入 slot 不再释放。上游消耗完现有 credit 后才停止发送；它的输入 FIFO 随后可能填满，再阻塞更上游。实际传播时间取决于在途 flit、现有空槽、仲裁和正反向延迟，不能只用 buffer 深度估计一个固定拍差。流量不足时反压可能永远到不了源端。
 
-正确处理：
+实现 trace 应记录每个 slot 消耗与返回、free 信号、成功转发、弹出、消费和单一主阻塞原因。[逐拍验证表](./verification-and-calibration.md) 使用同一快照口径。
+
+## Trace 示例
+
+例如场景 1 的 T 在拍 9 弹出时，可记录一行：
 
 ```text
-update_local_ejection_state(router, now):
-  # 由 endpoint 在上一拍 / 本拍开头消费 ejection_queue 的头部
-  drained = endpoint_drain(endpoint_of(router), now)
-  for _ in range(drained):
-    router.local_ejection_queue.pop_front()
-
-enqueue_to_ejection(router, flit, now):
-  if router.local_ejection_queue.size() == router.ejection_depth:
-    # 本拍 SA 不应给出 grant；如果走到这里说明上游误判，回滚
-    rollback_grant_and_record(router, flit, EJECTION_BLOCKED)
-    return
-  router.local_ejection_queue.push_back(flit)
+t=9 event=eject packet=P flit=T router=R3 input=W:0 output=LOCAL hop=3 upstream_credit_due=10 free=1
 ```
 
-更稳的做法是在 `can_advance` 阶段就提前判断 ejection 满：
-
-```text
-can_advance(...):
-  ...
-  if s.output_port == LOCAL_PORT and ejection_queue_full(router):
-    s.vc_state = BLOCKED_NO_CREDIT  # 复用 NO_CREDIT 语义：把 local port 看成一个特殊下游
-    record_stall(s, EJECTION_BLOCKED)
-    return false
-```
-
-要点：
-- ejection 满时**保留 flit 在 input buffer，不释放 slot，不回 credit**——backpressure 由此产生
-- 同 input VC 上的后续 flit 也被卡住；这条 VC 的 credit 回传链断开，沿路上游一拍一拍堆积
-- `EJECTION_BLOCKED` 必须作为独立 stall reason 上报，不要和 `NO_CREDIT` 合并，否则归因会失真
-
-## injection 也应有对称规则
-
-source 端不能因为 packet 被生成就立刻进网。注入伪代码：
-
-```text
-tick_endpoint_inject(ep, now):
-  # 1. 先 drain workload 调度器，把 ready 的 packet 推进 injection_queue
-  for pkt in scheduler.packets_ready_at(now):
-    if ep.injection_queue.size() < ep.injection_depth:
-      ep.injection_queue.push_back(pkt)
-      pkt.state = IN_INJECTION_QUEUE
-    else:
-      record_injection_stall(ep, INJECTION_BLOCKED)
-      break
-
-  # 2. 选当前正在拆 flit 的 packet
-  if ep.current_injection_packet == 0:
-    if ep.injection_queue.empty(): return
-    pkt = ep.injection_queue.front()
-    ep.current_injection_packet = pkt.packet_id
-    ep.current_injection_flit_seq = 0
-    pkt.injection_cycle = now
-
-  # 3. 注入下一个 flit，需要满足：
-  pkt = packet_of(ep.current_injection_packet)
-  vc_target = pick_injection_vc(pkt.traffic_class)
-  if ep.injection_credit[vc_target] == 0:
-    record_injection_stall(ep, INJECTION_BLOCKED)
-    return
-  if not route_precondition_ok(pkt, now):
-    record_injection_stall(ep, ROUTE_BLOCKED)
-    return
-
-  # 4. 真正注入：构造 flit，放入接入 router 的 local input buffer
-  f = build_flit(pkt, ep.current_injection_flit_seq, now)
-  router = router_of(ep.attached_router)
-  ip, iv = ep.attached_router.port, vc_target
-  router.input_vcs[ip][iv].queue.push_back(f)
-  ep.injection_credit[vc_target] -= 1
-  ep.current_injection_flit_seq += 1
-
-  # 5. packet 注入完毕：清当前句柄
-  if ep.current_injection_flit_seq == pkt.num_flits:
-    ep.injection_queue.pop_front()
-    ep.current_injection_packet = 0
-    pkt.state = IN_FLIGHT
-```
-
-要点：
-- **packet 不能交错**：同一时刻 endpoint 最多拆一个 packet 的 flit；否则下游 wormhole 路径会被两个包的 HEADER 同时争抢同一 input VC
-- `INJECTION_BLOCKED` 与 `ROUTE_BLOCKED` 分开归因：前者是网络反压，后者是 workload 依赖未满足
-- endpoint 也有 credit：injection_credit 对应"接入 router 的 local input buffer 还能收几个 flit"
-
-## backpressure 的完整回传链
-
-把上面 ejection、move、credit、injection 串起来，就是 backpressure 的传播链：
-
-```
-consumer 不取  →  ejection_queue 满
-              →  目的 router 的 local port 不能消化 flit
-              →  目的 router 的 input VC 的 head flit 停在 buffer 里（slot 不释放）
-              →  credit 不回传给前一跳 router
-              →  前一跳 router 的 output_credit 耗尽
-              →  前一跳 input VC 触发 NO_CREDIT，进入 BLOCKED_NO_CREDIT
-              →  前一跳 buffer 也停止释放 slot
-              →  ...
-              →  传到源端 endpoint 的接入 router
-              →  endpoint 的 injection_credit 耗尽
-              →  endpoint 触发 INJECTION_BLOCKED
-```
-
-每一级都对应**一个明确的 stall reason 与一个 stats 计数器**。如果伪代码里某一级没归因，链就有断点，调试时无法在 wave 上对齐根因。
-
-## 双缓冲值得优先考虑
-
-如果担心同周期读写污染，推荐：
-
-- `current_state`：本拍读
-- `next_state`：本拍写
-- tick 结尾 `swap(current, next)`
-
-适用范围：
-- `output_credit`：本拍 SA 看到的是 tick 开头的 credit；本拍 `move_flit` 扣减写入 `next.output_credit`
-- `output_vc_busy / holder`：本拍 VA 看到的是上一拍的释放结果，避免 TAIL 和后包同拍抢同一 VC
-- `input_vcs[*].queue`：accept 入队的 flit 不应在同一 tick 被 RC/VA 看见
-
-哪怕多写一些代码，也能显著减少隐式抢跑和 debug 难度。
-
-## 一句话理解
-
-router pipeline 的关键不是把 RC/VA/SA/LT 名字写全，而是把**资源分配、移动、credit 返回、tail 释放和 backpressure 归因**的时序关系写对。每一处状态改写都对应一个不变量，每一处阻塞都对应一个 StallReason。
-
-## 建模启示
-
-实现阶段建议立刻为这些最小场景写手算对照：
-
-- 3-hop 单 packet
-- 两包抢同一输出
-- buffer 满后的 backpressure
-- tail 释放后下一包接续前进
-- destination ejection blocked 沿路回传
-
-这些最小场景的逐拍 expected state 见 [Verification And Calibration](./verification-and-calibration.md)。如果这些最小场景还不稳定，就不要急着上复杂 workload——大概率不是 workload 难，是 pipeline 的时序还在飘。
+该记录必须能与同拍 input pop、ejection push 及下一拍末的 credit/free 到达对应。LOCAL 没有发送链路字段。可另记录拍初候选、主 stall、拍末 credit 与 VC 许可；字段含义和采样边界须固定。

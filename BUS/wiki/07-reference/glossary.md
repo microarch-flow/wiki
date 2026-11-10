@@ -20,7 +20,7 @@
 
 | 术语 | 定义 | 建模关注点 |
 | --- | --- | --- |
-| Transaction | 一次从 request 到 response/error/completion 的完整访问行为（一次快递从下单到签收） | 需要闭环到 slot release 或软件可见完成 |
+| Transaction | 一次按协议发起并返回响应或错误的访问 | 协议响应消费和 slot 回收与软件任务 completion 是不同层级 |
 | Beat | 一次 data channel 上的有效传输单位（卡车跑一趟） | 与 bus width、byte lane、burst length 相关 |
 | Burst | 多个 beat 组成的一组连续或规则访问（一次团购订单，多趟一起发） | 记录长度、大小、边界、拆分和合并 |
 | Outstanding | 已发出但尚未完成的事务数量（同时在途的快递包裹数） | 受 master slot、ID、slave slot、return path 限制 |
@@ -57,7 +57,7 @@
 | MMIO | 通过内存映射地址访问设备寄存器 | 与普通 memory 分开建模，关注 side effect 和顺序 |
 | Normal Memory | 面向数据存取和性能优化的内存访问对象 | 关注 cache、coherence、burst、locality |
 | Cacheability | 访问能否进入 cache hierarchy 或受 cache 策略影响 | DMA、completion、MMIO 必须分开 |
-| Shareability | 访问是否参与共享域和一致性语义 | 影响 CPU/DMA/NoC 可见性 |
+| Shareability | 共享和排序规则适用的域属性 | 不自动让未接入一致性路径的 agent coherent |
 | Barrier | 约束访问顺序和可见点的机制 | 不等于 cache clean/invalidate |
 | Doorbell | 软件或上游通知设备有新任务的控制写 | 必须晚于 descriptor 可见 |
 | Side Effect | 读写寄存器会改变设备状态 | debug read、polling、width adapter 都要谨慎 |
@@ -80,7 +80,7 @@
 | --- | --- | --- |
 | Decode Error | 地址没有命中合法目标或权限窗口 | 要有 default slave 或 error response |
 | Slave Error | 目标接收访问后主动报告失败 | 与 decode error 区分来源 |
-| Timeout | 等待超过阈值后由某层生成收尾事件 | 记录 timeout wrapper 和下游原始等待 |
+| Timeout | 等待超过阈值的检测或报告 | 分开记录是否产生响应、隔离迟到结果和资源回收；原事务可能仍在途 |
 | Fault | 访问被明确判定错误，例如 permission、translation、protocol fault | 记录原始 fault source 和映射 |
 | Hang | 事务既不成功也不报错，失去 forward progress | 需要 last progress、outstanding age、resource release |
 | Error Mapping | bridge/fabric 把下游错误转换成上游 response | 不能丢失错误来源 |

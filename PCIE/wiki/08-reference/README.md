@@ -10,3 +10,4 @@
 4. [PCIE 设计检查清单](./pcie-design-checklist.md)
 5. [PCIE 调试检查清单](./pcie-debug-checklist.md)
 6. [PCIe 建模参数与公式速查](./pcie-modeling-params.md)（量化建模 / 架构探索工具用）
+7. [PCIe 故障复盘模板](./pcie-debug-postmortem-template.md)

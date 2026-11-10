@@ -24,19 +24,23 @@
 
 ```mermaid
 flowchart TD
-    A[architecture requirement] --> B{need ultra-high memory bandwidth?}
-    B -- no --> C[monolithic / traditional substrate / simpler MCM]
-    B -- yes --> D[HBM and near-memory package]
-    D --> E{horizontal or vertical integration?}
-    E -- horizontal --> F[2.5D: interposer / RDL / bridge]
-    E -- vertical --> G[3DIC: micro-bump / hybrid bonding]
-    F --> H{global or local high density?}
-    H -- global --> I[Si interposer]
-    H -- local --> J[embedded bridge / local silicon interconnect]
-    H -- balanced --> K[Fan-out / RDL]
+    A[记录面积、HBM、D2D、热、测试需求] --> B{是否需要高带宽 memory?}
+    B -- 是 --> C[加入 HBM 接口和布局约束]
+    B -- 否 --> D[继续检查 D2D 密度、面积和异构需求]
+    C --> E[比较 interposer、RDL、bridge 和 3D 候选]
+    D --> K{单 die 可行且 I/O 压力不高?}
+    K -- 是 --> L[传统 flip-chip 与 substrate 候选]
+    K -- 否 --> M[传统 MCM、fan-out 与多 die 候选]
+    D --> E
+    E --> G[复核热、PI、SI、测试、良率和供货]
+    L --> G
+    M --> G
+    G --> H{存在合格候选?}
+    H -- 是 --> I[进入详细设计与验证]
+    H -- 否 --> J[调整规格或报告无可行方案]
 ```
 
-这个流程不是固定答案，而是逼迫设计团队先说明瓶颈在哪里。
+即使不需要 HBM，高密度局部 D2D、超 reticle 尺寸或异构节点也可促使多 die 或 fan-out 进入候选。路线名本身不能提供时延。
 
 ## 关键问题清单
 

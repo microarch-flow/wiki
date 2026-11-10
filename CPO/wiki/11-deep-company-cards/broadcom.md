@@ -19,7 +19,7 @@ Broadcom 在 CPO 生态里的核心位置，是 `交换芯片平台主导方`。
 
 ## 为什么现在值得跟踪
 
-截至 `2024-03-14` 和 `2025-05-15` 的 Broadcom 官方新闻稿，Broadcom 已经把 `Bailly CPO` 和 `Tomahawk 5-Bailly` 明确推到公开路线图中。
+Broadcom [2025-05-15 公告](https://investors.broadcom.com/news-releases/news-release-details/broadcom-announces-third-generation-co-packaged-optics-cpo)称第二代 `Tomahawk 5-Bailly`（TH5-Bailly）芯片组已进入 volume production；同一公告另发布第三代 `200G/lane` 产品线。前者是厂商对特定型号的生产阶段声明，不能推导良率或客户部署数量。
 
 这很关键，因为：
 

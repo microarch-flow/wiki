@@ -8,7 +8,7 @@
 
 各页「建模启示」里各自定义了一个小结构体（`DMAEngineState`、`DMAMetrics`、`DMATuningKnobs`、`ExpandedTransfer`、`MemoryInteraction`、`DMANoCFlow`、`DMAObservability`…），它们互相重叠又不一致。如果照着各页直接落地，会得到一堆字段冲突的对象。
 
-这页把它们收敛成**单一事实来源**：一个统一的 `DMAModel` 顶层数据模型，加上一条**规范事件链**。其它页的结构体应理解为这张总表的子集投影，而不是各自独立的定义。
+这页把它们收敛成**单一事实来源**：一个统一的 `DMAModel` 顶层数据模型，加上一组**规范事件与条件偏序**。其它页的结构体应理解为这张总表的子集投影，而不是各自独立的定义。
 
 ## 顶层数据模型
 
@@ -26,7 +26,7 @@ DMAModel {
 
 - `Capability` → `Knobs`
 - `Resource` → `Resources`
-- `Interaction` → 事件链（驱动 `State` 演化）
+- `Interaction` → 事件及依赖关系（驱动 `State` 演化）
 - `Topology` → `Resources` 里的共享点 + 路径定义
 
 ### Knobs（Capability，输入）
@@ -109,70 +109,51 @@ Observability {
 
 `Metrics` 与 `Observability` 不重复存储：`Observability` 是 `State` 在每个采样点的投影，`Metrics` 是事件流的统计汇总。
 
-## 规范事件链（canonical event taxonomy）
+## 规范事件与偏序（canonical event taxonomy）
 
-这是本页最关键的统一项。同一条 DMA 生命周期，原来在三页里有三套不同命名（scheduling 用 `request_issue/...`，metrics 用 `submit_ts/...`，address-descriptor 用 `descriptor_fetch_done/...`）。它们其实是**同一条链的不同切面**。下面是规范命名，所有页面应以此为准：
+统一名称不意味着所有事务共享一条线性事件链。每条事件应记录 `descriptor_id`、`subtransaction_id`、协议、方向、观察点、时间，以及成功/错误状态；beat 级事件还要记录 beat index。`request_issue` 是实现选择的发出或接口接受点，必须明确是哪一种。`data_commit` 必须标识是本地 buffer、目标 memory 系统、DRAM 还是 CPU 可见域的哪一个事件。未观测到的事件保持未知，不可从其他事件自动推导。
+
+| 层 | 事件 | 定义与条件 |
+| --- | --- | --- |
+| descriptor | `descriptor_ready / descriptor_fetch_done / transaction_split` | 描述符可供设备使用、取回、按路径规则拆成子事务 |
+| transaction | `request_issue / address_accept / data_accept / response_accept` | 按协议和方向记录地址、数据、响应握手；并非每种协议都有每类事件 |
+| data | `data_commit(domain, beat)` | 指定域内的一次数据落位；各 beat 可分别发生 |
+| transfer | `transfer_done` | 设备为该任务定义的传输完成条件成立；须列出所有子事务和错误条件 |
+| completion | `completion_record / completion_visible / consumer_ready` | 完成记录生成、通知或记录对软件可见、消费者满足数据与所有权条件 |
+| resource | `slot_release(resource_kind, id)` | 指定 queue、buffer、outstanding、descriptor 或 completion 槽位释放 |
+
+### AXI4、PCIe 的必要依赖
+
+AXI4 读事务的 AR 在上升沿握手后，R beat 逐个握手。每个已接收的成功 R beat 可写入目标 buffer，故先前 beat 的 `data_commit` 可以早于最后一个 R beat。最后 R beat 的 `RLAST` 握手结束接口读事务；错误 beat 及其后处理按协议和引擎契约处理。
+
+AXI4 写事务中，AW 与各 W beat 相互独立，W 可以先于 AW 被接收。针对同一笔写，接收完 AW 和最后一个带 `WLAST` 的 W beat，才可生成 B；B 握手结束该接口写事务。数据可以逐 beat 在 B 之前被写入某个位置，也可能在允许提前响应的路径中在 B 之后才到达最终位置。`B` 本身不保证 DRAM 已更新，也不保证 CPU cache 可见。必须同时考虑属性、互连、内存系统与设备契约。
+
+PCIe Memory Read 是 non-posted 请求，可由一个或多个带数据的 Completion 返回；需跟踪 tag、片段及错误。Memory Write 是 posted 请求，不会产生针对该 MWr 的事务 Completion。发送端链路 ACK 或本地发送槽释放也不证明目标软件已能看到数据；若系统用读回、屏障或额外 completion 表示完成，必须依据设备、排序和软件契约单独建模。参考 [Arm IHI 0022H](https://developer.arm.com/-/media/Arm%20Developer%20Community/PDF/IHI0022H_amba_axi_protocol_spec.pdf?hash=6325311012DDADF238C35A6C0FD734E520754F82&la=en&revision=71bd7c57-2ed7-487b-bc3e-68c4ab56fa5f) 和 [AMD AXI Bridge for PCIe：Completion TLP Errors](https://docs.amd.com/r/en-US/pg055-axi-bridge-pcie/Completion-TLP-Errors)。
+
+各资源的释放条件分别定义。例如，输入数据 FIFO 的一个槽可在数据被下游接收后释放；读 outstanding 条目可以在最后 R beat 握手后释放；completion queue 的槽按设备与软件回收约定释放；descriptor 槽也可能在设备已取得或稍后的约定时点释放。不同槽可以先于或晚于 completion 可见；不存在通用的最后一步 `slot_release`。
+
+### 时间戳与延迟
+
+若某具体设备契约保证 `descriptor_ready ≤ first_request_issue ≤ transfer_done ≤ completion_visible ≤ consumer_ready`，可定义：
 
 ```text
-[descriptor 层]
-  descriptor_ready          # 软件提交 / ring 可见
-  descriptor_fetch_done     # DMA 取到任务
-  transaction_split         # 展开成子事务（边界/对齐拆分）
-
-[transaction 层]  —— 每个子事务重复
-  request_issue             # AR/AW 发出
-  response_arrive           # R/B 返回
-  data_commit               # 数据真正落位
-  boundary_penalty          # （可选）边界拆分附加事件
-
-[completion 层]
-  completion_record         # 完成被记录
-  completion_visible        # 对软件/下游可见
-  slot_release              # 资源槽位释放
-  consumer_ready            # 下游可继续推进
+submit_latency                = first_request_issue - descriptor_ready
+service_time                  = transfer_done - first_request_issue
+completion_visibility_latency = completion_visible - transfer_done
+consumer_ready_latency        = consumer_ready - completion_visible
 ```
 
-### 旧命名 → 规范命名对照
+这是带前提的测量分解，不是通用协议顺序。`transfer_done` 的观察域与任务范围必须与参考设备一致。若设备允许提前通知，或观测不到目标落位，上式中相应区间不能解释成非负等待时间，应分别报告事件和不确定性。completion 记录可见也不自动代表 payload 对 CPU 可见；读取前可能还需要 DMA 同步与所有权交接。
 
-| 出处页 | 旧名 | 规范事件 |
+### 按目标选择事件
+
+| 目标 | 需要保留 | 可折叠的条件 |
 | --- | --- | --- |
-| metrics | `submit_ts` | `descriptor_ready` |
-| metrics | `issue_ts` | `request_issue` |
-| metrics | `transfer_done_ts` | `data_commit`(末笔) |
-| metrics | `completion_visible_ts` | `completion_visible` |
-| metrics | `consumer_ready_ts` | `consumer_ready` |
-| scheduling | `request_issue` | `request_issue` |
-| scheduling | `response_arrive` | `response_arrive` |
-| scheduling | `data_commit` | `data_commit` |
-| scheduling | `completion_record` | `completion_record` |
-| scheduling | `slot_release` | `slot_release` |
-| address-descriptor | `descriptor_fetch_done` | `descriptor_fetch_done` |
-| address-descriptor | `transaction_split` | `transaction_split` |
-| address-descriptor | `read_issue / write_issue` | `request_issue`(带 dir) |
+| `throughput` | 协议对应请求、数据、资源占用和释放 | 所折叠的 completion 不限制供数或回收，且定义已验证 |
+| `tail_latency` / `bringup` | 上述事件、完成域、错误、独立槽释放和可见性 | 只折叠不影响所测边界的细节 |
+| `ai_supply` | 数据到目标 SRAM、consumer-ready、端口冲突 | 与供数无关的描述符细节 |
 
-### 时间戳与四段延迟的对应
-
-[metrics-bottlenecks](./metrics-bottlenecks.md) 的四段延迟，全部能由规范事件相减得到：
-
-```text
-submit_latency                = request_issue        - descriptor_ready
-service_time                  = data_commit(末)      - request_issue(首)
-completion_visibility_latency = completion_visible    - data_commit(末)
-consumer_ready_latency        = consumer_ready        - completion_visible
-```
-
-## 按 analysis_goal 启用事件集
-
-不是每个模型都要全链。按目标裁剪（与 [goal-oriented-navigation](../01-overview/goal-oriented-navigation.md) 一致）：
-
-| analysis_goal | 必须保留的事件 / 状态 | 可折叠的 |
-| --- | --- | --- |
-| `throughput` | request_issue / response_arrive / data_commit | completion_visible 与 data_commit 合并 |
-| `tail_latency` | 全链，尤其 completion_visible 与 data_commit **不可合并** | — |
-| `bringup` | descriptor_ready / completion_visible / slot_release | transaction 层细节 |
-| `ai_supply` | request_issue / data_commit / consumer_ready + sram_port / injection | descriptor 取指细节 |
-
-关键约束：**关心 tail latency / hang 时，`data_commit` 与 `completion_visible` 绝不能合并**——大量真实问题正是"数据已到、completion 未见"。
+旧页面的 `submit_ts` 对应具体定义的 `descriptor_ready`，`issue_ts` 对应具体定义的首个 `request_issue`；`transfer_done_ts` 对应约定的 `transfer_done`，不可无条件等同最后 `data_commit`。其它旧名按观察点和协议逐项映射。
 
 ## 与各页结构体的关系
 
@@ -196,4 +177,4 @@ consumer_ready_latency        = consumer_ready        - completion_visible
 
 ## 一句话理解
 
-一个 `DMAModel` 总表 + 一条规范事件链，是把分散在各页的建模片段拼成可落地工具的"接口契约"；其余结构体都应视为它的子集投影。
+一个 `DMAModel` 总表加协议相关事件和条件偏序，是把分散的建模片段拼成接口契约的基础；其余结构体可视为其子集投影。

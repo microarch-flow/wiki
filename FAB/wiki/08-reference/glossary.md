@@ -21,8 +21,8 @@
 | 术语 | 含义 | 继续阅读 |
 | --- | --- | --- |
 | Wafer | 晶圆，前道制造的圆片载体 | [晶圆](../02-front-end-fabrication/wafer-the-substrate.md) |
-| Die | 从 wafer 切割出的裸芯片 | [从晶圆到产品](../01-overview/from-wafer-to-product.md) |
-| KGD | Known Good Die，经过筛选的已知良品裸 die | [KGD](../03-wafer-test-and-cp/kgd-known-good-die.md) |
+| Die | 晶圆上的单个电路区域或切割后的裸片；singulated die 明确指已切割裸片 | [从晶圆到产品](../01-overview/from-wafer-to-product.md) |
+| KGD | Known Good Die，按指定条件和判据筛选通过的 die；仍可能漏检或在组装中受损 | [KGD](../03-wafer-test-and-cp/kgd-known-good-die.md) |
 | Package | 封装后的芯片产品形态 | [后道封装](../04-back-end-packaging/README.md) |
 | Substrate | 封装基板，连接 package module 与 board | [基板与载板](../04-back-end-packaging/key-components/substrate-and-carrier.md) |
 | Carrier | 制程中的临时承载平台 | [基板与载板](../04-back-end-packaging/key-components/substrate-and-carrier.md) |

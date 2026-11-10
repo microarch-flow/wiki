@@ -14,8 +14,8 @@
 | Driver | 调制器驱动电路 | 电光边界层 | [laser-modulator-detector](../04-optical-engine/laser-modulator-detector.md) |
 | TIA | 跨阻放大器 | 电光边界层 | [laser-modulator-detector](../04-optical-engine/laser-modulator-detector.md) |
 | KGD | Known Good Die | 测试/良率层 | [known-good-die-and-yield](../06-manufacturing/known-good-die-and-yield.md) |
-| UCIe | Chiplet 互连标准 | package/chiplet 生态层 | [partnership-map](../10-company-ecosystem/partnership-map.md) |
-| COUPE | TSMC 紧凑型通用光子引擎 | advanced packaging / photonics platform 层 | [partnership-map](../10-company-ecosystem/partnership-map.md) |
-| SoIC | System on Integrated Chips | 先进封装层 | [partnership-map](../10-company-ecosystem/partnership-map.md) |
+| UCIe | 封装内 chiplet 互连标准；不指定外部光纤协议或光源 | 电侧接口 | [UCIe 联盟](https://www.uciexpress.org/) |
+| COUPE | TSMC 光子引擎集成平台，结合光子芯片与电控制芯片 | 光子引擎 | [TSMC 技术资料](https://research.tsmc.com/page/interconnect/30.html) |
+| SoIC | TSMC 的 3D 芯片堆叠平台 | 封装工艺 | [TSMC SoIC](https://3dfabric.tsmc.com/english/dedicatedFoundry/technology/SoIC.htm) |
 | Polymer waveguide | 聚合物波导接口 | 光连接/装配层 | [packaging-integration-papers](../08-research/paper-cards/packaging-integration-papers.md) |
 | Connectorization | 连接器化/连接工程 | 制造与可靠性层 | [thermal-reliability-papers](../08-research/paper-cards/thermal-reliability-papers.md) |

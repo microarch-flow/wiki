@@ -7,7 +7,7 @@
 
 如果要把 SRAM 看成一条完整工程路线，而不是一句“快但贵”的摘要，最少需要先建立哪些基础概念。本章的任务，就是用最少但足够的电路和阵列语言，把后面 cache、scratchpad、register file、TCM、NPU buffer 共用的底层约束讲清楚。
 
-## 正文
+## 从 cell 到阵列和应用的学习边界
 
 这一章之所以放在 DRAM 之前，不是因为 SRAM 在系统里一定更重要，而是因为它更适合做 RAM 的最小完备模型——就像学物理先从无摩擦平面上的小球开始，不是因为现实中没有摩擦力，而是因为这样可以先把牛顿定律搞清楚，再逐步加入复杂性。SRAM 把一个 bit 存成可持续维持的双稳态电路，因此它没有 refresh、row activate、destructive read 这些额外复杂性。这样一来，很多最基本的问题就可以先在更干净的环境里成立：一个 bit 为什么能稳定存在，读写为什么会扰动这个状态，字线和位线分别在干什么，sense amp 为什么仍然重要，端口数为什么会迅速推高面积和时序难度，阵列为什么必须切成 bank 和 sub-array，而不能无限平铺。
 
@@ -27,7 +27,7 @@
 
 1. [6T cell 为什么是 6 个晶体管——双稳态如何对抗扰动](./6t-cell-bistable-storage.md)
 2. [字线、位线、读出放大器：SRAM 的电路骨架](./wordline-bitline-sense-amp.md)
-3. [SRAM 一次读/写的 cycle-by-cycle 行为](./read-write-cycle-timing.md)
+3. [SRAM 一次访问的电气阶段与接口时序](./read-write-cycle-timing.md)
 4. [单口、双口、多口 SRAM——端口数为什么是关键代价](./single-port-dual-port-multi-port.md)
 5. [bank/sub-array/mat：SRAM 阵列怎么划分才高效](./sram-array-organization.md)
 6. [为什么 SRAM 在先进制程下不再 scale](./sram-process-scaling-challenge.md)

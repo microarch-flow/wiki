@@ -5,7 +5,7 @@
 
 ## 这页在回答什么问题
 
-为什么 mesh 在 NPU 上几乎总是 baseline，torus 又为什么常常在图论上更漂亮、在芯片上却没那么常见。
+为什么 mesh 可作为本教程的 baseline，torus 又为什么常常在图论上更漂亮、在芯片上却没那么常见。
 
 这两者的关系很典型：torus 看起来像“给 mesh 打补丁”，但补丁补掉的是边界效应，换来的是更长的物理线和更麻烦的资源依赖处理。
 
@@ -43,7 +43,7 @@ torus 的直觉很简单：把 mesh 边界首尾相连，减少边角节点的�
 - 更低的 average hop
 - 更高的 bisection bandwidth
 
-这些指标都是真优势，不是幻觉。但关键问题在于：torus 的新增边不是普通边，而是 wrap-around 长边。
+这些指标都是真优势，不是幻觉。但物理代价取决于 placement：未折叠布局的 wrap 可能很长，折叠布局可缩短 wrap，同时可能改变其他边的跨度。
 
 ## Torus 的真实代价在物理层
 
@@ -54,9 +54,9 @@ torus 的直觉很简单：把 mesh 边界首尾相连，减少边角节点的�
 - credit round-trip 变长
 - dateline 或额外 VC 的死锁处理
 
-所以 torus 的逻辑 hop 优势，常常会被每一跳更重的物理代价侵蚀。
+较长的 wrap 边可能需要额外 pipeline；具体路径并非每一跳都变重，需分别建模实际边。
 
-一个很典型的情况：
+以下限定未折叠方阵，router 间距为一个 pitch：
 
 ```text
 4x4 mesh:
@@ -102,7 +102,7 @@ torus 值得认真考虑的场景通常更苛刻：
 
 也就是说，torus 更像“有明确指标压力时的针对性增强”，而不是 NPU 的自然起点。
 
-## 为什么 NPU 上 mesh 几乎一统天下
+## 为什么本教程选 mesh 做 baseline
 
 不是因为 mesh 在所有指标上都最强，而是因为它最少把问题隐藏起来。它的长处和短处都很直观：
 
@@ -143,4 +143,4 @@ extra_vc_for_deadlock_avoidance
 ```
 
 如果不把 wrap-around 的物理代价独立建模，torus 在模型里通常会被系统性高估。  
-如果只做 routing 算法比较，mesh 可以先假设所有链路等价；torus 则不应这样做，因为“普通 hop”和“wrap hop”在片上很少同价。
+初期可以假设链路等价作敏感性对照，但物理结论必须按 placement 和具体链路重新校准。无 wrap 的有限 mesh 也要依赖合法路由证明无死锁；torus 的维序路由还须处理环形通道依赖，例如采用经证明的 dateline/VC 分层。

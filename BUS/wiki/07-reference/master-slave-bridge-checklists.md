@@ -46,7 +46,7 @@ Slave 的关键责任是“接了就要闭环”。如果某些状态下不能�
 | ordering | 拆分、合并、ID remap 后，原本 ordering 是否保持 |
 | CDC | 异步 FIFO/handshake、reset crossing、满空状态是否定义 |
 | width adaptation | byte lane、WSTRB、read-modify-write、MMIO side effect 是否正确 |
-| burst handling | burst 是否被拆分、截断、拒绝或转换为 single access |
+| burst handling | 是否在发出前拆分逻辑请求，或将已接受 burst 转换为下游 single access；上游 AXI 不得截断已接受 burst |
 | error mapping | 下游 PSLVERR/SLVERR/timeout 如何映射到上游 response |
 | resource release | 子事务错误或 timeout 后，bridge slot 是否释放 |
 | backpressure | bridge 满时反压到哪个 channel，是否影响无关目标 |
@@ -81,4 +81,4 @@ Master 负责正确发起并接收完成，slave 负责接收后闭环，bridge 
 
 角色清单可以直接转成事件模型。Master 侧关注 `request_issue`、`id_allocate`、`response_match`；slave 侧关注 `request_accept`、`service_done`、`error_generate`；bridge 侧关注 `bridge_accept`、`child_txn_issue`、`child_txn_done`、`response_release`。
 
-系统模型要检查这些事件是否能闭环：每个 accepted request 最终必须走到 data/response、error、timeout 或 abort；每个错误路径必须释放 Resource；每个 bridge 转换必须保留 Interaction 的必要顺序和 Capability 边界。
+系统模型要分别检查协议完成与恢复。AXI 没有通用的事务取消：已接受的写须收齐 W 并返回 B，读须返回完整 R burst；错误或 timeout 合成响应后须隔离或排空迟到下游返回，避免重复完成。系统级 reset 若用于终止在途请求，复位范围和两侧恢复必须由系统契约定义。仅检测 timeout 或发出内部 abort 不等于上游完成，也不自动回收资源。

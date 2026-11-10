@@ -1,7 +1,7 @@
 # BEOL 的金属互联:从 M0 到 redistribution
 
 上级:[前道工艺](./README.md)
-相关:[前道工艺的整体节奏:FEOL/MOL/BEOL](./process-flow-overview.md), [互连组件与数据路径分解](../../BUS/wiki/04-microarchitecture-integration/interconnect-components.md), [封装内的信号完整性](../06-cross-cutting-engineering/signal-integrity-in-package.md)
+相关:[前道工艺的整体节奏:FEOL/MOL/BEOL](./process-flow-overview.md), [互连组件与数据路径分解](../../../BUS/wiki/04-microarchitecture-integration/interconnect-components.md), [封装内的信号完整性](../06-cross-cutting-engineering/signal-integrity-in-package.md)
 
 ## 这页在回答什么问题
 
@@ -27,6 +27,8 @@ transistor / contact
 先进节点里，transistor 变小不意味着 wire 同比例变好。细线电阻上升、线间电容、via 电阻、repeaters、clock skew、IR drop 和 electromigration 都会限制系统频率和能效。长距离通信的代价经常不由逻辑门决定，而由 BEOL wire 决定。
 
 这直接连接到 BUS wiki 的路径分解：decoder、arbiter、buffer、adapter 和 return path 不只是 RTL 模块，它们需要布局在物理位置上，并通过金属栈连接。若 return path 绕远、共享仲裁点靠近拥塞区域，模型中的低延迟路径会在布局布线后变成高 RC、高功耗路径。
+
+如果布线后的路径仍满足时序签核，模型周期和链路级数可保持不变，只更新有依据的能耗或面积。若不满足，设计者可重定时并增加寄存器，改变该路径周期延迟；也可在重新签核后选择较低工作频率。只有产品实际采用的频率或流水级数才进入模型，单凭 RC 增大不能自动触发运行时降频。
 
 ## BEOL 与 PDN
 
@@ -57,6 +59,6 @@ BEOL 是片上系统真正的物理互联资源；它把 BUS/NoC/PDN 从逻辑�
 
 ## 架构师启示
 
-如果我设计一个 mesh NoC，不能只按 hop 数估算延迟和能耗。每条 link 的物理长度、使用金属层、是否跨 SRAM macro、是否与 PDN/clock 竞争，都会改变真实性能。NoC wiki 中的 [topology physical realization](../../NOC/wiki/03-topology/topology-physical-realization.md) 应该和本页一起读。
+如果我设计一个 mesh NoC，不能只按 hop 数估算延迟和能耗。每条 link 的物理长度、使用金属层、是否跨 SRAM macro、是否与 PDN/clock 竞争，都会改变真实性能。NoC wiki 中的 [topology physical realization](../../../NOC/wiki/03-topology/topology-physical-realization.md) 应该和本页一起读。
 
 一个具体决策例子：若 workload 需要高 bisection bandwidth，增加 NoC 宽度可能不如优化 tile placement 和 memory adjacency 有效。因为宽 link 会消耗 BEOL 资源，增加拥塞与功耗，而更好的 floorplan 可以减少长线和 repeater 代价。

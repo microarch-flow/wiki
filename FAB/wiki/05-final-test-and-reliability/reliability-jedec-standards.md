@@ -33,7 +33,7 @@ reliability requirement
 | Mechanical / board-level | 板级焊点、跌落、弯曲或机械载荷 |
 | ESD / latch-up | 静电和异常电气应力 |
 
-具体产品会选择适用的标准、等级和测试组合。
+具体产品会选择适用的标准、等级和测试组合。例如车规器件可参考 [AEC-Q100 Rev. J 表 2](https://www.aecouncil.com/Documents/AEC_Q100_Rev_J_Base_Document.pdf) 的 qualification test methods，再按产品类别、适用条件及客户要求确定测试。AEC-Q100 是 AEC 文件；其中引用的 JEDEC 方法不代表两者是同一个标准。样本量与通过判据应查对应版本和具体测试条件，资格试验结果不能直接当作生产线上逐件良率。
 
 ## 对先进封装的意义
 

@@ -30,7 +30,7 @@
 
 第二类压力是物理实现。很多初学者只看逻辑 hop 数，忽略线长。现实里，长线经常比 router 更贵：要插 pipeline、要占 metal layer、要吃掉时钟余量。NoC 之所以演化为多跳网络，并不是因为多跳“更优雅”，而是因为把长线切短、把控制局部化之后，时序和面积才更可收敛。
 
-第三类压力是流量结构。BUS 更像事务串行化器，crossbar 更像单跳交换矩阵；而 AI 芯片里的真实压力来自持续流。权重分发、activation 转发、partial sum 归约、KV cache 回包，这些都不是“一次访问结束就完”的控制事务，而是会在很多周期里持续占用互连资源。NoC 必须显式处理排队、阻塞传播、消息隔离和路径冲突。
+第三类压力是流量结构。共享式阻塞 BUS 在其共享资源处串行服务，crossbar 可让不冲突端口并行；BUS 协议本身并不限定只能使用共享线。而 AI 芯片里的真实压力来自持续流。权重分发、activation 转发、partial sum 归约、KV cache 回包，这些都不是“一次访问结束就完”的控制事务，而是会在很多周期里持续占用互连资源。NoC 必须显式处理排队、阻塞传播、消息隔离和路径冲突。
 
 第四类压力是可分析性。对 deterministic NPU 而言，互连不是“尽量快一点”就够了，而是要可建模、可调度、最好还能给出 latency 上界。NoC 把通信抽成包、流控单元和路径资源之后，编译器和架构师才有机会讨论 source routing、静态时隙、traffic class 分离和 worst-case analysis。
 
@@ -44,7 +44,7 @@ NoC 在 AI 芯片里最重要的价值，不是替代 BUS，而是把数据搬�
 - decode 场景里 response path 是否比 request path 更容易先饱和
 - 某个 destination 慢下来时，stall 会不会沿 credit/backpressure 一路传回 producer
 
-这也是 NoC 和 BUS 的关键区别。BUS 里你常先问 ordering、decode、response；NoC 里你常先问热点、饱和、阻塞扩散和隔离。两者都处理 backpressure，但层级不同：BUS 上的 `ready/valid` 通常在短路径上解决单笔传输节奏，NoC 上的 flow control 要解决多跳网络中“下游 buffer 满了，上游何时停、何时恢复”的问题。
+这也是 NoC 和 BUS 的关键区别。BUS 里你常先问 ordering、decode、response；NoC 里你常先问热点、饱和、阻塞扩散和隔离。NoC 可以承载 memory-mapped BUS 事务：网络负责运输与逐跳流控，端点和桥仍须保持原事务的 ordering、response 和错误语义。`ready/valid` 是局部交付机制；NoC 的逐跳 credit 控制缓冲，每跳阻塞可反向传播。
 
 ## 为什么不是“把 BUS 做宽一点”或“把 crossbar 做大一点”
 
@@ -69,7 +69,7 @@ NoC 的演化路径本质上是：承认通信会成为分布式问题，然后�
 
 ## 一句话理解
 
-NoC 的出现不是因为工程师喜欢网络，而是因为当互连必须同时承受大规模并发、长线时序和可调度数据流时，BUS 和 crossbar 的集中式方法已经不再够用。
+面对大规模并发、长线时序和可调度数据流时，分布式 NoC 是一种候选；共享总线、分层 crossbar 和 NoC 的适用性取决于具体拓扑、工作负载和实现成本。
 
 ## 建模启示
 

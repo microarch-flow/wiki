@@ -18,7 +18,7 @@ NVIDIA 在 CPO 生态里的核心位置，是 `AI 系统需求牵引方 + 网络
 
 ## 为什么现在值得跟踪
 
-NVIDIA 在 `2025-03-18` 官方公开了 `Spectrum-X Photonics` 和 `Quantum-X Photonics` 路线，并点名多个合作伙伴。
+NVIDIA 在 [2025-03-18 公告](https://nvidianews.nvidia.com/news/nvidia-spectrum-x-co-packaged-optics-networking-switches-ai-factories)发布 `Spectrum-X Photonics` 和 `Quantum-X Photonics`，并列出生态伙伴。
 
 这说明它已经不再只是笼统谈 photonics，而是在公开定义：
 
@@ -30,10 +30,10 @@ NVIDIA 在 `2025-03-18` 官方公开了 `Spectrum-X Photonics` 和 `Quantum-X Ph
 
 从官方公开材料看，NVIDIA 的重点不是传统“交换机模块升级”，而是：
 
-- 为百万 GPU 级 AI factory 网络准备更高带宽和能效路线
-- 将 silicon photonics / co-packaged optics 放进更大规模系统叙事
+- Spectrum-X Photonics 面向 Ethernet；Quantum-X Photonics 面向 InfiniBand
+- 百万 GPU AI factory 是厂商提出的平台规模目标，不等于已部署集群
 
-这使它的路线天然比传统网络厂商更激进，也更依赖大规模系统收益成立。
+任务收益取决于实际部署的拓扑、可用端口、协议和负载；公告本身不能确定任务时延。
 
 ## 它的公开合作关系
 

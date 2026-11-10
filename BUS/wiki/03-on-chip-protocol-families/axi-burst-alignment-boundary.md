@@ -22,6 +22,16 @@ Burst 就像**团购订单**——你下一次单，告诉快递公司"从 A 地
 
 `FIXED` burst 的地址不随 beat 变化，适合 FIFO 类寄存器窗口；`INCR` burst 的地址按 beat size 递增，是连续内存访问的主要形态；`WRAP` burst 用在 cache line 这类环绕边界场景。实现者不能只看“有几个 beat”，还要知道每个 beat 的地址如何被推导。
 
+AXI4 的基本合法性条件如下，目标还可能有更严格的能力限制：
+
+| 类型 | beat 数与地址条件 |
+|---|---|
+| FIXED | 1–16 beat |
+| INCR | 1–256 beat；不能跨 4KB |
+| WRAP | 只能为 2、4、8、16 beat；起始地址必须按 beat 大小对齐，不能跨 4KB |
+
+所有类型的 `2^AxSIZE` 都不能大于数据总线字节宽度。例如 64-bit 总线的 WRAP 3 beat 或从 `0x1003` 开始的 4-byte WRAP 都不合法；应在发出前转换成合法请求，而不是由下游猜测。依据 [Arm IHI 0022H](https://developer.arm.com/-/media/Arm%20Developer%20Community/PDF/IHI0022H_amba_axi_protocol_spec.pdf?hash=6325311012DDADF238C35A6C0FD734E520754F82&la=en&revision=71bd7c57-2ed7-487b-bc3e-68c4ab56fa5f)。
+
 容易误解：burst 只是把多次访问合并起来。实际上，burst 是一笔带有地址生成规则、last beat、response 和边界约束的 transaction。
 
 ## 对齐决定 byte lane 和拆分压力
@@ -34,7 +44,7 @@ Burst 就像**团购订单**——你下一次单，告诉快递公司"从 A 地
 |---:|---:|---|---|
 | `0x1000` | 4 byte | lane 0-3 | 对齐半宽访问 |
 | `0x1004` | 4 byte | lane 4-7 | 对齐半宽访问 |
-| `0x1003` | 4 byte | lane 3-6 | 非自然对齐，需要更小心的 lane/strobe 处理 |
+| `0x1003` | 4 byte | 首拍仅 lane 3 | INCR 首拍只覆盖到 4-byte 对齐边界；下一拍从 `0x1004` 开始 |
 
 读路径上，非对齐访问可能要求 slave 返回包含目标 byte 的 beat，再由 master 或 adapter 选择有效 byte。写路径上，`WSTRB` 必须准确表达哪些 byte lane 被更新；如果经过 width adapter，还可能被拆成多个下游 beat。
 
@@ -46,18 +56,18 @@ Burst 就像**团购订单**——你下一次单，告诉快递公司"从 A 地
 
 AXI burst 不能跨越 4KB 地址边界——就像一个快递订单**不能跨越两个不同的行政区**。这个规则的目的不是性能优化，而是保证一笔订单从头到尾都在同一个管辖范围内处理。如果一个 burst 跨过 4KB 边界，就像一个快递单横跨两个城市——中途换快递公司、换配送规则、换投诉渠道，response 和 ordering 语义都会变得极其复杂。
 
-判断 4KB 边界可以用这个口径：
+对 AXI4 INCR burst，令 `S = 2^AxSIZE`、`N = AxLEN + 1`，并令 `A = floor(start / S) * S`。协议允许访问的最后一个 byte 地址是 `A + N*S - 1`。首拍可能只使用起始地址到 `A+S-1` 的部分；不能把 `start + N*S - 1` 当作非对齐 INCR 的末地址。检查 `floor(start/4096) == floor(last/4096)`，并使用足够宽的地址运算，避免整数回绕。FIXED 和 WRAP 使用各自的地址规则，不能套用此 INCR 公式。
 
-`start_address[31:12] == end_address[31:12]`
-
-其中 `end_address` 来自起始地址、beat count 和 beat size 推导出的最后一个 byte 地址。构造例子：
-
-| 起始地址 | Beat 数 | 每 beat | 最后 byte | 是否跨 4KB |
+| 起始地址 | Beat 数 | 每 beat | 最后允许 byte | 是否跨 4KB |
 |---:|---:|---:|---:|---|
 | `0x0FC0` | 8 | 8 byte | `0x0FFF` | 否 |
 | `0x0FE0` | 8 | 8 byte | `0x101F` | 是 |
+| `0x0FFF` | 1 | 4 byte | `0x0FFF` | 否，首拍只有地址 `0x0FFF` |
+| `0x0FFF` | 2 | 4 byte | `0x1003` | 是 |
 
-第二行必须在 master 或上游生成逻辑里拆成两个合法 burst，例如先覆盖 `0x0FE0-0x0FFF`，再从 `0x1000` 继续。拆分后，事务数量、address handshake 次数、outstanding 占用、response 数量和 backpressure 形态都会改变。
+跨界的逻辑请求必须在发出 AXI 地址之前拆成多个合法 burst。例如第二行先覆盖 `0x0FE0-0x0FFF`，再从 `0x1000` 开始。不能先发出非法跨界 burst，再把它当作合法输入。`WSTRB` 即使关闭部分 byte，也不能使跨界地址序列变合法。拆分会改变 address handshake、outstanding 与 response 数量。
+
+依据：[Arm IHI 0022H，AXI and ACE Protocol Specification](https://developer.arm.com/-/media/Arm%20Developer%20Community/PDF/IHI0022H_amba_axi_protocol_spec.pdf?hash=6325311012DDADF238C35A6C0FD734E520754F82&la=en&revision=71bd7c57-2ed7-487b-bc3e-68c4ab56fa5f)，burst 地址、非对齐传输与 4KB 规则。
 
 除了 AXI 的协议级 4KB 边界，SoC 还会有自己的 decode window、bridge 限制、memory controller 行粒度、IOMMU/SMMU 映射和外设寄存器窗口。协议合法只说明通过了第一层约束，不说明下游一定愿意按原始 burst 接收。
 
@@ -89,6 +99,6 @@ AXI burst 用 `AxLEN/AxSIZE/AxBURST` 把多个 beat 组织成一笔事务；对�
 
 建模 AXI burst 时，不能只保存 payload bytes。至少要保存起始地址、beat count、beat size、burst type、last beat、是否跨 4KB 边界、是否经过 width adapter、每个 beat 的有效 byte lane，以及拆分后形成的子事务数量。
 
-性能模型要把 burst 拆分对系统状态的影响算进去：一个非法跨界 burst 会变成多个 address handshake 和多个 response；一个非对齐或 narrow burst 可能增加 beat 数、adapter buffer 占用和 WSTRB 处理；一个长 burst 可能提高 payload 利用率，也可能放大仲裁尾延迟。
+性能模型要把 burst 拆分对系统状态的影响算进去：一个跨界逻辑请求在发出前拆分，会形成多个 address handshake 和多个 response；一个非对齐或 narrow burst 可能增加 beat 数、adapter buffer 占用和 WSTRB 处理；一个长 burst 可能提高 payload 利用率，也可能放大仲裁尾延迟。
 
 功能模型要检查地址序列是否合法、`WLAST/RLAST` 是否和 `AxLEN` 一致、`AxSIZE` 是否匹配 byte lane、`WRAP` 地址是否按规则环绕、4KB 边界是否被遵守、错误 response 是否能对应到正确事务。省略这些规则，会把 burst 从协议语义误降成“连续 N 个 beat”，从而漏掉最容易出错的边界条件。

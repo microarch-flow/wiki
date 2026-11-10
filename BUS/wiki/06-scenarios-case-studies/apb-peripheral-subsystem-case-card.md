@@ -28,18 +28,20 @@ CPU / debug / DMA control master
 | APB slave | 执行寄存器读写 | PREADY stall、PSLVERR、side effect |
 | interrupt/status block | 暴露事件和清除路径 | clear/read side effect、软件长尾 |
 
+APB4 及以后版本可用原生 `PSTRB` 表达写字节掩码；bridge 需把 AXI `WSTRB` 映射到合法 lane。若目标或较早版本不支持该局部写，必须按设备契约拒绝或报告错误；不能假设任意 RMW 对带副作用寄存器安全。
+
 APB 子系统的设计动机是把低速控制资源从高性能主干中分离出来。代价是 bridge 成为语义收缩点：上游 burst/outstanding/ID 能力会被压成单笔 APB access。
 
 ## APB 节拍与 Bridge 收缩
 
-APB access 至少有 setup 和 access 两个阶段。PREADY 可以拉长 access phase，PSLVERR 在完成时返回错误。
+以下以 APB3 及以后版本为前提。访问有 setup 和 access 两阶段；只有时钟采样沿 `PSEL && PENABLE && PREADY` 同时有效才完成，PREADY 可拉长 access，PSLVERR 在完成沿有效。
 
 | 阶段 | APB 信号语义 | 上游可见结果 |
 | --- | --- | --- |
 | setup | PSEL=1, PENABLE=0 | bridge 已选择目标，但访问未完成 |
 | access wait | PSEL=1, PENABLE=1, PREADY=0 | 上游 request 或 bridge slot 被占用 |
-| access done | PREADY=1 | 读数据/写完成可返回上游 |
-| error done | PREADY=1, PSLVERR=1 | bridge 映射成上游 error response |
+| access done | 采样沿 PSEL=1, PENABLE=1, PREADY=1 | 读数据/写完成可返回上游 |
+| error done | 采样沿 PSEL=1, PENABLE=1, PREADY=1, PSLVERR=1 | bridge 映射成上游 error response |
 
 这说明 APB 子系统不是零成本低速尾巴。一个 PREADY 长等待会占住 bridge slot；若 bridge 前没有足够隔离，低速 APB access 会反压上游控制路径。
 
@@ -62,7 +64,7 @@ APB 访问大多是 MMIO，因此软件语义比吞吐更重要。
 | 软件动作 | BUS 风险 | 设计要求 |
 | --- | --- | --- |
 | polling status | 大量 APB read 占住 bridge | 限制 polling 频率或提供 interrupt |
-| clear interrupt | write-one-to-clear 或 read-clear 语义 | WSTRB、写值、顺序要定义 |
+| clear interrupt | write-one-to-clear 或 read-clear 语义 | 上游 WSTRB 与下游 APB4+ PSTRB 映射、写值和顺序要定义 |
 | read FIFO data | read 可能 pop 数据 | 禁止无意 debug read 或 speculative read |
 | write command | 写入触发硬件动作 | 与配置寄存器顺序要受控 |
 | debug read status | 取证可能改变状态 | 提供 shadow/snapshot 或只读 alias |
@@ -109,6 +111,6 @@ APB 子系统用低 Resource 和简单 Topology 承接低速控制 Interaction�
 
 ## 建模启示
 
-APB peripheral subsystem 要建模成 bridge 收缩点加低速 MMIO 事务集合。性能模型要记录 bridge slot、APB setup/access、PREADY wait、per-slave latency、polling rate 和 interrupt clear latency。功能模型要记录 address decode、PSLVERR、timeout、WSTRB、read/write side effect、status/clear 语义和 debug access。
+APB peripheral subsystem 要建模成 bridge 收缩点加低速 MMIO 事务集合。性能模型要记录 bridge slot、APB setup/access、PREADY wait、per-slave latency、polling rate 和 interrupt clear latency。功能模型要记录 address decode、PSLVERR、timeout、上游 WSTRB 到 APB4+ PSTRB 的映射、read/write side effect、status/clear 语义和 debug access。
 
 事件模型建议显式表达 `bridge_accept`、`apb_setup`、`apb_access_wait`、`apb_access_done`、`pslverr_seen`、`mmio_side_effect`、`interrupt_clear_done`。这些事件能解释 APB 子系统为什么低成本可行，也能定位它何时把控制路径拖成长尾或 hang。

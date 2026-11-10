@@ -14,11 +14,14 @@ SRAM-CIM、ReRAM/新器件 CIM、DRAM-PIM 到底应该怎么横向比较？不�
 | 归类 | CIM | CIM | CIM | CIM 研究分支，MRAM 需 read/sense path 参与计算 | PIM |
 | 计算位置 | SRAM array path | resistive crossbar | Flash cell/read path | NVM cell/read path；旁路数字逻辑不算 CIM | memory die/bank 内 compute unit |
 | 主导 paradigm | digital / mixed-signal | analog / mixed-signal | analog / mixed-signal | PCM 偏 analog，MRAM 仅在 array path 参与时偏 digital | independent digital processing |
-| 容量 | 片上容量有限 | 高密度潜力 | 非易失固定权重 | 取决于 device | 大容量，高带宽 |
+| 容量/密度限制 | 受 cell 面积与片上面积限制 | 器件密度有潜力，外围、差分编码降低可用密度 | 单元密度及多态可区分性、外围面积限制 | PCM 多态可靠性、MRAM cell/外围面积分别限制 | 可用 die/stack 容量及保留给执行逻辑的面积决定 |
+| 驻留/带宽 | 供电保持，端口决定带宽 | 非易失；ADC 和阵列连接限制带宽 | 非易失，可驻留固定权重 | 均为非易失，读写路径各异 | 刷新保持；bank/接口与 CU 共享决定带宽 |
 | 写入 | 快 | write/verify 复杂 | program 成本高 | PCM 写重，MRAM 较耐久 | DRAM 正常读写，compute unit 执行 |
 | 精度风险 | bitline/SA/ADC 或 bit-serial 代价 | variation、IR drop、drift、ADC | threshold drift、校准 | PCM drift / MRAM multi-level 不自然；普通 MRAM + 旁路数字逻辑不算 CIM | 算子集合和数据格式受限 |
 | 工艺成熟度 | 最高 | 研究/原型较多 | niche 产品尝试 | 分化明显 | memory vendor 主导 |
 | 更适合 | edge SoC、小模型、固定子图 | fixed-weight edge MVM | always-on/fixed model | 特定非易失场景 | LLM decode、KV cache、HPC memory-bound |
+
+可驻留权重数须从可用 cell/bit、每权重编码、差分对、冗余和外围面积计算；非易失不决定容量。
 
 ## 不能直接横比的指标
 

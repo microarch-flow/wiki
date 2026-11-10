@@ -66,18 +66,17 @@ input port
 
 ## Buffer 深度为什么不能拍脑袋定
 
-buffer depth 的最基本约束，不是 workload，而是 credit round-trip。
+buffer 窗口需求由目标负载发送速率和 credit 往返时间共同决定，突发与仲裁还会改变实际需求。
 
-如果从当前 router 发一个 flit，到对应 credit 返回，需要 `R` 个 cycle，那么每个活跃 VC 至少要有大约 `R` 个 slot，才能避免链路在稳定流下出现气泡。
+令 `R` 为从发送预留下游 slot 到返还 credit 可用于再次发送的周期数，`r` 为该 VC 目标平均发送速率（flit/cycle）。稳定流的窗口需求约为 `ceil(r×R)` slot。只有该 VC 独占链路并以 1 flit/cycle 持续发送时才需要约 R；若 V 个 VC 均匀轮流，各自速率为 1/V，分别约需 `ceil(R/V)`。这只是容量条件，仲裁、端点服务和 credit 采样边界仍会影响结果。共享池还须保证已授予而未归还的 credit 总数不超过可用 slot，避免多 VC 重复预订同一空间。
 
 一个简单例子：
 
 ```text
-forward link latency = 1
-downstream consume latency = 1
-credit return latency = 1
-
-R = 3
+单 VC 独占，每拍可发 1 flit；采用第 08 章拍末提交契约
+flit0 在 cycle 0 发送，forward latency=1，cycle 1 拍末入队
+cycle 2 下游出队并生成 credit，return latency=1
+credit 在 cycle 3 拍末提交，cycle 4 才可用，因此 R=4
 ```
 
 若 VC 深度只有 2：
@@ -85,11 +84,11 @@ R = 3
 ```text
 cycle 0: send flit0, credit 2->1
 cycle 1: send flit1, credit 1->0
-cycle 2: cannot send, waiting for credit
-cycle 3: credit returns
+cycle 2–3: cannot send, waiting for credit
+cycle 4: first credit is available
 ```
 
-你白白丢了一拍带宽。也就是说，buffer 过浅不仅是“容量小”，还是“稳态吞吐上不去”。
+在这个构造时序中，发送端因此空了两拍。也就是说，buffer 过浅不仅是“容量小”，还是“稳态吞吐上不去”。
 
 ## 深 buffer 也不是免费午餐
 
@@ -103,7 +102,7 @@ cycle 3: credit returns
 
 深 buffer 的代价是：
 
-- SRAM 面积线性增长
+- 固定宽度时逻辑存储容量随深度线性增长；实际 SRAM 宏面积还取决于端口数、外围电路和实现
 - 动态功耗和 leakage 上升
 - 拥塞恢复更慢，因为网络里积压的 flit 变多
 - 延迟尾部可能更差，因为大量排队被隐藏在 buffer 中
@@ -138,12 +137,12 @@ cycle 3: credit returns
 120 * 16B = 1920B
 ```
 
-一个 router 接近 2KB input buffer。若扩到 64 个 router，光 input buffer 就已经超过 120KB，还没算控制状态和其他 SRAM。这个数量级足以说明：buffer 组织不是参数小事，而是面积预算的中心问题之一。
+一个 router 为 1,920 B input buffer。若扩到 64 个 router，总计 `122,880 B = 120 KiB`，还没算控制状态和其他 SRAM。这个数量级足以说明：buffer 组织不是参数小事，而是面积预算的中心问题之一。
 
 ## 常见误解
 
 常见误解：buffer 越深，性能一定越好。  
-实际上：超过 credit round-trip 所需后，边际收益迅速下降，反而可能增加面积、功耗和最坏排队时间。
+实际上：超过给定速率和 credit 往返对应的容量后，收益仍取决于突发、争用和服务抖动，反而可能增加面积、功耗和最坏排队时间。
 
 常见误解：VC 只是逻辑概念，和 buffer 无关。  
 实际上：VC 的存在必须落在独立队列或至少独立 credit/状态上，否则它就无法承担 HoL 缓解和隔离职责。

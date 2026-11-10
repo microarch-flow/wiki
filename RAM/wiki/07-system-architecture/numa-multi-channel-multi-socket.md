@@ -7,21 +7,21 @@
 
 为什么系统一旦想继续扩容量或扩外存带宽，几乎总会走向多通道、多 socket 和 NUMA 这类拓扑结构。更关键的是，这些结构带来的不只是“更多资源”，还会同步带来更复杂的访问距离、一致性压力、地址放置问题和软件可见代价。
 
-## 正文
+## 通道扩展与远端访问代价
 
-当单个 memory channel 的带宽不够、单个 socket 可挂的主存容量不够时，最自然的扩展办法似乎就是“再加几个 channel”或“再加几个 socket”。从资源总量上看，这当然有效：更多 channel 意味着更多独立的数据总线和 bank 资源，更多 socket 意味着更多本地控制器和更多物理内存插槽。但系统层真正麻烦的地方在于，存储不是一个可以无代价横向复制的纯容量池。只要开始做多通道和多 socket，访问就会从”单控制器单路径”变成”多资源、多距离、多一致性边界”的问题。就像一家公司从单办公室扩展到多城市分部——总工位数增加了，但跨城市协作的沟通成本、信息同步延迟和管理复杂度也同步上升了。
+当单个 memory channel 的带宽不够、单个 socket 可挂的主存容量不够时，最自然的扩展办法似乎就是“再加几个 channel”或“再加几个 socket”。从资源总量上看，这当然有效：更多 channel 意味着更多独立的数据总线和 bank 资源，更多 socket 意味着更多本地控制器和更多物理内存插槽。但系统层真正麻烦的地方在于，存储不是一个可以无代价横向复制的纯容量池。多通道会增加可并行的接口；是否产生非对称距离或新的缓存一致性域取决于具体拓扑。对称多通道仍可构成 UMA，多个 socket 也可共享一个一致性域。就像一家公司从单办公室扩展到多城市分部——总工位数增加了，但跨城市协作的沟通成本、信息同步延迟和管理复杂度也同步上升了。
 
-先看多通道 `multi-channel`。它最直接的价值，是把原本一条 DRAM 路径上的峰值带宽和 bank 并行度横向扩展成多份。若地址映射合适，请求流能被分散到不同 channel，那么 controller 就能同时在多个独立通道上推进事务，总带宽和可并行 outstanding request 数都明显增加。也就是说，多通道本质上是在复制 memory controller + channel + rank/bank 这一整段资源链，而不是简单多挂几颗颗粒。
+先看多通道 `multi-channel`。它最直接的价值，是把原本一条 DRAM 路径上的峰值带宽和 bank 并行度横向扩展成多份。若地址映射合适，请求流能被分散到不同 channel，那么 controller 就能同时在多个独立通道上推进事务，总带宽和可并行 outstanding request 数都明显增加。增加独立 channel 可增加 CA/DQ 与下游 rank/bank 资源，但不要求复制整个 memory controller：一个 controller 可以管理多个 channel，前端队列与调度逻辑也可能共享。
 
 但多通道的代价很快就会出现。第一，地址映射更复杂，因为你必须决定哪些地址跨 channel striping，哪些地址尽量留在局部以保 row locality。第二，channel 之间虽然逻辑独立，但上游请求流不一定能自然均匀分布，某些 workload 会把热点继续压在少数 channel 上，导致“总资源很多，实际只热一部分”。第三，更多 channel 意味着更多板级走线、更多信号引脚、更多功耗和更多内存控制状态，系统复杂度不是线性免费增长。也就是说，多通道不是“自动更快”，而是“多了更多潜在并行资源，同时多了更多需要被正确喂养的资源”。
 
-再看 `multi-socket`。它的扩展逻辑比多通道更重，因为它不仅复制了内存资源，还复制了计算节点和一致性域。每个 socket 往往有自己的本地 controller、本地 channel、本地主存，访问本地内存通常延迟和带宽都更好；而访问另一个 socket 的内存，则必须跨 socket 互连，把请求送到对方 controller 再进入 DRAM。于是，系统不再面对单一统一内存时间，而是天然出现”本地快、远端慢”的访问差异。这就是 NUMA，`Non-Uniform Memory Access`，名字本身就说明延迟和带宽已经不再统一。你可以把它想成两栋办公楼各自有自己的文件室——在自己楼里查文件很快（本地访问），但如果要查另一栋楼文件室的资料，就得打电话让那边的人找到后再快递过来（远端访问），时间和精力消耗都大得多。
+再看 `multi-socket`。它的扩展逻辑比多通道更重，因为它不仅增加内存资源，还增加计算节点。多个 socket 可以处在同一个硬件缓存一致性域；NUMA 节点与 socket 也不必一一对应。每个 socket 往往有自己的本地 controller、本地 channel、本地主存，访问本地内存通常延迟和带宽都更好；而访问另一个 socket 的内存，则必须跨 socket 互连，把请求送到对方 controller 再进入 DRAM。这种具体多 socket 组织可能产生”本地快、远端慢”的访问差异。NUMA 不要求多 socket：一个 socket 可包含多个访问代价不同的 node。NUMA 是`Non-Uniform Memory Access`，名字本身就说明延迟和带宽已经不再统一。你可以把它想成两栋办公楼各自有自己的文件室——在自己楼里查文件很快（本地访问），但如果要查另一栋楼文件室的资料，就得打电话让那边的人找到后再快递过来（远端访问），时间和精力消耗都大得多。
 
-NUMA 最值得先抓住的，不是定义，而是它改变了软件和系统的默认假设。在 UMA 或单 socket 直觉里，物理地址只是一个容量空间，放在哪里都差不多；到了 NUMA，地址放置本身变成性能变量。线程跑在哪个 socket，上游页分配在哪个节点，数据结构被谁 first-touch，甚至任务调度过程中线程是否迁移，都会直接改变访问到底是本地还是远端。也就是说，NUMA 不是“硬件多了几条路”这么简单，而是在把拓扑和放置策略暴露给整个软件栈。
+NUMA 最值得先抓住的，不是定义，而是它改变了软件和系统的默认假设。在对称 UMA 中，发起节点到所定义内存的访问代价按模型是均一的；单 socket 本身不保证 UMA。到了 NUMA，地址放置本身变成性能变量。线程跑在哪个 socket，上游页分配在哪个节点，数据结构被谁 first-touch，甚至任务调度过程中线程是否迁移，都会直接改变访问到底是本地还是远端。也就是说，NUMA 不是“硬件多了几条路”这么简单，而是在把拓扑和放置策略暴露给整个软件栈。
 
 这也解释了为什么“多 socket = 更大带宽和容量”这句话只对总量成立，对单个任务并不总成立。若应用能很好地按节点切分数据和线程，让大多数访问都落在本地 NUMA node，那么它确实能吃到更多 aggregate bandwidth；但若应用频繁跨 socket 共享数据、线程与数据放置错位，或者 allocator 根本没管 NUMA，本来为了扩展总资源而引入的远端路径，反而会把平均延迟和尾延迟拉高。常见误解是觉得更多 socket 自动意味着单任务更快；实际上，单任务可能只在“本地性感知很强”的情况下受益。
 
-从控制器视角再看一层，多通道和 NUMA 也会改变仲裁问题的形状。单通道时，争用主要发生在一个 controller 内；多通道时，请求是否被均匀分散变得重要；多 socket 时，不同 socket 上的 controller 还会通过互连路径间接耦合，远端访问不仅占 DRAM，还占 socket 间链路。于是系统瓶颈不再只有“DRAM 忙不忙”，而要同时看“哪个 controller 忙、哪个 channel 热、哪个互连在拥塞”。这就是为什么大系统里的内存性能分析，往往必须同时看内存控制器和 NUMA 拓扑。
+从控制器视角再看一层，多通道和 NUMA 也会改变仲裁问题的形状。单通道时，争用可能发生在 controller 和共享上游资源；多通道时，请求是否被均匀分散变得重要；多 socket 时，不同 socket 上的 controller 还会通过互连路径间接耦合，跨 socket 远端访问除占用 DRAM，还占 socket 间链路；同 socket 不同 node 可能只经过片内互连。于是系统瓶颈不再只有“DRAM 忙不忙”，而要同时看“哪个 controller 忙、哪个 channel 热、哪个互连在拥塞”。这就是为什么大系统里的内存性能分析，往往必须同时看内存控制器和 NUMA 拓扑。
 
 可以用一个很简单的三层对照来理解扩展路径：
 
@@ -36,7 +36,7 @@ Multi-socket NUMA:
   multiple bandwidth pools + multiple latency domains + remote access path
 ```
 
-这三层每往上走一步，资源总量都更大，但“统一性”都更弱。统一性一弱，软件和系统就必须更明确地管理放置与调度。
+这是三种示意配置，并非严格递进：多通道可保持 UMA，NUMA 可发生在单 socket，且跨 socket 不必拆分一致性域。需要根据实际拓扑管理放置与调度。
 
 还有一个经常被低估的代价是 `coherence and sharing traffic`。多 socket 系统如果仍然暴露共享内存编程模型，那么缓存一致性、目录状态、远端失效和跨 socket 共享数据的同步流量都会在互连上形成额外压力。这样一来，某次远端内存访问的成本，常常不只是“远一点的 DRAM 延迟”，还可能叠加一致性维护和链路争用。也就是说，NUMA 的代价不是单一的距离成本，而是距离 + 拓扑 + 协议共同叠加。
 
@@ -44,11 +44,11 @@ Multi-socket NUMA:
 
 从前面几章的知识回看，多通道和 NUMA 其实是在把 `address mapping`、`controller scheduling`、`workload locality` 这些问题提升到更高层。单通道里，你主要关心请求落到哪个 bank/row；多通道里，你还要关心落到哪个 channel；多 socket 里，再加上落到哪个 node，以及请求者是不是本地。这不是几个新名词并列出现，而是同一类“资源几何形状”问题不断向外扩展。
 
-所以，这一页真正要建立的不是“多通道、多 socket 可以扩带宽”这种显然正确但不够用的结论，而是更系统的一句判断：扩展带宽和容量，几乎总意味着把统一资源拆成多个带拓扑结构的局部资源。资源总量增加了，但延迟和带宽的均匀性变差了；如果软件与映射策略不能顺着拓扑工作，新增资源很可能一半变成复杂度，一半才变成性能。
+所以，这一页真正要建立的不是“多通道、多 socket 可以扩带宽”这种显然正确但不够用的结论，而是更系统的一句判断：扩展带宽和容量，几乎总意味着把统一资源拆成多个带拓扑结构的局部资源。资源总量增加后，延迟和带宽是否均匀要看互连与地址映射；如果软件与映射策略不能顺着拓扑工作，新增资源很可能一半变成复杂度，一半才变成性能。
 
 ## 一句话理解
 
-多通道和 NUMA 扩展带来的不只是更多带宽和容量，而是把内存系统从“一个统一池子”变成“多个带距离和拓扑差异的局部资源”，因此地址放置和线程放置本身就成了性能变量。
+独立通道可增加聚合峰值带宽；若同时配置额外存储器，也可增加容量。有效带宽取决于地址映射和共享资源争用。只有访问代价随发起节点与内存归属位置变化时，才产生 NUMA 的放置代价。
 
 ## 建模启示
 
@@ -58,12 +58,13 @@ Multi-socket NUMA:
 
 ```text
 NumaMemorySystem {
-  sockets: int
-  channels_per_socket: int
-  local_latency_cycles: int
-  remote_latency_cycles: int
-  local_bw_bytes_per_cycle: int
-  remote_link_bw_bytes_per_cycle: int
+  nodes: set<NodeId>
+  node_to_socket: map<NodeId, SocketId>
+  channel_to_controller: map<ChannelId, ControllerId>
+  request_route[initiator_node][home_node]: list<LinkId>
+  response_route[home_node][initiator_node]: list<LinkId>
+  link_latency_and_bw: map<LinkId, LinkProfile>
+  memory_service_base[home_node]: cycles  # 不含链路和 MC 排队
 }
 ```
 
@@ -71,18 +72,22 @@ NumaMemorySystem {
 
 ```text
 PlacementState {
-  page_home_socket[page]
-  thread_home_socket[thread]
+  page_home_node[page]
+  request_initiator_node[request]  # 随实际执行位置变化
 }
 ```
+
+以下示意约定 base 为不含链路及 MC 排队的服务时间；请求和响应按各自实际路径计时。对空闲且互不重叠的分段可相加，动态拥塞应按链路队列及事件调度。若输入的 remote_latency 已是端到端实测值，则不能再次加相同链路延迟。一致性命中其他缓存时还需按实际协议建不同路径。
 
 请求代价至少要区分：
 
 ```text
-if req.thread_home_socket == page_home_socket:
-    cost = local_latency + local_mc_queue_delay
-else:
-    cost = remote_latency + intersocket_link_delay + remote_mc_queue_delay
+initiator = request_initiator_node[req]
+home = page_home_node[req.page]
+request_path = request_route[initiator][home]
+response_path = response_route[home][initiator]
+cost = path_latency(request_path) + memory_service_base[home]
+       + mc_queue_delay[home] + path_latency(response_path)
 ```
 
-如果只关心 very-high-level aggregate throughput，可以把多个 channel 的贡献简单加总；但只要你要分析单任务性能、尾延迟或多租户隔离，就必须显式区分 local 和 remote 路径。因为 NUMA 的关键不是“资源总和更大”，而是“资源位置开始重要”。
+只有独立 channel 可同时供数、无共享瓶颈且流量分布足够时，才可把其峰值作为 aggregate throughput 上界相加；但只要你要分析单任务性能、尾延迟或多租户隔离，就必须显式区分 local 和 remote 路径。因为 NUMA 的关键不是“资源总和更大”，而是“资源位置开始重要”。

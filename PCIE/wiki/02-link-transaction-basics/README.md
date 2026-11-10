@@ -4,7 +4,7 @@
 
 - 角色和拓扑怎么分
 - 三层各自负责什么
-- 一个请求为什么会表现成 TLP、DLLP 和 completion
+- 请求及事务 Completion 都是 TLP；Non-Flit 链路上的 ACK/NAK DLLP 是相邻端口间的另一种返回。posted Memory Write 没有事务 Completion，链路 ACK 也不能替代它
 
 ## 推荐阅读顺序
 

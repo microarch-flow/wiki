@@ -8,7 +8,7 @@
 
 ### 这组为什么重要
 
-这是目前公开可见度较高、且更接近交换机量产路线的一组。
+Broadcom [2025-05-15 公告](https://investors.broadcom.com/news-releases/news-release-details/broadcom-announces-third-generation-co-packaged-optics-cpo)将第二代 TH5-Bailly 称为 volume-production CPO；这是厂商对特定芯片组的生产阶段声明。公告也分别列出伙伴的部件或系统进展。
 
 ### 组合逻辑
 
@@ -20,14 +20,14 @@
 
 ### 你该关注什么
 
-- 这组更像“CPO switch 量产验证链”
+- 这组可用于研究 TH5-Bailly 的平台和伙伴披露；不能由此推算各伙伴销量或客户现场部署量
 - 最关键不是单一器件指标，而是系统级交付和制造成熟度
 
 ## 组合 2：NVIDIA + TSMC + 多家 optics / connector / assembly 伙伴
 
 ### 这组为什么重要
 
-这是 AI 系统需求牵引最强的一组。
+[NVIDIA 2025-03-18 公告](https://nvidianews.nvidia.com/news/nvidia-spectrum-x-co-packaged-optics-networking-switches-ai-factories)列出 photonics 平台及生态伙伴；下列分工是研究分类，具体交付物要逐项核实。
 
 ### 组合逻辑
 
@@ -39,7 +39,7 @@
 
 ### 你该关注什么
 
-- 这组路线的核心不是“替换一个模块”，而是服务百万 GPU 级 AI factory
+- 百万 GPU 级 AI factory 是该公告中的平台目标，不是已部署集群规模
 - 这类路线的 adoption 条件是：系统收益必须足够大，才能覆盖复杂度
 
 ## 组合 3：Ayar Labs + Alchip + TSMC
@@ -52,7 +52,7 @@
 
 - Ayar Labs：TeraPHY optical I/O chiplet + SuperNova remote light source
 - Alchip：ASIC 与 advanced packaging 协同
-- TSMC：COUPE / SoIC / advanced process & packaging platform
+- TSMC：先进工艺与封装平台；具体方案的 COUPE / SoIC 配置应按项目核实
 
 ### 你该关注什么
 

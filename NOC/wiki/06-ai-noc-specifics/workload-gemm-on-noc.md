@@ -10,7 +10,7 @@
 
 ## GEMM 为什么重要
 
-GEMM 的价值不只是常见，而是它能把三类典型流量一次串起来：
+GEMM 可按映射产生多类流量，但不是每次都包含以下三类：
 
 - broadcast / fan-out
 - tile-to-tile forwarding
@@ -46,6 +46,12 @@ GEMM 的价值不只是常见，而是它能把三类典型流量一次串起来
 - ejection / local accumulation 是否扛得住
 - tree / hierarchical reduce 是否值得
 
+## 一个可核算的分块
+
+假设 `A[4,4]×B[4,4]→C[4,4]`，元素均为 2 B，4 个 tile 各负责一个 `2×2` 输出块，沿 K 分为两个长度 2 的步骤。每步每行需要一个 `A[2,2]`（8 B）给该行两个 tile；每列需要一个 `B[2,2]`（8 B）给该列两个 tile。若 A/B 从行/列边缘源分发，且接收 tile 没有缓存，可用 4 个 8 B multicast flow/步，共 2 步、64 B 源端逻辑 payload；链路 byte-hop 要按树的边数另算。4 个输出块各 8 B，最后写回合计 32 B；实际是否经过 NoC 由输出位置决定。
+
+这里每个输出 tile 本地累加两个 K 块，是 output-stationary 映射，不需跨 tile partial-sum reduce。若把同一输出的不同 K 分片放在不同 tile，则要传输并归约 partial sum；是否 forwarding、广播和本地复用，均由 mapping 决定。
+
 ## GEMM 更常偏向 deterministic 设计
 
 因为：
@@ -74,7 +80,7 @@ GEMM 的价值不只是常见，而是它能把三类典型流量一次串起来
 
 ## 一句话理解
 
-GEMM 是 AI NoC 的基础体检项，因为它用规则的方式同时考 broadcast、forwarding 和 reduce。
+GEMM 是规则基线，可按具体 mapping 测试分发、转发和可选归约；不能假设三者每次都发生。
 
 ## 建模启示
 

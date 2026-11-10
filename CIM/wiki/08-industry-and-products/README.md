@@ -17,7 +17,7 @@
 | PIM | DRAM/HBM/GDDR memory die 或 bank 内有独立 compute unit，compute 与 cell 分离 | `pim-` |
 | NMC | compute 在 memory 近侧的 module、package、base die、interposer、host-visible memory expansion 路径上 | `nmc-` |
 
-公司宣传中的 “in-memory”、“AiM”、“PIM”、“analog AI” 不能直接决定分类；本 wiki 的基础 taxonomy 仍以计算发生的位置和与 cell/array 的关系为准。Samsung HBM-PIM 与 SK hynix GDDR6-AiM/AiMX 在这里归 PIM，不归 CIM。UPMEM 是一个特殊的产业对照卡：官方口径和 die-level 位置更接近 PIM，但本章把它放在 `nmc-` 文件中，是为了单独讨论 DIMM/server 形态的 near-data 产品化、host+DPU 编程和系统接入；这个对照卡不覆盖 01 章的基础 taxonomy。
+公司宣传中的 “in-memory”、“AiM”、“PIM”、“analog AI” 不能直接决定分类；本 wiki 的基础 taxonomy 仍以计算发生的位置和与 cell/array 的关系为准。Samsung HBM-PIM 与 SK hynix GDDR6-AiM/AiMX 在这里归 PIM，不归 CIM。UPMEM 的 DPU 与 DRAM bank 同 die，按本书归 PIM；DIMM/server 是交付层级。旧 `nmc-` 文件名仅为兼容链接，不改变分类。
 
 | 页面 | 产业问题 |
 | --- | --- |

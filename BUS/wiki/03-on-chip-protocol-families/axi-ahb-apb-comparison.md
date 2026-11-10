@@ -46,7 +46,7 @@ AXI 的价值来自更彻底的 transaction 拆分。读和写可以走不同 ch
 
 这种能力适合 CPU cluster 到 memory system、DMA 到 DDR、accelerator data mover、high-performance interconnect、AXI crossbar 和各类商用 IP 集成路径。它的生态优势也来自这里：当系统里存在多个高吞吐 master、多个 target、不同 burst 形态和复杂返回路径时，AXI 提供了一套可组合的事务接口。
 
-代价同样来自这些能力。AXI 需要维护 ID、outstanding slot、burst counter、read/write channel backpressure、write response、read response ordering、属性传播和错误返回。一个看起来“只是接 AXI”的 slave，如果没有正确处理 backpressure、response、burst、WSTRB、exclusive/barrier 或 cacheability 属性，就可能在高并发系统里制造 hang、数据错误或尾延迟。
+代价同样来自这些能力。AXI 需要维护 ID、outstanding slot、burst counter、read/write channel backpressure、write response、read response ordering、属性传播和错误返回。一个看起来“只是接 AXI”的 slave，如果没有按所选接口版本和支持能力正确处理 backpressure、response、burst、WSTRB 或属性，就可能制造 hang、数据错误或尾延迟。AXI4、AXI4-Lite、ACE 的能力不同；exclusive 需要按接口和目标的支持契约处理，普通 AXI4 不包含 ACE 的通用 barrier 事务，不能把这些扩展当作所有 slave 的义务。
 
 常见误解：AXI 一定更快。实际上，AXI 只是提供更高并发和 latency hiding 的协议能力；若 slave 很慢、ID 深度很浅、bridge FIFO 很小、或者路径被强保序约束，AXI 路径仍然会慢。
 

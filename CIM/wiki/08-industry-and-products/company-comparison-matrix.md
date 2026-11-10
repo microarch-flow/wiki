@@ -13,7 +13,7 @@
 | [Axelera Metis/Europa](company-cards/cim-companies-axelera.md) | AI accelerator startup | CIM | SRAM | digital CIM + RISC-V dataflow | chip、M.2、PCIe card、compute board | edge vision、industrial、retail、robotics、edge server | Voyager SDK、model zoo、可购买硬件 | 软件生态、模型覆盖、片上 SRAM 容量与产品代际 |
 | [Samsung HBM-PIM](company-cards/pim-companies-samsung-hbm-pim.md) | memory vendor | PIM | HBM DRAM | bank-level digital/vector compute | HBM memory technology + accelerator test platform | HPC/AI memory-bound kernels | 需要 GPU/controller/runtime 支持 | 标准化、客户 qualification、HBM 产品线优先级 |
 | [SK hynix GDDR6-AiM/AiMX](company-cards/pim-companies-sk-hynix-aim.md) | memory vendor | PIM | GDDR6 DRAM | memory-chip compute + card-level control | GDDR6-AiM sample、AiMX prototype card | LLM inference demo、AI/HPC | 需要 AiM control/runtime | 从 prototype/demo 到客户部署仍需证明 |
-| [UPMEM DPU/DIMM](company-cards/nmc-companies-upmem.md) | near-data memory/system vendor | NMC 对照 | DDR4 DRAM module with DPU | programmable RISC near-data | DIMM/server platform/SDK | database、analytics、memory-bound kernels | C/Rust SDK、host+DPU 编程模型 | host/DPU 数据划分、同步、生态规模 |
+| [UPMEM DPU/DIMM](company-cards/nmc-companies-upmem.md) | memory/system vendor | PIM（同 die 可编程 DPU） | DDR4 DRAM module with DPU | programmable RISC processing | DIMM/server platform/SDK | database、analytics、memory-bound kernels | C/Rust SDK、host+DPU 编程模型 | host/DPU 数据划分、同步、生态规模 |
 
 比较时要先标注指标层级：
 
@@ -24,7 +24,7 @@
 | card/module-level | host bandwidth、thermal、driver、form factor | cell-level energy/MAC |
 | system-level | workload latency、energy/query、软件接入 | 单个 macro 的物理上限 |
 
-CIM 公司适合看 energy/MAC、片上权重容量、量化精度、校准和模型覆盖；PIM 公司适合看 bandwidth、energy/byte、host offload、memory command 和 controller/runtime；NMC 公司适合看 host-DPU 数据划分、DMA、同步和系统吞吐。把这些指标混在一起排名，会得到错误结论。
+CIM 公司适合看 energy/MAC、片上权重容量、量化精度、校准和模型覆盖；PIM 公司适合看 bandwidth、energy/byte、host offload、memory command 和 controller/runtime；UPMEM 等可编程 PIM 和 NMC 都需要看 host/执行单元数据划分、DMA、同步和系统吞吐。把这些指标混在一起排名，会得到错误结论。
 
 ## 一句话理解
 

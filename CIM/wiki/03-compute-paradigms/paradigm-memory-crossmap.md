@@ -9,14 +9,16 @@
 
 ## Crossmap
 
+阵列模拟求值与含 ADC/数字累加的 mixed-signal 宏可以同时描述同一设计的不同层。
+
 | Memory / Paradigm | Analog CIM | Digital CIM | Mixed-Signal CIM |
 | --- | --- | --- | --- |
 | SRAM-CIM | 可做 charge/current-domain，但 multi-bit 不自然 | 主流产品化方向，bitwise/bit-serial/popcount | 很常见，bitline 局部累加 + SA/ADC/数字累加 |
 | ReRAM-CIM | 最自然，conductance MVM | 可做但削弱 ReRAM 核心优势；离开 array path 不算 CIM | 现实落点，analog MVM + ADC/校正/mapping |
-| Flash-CIM | 固定权重 analog 路线，Mythic 代表 | 不主流，变成 NVM + logic 后优势弱 | 现实落点，cell 权重 + 数字校准 |
+| Flash-CIM | 固定权重 analog 路线，Mythic 代表 | 若 Flash 读/感测路径实现离散逻辑则属于 Digital CIM；普通读后独立 MAC 不属于 CIM | 现实落点，cell 权重 + 数字校准 |
 | PCM-CIM | 有 multi-level analog 潜力，但 drift 重 | 可做但不突出 | 用数字校正补偿 drift |
 | MRAM-CIM | 不自然，缺少稳定多级 analog 权重优势 | 只有 read/sense path 参与 compute 时成立 | 弱路线；read/sense path + comparator/SA correction 参与计算时才可能成立 |
-| DRAM/HBM/GDDR-PIM | 不属于本 CIM 纵轴 | PIM compute unit 可为 digital processing | PIM 系统可含 mixed circuits，但不是 array-native CIM |
+| DRAM/HBM/GDDR-PIM | 不适用 CIM 范式 | 独立 CU 的数字处理另记 | 普通 PHY 不构成 mixed-signal 求值 |
 
 ## 三个主流组合
 

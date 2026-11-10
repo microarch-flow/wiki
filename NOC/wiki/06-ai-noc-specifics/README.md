@@ -80,3 +80,18 @@ AI NoC 的特殊性，不在于“流量更大”这么简单，而在于 worklo
 - dynamic hotspot phase
 
 那么它还不够用来分析 AI NoC。
+
+## 本章其余正文
+
+- [Broadcast Multicast Tree](./broadcast-multicast-tree.md)
+- [Chiplet And Die To Die Interconnect](./chiplet-and-die-to-die-interconnect.md)
+- [Compiler NOC Co Design](./compiler-noc-co-design.md)
+- [Deterministic NOC And Static Scheduling](./deterministic-noc-and-static-scheduling.md)
+- [Memory Centric NOC](./memory-centric-noc.md)
+- [Reduction And Collective Networks](./reduction-and-collective-networks.md)
+- [Tile Architecture And NOC](./tile-architecture-and-noc.md)
+- [Why AI NOC Is Different](./why-ai-noc-is-different.md)
+- [Workload Attention Decode KV Cache](./workload-attention-decode-kv-cache.md)
+- [Workload Attention Prefill](./workload-attention-prefill.md)
+- [Workload GEMM On NOC](./workload-gemm-on-noc.md)
+- [Workload MOE Routing](./workload-moe-routing.md)

@@ -15,7 +15,7 @@ Design rule 把制造可行性翻译成设计几何约束，例如最小线宽�
 
 ## PDK 是工艺到设计的契约
 
-PDK，process design kit，是 foundry/工艺平台把制造能力交给设计团队的接口集合。它包括 design rules、device models、DRC/LVS deck、parasitic extraction、layer stack、reliability rule、standard cell library、SRAM compiler、I/O/PHY 支持和 corner 定义等。
+PDK，process design kit，是 foundry/工艺平台把制造能力交给设计团队的接口集合。PDK 通常包含 design rules、device models、DRC/LVS deck、寄生提取规则、layer stack、reliability rule 和 corner 定义。standard cell library、SRAM compiler 和 I/O/PHY IP 是与该 PDK 兼容的配套交付物，可能来自 foundry 或其他 IP 供应商，不必属于 PDK 本身。
 
 ```text
 process capability
@@ -45,7 +45,7 @@ PDK 不是后端团队的局部工具，而是架构假设的边界条件。早�
 
 ## 常见误解
 
-常见误解是“PDK 是 physical design 才用的东西”。实际 PDK 中的库、SRAM compiler、PHY、metal stack 和 corner 会直接决定架构选项。没有这些信息，架构模型只能做抽象趋势判断，不能做产品级可行性判断。
+常见误解是“PDK 是 physical design 才用的东西”。实际 PDK 的 metal stack、corner，以及与之兼容的库、SRAM compiler 和 PHY 会共同约束架构选项。没有这些信息，架构模型只能做抽象趋势判断，不能做产品级可行性判断。
 
 另一个误解是“design rule 越激进，架构越受益”。激进规则可能提高密度，但也可能降低 routability、增加 DRC 修复、拉长时序收敛周期，并推高良率风险。密度和可实现性必须一起评估。
 
@@ -57,4 +57,4 @@ Design rule 和 PDK 是工艺能力进入架构与物理设计的接口，决定
 
 如果我在选节点时只问“这个节点有多少密度提升”，问题不够。应同时问：目标 SRAM compiler 是否支持所需容量、banking 和电压；HBM/D2D/PCIe PHY 是否可用；metal stack 是否支撑 NoC 和 PDN；bump map 是否能和封装路线匹配。
 
-一个具体决策例子：若架构需要超大 SRAM scratchpad 和极宽片上 NoC，PDK 中 SRAM macro 尺寸、端口配置、top metal 资源和 IR rule 可能比纯 logic density 更决定成败。这个信息应该在 architecture exploration 阶段进入约束，而不是等 P&R 后才发现。
+一个具体决策例子：若架构需要超大 SRAM scratchpad 和极宽片上 NoC，配套 SRAM macro 的尺寸和端口配置、PDK 的 top metal 资源和 IR rule 可能比纯 logic density 更决定成败。这个信息应该在 architecture exploration 阶段进入约束，而不是等 P&R 后才发现。

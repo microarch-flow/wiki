@@ -20,8 +20,9 @@
 - DOI/官方链接：
 - 本 wiki taxonomy：CIM / PIM / NMC / boundary case
 - memory technology：SRAM / ReRAM / PCM / Flash / MRAM / DRAM-HBM-GDDR / other
-- compute paradigm：analog / digital / mixed-signal
-- 结果层级：device / macro / tile / chip / card-module / system / simulation
+- 求值方式：CIM 记 analog / digital / mixed-signal 及观察层；独立 PIM/NMC 记 ISA、数值和执行单元；不适用时注明
+- 结果层级：device / macro / tile / chip / card-module / system
+- 证据类型：silicon measurement / post-layout simulation / architecture simulation / analytical estimate / other
 
 ## 这篇论文真正解决的问题
 
@@ -48,7 +49,7 @@
 - 精度：
 - workload/model/dataset：
 - precision：
-- 是否 silicon measured：
+- 结果证据与测量/仿真条件：
 - 是否包含 ADC/DAC/SA/buffer/NoC/DRAM/host：
 - baseline：
 

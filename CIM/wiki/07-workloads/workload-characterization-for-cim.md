@@ -1,7 +1,7 @@
 # 什么样的 Workload 适合 CIM、什么样的不适合
 
 上级：[07 Workloads](./README.md)
-相关：[Problem Statement](../01-overview/problem-statement.md), [RAM: Data Movement First Principle](../../../RAM/wiki/09-ai-chip-memory-architecture/data-movement-first-principle.md), [NoC: Memory-Centric NoC](../../../NoC/wiki/06-ai-noc-specifics/memory-centric-noc.md), [BUS: DMA Path](../../../BUS/wiki/04-microarchitecture-integration/dma-descriptor-fetch-data-move-writeback.md), [FAB: Process Variation](../../../FAB/wiki/02-front-end-fabrication/process-nodes-and-ppa-tradeoffs.md)
+相关：[Problem Statement](../01-overview/problem-statement.md), [RAM: Data Movement First Principle](../../../RAM/wiki/09-ai-chip-memory-architecture/data-movement-first-principle.md), [NoC: Memory-Centric NoC](../../../NOC/wiki/06-ai-noc-specifics/memory-centric-noc.md), [BUS: DMA Path](../../../BUS/wiki/04-microarchitecture-integration/dma-descriptor-fetch-data-move-writeback.md), [FAB: Process Variation](../../../FAB/wiki/02-front-end-fabrication/process-nodes-and-ppa-tradeoffs.md)
 
 ## 这页在回答什么问题
 
@@ -13,12 +13,14 @@
 | --- | --- | --- |
 | 数据流 | MVM/GEMM/Conv 规整、reuse 高 | 控制流强、稀疏随机访问 |
 | 权重 | 固定或低频更新 | 高频更新、在线训练、动态专家频繁切换 |
-| 精度 | INT4/INT8 或更低，误差可训练吸收 | FP16/FP8 强精度、outlier 敏感 |
+| 精度 | 在目标模型与数据集实测后，误差满足阈值 | 范围、舍入、累加或 outlier 要求超出目标宏 |
 | 映射 | array utilization 高、partial sum 局部合并 | tiling 碎片多、跨 tile reduction 重 |
 | 系统 | fallback 少、host sync 少 | unsupported op 多、张量往返频繁 |
-| 时延 | batch 可摊销或 latency target 宽松 | 小 batch、强同步、token-by-token |
+| 时延 | 常驻模型或 batch 可摊销固定成本，且满足时限 | 实际同步、重装、转换或 fallback 不能摊薄且超出时限 |
 
 ## 三条 Paradigm 的 Workload 差异
+
+同为 8 bit，INT8、FP8 E4M3 和 E5M2 的数值范围与精度不同，accumulator 也可能不同；按算子支持、误差实测和任务质量阈值判断。batch=1 的小模型若已常驻并在设备内执行，也可能没有每 token host 往返。
 
 Analog CIM 要求最苛刻：低比特、固定权重、可校准、误差可容忍。ReRAM/Flash analog CIM 适合长期驻留权重的 MVM，而不适合频繁重写或高精度动态模型。
 

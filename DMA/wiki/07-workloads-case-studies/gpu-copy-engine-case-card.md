@@ -33,6 +33,17 @@ GPU copy engine 位于 GPU 侧的异步传输引擎，负责 host <-> device、d
 
 这里最容易被低估的是 host-side 准备和依赖边界。GPU copy engine 看起来很像“只要发个异步 memcpy”，但真正决定收益的是数据准备、stream 依赖和 kernel 边界是否真的允许并行。
 
+## 两个 tile 的依赖例
+
+假设一条 H2D copy engine 和一条独立 compute engine 可并行，两个设备 buffer A/B 独立，host buffer 已按平台要求 pin/map，且链路与内存带宽不互相限制。每次 H2D 为 3 时间单位、kernel 为 5：
+
+```text
+copy stream: H2D(A) [0,3) -> event A -> H2D(B) [3,6) -> event B
+compute stream: wait A -> kernel(A) [3,8) -> wait B -> kernel(B) [8,13)
+```
+
+kernel(A) 只在 event A 表示其输入传输完成后开始；H2D(B) 与 kernel(A) 在 [3,6) 重叠。A 不能在 kernel(A) 释放前覆盖。若把 H2D 和 kernel 放在同一串行 stream，或只有一个共享 buffer，依赖可能迫使它们串行。调用异步 API 返回只表示任务已提交，不代表传输完成或实际发生 overlap；pageable host memory 可能需要 staging，行为取决于平台 API。GPU 内部的异步 copy 指令也不一定由独立 copy engine 执行。CUDA 的具体 stream 和重叠条件见 [NVIDIA 异步执行指南](https://docs.nvidia.com/cuda/archive/13.2.2/cuda-programming-guide/02-basics/asynchronous-execution.html)；pageable staging 行为见 [API 同步说明](https://docs.nvidia.com/cuda/archive/13.2.2/cuda-driver-api/api-sync-behavior.html)。
+
 ## 最常见瓶颈
 
 最常见的问题通常包括：

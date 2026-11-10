@@ -71,3 +71,13 @@ package substrate
 选择 2.5D 时，架构师要先问系统真正需要哪一种密度：全局都需要硅级互连，还是只有局部 die-to-die 链路需要。这个问题会直接决定路线偏向 Si interposer、Fan-out/RDL，还是 embedded bridge。
 
 一个具体判断：如果 compute die 与多颗 HBM stack 之间需要非常宽的低能耗接口，并且封装成本可以接受，Si interposer 会变得合理。若只是几个 chiplet 间有局部高带宽需求，bridge 可能比整块 interposer 更接近真实目标函数。
+
+## 本章正文
+
+- [三种 2.5D 路线的 trade-off 全景](./2.5d-routes-tradeoff-map.md)
+- [CoWoS-S 简化制造对象流](./cowos-s-complete-process.md)
+- [CoWoS-S/R/L 的真正差别](./cowos-s-r-l-comparison.md)
+- [Embedded Bridge:Intel EMIB 与 TSMC CoWoS-L](./embedded-bridge-emib-and-cowos-l.md)
+- [Chip-first vs Chip-last:两条 Fan-out 工艺](./fan-out-chip-first-vs-chip-last.md)
+- [Fan-out RDL:Si Interposer 的替代路线](./fan-out-rdl-overview.md)
+- [Si Interposer:第一代主流 2.5D](./si-interposer-fundamentals.md)

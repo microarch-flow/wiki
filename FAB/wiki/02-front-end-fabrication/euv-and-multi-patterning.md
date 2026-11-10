@@ -1,4 +1,4 @@
-# EUV 与多重曝光:7nm 之下的两条路
+# EUV 与多重图形化：按层选择的工艺路线
 
 上级:[前道工艺](./README.md)
 相关:[光刻:把版图变成芯片的核心步骤](./photolithography-fundamentals.md), [工艺节点演化与 PPA 取舍](./process-nodes-and-ppa-tradeoffs.md), [Design Rule 和 PDK:架构师与工艺的接口](./design-rule-and-pdk.md)
@@ -10,6 +10,8 @@
 ## 多重图形化解决了什么
 
 当 193 nm DUV 单次曝光无法直接打印足够小的 pitch 时，可以把一个密集图形拆成多次曝光和多次刻蚀。它的逻辑是把“单次做不到的密度”拆成多个可制造步骤。
+
+下图是 LELE（litho-etch-litho-etch）类拆分示例。多重图形化也可使用 spacer 自对准等路线，并非都采用两套直接曝光刻蚀。节点名称不规定单一工艺分界；不同厂商和层可选不同路线。
 
 ```text
 target dense pattern

@@ -52,7 +52,11 @@ DMA 性能分析里经常看见“理论上一笔 256B 搬运，为什么硬件�
 - local SRAM bank 或端口映射要求拆分
 - IOMMU 映射把逻辑连续区间切成多个物理段
 
-这正是 descriptor、address mapping 和 burst 行为相互作用的地方。例如 `0x1003 -> 0x2000, 256B` 这笔任务，看上去只是 256B 复制；落到硬件上，可能先做一个 misaligned 头部，再做若干对齐 burst，最后在 page 或 bank 边界处再拆一次。和 [RAM wiki 的地址映射与 row locality](../../../RAM/wiki/06-memory-controller/address-mapping-channel-rank-bank-row-col.md) 放在一起看时，这种拆分还会直接改变 DRAM 的 row hit 率。
+一个保守的逻辑分块器可每次选择 `chunk = min(remaining, max_chunk_bytes, bytes_to_src_boundary, bytes_to_dst_boundary)`，推进源、目的和 remaining。这里 boundary 是当前路径确实要求的边界；对每个 chunk 再按接口生成合法读写 burst，尾部有效字节用允许的 byte lane/WSTRB 表示。源与目的各自独立拆分和重组也可合法，不一定都按同一边界拆。
+
+例如 AXI4，源 `0x0FF0`、目的 `0x2000`、长度 32 B、每 beat 8 B，源在 16 B 后到 4KB 边界。保守分块得到 `[0x0FF0,0x0FFF]` 和 `[0x1000,0x100F]` 两个 16 B 子块，每个读 burst 为 2 beat，至少两次 AR/R；目的端独立规划时可以是一笔 4-beat AW/W/B，也可按两块发送。若只剩 5 B，最后使用合法 size/lane 或 strobe；不能假定无效 byte 被写入。
+
+AXI4 的 4KB 与最大 beat 数、PCIe 的 MPS/MRRS 和请求边界、IOMMU page 映射是不同约束：page 不连续可能需要翻译或 scatter-gather，不自动等于 AXI 事务必须按物理页拆。算法还须验证地址宽度、溢出、权限和目标支持。见 [Arm IHI 0022H](https://developer.arm.com/-/media/Arm%20Developer%20Community/PDF/IHI0022H_amba_axi_protocol_spec.pdf?hash=6325311012DDADF238C35A6C0FD734E520754F82&la=en&revision=71bd7c57-2ed7-487b-bc3e-68c4ab56fa5f) 与 [RAM 地址映射](../../../RAM/wiki/06-memory-controller/address-mapping-channel-rank-bank-row-col.md)。
 
 ## Scatter-gather 的价值和代价
 

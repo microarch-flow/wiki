@@ -169,14 +169,14 @@ deadlock 是“互相卡死”，livelock 是“忙着兜圈”，starvation 是
 
 如果仿真器要正确区分这三者，不能只统计 packet latency。至少还要额外统计：
 
-- wait-for graph 或 channel dependency graph
+- 静态 channel dependency graph（合法路由可能依赖）和运行时 wait-for graph（当前持有与等待）
 - packet progress metric：是否更接近目的地、route 是否反复变化
 - request-to-grant wait time 与 grant fairness
 
 一个实用做法是：
 
-- 对 deadlock：检测一段时间内是否存在闭合等待环且无释放事件
-- 对 livelock：检测 packet 虽多次转发但距离目标或阶段编号长期不下降
+- 对 deadlock：先报告观察窗口内的 wait-for 环及无释放为疑似；只有资源独占、所有等待都由环内资源满足、无外部释放/超时/仲裁可解除，且状态持续不变等条件成立时，才能证明当前集合死锁。静态依赖图中的环只是潜在风险。
+- 对 livelock：记录长期转发而未到达及路径阶段变化；非最短合法绕路可暂时增加距离，因此距离下降只是诊断启发式，不是逐步正确性条件
 - 对 starvation：检测持续请求但 grant 长时间缺失，且系统其他流量仍在前进
 
 这样模型才能把“没完成”细分成真正有操作价值的类别。

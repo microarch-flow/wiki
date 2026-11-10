@@ -63,3 +63,12 @@ higher density
 ## 架构师启示
 
 架构师选择 3DIC 时，不能只计算 D2D 带宽收益。还要同步评估 die thinning、bonding pitch、热路径、KGD、失效隔离和中间测试节点。否则 3DIC 会从架构收益变成制造和可靠性风险。
+
+## 本章正文
+
+- [3DIC:为什么需要垂直堆叠](./3dic-fundamentals.md)
+- [3DIC 的热与应力挑战](./3dic-thermal-and-stress-challenges.md)
+- [Micro-bump vs Hybrid Bonding:键合技术的代际差](./micro-bump-vs-hybrid-bonding.md)
+- [SoIC:F2F/F2B/CoW/WoW 的关系](./soic-face-to-face-to-back.md)
+- [TSV:贯穿硅基的纵向连接](./tsv-through-silicon-via.md)
+- [Wafer-to-Wafer vs Die-to-Wafer:工艺与良率](./w2w-vs-d2w.md)

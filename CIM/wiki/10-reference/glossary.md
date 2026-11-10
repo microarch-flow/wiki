@@ -21,20 +21,20 @@
 | Memory technology | 计算依附的存储介质或 memory product，例如 SRAM、ReRAM、Flash、PCM、MRAM、DRAM/HBM/GDDR | 用 memory 名称推断 compute paradigm |
 | Compute paradigm | 计算如何发生：analog、digital、mixed-signal | 把 SRAM-CIM 自动等同 digital，或把 ReRAM-CIM 自动等同可量产 analog |
 | SRAM-CIM | SRAM cell/bitline/sense path 被改造成计算路径 | 把所有使用 SRAM 存权重的 NPU 都叫 SRAM-CIM |
-| ReRAM/RRAM-CIM | ReRAM 电导/电阻态直接表示权重并参与 MVM/MAC | 只看 crossbar 理想能效，忽略 drift、IR drop、sneak path |
-| Flash-CIM | Flash/floating-gate 状态作为 analog 权重，代表案例是 Mythic 路线 | 认为成熟 Flash 工艺自动解决 analog 推理可靠性 |
+| ReRAM/RRAM-CIM | ReRAM 电导/读路径参与阵列 MVM 或逻辑求值；普通读后独立 MAC 不算 | 只看 crossbar 理想能效，忽略 drift、IR drop、sneak path |
+| Flash-CIM | Flash 状态及读/感测路径参与模拟或数字计算；Mythic 是模拟路线案例 | 认为成熟 Flash 工艺自动解决 analog 推理可靠性 |
 | PCM-CIM | PCM 相变/电阻状态参与存算 | 忽略 drift 和写入代价 |
-| MRAM-CIM | MRAM 非易失状态用于 CIM，更多偏 binary/digital-like | 假设天然适合高精度 analog |
+| MRAM-CIM | MRAM 读/感测路径参与计算，常见 binary/digital-like；普通 MRAM 加独立 MAC 不算 | 假设天然适合高精度 analog |
 | DRAM/HBM/GDDR-PIM | DRAM/HBM/GDDR memory die/bank 内加入 processing unit | 把它塞进 analog/digital CIM 三分法 |
 | HBM-PIM | HBM memory die/bank 内加入 PIM compute unit | 写成 HBM-CIM |
 | GDDR-PIM / AiM | GDDR memory chip 内加入 compute function | 写成 CIM 公司路线 |
-| Gain-cell CIM | 用 gain-cell macro 支持 CIM，常见于研究型 SRAM/DRAM-like macro | 和标准 6T SRAM-CIM 混为一谈 |
+| Gain-cell CIM | 动态 gain-cell 节点与阵列路径参与计算，保持时间有限并需维护 | 和标准 6T SRAM-CIM 混为一谈 |
 | Embedded NVM | 嵌入式非易失存储，如 eFlash/ReRAM/MRAM/PCM | 认为只要 NVM 就适合 CIM |
-| 6T/8T/10T SRAM cell | SRAM bitcell 变体，影响读写隔离和 compute path | 只看 bit 数不看 read disturb |
+| 6T/8T/10T SRAM cell | T 是每 cell 晶体管数；拓扑决定读写隔离和计算路径 | 把 T 当 bit 数或仅凭数字断言隔离 |
 | DRAM 1T1C cell | DRAM capacitor + access transistor 结构 | 和 HBM-PIM 的独立 compute 混淆 |
 | Crossbar array | 交叉阵列结构，ReRAM/PCM 等 analog MVM 常见 | 忽略 sneak path 和 IR drop |
 | Conductance state | 用电导状态表达权重 | 认为电导状态长期不漂移 |
-| Multi-level cell | 一个 cell 存多个状态 | 只看密度，不看 state margin |
+| Multi-level cell | 一个 cell 用多个可区分状态编码信息；b bit 理想需 2^b 级并满足误码裕量 | 只看密度，不看 state margin |
 | Retention | 状态长期保持能力 | 只在存储中重要，忽略对推理精度影响 |
 | Endurance | 可写擦次数或状态更新寿命 | 忽略 retraining/personalization 影响 |
 | Write verify | 写入后校验状态是否达到目标 | 忽略其能耗和延迟 |
@@ -49,7 +49,7 @@
 | Weight-stationary / activation-stationary | 权重或输入尽量驻留以减少搬移 | 忽略 partial sum 和 fallback |
 | CIM macro | 一个局部 compute-memory array block，可能包含 driver、SA/ADC、local accumulator | 把 macro 指标外推成 chip/system 指标 |
 | Wordline / bitline / source line | array 内访问和读出路径，也是 CIM compute path 的核心对象 | 只当传统读写控制线 |
-| Sense amplifier / ADC / DAC | 读出判决和数模转换外围 | 不计入面积/功耗 |
+| Sense amplifier / ADC / DAC | SA 对小信号作判决或放大；ADC 模拟转数字；DAC 数字转模拟 | 不计入面积/功耗 |
 | Local accumulator | macro/tile 近侧 partial sum 累加器 | 单独作为 CIM 判据 |
 | Peripheral | array 周边 driver、SA、ADC/DAC、buffer、controller 等 | 只报 array-only 指标 |
 | IR drop / sneak path | 线阻压降和 crossbar 非目标路径电流 | 理想阵列里常被忽略 |
@@ -64,7 +64,8 @@
 | Host offload / runtime / kernel mapping | host 下沉任务、运行时调度和算子映射 | 认为硬件峰值自动可用 |
 | Reduction network | 合并 partial sum 的网络 | 忽略其成为瓶颈 |
 | Data movement | 数据在 array/tile/chip/memory/host 间移动 | 只看 compute energy |
-| Memory wall / von Neumann bottleneck | 计算与 memory 分离导致的带宽、延迟、能耗瓶颈 | 认为 CIM 完全解决 |
+| Memory wall | 存储延迟或带宽相对计算能力增长不匹配 | 认为 CIM 完全解决 |
+| von Neumann bottleneck | 处理器与存储分离，交换指令/数据受通路限制 | 与 memory wall 当成完全同义 |
 | CNN / Transformer / attention / KV cache / LLM decode | 主要 AI workload 和子结构 | 用 CNN 结论直接判断 LLM |
 | Memory-bound / compute-bound | 受数据搬移或计算吞吐限制 | 不做 workload profiling |
 | Sparsity | 稀疏性，可减少计算/搬移但增加控制复杂度 | 假设免费跳零 |
@@ -79,7 +80,7 @@
 
 - Samsung HBM-PIM：PIM，不是 CIM。
 - SK hynix GDDR6-AiM/AiMX：PIM，不是 CIM。
-- UPMEM：本 wiki 归 NMC 对照；官方材料常使用 PIM 口径，但正文分类以 01 taxonomy 为准，不能当 cell-level CIM。
+- UPMEM：本 wiki 归同 die 独立 DPU 的 PIM；DIMM 是产品形态，不是 cell-level CIM。
 - Mythic：Flash-based analog CIM。
 - Axelera：SRAM-based digital CIM。
 

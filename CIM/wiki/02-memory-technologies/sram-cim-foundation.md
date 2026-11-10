@@ -29,7 +29,7 @@ WL/input activation -> cell/BL interaction -> local logic or accumulation -> SA/
 
 6T SRAM cell 面积最小，适合高密度片上 SRAM，但读写和计算路径耦合强。要让 6T 同时承担存储和计算，设计必须避免读 disturb、half-select disturb 和 bitline 电压扰动破坏原数据。它适合做面积敏感的 bitwise 或低复杂度操作，但对多行同时激活和 analog accumulation 更紧张。
 
-8T/10T 通过额外 transistor 拆出 read port 或 compute path。代价是 cell 面积上升，收益是读路径与存储节点更好隔离，可以更安全地做多行激活、bitline accumulation 或 local sensing。很多 SRAM-CIM 论文选择 8T/10T，不是因为 6T 不能算，而是因为稳定性和可测性比最小面积更重要。
+一些 8T/10T 拓扑通过额外 transistor 拆出 read port 或 compute path；是否隔离及隔离程度必须看实际电路，不能仅凭晶体管数断定。代价是 cell 面积上升，收益是读路径与存储节点更好隔离，可以更安全地做多行激活、bitline accumulation 或 local sensing。很多 SRAM-CIM 论文选择 8T/10T，不是因为 6T 不能算，而是因为稳定性和可测性比最小面积更重要。
 
 ## SRAM 更自然走 digital / mixed-signal
 
@@ -46,7 +46,8 @@ Pure analog SRAM-CIM 比 ReRAM analog MVM 不自然。SRAM cell 只稳定保存�
 | 设计 | 是否 SRAM-CIM | 原因 |
 | --- | --- | --- |
 | SRAM 旁边放 MAC array | 否 | cell/bitline 不参与计算 |
-| SRAM read 出多个 bit 后在外围 popcount | 边界案例 | 如果 popcount 完全在外围，接近 near-array logic |
+| 普通 SRAM read 后把数码送独立 popcount | 否 | 阵列只作普通读，计算在独立逻辑 |
+| 阵列感测路径先完成多行逻辑，再由外围 popcount | 是 | 即使 popcount 在外，阵列仍已参与求值 |
 | 多行 WL 激活并在 BL/SA 路径形成 bitwise/accumulation | 是 | array path 参与计算 |
 | 8T read port 执行 current-domain accumulation | 是 | read path 承担局部计算 |
 

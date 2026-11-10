@@ -8,9 +8,9 @@
 
 系统”卡住了”就像你在路上遇到了麻烦——但麻烦有三种完全不同的性质：
 
-- **Timeout**（超时）：你等了太久，交警过来开了罚单让你离开——“有人收尾，但等太久了”
-- **Fault**（故障）：你闯了红灯，被摄像头拍下来开了罚单——“有明确错误”
-- **Hang**（死锁）：你被堵在一个环形死胡同里，没人来管，你也出不去——“没有人收尾，也没有 forward progress”
+- **Timeout**（超时）：某个等待超过指定阈值并被检测或报告，不自动终止原事务。
+- **Fault**（故障）：某层明确报告错误，例如权限失败或错误响应。
+- **Hang**：在指定观察窗口内关键状态没有 forward progress；原因可能是丢响应、时钟停止或资源依赖。deadlock 是其中存在无法解除依赖的一种机制，不等同于所有 hang。
 
 第一步不是把所有监控录像都翻出来看，而是先判断你遇到的是哪一种。这三类不是互斥的根因，而是同一个底层问题在不同层级的表现——一个下游 slave 永不响应（根因），在 fabric 层表现为 no-progress（hang），在 timeout wrapper 层被包装成超时罚单（timeout），在软件层变成异常（fault）。
 
@@ -18,13 +18,13 @@
 
 | 类型 | 软件/系统看到什么 | BUS 层含义 | 首要问题 |
 | --- | --- | --- | --- |
-| timeout | 等了过长时间后得到错误、状态或 watchdog 触发 | 某处超时机制把长等待闭环 | 谁慢，还是谁把 hang 包装成 timeout |
+| timeout | 等待超过阈值，计数器或 watchdog 报告 | 仅表明检测；原事务可能仍在途 | 谁检测、是否生成响应、如何隔离和回收 |
 | fault | 得到明确错误 response、fault record 或异常 | 某层主动拒绝或报告错误 | 谁报错，错误是否被中间层映射 |
-| hang | 没有成功、没有错误、没有前进 | transaction 或状态机没有 forward progress | 哪个握手、队列或 response 永远不完成 |
+| hang | 指定观察窗口内关键状态没有进展 | transaction 或状态机未见预期 forward progress | 哪个握手、队列或 response 在窗口内未完成 |
 
-用更生活化的比喻：timeout 是”快递超时自动退款”；fault 是”快递公司说你地址写错了，包裹退回”；hang 是”包裹失踪了，快递公司也没给你退款，你的寄件额度永远被占着”。工程风险从 timeout 到 hang 逐步上升，因为 hang 可能让 CPU、DMA slot、bridge FIFO 或整个 fabric 永久占住资源。
+例如软件 watchdog 超时仅记录日志时，原 AXI 请求仍可能在途并占用 slot；若 wrapper 实现合成响应、隔离迟到返回并回收状态，才形成另一种收尾路径。检测、错误响应、隔离和资源回收应分别记录。
 
-## Timeout：有收尾，但超过预期
+## Timeout：超过阈值，不保证收尾
 
 timeout 的价值是把 no-progress 或超长等待转换成可诊断事件。它可能由 software watchdog、DMA task timer、bridge timeout、fabric timeout wrapper、slave timeout 或 memory controller timeout 产生。
 
@@ -55,12 +55,12 @@ fault 还要看传播路径。IOMMU fault 可能写 fault record 并触发 inter
 
 ## Hang：没有 Forward Progress
 
-Hang 就像**车停在十字路口中间，红绿灯也坏了，交警也没来**——不是”等太久”的问题，而是”永远不会动了”。判断标准不是时间长，而是关键状态不再前进。
+判断 hang 要先声明观察窗口与应当发生的进展事件。窗口内无进展是可观测事实；仅凭有限窗口不能证明永远不会恢复，也不能证明存在资源依赖环。
 
 | Hang 形态 | 波形/状态表现 | 可能原因 |
 | --- | --- | --- |
-| request stuck | VALID 保持，READY 永远不来 | 下游 backpressure、queue full、clock/reset/power 未 ready |
-| response missing | request 已接受，response 永远不回 | slave 无返回、bridge 丢 response、ID/slot 泄漏 |
+| request stuck | 观察窗口内 VALID 保持，READY 未到 | 下游 backpressure、queue full、clock/reset/power 未 ready |
+| response missing | request 已接受，观察窗口内未见 response | slave 无返回、bridge 丢 response、ID/slot 泄漏 |
 | circular backpressure | 多个 FIFO/通道互相等待 | deadlock、ordering 约束、资源依赖环 |
 | CDC no-progress | 一侧 push 后另一侧不 pop | clock stop、reset mismatch、CDC FIFO 状态错误 |
 | software-visible hang | 硬件完成但软件等不到 | completion/interrupt/clear 路径断裂 |
@@ -90,7 +90,7 @@ hang 的危险在于它不会自动释放资源。一个未返回的 read 占住
 | T3 | bridge timeout counter 到阈值 | bridge 把 no-progress 包装成 timeout |
 | T4 | CPU 收到错误 response 或异常 | 软件看到 timeout/fault |
 
-若 T3 不存在，CPU 可能一直等不到 R response，现象就是 hang。是否配置 timeout wrapper，决定同一个根因最终是 timeout 还是 hang。
+若 T3 不存在，CPU 在观察窗口内可能等不到 R response，表现为 hang。配置 timeout wrapper 后，阈值触发与窗口内无进展可以同时成立；只有 wrapper 或其他机制实际返回错误、隔离迟到响应并回收资源，才可完成对应事务的收尾。
 
 ## 例子：DMA 任务无声停止
 
@@ -116,7 +116,7 @@ hang 的危险在于它不会自动释放资源。一个未返回的 read 占住
 
 ## 一句话理解
 
-Timeout、fault 和 hang 是三种观察入口：timeout 有收尾但太晚，fault 有明确错误，hang 没有 forward progress。
+Timeout、fault 和 hang 是可重叠的观察入口：timeout 超过阈值，fault 有明确错误，hang 在所选窗口内没有预期进展；三者都不能单独证明事务已经终止。
 
 ## 继续阅读
 
@@ -127,6 +127,6 @@ Timeout、fault 和 hang 是三种观察入口：timeout 有收尾但太晚，fa
 
 ## 建模启示
 
-调试模型要把 timeout、fault 和 hang 建成不同终态。性能模型要记录 max latency、timeout threshold、last progress timestamp、outstanding age、queue high watermark 和 response wait。功能模型要记录 fault source、error mapping、timeout wrapper、resource release、completion visibility 和 interrupt/clear 状态。
+调试模型要把 timeout 检测、fault 报告和观察窗口内 no-progress 分开记录，而不是假定它们都是事务终态。另行记录响应是否被消费、迟到响应是否隔离以及资源何时回收。性能模型要记录 max latency、timeout threshold、last progress timestamp、outstanding age、queue high watermark 和 response wait。功能模型要记录 fault source、error mapping、timeout wrapper、resource release、completion visibility 和 interrupt/clear 状态。
 
 事件模型建议显式表达 `request_accepted`、`last_forward_progress`、`response_missing`、`timeout_start`、`timeout_fire`、`fault_recorded`、`error_response_return`、`resource_release`、`completion_missing`。这些事件能把“卡住了”拆成可定位、可复盘、可修复的系统状态。

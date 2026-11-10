@@ -21,7 +21,7 @@ packet 回答的是“这一笔通信到底在做什么”。它通常包含源�
 
 这说明 packet 先是系统对象，再是网络对象。packet 的大小首先受软件、编译器和系统接口约束，而不是受 router 喜好约束。
 
-为什么不能直接用 packet 做所有建模？因为 packet 太粗。router 不会等整包都到齐再决定仲裁，credit 也不会按“整包剩余空间”计数。真正决定网络行为的是更细的传输粒度。
+为什么不能直接用 packet 做所有建模？因为 packet 可能太粗。在本文的 wormhole、flit-credit 模型中，router 不必等整包到齐才转发，credit 按下游 flit slot 计数；store-and-forward 和 VCT 可使用不同的整包接收或预留条件。真正决定网络行为的是更细的传输粒度。
 
 ## Flit 是流控与仲裁单位
 
@@ -83,7 +83,7 @@ cycle 1: phit1[255:128]
 
 假设：
 
-- packet size = 64B = 512b
+- 线上 packet 总长 = 64B = 512b，已包含 header、tail 信息及 padding；不是 64B 有效 payload
 - flit width = 128b
 - link width = 128b
 
@@ -111,7 +111,9 @@ cycle 4-5: body1 flit
 cycle 6-7: tail flit
 ```
 
-同一个 packet，语义没变，flit 数没变，但 hop 传输时间翻倍。这正是 phit 层存在的意义。
+如果 64B 是有效 payload，且 header/tail 合计另占 8B，假设按字节连续打包，线上 flit 数为 `ceil((64+8)/16)=5`，padding 为 `5×16−72=8B`。总包字节与有效 payload 必须分开。单 flit 包同时携带起止语义，可用 `HEAD_TAIL` 类型，而不是假设必有独立 header 和 tail。
+
+同一个 packet，语义没变，flit 数没变，但在本例无额外空隙时 hop 传输时间翻倍。这正是 phit 层存在的意义。
 
 ## 和 BUS 世界的一个关键差别
 
@@ -147,7 +149,7 @@ Packet {
 Flit {
   packet_id
   flit_id
-  kind  // HEADER, BODY, TAIL
+  kind  // HEADER, BODY, TAIL, HEAD_TAIL
   num_phits
 }
 ```

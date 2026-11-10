@@ -7,7 +7,7 @@
 
 cache 为什么不能被理解成“一个普通 SRAM 宏，只是里面装了缓存数据”。更准确地说，cache 是怎样把 SRAM 阵列、tag 比较、命中判断和替换控制绑成一个整体的，以及为什么 tag array 和 data array 虽然都用 SRAM 实现，却承担了完全不同的时序角色。
 
-## 正文
+## 数据阵列与标记阵列的职责
 
 把 cache 粗略描述为”用 SRAM 做出来的高速缓存”当然没错，但这句话最大的问题是把 cache 的关键复杂性抹掉了——就像说”图书馆就是一屋子书”，忽略了分类目录、借阅系统和管理员。真正让 cache 成为 cache 的，不是它用了 SRAM，而是它把一块 SRAM 变成了一个由硬件管理的、带命中不确定性和替换语义的数据层。register file、scratchpad 和 cache 都可能用 SRAM 实现，但只有 cache 会主动替软件猜：当前访问的地址有没有已经被我留在本地，如果有，它在哪一行、哪一路、是否有效、是否脏、是否需要回写。这个”猜”的过程，决定了 cache 绝不是一块单纯的数据阵列。
 
@@ -63,4 +63,4 @@ event CacheHitReturn(cache_id, req_id)
 event CacheMissAllocate(cache_id, req_id)
 ```
 
-如果只关心粗粒度系统性能，`tag_read_cycles + tag_compare_cycles + data_read_cycles` 可以折叠成单个 hit latency；但如果你需要分析 L1 频率、能耗，或者研究 cache 组织选择对 miss 流量的影响，`tag_data_parallel` 和 `way_prediction` 这类字段就不应该省略。它们直接决定“为了一拍命中，你是否愿意每次多唤醒几路 data array”。
+若 tag/data 串行且 tag 决策后才启动 data，命中路径可简化为 `tag_read + compare + data_read + output_mux`；若两路同刻并行启动，则为 `max(tag_read + compare, data_read) + output_mux`。以上均假设路径延迟与端点一致，实际流水边沿仍须按实现计算。改并行方式可改变时序和唤醒能耗；在容量、索引、替换及请求序列不变且没有预测副作用时，不必改变 miss 数。研究预测失误、访问顺序或竞态时还要保留 `way_prediction` 和对应事件。

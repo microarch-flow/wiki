@@ -1,7 +1,7 @@
 # 工艺节点演化与 PPA 取舍
 
 上级:[前道工艺](./README.md)
-相关:[为什么工艺红利在让位于封装红利](../01-overview/why-process-and-packaging-matter-now.md), [器件演化:Planar -> FinFET -> GAAFET](./transistor-evolution-planar-finfet-gaa.md), [SRAM 工艺缩放挑战](../../RAM/wiki/02-sram-foundations/sram-process-scaling-challenge.md)
+相关:[为什么工艺红利在让位于封装红利](../01-overview/why-process-and-packaging-matter-now.md), [器件演化:Planar -> FinFET -> GAAFET](./transistor-evolution-planar-finfet-gaa.md), [SRAM 工艺缩放挑战](../../../RAM/wiki/02-sram-foundations/sram-process-scaling-challenge.md)
 
 ## 这页在回答什么问题
 
@@ -11,7 +11,7 @@
 
 `7nm`、`5nm`、`3nm` 这类节点名不是某个单一物理尺寸。它们代表一代工艺平台，包括器件结构、标准单元库、金属栈、SRAM bitcell、设计规则、mask、PDK、IP 和良率成熟度。
 
-公开数据可以作为量级锚点。TSMC 对 N3E 的公开描述给出相对 N5 约 20% speed improvement、超过 30% power saving、约 1.6x logic density 的量级。早期 N5 相对 N7 的公开沟通也常以约 15% speed、约 30% power、约 1.8x logic density 作为量级参考。这里的重点不是记数字，而是理解这些收益针对的是特定条件和特定结构，不会自动等比例作用到整颗 SoC。
+公开 PPA 比较必须给出节点版本、基线、库类型、测量结构，以及等功耗下性能或等性能下功耗等条件。缺少可核验条件时，不应把单项百分比直接用于整颗 SoC，更不能同时叠乘密度、频率和功耗的最佳收益。应按目标设计的逻辑、SRAM、接口和工作点分别估算。
 
 ## PPA 不同部分缩放不同
 
@@ -54,6 +54,6 @@
 
 ## 架构师启示
 
-如果我在 archax 中比较 N5 与 N3 方案，不能把所有资源统一乘一个 scaling factor。应至少拆分 logic、SRAM、NoC wire、PHY/I/O、analog 和 package interface。RAM wiki 的 [SRAM scaling](../../RAM/wiki/02-sram-foundations/sram-process-scaling-challenge.md) 尤其需要单独处理，因为片上 SRAM 往往是 AI 芯片面积和 Vmin 的关键约束。
+如果我在 archax 中比较 N5 与 N3 方案，不能把所有资源统一乘一个 scaling factor。应至少拆分 logic、SRAM、NoC wire、PHY/I/O、analog 和 package interface。RAM wiki 的 [SRAM scaling](../../../RAM/wiki/02-sram-foundations/sram-process-scaling-challenge.md) 尤其需要单独处理，因为片上 SRAM 往往是 AI 芯片面积和 Vmin 的关键约束。
 
 一个具体决策例子：若模型显示性能受片外带宽限制，从 N5 换到 N3 可能提高 compute density，但也可能让 memory wall 更严重。此时更合理的方案可能是保持 compute die 节点不变，改 HBM 数量、封装路线或数据流，而不是盲目追求更小节点。

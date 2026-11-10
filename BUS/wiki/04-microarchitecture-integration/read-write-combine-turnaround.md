@@ -6,7 +6,7 @@
 
 ## 这页在回答什么问题
 
-想象一个**单车道双向隧道**——每次只能走一个方向的车。如果来一辆切换一次方向，大部分时间都浪费在"掉头"上。所以隧道管理员会积攒一批同方向的车一起放行，再换方向放另一批。这就是 read/write combine 和 bus turnaround 的本质。
+想象一个**单车道双向隧道**——每次只能走一个方向的车。如果来一辆切换一次方向，大部分时间都浪费在"掉头"上。所以隧道管理员会积攒一批同方向的车一起放行，再换方向放另一批。这是 read/write batching 和 bus turnaround 的基本动机。batching 只改变服务次序；真正的 write combining 将相邻写合并为更少操作，还必须满足地址、字节掩码和顺序语义，两者不能混用。
 
 读写混合负载下，系统可能出现一种看似矛盾的现象：总体 DDR 带宽不低（隧道一天通过的车总量不少），但某些 AXI read latency 突然变长（你的车等了好久才轮到你这个方向放行），write response 集中返回（一批写操作被积攒后集中处理），DMA completion 被拖后。
 
@@ -26,7 +26,7 @@ read/write combine 的设计动机是减少方向切换和命令碎片。DDR/PHY
 
 ## Turnaround 为什么贵
 
-Turnaround 就像隧道的**换向操作**——不是简单地"换个信号灯"，而是要等最后一辆出方向的车彻底通过（pipeline 清空），确认对面安全（PHY 方向切换、DRAM timing），调整照明和通风方向（data bus tri-state/drive），以及重新校准入口设备（write leveling/read capture）。每次换向都要花好几个时钟周期，这就是为什么 controller 宁可攒一批再切换。
+Turnaround 就像隧道的**换向操作**——不是简单地"换个信号灯"，而是要等最后一辆出方向的车彻底通过（pipeline 清空），确认对面安全（PHY 方向切换、DRAM timing），切换数据总线驱动方向并满足 DRAM 与 PHY 的时序间隔。具体读到写、写到读间隔依器件和控制器配置，例如写到读受 `tWTR` 等约束；不能把固定周期数当成所有平台的参数。write leveling 和 read capture 训练/校准是独立过程，并非每次读写换向都重做。controller 常积攒同方向请求以减少换向。
 
 | 切换 | 典型代价 | AXI 可见影响 |
 | --- | --- | --- |
@@ -75,7 +75,7 @@ DMA completion/writeback 常是小写流量，但它可能排在大数据写之�
 | completion 与 data write 共用 AXI ID/port | completion 被 data burst 排队 | writeback 是否有独立 port 或 QoS |
 | controller 处于 read batch | completion write 等待 write service | write queue 何时被 drain |
 | write buffer 满 | completion 无法进入或延后 response | buffer threshold、backpressure |
-| interrupt 早于 completion 可见 | CPU ISR 读到旧状态 | completion visible 先于 interrupt |
+| 通知早于设备规定的完成观察点，或 CPU 未同步 | CPU ISR 读到旧状态 | 设备保证写与通知顺序；非一致映射由 CPU 按 DMA API 同步后读取 |
 
 这就是“数据已经搬完但软件还没看到完成”的常见来源。completion 的数据量小，不代表它的 latency 小；它要经过同一套 write queue、scheduler、B response 和 cache/coherence 可见性规则。
 

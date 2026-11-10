@@ -10,7 +10,7 @@
 - [Memory Wall 与 Von Neumann Bottleneck](./01-overview/problem-statement.md)
 - [CIM/PIM/NMC 的严格区分](./01-overview/cim-pim-nmc-taxonomy.md)
 - [两条正交主线：Memory Technology × Compute Paradigm](./01-overview/two-axes-memory-and-paradigm.md)
-- [为什么 CIM 在 1990s 失败、在 2010s 重生](./01-overview/why-cim-now-and-why-not-before.md)
+- [早期 PIM 原型未规模采用与 AI 时代的新机会](./01-overview/why-cim-now-and-why-not-before.md)
 - [CIM 整体分类体系](./01-overview/taxonomy.md)
 - [学习路径与章节依赖关系](./01-overview/learning-roadmap.md)
 
@@ -92,7 +92,7 @@
   - [Mythic：Flash-Based Analog CIM 的代表与教训](./08-industry-and-products/company-cards/cim-companies-mythic.md)
   - [Samsung HBM-PIM：属于 PIM 不是 CIM](./08-industry-and-products/company-cards/pim-companies-samsung-hbm-pim.md)
   - [SK hynix AiM/AiMX：属于 PIM 不是 CIM](./08-industry-and-products/company-cards/pim-companies-sk-hynix-aim.md)
-  - [UPMEM：属于 NMC 的对照案例](./08-industry-and-products/company-cards/nmc-companies-upmem.md)
+  - [UPMEM：同 die 可编程 PIM 对照案例](./08-industry-and-products/company-cards/nmc-companies-upmem.md)
 
 ## 09 Research Frontier — 研究前沿
 
