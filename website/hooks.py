@@ -2,13 +2,18 @@
 
 from html import escape, unescape
 from hashlib import sha256
-import json
 from pathlib import Path, PurePosixPath
 import posixpath
 import re
+import sys
 from urllib.parse import quote, unquote, urljoin, urlsplit
 
 from mkdocs.utils import get_relative_url
+
+_WEBSITE = str(Path(__file__).resolve().parent)
+if _WEBSITE not in sys.path:
+    sys.path.insert(0, _WEBSITE)
+from sources import load_series, series_landing  # noqa: E402
 
 
 TOPICS = (
@@ -25,18 +30,18 @@ TOPICS = (
 
 
 def read_series(root, registry=None):
-    """Read a list of local pages or independently hosted HTTPS series."""
-    registry = registry or Path(__file__).parent / "series.json"
-    entries = json.loads(registry.read_text(encoding="utf-8"))["series"]
-    if not isinstance(entries, list) or not entries:
-        raise ValueError("website/series.json must contain at least one series")
+    """Read the registry staged together with the site's source documents."""
+    registry = registry or root.parent / "series.json"
+    entries = load_series(registry)
     result = []
     for item in entries:
-        name = item.get("title", "").strip()
-        description = item.get("description", "").strip()
+        name = item["title"].strip()
+        description = item["description"].strip()
+        source = item.get("source")
         page, url = item.get("page"), item.get("url")
-        if not name or not description or bool(page) == bool(url):
-            raise ValueError("Each series needs a title, description, and exactly one page or url")
+        if source:
+            landing = series_landing(root / "external" / source["slug"])
+            page = landing.relative_to(root).as_posix()
         if page:
             path = PurePosixPath(page)
             if path.is_absolute() or ".." in path.parts or path.suffix.lower() != ".md" or not (root / page).is_file():
@@ -49,7 +54,7 @@ def read_series(root, registry=None):
             if parsed.scheme != "https" or not parsed.netloc:
                 raise ValueError(f"Series URL must be an absolute HTTPS URL: {url}")
             href = target = url
-        result.append({"title": name, "description": description, "href": href, "target": target})
+        result.append({"title": name, "description": description, "href": href, "target": target, "source": source})
     return result
 
 
@@ -76,9 +81,9 @@ def title(path):
     return match.group(1).strip() if match else path.stem.replace("-", " ")
 
 
-def reading_items(directory):
+def reading_items(directory, index_name="README.md"):
     """Read labels and targets from an index's numbered sibling reading list."""
-    index = directory / "README.md"
+    index = directory / index_name
     if not index.is_file():
         return []
     items = []
@@ -113,14 +118,14 @@ def reading_items(directory):
         if target.scheme or target.netloc or not target.path:
             continue
         path = (directory / unquote(target.path)).resolve()
-        if path.parent == directory.resolve() and path.is_file() and path.suffix.lower() == ".md" and path.name not in {"README.md", "SUMMARY.md"} and all(name != path.name for name, _ in items):
+        if path.parent == directory.resolve() and path.is_file() and path.suffix.lower() == ".md" and path.name not in {index_name, "README.md", "SUMMARY.md"} and all(name != path.name for name, _ in items):
             items.append((path.name, unescape(item.group(1)).strip()))
     return items
 
 
-def reading_order(directory):
+def reading_order(directory, index_name="README.md"):
     """Use an index's explicit numbered reading list for sibling articles."""
-    return [name for name, _ in reading_items(directory)]
+    return [name for name, _ in reading_items(directory, index_name)]
 
 
 def ram_sidebar_labels(root):
@@ -140,23 +145,26 @@ def ram_sidebar_labels(root):
     return labels
 
 
-def make_tree(directory, root):
+def make_tree(directory, root, index_names=("README.md",)):
     items = []
-    index = directory / "README.md"
-    if index.is_file():
+    indexes = [directory / name for name in index_names if (directory / name).is_file()]
+    if len(indexes) > 1:
+        raise ValueError(f"Directory has more than one index page: {directory}")
+    index = indexes[0] if indexes else None
+    if index:
         items.append(index.relative_to(root).as_posix())
     summary = directory / "SUMMARY.md"
     if summary.is_file():
         items.append({"知识地图": summary.relative_to(root).as_posix()})
-    priority = {name: number for number, name in enumerate(reading_order(directory))}
+    priority = {name: number for number, name in enumerate(reading_order(directory, index.name if index else "README.md"))}
     for path in sorted(directory.iterdir(), key=lambda p: (priority.get(p.name, len(priority)), p.name.lower())):
         if path.is_dir():
             if not any(path.rglob("*.md")):
                 continue
-            section_index = path / "README.md"
-            label = title(section_index) if section_index.exists() else path.name
-            items.append({label: make_tree(path, root)})
-        elif path.is_file() and path.suffix.lower() == ".md" and path.name not in {"README.md", "SUMMARY.md"}:
+            section_index = next((path / name for name in index_names if (path / name).is_file()), None)
+            label = title(section_index) if section_index else path.name
+            items.append({label: make_tree(path, root, index_names)})
+        elif path.is_file() and path.suffix.lower() == ".md" and path.name not in {*index_names, "SUMMARY.md"}:
             items.append(path.relative_to(root).as_posix())
     return items
 
@@ -226,7 +234,7 @@ def has_breadcrumbs(page):
 
 def on_config(config, **kwargs):
     root = Path(config.docs_dir)
-    read_series(root)
+    series = read_series(root)
     config.extra["ram_sidebar_labels"] = ram_sidebar_labels(root)
     # These files use stable paths. A content-derived query prevents browsers
     # from combining freshly deployed HTML with a cached older CSS/JS file.
@@ -258,6 +266,10 @@ def on_config(config, **kwargs):
             ]},
         ]},
     ]
+    for entry in series:
+        if entry["source"]:
+            directory = root / "external" / entry["source"]["slug"]
+            config.nav.append({entry["title"]: make_tree(directory, root, ("README.md", "index.md"))})
     return config
 
 

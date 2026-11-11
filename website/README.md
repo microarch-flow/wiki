@@ -10,21 +10,49 @@ RAM 专题的文章目录使用各章编号阅读列表中的链接文字作为�
 
 侧边导航由 `website/assets/javascripts/navigation.js` 补充交互：当前章节首页的标题可以展开或收起其目录，其他标题仍跳转到对应页面；长标题在可悬停设备上显示省略号并提供完整标题提示。触屏设备保留换行，以便查看完整名称。
 
-## 增加技术系列
+## 增加来自其他仓库的技术系列
 
-在 `website/series.json` 的 `series` 数组中添加一个对象。首页和“系列”目录的卡片都由此文件生成，顶部“系列”导航直达该目录。名称和简介可以随时修改。现有系列使用 `page` 指向本网站中的 Markdown 页面；独立仓库发布后，可以使用 `url` 指向其 HTTPS 地址，例如：
+网站使用 `website/series.json` 配置系列。当前只有本仓库的“芯片微架构笔记”，没有配置其他仓库。接入新系列时，在 `series` 数组中添加一个对象，例如：
 
 ```json
 {
-  "title": "新系列名称",
+  "title": "示例系列",
   "description": "这个系列的一句简介。",
-  "url": "https://example.com/series/"
+  "source": {
+    "slug": "example-series",
+    "repository": "example-owner/example-repository",
+    "ref": "main",
+    "directory": "docs/blog"
+  }
 }
 ```
 
-示例只是格式，不会自动创建或发布新网站。每个对象必须填写 `title`、`description`，以及 `page` 或 `url` 中的一个；`page` 指向已放入构建目录的 Markdown 页面。新增独立仓库时，需要先构建并发布该仓库的网站，再在这里填写它的公开地址。本网站的搜索索引只覆盖本仓库构建的页面，不会自动搜索其他网站。
+这是配置格式示例，不代表已接入该仓库。`repository` 使用 GitHub 的 `owner/repository` 格式。`ref` 可以是分支、标签或完整提交 SHA；使用分支时，每次构建读取该分支当前版本，构建日志会记录实际取得的提交。`directory` 是相对于仓库根目录的目录。`slug` 是系列的稳定标识，只能使用小写英文字母、数字和连字符，不能与其他系列重复。系列标题不能重复，也不能使用现有导航名称“首页”“系列”或“微架构”。
 
-目前聚合首页仍由本仓库发布在 `/wiki/` 路径下；独立系列可以继续使用各自的地址。若将来需要独立的总入口或跨仓库统一搜索，需要另行设计。站点的暂定名称在 `mkdocs.yml` 的 `site_name` 中修改；首页会自动使用该名称。
+构建时，`website/prepare.py` 获取指定版本，只将所选目录复制到临时构建目录。网站在首页和系列目录生成入口，并把文章加入统一导航、面包屑和搜索索引。其他仓库不需要单独发布 GitHub Pages。文章位于 `external/<slug>/` 下；**修改 slug 会改变该系列的 URL**。现有 Wiki 文章的路径不变。
+
+选定的目录必须有且只有一个 `README.md` 或 `index.md` 作为系列首页。文章使用小写 `.md` 扩展名。子目录可以按同一方式设置首页；章节首页的编号阅读列表可决定同目录文章的导航顺序。请把文章引用的图片和其他文件放在选定目录内，并检查指向目录外文件的链接。构建不会自动改写跨仓库或目录外链接。构建时会拒绝符号链接，不会复制 `.git` 元数据；如果源文件与 Markdown 生成的页面占用同一输出路径，也会报错。
+
+**公开范围以整个所选目录为准**：其中的文章和资源都可能发布。接入前应先确认目录内容适合公开；不要把密钥或不应公开的资料放入该目录。来源不可访问、目录缺失或首页不符合要求时，构建会失败，不会静默省略该系列。
+
+默认构建从 GitHub 通过 HTTPS 获取公开仓库。本地预览也可以使用已检出的目录，避免联网：
+
+```text
+本地来源目录/
+├── example-series/          # 上述 slug 对应的仓库检出目录
+└── another-series/          # 如果配置了第二个来源
+```
+
+```sh
+python website/prepare.py --source-root /path/to/本地来源目录
+mkdocs serve
+```
+
+使用 `--source-root` 时，每个外部系列都必须有对应的本地检出目录；构建使用目录中的实际文件，包括未提交的修改，不校验其是否与 `ref` 一致。正常发布流程则按 `ref` 从 GitHub 获取版本。私有仓库需要另外配置有读取权限的检出步骤和凭据，再让构建使用这些本地检出目录；当前 workflow 没有自动配置私有仓库凭据。
+
+每个系列对象必须有 `title`、`description`，以及 `source`、`page`、`url` 中恰好一个。`page` 指向已放入构建目录的本地 Markdown 页面；`url` 指向独立网站的 HTTPS 地址。独立网站仍可添加入口，但其文章不会自动进入本网站的搜索索引。
+
+总入口继续使用当前 `/wiki/` 路径。站点名称在 `mkdocs.yml` 的 `site_name` 中修改；首页会自动使用该名称。
 
 ## 本地预览
 
@@ -38,7 +66,7 @@ python website/prepare.py
 mkdocs serve
 ```
 
-根据命令输出打开本地地址。编辑原始 wiki、`website/home.md`、`website/series.md`、`website/microarchitecture.md`、`website/series.json`、`website/visuals.md` 或网站资源后，重新执行 `python website/prepare.py`，再启动或刷新预览。`.site-build/` 是可重新生成的构建目录，不要直接在其中维护正文。
+根据命令输出打开本地地址。编辑原始 wiki、其他来源目录、`website/home.md`、`website/series.md`、`website/microarchitecture.md`、`website/series.json`、`website/visuals.md` 或网站资源后，重新执行 `python website/prepare.py`，再启动或刷新预览。使用本地来源时，重新执行的命令也要带上 `--source-root`。`.site-build/` 是可重新生成的构建目录，不要直接在其中维护正文。
 
 要只生成静态文件：
 
@@ -56,6 +84,8 @@ mkdocs build
 ## 发布到 GitHub Pages
 
 仓库管理员在 GitHub 仓库的 **Settings → Pages → Build and deployment → Source** 中选择 **GitHub Actions**。将网站配置和内容提交并推送到 `main` 后，`.github/workflows/pages.yml` 会构建并部署；也可以在 Actions 页面手动运行该 workflow。检查运行结果，以 GitHub 显示的部署地址为准。
+
+其他仓库更新不会自动触发本仓库的 `push` workflow。网站 workflow 已支持 `repository_dispatch` 的 `content-updated` 事件；接入具体仓库时，可以为该仓库另行配置发送事件的 workflow 和仅限目标仓库的凭据，也可以继续手动构建。发送事件需要目标仓库的相应权限；详见 [GitHub 的事件说明](https://docs.github.com/en/actions/reference/workflows-and-actions/events-that-trigger-workflows#repository_dispatch)和 [API 权限说明](https://docs.github.com/en/rest/repos/repos#create-a-repository-dispatch-event)。若 `ref` 固定为提交 SHA，重新构建仍使用该 SHA；需要修改配置才能发布新版本。
 
 当前配置的预期地址是 `https://microarch-flow.github.io/wiki/`。若更换仓库或使用自定义域名，应调整 `mkdocs.yml` 中的 `site_url` 和 `repo_url`，并按 GitHub 的方式配置发布与域名。GitHub Pages 网站可能公开可访问，发布前请确认内容适合公开。
 
