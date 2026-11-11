@@ -1,7 +1,6 @@
 ---
 title: 芯片微架构笔记
 hide:
-  - navigation
   - toc
 ---
 

@@ -1,7 +1,6 @@
 ---
 title: 精选文章
 hide:
-  - navigation
   - toc
 ---
 
