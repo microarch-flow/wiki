@@ -8,6 +8,7 @@ hide:
 <div class="article-page">
   <header class="visual-intro"><p class="eyebrow dark"><span></span> SELECTED ARTICLES</p><h1>精选文章</h1><p>从电路、数据通路到系统互连，挑选一个问题开始阅读。每篇文章都可以继续深入相关专题。</p></header>
   <div class="article-grid">
+    <a class="article-card" href="../RAM/wiki/01-overview/"><span>RAM / OVERVIEW</span><h2>RAM 存储系统概览：数据如何从存储走到计算</h2><p>区分存储单元、系统角色和访问路径。</p><b>阅读文章 · 含互动图解 ↗</b></a>
     <a class="article-card" href="../electrical-timing-foundations/"><span>FOUNDATIONS / 电路与时序</span><h2>从电路到时序：为什么硬件操作需要时间？</h2><p>从充放电、采样边沿和建立时间，走向离散事件模型。</p><b>阅读文章 ↗</b></a>
     <a class="article-card" href="../RAM/wiki/02-sram-foundations/6t-cell-bistable-storage/"><span>RAM / SRAM</span><h2>6T SRAM cell：它如何保存、读取和写入 1 bit</h2><p>理解交叉耦合反相器、位线访问和读写边界。</p><b>阅读文章 · 含互动图解 ↗</b></a>
     <a class="article-card" href="../RAM/wiki/05-dram-protocol-families/commands-act-rd-wr-pre/"><span>RAM / DRAM</span><h2>ACT、RD、WR、PRE：DRAM 命令</h2><p>从开行到读写和预充，理解命令的职责与时序约束。</p><b>阅读文章 · 含互动图解 ↗</b></a>

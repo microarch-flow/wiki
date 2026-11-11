@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 600" role="img" aria-labelledby="title desc">
+  <title id="title">两种存储访问路径示例</title>
+  <desc id="desc">上方示意处理器读请求在 cache 未命中后经过内存控制器访问 DRAM，再返回数据。下方示意 DMA 从 DRAM 搬运数据，经内存控制器到 scratchpad，再由计算单元使用。两条路径均为简化示例。</desc>
+  <defs><marker id="arrow" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto"><path d="M0 0L8 4L0 8Z" fill="#6f9b83"/></marker></defs>
+  <rect width="1000" height="600" rx="22" fill="#f2f7ef"/>
+  <text x="48" y="56" fill="#789582" font-family="sans-serif" font-size="16" font-weight="700" letter-spacing="2">MEMORY SYSTEM / EXAMPLES</text>
+  <text x="48" y="95" fill="#254c3c" font-family="sans-serif" font-size="22" font-weight="700">01　处理器读：cache 未命中</text>
+  <g fill="none" stroke="#6f9b83" stroke-width="4" marker-end="url(#arrow)"><path d="M250 155H286"/><path d="M480 155H516"/><path d="M710 155H746"/><path d="M286 194H250"/><path d="M516 194H480"/><path d="M746 194H710"/></g>
+  <g font-family="sans-serif" text-anchor="middle">
+    <rect x="50" y="120" width="200" height="108" rx="12" fill="#d9efa8"/><text x="150" y="163" fill="#254c3c" font-size="21" font-weight="700">处理器</text><text x="150" y="191" fill="#5d7c69" font-size="16">发出读请求</text>
+    <rect x="286" y="120" width="194" height="108" rx="12" fill="#fff" stroke="#cbdccc" stroke-width="2"/><text x="383" y="163" fill="#254c3c" font-size="21" font-weight="700">Cache</text><text x="383" y="191" fill="#5d7c69" font-size="16">查找并回填</text>
+    <rect x="516" y="120" width="194" height="108" rx="12" fill="#fff" stroke="#cbdccc" stroke-width="2"/><text x="613" y="163" fill="#254c3c" font-size="21" font-weight="700">内存控制器</text><text x="613" y="191" fill="#5d7c69" font-size="16">排队与调度</text>
+    <rect x="746" y="120" width="204" height="108" rx="12" fill="#d0e4d4"/><text x="848" y="163" fill="#254c3c" font-size="21" font-weight="700">DRAM</text><text x="848" y="191" fill="#5d7c69" font-size="16">服务读取</text>
+  </g>
+  <text x="500" y="264" text-anchor="middle" fill="#6a8b75" font-family="sans-serif" font-size="15">请求向右，数据向左返回（示意）</text>
+  <path d="M48 307H952" stroke="#d7e5d5" stroke-width="2"/>
+  <text x="48" y="350" fill="#254c3c" font-family="sans-serif" font-size="22" font-weight="700">02　加速器搬运：显式填充 scratchpad</text>
+  <g fill="none" stroke="#6f9b83" stroke-width="4" marker-end="url(#arrow)"><path d="M210 429H234"/><path d="M386 429H410"/><path d="M562 429H586"/><path d="M738 429H762"/></g>
+  <g font-family="sans-serif" text-anchor="middle">
+    <rect x="50" y="381" width="160" height="98" rx="12" fill="#d0e4d4"/><text x="130" y="424" fill="#254c3c" font-size="20" font-weight="700">DRAM</text><text x="130" y="449" fill="#5d7c69" font-size="15">源数据</text>
+    <rect x="234" y="381" width="152" height="98" rx="12" fill="#fff" stroke="#cbdccc" stroke-width="2"/><text x="310" y="422" fill="#254c3c" font-size="19" font-weight="700">控制器</text><text x="310" y="449" fill="#5d7c69" font-size="15">服务读取</text>
+    <rect x="410" y="381" width="152" height="98" rx="12" fill="#fff" stroke="#cbdccc" stroke-width="2"/><text x="486" y="422" fill="#254c3c" font-size="19" font-weight="700">DMA</text><text x="486" y="449" fill="#5d7c69" font-size="15">发起与搬运</text>
+    <rect x="586" y="381" width="152" height="98" rx="12" fill="#fff" stroke="#cbdccc" stroke-width="2"/><text x="662" y="422" fill="#254c3c" font-size="18" font-weight="700">Scratchpad</text><text x="662" y="449" fill="#5d7c69" font-size="15">片上数据</text>
+    <rect x="762" y="381" width="188" height="98" rx="12" fill="#d9efa8"/><text x="856" y="422" fill="#254c3c" font-size="19" font-weight="700">计算单元</text><text x="856" y="449" fill="#5d7c69" font-size="15">读取并使用</text>
+  </g>
+  <text x="48" y="542" fill="#708c78" font-family="sans-serif" font-size="17">只表示示例中的主要路径；地址翻译、互连、同步和其他层级未画出。</text>
+  <text x="48" y="570" fill="#708c78" font-family="sans-serif" font-size="17">实际系统的连接和完成条件由具体设计决定。</text>
+</svg>

@@ -190,6 +190,34 @@ body { background: var(--paper); }
 .sram-controls button:disabled { opacity: .42; cursor: not-allowed; }
 .sram-controls button:focus-visible { outline: 3px solid #dc9a6e; outline-offset: 3px; }
 
+/* RAM overview: a deliberately bounded cache-miss example. */
+.md-typeset .ram-overview-demo { margin: 1.7rem 0 2rem; padding: 1.25rem; border: 1px solid #d4e4d3; border-radius: .6rem; background: #f0f6ec; }
+.ram-flow-header { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: .5rem; }
+.ram-flow-header span { color: #789584; font-size: .5rem; font-weight: 800; letter-spacing: .13em; }
+.md-typeset .ram-flow-header h3 { margin: .2rem 0 0; color: #214b3c; font-size: .95rem; }
+.ram-flow-header > b { padding: .22rem .5rem; border: 1px solid #c4d8c5; border-radius: 2rem; color: #61806a; font-size: .52rem; white-space: nowrap; }
+.md-typeset .ram-flow-intro { margin: .55rem 0 1rem; color: #607a69; font-size: .65rem; }
+.ram-flow-track { display: flex; align-items: stretch; gap: .25rem; padding: 1rem .8rem; border: 1px solid #d9e8d8; border-radius: .4rem; background: #f8fbf5; }
+.ram-flow-node { display: flex; flex: 1 1 0; min-width: 0; flex-direction: column; justify-content: center; min-height: 5.5rem; padding: .55rem; border: 1px solid #d5e4d3; border-radius: .3rem; background: #fff; transition: background .25s, border-color .25s, box-shadow .25s; }
+.ram-flow-node small { color: #93a899; font-size: .42rem; font-weight: 800; letter-spacing: .05em; }
+.ram-flow-node strong { margin-top: .4rem; color: #325b47; font-size: .7rem; line-height: 1.4; }
+.ram-flow-node span { margin-top: .18rem; color: #829687; font-size: .52rem; }
+.ram-flow-node.active { border-color: #81a986; background: #e4f2cf; box-shadow: 0 0 0 3px #b6d8a433; animation: ram-flow-focus 1.8s ease-in-out infinite; }
+@keyframes ram-flow-focus { 50% { box-shadow: 0 0 0 5px #b6d8a455; } }
+.ram-flow-connector { align-self: center; color: #80a88a; font-size: .85rem; line-height: 1; }
+.ram-flow-connector::before { content: '→'; }
+.ram-overview-demo[data-direction="return"] .ram-flow-connector::before { content: '←'; }
+.ram-flow-progress { display: flex; flex-wrap: wrap; justify-content: space-between; gap: .4rem; margin-top: 1rem; color: #6e8c78; font-size: .55rem; font-weight: 700; }
+.ram-flow-progress span:first-child { color: #387a59; letter-spacing: .05em; }
+.ram-flow-status { min-height: 3.9rem; margin-top: .5rem; }
+.ram-flow-status strong { color: #234f3b; font-size: .74rem; }
+.md-typeset .ram-flow-status p { margin: .3rem 0 0; color: #61796b; font-size: .63rem; line-height: 1.7; }
+.ram-flow-controls { display: flex; flex-wrap: wrap; gap: .4rem; }
+.ram-flow-controls button { min-height: 2rem; padding: .35rem .7rem; border: 1px solid #b8ceb9; border-radius: .23rem; background: #fbfdf8; color: #32654e; font: inherit; font-size: .59rem; font-weight: 700; cursor: pointer; }
+.ram-flow-controls button.ram-flow-next { border-color: #285e49; background: #285e49; color: white; }
+.ram-flow-controls button:disabled { opacity: .42; cursor: not-allowed; }
+.ram-flow-controls button:focus-visible { outline: 3px solid #dc9a6e; outline-offset: 3px; }
+
 @media (max-width: 760px) {
   .hero { grid-template-columns: 1fr; }
   .hero-copy { padding: 2rem 1.5rem .8rem; }
@@ -235,6 +263,12 @@ body { background: var(--paper); }
   .sram-mobile-coupling { color: #80a28b; font-size: .8rem; }
   .sram-demo[data-phase="read"] .sram-mobile-switch.n4, .sram-demo[data-phase="write"] .sram-mobile-switch.n3 { border-color: #d78861; box-shadow: 0 0 0 2px #d7886133; }
   .sram-mobile-feedback { display: flex; flex-direction: column; gap: .2rem; align-items: center; color: #688576; font-size: .48rem; }
+  .md-typeset .ram-overview-demo { margin-left: -.3rem; margin-right: -.3rem; padding: .8rem; }
+  .ram-flow-track { flex-direction: column; align-items: stretch; gap: .2rem; padding: .7rem; }
+  .ram-flow-node { min-height: 3.1rem; padding: .5rem .7rem; }
+  .ram-flow-node strong { margin-top: .12rem; }
+  .ram-flow-node span { margin-top: 0; }
+  .ram-flow-connector { transform: rotate(90deg); }
 }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { scroll-behavior: auto !important; transition-duration: .01ms !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; }

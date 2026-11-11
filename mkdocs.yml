@@ -47,5 +47,6 @@ extra_css:
 extra_javascript:
   - assets/javascripts/visuals.js
   - assets/javascripts/sram.js
+  - assets/javascripts/ram-overview.js
 extra:
   generator: false

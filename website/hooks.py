@@ -60,6 +60,10 @@ def on_config(config, **kwargs):
 
 def on_page_markdown(markdown, page, **kwargs):
     """Add website interactions while keeping Markdown usable on GitHub."""
+    if page.file.src_uri == "RAM/wiki/01-overview/README.md":
+        template = (Path(__file__).parent / "partials" / "ram-overview-demo.html").read_text(encoding="utf-8")
+        markdown = markdown.replace("<!-- ram-overview-demo -->", template)
+
     if page.file.src_uri == "RAM/wiki/02-sram-foundations/6t-cell-bistable-storage.md":
         template = (Path(__file__).parent / "partials" / "sram-demo.html").read_text(encoding="utf-8")
         for mode, number, heading, intro, label in (
