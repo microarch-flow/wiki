@@ -13,7 +13,6 @@ hide:
       <p class="hero-description">从电路与时序出发，理解数据如何存储、计算和移动，再把这些机制转化为可解释的模型。</p>
       <div class="hero-actions">
         <a class="hero-button primary" href="../articles/">阅读精选文章 <span aria-hidden="true">↗</span></a>
-        <a class="hero-button secondary" href="../visuals/">探索互动图解 <span aria-hidden="true">→</span></a>
       </div>
       <div class="hero-footnote"><span>01 / 03</span> 电路 <i></i> 架构 <i></i> 建模</div>
     </div>
@@ -46,13 +45,8 @@ hide:
     </div>
   </section>
 
-  <section class="feature-section">
-    <div class="feature-copy"><span class="section-number">LEARN BY SEEING / 03</span><h2>让过程<br>动起来。</h2><p>一步一步观察 DRAM 命令顺序，或查看一个简化的双缓冲时间线。每个图解都标出假设和适用边界。</p><a href="../visuals/">打开互动图解 <span aria-hidden="true">↗</span></a></div>
-    <div class="feature-graphic" aria-hidden="true"><div class="feature-line"><span>ACT</span><b></b><span>RD</span><b></b><span>PRE</span></div><div class="feature-bars"><i></i><i></i><i></i><i></i><i></i></div><small>COMMAND SEQUENCE / SCHEMATIC</small></div>
-  </section>
-
   <section class="reading-section">
-    <div class="section-heading"><div><span class="section-number">A GOOD PLACE TO START / 04</span><h2>推荐阅读</h2></div><p>选一条路径，<br>沿着问题继续深入。<br><a href="../articles/">查看全部精选文章 ↗</a></p></div>
+    <div class="section-heading"><div><span class="section-number">A GOOD PLACE TO START / 03</span><h2>推荐阅读</h2></div><p>选一条路径，<br>沿着问题继续深入。<br><a href="../articles/">查看全部精选文章 ↗</a></p></div>
     <div class="reading-grid">
       <a class="reading-card reading-image" href="../RAM/wiki/02-sram-foundations/6t-cell-bistable-storage/"><div class="reading-card-image"><img src="../RAM/wiki/img/6t-sram-cell.svg" alt="6T SRAM cell 晶体管连接图"></div><div><span>RAM · 基础</span><h3>6T SRAM cell：它如何保存、读取和写入 1 bit</h3><p>从存储单元理解保持、读和写。</p></div><b>↗</b></a>
       <a class="reading-card" href="../NOC/wiki/02-router-microarchitecture/credit-based-flow-control/"><div><span>NOC · 流控</span><h3>Credit 如何约束发送？</h3><p>从下游 buffer 空位理解局部流控。</p></div><b>↗</b></a>

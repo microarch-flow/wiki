@@ -86,7 +86,6 @@ body { background: var(--paper); }
 .md-typeset .hero-button:hover { transform: translateY(-2px); }
 .md-typeset .hero-button.primary { background: #173d35; border-color: #173d35; color: #fff; }
 .md-typeset .hero-button.primary:hover { background: #29634f; }
-.md-typeset .hero-button.secondary { color: #284e41; }
 .hero-footnote { display: flex; align-items: center; flex-wrap: wrap; gap: .55rem; margin-top: 3rem; color: #71897b; font-size: .55rem; font-weight: 600; letter-spacing: .07em; }
 .hero-footnote span { color: #3c6c5a; }
 .hero-footnote i { width: .18rem; height: .18rem; background: #9fb7a8; border-radius: 50%; }
@@ -96,7 +95,7 @@ body { background: var(--paper); }
 .hero-art-caption span { color: #39715d; font-weight: 800; }
 
 .intro-band { display: grid; grid-template-columns: .8fr 1.2fr; gap: 2rem; align-items: start; padding: 3.4rem 0; border-bottom: 1px solid var(--line); }
-.md-typeset .intro-band h2, .md-typeset .section-heading h2, .md-typeset .feature-copy h2 { margin: .65rem 0 0; font-size: 1.42rem; line-height: 1.35; }
+.md-typeset .intro-band h2, .md-typeset .section-heading h2 { margin: .65rem 0 0; font-size: 1.42rem; line-height: 1.35; }
 .md-typeset .intro-band p { max-width: 34rem; margin: 0; color: #657b6e; font-size: .74rem; }
 .explore-section, .reading-section { padding: 3.5rem 0; }
 .section-heading { display: flex; align-items: end; justify-content: space-between; gap: 1rem; margin-bottom: 1.45rem; }
@@ -110,22 +109,6 @@ body { background: var(--paper); }
 .topic-card h3 small { display: block; margin-top: .1rem; color: #567967; font-size: .61rem; font-weight: 600; }
 .md-typeset .topic-card p { margin: 0 0 .7rem; color: #718579; font-size: .62rem; line-height: 1.6; }
 .card-link { margin-top: auto; color: #3b7c60; font-size: .56rem; font-weight: 700; }
-.feature-section { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; padding: 2.4rem; background: #173d35; border-radius: .6rem; color: #eaf3e9; overflow: hidden; }
-.feature-copy .section-number { color: #9ab9a1; }
-.md-typeset .feature-copy h2 { color: #e8f4df; font-size: 1.7rem; }
-.md-typeset .feature-copy p { max-width: 20rem; margin: .85rem 0; color: #a9c6b4; font-size: .67rem; }
-.md-typeset .feature-copy a { display: inline-block; margin-top: .5rem; color: #d6efa1; font-size: .67rem; font-weight: 700; }
-.feature-graphic { align-self: center; padding: 1.4rem; border: 1px solid #80a99255; border-radius: .5rem; background: #214d41; }
-.feature-line { display: flex; align-items: center; gap: .5rem; color: #d9edcc; font-size: .58rem; font-weight: 800; letter-spacing: .1em; }
-.feature-line span { padding: .4rem .55rem; border: 1px solid #80a99288; border-radius: .2rem; }
-.feature-line b { flex: 1; height: 1px; background: #91bda3; }
-.feature-bars { display: flex; align-items: end; gap: .35rem; height: 4rem; margin-top: 1rem; }
-.feature-bars i { flex: 1; height: 45%; background: #84b59c; border-radius: .12rem; opacity: .65; }
-.feature-bars i:nth-child(2) { height: 75%; background: #c5e496; }
-.feature-bars i:nth-child(3) { height: 100%; }
-.feature-bars i:nth-child(4) { height: 62%; background: #e0aa7f; }
-.feature-bars i:nth-child(5) { height: 34%; }
-.feature-graphic small { display: block; margin-top: .8rem; color: #9dc0aa; font-size: .48rem; letter-spacing: .12em; }
 .reading-grid { display: grid; grid-template-columns: 1.35fr 1fr 1fr; gap: .6rem; }
 .md-typeset .reading-card { position: relative; display: flex; flex-direction: column; justify-content: end; min-height: 10rem; padding: 1.1rem; background: #e8eee4; border-radius: .35rem; text-decoration: none; }
 .reading-card span { color: #6b8a76; font-size: .55rem; font-weight: 700; }
@@ -283,7 +266,6 @@ body { background: var(--paper); }
   .hero-art { padding: .5rem 1.2rem 1.2rem; }
   .intro-band { grid-template-columns: 1fr; gap: .8rem; padding: 2.5rem 0; }
   .topic-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  .feature-section { grid-template-columns: 1fr; padding: 1.5rem; }
   .reading-grid { grid-template-columns: 1fr; }
   .md-typeset .reading-card { min-height: 7rem; }
   .sram-canvas svg { min-width: 560px; }
