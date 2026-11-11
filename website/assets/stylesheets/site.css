@@ -24,6 +24,18 @@ body { background: var(--paper); }
 .md-typeset code, .md-typeset pre > code { border-radius: .3rem; }
 .md-footer { background: #163a32; }
 
+/* Keep the current article distinct from its ancestor sections. */
+.md-sidebar--primary a.md-nav__link--active,
+.md-sidebar--primary label.md-nav__link--active[for="__toc"] { padding: .25rem .4rem; border-left: .16rem solid #3b805c; border-radius: .2rem; background: #deeddc; color: #164b35; font-weight: 700; }
+.md-sidebar--primary .md-nav__item--active > .md-nav__container > a:not(.md-nav__link--active) { color: #397257; font-weight: 600; }
+.md-typeset .site-breadcrumbs { margin: 0 0 1.15rem; color: #607b6a; font-size: .64rem; line-height: 1.6; }
+.md-typeset .site-breadcrumbs ol { display: flex; flex-wrap: wrap; align-items: baseline; gap: .15rem 0; margin: 0; padding: 0; list-style: none; }
+.md-typeset .site-breadcrumbs li { display: flex; min-width: 0; align-items: baseline; margin: 0; overflow-wrap: anywhere; }
+.md-typeset .site-breadcrumbs li + li::before { content: "/"; margin: 0 .48rem; color: #99ad9c; }
+.md-typeset .site-breadcrumbs a { color: #39765a; text-decoration: none; }
+.md-typeset .site-breadcrumbs a:hover { text-decoration: underline; }
+.md-typeset .site-breadcrumbs [aria-current="page"] { color: #284e3c; font-weight: 700; }
+
 /* Reading layout for the electrical timing foundations article. */
 .md-typeset .timing-article { max-width: 48rem; margin-bottom: 4rem; }
 .md-typeset .timing-article h1 { margin-bottom: .8em; line-height: 1.35; }

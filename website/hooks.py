@@ -1,11 +1,14 @@
-"""Build a compact navigation from the wiki's real chapter directories."""
+"""Build navigation and breadcrumbs from the wiki's chapter directories."""
 
-from html import escape
+from html import escape, unescape
 from hashlib import sha256
 import json
 from pathlib import Path, PurePosixPath
+import posixpath
 import re
-from urllib.parse import quote, urlsplit
+from urllib.parse import quote, unquote, urlsplit
+
+from mkdocs.utils import get_relative_url
 
 
 TOPICS = (
@@ -88,7 +91,70 @@ def make_tree(directory, root):
             section_index = path / "README.md"
             label = title(section_index) if section_index.exists() else path.name
             items.append({label: make_tree(path, root)})
+        elif path.is_file() and path.suffix.lower() == ".md" and path.name not in {"README.md", "SUMMARY.md"}:
+            items.append(path.relative_to(root).as_posix())
     return items
+
+
+def topic_tree(root, name):
+    """Include the topic's wiki and any published companion documents."""
+    items = make_tree(root / name / "wiki", root)
+    for filename, label in (("self-test-questions.md", "自测问题"), ("README.md", "专题仓库说明")):
+        path = root / name / filename
+        if path.is_file():
+            items.append({label: path.relative_to(root).as_posix()})
+    return items
+
+
+def breadcrumb_ancestors(page):
+    """Find ancestor sections and their landing pages, when available."""
+    ancestors = []
+    parent = page.parent
+    while parent:
+        index = next((item for item in parent.children if item.is_page and item.is_index), None)
+        if parent.title == "微架构":
+            index = next((item for item in parent.children if item.is_page and item.file.src_uri == "microarchitecture.md"), None)
+        if index is None or index.file.src_uri != page.file.src_uri:
+            ancestors.append((parent.title, index))
+        parent = parent.parent
+    return list(reversed(ancestors))
+
+
+def strip_duplicate_parent(markdown, page, root):
+    """Hide an introductory parent link only when breadcrumbs already contain it."""
+    ancestors = {index.file.src_uri for _, index in breadcrumb_ancestors(page) if index is not None}
+    lines = markdown.splitlines(keepends=True)
+    for number, line in enumerate(lines[:8]):
+        match = re.match(r"^\s*上级[：:]\s*\[[^\]]+\]\(([^)]+)\)\s*$", line)
+        if not match:
+            continue
+        target = urlsplit(unescape(match.group(1)))
+        if target.scheme or target.netloc or not target.path:
+            continue
+        path = posixpath.normpath(posixpath.join(str(PurePosixPath(page.file.src_uri).parent), unquote(target.path)))
+        if (root / path).is_dir():
+            path = posixpath.join(path, "README.md")
+        if path in ancestors:
+            del lines[number]
+        break
+    return "".join(lines)
+
+
+def render_breadcrumbs(page, root):
+    """Render links to real ancestor pages and the current article title."""
+    items = [("首页", "/")]
+    items.extend((label, index.url if index is not None else None) for label, index in breadcrumb_ancestors(page))
+    links = [
+        ('<li><a href="{}">{}</a></li>'.format(escape(get_relative_url(url, page.url), quote=True), escape(label))
+         if url is not None else '<li><span>{}</span></li>'.format(escape(label)))
+        for label, url in items
+    ]
+    links.append('<li><span aria-current="page">{}</span></li>'.format(escape(title(root / page.file.src_uri))))
+    return '<nav class="site-breadcrumbs" aria-label="面包屑导航"><ol>{}</ol></nav>'.format("".join(links))
+
+
+def has_breadcrumbs(page):
+    return page.file.src_uri not in {"README.md", "series.md", "microarchitecture.md", "articles.md", "visuals.md"}
 
 
 def on_config(config, **kwargs):
@@ -115,12 +181,12 @@ def on_config(config, **kwargs):
             {"微架构首页": "microarchitecture.md"},
             {"精选文章": "articles.md"},
             {"互动图解": "visuals.md"},
-            {"基础": "electrical-timing-foundations.md"},
-            {"专题": [{label: make_tree(root / name / "wiki", root)} for name, label in TOPICS]},
+            {"基础": ["electrical-timing-foundations.md"]},
+            {"专题": [{label: topic_tree(root, name)} for name, label in TOPICS]},
             {"评审记录": [
                 {"九专题基线问题": "reviews/2026-11-09-topic-review.md"},
-                {"第二轮逐篇评审": "reviews/round-2/README.md"},
-                {"第三轮有限资源盲测": "reviews/round-3/README.md"},
+                {"第二轮逐篇评审": make_tree(root / "reviews" / "round-2", root)},
+                {"第三轮有限资源盲测": make_tree(root / "reviews" / "round-3", root)},
             ]},
         ]},
     ]
@@ -129,6 +195,8 @@ def on_config(config, **kwargs):
 
 def on_page_markdown(markdown, page, **kwargs):
     """Add website interactions while keeping Markdown usable on GitHub."""
+    if has_breadcrumbs(page):
+        markdown = strip_duplicate_parent(markdown, page, Path(kwargs["config"].docs_dir))
     if page.file.src_uri == "README.md":
         config = kwargs["config"]
         markdown = markdown.replace("__SITE_NAME__", escape(config.site_name))
@@ -170,7 +238,15 @@ def on_page_markdown(markdown, page, **kwargs):
 
 
 def on_page_content(html, page, **kwargs):
-    """Scope the foundational article's reading layout to that page."""
+    """Add article breadcrumbs and scope the foundational article layout."""
     if page.file.src_uri == "electrical-timing-foundations.md":
-        return f'<div class="timing-article">\n{html}\n</div>'
+        html = f'<div class="timing-article">\n{html}\n</div>'
+    if has_breadcrumbs(page):
+        html = render_breadcrumbs(page, Path(kwargs["config"].docs_dir)) + "\n" + html
     return html
+
+
+def on_post_page(output, page, **kwargs):
+    """Expose the theme's current navigation link to assistive technology."""
+    active_link = r'(<a\b[^>]*\bclass="[^"]*\bmd-nav__link--active\b[^"]*"[^>]*)(>)'
+    return re.sub(active_link, lambda match: match.group(0) if "aria-current=" in match.group(1) else match.group(1) + ' aria-current="page"' + match.group(2), output)

@@ -1,6 +1,8 @@
 # 网站构建与维护
 
-本网站使用 MkDocs Material。首页汇集技术系列；当前的“芯片微架构笔记”系列来自本仓库中九个专题的 `wiki/` 目录，并保留原始 Markdown 文件。`website/prepare.py` 将当前正文、专题自测、评审记录和网站资源复制到 `.site-build/docs/`，然后 MkDocs 生成静态网站。导航列出系列及微架构专题；章节正文与站内搜索提供文章入口。
+本网站使用 MkDocs Material。首页汇集技术系列；当前的“芯片微架构笔记”系列来自本仓库中九个专题的 `wiki/` 目录，并保留原始 Markdown 文件。`website/prepare.py` 将当前正文、专题自测、评审记录和网站资源复制到 `.site-build/docs/`，然后 MkDocs 生成静态网站。导航按专题、章节和文章展开，当前页面高亮显示。文章开头的面包屑根据同一导航层级生成；已有上级页面可以点击，没有首页的分组显示为文本。
+
+导航由 `website/hooks.py` 根据目录与 Markdown 标题生成；各章节目录中的文章按文件名排序。网站构建时，如果文章开头的“上级”链接与面包屑中的上级页面相同，会在网页中省略该行；不同的链接和原始 Markdown 均保留。
 
 ## 增加技术系列
 
@@ -42,6 +44,8 @@ mkdocs build
 输出目录为 `.site-build/site/`。中文搜索使用 `jieba`；Mermaid 代码块由主题处理。没有联网的读者也可以使用已加载的网页和本地资源，实际离线能力仍取决于浏览器缓存与访问方式。
 
 构建时，`website/hooks.py` 会根据自定义 CSS 和 JavaScript 的内容生成版本参数，避免新页面继续使用浏览器缓存的旧资源。
+
+构建完成后，可以运行 `python -m unittest discover -s website/tests`，检查各页面的当前导航项和面包屑链接。
 
 ## 发布到 GitHub Pages
 
