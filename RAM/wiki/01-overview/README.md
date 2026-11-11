@@ -121,9 +121,10 @@ DMA 是发起和执行搬运的模块；内存控制器负责对 DRAM 请求进�
 本章后续文章按问题逐步展开：
 
 1. [存储系统为何难设计](./problem-statement.md)：观察约束如何跨层耦合。
-2. [速度·容量·成本·功耗](./memory-hierarchy-tension.md)：区分四个目标及其代价。
-3. [SRAM 与 DRAM 的分化](./sram-dram-divergence.md)：从存储方式推导组织差异。
-4. [学习路径与章节依赖](./learning-roadmap.md)：按目标选择后续章节。
-5. [RAM 分类与命名](./taxonomy.md)：进一步区分单元、角色、接口和封装。
+2. [RAM 分类与命名](./taxonomy.md)：区分单元、角色、接口和封装。
+3. [速度·容量·成本·功耗](./memory-hierarchy-tension.md)：区分设计目标及其代价。
+4. [局部性与数据搬运](./locality-working-set-data-movement.md)：看访问序列、工作集和复用如何影响跨层流量。
+5. [SRAM 与 DRAM 的分化](./sram-dram-divergence.md)：从存储方式推导组织差异。
+6. [学习路径与章节依赖](./learning-roadmap.md)：按目标选择后续章节。
 
 如果想先深入一颗 SRAM 单元，可以直接阅读 [6T SRAM cell：它如何保存、读取和写入 1 bit](../02-sram-foundations/6t-cell-bistable-storage.md)。如果当前目标是 DRAM 建模，可以转到 [DRAM 基础](../04-dram-foundations/README.md)和 [Memory Controller](../06-memory-controller/README.md)。

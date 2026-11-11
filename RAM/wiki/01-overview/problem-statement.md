@@ -130,6 +130,7 @@ ACT 表示开行，RD 发起列读取，PRE 关闭当前行并进行预充。图
 ## 接下来怎么读？
 
 - [速度·容量·成本·功耗](./memory-hierarchy-tension.md)：继续看存储方案的取舍。
+- [局部性与数据搬运](./locality-working-set-data-movement.md)：看访问序列和复用如何影响跨层流量。
 - [带宽与延迟](../07-system-architecture/bandwidth-vs-latency-fundamental.md)：进一步区分单次响应与持续吞吐。
 - [地址映射](../06-memory-controller/address-mapping-channel-rank-bank-row-col.md)：看地址怎样影响行局部性和并行机会。
 - [命令调度与 FR-FCFS](../06-memory-controller/command-scheduling-fr-fcfs.md)：看控制器如何在合法候选中选择命令。
