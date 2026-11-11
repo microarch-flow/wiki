@@ -6,11 +6,16 @@ Run after `python website/prepare.py && mkdocs build`.
 from html import unescape
 from pathlib import Path
 import re
+import sys
+import tempfile
 import unittest
 from urllib.parse import unquote, urljoin, urlsplit
 
 
 SITE = Path(__file__).resolve().parents[2] / ".site-build" / "site"
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+from hooks import make_tree  # noqa: E402
+
 LANDING_PAGES = {
     "index.html", "series/index.html", "microarchitecture/index.html",
     "articles/index.html", "visuals/index.html",
@@ -25,6 +30,44 @@ def page_url(relative):
 
 
 class GeneratedNavigationTests(unittest.TestCase):
+    def test_ram_overview_reading_list_matches_navigation(self):
+        html = (SITE / "RAM/wiki/01-overview/index.html").read_text(encoding="utf-8")
+        start = html.index('<div class="md-sidebar md-sidebar--primary"')
+        end = html.index('<div class="md-sidebar md-sidebar--secondary"', start)
+        primary = html[start:end]
+        active = ACTIVE_LINK.search(primary)
+        self.assertIsNotNone(active)
+        section = re.search(r'<nav class="md-nav"[^>]*>.*?<ul class="md-nav__list"[^>]*>(.*?)</ul>', primary[active.end():], re.DOTALL)
+        self.assertIsNotNone(section)
+        nav_items = re.findall(r'<a\s+href="([^"]+)"[^>]*>\s*<span class="md-ellipsis">(.*?)</span>\s*</a>', section.group(1), re.DOTALL)
+        reading_section = re.search(r'<h2 id="8-接下来怎么读".*?</h2>.*?<ol>(.*?)</ol>', html, re.DOTALL)
+        self.assertIsNotNone(reading_section)
+        reading_items = re.findall(r'<li>\s*<a href="([^"]+)">(.*?)</a>', reading_section.group(1), re.DOTALL)
+        clean = lambda items: [(unescape(url), unescape(" ".join(label.split()))) for url, label in items]
+        self.assertGreater(len(reading_items), 0)
+        self.assertEqual(clean(nav_items), clean(reading_items))
+        self.assertIn('class="ram-calculation"', html)
+        self.assertIn('class="ram-event-sequence"', html)
+
+    def test_numbered_reading_order_ignores_non_sibling_links(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            chapter = root / "chapter"
+            chapter.mkdir()
+            for name in ("a.md", "b.md", "c.md"):
+                (chapter / name).write_text("# Article\n", encoding="utf-8")
+            (root / "outside.md").write_text("# Outside\n", encoding="utf-8")
+            (chapter / "README.md").write_text(
+                "# Chapter\n\n```md\n## 阅读顺序\n1. [ignored](./c.md)\n```\n\n"
+                "## 阅读顺序\n\n1. [B](./b.md)\n2. [Outside](../outside.md)\n"
+                "3. [A](./a.md)\n4. [B again](./b.md)\n5. [Missing](./missing.md)\n",
+                encoding="utf-8",
+            )
+            self.assertEqual(
+                make_tree(chapter, root),
+                ["chapter/README.md", "chapter/b.md", "chapter/a.md", "chapter/c.md"],
+            )
+
     def test_article_paths_and_distinct_parent_links(self):
         cases = {
             "RAM/wiki/02-sram-foundations/6t-cell-bistable-storage/index.html": [

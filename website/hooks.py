@@ -76,6 +76,48 @@ def title(path):
     return match.group(1).strip() if match else path.stem.replace("-", " ")
 
 
+def reading_order(directory):
+    """Use an index's explicit numbered reading list for sibling articles."""
+    index = directory / "README.md"
+    if not index.is_file():
+        return []
+    order = []
+    section_level = None
+    fence = None
+    for line in index.read_text(encoding="utf-8").splitlines():
+        marker = re.match(r"^\s*(`{3,}|~{3,})(.*)$", line)
+        if fence:
+            if marker and marker.group(1)[0] == fence[0] and len(marker.group(1)) >= len(fence) and not marker.group(2).strip():
+                fence = None
+            continue
+        if marker:
+            fence = marker.group(1)
+            continue
+        heading = re.match(r"^(#{1,6})\s+(.+?)\s*$", line)
+        if heading:
+            level = len(heading.group(1))
+            if section_level is not None and level <= section_level:
+                if order:
+                    break
+                section_level = None
+            label = re.sub(r"^\d+[.、．]?\s*", "", heading.group(2)).strip()
+            if re.fullmatch(r"(?:(?:推荐|建议|本章|本目录|这章的)?阅读顺序|接下来怎么读)[？?]?", label):
+                section_level = level
+            continue
+        if section_level is None:
+            continue
+        item = re.match(r"^\s*\d+[.)、]\s+\[[^\]]+\]\(([^)]+)\)", line)
+        if not item:
+            continue
+        target = urlsplit(unescape(item.group(1)))
+        if target.scheme or target.netloc or not target.path:
+            continue
+        path = (directory / unquote(target.path)).resolve()
+        if path.parent == directory.resolve() and path.is_file() and path.suffix.lower() == ".md" and path.name not in {"README.md", "SUMMARY.md"} and path.name not in order:
+            order.append(path.name)
+    return order
+
+
 def make_tree(directory, root):
     items = []
     index = directory / "README.md"
@@ -84,7 +126,8 @@ def make_tree(directory, root):
     summary = directory / "SUMMARY.md"
     if summary.is_file():
         items.append({"知识地图": summary.relative_to(root).as_posix()})
-    for path in sorted(directory.iterdir(), key=lambda p: p.name.lower()):
+    priority = {name: number for number, name in enumerate(reading_order(directory))}
+    for path in sorted(directory.iterdir(), key=lambda p: (priority.get(p.name, len(priority)), p.name.lower())):
         if path.is_dir():
             if not any(path.rglob("*.md")):
                 continue
@@ -241,6 +284,8 @@ def on_page_content(html, page, **kwargs):
     """Add article breadcrumbs and scope the foundational article layout."""
     if page.file.src_uri == "electrical-timing-foundations.md":
         html = f'<div class="timing-article">\n{html}\n</div>'
+    elif page.file.src_uri == "RAM/wiki/01-overview/README.md":
+        html = f'<div class="ram-overview-article">\n{html}\n</div>'
     if has_breadcrumbs(page):
         html = render_breadcrumbs(page, Path(kwargs["config"].docs_dir)) + "\n" + html
     return html

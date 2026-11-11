@@ -36,6 +36,18 @@ body { background: var(--paper); }
 .md-typeset .site-breadcrumbs a:hover { text-decoration: underline; }
 .md-typeset .site-breadcrumbs [aria-current="page"] { color: #284e3c; font-weight: 700; }
 
+/* Explanatory blocks in the RAM overview are not source code. */
+.md-typeset .ram-calculation, .md-typeset .ram-event-sequence { margin: 1.1rem 0; padding: .85rem 1rem; border: 1px solid #cee0ce; border-left: .18rem solid #70a081; border-radius: .35rem; background: #e9f2e7; color: #254d3b; }
+.ram-calculation { display: flex; flex-direction: column; gap: .3rem; }
+.ram-calculation strong { color: #1d5a3d; }
+.md-typeset .ram-event-sequence { display: flex; flex-wrap: wrap; gap: .3rem .55rem; list-style: none; }
+.md-typeset .ram-event-sequence li { display: inline-flex; align-items: center; gap: .55rem; margin: 0; font-weight: 600; }
+.ram-event-sequence li:not(:last-child)::after { content: "→"; color: #739b7c; font-weight: 400; }
+.md-typeset .ram-overview-article table:not([class]) th { background: #e3eee1; color: #214d3c; }
+.md-typeset .ram-overview-article table:not([class]) td { background: #f8fbf6; }
+.md-typeset .ram-overview-article :not(pre) > code { background: #e8f0e5; color: #294f40; }
+.ram-overview-article .ram-flow-node { background: #f8fbf6; }
+
 /* Reading layout for the electrical timing foundations article. */
 .md-typeset .timing-article { max-width: 48rem; margin-bottom: 4rem; }
 .md-typeset .timing-article h1 { margin-bottom: .8em; line-height: 1.35; }

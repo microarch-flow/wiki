@@ -2,7 +2,7 @@
 
 本网站使用 MkDocs Material。首页汇集技术系列；当前的“芯片微架构笔记”系列来自本仓库中九个专题的 `wiki/` 目录，并保留原始 Markdown 文件。`website/prepare.py` 将当前正文、专题自测、评审记录和网站资源复制到 `.site-build/docs/`，然后 MkDocs 生成静态网站。导航按专题、章节和文章展开，当前页面高亮显示。文章开头的面包屑根据同一导航层级生成；已有上级页面可以点击，没有首页的分组显示为文本。
 
-导航由 `website/hooks.py` 根据目录与 Markdown 标题生成；各章节目录中的文章按文件名排序。网站构建时，如果文章开头的“上级”链接与面包屑中的上级页面相同，会在网页中省略该行；不同的链接和原始 Markdown 均保留。
+导航由 `website/hooks.py` 根据目录与 Markdown 标题生成。章节首页中，如果“阅读顺序”或“接下来怎么读”包含指向同一目录文章的编号列表，导航优先使用该顺序；未列出的文章按文件名排序。网站构建时，如果文章开头的“上级”链接与面包屑中的上级页面相同，会在网页中省略该行；不同的链接和原始 Markdown 均保留。
 
 ## 增加技术系列
 
@@ -61,5 +61,5 @@ mkdocs build
 - 双缓冲图解假设搬运和计算各占一个周期，且资源访问不冲突。它不代表实际设备的实测性能。
 - 电路与时序文章维护在根目录的 `electrical-timing-foundations.md`，原理图位于根目录 `img/`。公式区和路径卡片使用文中的 HTML 及 `site.css` 样式；构建时 `website/hooks.py` 只为该页添加阅读布局容器。公式不依赖外部脚本。
 - 6T SRAM 文章通过 `website/hooks.py` 在正文标记处插入读写图解；模板位于 `website/partials/sram-demo.html`，状态与控制逻辑位于 `website/assets/javascripts/sram.js`。结构图和操作步骤都是教学示意，不是电路仿真。
-- RAM 概览同样通过正文标记插入 cache miss 图解；模板为 `website/partials/ram-overview-demo.html`，状态与控制逻辑为 `website/assets/javascripts/ram-overview.js`。图解采用文章中列出的单请求假设。
+- RAM 概览同样通过正文标记插入 cache miss 图解；模板为 `website/partials/ram-overview-demo.html`，状态与控制逻辑为 `website/assets/javascripts/ram-overview.js`。图解采用文章中列出的单请求假设。文章中的计算与事件路径使用 `site.css` 中的说明块样式。
 - 修改图解时，同步检查状态文案、相关约束、链接，以及键盘操作和减少动态效果的设置。
