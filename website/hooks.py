@@ -325,6 +325,7 @@ def on_page_content(html, page, **kwargs):
     elif page.file.src_uri in {
         "RAM/wiki/01-overview/problem-statement.md",
         "RAM/wiki/01-overview/memory-hierarchy-tension.md",
+        "RAM/wiki/01-overview/taxonomy.md",
     }:
         html = f'<div class="ram-problem-article">\n{html}\n</div>'
     if has_breadcrumbs(page):

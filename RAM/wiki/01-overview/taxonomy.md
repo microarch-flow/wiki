@@ -1,54 +1,158 @@
 # RAM 家族的分类与命名体系
 
-上级：[概览](./README.md)
-相关：[同样是 RAM，为什么 SRAM 和 DRAM 走向了完全不同的工程路径](./sram-dram-divergence.md), [DDR、LPDDR、GDDR、HBM：四种 DRAM 协议的 trade-off 全景图](../05-dram-protocol-families/ddr-lpddr-gddr-hbm-tradeoff-map.md)
+<span id="这页在回答什么问题"></span>
+<span id="区分单元组织接口角色和封装"></span>
 
-## 这页在回答什么问题
+上级：[RAM 存储系统概览](./README.md)
 
-RAM 相关名词到底该按哪些维度分类，才能避免用一个词同时指代“存储单元”“协议家族”“系统位置”或“封装形态”。如果这件事不先做干净，后面几乎每个讨论都会出现层级错位。
+相关：[SRAM 与 DRAM 的分化](./sram-dram-divergence.md) · [DRAM 协议对比](../05-dram-protocol-families/ddr-lpddr-gddr-hbm-tradeoff-map.md) · [存储层次与系统角色](../07-system-architecture/memory-hierarchy-as-system.md)
 
-## 区分单元、组织、接口、角色和封装
+<p class="ram-problem-lede">SRAM、cache、DDR 和 HBM 都与存储有关，但它们回答的问题不同：一个 bit 怎样保存、存储资源在系统里做什么、控制器怎样访问它，以及器件如何集成。先分清问题，才能正确描述一个系统。</p>
 
-存储器领域最常见的混乱，不是某个术语难懂，而是不同层级的术语被放进同一句话里直接比较。比如”HBM 比 SRAM 更先进””DDR 是一种颗粒””cache 和 LPDDR 谁更快”这类表述，就像问”篮球比红色更圆吗”——乍看像在比较，实际上比较双方根本不在同一分类轴上。要把问题讲清楚，第一步不是背更多名词，而是先把分类坐标系搭起来。
+本文用五个观察角度整理常见名称，再用 DDR4 模块和 HBM2E 两个例子把它们连接起来。这些角度彼此有关，不代表每一项都可以任意组合。
 
-最重要的一条原则是：RAM 相关概念至少要沿五个正交维度拆开看，分别是 `存储单元`、`阵列与访问组织`、`接口/协议家族`、`系统角色`、`封装与集成形态`。这就像描述一个人不能只用一个标签——“张三是北京人”同时省略了他的职业、年龄、技能和住址，信息量严重不足。这五个维度互相有关，但不能互相替代。你当然可以说某个系统位置”通常由某类存储单元实现”，但不能把”通常”直接偷换成”定义上等于”。
+## 1. 先看名称在回答什么问题
 
-第一维是 `存储单元`。这一维回答的是：一个 bit 到底怎么被存住。放在本 wiki 里，主角就是 `SRAM` 和 `DRAM`。SRAM 用双稳态电路持有状态，DRAM 用电容存储电荷并接受 refresh。这个维度决定的是面积效率、读写扰动、保持方式、感测难度和后续一整套访问成本曲线。常见误解是把 `DDR`、`HBM` 也放进这个维度；实际上它们不是新的 bit cell 物理原理，而是在 DRAM 这条单元路线之上继续分化出来的接口和系统方案。
+| 观察角度 | 要问的问题 | 例子 |
+| --- | --- | --- |
+| 存储单元与技术 | 数据靠什么物理状态保存？ | 6T SRAM cell、1T1C DRAM cell |
+| 阵列与访问组织 | 单元怎样组成可访问的资源？ | SRAM bank、DRAM row 和 bank |
+| 系统角色 | 这块存储在系统里负责什么？ | cache、scratchpad、register file、主存 |
+| 接口与协议 | 请求、命令、数据和时序怎样在边界上传递？ | SRAM 宏接口、DDR4、LPDDR5、HBM2E 接口 |
+| 封装与集成 | die、器件和计算芯片怎样连接到一起？ | BGA 器件封装、DIMM 模块、die 堆叠、interposer |
 
-第二维是 `阵列与访问组织`。这一维回答的是：即便底层单元确定了，很多 bit 是如何被组织成可访问资源的。对 SRAM，这一维会关心单口、双口、多口，bank、sub-array、mat，以及 tag/data array 这类组织方式。对 DRAM，则会关心 `row / column / bank / rank / channel`，以及 row buffer、bank group、prefetch、burst 这些桥接结构。这个维度决定“访问一个地址时，硬件内部会经历怎样的路径”，因此它和系统表现直接相关。常见误解是把 `bank` 当成协议名词，或者把 `cache` 当成单元类型；实际上它们都更接近组织方式或系统角色。
+这些角度不是互斥的盒子。同一个对象可以同时具有多个属性；一个名称也可能横跨多个角度。例如，HBM 既涉及 DRAM、接口，也涉及堆叠和集成要求。
 
-第三维是 `接口与协议家族`。这一维回答的是：存储器如何被片外系统访问，以及为了某个目标暴露了什么命令、时序和电气约束。这里的主角是 `DDR`、`LPDDR`、`GDDR`、`HBM`。这四者本质上都站在 DRAM 单元之上，但它们为不同系统目标重新布置了带宽、功耗、距离和封装的最优点。也正因为它们属于协议家族，所以讨论它们时应该关注 `ACT/RD/WR/PRE`、timing、功耗状态、I/O 宽度、速率和接口距离，而不是把它们当作新的存储物理类别。常见误解：“HBM 是不是一种和 DRAM 平行的新存储器？” 实际上，HBM 仍然是 DRAM 路线，只是协议和封装路线都更激进。
+## 2. 存储单元与阵列：数据怎样保存和访问？
 
-第四维是 `系统角色`。这一维回答的是：某段存储在系统里承担什么功能。典型角色包括 `register file`、`cache`、`scratchpad`、`TCM`、`main memory`。这个维度最容易和前面几维混掉，因为某些系统角色确实强烈偏好某类物理实现，例如 cache 往往由 SRAM 实现，main memory 往往由 DRAM 实现。但“往往”不是“定义上”。cache 讲的是一种由硬件管理的层次化数据复用语义；scratchpad 讲的是一种由软件或编译器管理的局部存储语义；main memory 讲的是地址空间中的主承载层。它们首先是系统角色，其次才讨论通常用什么介质去实现。
+**RAM** 是 random-access memory，通常译为随机存取存储器。它允许根据地址选择存储位置，不需要从开头顺序经过更早的位置。这个名称不保证所有位置的访问时间相同，也不保证多个请求不会竞争同一资源。
 
-第五维是 `封装与集成形态`。这一维回答的是：这些存储 die 最终怎样被放进系统。这里会出现 `DIMM`、`SODIMM`、`PoP`、`MCP`、`HBM stack`、`2.5D interposer`、`3D integration` 这些词。注意这批词自己内部也不完全在同一层。`DIMM` 更接近模块级交付形态，`PoP/MCP` 更接近封装级组织，`HBM stack` 描述的是内存 die 的堆叠形态，`2.5D/3D` 描述的是更高层的集成路线。它们可以一起被放进“封装与集成”这个大类里讨论，但不能假装它们彼此完全等价。常见误解是说“HBM 是一种封装”；更准确的说法应该是：HBM 是一种 DRAM 协议与产品路线，通常依赖堆叠和先进封装去落地。
+本专题主要讨论易失性 SRAM 和 DRAM 中常见的两种单元：
 
-把这五维放在一起后，很多混淆就会自动消失。比如 `HBM` 应该被描述为：在 `存储单元` 维度上属于 `DRAM`，在 `协议家族` 维度上属于 `HBM`，在 `系统角色` 维度上常承担高带宽外层内存，在 `封装与集成` 维度上通常结合 `HBM stack + 2.5D/3D`。再比如 `cache` 应该被描述为：在 `系统角色` 维度上属于 cache，在 `实现介质` 上常用 SRAM，在 `阵列组织` 上可能涉及 tag/data 分离和多 bank，但它本身不是协议家族，也不是封装名词。只要你能用这种多维表述方式说清一个对象的位置，后面的讨论就不容易再串线。
+- **6T SRAM cell**：用交叉耦合电路维持状态。满足供电和保持条件时，不需要 DRAM 式周期刷新。
+- **1T1C DRAM cell**：用电容上的电荷表示状态。电荷会泄漏，需要按器件要求周期刷新；常见 DRAM 在 ACT 开行时感测并恢复该行，后续列读取可以访问已打开的行。
 
-这里还需要补一个实际工作中很有用的判断方法——像给术语”挂标签”之前先问一个问题：这个词在回答什么？如果它在回答”一个 bit 怎么存”，那大概率是单元维度；如果在回答”怎么对系统暴露命令和时序”，那大概率是协议维度；如果在回答”它在系统里干什么”，那就是系统角色；如果在回答”它被怎么装进板级或封装级系统”，那就是集成形态。这比死记术语表更稳，因为它迫使你先分层，再分析——就像医生看病先确定是内科、外科还是皮肤科的问题，而不是上来就开药。
+SRAM、DRAM 是存储技术名称；6T 和 1T1C 是常见单元结构，不是各自所有实现的完整清单。“随机存取”也不等于“断电后一定丢失数据”：例如，厂商提供非易失性的 [MRAM](https://www.everspin.com/products)。MRAM 不在本专题的主要范围内。
 
-所以，这一页真正要建立的不是一张名词对照表，而是一种说话纪律。后面所有章节都会反复跨这几个维度移动，但每次移动都应该显式说明“现在在切哪一层”。只有这样，比较才有意义，建模才不会把本来不同的约束压扁成一个标签。
+**SRAM 与 SDRAM 也不是同一个缩写。**SRAM 中的 S 表示 static；SDRAM 中的 S 表示 synchronous。SDRAM 是接口和命令与时钟同步的 DRAM，DDR4 和 DDR5 SDRAM 是其中的具体代际。[Micron 的 DDR5 说明](https://www.micron.com/content/micron/us/en/products/memory/dram-components/ddr5-sdram.html)介绍了 DDR5 与 DRAM、SDRAM 的关系。
+
+另一个容易混淆的名称是 pSRAM（伪静态 RAM）。例如，[Infineon 的一种 pSRAM](https://www.infineon.com/products/memories/psram-pseudostatic-dram)使用 DRAM 存储阵列，并在器件内部处理刷新。主控不需要发出刷新命令，并不表示内部一定是 SRAM cell；具体行为仍以目标器件为准。
+
+许多单元还要组织成阵列，并通过端口、译码和数据通路提供访问。一个 **bank** 通常表示某种可独立或相对独立管理的访问资源；它具体能否与其他 bank 并行，取决于共享的端口、控制和数据通道。SRAM bank 和 DRAM bank 的内部状态也不同，不能只因名字相同就假设行为相同。
+
+## 3. 系统角色：谁管理数据？
+
+同一类存储单元可以承担不同职责。角色描述的是系统怎样使用和管理数据，而不单是它由什么电路构成。
+
+| 角色 | 在系统中的职责 |
+| --- | --- |
+| Cache | 在常见硬件管理的设计中，保存下一级数据的副本；硬件判断命中，并按策略填充或替换。 |
+| Scratchpad | 提供显式管理的数据区域；软件、编译器或其他调度机制负责安排数据放置与使用。 |
+| Register file | 为执行单元提供寄存器操作数，并接收结果写回。 |
+| 主存或设备内存 | 为系统或设备提供较大范围的数据存放空间；具体可见性和用途由系统定义。 |
+
+Cache 的数据阵列和 scratchpad **常用 SRAM 实现**，但角色名称本身不规定唯一的 cell 技术。Cache 也不等于一块 SRAM：常见实现还需要 tag、命中判断、替换等机制。Scratchpad 的显式管理则需要关注搬运何时完成、数据何时可用和何时允许覆盖。
+
+例如，[NVIDIA 的 CUDA 编程指南](https://docs.nvidia.com/cuda/archive/13.2.2/cuda-programming-guide/02-basics/writing-cuda-kernels.html)把其 GPU 的 shared memory 描述为由使用者管理的 scratchpad，并说明在该指南讨论的实现中，它与 L1 cache 共用物理资源。这是具体平台的组织方式，不代表所有 GPU 或 NPU 都相同。两种管理方式的进一步比较见 [Scratchpad 与 cache](../03-sram-applications/scratchpad-vs-cache.md)。
+
+## 4. 接口与协议：两端如何交换数据？
+
+接口定义边界上的信号或请求、响应及时序；协议进一步约束操作如何执行。片上 SRAM 宏也有接口，例如读写地址、使能、数据和对应的时钟边沿。它未必使用 DDR 或 AXI，但不能因此认为它“没有接口”。
+
+在本专题中，讨论 DRAM 时经常遇到这些名称：
+
+| 名称 | 需要先确认什么 |
+| --- | --- |
+| DDR4、DDR5 SDRAM | 所说的代际、器件或模块，以及对应的命令、时序与电气条件。 |
+| LPDDR、GDDR | 具体代际与产品配置；它们是不同的 DRAM 接口与产品路线。 |
+| HBM、HBM2E | 具体代际与配置；HBM 涉及堆叠 DRAM、接口和系统集成。 |
+
+**DDR 的含义要看上下文。**“double data rate”可以描述在时钟或数据选通信号的两个边沿传输数据；“DDR4 SDRAM”“DDR5 SDRAM”则指具体的 DRAM 标准及产品家族。双倍数据率传输方式并非 DRAM 独有，[Infineon 也提供 DDR 同步 SRAM](https://www.infineon.com/products/memories/sram-static-ram)。因此，只看到“DDR”三个字，还不足以判断 cell 技术或接口的全部细节。
+
+DDR4、DDR5、LPDDR、GDDR 和 HBM 的具体接口不能因为都涉及双倍数据率就视为兼容。比较时应查对应代际、器件和工作模式，而不是只按缩写推断。
+
+## 5. 封装与集成：器件怎样进入系统？
+
+下面几个名称处于不同的物理层级：
+
+- **Die** 是制造在晶圆上、切割后的一块芯片。一个封装内可以包含一个或多个 die。
+- **BGA** 等名称描述器件封装形式。日常所说的 DRAM“颗粒”通常指封装后的存储器件，不必然等于单个裸 die。
+- **DIMM / SODIMM** 是内存模块形式。模块上可以装多个 DRAM 器件及其他所需组件；它不是单个 DRAM cell 或单个封装。
+- **HBM stack** 描述堆叠的存储 die 及相关结构；**interposer** 则可用于在封装内连接 HBM 与计算 die。堆叠方式和系统集成方式应分别说明。
+
+例如，同样是 DRAM，器件可以安装在 DIMM 上，也可以作为 HBM stack 的一部分集成到封装系统中。具体连接、可替换性和电气条件取决于实际产品，不由“DRAM”一词单独决定。
+
+## 6. 例子一：一条 DDR4 DIMM 包含什么？
+
+假设一个教学系统使用单 rank、非 ECC 的 DDR4 DIMM。这个 rank 包含 8 颗 x8 DRAM 器件，每颗容量为 8 Gibit；8 颗器件并行提供数据。这里的 `x8` 表示**单颗器件的数据位宽为 8 bit**，不是模块只有 8 bit 宽。
+
+假设处理器的读取未在参与查找的 cache 中命中，简化的请求方向如下。图中省略互连和排队；数据沿返回路径送回处理器。
+
+<ol class="ram-event-sequence" aria-label="简化的 DDR4 读取请求路径">
+  <li>处理器</li>
+  <li>cache</li>
+  <li>内存控制器</li>
+  <li>DDR4 channel</li>
+  <li>DIMM 上的 rank</li>
+</ol>
+
+| 要描述的对象 | 本例中的含义 |
+| --- | --- |
+| 存储技术 | 每颗器件是 DRAM。 |
+| 接口家族 | 控制器按 DDR4 接口与器件通信。 |
+| Rank 与位宽 | 8 颗 x8 器件在本例中组成一个 rank，合计提供 64 bit 数据位宽。 |
+| 模块形式 | 这些器件安装在 DIMM 上；DIMM 是模块，不是另一种 cell。 |
+| 系统角色 | 在这个假设系统中，该模块承担主存角色。 |
+
+按例子的容量口径，`1 Gibit = 2³⁰ bit`，`1 GiB = 2³⁰ B`：
+
+<div class="ram-calculation">
+  <span>模块数据位宽 = 8 颗 × 8 bit = <strong>64 bit</strong></span>
+  <span>模块数据容量 = 8 颗 × 8 Gibit ÷ 8 = <strong>8 GiB</strong></span>
+</div>
+
+如果这个接口以 3,200 MT/s 传输，且每次传输的 64 bit 都是数据，则单方向理论数据率为 `3,200 × 10⁶ × 8 B/s = 25.6 GB/s`，这里 `1 GB = 10⁹ B`。这是数据引脚持续传输时的理论值，不计命令、刷新、读写切换或空闲造成的损失，也不是实测带宽。
+
+这个组合是为了说明命名和计算边界，不是对实际系统的测量。[Micron 的一个 DDR4 UDIMM 产品资料](https://www.micron.com/products/memory/dram-modules/udimm/part-catalog/part-detail/mta8atf1g64az-3g2e1)列出了单 rank、x64、8 颗 x8 器件和 3,200 MT/s 等字段。不同模块可能有不同的 rank、器件位宽或 ECC 配置，不能把此例当作 DIMM 的统一组织。进一步的层级说明见 [Channel、rank 与 chip](../04-dram-foundations/channel-rank-chip-hierarchy.md)。
+
+## 7. 例子二：HBM 不只是一个封装名称
+
+以 [Micron 的 HBM2E 技术说明](https://assets.micron.com/adobe/assets/urn%3Aaaid%3Aaem%3A275edf31-79e3-4b6c-8bbd-a233babe9281/original/as/micron-hbm2e-memory-wp.pdf)中的器件为例：
+
+| 观察角度 | 该资料中的对象 |
+| --- | --- |
+| 存储技术 | 多层 DRAM die。 |
+| 访问组织与接口 | 8 个独立 channel；每个 channel 有各自的命令、地址和数据接口。 |
+| 堆叠方式 | DRAM die 通过 TSV 与底部接口 die 连接。 |
+| 系统集成 | 资料展示了通过硅 interposer 连接 HBM2E 与计算 die 的封装系统。 |
+
+这里的 8 个 channel 是该 HBM2E 资料的配置，不能套用到所有 HBM 代际。HBM 在某个系统中可以承担设备内存等角色，但“设备内存”描述用途，不等于“HBM”这个技术与接口名称。
+
+因此，说“HBM 是 DRAM”是在说明存储技术；说“HBM 使用堆叠和封装集成”是在说明实现方式。这两句话可以同时成立，但都不能独自描述完整系统。
+
+## 8. 怎样比较不同名称？
+
+“HBM 比 SRAM 更先进吗？”没有给出比较目标、实现或约束，因此无法得到清楚的工程结论。但来自不同角度的对象并非不能比较：只要定义了实际系统和统一的指标边界，就可以比较它们的**具体实现**。
+
+例如，在同一处理器上，可以测量同样大小的一笔读取，从发起到数据可用所需的时间：一次由指定的 L1 cache 命中满足；另一次在参与查找的 cache 均未命中后，由 HBM 返回。后一条路径包含互连、控制器、排队和数据返回等开销。结果反映的是这两条**系统路径**，不能直接当成 SRAM cell 与 DRAM cell 的电路延迟对比。
+
+比较容量、带宽或能耗时也要说明观察位置、工作负载、器件配置和时间窗口。关于指标与约束，见[速度·容量·成本·功耗](./memory-hierarchy-tension.md)。
 
 ## 一句话理解
 
-RAM 相关名词不能放在一个平面上硬比，至少要先分清它是在说 bit cell、阵列组织、协议家族、系统角色，还是封装与集成形态。
+先问一个名称描述的是存储技术、资源组织、系统角色、接口协议，还是封装集成；再把同一系统中相关的属性连接起来。
 
 ## 建模启示
 
-这页对应的核心建模价值，是告诉你“标签系统必须多维，而不是单标签”。如果把一个对象只命名成 `HBM` 或 `cache`，模型很快就会因为缺失层级信息而无法扩展。更稳妥的做法是把每个内存对象拆成多个正交属性，让 `primitive`、`organization`、`interface_family`、`system_role`、堆叠形态和系统集成方式分开编码。
+建模时，先确定对象边界。Cache 是有管理机制的系统资源；它的 tag 和 data 阵列可以进一步映射到具体存储实现。DRAM 器件、channel、控制器和连接它们的路径也不是同一个对象。
 
-一个最小可扩展的数据结构草图可以是：
+按需要记录角色、存储技术、组织、接口和集成方式，并明确它们之间的关系。例如，片上 SRAM 宏可以有自定义读写接口；如果接口信息未知，应标记为未知，而不是用“无接口”代替。若只做容量估算，可以暂时省略内部时序；若要研究 bank 冲突或 DRAM 调度，还需要地址映射、共享资源和相关状态。
 
-```text
-MemoryDescriptor {
-  primitive: enum { SRAM, DRAM }
-  organization: enum { RF, TAG_ARRAY, DATA_ARRAY, BANKED_SPM, DRAM_BANKED }
-  interface_family: enum { NONE, DDR, LPDDR, GDDR, HBM }
-  system_role: enum { REGISTER_FILE, CACHE, SCRATCHPAD, TCM, MAIN_MEMORY }
-  module_form: enum { NONE, DIMM, SODIMM, PACKAGE }
-  die_stack: enum { NONE, STACKED_DIE }
-  integration: enum { ON_DIE, PCB, POP, MCP, INTERPOSER_2P5D, STACKED_3D }
-}
-```
+这些分类有助于说明模型对象，但**名称本身不会给出延迟、带宽或正确的事件规则**。具体参数仍需来自目标规格、测量或明确的建模假设。
 
-如果只做高层性能比较，可以把某些维度折叠。例如片上 SRAM 可能把 `interface_family=NONE`，而主存模型可能暂时不区分 `DIMM` 和 `SODIMM`。但至少 `primitive`、`interface_family` 和 `system_role` 这三维不能混掉。一个典型反例是把 `HBM` 直接当成 `MAIN_MEMORY` 的同义词，这会让模型丢失“它是 DRAM 路线、但接口和封装约束不同”的关键信息。
+## 接下来怎么读？
+
+- [速度·容量·成本·功耗](./memory-hierarchy-tension.md)：看不同实现如何在共同约束下取舍。
+- [SRAM 与 DRAM 的分化](./sram-dram-divergence.md)：从存储方式继续看两条技术路线。
+- [DRAM 协议对比](../05-dram-protocol-families/ddr-lpddr-gddr-hbm-tradeoff-map.md)：比较不同 DRAM 路线的系统目标。
+- [HBM 封装与 TSV](../08-packaging-integration/hbm-2.5d-3d-tsv.md)：进一步看 die 堆叠和系统集成。
