@@ -45,3 +45,7 @@ next_accept_edge   = edge + documented_ii(req, port_state)
 ```
 
 模拟器可观测的结果包括请求接纳边沿、数据有效或被采样的边沿、写后读结果、下一次接纳边沿及端口等待。若库只给接口级结果，模型不应声称验证了位线波形或 cell 稳定性。
+
+## 接下来怎么读？
+
+- [SRAM 宏接口与读写语义](./sram-macro-interface-and-semantics.md)：从使用者视角检查地址、掩码和端口规则。

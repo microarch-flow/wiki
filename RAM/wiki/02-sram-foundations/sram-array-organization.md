@@ -69,3 +69,7 @@ event LocalSenseDone(array_id, bank_id, req_id)
 ```
 
 这里不需要真的模拟 mat 级所有电气过程，但至少要承认：并发能力、访问延迟和单次能耗，都是阵列切分方式的函数，而不是容量的简单函数。
+
+## 接下来怎么读？
+
+- [SRAM bank 地址映射与冲突](./sram-bank-address-mapping-conflicts.md)：从请求地址和访问模式推导 bank 竞争。

@@ -329,6 +329,8 @@ def on_page_content(html, page, **kwargs):
         "RAM/wiki/01-overview/locality-working-set-data-movement.md",
         "RAM/wiki/01-overview/sram-dram-divergence.md",
         "RAM/wiki/01-overview/learning-roadmap.md",
+        "RAM/wiki/02-sram-foundations/sram-macro-interface-and-semantics.md",
+        "RAM/wiki/02-sram-foundations/sram-bank-address-mapping-conflicts.md",
     }:
         html = f'<div class="ram-problem-article">\n{html}\n</div>'
     if has_breadcrumbs(page):

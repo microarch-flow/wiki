@@ -11,9 +11,9 @@
 
 这一章之所以放在 DRAM 之前，不是因为 SRAM 在系统里一定更重要，而是因为它更适合做 RAM 的最小完备模型——就像学物理先从无摩擦平面上的小球开始，不是因为现实中没有摩擦力，而是因为这样可以先把牛顿定律搞清楚，再逐步加入复杂性。SRAM 把一个 bit 存成可持续维持的双稳态电路，因此它没有 refresh、row activate、destructive read 这些额外复杂性。这样一来，很多最基本的问题就可以先在更干净的环境里成立：一个 bit 为什么能稳定存在，读写为什么会扰动这个状态，字线和位线分别在干什么，sense amp 为什么仍然重要，端口数为什么会迅速推高面积和时序难度，阵列为什么必须切成 bank 和 sub-array，而不能无限平铺。
 
-本章的阅读顺序本身就是一条推导链，像搭房子一样从地基往上盖。`6t-cell-bistable-storage.md` 先回答”一个 bit 为什么能被稳定存住”——这是地基。`wordline-bitline-sense-amp.md` 接着回答”稳定存住之后，怎样把它变成可读可写的阵列资源”——这是承重结构。`read-write-cycle-timing.md` 再把这些电路元素串成一次完整访问，明确读和写分别在什么阶段最脆弱——这是水电管线。到这里为止，你得到的是一个能工作的单 bank SRAM 直觉。后面的 `single-port-dual-port-multi-port.md`、`sram-array-organization.md`、`sram-process-scaling-challenge.md`、`sram-power-leakage-retention.md`，则是在问：当你要把这个小房子扩建成大楼时，哪些代价会先暴露出来。
+本章先从 6T cell 出发，解释字线、位线和一次访问的时序，再看 SRAM 宏向上层提供什么接口。接下来讨论端口、阵列组织，以及地址映射怎样影响 bank 冲突。最后再看工艺、稳定性和低功耗约束。
 
-这一章有一个很重要的边界条件：它讨论的是 SRAM 作为“物理与阵列基础”的共性，不直接展开它在系统里的具体语义。比如 cache 和 scratchpad 都可能用 SRAM 实现，但它们的差异不是先从 bit cell 开始的，而是从管理方式、命中语义、数据流角色开始的。因此这些话题会留到 `03-sram-applications/` 再讲。本章只关心一个问题：如果底层介质是 SRAM，那么无论上层把它叫 cache、register file 还是 local buffer，它们都会共同继承哪些约束。
+本章讨论 SRAM 的物理与阵列基础，以及宏暴露的访问接口。Cache 和 scratchpad 都可能用 SRAM 实现，但它们还涉及各自的管理方式、命中语义和数据流角色，这些内容留到 `03-sram-applications/` 再讲。
 
 这些共性约束主要有四类。第一类是稳定性约束，也就是 cell 在保持、读取、写入三种状态下如何避免翻转错误。第二类是访存路径约束，即字线、位线、预充、感测和写驱动如何决定访问时间。第三类是结构扩展约束，即端口数、banking、阵列尺寸和布线长度如何一起决定面积与频率。第四类是工艺与功耗约束，即先进制程下的漏电、Vmin 和保持能力如何反过来限制你“把 SRAM 做大、做低功耗、做高频”的自由度。后面每一篇其实都在处理这四类约束中的某一组。
 
@@ -28,12 +28,14 @@
 1. [6T SRAM cell](./6t-cell-bistable-storage.md)
 2. [字线、位线与读出放大](./wordline-bitline-sense-amp.md)
 3. [SRAM 读写时序](./read-write-cycle-timing.md)
-4. [SRAM 端口与代价](./single-port-dual-port-multi-port.md)
-5. [SRAM 阵列组织](./sram-array-organization.md)
-6. [先进工艺与 SRAM](./sram-process-scaling-challenge.md)
-7. [SRAM 漏电与低功耗](./sram-power-leakage-retention.md)
+4. [SRAM 宏接口与读写语义](./sram-macro-interface-and-semantics.md)
+5. [SRAM 端口与代价](./single-port-dual-port-multi-port.md)
+6. [SRAM 阵列组织](./sram-array-organization.md)
+7. [SRAM bank 地址映射与冲突](./sram-bank-address-mapping-conflicts.md)
+8. [先进工艺与 SRAM](./sram-process-scaling-challenge.md)
+9. [SRAM 漏电与低功耗](./sram-power-leakage-retention.md)
 
-如果你这次只想补“为什么 SRAM 不能无限做大、无限提频”的直觉，优先看 4 -> 7。第一次系统阅读，仍然建议按 1 -> 7 顺序走。
+如果当前关心并发和阵列扩展，可以先读第 4 至 7 篇；关心工艺和低功耗，可以继续读第 8 至 9 篇。系统阅读时可以按上表顺序，也可以按问题回读。
 
 ## 一句话理解
 
