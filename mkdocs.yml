@@ -1,0 +1,50 @@
+site_name: 芯片微架构笔记
+site_description: 从电路、数据移动到系统建模的工程学习笔记
+site_url: https://microarch-flow.github.io/wiki/
+repo_url: https://github.com/microarch-flow/wiki
+repo_name: microarch-flow/wiki
+docs_dir: .site-build/docs
+site_dir: .site-build/site
+hooks:
+  - website/hooks.py
+theme:
+  name: material
+  language: zh
+  font: false
+  logo: assets/images/mark.svg
+  favicon: assets/images/mark.svg
+  features:
+    - navigation.tabs
+    - navigation.indexes
+    - navigation.top
+    - toc.follow
+    - search.suggest
+    - search.highlight
+    - content.code.copy
+  palette:
+    primary: custom
+    accent: custom
+plugins:
+  - search:
+      lang:
+        - zh
+        - en
+markdown_extensions:
+  - tables
+  - attr_list
+  - md_in_html
+  - toc:
+      permalink: true
+      slugify: !!python/name:markdown.extensions.toc.slugify_unicode
+  - pymdownx.highlight
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
+extra_css:
+  - assets/stylesheets/site.css
+extra_javascript:
+  - assets/javascripts/visuals.js
+extra:
+  generator: false

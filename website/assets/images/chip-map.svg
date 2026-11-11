@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="760" height="620" viewBox="0 0 760 620" role="img" aria-labelledby="title desc">
+  <title id="title">芯片中的数据路径</title>
+  <desc id="desc">计算、片上存储、片上互连和外部存储的概念示意。</desc>
+  <style>
+    .flow { animation: flow 4s linear infinite; }
+    .flow.two { animation-delay: -2s; }
+    @keyframes flow { 0% { opacity: 0; transform: translateX(0); } 12% { opacity: 1; } 82% { opacity: 1; } 100% { opacity: 0; transform: translateX(84px); } }
+    @media (prefers-reduced-motion: reduce) { .flow { animation: none; opacity: 0; } }
+  </style>
+  <defs><pattern id="grid" width="28" height="28" patternUnits="userSpaceOnUse"><path d="M28 0H0V28" fill="none" stroke="#dce7dd" stroke-width="1"/></pattern></defs>
+  <rect width="760" height="620" rx="24" fill="#e8f0e8"/>
+  <rect x="20" y="20" width="720" height="580" rx="18" fill="url(#grid)"/>
+  <g fill="none" stroke="#719687" stroke-width="2" opacity=".65"><path d="M75 170h70M75 214h70M75 258h70M75 302h70M75 346h70M75 390h70M75 434h70M615 170h70M615 214h70M615 258h70M615 302h70M615 346h70M615 390h70M615 434h70"/><path d="M216 95v60M270 95v60M324 95v60M378 95v60M432 95v60M486 95v60M540 95v60M216 465v60M270 465v60M324 465v60M378 465v60M432 465v60M486 465v60M540 465v60"/></g>
+  <rect x="144" y="154" width="472" height="312" rx="20" fill="#123d35"/>
+  <rect x="157" y="167" width="446" height="286" rx="13" fill="#174b40" stroke="#8db3a1" stroke-opacity=".5"/>
+  <rect x="182" y="190" width="153" height="102" rx="8" fill="#d6efa1"/>
+  <path d="M198 216h121M198 233h121M198 250h121M198 267h121M222 200v82M247 200v82M272 200v82M297 200v82" stroke="#99bc70" stroke-width="1"/>
+  <text x="196" y="281" fill="#173e34" font-family="sans-serif" font-size="12" font-weight="700" letter-spacing="2">COMPUTE</text>
+  <rect x="424" y="190" width="153" height="102" rx="8" fill="#8bb9a5"/>
+  <g fill="#427968"><rect x="440" y="207" width="24" height="15" rx="2"/><rect x="469" y="207" width="24" height="15" rx="2"/><rect x="498" y="207" width="24" height="15" rx="2"/><rect x="527" y="207" width="24" height="15" rx="2"/><rect x="440" y="229" width="24" height="15" rx="2"/><rect x="469" y="229" width="24" height="15" rx="2"/><rect x="498" y="229" width="24" height="15" rx="2"/><rect x="527" y="229" width="24" height="15" rx="2"/></g>
+  <text x="440" y="281" fill="#173e34" font-family="sans-serif" font-size="12" font-weight="700" letter-spacing="1.4">ON-CHIP MEMORY</text>
+  <rect x="182" y="320" width="395" height="48" rx="8" fill="#387666"/>
+  <text x="198" y="350" fill="#e7f1df" font-family="sans-serif" font-size="12" font-weight="700" letter-spacing="1.6">ON-CHIP INTERCONNECT</text>
+  <path d="M258 292v28M500 292v28M380 368v45" fill="none" stroke="#acd0ac" stroke-width="3"/>
+  <rect x="288" y="398" width="184" height="42" rx="6" fill="#e2bd90"/>
+  <text x="380" y="424" text-anchor="middle" fill="#403b2e" font-family="sans-serif" font-size="11" font-weight="700" letter-spacing="1.4">MEMORY INTERFACE</text>
+  <path d="M335 240h89" stroke="#d8f39a" stroke-width="2" stroke-dasharray="4 5"/>
+  <circle class="flow" cx="338" cy="240" r="4" fill="#f4c79b"/>
+  <circle class="flow two" cx="338" cy="240" r="4" fill="#f4c79b"/>
+  <text x="79" y="65" fill="#557b6a" font-family="sans-serif" font-size="12" letter-spacing="2">SYSTEM / CONCEPTUAL VIEW</text>
+  <text x="76" y="566" fill="#557b6a" font-family="sans-serif" font-size="12" letter-spacing="1">NOT A PHYSICAL FLOORPLAN</text>
+  <circle cx="677" cy="560" r="7" fill="#db9d77"/><circle cx="700" cy="560" r="7" fill="#b3ca9d"/>
+</svg>

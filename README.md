@@ -2,6 +2,8 @@
 
 本 wiki 面向希望理解芯片，并建立可解释模拟器的读者。建议先读[电路到时序的共用基础](./electrical-timing-foundations.md)。它从电容充电算到采样边沿，再说明这些连续过程如何成为离散事件模型的参数。
 
+网站版的本地预览、内容维护与 GitHub Pages 发布方法见[网站构建与维护](./website/README.md)。
+
 ## 先回答哪些问题
 
 1. **电路为何需要时间？** 电压变化需要电流给电容充放电；互连还有传播与反射。先读[共用基础](./electrical-timing-foundations.md)。
