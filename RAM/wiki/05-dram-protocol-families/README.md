@@ -25,14 +25,14 @@
 
 建议按下面顺序阅读本目录：
 
-1. [ACT/RD/WR/PRE：DRAM 命令集为什么长这样](./commands-act-rd-wr-pre.md)
-2. [关键 timing 参数：tRCD/tRP/tRAS/tCL 的物理来源](./timing-parameters-trcd-trp-tras.md)
-3. [DDR：为什么要在时钟两边都传数据](./why-double-data-rate.md)
-4. [DDR1 -> DDR5：每一代的核心改变是什么](./ddr-generation-evolution.md)
-5. [LPDDR：为了功耗放弃了什么](./lpddr-low-power-mobile.md)
-6. [GDDR：为带宽放弃了什么](./gddr-graphics-bandwidth.md)
-7. [HBM：从协议层面看它和 DDR 的根本不同](./hbm-stacked-wide-io.md)
-8. [四种 DRAM 协议的 trade-off 全景图](./ddr-lpddr-gddr-hbm-tradeoff-map.md)
+1. [DRAM 命令集](./commands-act-rd-wr-pre.md)
+2. [DRAM 时序参数](./timing-parameters-trcd-trp-tras.md)
+3. [双倍数据速率](./why-double-data-rate.md)
+4. [DDR 代际演进](./ddr-generation-evolution.md)
+5. [LPDDR 与低功耗](./lpddr-low-power-mobile.md)
+6. [GDDR 与高带宽](./gddr-graphics-bandwidth.md)
+7. [HBM 与 DDR 协议](./hbm-stacked-wide-io.md)
+8. [DRAM 协议对比](./ddr-lpddr-gddr-hbm-tradeoff-map.md)
 
 如果你这次主要想补“DDR/LPDDR/GDDR/HBM 到底怎么分家”的直觉，优先看 3 -> 8。第一次系统阅读，建议完整按 1 -> 8 顺序走。
 

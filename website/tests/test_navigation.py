@@ -30,24 +30,48 @@ def page_url(relative):
 
 
 class GeneratedNavigationTests(unittest.TestCase):
-    def test_ram_overview_reading_list_matches_navigation(self):
-        html = (SITE / "RAM/wiki/01-overview/index.html").read_text(encoding="utf-8")
+    def test_ram_chapter_reading_lists_match_navigation(self):
+        chapters = sorted((SITE / "RAM/wiki").glob("[0-9][0-9]-*/index.html"))
+        self.assertGreater(len(chapters), 0)
+        clean = lambda items: [(unescape(url), unescape(" ".join(label.split()))) for url, label in items]
+        for chapter in chapters:
+            with self.subTest(chapter=chapter.parent.name):
+                html = chapter.read_text(encoding="utf-8")
+                start = html.index('<div class="md-sidebar md-sidebar--primary"')
+                end = html.index('<div class="md-sidebar md-sidebar--secondary"', start)
+                primary = html[start:end]
+                active = ACTIVE_LINK.search(primary)
+                self.assertIsNotNone(active)
+                section = re.search(r'<nav class="md-nav"[^>]*>.*?<ul class="md-nav__list"[^>]*>(.*?)</ul>', primary[active.end():], re.DOTALL)
+                self.assertIsNotNone(section)
+                nav_items = re.findall(r'<a\s+href="([^"]+)"[^>]*>\s*<span class="md-ellipsis">(.*?)</span>\s*</a>', section.group(1), re.DOTALL)
+                reading_section = re.search(r'<h2\b[^>]*>[^<]*(?:阅读顺序|接下来怎么读).*?</h2>.*?<ol>(.*?)</ol>', html, re.DOTALL)
+                self.assertIsNotNone(reading_section)
+                reading_items = re.findall(r'<li>\s*<a href="([^"]+)">(.*?)</a>', reading_section.group(1), re.DOTALL)
+                self.assertGreater(len(reading_items), 0)
+                self.assertEqual(clean(nav_items), clean(reading_items))
+
+        overview = (SITE / "RAM/wiki/01-overview/index.html").read_text(encoding="utf-8")
+        self.assertIn('class="ram-calculation"', overview)
+        self.assertIn('class="ram-event-sequence"', overview)
+
+    def test_ram_sidebar_short_names_keep_full_article_titles(self):
+        relative = Path("RAM/wiki/01-overview/problem-statement/index.html")
+        html = (SITE / relative).read_text(encoding="utf-8")
+        self.assertIn('title="为什么存储系统难设计？从一次读取看跨层约束"', html)
+        self.assertIn('<span class="md-ellipsis">存储系统为何难设计</span>', html)
+        self.assertIn('<h1 id="为什么存储系统难设计从一次读取看跨层约束">为什么存储系统难设计？从一次读取看跨层约束', html)
+
         start = html.index('<div class="md-sidebar md-sidebar--primary"')
         end = html.index('<div class="md-sidebar md-sidebar--secondary"', start)
-        primary = html[start:end]
-        active = ACTIVE_LINK.search(primary)
-        self.assertIsNotNone(active)
-        section = re.search(r'<nav class="md-nav"[^>]*>.*?<ul class="md-nav__list"[^>]*>(.*?)</ul>', primary[active.end():], re.DOTALL)
+        nav = re.findall(r'<a\s+href="([^"]+)"[^>]*>\s*<span class="md-ellipsis">(.*?)</span>\s*</a>', html[start:end], re.DOTALL)
+        names = {urljoin(page_url(relative), unescape(href)): unescape(" ".join(label.split())) for href, label in nav}
+        section = re.search(r'<h2 id="接下来怎么读".*?</h2>\s*<ul>(.*?)</ul>', html, re.DOTALL)
         self.assertIsNotNone(section)
-        nav_items = re.findall(r'<a\s+href="([^"]+)"[^>]*>\s*<span class="md-ellipsis">(.*?)</span>\s*</a>', section.group(1), re.DOTALL)
-        reading_section = re.search(r'<h2 id="8-接下来怎么读".*?</h2>.*?<ol>(.*?)</ol>', html, re.DOTALL)
-        self.assertIsNotNone(reading_section)
-        reading_items = re.findall(r'<li>\s*<a href="([^"]+)">(.*?)</a>', reading_section.group(1), re.DOTALL)
-        clean = lambda items: [(unescape(url), unescape(" ".join(label.split()))) for url, label in items]
-        self.assertGreater(len(reading_items), 0)
-        self.assertEqual(clean(nav_items), clean(reading_items))
-        self.assertIn('class="ram-calculation"', html)
-        self.assertIn('class="ram-event-sequence"', html)
+        links = re.findall(r'<li>\s*<a href="([^"]+)">(.*?)</a>', section.group(1), re.DOTALL)
+        self.assertGreater(len(links), 0)
+        for href, label in links:
+            self.assertEqual(names.get(urljoin(page_url(relative), unescape(href))), unescape(label))
 
     def test_numbered_reading_order_ignores_non_sibling_links(self):
         with tempfile.TemporaryDirectory() as tmp:
@@ -70,6 +94,10 @@ class GeneratedNavigationTests(unittest.TestCase):
 
     def test_article_paths_and_distinct_parent_links(self):
         cases = {
+            "RAM/wiki/01-overview/problem-statement/index.html": [
+                "首页", "微架构", "专题", "RAM · 存储系统", "存储系统概览",
+                "为什么存储系统难设计？从一次读取看跨层约束",
+            ],
             "RAM/wiki/02-sram-foundations/6t-cell-bistable-storage/index.html": [
                 "首页", "微架构", "专题", "RAM · 存储系统", "SRAM 基础",
                 "6T SRAM cell：它如何保存、读取和写入 1 bit",

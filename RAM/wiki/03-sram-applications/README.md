@@ -25,11 +25,11 @@
 
 建议按下面顺序阅读本目录：
 
-1. [Register file 为什么是一种特殊 SRAM](./register-file-as-sram.md)
-2. [Cache 里的 SRAM：tag 阵列与 data 阵列的差异](./cache-sram-tag-data-arrays.md)
-3. [Scratchpad 和 cache 都是 SRAM，差异在哪](./scratchpad-vs-cache.md)
-4. [NPU 里的 SRAM buffer：weight/activation/accumulator](./npu-weight-buffer-activation-buffer.md)
-5. [MCU 里的 TCM——为什么实时性需要确定性 SRAM](./tcm-itcm-dtcm-in-mcu.md)
+1. [Register file](./register-file-as-sram.md)
+2. [Cache 的 tag 与 data](./cache-sram-tag-data-arrays.md)
+3. [Scratchpad 与 cache](./scratchpad-vs-cache.md)
+4. [NPU 的 SRAM buffer](./npu-weight-buffer-activation-buffer.md)
+5. [TCM 与实时性](./tcm-itcm-dtcm-in-mcu.md)
 
 如果你更关心通用处理器和软件可见语义，优先看 1 -> 3。若你的重点是 AI 芯片和实时系统，再接着看 4 -> 5。
 

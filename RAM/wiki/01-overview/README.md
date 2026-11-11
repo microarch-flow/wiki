@@ -1,5 +1,7 @@
 # RAM 存储系统概览：数据如何从存储走到计算
 
+<!-- nav-title: 存储系统概览 -->
+
 上级：[RAM 专题主页](../README.md)
 
 相关：[SRAM 6T cell](../02-sram-foundations/6t-cell-bistable-storage.md) · [存储层次与系统角色](../07-system-architecture/memory-hierarchy-as-system.md) · [学习路线](./learning-roadmap.md)
@@ -118,10 +120,10 @@ DMA 是发起和执行搬运的模块；内存控制器负责对 DRAM 请求进�
 
 本章后续文章按问题逐步展开：
 
-1. [为什么存储系统难设计？从一次读取看跨层约束](./problem-statement.md)：观察约束如何跨层耦合。
-2. [速度、容量、成本、功耗四角矛盾的根源](./memory-hierarchy-tension.md)：区分不同目标及其代价。
-3. [同样是 RAM，为什么 SRAM 和 DRAM 走向了完全不同的工程路径](./sram-dram-divergence.md)：从存储方式推导组织差异。
-4. [学习路径与各章节依赖关系](./learning-roadmap.md)：按目标选择后续章节。
-5. [RAM 家族的分类与命名体系](./taxonomy.md)：进一步区分单元、角色、接口和封装。
+1. [存储系统为何难设计](./problem-statement.md)：观察约束如何跨层耦合。
+2. [速度·容量·成本·功耗](./memory-hierarchy-tension.md)：区分四个目标及其代价。
+3. [SRAM 与 DRAM 的分化](./sram-dram-divergence.md)：从存储方式推导组织差异。
+4. [学习路径与章节依赖](./learning-roadmap.md)：按目标选择后续章节。
+5. [RAM 分类与命名](./taxonomy.md)：进一步区分单元、角色、接口和封装。
 
 如果想先深入一颗 SRAM 单元，可以直接阅读 [6T SRAM cell：它如何保存、读取和写入 1 bit](../02-sram-foundations/6t-cell-bistable-storage.md)。如果当前目标是 DRAM 建模，可以转到 [DRAM 基础](../04-dram-foundations/README.md)和 [Memory Controller](../06-memory-controller/README.md)。

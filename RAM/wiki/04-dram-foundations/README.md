@@ -25,14 +25,14 @@
 
 建议按下面顺序阅读本目录：
 
-1. [1T1C cell——一颗电容为什么改变了一切](./1t1c-cell-destructive-read.md)
-2. [刷新：DRAM 的原罪和它的代价](./refresh-the-fundamental-cost.md)
-3. [行列解码与读出放大：为什么 DRAM 必须“先开行”](./row-column-decode-sense-amplify.md)
-4. [Row buffer：DRAM 内部的小 cache](./row-buffer-as-cache.md)
-5. [Bank 为什么是 DRAM 并行性的最小单位](./bank-organization-parallelism.md)
-6. [Channel、Rank、Chip：从引脚到 cell 的完整物理层级](./channel-rank-chip-hierarchy.md)
-7. [Bank group、prefetch、burst：高频接口下的必然演化](./bank-group-prefetch-burst.md)
-8. [DRAM 工艺路线：平面 -> 堆叠 -> 3D](./dram-process-stacking-trends.md)
+1. [1T1C 存储单元](./1t1c-cell-destructive-read.md)
+2. [DRAM 刷新](./refresh-the-fundamental-cost.md)
+3. [行列解码与读出放大](./row-column-decode-sense-amplify.md)
+4. [Row buffer](./row-buffer-as-cache.md)
+5. [Bank 与并行性](./bank-organization-parallelism.md)
+6. [Channel、rank 与 chip](./channel-rank-chip-hierarchy.md)
+7. [Bank group 与 burst](./bank-group-prefetch-burst.md)
+8. [DRAM 工艺与堆叠](./dram-process-stacking-trends.md)
 
 如果你这次只想补”为什么 DRAM 会暴露出 ACT/RD/PRE 这种命令式接口”的直觉，优先看 1 -> 5。第一次系统阅读，建议完整按 1 -> 8 顺序走。
 

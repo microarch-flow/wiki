@@ -29,11 +29,11 @@
 
 建议按下面顺序阅读本目录：
 
-1. [传统封装：DIMM/SODIMM 的电气与机械约束](./dimm-sodimm-traditional-forms.md)
-2. [PoP/MCP：移动端的集成方式](./pop-mcp-mobile-integration.md)
-3. [HBM 的 2.5D/3D 集成与 TSV 技术](./hbm-2.5d-3d-tsv.md)
-4. [HBM 的成本结构](./why-hbm-is-expensive.md)
-5. [CXL、近存计算、未来封装方向](./future-packaging-cxl-near-memory.md)
+1. [DIMM 与 SODIMM](./dimm-sodimm-traditional-forms.md)
+2. [PoP 与 MCP](./pop-mcp-mobile-integration.md)
+3. [HBM 封装与 TSV](./hbm-2.5d-3d-tsv.md)
+4. [HBM 的成本](./why-hbm-is-expensive.md)
+5. [CXL 与近存计算](./future-packaging-cxl-near-memory.md)
 
 如果你这次主要想补“为什么 HBM 不只是协议不同，而是整条集成路线不同”，优先看 3 -> 5。第一次系统阅读，建议完整按 1 -> 5 顺序走。
 

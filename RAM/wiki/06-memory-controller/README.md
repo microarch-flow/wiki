@@ -27,14 +27,14 @@ Memory controller 连接请求接口和 DRAM 协议。对上，它接收来自 C
 
 建议按下面顺序阅读本目录：
 
-1. [Memory controller 如何影响 DRAM 的实际性能](./why-mc-is-the-real-bottleneck.md)
-2. [命令调度：FR-FCFS 及其变体](./command-scheduling-fr-fcfs.md)
-3. [Open/close/adaptive page policy 的权衡](./page-policy-open-close-adaptive.md)
-4. [Refresh 调度：分散刷新、推迟刷新、bank-level refresh](./refresh-management-distributed-postponed.md)
-5. [写缓冲与 write drain：为什么读优先](./write-buffer-write-drain.md)
-6. [地址映射：物理地址到 channel/rank/bank/row/col 的拆分艺术](./address-mapping-channel-rank-bank-row-col.md)
-7. [多 master 场景下的 QoS 与公平性](./qos-multi-master-arbitration.md)
-8. [MC 在 cycle-level 仿真里的建模方法](./mc-modeling-for-simulation.md)
+1. [控制器与 DRAM 性能](./why-mc-is-the-real-bottleneck.md)
+2. [命令调度与 FR-FCFS](./command-scheduling-fr-fcfs.md)
+3. [开页与关页策略](./page-policy-open-close-adaptive.md)
+4. [刷新调度](./refresh-management-distributed-postponed.md)
+5. [写缓冲与写排空](./write-buffer-write-drain.md)
+6. [地址映射](./address-mapping-channel-rank-bank-row-col.md)
+7. [QoS 与公平性](./qos-multi-master-arbitration.md)
+8. [控制器仿真建模](./mc-modeling-for-simulation.md)
 
 如果你这次主要想补“为什么同一套 DRAM 颗粒会跑出完全不同的系统行为”，优先看 1 -> 7。若你的目的已经是做仿真或架构探索，再接着看 8。
 

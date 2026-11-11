@@ -5,7 +5,7 @@
   // Keep the full name available when a navigation label is visually shortened.
   sidebar.querySelectorAll('.md-nav__link > .md-ellipsis').forEach((text) => {
     const label = text.textContent.replace(/\s+/g, ' ').trim();
-    if (label) text.parentElement.setAttribute('title', label);
+    if (label && !text.parentElement.hasAttribute('title')) text.parentElement.setAttribute('title', label);
   });
 
   sidebar.querySelectorAll('li.md-nav__item--nested').forEach((item) => {

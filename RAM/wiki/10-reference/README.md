@@ -35,13 +35,13 @@
 
 这一章不要求严格线性读完，但如果你想先建立一个最稳的参考层入口，建议按下面顺序：
 
-1. [存储器设计的第一性原理清单](./first-principles.md)
+1. [存储设计第一性原理](./first-principles.md)
 2. [术语表](./glossary.md)
 3. [高频问答](./high-frequency-questions.md)
-4. [DRAM timing 参数速查](./timing-parameter-cheatsheet.md)
-5. [SRAM 设计与选型 checklist](./sram-design-checklist.md)
-6. [DRAM 系统调试 checklist](./dram-debug-checklist.md)
-7. [存储器在架构探索中的建模模板](./memory-modeling-template.md)
+4. [DRAM 时序速查](./timing-parameter-cheatsheet.md)
+5. [SRAM 选型清单](./sram-design-checklist.md)
+6. [DRAM 调试清单](./dram-debug-checklist.md)
+7. [存储系统建模模板](./memory-modeling-template.md)
 
 如果你是：
 

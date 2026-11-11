@@ -6,7 +6,7 @@ import json
 from pathlib import Path, PurePosixPath
 import posixpath
 import re
-from urllib.parse import quote, unquote, urlsplit
+from urllib.parse import quote, unquote, urljoin, urlsplit
 
 from mkdocs.utils import get_relative_url
 
@@ -76,12 +76,12 @@ def title(path):
     return match.group(1).strip() if match else path.stem.replace("-", " ")
 
 
-def reading_order(directory):
-    """Use an index's explicit numbered reading list for sibling articles."""
+def reading_items(directory):
+    """Read labels and targets from an index's numbered sibling reading list."""
     index = directory / "README.md"
     if not index.is_file():
         return []
-    order = []
+    items = []
     section_level = None
     fence = None
     for line in index.read_text(encoding="utf-8").splitlines():
@@ -97,7 +97,7 @@ def reading_order(directory):
         if heading:
             level = len(heading.group(1))
             if section_level is not None and level <= section_level:
-                if order:
+                if items:
                     break
                 section_level = None
             label = re.sub(r"^\d+[.、．]?\s*", "", heading.group(2)).strip()
@@ -106,16 +106,38 @@ def reading_order(directory):
             continue
         if section_level is None:
             continue
-        item = re.match(r"^\s*\d+[.)、]\s+\[[^\]]+\]\(([^)]+)\)", line)
+        item = re.match(r"^\s*\d+[.)、]\s+\[([^\]]+)\]\(([^)]+)\)", line)
         if not item:
             continue
-        target = urlsplit(unescape(item.group(1)))
+        target = urlsplit(unescape(item.group(2)))
         if target.scheme or target.netloc or not target.path:
             continue
         path = (directory / unquote(target.path)).resolve()
-        if path.parent == directory.resolve() and path.is_file() and path.suffix.lower() == ".md" and path.name not in {"README.md", "SUMMARY.md"} and path.name not in order:
-            order.append(path.name)
-    return order
+        if path.parent == directory.resolve() and path.is_file() and path.suffix.lower() == ".md" and path.name not in {"README.md", "SUMMARY.md"} and all(name != path.name for name, _ in items):
+            items.append((path.name, unescape(item.group(1)).strip()))
+    return items
+
+
+def reading_order(directory):
+    """Use an index's explicit numbered reading list for sibling articles."""
+    return [name for name, _ in reading_items(directory)]
+
+
+def ram_sidebar_labels(root):
+    """Use RAM chapter reading-list labels as concise sidebar names."""
+    labels = {}
+    wiki = root / "RAM" / "wiki"
+    for chapter in sorted(path for path in wiki.iterdir() if path.is_dir()):
+        index = chapter / "README.md"
+        if not index.is_file():
+            continue
+        metadata = re.search(r"^<!--\s*nav-title:\s*(.+?)\s*-->\s*$", index.read_text(encoding="utf-8"), re.MULTILINE)
+        if metadata:
+            labels[index.relative_to(root).as_posix()] = (metadata.group(1), title(index))
+        for filename, label in reading_items(chapter):
+            path = chapter / filename
+            labels[path.relative_to(root).as_posix()] = (label, title(path))
+    return labels
 
 
 def make_tree(directory, root):
@@ -183,10 +205,12 @@ def strip_duplicate_parent(markdown, page, root):
     return "".join(lines)
 
 
-def render_breadcrumbs(page, root):
+def render_breadcrumbs(page, root, sidebar_labels=None):
     """Render links to real ancestor pages and the current article title."""
     items = [("首页", "/")]
-    items.extend((label, index.url if index is not None else None) for label, index in breadcrumb_ancestors(page))
+    sidebar_labels = sidebar_labels or {}
+    items.extend((sidebar_labels.get(index.file.src_uri, (label,))[0] if index is not None else label,
+                  index.url if index is not None else None) for label, index in breadcrumb_ancestors(page))
     links = [
         ('<li><a href="{}">{}</a></li>'.format(escape(get_relative_url(url, page.url), quote=True), escape(label))
          if url is not None else '<li><span>{}</span></li>'.format(escape(label)))
@@ -203,6 +227,7 @@ def has_breadcrumbs(page):
 def on_config(config, **kwargs):
     root = Path(config.docs_dir)
     read_series(root)
+    config.extra["ram_sidebar_labels"] = ram_sidebar_labels(root)
     # These files use stable paths. A content-derived query prevents browsers
     # from combining freshly deployed HTML with a cached older CSS/JS file.
     for setting in ("extra_css", "extra_javascript"):
@@ -234,6 +259,17 @@ def on_config(config, **kwargs):
         ]},
     ]
     return config
+
+
+def on_nav(nav, config, files, **kwargs):
+    """Resolve source paths to generated URLs for sidebar labels."""
+    labels = config.extra.get("ram_sidebar_labels", {})
+    config.extra["ram_sidebar_urls"] = {
+        file.url: labels[path]
+        for path in labels
+        if (file := files.get_file_from_path(path)) is not None
+    }
+    return nav
 
 
 def on_page_markdown(markdown, page, **kwargs):
@@ -289,11 +325,32 @@ def on_page_content(html, page, **kwargs):
     elif page.file.src_uri == "RAM/wiki/01-overview/problem-statement.md":
         html = f'<div class="ram-problem-article">\n{html}\n</div>'
     if has_breadcrumbs(page):
-        html = render_breadcrumbs(page, Path(kwargs["config"].docs_dir)) + "\n" + html
+        config = kwargs["config"]
+        html = render_breadcrumbs(page, Path(config.docs_dir), config.extra.get("ram_sidebar_labels")) + "\n" + html
     return html
 
 
 def on_post_page(output, page, **kwargs):
-    """Expose the theme's current navigation link to assistive technology."""
+    """Shorten RAM sidebar labels and expose the current page accessibly."""
+    labels = kwargs["config"].extra.get("ram_sidebar_urls", {})
+    start = output.find('<div class="md-sidebar md-sidebar--primary"')
+    end = output.find('<div class="md-sidebar md-sidebar--secondary"', start)
+    if labels and start >= 0 and end >= 0:
+        link = re.compile(r'(<a\s+href="([^"]+)"\s+class="[^"]*\bmd-nav__link\b[^"]*"[^>]*)(>\s*<span class="md-ellipsis">)(.*?)(</span>\s*</a>)', re.DOTALL)
+
+        def shorten(match):
+            target = urlsplit(urljoin("https://navigation.invalid/" + page.url, unescape(match.group(2))))
+            if target.netloc != "navigation.invalid" or target.fragment:
+                return match.group(0)
+            label = labels.get(unquote(target.path).lstrip("/"))
+            if not label or label[0] == label[1]:
+                return match.group(0)
+            short, full = label
+            return '{} title="{}" aria-label="{}"{}{}{}'.format(
+                match.group(1), escape(full, quote=True), escape(full, quote=True),
+                match.group(3), escape(short), match.group(5),
+            )
+
+        output = output[:start] + link.sub(shorten, output[start:end]) + output[end:]
     active_link = r'(<a\b[^>]*\bclass="[^"]*\bmd-nav__link--active\b[^"]*"[^>]*)(>)'
     return re.sub(active_link, lambda match: match.group(0) if "aria-current=" in match.group(1) else match.group(1) + ' aria-current="page"' + match.group(2), output)

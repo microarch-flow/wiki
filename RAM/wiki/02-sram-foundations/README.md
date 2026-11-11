@@ -25,13 +25,13 @@
 
 建议按下面顺序阅读本目录：
 
-1. [6T cell 为什么是 6 个晶体管——双稳态如何对抗扰动](./6t-cell-bistable-storage.md)
-2. [字线、位线、读出放大器：SRAM 的电路骨架](./wordline-bitline-sense-amp.md)
-3. [SRAM 一次访问的电气阶段与接口时序](./read-write-cycle-timing.md)
-4. [单口、双口、多口 SRAM——端口数为什么是关键代价](./single-port-dual-port-multi-port.md)
-5. [bank/sub-array/mat：SRAM 阵列怎么划分才高效](./sram-array-organization.md)
-6. [为什么 SRAM 在先进制程下不再 scale](./sram-process-scaling-challenge.md)
-7. [漏电、保持电压、low-power SRAM 设计](./sram-power-leakage-retention.md)
+1. [6T SRAM cell](./6t-cell-bistable-storage.md)
+2. [字线、位线与读出放大](./wordline-bitline-sense-amp.md)
+3. [SRAM 读写时序](./read-write-cycle-timing.md)
+4. [SRAM 端口与代价](./single-port-dual-port-multi-port.md)
+5. [SRAM 阵列组织](./sram-array-organization.md)
+6. [先进工艺与 SRAM](./sram-process-scaling-challenge.md)
+7. [SRAM 漏电与低功耗](./sram-power-leakage-retention.md)
 
 如果你这次只想补“为什么 SRAM 不能无限做大、无限提频”的直觉，优先看 4 -> 7。第一次系统阅读，仍然建议按 1 -> 7 顺序走。
 

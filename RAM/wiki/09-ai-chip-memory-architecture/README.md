@@ -29,13 +29,13 @@
 
 建议按下面顺序阅读本目录：
 
-1. [NPU 的存储层次：L0/L1/L2 SRAM + HBM/LPDDR](./npu-memory-hierarchy.md)
-2. [Weight buffer 的容量与组织：从 model size 反推](./weight-buffer-design.md)
-3. [Activation buffer 与 double buffering：data movement 与 compute 的重叠](./activation-buffer-and-double-buffering.md)
-4. [NPU 的 on-chip 带宽预算从哪来、到哪去](./on-chip-bandwidth-budget.md)
-5. [NPU 选 HBM 还是 LPDDR——决策框架](./hbm-vs-lpddr-for-npu.md)
-6. [“数据搬运优先”原则在 NPU 设计中的体现](./data-movement-first-principle.md)
-7. [Memory bound vs compute bound 的本质与缓解策略](./memory-bound-vs-compute-bound.md)
+1. [NPU 存储层次](./npu-memory-hierarchy.md)
+2. [Weight buffer 设计](./weight-buffer-design.md)
+3. [激活缓冲与双缓冲](./activation-buffer-and-double-buffering.md)
+4. [片上带宽预算](./on-chip-bandwidth-budget.md)
+5. [HBM 与 LPDDR 选型](./hbm-vs-lpddr-for-npu.md)
+6. [数据搬运优先](./data-movement-first-principle.md)
+7. [存储瓶颈与计算瓶颈](./memory-bound-vs-compute-bound.md)
 
 如果你这次主要想补“为什么 NPU 经常先被数据流卡住而不是先被 MAC 数量卡住”，优先看 1 -> 4 和 6 -> 7。第一次系统阅读，建议完整按 1 -> 7 顺序走。
 

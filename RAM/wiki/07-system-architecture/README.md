@@ -36,13 +36,13 @@
 
 建议按下面顺序阅读本目录：
 
-1. [带宽与延迟：两个不同的目标](./bandwidth-vs-latency-fundamental.md)
-2. [峰值带宽 vs 有效带宽：损失发生在哪里](./effective-bandwidth-vs-peak.md)
-3. [Cache 和 DRAM 如何协同——miss 之后发生了什么](./cache-dram-coordination.md)
-4. [多通道、多 socket、NUMA：扩展带宽的代价](./numa-multi-channel-multi-socket.md)
-5. [把 register/cache/scratchpad/DRAM/HBM 看作一个系统](./memory-hierarchy-as-system.md)
-6. [SRAM 和 DRAM 在访问模式上的根本区别（压轴对比）](./sram-vs-dram-access-pattern.md)
-7. [MCU/CPU/GPU/NPU 选择不同存储器的逻辑](./why-systems-choose-different-memory.md)
+1. [带宽与延迟](./bandwidth-vs-latency-fundamental.md)
+2. [峰值与有效带宽](./effective-bandwidth-vs-peak.md)
+3. [Cache 与 DRAM 协同](./cache-dram-coordination.md)
+4. [多通道与 NUMA](./numa-multi-channel-multi-socket.md)
+5. [存储层次与系统角色](./memory-hierarchy-as-system.md)
+6. [SRAM 与 DRAM 访问模式](./sram-vs-dram-access-pattern.md)
+7. [系统的存储器选择](./why-systems-choose-different-memory.md)
 
 如果你这次主要想补“为什么系统里的内存表现总和器件参数表不一样”，优先看 1 -> 6。若你的重点是不同系统为什么选不同路线，再接着看 7。
 
