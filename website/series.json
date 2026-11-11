@@ -4,6 +4,16 @@
       "title": "芯片微架构笔记",
       "description": "从电路、存储和互连出发，理解芯片架构与系统建模。",
       "page": "microarchitecture.md"
+    },
+    {
+      "title": "算法与模型（Workload Wiki）",
+      "description": "从基础组件到感知、自动驾驶、机器人和世界模型，并按需延伸到芯片工作负载。",
+      "source": {
+        "slug": "workload-wiki",
+        "repository": "microarch-flow/workload-wiki",
+        "ref": "main",
+        "directory": "."
+      }
     }
   ]
 }
