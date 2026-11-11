@@ -45,6 +45,7 @@ markdown_extensions:
 extra_css:
   - assets/stylesheets/site.css
 extra_javascript:
+  - assets/javascripts/navigation.js
   - assets/javascripts/visuals.js
   - assets/javascripts/sram.js
   - assets/javascripts/ram-overview.js

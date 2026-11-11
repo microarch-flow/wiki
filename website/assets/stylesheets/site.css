@@ -20,11 +20,17 @@ body { background: var(--paper); }
 .md-typeset { color: #263d35; line-height: 1.8; }
 .md-typeset h1, .md-typeset h2, .md-typeset h3 { color: var(--ink); font-weight: 700; letter-spacing: -.025em; }
 .md-typeset a { color: #32745e; }
+.md-typeset :is(p, li, td) a:not([class]) { color: #006e80; text-decoration: underline; text-decoration-color: #83b2b8; text-decoration-thickness: .075em; text-underline-offset: .17em; }
+.md-typeset :is(p, li, td) a:not([class]):hover { color: #004d5d; text-decoration-color: currentColor; }
 .md-typeset table:not([class]) { border-color: var(--line); }
 .md-typeset code, .md-typeset pre > code { border-radius: .3rem; }
 .md-footer { background: #163a32; }
 
 /* Keep the current article distinct from its ancestor sections. */
+.md-sidebar--primary .md-nav__link > .md-ellipsis { display: block; flex: 1 1 auto; min-width: 0; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+@media (hover: none) {
+  .md-sidebar--primary .md-nav__link > .md-ellipsis { overflow: visible; white-space: normal; }
+}
 .md-sidebar--primary a.md-nav__link--active,
 .md-sidebar--primary label.md-nav__link--active[for="__toc"] { position: relative; z-index: 0; color: #164b35; font-weight: 700; }
 .md-sidebar--primary a.md-nav__link--active::before,
@@ -38,8 +44,8 @@ body { background: var(--paper); }
 .md-typeset .site-breadcrumbs ol { display: flex; flex-wrap: wrap; align-items: baseline; gap: .15rem 0; margin: 0; padding: 0; list-style: none; }
 .md-typeset .site-breadcrumbs li { display: flex; min-width: 0; align-items: baseline; margin: 0; overflow-wrap: anywhere; }
 .md-typeset .site-breadcrumbs li + li::before { content: "/"; margin: 0 .48rem; color: #99ad9c; }
-.md-typeset .site-breadcrumbs a { color: #39765a; text-decoration: none; }
-.md-typeset .site-breadcrumbs a:hover { text-decoration: underline; }
+.md-typeset .site-breadcrumbs li a:not([class]) { color: #39765a; text-decoration: none; }
+.md-typeset .site-breadcrumbs li a:not([class]):hover { text-decoration: underline; }
 .md-typeset .site-breadcrumbs [aria-current="page"] { color: #284e3c; font-weight: 700; }
 
 /* Explanatory blocks in RAM articles are not source code. */
