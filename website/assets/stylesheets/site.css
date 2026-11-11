@@ -24,6 +24,25 @@ body { background: var(--paper); }
 .md-typeset code, .md-typeset pre > code { border-radius: .3rem; }
 .md-footer { background: #163a32; }
 
+/* Reading layout for the electrical timing foundations article. */
+.md-typeset .timing-article { max-width: 48rem; margin-bottom: 4rem; }
+.md-typeset .timing-article h1 { margin-bottom: .8em; line-height: 1.35; }
+.md-typeset .timing-article h2 { margin-top: 2.2rem; }
+.md-typeset .timing-article img { display: block; width: 100%; max-width: 40rem; border: 1px solid #d3e2d2; border-radius: .4rem; }
+.md-typeset .timing-article table:not([class]) th { background: #e3eee1; color: #214d3c; }
+.md-typeset .timing-article table:not([class]) td { background: #f8fbf6; }
+.md-typeset .timing-lede { padding: .85rem 1rem; border-left: .18rem solid #6d9c7c; border-radius: .2rem; background: #e8f0e5; color: #294f40; font-weight: 600; }
+.timing-journey, .timing-milestones { display: grid; gap: .45rem; margin: 1.3rem 0; }
+.timing-journey { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+.timing-milestones { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.timing-journey > div, .timing-milestones > div { min-width: 0; padding: .75rem .8rem; border: 1px solid #d3e2d2; border-radius: .35rem; background: #edf4ea; }
+.timing-journey span, .timing-milestones span { display: block; color: #527c63; font-size: .56rem; font-weight: 700; letter-spacing: .03em; }
+.timing-journey strong, .timing-milestones strong { display: block; margin-top: .2rem; color: #214d3c; font-size: .74rem; }
+.timing-journey small, .timing-milestones small { display: block; margin-top: .15rem; color: #617b69; font-size: .61rem; line-height: 1.6; }
+.timing-equation { display: flex; flex-wrap: wrap; align-items: baseline; gap: .3rem 1.5rem; overflow-x: auto; margin: 1.15rem 0; padding: .8rem 1rem; border: 1px solid #cee0ce; border-left: .18rem solid #70a081; border-radius: .35rem; background: #e9f2e7; color: #1d493a; font-family: Georgia, 'Times New Roman', serif; font-size: .84rem; line-height: 1.7; }
+.timing-equation > span { white-space: nowrap; }
+.timing-equation sub, .timing-equation sup { line-height: 0; }
+
 .portal-page { margin: -.3rem 0 2rem; }
 .portal-hero { display: grid; grid-template-columns: 1.04fr .96fr; min-height: 26rem; overflow: hidden; border: 1px solid #dbe6d7; border-radius: .85rem; background: #e9f0e6; }
 .portal-hero-copy { display: flex; flex-direction: column; justify-content: center; padding: clamp(2rem, 4.6vw, 4.2rem); }
@@ -250,6 +269,7 @@ body { background: var(--paper); }
 .ram-flow-controls button:focus-visible { outline: 3px solid #dc9a6e; outline-offset: 3px; }
 
 @media (max-width: 760px) {
+  .timing-journey, .timing-milestones { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .portal-hero { grid-template-columns: 1fr; }
   .portal-hero-copy { padding: 2rem 1.5rem .8rem; }
   .md-typeset .portal-caption { margin-top: 1.7rem; }
@@ -272,6 +292,7 @@ body { background: var(--paper); }
   .md-typeset .sram-scroll-hint { display: block; }
 }
 @media (max-width: 450px) {
+  .timing-equation { gap: .3rem 1rem; padding: .75rem .8rem; font-size: .78rem; }
   .portal-section-heading > p { display: none; }
   .mobile-break { display: inline; }
   .article-grid { grid-template-columns: 1fr; }

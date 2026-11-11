@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 395" role="img" aria-labelledby="title desc">
+  <title id="title">理想 RC 充电曲线</title>
+  <desc id="desc">一个时间常数为 100 皮秒的电路从 0 伏充至 0.8 伏。节点在约 69.3 皮秒时达到 0.4 伏，随后继续上升并逐渐接近 0.8 伏。</desc>
+  <rect width="760" height="395" rx="16" fill="#eef5eb"/>
+  <text x="104" y="39" fill="#214d3c" font-family="Arial, sans-serif" font-size="24" font-weight="700">理想 RC 充电：节点电压随时间变化</text>
+  <text x="623" y="39" fill="#537967" font-family="Arial, sans-serif" font-size="22">τ = 100 ps</text>
+  <g stroke="#cadbcb" stroke-width="1">
+    <path d="M104 74H716 M104 187H716 M104 300H716"/>
+    <path d="M308 74V300 M512 74V300 M716 74V300" stroke-dasharray="4 6"/>
+  </g>
+  <path d="M104 74V300H716" fill="none" stroke="#6e907a" stroke-width="2"/>
+  <g fill="#426b54" font-family="Arial, sans-serif" font-size="23">
+    <text x="85" y="80" text-anchor="end">0.8</text>
+    <text x="85" y="193" text-anchor="end">0.4</text>
+    <text x="85" y="306" text-anchor="end">0</text>
+    <text x="104" y="331" text-anchor="middle">0</text>
+    <text x="308" y="331" text-anchor="middle">100</text>
+    <text x="512" y="331" text-anchor="middle">200</text>
+    <text x="716" y="331" text-anchor="middle">300</text>
+    <text x="104" y="63">电压（V）</text>
+    <text x="410" y="372" text-anchor="middle">充电时间（ps）</text>
+  </g>
+  <path d="M104 187H245.4 M245.4 187V300" fill="none" stroke="#b77855" stroke-width="2" stroke-dasharray="6 5"/>
+  <path d="M 104.0 300.0 L 114.2 289.0 L 124.4 278.5 L 134.6 268.5 L 144.8 259.0 L 155.0 250.0 L 165.2 241.4 L 175.4 233.3 L 185.6 225.5 L 195.8 218.1 L 206.0 211.1 L 216.2 204.4 L 226.4 198.0 L 236.6 192.0 L 246.8 186.2 L 257.0 180.8 L 267.2 175.5 L 277.4 170.6 L 287.6 165.9 L 297.8 161.4 L 308.0 157.1 L 318.2 153.1 L 328.4 149.2 L 338.6 145.6 L 348.8 142.1 L 359.0 138.8 L 369.2 135.6 L 379.4 132.6 L 389.6 129.7 L 399.8 127.0 L 410.0 124.4 L 420.2 122.0 L 430.4 119.6 L 440.6 117.4 L 450.8 115.3 L 461.0 113.3 L 471.2 111.4 L 481.4 109.5 L 491.6 107.8 L 501.8 106.2 L 512.0 104.6 L 522.2 103.1 L 532.4 101.7 L 542.6 100.3 L 552.8 99.0 L 563.0 97.8 L 573.2 96.7 L 583.4 95.6 L 593.6 94.5 L 603.8 93.5 L 614.0 92.6 L 624.2 91.6 L 634.4 90.8 L 644.6 90.0 L 654.8 89.2 L 665.0 88.4 L 675.2 87.7 L 685.4 87.1 L 695.6 86.4 L 705.8 85.8 L 716.0 85.3" fill="none" stroke="#367a5c" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+  <circle cx="245.4" cy="187" r="7" fill="#c87c53" stroke="#eef5eb" stroke-width="3"/>
+  <path d="M253 193L272 209" fill="none" stroke="#b77855" stroke-width="2"/>
+  <rect x="272" y="207" width="215" height="44" rx="7" fill="#f7e5d3" stroke="#e0c2a5"/>
+  <text x="284" y="235" fill="#7c513c" font-family="Arial, sans-serif" font-size="23" font-weight="700">0.4 V / 69.3 ps</text>
+</svg>

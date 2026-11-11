@@ -167,3 +167,10 @@ def on_page_markdown(markdown, page, **kwargs):
     lines = markdown.splitlines(keepends=True)
     link = f"\n> 互动图解：[{label}](../../../visuals.md#{anchor})。\n\n"
     return lines[0] + link + "".join(lines[1:]) if lines else markdown
+
+
+def on_page_content(html, page, **kwargs):
+    """Scope the foundational article's reading layout to that page."""
+    if page.file.src_uri == "electrical-timing-foundations.md":
+        return f'<div class="timing-article">\n{html}\n</div>'
+    return html

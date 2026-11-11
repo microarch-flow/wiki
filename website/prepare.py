@@ -24,6 +24,7 @@ def main():
                 shutil.copy2(source / filename, target / filename)
 
     shutil.copytree(ROOT / "reviews", DOCS / "reviews")
+    shutil.copytree(ROOT / "img", DOCS / "img")
     shutil.copy2(ROOT / "electrical-timing-foundations.md", DOCS)
     shutil.copy2(ROOT / "website" / "home.md", DOCS / "README.md")
     shutil.copy2(ROOT / "website" / "series.md", DOCS / "series.md")
