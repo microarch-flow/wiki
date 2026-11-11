@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1080 260" role="img" aria-labelledby="title desc">
+<title id="title">串行输出时间示意</title><desc id="desc">十六进制 B2 的八位 10110010 按最高位先发，每位占 100 皮秒，总计 800 皮秒。</desc>
+<rect width="1080" height="260" rx="18" fill="#edf4f8"/><g font-family="-apple-system, BlinkMacSystemFont, sans-serif" fill="#17334d" text-anchor="middle">
+<text x="540" y="32" font-size="20" font-weight="600">0xB2：MSB-first，1 UI = 100 ps</text>
+<g stroke="#b1c6d5" stroke-dasharray="5 5"><path d="M125 55 V190 M225 55 V190 M325 55 V190 M425 55 V190 M525 55 V190 M625 55 V190 M725 55 V190 M825 55 V190 M925 55 V190"/></g>
+<g font-size="19"><text x="175" y="77">1</text><text x="275" y="77">0</text><text x="375" y="77">1</text><text x="475" y="77">1</text><text x="575" y="77">0</text><text x="675" y="77">0</text><text x="775" y="77">1</text><text x="875" y="77">0</text></g>
+<path d="M125 105 H225 V160 H325 V105 H525 V160 H725 V105 H825 V160 H925" fill="none" stroke="#17618b" stroke-width="5"/>
+<path d="M125 200 H930" stroke="#31587e" stroke-width="2"/><g font-size="15"><text x="125" y="224">0 ps</text><text x="525" y="224">400 ps</text><text x="925" y="224">800 ps</text><text x="540" y="247">逻辑示意：边沿不是实测波形</text></g>
+</g></svg>

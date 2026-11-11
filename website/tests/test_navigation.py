@@ -30,6 +30,61 @@ def page_url(relative):
 
 
 class GeneratedNavigationTests(unittest.TestCase):
+    def test_serdes_chapter_order_and_figures(self):
+        counts = {
+            "01-overview": 4, "02-signal-channel": 6, "03-transmitter": 5,
+            "04-receiver": 7, "05-signaling-and-metrics": 5, "06-link-operation": 5,
+            "07-design-and-validation": 6, "08-system-applications": 6, "09-modeling": 4,
+            "10-reference": 10,
+        }
+        clean = lambda items: [(unescape(url), unescape(" ".join(label.split()))) for url, label in items]
+        for chapter, expected_count in counts.items():
+            with self.subTest(chapter=chapter):
+                html = (SITE / "SERDES" / "wiki" / chapter / "index.html").read_text(encoding="utf-8")
+                start = html.index('<div class="md-sidebar md-sidebar--primary"')
+                end = html.index('<div class="md-sidebar md-sidebar--secondary"', start)
+                primary = html[start:end]
+                active = ACTIVE_LINK.search(primary)
+                self.assertIsNotNone(active)
+                section = re.search(r'<nav class="md-nav"[^>]*>.*?<ul class="md-nav__list"[^>]*>(.*?)</ul>', primary[active.end():], re.DOTALL)
+                self.assertIsNotNone(section)
+                nav_items = re.findall(r'<a\s+href="([^"]+)"[^>]*>\s*<span class="md-ellipsis">(.*?)</span>\s*</a>', section.group(1), re.DOTALL)
+                reading_section = re.search(r'<h2\b[^>]*>[^<]*阅读顺序.*?</h2>.*?<ol>(.*?)</ol>', html, re.DOTALL)
+                self.assertIsNotNone(reading_section)
+                reading_items = re.findall(r'<li>\s*<a href="([^"]+)">(.*?)</a>', reading_section.group(1), re.DOTALL)
+                self.assertEqual(len(reading_items), expected_count)
+                self.assertEqual(clean(nav_items), clean(reading_items))
+
+        landing = (SITE / "microarchitecture" / "index.html").read_text(encoding="utf-8")
+        self.assertIn('../SERDES/wiki/', landing)
+        for figure in ("link-overview.svg", "differential.svg", "reflection.svg", "tx-timing.svg", "rx-feedback.svg", "nrz-pam4.svg", "eye-metrics.svg", "training-feedback.svg", "event-model.svg"):
+            self.assertTrue((SITE / "SERDES" / "wiki" / "img" / figure).is_file())
+
+        figure_pages = {
+            "01-overview/link-end-to-end": "link-overview.svg",
+            "02-signal-channel/differential-and-return": "differential.svg",
+            "02-signal-channel/impedance-and-reflection": "reflection.svg",
+            "03-transmitter/parallel-to-serial": "tx-timing.svg",
+            "04-receiver/receiver-signal-chain": "rx-feedback.svg",
+            "05-signaling-and-metrics/nrz-and-pam4": "nrz-pam4.svg",
+            "05-signaling-and-metrics/eye-and-jitter": "eye-metrics.svg",
+            "06-link-operation/training-and-adaptation": "training-feedback.svg",
+            "09-modeling/worked-model-and-limits": "event-model.svg",
+        }
+        for article, figure in figure_pages.items():
+            with self.subTest(article=article):
+                html = (SITE / "SERDES" / "wiki" / article / "index.html").read_text(encoding="utf-8")
+                link = re.search(rf'<a\s+href="[^"]*{re.escape(figure)}"[^>]*>(.*?)</a>', html, re.DOTALL)
+                self.assertIsNotNone(link)
+                self.assertRegex(link.group(1), rf'<img\s+alt="[^"]+"\s+src="[^"]*{re.escape(figure)}"')
+
+        self_check = (SITE / "SERDES/wiki/10-reference/phase2-self-check/index.html").read_text(encoding="utf-8")
+        self.assertRegex(self_check, r'<details(?:\s|>)')
+        self.assertIn('<summary>查看参考判断</summary>', self_check)
+        self_check = (SITE / "SERDES/wiki/10-reference/phase3-self-check/index.html").read_text(encoding="utf-8")
+        self.assertRegex(self_check, r'<details(?:\s|>)')
+        self.assertIn('<summary>查看参考判断</summary>', self_check)
+
     def test_ram_chapter_reading_lists_match_navigation(self):
         chapters = sorted((SITE / "RAM/wiki").glob("[0-9][0-9]-*/index.html"))
         self.assertGreater(len(chapters), 0)
@@ -108,6 +163,14 @@ class GeneratedNavigationTests(unittest.TestCase):
             ],
             "electrical-timing-foundations/index.html": [
                 "首页", "微架构", "基础", "从电荷到芯片时序：一条可手算的路径",
+            ],
+            "SERDES/wiki/05-signaling-and-metrics/ber-confidence-and-fec/index.html": [
+                "首页", "微架构", "专题", "SerDes · 高速串行链路", "05 信号与指标：怎样读懂链路数据？",
+                "BER、置信度与 FEC 怎样关联？",
+            ],
+            "SERDES/wiki/06-link-operation/pcie-training-case/index.html": [
+                "首页", "微架构", "专题", "SerDes · 高速串行链路", "06 初始化与链路训练：链路怎样建立和维持？",
+                "PCIe 链路训练案例：从现象到证据",
             ],
         }
         for filename, expected in cases.items():

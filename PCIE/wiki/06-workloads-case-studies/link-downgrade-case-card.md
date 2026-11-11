@@ -2,7 +2,7 @@
 
 上级：[06 工作负载与案例](./README.md)
 
-相关：[带宽、延迟、Credit、MPS 与 MRRS](../05-performance-debug/bandwidth-latency-credit-mps-mrrs.md)、[AER、计数器与链路调试路径](../05-performance-debug/aer-counters-link-debug.md)
+相关：[带宽、延迟、Credit、MPS 与 MRRS](../05-performance-debug/bandwidth-latency-credit-mps-mrrs.md)、[AER、计数器与链路调试路径](../05-performance-debug/aer-counters-link-debug.md)、[SerDes：PCIe 链路训练案例](../../../SERDES/wiki/06-link-operation/pcie-training-case.md)
 
 ## 这页在回答什么问题
 

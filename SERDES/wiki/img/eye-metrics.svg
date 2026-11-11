@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 370" role="img" aria-labelledby="title desc">
+<title id="title">NRZ 眼高与眼宽的观察位置</title>
+<desc id="desc">上下波形形成的开口，沿指定采样时刻测量眼高，沿指定电压门限测量眼宽。图为教学示意，不含实际测量数据。</desc>
+<defs><marker id="arrow" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 Z" fill="#ad5b35"/></marker></defs>
+<rect width="1000" height="370" rx="18" fill="#edf4f8"/>
+<g font-family="-apple-system, BlinkMacSystemFont, sans-serif" fill="#17334d">
+<text x="500" y="30" font-size="20" font-weight="600" text-anchor="middle">指定参考时钟、门限与采样时刻后，观察 NRZ 眼图</text>
+<g fill="none" stroke="#17618b" stroke-width="5"><path d="M190 175 C260 105 350 85 500 85 C650 85 740 105 810 175"/><path d="M190 175 C260 245 350 265 500 265 C650 265 740 245 810 175"/></g>
+<g stroke="#8da9b9" stroke-dasharray="6 5" stroke-width="2"><path d="M500 48 V300"/><path d="M115 175 H890"/></g>
+<path d="M500 88 V262" stroke="#ad5b35" stroke-width="3" marker-start="url(#arrow)" marker-end="url(#arrow)"/>
+<path d="M195 175 H805" stroke="#ad5b35" stroke-width="3" marker-start="url(#arrow)" marker-end="url(#arrow)"/>
+<g font-size="17"><text x="515" y="63">指定采样时刻</text><text x="520" y="125" fill="#914323">眼高</text><text x="410" y="162" fill="#914323">眼宽</text><text x="825" y="166">指定门限</text><text x="85" y="332">纵向：电压</text><text x="720" y="332">横向：时间</text></g>
+<text x="500" y="355" text-anchor="middle" font-size="15">示意图非实测眼图；采样量和时钟恢复设置会影响观察结果</text>
+</g></svg>

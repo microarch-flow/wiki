@@ -376,3 +376,17 @@ body { background: var(--paper); }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { scroll-behavior: auto !important; transition-duration: .01ms !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; }
 }
+/* Keep SerDes diagrams legible on narrow screens without widening the page. */
+.md-typeset a:is([href$="/img/link-overview.svg"], [href$="/img/differential.svg"], [href$="/img/reflection.svg"], [href$="/img/tx-timing.svg"], [href$="/img/rx-feedback.svg"], [href$="/img/nrz-pam4.svg"], [href$="/img/eye-metrics.svg"], [href$="/img/training-feedback.svg"], [href$="/img/event-model.svg"]) {
+  display: block;
+  max-width: 100%;
+  overflow-x: auto;
+  overscroll-behavior-inline: contain;
+}
+
+.md-typeset a:is([href$="/img/link-overview.svg"], [href$="/img/differential.svg"], [href$="/img/reflection.svg"], [href$="/img/tx-timing.svg"], [href$="/img/rx-feedback.svg"], [href$="/img/nrz-pam4.svg"], [href$="/img/eye-metrics.svg"], [href$="/img/training-feedback.svg"], [href$="/img/event-model.svg"]) img {
+  display: block;
+  width: 100%;
+  min-width: 720px;
+  max-width: none;
+}

@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 320" role="img" aria-labelledby="title desc">
+<title id="title">接收端数据与反馈路径</title><desc id="desc">受损信号进入 CTLE 后到达采样判决器；历史判决送至 DFE，DFE 反馈判决条件；CDR 使用接收信号相关时序调整采样；解串输出并行字。</desc>
+<defs><marker id="arrow" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto"><path d="M0 0 L9 4.5 L0 9Z" fill="#31587e"/></marker></defs>
+<rect width="1000" height="320" rx="18" fill="#edf4f8"/><g font-family="-apple-system, BlinkMacSystemFont, sans-serif" fill="#17334d" text-anchor="middle">
+<text x="500" y="32" font-size="20" font-weight="600">数据路径与反馈路径</text>
+<g fill="#fff" stroke="#8cacc2" stroke-width="2"><rect x="42" y="78" width="135" height="70" rx="12"/><rect x="250" y="78" width="135" height="70" rx="12"/><rect x="460" y="78" width="160" height="70" rx="12"/><rect x="785" y="78" width="165" height="70" rx="12"/><rect x="250" y="226" width="135" height="55" rx="12"/><rect x="610" y="226" width="135" height="55" rx="12"/></g>
+<g font-size="19"><text x="109" y="120">通道信号</text><text x="317" y="120">CTLE</text><text x="540" y="120">采样与判决</text><text x="867" y="120">解串 / 输出</text><text x="317" y="260">CDR</text><text x="677" y="260">DFE</text></g>
+<g stroke="#31587e" stroke-width="3" fill="none" marker-end="url(#arrow)"><path d="M177 113 H246"/><path d="M385 113 H456"/><path d="M620 113 H781"/><path d="M317 150 V222"/><path d="M385 253 H430 V170 H510 V152"/><path d="M700 113 V222"/><path d="M610 253 H565 V152"/></g>
+<g font-size="14"><text x="352" y="190">时序信息</text><text x="480" y="196">采样时刻</text><text x="770" y="200">历史判决</text><text x="625" y="196">反馈</text><text x="500" y="306">功能示意：实际结构可不同，反馈并非串行流水线</text></g>
+</g></svg>

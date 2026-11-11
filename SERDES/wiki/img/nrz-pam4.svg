@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1040 335" role="img" aria-labelledby="title desc">
+<title id="title">NRZ 与 PAM4 的符号时间示意</title>
+<desc id="desc">比特序列 00011110 在 10 Gb/s 下以 NRZ 表示时占八个 100 皮秒符号，以示例 PAM4 映射表示时占四个 200 皮秒符号。两者均占 800 皮秒。</desc>
+<rect width="1040" height="335" rx="18" fill="#edf4f8"/>
+<g font-family="-apple-system, BlinkMacSystemFont, sans-serif" fill="#17334d">
+<text x="520" y="30" text-anchor="middle" font-size="20" font-weight="600">相同线路比特序列：00011110，10 Gb/s</text>
+<g stroke="#b1c6d5" stroke-dasharray="5 5"><path d="M120 48 V285 M220 48 V285 M320 48 V285 M420 48 V285 M520 48 V285 M620 48 V285 M720 48 V285 M820 48 V285 M920 48 V285"/></g>
+<g font-size="17" text-anchor="middle"><text x="170" y="60">0</text><text x="270" y="60">0</text><text x="370" y="60">0</text><text x="470" y="60">1</text><text x="570" y="60">1</text><text x="670" y="60">1</text><text x="770" y="60">1</text><text x="870" y="60">0</text></g>
+<text x="30" y="106" font-size="18">NRZ</text><text x="31" y="129" font-size="14">100 ps / UI</text>
+<path d="M120 130 H420 V80 H820 V130 H920" fill="none" stroke="#17618b" stroke-width="5"/>
+<g font-size="17" text-anchor="middle"><text x="220" y="171">00</text><text x="420" y="171">01</text><text x="620" y="171">11</text><text x="820" y="171">10</text></g>
+<text x="27" y="218" font-size="18">PAM4</text><text x="31" y="241" font-size="14">200 ps / UI</text>
+<path d="M120 255 H320 V235 H520 V215 H720 V195 H920" fill="none" stroke="#ad5b35" stroke-width="5"/>
+<g font-size="14" text-anchor="start"><text x="930" y="199">+3</text><text x="930" y="219">+1</text><text x="930" y="239">−1</text><text x="930" y="259">−3</text></g>
+<path d="M120 285 H924" stroke="#31587e" stroke-width="2"/>
+<g font-size="15" text-anchor="middle"><text x="120" y="306">0 ps</text><text x="520" y="306">400 ps</text><text x="920" y="306">800 ps</text><text x="520" y="327">教学示意：使用文中的归一化电平和映射，不含真实边沿</text></g>
+</g></svg>

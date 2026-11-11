@@ -2,7 +2,7 @@
 
 上级：[04 光引擎与核心器件](./README.md)
 
-相关：[系统栈与接口位置](../03-architecture-platform/system-stack.md)
+相关：[系统栈与接口位置](../03-architecture-platform/system-stack.md)、[SerDes：全局链路](../../../SERDES/wiki/01-overview/link-end-to-end.md)、[SerDes：CPO 电光接口](../../../SERDES/wiki/08-system-applications/cpo-electrical-optical.md)
 
 ## 最小对象
 

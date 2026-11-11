@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 250" role="img" aria-labelledby="title desc">
+<title id="title">差模与共模的代数示例</title><desc id="desc">P 为 0.65 伏、N 为 0.45 伏时差模为 0.20 伏，共模为 0.55 伏；两者都增加 0.10 伏后差模仍为 0.20 伏。</desc>
+<rect width="1000" height="250" rx="18" fill="#edf4f8"/><g font-family="-apple-system, BlinkMacSystemFont, sans-serif" fill="#17334d" text-anchor="middle">
+<text x="500" y="32" font-size="20" font-weight="600">共同扰动下，差模与共模怎样变化？</text>
+<g fill="#fff" stroke="#8cacc2" stroke-width="2"><rect x="55" y="58" width="395" height="136" rx="12"/><rect x="550" y="58" width="395" height="136" rx="12"/></g>
+<g font-size="18"><text x="252" y="87">初始</text><text x="747" y="87">两线各增加 0.10 V</text></g>
+<g font-size="19"><text x="252" y="122">VP = 0.65 V　VN = 0.45 V</text><text x="747" y="122">VP = 0.75 V　VN = 0.55 V</text></g>
+<g font-size="17"><text x="252" y="157">差模 0.20 V　共模 0.55 V</text><text x="747" y="157">差模 0.20 V　共模 0.65 V</text></g>
+<path d="M466 125 H531" stroke="#31587e" stroke-width="3"/><path d="M522 118 L535 125 L522 132" fill="none" stroke="#31587e" stroke-width="3"/>
+<text x="500" y="228" font-size="15">仅示理想等量扰动；非等量扰动和不平衡仍会改变差模</text>
+</g></svg>

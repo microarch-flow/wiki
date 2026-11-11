@@ -2,7 +2,7 @@
 
 Wiki 与博客的共同写作和设计要求见 [Wiki 与博客设计规则](../docs/wiki-blog-design-rules.md)。
 
-本网站使用 MkDocs Material。首页汇集技术系列。“芯片微架构笔记”来自本仓库中十个专题的 `wiki/` 目录；“算法与模型（Workload Wiki）”来自 `microarch-flow/workload-wiki` 仓库。两者保留各自的 Markdown 源文件。`website/prepare.py` 将网站内容及已配置的外部系列复制到 `.site-build/docs/`，然后 MkDocs 生成静态网站。导航按专题、章节和文章展开，当前页面高亮显示。文章开头的面包屑根据同一导航层级生成；已有上级页面可以点击，没有首页的分组显示为文本。
+本网站使用 MkDocs Material。首页汇集技术系列。“芯片微架构笔记”来自本仓库中十一个专题的 `wiki/` 目录；“算法与模型（Workload Wiki）”来自 `microarch-flow/workload-wiki` 仓库。两者保留各自的 Markdown 源文件。`website/prepare.py` 将网站内容及已配置的外部系列复制到 `.site-build/docs/`，然后 MkDocs 生成静态网站。导航按专题、章节和文章展开，当前页面高亮显示。文章开头的面包屑根据同一导航层级生成；已有上级页面可以点击，没有首页的分组显示为文本。
 
 导航由 `website/hooks.py` 根据目录与 Markdown 标题生成。章节首页中，如果“阅读顺序”或“接下来怎么读”包含指向同一目录文章的编号列表，导航优先使用该顺序；未列出的文章按文件名排序。网站构建时，如果文章开头的“上级”链接与面包屑中的上级页面相同，会在网页中省略该行；不同的链接和原始 Markdown 均保留。
 
@@ -101,7 +101,7 @@ mkdocs build
 
 ## 内容和图解
 
-- 十个 `wiki/` 是正文来源；`wiki.old/`、`task.md` 和 `seed/` 不在网站构建范围内。
+- 十一个 `wiki/` 是正文来源；`wiki.old/`、`task.md` 和 `seed/` 不在网站构建范围内。
 - 总首页维护在 `website/home.md`，系列目录维护在 `website/series.md`，微架构系列首页维护在 `website/microarchitecture.md`，系列列表维护在 `website/series.json`。精选文章列表维护在 `website/articles.md`，互动图解维护在 `website/visuals.md`，图形与脚本位于 `website/assets/`。精选文章直接引用现有正文，后续可逐篇修改原文。
 - DRAM 图解只表示一次显式 PRE 读流程的逻辑阶段，不给出周期数或替代器件规格。
 - 双缓冲图解假设搬运和计算各占一个周期，且资源访问不冲突。它不代表实际设备的实测性能。

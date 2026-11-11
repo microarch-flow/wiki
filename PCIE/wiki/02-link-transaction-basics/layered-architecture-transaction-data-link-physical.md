@@ -2,7 +2,7 @@
 
 上级：[02 链路、分层与事务基础](./README.md)
 
-相关：[TLP、DLLP 与 Completion 语义](./tlp-dllp-completion-basics.md)
+相关：[TLP、DLLP 与 Completion 语义](./tlp-dllp-completion-basics.md)、[SerDes：PHY、SerDes 与协议](../../../SERDES/wiki/01-overview/phy-serdes-protocol.md)
 
 ## 这页在回答什么问题
 

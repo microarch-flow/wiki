@@ -26,6 +26,7 @@ TOPICS = (
     ("CIM", "CIM · 存内计算"),
     ("CPO", "CPO · 光互连"),
     ("FAB", "FAB · 制造与封装"),
+    ("SERDES", "SerDes · 高速串行链路"),
     ("HBF", "HBF · 高带宽闪存"),
 )
 

@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1120 325" role="img" aria-labelledby="title desc">
+<title id="title">链路事件模型：两个请求与一次恢复</title>
+<desc id="desc">请求 A 在零到一微秒服务。无恢复时请求 B 在一到二微秒服务；有恢复时一到三微秒恢复，请求 B 在三到四微秒服务。传播延迟在此例中为零。</desc>
+<rect width="1120" height="325" rx="18" fill="#edf4f8"/>
+<g font-family="-apple-system, BlinkMacSystemFont, sans-serif" fill="#17334d">
+<text x="560" y="32" font-size="21" font-weight="600" text-anchor="middle">教学模型：每个请求 1000 byte，服务各需 1 μs</text>
+<g stroke="#adc3d0" stroke-width="2" stroke-dasharray="6 6"><path d="M200 55 V270 M400 55 V270 M600 55 V270 M800 55 V270 M1000 55 V270"/></g>
+<text x="45" y="111" font-size="18">无恢复</text>
+<rect x="200" y="75" width="200" height="55" rx="6" fill="#bddce9" stroke="#3b799b" stroke-width="2"/>
+<rect x="400" y="75" width="200" height="55" rx="6" fill="#9fc8da" stroke="#3b799b" stroke-width="2"/>
+<text x="300" y="108" font-size="19" text-anchor="middle">发送 A</text><text x="500" y="108" font-size="19" text-anchor="middle">发送 B</text>
+<text x="740" y="108" font-size="16" text-anchor="middle">B 在 2 μs 完成</text>
+<text x="45" y="219" font-size="18">有恢复</text>
+<rect x="200" y="183" width="200" height="55" rx="6" fill="#bddce9" stroke="#3b799b" stroke-width="2"/>
+<rect x="400" y="183" width="400" height="55" rx="6" fill="#f3dfc9" stroke="#b27b4e" stroke-width="2"/>
+<rect x="800" y="183" width="200" height="55" rx="6" fill="#9fc8da" stroke="#3b799b" stroke-width="2"/>
+<text x="300" y="216" font-size="19" text-anchor="middle">发送 A</text><text x="600" y="216" font-size="19" text-anchor="middle">恢复：B 等待</text><text x="900" y="216" font-size="19" text-anchor="middle">发送 B</text>
+<path d="M200 270 H1000" stroke="#31587e" stroke-width="2"/>
+<g font-size="16" text-anchor="middle"><text x="200" y="294">0</text><text x="400" y="294">1</text><text x="600" y="294">2</text><text x="800" y="294">3</text><text x="1000" y="294">4 μs</text></g>
+<text x="560" y="316" font-size="15" text-anchor="middle">同一时间先完成 A，再进入恢复；传播与接收额外延迟假设为零</text>
+</g></svg>

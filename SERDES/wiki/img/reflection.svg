@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 260" role="img" aria-labelledby="title desc">
+<title id="title">负载处第一次反射</title><desc id="desc">沿 50 欧姆无损传输线的 0.2 伏入射阶跃到达 100 欧姆负载。反射系数为三分之一，首次负载电压约 0.267 伏。</desc>
+<defs><marker id="arrow" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto"><path d="M0 0 L9 4.5 L0 9Z" fill="#31587e"/></marker></defs>
+<rect width="1000" height="260" rx="18" fill="#edf4f8"/><g font-family="-apple-system, BlinkMacSystemFont, sans-serif" fill="#17334d" text-anchor="middle">
+<text x="500" y="30" font-size="20" font-weight="600">入射波首次到达负载：入射波与反射波相加</text>
+<g fill="#fff" stroke="#8cacc2" stroke-width="2"><rect x="45" y="90" width="125" height="65" rx="12"/><rect x="830" y="90" width="125" height="65" rx="12"/></g>
+<g font-size="19"><text x="108" y="130">源端</text><text x="893" y="130">负载</text><text x="500" y="126">传输线 Z0 = 50 Ω</text><text x="893" y="177">RL = 100 Ω</text></g>
+<g stroke="#31587e" stroke-width="3" fill="none" marker-end="url(#arrow)"><path d="M190 80 H805"/><path d="M810 169 H195"/></g>
+<g font-size="17"><text x="500" y="69">入射 Vi = +0.2 V</text><text x="500" y="197">首次反射 Vr ≈ +0.067 V</text><text x="500" y="232">ΓL = 1/3；首次负载电压 ≈ 0.267 V；不包含后续往返</text></g>
+</g></svg>

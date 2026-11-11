@@ -2,7 +2,7 @@
 
 上级：[术语与检查清单](./README.md)
 
-相关：[带宽、延迟、Credit、MPS 与 MRRS](../05-performance-debug/bandwidth-latency-credit-mps-mrrs.md)、[PCIe Read Completion 延迟](../04-data-path-dma-interrupts/pcie-read-completion-latency.md)
+相关：[带宽、延迟、Credit、MPS 与 MRRS](../05-performance-debug/bandwidth-latency-credit-mps-mrrs.md)、[PCIe Read Completion 延迟](../04-data-path-dma-interrupts/pcie-read-completion-latency.md)、[SerDes：链路状态、失败与恢复](../../../SERDES/wiki/09-modeling/link-state-and-failure.md)
 
 本页区分协议限制、实现参数和估算假设。建模时先定义方向、测量层次、链路模式、包长分布和时间单位；再用目标平台的配置和测量值校准。PCIe Base Specification 的相应版本是协议细节的最终依据。
 

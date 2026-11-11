@@ -166,3 +166,4 @@ Setup 关心数据能否**足够早地到达下一个采样边沿**。Hold 关�
 - [RAM：字线、位线与读出放大器](./RAM/wiki/02-sram-foundations/wordline-bitline-sense-amp.md)：看存储阵列中的电容、信号变化与感测。
 - [FAB：供电完整性](./FAB/wiki/06-cross-cutting-engineering/power-delivery-pi-pdn-decap.md)：了解电源网络对电路工作条件的影响。
 - [CPO：光链路基础](./CPO/wiki/04-optical-engine/optical-link-basics.md)：从电信号延伸到另一类数据传输路径。
+- [SerDes：全局链路](./SERDES/wiki/01-overview/README.md)：继续看发送、通道与接收端怎样处理高速信号。
