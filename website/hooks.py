@@ -1,6 +1,7 @@
 """Build a compact navigation from the wiki's real chapter directories."""
 
 from pathlib import Path
+from hashlib import sha256
 import re
 
 
@@ -43,6 +44,20 @@ def make_tree(directory, root):
 
 def on_config(config, **kwargs):
     root = Path(config.docs_dir)
+    # These files use stable paths. A content-derived query prevents browsers
+    # from combining freshly deployed HTML with a cached older CSS/JS file.
+    for setting in ("extra_css", "extra_javascript"):
+        paths = []
+        for asset in getattr(config, setting):
+            asset_path, _, query = asset.partition("?")
+            path = root / asset_path
+            if path.is_file():
+                version = sha256(path.read_bytes()).hexdigest()[:12]
+                params = [part for part in query.split("&") if part and not part.startswith("v=")]
+                paths.append(f"{asset_path}?{'&'.join(params + [f'v={version}'])}")
+            else:
+                paths.append(asset)
+        setattr(config, setting, paths)
     config.nav = [
         {"首页": "README.md"},
         {"精选文章": "articles.md"},
