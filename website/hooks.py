@@ -112,7 +112,7 @@ def on_config(config, **kwargs):
         {"首页": "README.md"},
         {"系列": "series.md"},
         {"微架构": [
-            "microarchitecture.md",
+            {"微架构首页": "microarchitecture.md"},
             {"精选文章": "articles.md"},
             {"互动图解": "visuals.md"},
             {"基础": "electrical-timing-foundations.md"},

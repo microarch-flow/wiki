@@ -7,7 +7,7 @@ hide:
 <div class="home-page">
   <section class="hero">
     <div class="hero-copy">
-      <p class="eyebrow"><span></span> MICROARCHITECTURE NOTES</p>
+      <p class="eyebrow"><span></span> 芯片微架构笔记 / 系列首页</p>
       <h1>理解芯片，<br><em>从数据如何<br class="mobile-break">流动开始。</em></h1>
       <p class="hero-description">从电路与时序出发，理解数据如何存储、计算和移动，再把这些机制转化为可解释的模型。</p>
       <div class="hero-actions">
