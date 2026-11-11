@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 820 440" role="img" aria-labelledby="title desc">
+  <title id="title">同一 bank 的三种行状态</title>
+  <desc id="desc">目标为 R5 的读取：R5 已打开时可以等待条件满足后发出 RD；没有打开行时先 ACT 再 RD；其他行 R9 已打开时先 PRE，再 ACT，最后 RD。箭头只表示命令依赖，不表示时间长度。</desc>
+  <defs><marker id="arrow" markerWidth="8" markerHeight="8" refX="6.5" refY="4" orient="auto"><path d="M0 0L8 4L0 8Z" fill="#729b80"/></marker></defs>
+  <rect width="820" height="440" rx="18" fill="#eef5eb"/>
+  <text x="40" y="45" fill="#214d3c" font-family="Arial, sans-serif" font-size="25" font-weight="700">目标是同一行 R5，当前状态不同</text>
+  <text x="40" y="84" fill="#648572" font-family="Arial, sans-serif" font-size="18" font-weight="700">BANK 当前状态</text>
+  <text x="347" y="84" fill="#648572" font-family="Arial, sans-serif" font-size="18" font-weight="700">本次读取需要的命令</text>
+  <g font-family="Arial, sans-serif">
+    <rect x="40" y="104" width="245" height="76" rx="10" fill="#e0efdc" stroke="#c6dac6"/>
+    <text x="57" y="134" fill="#2a5942" font-size="21" font-weight="700">目标行 R5 已打开</text>
+    <text x="57" y="159" fill="#648572" font-size="17">行命中</text>
+    <rect x="40" y="200" width="245" height="76" rx="10" fill="#e0efdc" stroke="#c6dac6"/>
+    <text x="57" y="230" fill="#2a5942" font-size="21" font-weight="700">没有打开的行</text>
+    <text x="57" y="255" fill="#648572" font-size="17">关闭行</text>
+    <rect x="40" y="296" width="245" height="76" rx="10" fill="#e0efdc" stroke="#c6dac6"/>
+    <text x="57" y="326" fill="#2a5942" font-size="21" font-weight="700">其他行 R9 已打开</text>
+    <text x="57" y="351" fill="#648572" font-size="17">行冲突</text>
+  </g>
+  <g fill="none" stroke="#729b80" stroke-width="3" marker-end="url(#arrow)">
+    <path d="M300 142H332"/><path d="M300 238H332"/><path d="M300 334H332"/>
+    <path d="M435 238H460"/><path d="M435 334H460"/><path d="M550 334H575"/>
+  </g>
+  <g font-family="Arial, sans-serif" text-anchor="middle" font-size="21" font-weight="700">
+    <rect x="347" y="117" width="88" height="50" rx="8" fill="#cde8bb"/><text x="391" y="149" fill="#28543d">RD</text>
+    <rect x="347" y="213" width="88" height="50" rx="8" fill="#d8eacb"/><text x="391" y="245" fill="#28543d">ACT</text>
+    <rect x="462" y="213" width="88" height="50" rx="8" fill="#cde8bb"/><text x="506" y="245" fill="#28543d">RD</text>
+    <rect x="347" y="309" width="88" height="50" rx="8" fill="#f1dfc8"/><text x="391" y="341" fill="#80593f">PRE</text>
+    <rect x="462" y="309" width="88" height="50" rx="8" fill="#d8eacb"/><text x="506" y="341" fill="#28543d">ACT</text>
+    <rect x="577" y="309" width="88" height="50" rx="8" fill="#cde8bb"/><text x="621" y="341" fill="#28543d">RD</text>
+  </g>
+  <text x="40" y="416" fill="#648572" font-family="Arial, sans-serif" font-size="17">仅表示命令依赖；发令仍须满足器件时序和共享资源约束。</text>
+</svg>

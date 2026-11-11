@@ -281,11 +281,13 @@ def on_page_markdown(markdown, page, **kwargs):
 
 
 def on_page_content(html, page, **kwargs):
-    """Add article breadcrumbs and scope the foundational article layout."""
+    """Add article breadcrumbs and scope customized article layouts."""
     if page.file.src_uri == "electrical-timing-foundations.md":
         html = f'<div class="timing-article">\n{html}\n</div>'
     elif page.file.src_uri == "RAM/wiki/01-overview/README.md":
         html = f'<div class="ram-overview-article">\n{html}\n</div>'
+    elif page.file.src_uri == "RAM/wiki/01-overview/problem-statement.md":
+        html = f'<div class="ram-problem-article">\n{html}\n</div>'
     if has_breadcrumbs(page):
         html = render_breadcrumbs(page, Path(kwargs["config"].docs_dir)) + "\n" + html
     return html

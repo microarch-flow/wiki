@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 470" role="img" aria-labelledby="title desc">
+  <title id="title">同一 bank 的三种行状态</title>
+  <desc id="desc">目标为 R5 的读取：R5 已打开时等待条件满足后发出 RD；没有打开行时先 ACT 再 RD；其他行 R9 已打开时先 PRE，再 ACT，最后 RD。箭头只表示命令依赖，不表示时间长度。</desc>
+  <defs><marker id="arrow" markerWidth="8" markerHeight="8" refX="6.5" refY="4" orient="auto"><path d="M0 0L8 4L0 8Z" fill="#729b80"/></marker></defs>
+  <rect width="480" height="470" rx="18" fill="#eef5eb"/>
+  <g font-family="Arial, sans-serif">
+    <text x="24" y="40" fill="#214d3c" font-size="23" font-weight="700">目标是同一行 R5，当前状态不同</text>
+    <text x="24" y="69" fill="#648572" font-size="17">每种状态对应的本次读取命令</text>
+    <g fill="#e5f1e1" stroke="#c6dac6">
+      <rect x="24" y="91" width="432" height="96" rx="10"/>
+      <rect x="24" y="202" width="432" height="96" rx="10"/>
+      <rect x="24" y="313" width="432" height="96" rx="10"/>
+    </g>
+    <g fill="#2a5942" font-size="20" font-weight="700">
+      <text x="42" y="122">行命中：R5 已打开</text>
+      <text x="42" y="233">关闭行：没有打开的行</text>
+      <text x="42" y="344">行冲突：R9 已打开</text>
+    </g>
+    <g text-anchor="middle" font-size="19" font-weight="700">
+      <rect x="42" y="138" width="72" height="34" rx="6" fill="#cde8bb"/><text x="78" y="162" fill="#28543d">RD</text>
+      <rect x="42" y="249" width="72" height="34" rx="6" fill="#d8eacb"/><text x="78" y="273" fill="#28543d">ACT</text>
+      <rect x="145" y="249" width="72" height="34" rx="6" fill="#cde8bb"/><text x="181" y="273" fill="#28543d">RD</text>
+      <rect x="42" y="360" width="72" height="34" rx="6" fill="#f1dfc8"/><text x="78" y="384" fill="#80593f">PRE</text>
+      <rect x="145" y="360" width="72" height="34" rx="6" fill="#d8eacb"/><text x="181" y="384" fill="#28543d">ACT</text>
+      <rect x="248" y="360" width="72" height="34" rx="6" fill="#cde8bb"/><text x="284" y="384" fill="#28543d">RD</text>
+    </g>
+    <g fill="none" stroke="#729b80" stroke-width="2.5" marker-end="url(#arrow)">
+      <path d="M119 266H139"/><path d="M119 377H139"/><path d="M222 377H242"/>
+    </g>
+    <text x="24" y="442" fill="#648572" font-size="17">箭头表示依赖；发令仍须满足时序与资源约束。</text>
+  </g>
+</svg>

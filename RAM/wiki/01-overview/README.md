@@ -118,7 +118,7 @@ DMA 是发起和执行搬运的模块；内存控制器负责对 DRAM 请求进�
 
 本章后续文章按问题逐步展开：
 
-1. [为什么存储器是体系结构里最难的部分](./problem-statement.md)：观察约束如何跨层耦合。
+1. [为什么存储系统难设计？从一次读取看跨层约束](./problem-statement.md)：观察约束如何跨层耦合。
 2. [速度、容量、成本、功耗四角矛盾的根源](./memory-hierarchy-tension.md)：区分不同目标及其代价。
 3. [同样是 RAM，为什么 SRAM 和 DRAM 走向了完全不同的工程路径](./sram-dram-divergence.md)：从存储方式推导组织差异。
 4. [学习路径与各章节依赖关系](./learning-roadmap.md)：按目标选择后续章节。
