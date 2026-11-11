@@ -1,63 +1,74 @@
 # SRAM 基础
 
-上级：[`RAM/wiki/`](../)
-相关：[同样是 RAM，为什么 SRAM 和 DRAM 走向了完全不同的工程路径](../01-overview/sram-dram-divergence.md), [SRAM 的应用形态](../03-sram-applications/README.md)
+<span id="这页在回答什么问题"></span>
+<span id="从-cell-到阵列和应用的学习边界"></span>
 
-## 这页在回答什么问题
+上级：[RAM 专题主页](../README.md)
 
-如果要把 SRAM 看成一条完整工程路线，而不是一句“快但贵”的摘要，最少需要先建立哪些基础概念。本章的任务，就是用最少但足够的电路和阵列语言，把后面 cache、scratchpad、register file、TCM、NPU buffer 共用的底层约束讲清楚。
+相关：[SRAM 与 DRAM 的分化](../01-overview/sram-dram-divergence.md) · [SRAM 应用形态](../03-sram-applications/README.md)
 
-## 从 cell 到阵列和应用的学习边界
+<p class="ram-problem-lede">SRAM 能保存数据，但一块可用于系统的 SRAM 不只有存储单元。字线、位线、外围电路、端口和控制规则，共同决定请求何时被接纳、数据何时可用，以及需要付出多少面积和能量。</p>
 
-这一章之所以放在 DRAM 之前，不是因为 SRAM 在系统里一定更重要，而是因为它更适合做 RAM 的最小完备模型——就像学物理先从无摩擦平面上的小球开始，不是因为现实中没有摩擦力，而是因为这样可以先把牛顿定律搞清楚，再逐步加入复杂性。SRAM 把一个 bit 存成可持续维持的双稳态电路，因此它没有 refresh、row activate、destructive read 这些额外复杂性。这样一来，很多最基本的问题就可以先在更干净的环境里成立：一个 bit 为什么能稳定存在，读写为什么会扰动这个状态，字线和位线分别在干什么，sense amp 为什么仍然重要，端口数为什么会迅速推高面积和时序难度，阵列为什么必须切成 bank 和 sub-array，而不能无限平铺。
+本章从常见的 6T SRAM 出发，逐步看单元、阵列、宏接口和多 bank 组织。最后讨论工艺与低功耗。不同宏的具体结构和接口可能不同，不能把一种实现当成所有 SRAM 的规则。
 
-本章先从 6T cell 出发，解释字线、位线和一次访问的时序，再看 SRAM 宏向上层提供什么接口。接下来讨论端口、阵列组织，以及地址映射怎样影响 bank 冲突。最后再看工艺、稳定性和低功耗约束。
+## 1. 从一个 bit 到系统中的存储资源
 
-本章讨论 SRAM 的物理与阵列基础，以及宏暴露的访问接口。Cache 和 scratchpad 都可能用 SRAM 实现，但它们还涉及各自的管理方式、命中语义和数据流角色，这些内容留到 `03-sram-applications/` 再讲。
+一个常见 6T cell 用交叉耦合的反相器保存 1 bit。字线控制它与位线的连接；译码、预充、感测和写驱动等外围电路使一组 cell 可以被访问。许多 cell 和外围电路组合成 SRAM 宏；系统再按需要连接一个或多个宏。
 
-这些共性约束主要有四类。第一类是稳定性约束，也就是 cell 在保持、读取、写入三种状态下如何避免翻转错误。第二类是访存路径约束，即字线、位线、预充、感测和写驱动如何决定访问时间。第三类是结构扩展约束，即端口数、banking、阵列尺寸和布线长度如何一起决定面积与频率。第四类是工艺与功耗约束，即先进制程下的漏电、Vmin 和保持能力如何反过来限制你“把 SRAM 做大、做低功耗、做高频”的自由度。后面每一篇其实都在处理这四类约束中的某一组。
+宏外还可能有地址映射、仲裁、响应跟踪或低功耗控制。它们不一定属于宏本身。例如，cache 和 scratchpad 都可能使用 SRAM，但还各自有不同的管理方式。它们的系统角色留到 [SRAM 应用形态](../03-sram-applications/README.md)讨论。
 
-这也是为什么理解 SRAM 不能只靠一句”6T、快、不刷新”——这就像用”四个轮子、能跑”来理解汽车，正确但没有任何工程价值。这句话没有告诉你为什么多端口 register file 如此昂贵，也没有告诉你为什么大容量片上 buffer 往往要切 bank、为什么低功耗模式下 retention 会变成设计变量、为什么先进制程反而会让 SRAM 更难收敛。做系统建模时，这些问题都比”SRAM 的定义是什么”更接近真实瓶颈，因为它们决定了片上存储资源到底能以什么形状、什么延迟和什么能效被系统使用。
+[MIT 的 SRAM 与 cache 课程](https://ocw.mit.edu/courses/6-004-computation-structures-spring-2017/pages/c14/c14s1/)展示了单元、阵列和系统层次之间的关系。下面先看上层使用 SRAM 时会遇到的几个问题。
 
-阅读这一章时，建议始终带着一个系统问题往回看：上层为什么喜欢用 SRAM 承担离计算最近的角色。答案当然包括低延迟，但更本质的原因是 SRAM 的访问成本更局部、更稳定、更容易被做成确定性资源。这个特性会在 `03-sram-applications/` 被系统化展开，在 `07-system-architecture/sram-vs-dram-access-pattern.md` 与 DRAM 形成直接对照。因此本章虽然在讲电路和阵列，目的并不是让你停在电路，而是为后面所有“片上快速存储”的系统判断提供地基。
+## 2. 一块 SRAM 要回答哪些问题？
+
+| 问题 | 需要确认什么？ |
+| --- | --- |
+| 能否保存数据？ | cell 的保持条件、供电和温度；低功耗状态是否保留内容。 |
+| 一次访问如何完成？ | 地址与控制信号何时采样，数据何时有效，写入何时可见。 |
+| 多个请求能否并发？ | 端口类型、地址映射、bank 状态、仲裁和共享通路。 |
+| 代价从哪里来？ | 阵列与外围面积、访问能耗、背景功耗、时序和工作条件。 |
+
+例如，即使宏的读数据在规定时间内稳定，请求到达宏之前也可能因端口竞争等待。固定的宏接口延迟不自动等于固定的系统端到端延迟。
+
+## 3. 看一个同拍读写的例子
+
+假设两笔请求已经到达同一存储资源：一笔读取 word A，另一笔写入不同的 word B。两个请求相互独立；资源空闲，且上游和返回路径没有其他限制。
+
+- 如果资源只有一个 `1RW` 端口，且每拍只接纳一笔操作，这两笔请求需要分开接纳。
+- 如果资源有一个可同时使用的读口和写口，且目标宏允许这一读写组合，则可以同拍接纳。
+
+这里比较的是**请求接纳**，不是数据返回或写入可见的时间。同地址读写、不同的时钟关系和其他并发组合仍须遵守目标宏的规则。端口名称只是起点，不能替代接口规格。见 [SRAM 宏接口与读写语义](./sram-macro-interface-and-semantics.md)和 [SRAM 端口与代价](./single-port-dual-port-multi-port.md)。
+
+## 4. 稳定保存和低功耗是两个相关问题
+
+常见 SRAM 不需要 DRAM 式周期刷新，但保持数据仍需要满足相应电源、温度和噪声条件。某些低功耗模式可以保留内容；断电或退出保持条件后，数据可能丢失。模式名称、保持范围和唤醒规则都由具体设计定义。
+
+对于系统而言，决定是否进入低功耗状态，还要考虑下一次何时访问、唤醒需要多久，以及不保留数据后是否需要重新装载。具体取舍见 [SRAM 漏电与低功耗](./sram-power-leakage-retention.md)。
 
 ## 阅读顺序
 
-建议按下面顺序阅读本目录：
+1. [6T SRAM cell](./6t-cell-bistable-storage.md)：看一个 bit 怎样保存、读取和写入。
+2. [字线、位线与读出放大](./wordline-bitline-sense-amp.md)：看单元如何连接到阵列外围。
+3. [SRAM 读写时序](./read-write-cycle-timing.md)：区分电气过程与接口时间。
+4. [SRAM 宏接口与读写语义](./sram-macro-interface-and-semantics.md)：从使用者视角检查接口契约。
+5. [SRAM 端口与代价](./single-port-dual-port-multi-port.md)：比较不同并发能力及其代价。
+6. [SRAM 阵列组织](./sram-array-organization.md)：看局部阵列和共享路径如何组合。
+7. [bank 地址映射与冲突](./sram-bank-address-mapping-conflicts.md)：用地址和请求推导竞争。
+8. [先进工艺与 SRAM](./sram-process-scaling-challenge.md)：看工艺、变异与工作电压。
+9. [SRAM 漏电与低功耗](./sram-power-leakage-retention.md)：比较保持、断电与唤醒。
 
-1. [6T SRAM cell](./6t-cell-bistable-storage.md)
-2. [字线、位线与读出放大](./wordline-bitline-sense-amp.md)
-3. [SRAM 读写时序](./read-write-cycle-timing.md)
-4. [SRAM 宏接口与读写语义](./sram-macro-interface-and-semantics.md)
-5. [SRAM 端口与代价](./single-port-dual-port-multi-port.md)
-6. [SRAM 阵列组织](./sram-array-organization.md)
-7. [bank 地址映射与冲突](./sram-bank-address-mapping-conflicts.md)
-8. [先进工艺与 SRAM](./sram-process-scaling-challenge.md)
-9. [SRAM 漏电与低功耗](./sram-power-leakage-retention.md)
-
-如果当前关心并发和阵列扩展，可以先读第 4 至 7 篇；关心工艺和低功耗，可以继续读第 8 至 9 篇。系统阅读时可以按上表顺序，也可以按问题回读。
+可以按上表系统阅读。如果当前主要关心并发，先读第 4 至 7 篇；如果主要关心低电压和保持，先读第 8 至 9 篇。遇到不熟悉的电路概念时，再回读前面的文章。
 
 ## 一句话理解
 
-本章要建立的是 SRAM 作为片上快速存储介质的最小完备模型：一个 bit 怎样稳定存在，一次访问怎样完成，一个阵列怎样扩展，以及这些能力为什么都要付出明确代价。
+SRAM 的系统行为来自单元、阵列、接口和共享资源的组合。容量、访问时间、并发和保持条件需要分别定义。
 
 ## 建模启示
 
-这一章对应的建模重点，是先把 SRAM 当成“有限端口、有限 bank、近固定访问成本”的资源原型，而不是直接当成抽象 cache。为了做到这一点，后续模型至少需要能表达三类属性：`稳定属性`，例如容量、bank 数、端口数、基线访问延迟；`竞争属性`，例如端口冲突、bank 冲突；`功耗属性`，例如 active/read/write/retention 几种能耗状态。
+先确定模型要回答的问题，再选择需要保留的内容：
 
-一个适合作为后续章节公用底座的数据结构草图可以是：
+- 比较单次接口时间时，明确采样沿、读数据可见时间、写入可见条件及下一次接纳间隔。
+- 分析竞争时，加入相关请求、端口、bank、地址映射和共享路径。
+- 比较低功耗策略时，记录各状态的保持能力、功率、转换延迟和能量。
 
-```text
-SramArrayModel {
-  capacity_bytes: uint64
-  bank_count: int
-  ports_per_bank: int
-  read_latency_cycles: int
-  write_latency_cycles: int
-  bank_busy_until[bank_count]: cycle
-  port_busy_until[bank_count][ports_per_bank]: cycle
-  retention_mode: enum { ACTIVE, LIGHT_SLEEP, DEEP_SLEEP }
-}
-```
-
-如果只关心系统吞吐，bit cell 稳定性和 sense amp 电气细节可以暂时折叠，但 `ports_per_bank`、`read/write latency asymmetry`、`retention_mode` 这类属性最好保留，因为它们会直接影响 register file、scratchpad、TCM 和 NPU local buffer 的可行组织方式。后面 `03-sram-applications/` 的很多建模差异，本质上都建立在这一底座之上。
+宏参数应来自目标配置和工作条件。架构模型可以使用接口级抽象，但不能仅凭这些参数证明 cell 在电路上稳定，或证明真实芯片的性能与功耗。

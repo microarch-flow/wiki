@@ -329,8 +329,16 @@ def on_page_content(html, page, **kwargs):
         "RAM/wiki/01-overview/locality-working-set-data-movement.md",
         "RAM/wiki/01-overview/sram-dram-divergence.md",
         "RAM/wiki/01-overview/learning-roadmap.md",
+        "RAM/wiki/02-sram-foundations/README.md",
+        "RAM/wiki/02-sram-foundations/6t-cell-bistable-storage.md",
+        "RAM/wiki/02-sram-foundations/wordline-bitline-sense-amp.md",
+        "RAM/wiki/02-sram-foundations/read-write-cycle-timing.md",
         "RAM/wiki/02-sram-foundations/sram-macro-interface-and-semantics.md",
+        "RAM/wiki/02-sram-foundations/single-port-dual-port-multi-port.md",
+        "RAM/wiki/02-sram-foundations/sram-array-organization.md",
         "RAM/wiki/02-sram-foundations/sram-bank-address-mapping-conflicts.md",
+        "RAM/wiki/02-sram-foundations/sram-process-scaling-challenge.md",
+        "RAM/wiki/02-sram-foundations/sram-power-leakage-retention.md",
     }:
         html = f'<div class="ram-problem-article">\n{html}\n</div>'
     if has_breadcrumbs(page):

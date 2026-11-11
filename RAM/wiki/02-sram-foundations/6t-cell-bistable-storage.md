@@ -2,9 +2,9 @@
 
 上级：[SRAM 基础](./README.md)
 
-相关：[字线、位线与读出放大器](./wordline-bitline-sense-amp.md) · [SRAM 一次访问的时序](./read-write-cycle-timing.md) · [DRAM 的 1T1C cell](../04-dram-foundations/1t1c-cell-destructive-read.md)
+相关：[字线、位线与读出放大](./wordline-bitline-sense-amp.md) · [SRAM 读写时序](./read-write-cycle-timing.md) · [1T1C 存储单元](../04-dram-foundations/1t1c-cell-destructive-read.md)
 
-一个 6T SRAM cell 用六个晶体管保存 1 bit。四个晶体管构成两个交叉耦合的反相器，维持内部状态；另外两个晶体管受字线控制，将内部节点接到位线，用于读写。
+<p class="ram-problem-lede">一个 6T SRAM cell 用六个晶体管保存 1 bit。四个晶体管构成两个交叉耦合的反相器，维持内部状态；另外两个晶体管受字线控制，将内部节点接到位线，用于读写。</p>
 
 理解它的关键是区分两个过程：**读操作希望观察状态而不改变它；写操作则要让外部驱动足以改变原状态。**两者使用同一对访问晶体管，因此会形成设计权衡。
 
@@ -128,9 +128,15 @@ BLB → N4（访问管）→ QB → N2（下拉管）→ VSS
 
 一个 cell 只保存 1 bit。实际 SRAM 宏还包含大量 cell、字线和位线，以及译码、预充、sense amp、写驱动和输出电路。多行 cell 可以共享位线；读写需要遵守整个宏的时序和端口约束。[MIT 的 SRAM 阵列课程](https://ocw.mit.edu/courses/6-004-computation-structures-spring-2017/pages/c14/c14s1/)给出了 cell、字线、位线和外围的组织示例。
 
-架构仿真通常不逐个计算 `Q/QB` 的连续波形。它应从选定宏及工作点获取读写可见时间、端口接纳间隔、冲突规则和能耗，并明确输入采样及输出可见边界。保持电压与可访问电压也需要分别确认。宏接口示例见 [SRAM 一次访问的时序](./read-write-cycle-timing.md)。
+架构仿真通常不逐个计算 `Q/QB` 的连续波形。它应从选定宏及工作点获取读写可见时间、端口接纳间隔、冲突规则和能耗，并明确输入采样及输出可见边界。保持电压与可访问电压也需要分别确认。宏接口示例见 [SRAM 读写时序](./read-write-cycle-timing.md)。
 
 如果要验证 cell 能否稳定读取和可靠写入，需要针对目标电路、寄生参数与工作条件做电路仿真或实测。本文的示意图和动画不能替代这些验证。
+
+## 接下来怎么读？
+
+- [字线、位线与读出放大](./wordline-bitline-sense-amp.md)：看多个 cell 如何共享阵列路径。
+- [SRAM 读写时序](./read-write-cycle-timing.md)：看电气阶段与接口时间的关系。
+- [SRAM 宏接口与读写语义](./sram-macro-interface-and-semantics.md)：从宏使用者的视角确认读写契约。
 
 ## 延伸阅读
 
