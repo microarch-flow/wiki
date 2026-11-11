@@ -13,7 +13,7 @@
 3. **数据如何保存、运算和移动？** 根据下表选专题。先定义资源、请求、服务过程和可观测结果，再决定模型需要保留什么细节。
 4. **模型与真实芯片怎样对应？** 把参数、适用条件、校准来源和误差分开记录。理想估算不等于实测，也不自动证明性能或硬件正确性。
 
-## 九个专题
+## 十个专题
 
 | 学习问题 | 入口 | 与模拟器的关系 |
 | --- | --- | --- |
@@ -26,6 +26,7 @@
 | 存储内计算如何改变数据路径？ | [CIM 专题主页](./CIM/wiki/README.md)；[域入口](./CIM/README.md)；[CIM：电路与宏](./CIM/wiki/04-circuit-and-macro/README.md) | 阵列、外围电路、精度及服务时间 |
 | 电信号怎样转换为光链路？ | [CPO 专题主页](./CPO/wiki/README.md)；[CPO：光链路基础](./CPO/wiki/04-optical-engine/optical-link-basics.md) | 转换、传输、功率预算和误码假设 |
 | 工艺、封装和测试如何约束设计？ | [FAB 专题主页](./FAB/wiki/README.md)；[FAB：封装信号完整性](./FAB/wiki/06-cross-cutting-engineering/signal-integrity-in-package.md) | PVT、寄生参数、良率和可靠性边界 |
+| NAND 怎样在计算附近提供高带宽？ | [HBF 专题主页](./HBF/wiki/README.md)；[HBF：一次读取](./HBF/wiki/04-read-walkthrough.md) | 地址映射、阵列并行、维护与可靠性 |
 
 各专题的 `wiki` 是现行内容；`wiki.old` 是历史归档。产业与产品资料具有时效性，需要按原始来源和日期核验。
 

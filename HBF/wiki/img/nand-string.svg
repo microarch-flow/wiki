@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 240" role="img" aria-labelledby="title desc">
+  <title id="title">3D NAND 字线与 string 的概念截面</title>
+  <desc id="desc">三条垂直 string 穿过三层水平字线。上方分别连接三条位线，中间的 WL37 被选中，其余字线提供通过条件。图中省略选择管和实际三维结构。</desc>
+  <g font-family="system-ui, sans-serif" font-size="14" fill="#213f35">
+    <text x="132" y="23">BL0</text><text x="215" y="23">BL1</text><text x="298" y="23">BL2</text>
+    <text x="10" y="74">WL38</text><text x="10" y="128">WL37 选中</text><text x="10" y="182">WL36</text>
+    <text x="118" y="230">string 下方通路（示意）</text>
+  </g>
+  <g stroke="#647d71" stroke-width="3" fill="none">
+    <path d="M145 32V207 M228 32V207 M311 32V207"/>
+    <path d="M108 69H336 M108 177H336"/>
+  </g>
+  <path d="M108 123H336" stroke="#bc743c" stroke-width="4"/>
+  <g fill="#e5eee6" stroke="#315c49" stroke-width="2">
+    <circle cx="145" cy="69" r="7"/><circle cx="228" cy="69" r="7"/><circle cx="311" cy="69" r="7"/>
+    <circle cx="145" cy="177" r="7"/><circle cx="228" cy="177" r="7"/><circle cx="311" cy="177" r="7"/>
+  </g>
+  <g fill="#f1d8bd" stroke="#985323" stroke-width="2">
+    <circle cx="145" cy="123" r="7"/><circle cx="228" cy="123" r="7"/><circle cx="311" cy="123" r="7"/>
+  </g>
+</svg>

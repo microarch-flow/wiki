@@ -11,7 +11,7 @@ from sources import copy_source, fetch_checkout, load_series, source_directory
 
 
 ROOT = Path(__file__).resolve().parent.parent
-TOPICS = ("RAM", "COMPUTE", "BUS", "NOC", "DMA", "PCIE", "CIM", "CPO", "FAB")
+TOPICS = ("RAM", "COMPUTE", "BUS", "NOC", "DMA", "PCIE", "CIM", "CPO", "FAB", "HBF")
 
 
 def stage_site(root=ROOT, build_root=None, registry=None, source_root=None):

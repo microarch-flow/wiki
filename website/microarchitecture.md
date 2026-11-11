@@ -29,7 +29,7 @@ hide:
   <section class="explore-section" id="topics">
     <div class="section-heading">
       <div><span class="section-number">EXPLORE THE TOPICS / 02</span><h2>选择一个专题</h2></div>
-      <p>九个相互连接的视角，<br>从基础概念到系统问题。</p>
+      <p>十个相互连接的视角，<br>从基础概念到系统问题。</p>
     </div>
     <div class="topic-grid">
       <a class="topic-card" href="../RAM/wiki/"><span class="topic-number">01 / STORAGE</span><span class="topic-symbol">▦</span><h3>RAM <small>存储系统</small></h3><p>从 SRAM、DRAM 单元到存储层级和控制器。</p><span class="card-link">进入专题 ↗</span></a>
@@ -41,6 +41,7 @@ hide:
       <a class="topic-card" href="../CIM/wiki/"><span class="topic-number">07 / IN-MEMORY</span><span class="topic-symbol">⊞</span><h3>CIM <small>存内计算</small></h3><p>存储阵列、外围电路和计算的边界。</p><span class="card-link">进入专题 ↗</span></a>
       <a class="topic-card" href="../CPO/wiki/"><span class="topic-number">08 / OPTICAL</span><span class="topic-symbol">✺</span><h3>CPO <small>光互连</small></h3><p>光引擎、链路预算与系统集成。</p><span class="card-link">进入专题 ↗</span></a>
       <a class="topic-card" href="../FAB/wiki/"><span class="topic-number">09 / PHYSICAL</span><span class="topic-symbol">◫</span><h3>FAB <small>制造与封装</small></h3><p>工艺、封装、测试与工程约束。</p><span class="card-link">进入专题 ↗</span></a>
+      <a class="topic-card" href="../HBF/wiki/"><span class="topic-number">10 / FLASH</span><span class="topic-symbol">▤</span><h3>HBF <small>高带宽闪存</small></h3><p>从 NAND 读取到近计算存储架构。</p><span class="card-link">进入专题 ↗</span></a>
     </div>
   </section>
 
