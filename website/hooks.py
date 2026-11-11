@@ -322,7 +322,10 @@ def on_page_content(html, page, **kwargs):
         html = f'<div class="timing-article">\n{html}\n</div>'
     elif page.file.src_uri == "RAM/wiki/01-overview/README.md":
         html = f'<div class="ram-overview-article">\n{html}\n</div>'
-    elif page.file.src_uri == "RAM/wiki/01-overview/problem-statement.md":
+    elif page.file.src_uri in {
+        "RAM/wiki/01-overview/problem-statement.md",
+        "RAM/wiki/01-overview/memory-hierarchy-tension.md",
+    }:
         html = f'<div class="ram-problem-article">\n{html}\n</div>'
     if has_breadcrumbs(page):
         config = kwargs["config"]
