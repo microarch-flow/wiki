@@ -31,7 +31,7 @@
 4. [SRAM 宏接口与读写语义](./sram-macro-interface-and-semantics.md)
 5. [SRAM 端口与代价](./single-port-dual-port-multi-port.md)
 6. [SRAM 阵列组织](./sram-array-organization.md)
-7. [SRAM bank 地址映射与冲突](./sram-bank-address-mapping-conflicts.md)
+7. [bank 地址映射与冲突](./sram-bank-address-mapping-conflicts.md)
 8. [先进工艺与 SRAM](./sram-process-scaling-challenge.md)
 9. [SRAM 漏电与低功耗](./sram-power-leakage-retention.md)
 

@@ -48,7 +48,7 @@
 
 ## 4. 想分析 NPU 片上 buffer：从资源到搬运
 
-1. 读 [SRAM 宏接口与读写语义](../02-sram-foundations/sram-macro-interface-and-semantics.md)、[SRAM 端口与代价](../02-sram-foundations/single-port-dual-port-multi-port.md)、[SRAM 阵列组织](../02-sram-foundations/sram-array-organization.md)和 [SRAM bank 地址映射与冲突](../02-sram-foundations/sram-bank-address-mapping-conflicts.md)，确定接口、端口、bank 和共享通路的含义。
+1. 读 [SRAM 宏接口与读写语义](../02-sram-foundations/sram-macro-interface-and-semantics.md)、[SRAM 端口与代价](../02-sram-foundations/single-port-dual-port-multi-port.md)、[SRAM 阵列组织](../02-sram-foundations/sram-array-organization.md)和 [bank 地址映射与冲突](../02-sram-foundations/sram-bank-address-mapping-conflicts.md)，确定接口、端口、bank 和共享通路的含义。
 2. 读 [Scratchpad 与 cache](../03-sram-applications/scratchpad-vs-cache.md)和 [NPU 的 SRAM buffer](../03-sram-applications/npu-weight-buffer-activation-buffer.md)，区分数据角色与管理方式。
 3. 按问题选择 [Weight buffer 设计](../09-ai-chip-memory-architecture/weight-buffer-design.md)、[激活缓冲与双缓冲](../09-ai-chip-memory-architecture/activation-buffer-and-double-buffering.md)和[片上带宽预算](../09-ai-chip-memory-architecture/on-chip-bandwidth-budget.md)。
 4. 如果涉及 DMA 与计算的交接，再看 DMA 专题的[同步、一致性与常见错误](../../../DMA/wiki/04-programming-model/synchronization-errors.md)。

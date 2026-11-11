@@ -72,4 +72,4 @@ event LocalSenseDone(array_id, bank_id, req_id)
 
 ## 接下来怎么读？
 
-- [SRAM bank 地址映射与冲突](./sram-bank-address-mapping-conflicts.md)：从请求地址和访问模式推导 bank 竞争。
+- [bank 地址映射与冲突](./sram-bank-address-mapping-conflicts.md)：从请求地址和访问模式推导 bank 竞争。

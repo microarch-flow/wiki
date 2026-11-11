@@ -103,4 +103,4 @@ SRAM 宏提供的不只是容量，而是一组有条件的读写契约。使用
 
 - [SRAM 端口与代价](./single-port-dual-port-multi-port.md)：比较端口、复制和时分复用。
 - [SRAM 阵列组织](./sram-array-organization.md)：看局部阵列、bank 与共享路径。
-- [SRAM bank 地址映射与冲突](./sram-bank-address-mapping-conflicts.md)：从请求地址推导 bank 竞争。
+- [bank 地址映射与冲突](./sram-bank-address-mapping-conflicts.md)：从请求地址推导 bank 竞争。
