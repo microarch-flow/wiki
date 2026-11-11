@@ -4,6 +4,8 @@
 
 网站版的本地预览、内容维护与 GitHub Pages 发布方法见[网站构建与维护](./website/README.md)。
 
+整理 Wiki 和博客时的写作、技术核查、导航与视觉要求见 [Wiki 与博客设计规则](./docs/wiki-blog-design-rules.md)。这些规则可以根据后续需求调整。
+
 ## 先回答哪些问题
 
 1. **电路为何需要时间？** 电压变化需要电流给电容充放电；互连还有传播与反射。先读[共用基础](./electrical-timing-foundations.md)。
