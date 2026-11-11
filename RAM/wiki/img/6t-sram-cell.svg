@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 680" role="img" aria-labelledby="title desc">
+  <title id="title">6T SRAM 单元的晶体管连接</title>
+  <desc id="desc">P1、N1 构成左反相器，其栅极连接 QB，输出为 Q。P2、N2 构成右反相器，其栅极连接 Q，输出为 QB。WL 控制访问管 N3 和 N4，分别连接 BL 与 Q、BLB 与 QB。黑点表示连接，跨线弧表示不连接。</desc>
+  <rect width="960" height="680" rx="20" fill="#f5f8f2"/>
+  <rect x="172" y="135" width="616" height="440" rx="20" fill="#fff" stroke="#d9e6d8" stroke-width="2"/>
+  <text x="195" y="166" fill="#7b9885" font-family="sans-serif" font-size="15" font-weight="700" letter-spacing="2">6T BIT CELL</text>
+  <g fill="none" stroke-linecap="round" stroke-linejoin="round">
+    <!-- Shared wordline and gates of the two access nMOS transistors. -->
+    <path d="M55 95 H905 M225 95 V349 M735 95 V349" stroke="#a06483" stroke-width="5"/>
+    <!-- Bitlines and access-transistor channels. -->
+    <path d="M100 160 V565 M860 160 V565 M100 370 H205 M245 370 H320 M640 370 H715 M755 370 H860" stroke="#476b61" stroke-width="5"/>
+    <path d="M205 370 H245 M715 370 H755" stroke="#476b61" stroke-width="8"/>
+    <path d="M205 349 H245 M715 349 H755" stroke="#a06483" stroke-width="4"/>
+    <!-- Supply and output rails of the two CMOS inverters. -->
+    <path d="M480 145 V180 M320 180 H640 M320 180 V205 M640 180 V205 M320 255 V445 M640 255 V445 M320 495 V540 M640 495 V540 M320 540 H640 M480 540 V570" stroke="#294d43" stroke-width="5"/>
+    <!-- P1/P2 and N1/N2 channels and gates. -->
+    <path d="M320 205 V255 M640 205 V255 M320 445 V495 M640 445 V495" stroke="#294d43" stroke-width="8"/>
+    <path d="M345 201 V259 M615 201 V259 M345 441 V499 M615 441 V499" stroke="#294d43" stroke-width="4"/>
+    <circle cx="355" cy="230" r="7" stroke="#294d43" stroke-width="3" fill="#fff"/>
+    <circle cx="605" cy="230" r="7" stroke="#294d43" stroke-width="3" fill="#fff"/>
+    <!-- QB drives both gates of the left inverter; Q drives both gates of the right inverter. -->
+    <path d="M362 230 H440 V470 H345 M598 230 H520 V470 H615" stroke="#387d6a" stroke-width="4"/>
+    <!-- Arcs bridge the other feedback wire; neither crossing is connected. -->
+    <path d="M640 310 H530 Q520 298 510 310 H440 M320 370 H430 Q440 358 450 370 H520" stroke="#fff" stroke-width="11"/>
+    <path d="M640 310 H530 Q520 298 510 310 H440 M320 370 H430 Q440 358 450 370 H520" stroke="#387d6a" stroke-width="4"/>
+    <path d="M465 570 H495 M470 578 H490 M475 586 H485" stroke="#294d43" stroke-width="4"/>
+  </g>
+  <g fill="#294d43"><circle cx="320" cy="370" r="6"/><circle cx="640" cy="370" r="6"/><circle cx="640" cy="310" r="6"/><circle cx="440" cy="310" r="6"/><circle cx="520" cy="370" r="6"/><circle cx="480" cy="180" r="6"/><circle cx="480" cy="540" r="6"/></g>
+  <g font-family="sans-serif" font-weight="700">
+    <text x="50" y="78" fill="#a06483" font-size="22">WL</text>
+    <text x="76" y="145" fill="#476b61" font-size="22">BL</text>
+    <text x="835" y="145" fill="#476b61" font-size="22">BLB</text>
+    <text x="449" y="136" fill="#294d43" font-size="19">VDD</text>
+    <text x="455" y="611" fill="#294d43" font-size="19">VSS</text>
+    <text x="276" y="236" fill="#294d43" font-size="18">P1</text>
+    <text x="652" y="236" fill="#294d43" font-size="18">P2</text>
+    <text x="275" y="477" fill="#294d43" font-size="18">N1</text>
+    <text x="652" y="477" fill="#294d43" font-size="18">N2</text>
+    <text x="210" y="402" fill="#a06483" font-size="18">N3</text>
+    <text x="720" y="402" fill="#a06483" font-size="18">N4</text>
+    <text x="330" y="356" fill="#c56f4f" font-size="22">Q</text>
+    <text x="600" y="298" fill="#c56f4f" font-size="22">QB</text>
+  </g>
+  <text x="190" y="642" fill="#6f8978" font-family="sans-serif" font-size="17">黑点：电气连接　　跨线弧：交叉但不连接</text>
+</svg>

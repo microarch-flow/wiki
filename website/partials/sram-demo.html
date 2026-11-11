@@ -1,0 +1,52 @@
+<div class="sram-demo" data-sram-demo="__MODE__" data-phase="idle">
+  <div class="sram-demo-header"><div><span class="sram-kicker">INTERACTIVE / __NUMBER__</span><h3>__TITLE__</h3></div><span class="sram-demo-badge">逻辑过程示意</span></div>
+  <p class="sram-demo-intro">__INTRO__</p>
+  <div class="sram-canvas">
+    <div class="sram-canvas-viewport" tabindex="0" role="region" aria-label="电路示意图，可左右滚动查看">
+    <svg viewBox="0 0 820 375" role="img" aria-label="6T SRAM 的功能示意：WL 控制两个访问管，两个反相器交叉耦合，Q 和 QB 分别连接 BL 和 BLB。具体晶体管连接见结构图。">
+      <defs><marker id="sram-arrow-__MODE__" markerWidth="7" markerHeight="7" refX="5.5" refY="3.5" orient="auto"><path d="M0 0 L7 3.5 L0 7 Z" fill="#7c9d8b"/></marker></defs>
+      <rect x="235" y="57" width="350" height="286" rx="16" fill="#fff" stroke="#d8e7d7"/>
+      <text x="253" y="81" class="sram-svg-kicker">交叉耦合存储核心 · 4T</text>
+      <g fill="none" stroke="#9eb8a4" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M70 108 V277 M750 108 V277 M70 192 H150 M220 192 H270 M550 192 H600 M670 192 H750"/>
+        <path d="M270 192 V113 H350" marker-end="url(#sram-arrow-__MODE__)"/>
+        <path d="M470 113 H550 V192" marker-end="url(#sram-arrow-__MODE__)"/>
+        <path d="M550 192 V274 H470" marker-end="url(#sram-arrow-__MODE__)"/>
+        <path d="M350 274 H270 V192" marker-end="url(#sram-arrow-__MODE__)"/>
+      </g>
+      <g class="sram-wl-wire" fill="none" stroke-width="3" stroke-linecap="round"><path d="M180 37 H640 M180 37 V161 M640 37 V161"/></g>
+      <text x="402" y="26" text-anchor="middle" class="sram-svg-label">WL · <tspan data-sram-field="wl">0</tspan></text>
+      <text x="70" y="91" text-anchor="middle" class="sram-svg-label">BL</text><text x="750" y="91" text-anchor="middle" class="sram-svg-label">BLB</text>
+      <text x="70" y="306" text-anchor="middle" class="sram-svg-value" data-sram-field="bl">未指定</text><text x="750" y="306" text-anchor="middle" class="sram-svg-value" data-sram-field="blb">未指定</text>
+      <rect class="sram-access" x="150" y="163" width="70" height="58" rx="8"/><rect class="sram-access" x="600" y="163" width="70" height="58" rx="8"/>
+      <text x="185" y="187" text-anchor="middle" class="sram-svg-label">N3</text><text x="185" y="204" text-anchor="middle" class="sram-svg-small">访问管</text>
+      <text x="635" y="187" text-anchor="middle" class="sram-svg-label">N4</text><text x="635" y="204" text-anchor="middle" class="sram-svg-small">访问管</text>
+      <rect x="350" y="93" width="120" height="40" rx="7" fill="#edf3e9"/><rect x="350" y="254" width="120" height="40" rx="7" fill="#edf3e9"/>
+      <text x="410" y="119" text-anchor="middle" class="sram-svg-small">反相器 P2 / N2</text><text x="410" y="280" text-anchor="middle" class="sram-svg-small">反相器 P1 / N1</text>
+      <path class="sram-read-path" d="M750 192 H550"/><path class="sram-write-path" d="M270 192 H70"/>
+      <circle class="sram-node q" cx="270" cy="192" r="32"/><circle class="sram-node qb" cx="550" cy="192" r="32"/>
+      <text x="270" y="188" text-anchor="middle" class="sram-node-label">Q</text><text x="270" y="207" text-anchor="middle" class="sram-node-value" data-sram-field="q">1</text>
+      <text x="550" y="188" text-anchor="middle" class="sram-node-label">QB</text><text x="550" y="207" text-anchor="middle" class="sram-node-value" data-sram-field="qb">0</text>
+    </svg>
+    </div>
+    <div class="sram-mobile-visual">
+      <div class="sram-mobile-wl">WL = <strong data-sram-field="wl">0</strong><span>控制 N3、N4</span></div>
+      <div class="sram-mobile-chain">
+        <div class="sram-mobile-bitline bl">BL<strong data-sram-field="bl">未指定</strong></div>
+        <div class="sram-mobile-switch n3">N3<small>访问管</small></div>
+        <div class="sram-mobile-node q">Q<strong data-sram-field="q">1</strong></div>
+        <span class="sram-mobile-coupling" aria-hidden="true">⇄</span>
+        <div class="sram-mobile-node qb">QB<strong data-sram-field="qb">0</strong></div>
+        <div class="sram-mobile-switch n4">N4<small>访问管</small></div>
+        <div class="sram-mobile-bitline blb">BLB<strong data-sram-field="blb">未指定</strong></div>
+      </div>
+      <div class="sram-mobile-feedback"><span>Q → 反相器 P2 / N2 → QB</span><span>QB → 反相器 P1 / N1 → Q</span></div>
+    </div>
+    <p class="sram-scroll-hint">← 左右滑动查看完整示意图 →</p>
+    <p class="sram-canvas-note">反相器方框表示存储核心中的四个晶体管。高亮表示主要作用路径；图形不是电压波形或电路仿真。</p>
+  </div>
+  <div class="sram-progress"><span data-sram-field="counter">01 / 05</span><span>__LABEL__</span></div>
+  <div class="sram-status" role="status" aria-live="polite"><strong data-sram-field="name">初始：保持</strong><p data-sram-field="description">WL 为低，假设 Q = 1、QB = 0。两条位线的电平暂不指定。</p><p class="sram-path-label" data-sram-field="path">访问管关闭。</p></div>
+  <div class="sram-controls"><button type="button" data-sram-action="prev" disabled>上一步</button><button type="button" data-sram-action="next" class="sram-next" disabled>下一步 →</button><button type="button" data-sram-action="play" disabled>自动播放</button><button type="button" data-sram-action="reset" disabled>重置</button></div>
+  <noscript><p>启用 JavaScript 后可逐步播放。下方正文提供相同过程的文字说明。</p></noscript>
+</div>

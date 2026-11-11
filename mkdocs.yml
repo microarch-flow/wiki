@@ -46,5 +46,6 @@ extra_css:
   - assets/stylesheets/site.css
 extra_javascript:
   - assets/javascripts/visuals.js
+  - assets/javascripts/sram.js
 extra:
   generator: false

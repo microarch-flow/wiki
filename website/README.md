@@ -37,4 +37,5 @@ mkdocs build
 - 首页维护在 `website/home.md`，精选文章列表维护在 `website/articles.md`，互动图解维护在 `website/visuals.md`，图形与脚本位于 `website/assets/`。精选文章直接引用现有正文，后续可逐篇修改原文。
 - DRAM 图解只表示一次显式 PRE 读流程的逻辑阶段，不给出周期数或替代器件规格。
 - 双缓冲图解假设搬运和计算各占一个周期，且资源访问不冲突。它不代表实际设备的实测性能。
+- 6T SRAM 文章通过 `website/hooks.py` 在正文标记处插入读写图解；模板位于 `website/partials/sram-demo.html`，状态与控制逻辑位于 `website/assets/javascripts/sram.js`。结构图和操作步骤都是教学示意，不是电路仿真。
 - 修改图解时，同步检查状态文案、相关约束、链接，以及键盘操作和减少动态效果的设置。

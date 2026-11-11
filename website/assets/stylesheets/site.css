@@ -149,6 +149,47 @@ body { background: var(--paper); }
 .time-cell.idle { border: 1px dashed #c3d5c4; }
 .time-cell.current { border-color: #4f8967; opacity: 1; transform: translateY(-2px); }
 
+/* Article-specific 6T SRAM illustrations. */
+.md-typeset .sram-demo { margin: 1.7rem 0 2rem; padding: 1.25rem; border: 1px solid #d4e4d3; border-radius: .6rem; background: #f0f6ec; }
+.sram-demo-header { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: .5rem; }
+.sram-kicker { color: #789584; font-size: .5rem; font-weight: 800; letter-spacing: .13em; }
+.md-typeset .sram-demo-header h3 { margin: .2rem 0 0; color: #214b3c; font-size: .95rem; }
+.sram-demo-badge { padding: .22rem .5rem; border: 1px solid #c4d8c5; border-radius: 2rem; color: #61806a; font-size: .52rem; white-space: nowrap; }
+.md-typeset .sram-demo-intro { margin: .55rem 0 1rem; color: #607a69; font-size: .65rem; }
+.sram-canvas { overflow: hidden; padding: .3rem .4rem .6rem; border: 1px solid #d9e8d8; border-radius: .4rem; background: #f8fbf5; }
+.sram-canvas-viewport { overflow-x: auto; }
+.sram-canvas svg { display: block; width: 100%; height: auto; }
+.sram-mobile-visual { display: none; }
+.md-typeset .sram-scroll-hint { display: none; margin: .2rem .5rem 0; color: #67846f; font-size: .55rem; }
+.sram-svg-kicker { fill: #849f8b; font: 700 13px sans-serif; letter-spacing: 1.2px; }
+.sram-svg-label { fill: #315647; font: 700 17px sans-serif; }
+.sram-svg-small { fill: #648372; font: 600 13px sans-serif; }
+.sram-svg-value { fill: #305f4b; font: 700 15px sans-serif; }
+.sram-wl-wire { stroke: #bbabc2; stroke-dasharray: 5 5; transition: stroke .2s; }
+.sram-demo[data-wl="1"] .sram-wl-wire { stroke: #a06483; stroke-dasharray: none; }
+.sram-access { fill: #f4f7f0; stroke: #afc5b2; stroke-width: 2; }
+.sram-demo[data-wl="1"] .sram-access { fill: #ebdfea; stroke: #ae7593; }
+.sram-node { fill: #d9e9d5; stroke: #6f9b78; stroke-width: 2; transition: fill .25s; }
+.sram-demo[data-sram-demo="read"] .sram-node.q, .sram-demo[data-sram-demo="write"][data-index="0"] .sram-node.q, .sram-demo[data-sram-demo="write"][data-index="1"] .sram-node.q { fill: #d8efa8; }
+.sram-demo[data-sram-demo="write"][data-index="3"] .sram-node.qb, .sram-demo[data-sram-demo="write"][data-index="4"] .sram-node.qb { fill: #d8efa8; }
+.sram-node-label { fill: #315647; font: 700 15px sans-serif; }
+.sram-node-value { fill: #315647; font: 700 13px sans-serif; }
+.sram-read-path, .sram-write-path { fill: none; stroke: #d78861; stroke-width: 5; stroke-linecap: round; stroke-dasharray: 9 9; opacity: 0; }
+.sram-demo[data-phase="read"] .sram-read-path, .sram-demo[data-phase="write"] .sram-write-path { opacity: 1; animation: sram-path-flow 1.1s linear infinite; }
+@keyframes sram-path-flow { to { stroke-dashoffset: 36; } }
+.md-typeset .sram-canvas-note { margin: .1rem .5rem 0; color: #819686; font-size: .55rem; line-height: 1.6; }
+.sram-progress { display: flex; justify-content: space-between; margin-top: 1rem; color: #6e8c78; font-size: .55rem; font-weight: 700; letter-spacing: .05em; }
+.sram-progress span:first-child { color: #387a59; }
+.sram-status { min-height: 5.2rem; margin-top: .5rem; }
+.sram-status strong { color: #234f3b; font-size: .74rem; }
+.md-typeset .sram-status p { margin: .3rem 0 0; color: #61796b; font-size: .63rem; line-height: 1.7; }
+.md-typeset .sram-status .sram-path-label { color: #996348; font-weight: 700; }
+.sram-controls { display: flex; flex-wrap: wrap; gap: .4rem; }
+.sram-controls button { min-height: 2rem; padding: .35rem .7rem; border: 1px solid #b8ceb9; border-radius: .23rem; background: #fbfdf8; color: #32654e; font: inherit; font-size: .59rem; font-weight: 700; cursor: pointer; }
+.sram-controls button.sram-next { border-color: #285e49; background: #285e49; color: white; }
+.sram-controls button:disabled { opacity: .42; cursor: not-allowed; }
+.sram-controls button:focus-visible { outline: 3px solid #dc9a6e; outline-offset: 3px; }
+
 @media (max-width: 760px) {
   .hero { grid-template-columns: 1fr; }
   .hero-copy { padding: 2rem 1.5rem .8rem; }
@@ -159,6 +200,8 @@ body { background: var(--paper); }
   .feature-section { grid-template-columns: 1fr; padding: 1.5rem; }
   .reading-grid { grid-template-columns: 1fr; }
   .md-typeset .reading-card { min-height: 7rem; }
+  .sram-canvas svg { min-width: 560px; }
+  .md-typeset .sram-scroll-hint { display: block; }
 }
 @media (max-width: 450px) {
   .mobile-break { display: inline; }
@@ -171,6 +214,27 @@ body { background: var(--paper); }
   .path-arrow { justify-self: center; transform: rotate(90deg); line-height: .7; }
   .timeline { grid-template-columns: .7fr repeat(3, 1fr); }
   .diagram-panel { padding: 1rem; }
+  .md-typeset .sram-demo { margin-left: -.3rem; margin-right: -.3rem; padding: .8rem; }
+  .sram-svg-value { font-size: 14px; }
+}
+@media (max-width: 500px) {
+  .sram-canvas-viewport { display: none; }
+  .md-typeset .sram-scroll-hint { display: none; }
+  .sram-mobile-visual { display: block; padding: .55rem .1rem .3rem; }
+  .sram-mobile-wl { display: flex; justify-content: center; gap: .35rem; color: #8d5f78; font-size: .6rem; font-weight: 700; }
+  .sram-mobile-wl span { color: #8c9c8f; font-weight: 500; }
+  .sram-mobile-chain { display: flex; align-items: center; justify-content: space-between; gap: .1rem; margin: 1.1rem 0 .8rem; }
+  .sram-mobile-bitline { min-width: 2.2rem; color: #416553; text-align: center; font-size: .57rem; font-weight: 800; }
+  .sram-mobile-bitline strong { display: block; margin-top: .3rem; color: #537b61; font-size: .49rem; line-height: 1.2; }
+  .sram-mobile-switch { padding: .2rem .16rem; border: 1px solid #bdcfbc; border-radius: .2rem; background: #f4f7f0; color: #567061; text-align: center; font-size: .55rem; font-weight: 800; }
+  .sram-mobile-switch small { display: block; font-size: .4rem; font-weight: 500; }
+  .sram-demo[data-wl="1"] .sram-mobile-switch { border-color: #b57d9b; background: #ebdfea; }
+  .sram-mobile-node { display: flex; flex-direction: column; align-items: center; justify-content: center; width: 2.3rem; height: 2.3rem; border: 1px solid #6f9b78; border-radius: 50%; background: #d9e9d5; color: #315647; font-size: .55rem; font-weight: 800; }
+  .sram-mobile-node strong { font-size: .46rem; white-space: nowrap; }
+  .sram-demo[data-sram-demo="read"] .sram-mobile-node.q, .sram-demo[data-sram-demo="write"][data-index="0"] .sram-mobile-node.q, .sram-demo[data-sram-demo="write"][data-index="1"] .sram-mobile-node.q, .sram-demo[data-sram-demo="write"][data-index="3"] .sram-mobile-node.qb, .sram-demo[data-sram-demo="write"][data-index="4"] .sram-mobile-node.qb { background: #d8efa8; }
+  .sram-mobile-coupling { color: #80a28b; font-size: .8rem; }
+  .sram-demo[data-phase="read"] .sram-mobile-switch.n4, .sram-demo[data-phase="write"] .sram-mobile-switch.n3 { border-color: #d78861; box-shadow: 0 0 0 2px #d7886133; }
+  .sram-mobile-feedback { display: flex; flex-direction: column; gap: .2rem; align-items: center; color: #688576; font-size: .48rem; }
 }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { scroll-behavior: auto !important; transition-duration: .01ms !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; }

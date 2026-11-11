@@ -54,7 +54,7 @@ hide:
   <section class="reading-section">
     <div class="section-heading"><div><span class="section-number">A GOOD PLACE TO START / 04</span><h2>推荐阅读</h2></div><p>选一条路径，<br>沿着问题继续深入。<br><a href="articles/">查看全部精选文章 ↗</a></p></div>
     <div class="reading-grid">
-      <a class="reading-card reading-image" href="RAM/wiki/02-sram-foundations/6t-cell-bistable-storage/"><div class="reading-card-image"><img src="RAM/wiki/img/6t-sram-cell-bistable-structure.png" alt="6T SRAM cell 结构示意图"></div><div><span>RAM · 基础</span><h3>6T cell：双稳态、读扰动与写入</h3><p>从存储单元理解保持、读和写。</p></div><b>↗</b></a>
+      <a class="reading-card reading-image" href="RAM/wiki/02-sram-foundations/6t-cell-bistable-storage/"><div class="reading-card-image"><img src="RAM/wiki/img/6t-sram-cell.svg" alt="6T SRAM cell 晶体管连接图"></div><div><span>RAM · 基础</span><h3>6T SRAM cell：它如何保存、读取和写入 1 bit</h3><p>从存储单元理解保持、读和写。</p></div><b>↗</b></a>
       <a class="reading-card" href="NOC/wiki/02-router-microarchitecture/credit-based-flow-control/"><div><span>NOC · 流控</span><h3>Credit 如何约束发送？</h3><p>从下游 buffer 空位理解局部流控。</p></div><b>↗</b></a>
       <a class="reading-card" href="DMA/wiki/04-programming-model/tiling-double-buffering/"><div><span>DMA · 数据路径</span><h3>分块与双缓冲</h3><p>探索搬运与计算重叠的条件。</p></div><b>↗</b></a>
     </div>
