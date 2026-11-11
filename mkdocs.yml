@@ -1,5 +1,5 @@
-site_name: 芯片微架构笔记
-site_description: 从电路、数据移动到系统建模的工程学习笔记
+site_name: 技术笔记
+site_description: 从基础原理到工程实践的技术文章
 site_url: https://microarch-flow.github.io/wiki/
 repo_url: https://github.com/microarch-flow/wiki
 repo_name: microarch-flow/wiki
@@ -11,8 +11,8 @@ theme:
   name: material
   language: zh
   font: false
-  logo: assets/images/mark.svg
-  favicon: assets/images/mark.svg
+  logo: assets/images/series-mark.svg
+  favicon: assets/images/series-mark.svg
   features:
     - navigation.tabs
     - navigation.indexes

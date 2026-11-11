@@ -26,6 +26,8 @@ def main():
     shutil.copytree(ROOT / "reviews", DOCS / "reviews")
     shutil.copy2(ROOT / "electrical-timing-foundations.md", DOCS)
     shutil.copy2(ROOT / "website" / "home.md", DOCS / "README.md")
+    shutil.copy2(ROOT / "website" / "series.md", DOCS / "series.md")
+    shutil.copy2(ROOT / "website" / "microarchitecture.md", DOCS / "microarchitecture.md")
     shutil.copy2(ROOT / "website" / "articles.md", DOCS / "articles.md")
     shutil.copy2(ROOT / "website" / "visuals.md", DOCS / "visuals.md")
     shutil.copytree(ROOT / "website" / "assets", DOCS / "assets")

@@ -1,0 +1,9 @@
+{
+  "series": [
+    {
+      "title": "芯片微架构笔记",
+      "description": "从电路、存储和互连出发，理解芯片架构与系统建模。",
+      "page": "microarchitecture.md"
+    }
+  ]
+}
