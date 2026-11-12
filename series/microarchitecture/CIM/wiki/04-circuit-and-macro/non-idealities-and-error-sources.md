@@ -1,7 +1,7 @@
 # 非理想性总览：Noise、Mismatch、Variation、Retention
 
 上级：[04 Circuit And Macro](./README.md)
-相关：[Analog CIM 深入](../03-compute-paradigms/analog-cim-deep-dive.md), [ReRAM-CIM 深入](../02-memory-technologies/reram-cim-deep-dive.md), [FAB: Process Nodes and PPA](../../../../../FAB/wiki/02-front-end-fabrication/process-nodes-and-ppa-tradeoffs.md)
+相关：[Analog CIM 深入](../03-compute-paradigms/analog-cim-deep-dive.md), [ReRAM-CIM 深入](../02-memory-technologies/reram-cim-deep-dive.md), [FAB: Process Nodes and PPA](../../../../chip-development/FAB/wiki/02-front-end-fabrication/process-nodes-and-ppa-tradeoffs.md)
 
 ## 这页在回答什么问题
 

@@ -280,7 +280,7 @@
    [DMA 双缓冲](../../microarchitecture/DMA/wiki/04-programming-model/tiling-double-buffering.md)、[RAM activation buffer](./wiki/09-ai-chip-memory-architecture/activation-buffer-and-double-buffering.md)
 
 79. [J] HBM 的 interposer 路由、PDN/SI 和热约束可能如何影响持续带宽？package test 与良率又如何影响成本或可供货性，为什么不能直接把它们当作带宽损失？
-   [FAB 封装信号完整性](../../../FAB/wiki/06-cross-cutting-engineering/signal-integrity-in-package.md)、[RAM HBM 成本](./wiki/08-packaging-integration/why-hbm-is-expensive.md)
+   [FAB 封装信号完整性](../../chip-development/FAB/wiki/06-cross-cutting-engineering/signal-integrity-in-package.md)、[RAM HBM 成本](./wiki/08-packaging-integration/why-hbm-is-expensive.md)
 
 80. [J] 从 RAM 视角看，DRAM-PIM 与 SRAM-CIM 在数据位置、刷新/保持、外围计算开销和上层 memory hierarchy 边界上有什么本质差异？
    [CIM DRAM-PIM](../../microarchitecture/CIM/wiki/02-memory-technologies/dram-pim-foundation.md)、[CIM SRAM-CIM](../../microarchitecture/CIM/wiki/02-memory-technologies/sram-cim-foundation.md)

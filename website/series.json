@@ -43,7 +43,7 @@
       "title": "芯片开发与实现",
       "description": "从产品定义、设计验证到晶圆、封装、测试和量产。",
       "local": {
-        "directory": "series/chip-development",
+        "directory": "series/chip-development/process",
         "publish": "series/chip-development"
       }
     }

@@ -32,5 +32,5 @@ SerDes 让并行数字数据经过串行链路，再在另一端恢复。理解�
 ## 与其他专题的关系
 
 - [PCIe 分层架构](../../PCIE/wiki/02-link-transaction-basics/layered-architecture-transaction-data-link-physical.md)：从物理层继续理解协议和事务。
-- [封装内的信号完整性](../../../../FAB/wiki/06-cross-cutting-engineering/signal-integrity-in-package.md)：理解封装、回流、串扰及电源噪声。
+- [封装内的信号完整性](../../../chip-development/FAB/wiki/06-cross-cutting-engineering/signal-integrity-in-package.md)：理解封装、回流、串扰及电源噪声。
 - [CPO 光链路基础](../../CPO/wiki/04-optical-engine/optical-link-basics.md)：从电接口继续到光引擎。

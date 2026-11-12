@@ -81,7 +81,7 @@
 
 节点电压越过参考门限，只说明信号到达了路径上的一个**测量点**。接收门电路还需要时间改变自己的输出；后面的组合逻辑也可能继续传播。门电路的切换点、时序测量门限和保证逻辑值有效的电压范围并不一定相同，具体定义要看模型或器件库。
 
-线路较短时，集中 RC 可以作为粗略近似。如果线路传播时间与信号上升时间可比，分布参数、终端和反射可能重要；这时单一 RC 不能替代传输线分析。可继续阅读 [FAB 封装信号完整性](../../../FAB/wiki/06-cross-cutting-engineering/signal-integrity-in-package.md)。
+线路较短时，集中 RC 可以作为粗略近似。如果线路传播时间与信号上升时间可比，分布参数、终端和反射可能重要；这时单一 RC 不能替代传输线分析。可继续阅读 [FAB 封装信号完整性](../../chip-development/FAB/wiki/06-cross-cutting-engineering/signal-integrity-in-package.md)。
 
 对于同步路径，接收寄存器在指定的有效时钟边沿采样。为了可靠捕获数据，通常要分别检查：
 
@@ -164,6 +164,6 @@ Setup 关心数据能否**足够早地到达下一个采样边沿**。Hold 关�
 
 - [COMPUTE：时钟与流水线](../COMPUTE/wiki/04-clocking-and-pipeline/README.md)：从单条路径继续看流水线与吞吐。
 - [RAM：字线、位线与读出放大器](../../storage/RAM/wiki/02-sram-foundations/wordline-bitline-sense-amp.md)：看存储阵列中的电容、信号变化与感测。
-- [FAB：供电完整性](../../../FAB/wiki/06-cross-cutting-engineering/power-delivery-pi-pdn-decap.md)：了解电源网络对电路工作条件的影响。
+- [FAB：供电完整性](../../chip-development/FAB/wiki/06-cross-cutting-engineering/power-delivery-pi-pdn-decap.md)：了解电源网络对电路工作条件的影响。
 - [CPO：光链路基础](../../interconnect/CPO/wiki/04-optical-engine/optical-link-basics.md)：从电信号延伸到另一类数据传输路径。
 - [SerDes：全局链路](../../interconnect/SERDES/wiki/01-overview/README.md)：继续看发送、通道与接收端怎样处理高速信号。

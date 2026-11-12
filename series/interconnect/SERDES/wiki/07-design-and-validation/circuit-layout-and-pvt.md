@@ -8,7 +8,7 @@
 
 差分线不对称、过孔、封装互连和回流路径会改变阻抗、耦合与时序。电源网络的噪声可能进入驱动、接收前端和时钟路径。多个 lane 或模块可能共享 PLL、电源或衬底，因此同时工作时的干扰不一定能由单 lane 空载测试代表。
 
-设计流程通常先基于初始模型分析，再把版图、互连和封装的提取结果加入相应模型。提取、封装和板卡的边界必须对齐；若某段已包含在通道模型中，就不要再次串入。相关物理背景见[封装内的信号完整性](../../../../../FAB/wiki/06-cross-cutting-engineering/signal-integrity-in-package.md)和[供电完整性](../../../../../FAB/wiki/06-cross-cutting-engineering/power-delivery-pi-pdn-decap.md)。
+设计流程通常先基于初始模型分析，再把版图、互连和封装的提取结果加入相应模型。提取、封装和板卡的边界必须对齐；若某段已包含在通道模型中，就不要再次串入。相关物理背景见[封装内的信号完整性](../../../../chip-development/FAB/wiki/06-cross-cutting-engineering/signal-integrity-in-package.md)和[供电完整性](../../../../chip-development/FAB/wiki/06-cross-cutting-engineering/power-delivery-pi-pdn-decap.md)。
 
 ## 角点和统计样本分别做什么？
 

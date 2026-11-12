@@ -1,7 +1,7 @@
 # CIM 编译流程总览：模型到算子再到 Macro 映射
 
 上级：[06 Software Stack](./README.md)
-相关：[Dataflow Mapping](../05-architecture-and-system/dataflow-mapping-on-cim.md), [BUS: MMIO and Interrupt](../../../../interconnect/BUS/wiki/04-microarchitecture-integration/mmio-cache-interrupt-view.md), [RAM: SRAM Array](../../../../storage/RAM/wiki/02-sram-foundations/sram-array-organization.md), [NoC: Tile Architecture](../../../../interconnect/NOC/wiki/06-ai-noc-specifics/tile-architecture-and-noc.md), [FAB: Process Variation](../../../../../FAB/wiki/02-front-end-fabrication/process-nodes-and-ppa-tradeoffs.md)
+相关：[Dataflow Mapping](../05-architecture-and-system/dataflow-mapping-on-cim.md), [BUS: MMIO and Interrupt](../../../../interconnect/BUS/wiki/04-microarchitecture-integration/mmio-cache-interrupt-view.md), [RAM: SRAM Array](../../../../storage/RAM/wiki/02-sram-foundations/sram-array-organization.md), [NoC: Tile Architecture](../../../../interconnect/NOC/wiki/06-ai-noc-specifics/tile-architecture-and-noc.md), [FAB: Process Variation](../../../../chip-development/FAB/wiki/02-front-end-fabrication/process-nodes-and-ppa-tradeoffs.md)
 
 ## 这页在回答什么问题
 

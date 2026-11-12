@@ -1,7 +1,7 @@
 # 工艺节点演化与 PPA 取舍
 
 上级:[前道工艺](./README.md)
-相关:[为什么工艺红利在让位于封装红利](../01-overview/why-process-and-packaging-matter-now.md), [器件演化:Planar -> FinFET -> GAAFET](./transistor-evolution-planar-finfet-gaa.md), [SRAM 工艺缩放挑战](../../../series/storage/RAM/wiki/02-sram-foundations/sram-process-scaling-challenge.md)
+相关:[为什么工艺红利在让位于封装红利](../01-overview/why-process-and-packaging-matter-now.md), [器件演化:Planar -> FinFET -> GAAFET](./transistor-evolution-planar-finfet-gaa.md), [SRAM 工艺缩放挑战](../../../../storage/RAM/wiki/02-sram-foundations/sram-process-scaling-challenge.md)
 
 ## 这页在回答什么问题
 
@@ -54,6 +54,6 @@
 
 ## 架构师启示
 
-如果我在 archax 中比较 N5 与 N3 方案，不能把所有资源统一乘一个 scaling factor。应至少拆分 logic、SRAM、NoC wire、PHY/I/O、analog 和 package interface。RAM wiki 的 [SRAM scaling](../../../series/storage/RAM/wiki/02-sram-foundations/sram-process-scaling-challenge.md) 尤其需要单独处理，因为片上 SRAM 往往是 AI 芯片面积和 Vmin 的关键约束。
+如果我在 archax 中比较 N5 与 N3 方案，不能把所有资源统一乘一个 scaling factor。应至少拆分 logic、SRAM、NoC wire、PHY/I/O、analog 和 package interface。RAM wiki 的 [SRAM scaling](../../../../storage/RAM/wiki/02-sram-foundations/sram-process-scaling-challenge.md) 尤其需要单独处理，因为片上 SRAM 往往是 AI 芯片面积和 Vmin 的关键约束。
 
 一个具体决策例子：若模型显示性能受片外带宽限制，从 N5 换到 N3 可能提高 compute density，但也可能让 memory wall 更严重。此时更合理的方案可能是保持 compute die 节点不变，改 HBM 数量、封装路线或数据流，而不是盲目追求更小节点。

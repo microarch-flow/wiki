@@ -11,7 +11,7 @@
 
 **新器件 CIM** 继续集中在 ReRAM、PCM、Flash、MRAM。ReRAM/PCM/Flash 的吸引力是非易失和高密度，适合固定权重推理；难点是 conductance drift、retention、write-verify、endurance 和 array 非理想性。东大 2025 ReRAM CiM work 的研究价值不是“ReRAM 已经产品化”，而是把多值存储、加速应力换算的等效 10 年保持和 MAC compensation 放在同一个问题里处理。
 
-**3D 集成与 advanced packaging** 是两条路线的交汇点。CIM 研究希望把 memory arrays、logic、ADC/SA、local reduction 贴得更近；PIM/NMC 研究希望利用 HBM stack、base die、interposer、chiplet 和 CXL-like expansion 近数据计算。这些问题与 [FAB wiki 的 HBM/3DIC/advanced packaging](../../../../../FAB/wiki/04-back-end-packaging/3d-routes/3dic-fundamentals.md) 强相关，研究难点从单 macro 能效扩展到热、TSV、die-to-die link、test 和 yield。
+**3D 集成与 advanced packaging** 是两条路线的交汇点。CIM 研究希望把 memory arrays、logic、ADC/SA、local reduction 贴得更近；PIM/NMC 研究希望利用 HBM stack、base die、interposer、chiplet 和 CXL-like expansion 近数据计算。这些问题与 [FAB wiki 的 HBM/3DIC/advanced packaging](../../../../chip-development/FAB/wiki/04-back-end-packaging/3d-routes/3dic-fundamentals.md) 强相关，研究难点从单 macro 能效扩展到热、TSV、die-to-die link、test 和 yield。
 
 **LLM 与 Transformer workload** 改变了研究重心。CNN 让 CIM 擅长的 weight-stationary matrix/vector compute 很自然；LLM decode 则把 KV cache、attention、embedding、activation movement 和 batch-size sensitivity 推到前台。CIM 研究开始讨论哪些子图适合 array-resident weights，PIM/NMC 研究开始讨论 HBM/GDDR/near-data offload 能否降低 memory-bound 阶段的 energy/byte。
 

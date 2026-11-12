@@ -1,7 +1,7 @@
 # 可靠性与误差容忍：Analog 路线的核心系统问题
 
 上级：[05 Architecture And System](./README.md)
-相关：[Non-Idealities and Error Sources](../04-circuit-and-macro/non-idealities-and-error-sources.md), [FAB: 3DIC Thermal Stress](../../../../../FAB/wiki/04-back-end-packaging/3d-routes/3dic-thermal-and-stress-challenges.md), [RAM: Refresh Cost](../../../../storage/RAM/wiki/04-dram-foundations/refresh-the-fundamental-cost.md), [BUS: MMIO Cache Interrupt](../../../../interconnect/BUS/wiki/04-microarchitecture-integration/mmio-cache-interrupt-view.md)
+相关：[Non-Idealities and Error Sources](../04-circuit-and-macro/non-idealities-and-error-sources.md), [FAB: 3DIC Thermal Stress](../../../../chip-development/FAB/wiki/04-back-end-packaging/3d-routes/3dic-thermal-and-stress-challenges.md), [RAM: Refresh Cost](../../../../storage/RAM/wiki/04-dram-foundations/refresh-the-fundamental-cost.md), [BUS: MMIO Cache Interrupt](../../../../interconnect/BUS/wiki/04-microarchitecture-integration/mmio-cache-interrupt-view.md)
 
 ## 这页在回答什么问题
 

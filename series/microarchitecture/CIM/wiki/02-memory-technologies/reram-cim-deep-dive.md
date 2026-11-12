@@ -63,7 +63,7 @@ write variation
 
 ## 与 3D 集成的关系
 
-ReRAM-CIM 常被放进 3D integration 的研究叙事中，因为非易失阵列和 logic 可以在垂直方向更紧密结合。这个方向与 FAB wiki 的 [3DIC fundamentals](../../../../../FAB/wiki/04-back-end-packaging/3d-routes/3dic-fundamentals.md) 和 [TSV](../../../../../FAB/wiki/04-back-end-packaging/3d-routes/tsv-through-silicon-via.md) 共享封装与互连背景。但 3D 集成解决的是距离和密度问题，不会自动消除 device variation、写入和读出误差。
+ReRAM-CIM 常被放进 3D integration 的研究叙事中，因为非易失阵列和 logic 可以在垂直方向更紧密结合。这个方向与 FAB wiki 的 [3DIC fundamentals](../../../../chip-development/FAB/wiki/04-back-end-packaging/3d-routes/3dic-fundamentals.md) 和 [TSV](../../../../chip-development/FAB/wiki/04-back-end-packaging/3d-routes/tsv-through-silicon-via.md) 共享封装与互连背景。但 3D 集成解决的是距离和密度问题，不会自动消除 device variation、写入和读出误差。
 
 ## 一句话理解
 

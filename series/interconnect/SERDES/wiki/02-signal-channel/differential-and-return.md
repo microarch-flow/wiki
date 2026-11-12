@@ -24,7 +24,7 @@
 
 ## 电流需要闭合路径
 
-P、N 导体及周围参考结构共同影响电流分布。差模电流、共模电流及高频回流的实际路径取决于几何、参考平面和频率。不能简单认为“差分线没有回流问题”。过孔和参考平面不连续会改变路径与阻抗；参见[封装内的信号完整性](../../../../../FAB/wiki/06-cross-cutting-engineering/signal-integrity-in-package.md)。
+P、N 导体及周围参考结构共同影响电流分布。差模电流、共模电流及高频回流的实际路径取决于几何、参考平面和频率。不能简单认为“差分线没有回流问题”。过孔和参考平面不连续会改变路径与阻抗；参见[封装内的信号完整性](../../../../chip-development/FAB/wiki/06-cross-cutting-engineering/signal-integrity-in-package.md)。
 
 ## 接下来怎么读
 

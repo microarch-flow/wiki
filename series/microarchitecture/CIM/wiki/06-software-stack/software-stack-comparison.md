@@ -1,7 +1,7 @@
 # 不同 CIM/PIM 路线的软件栈差异
 
 上级：[06 Software Stack](./README.md)
-相关：[CIM/PIM/NMC Taxonomy](../01-overview/cim-pim-nmc-taxonomy.md), [RAM: DRAM Commands](../../../../storage/RAM/wiki/05-dram-protocol-families/commands-act-rd-wr-pre.md), [NoC: Memory-Centric NoC](../../../../interconnect/NOC/wiki/06-ai-noc-specifics/memory-centric-noc.md), [BUS: DMA Interface](../../../../interconnect/BUS/wiki/04-microarchitecture-integration/axi-dma-system-interface.md), [FAB: Test Methodology](../../../../../FAB/wiki/05-final-test-and-reliability/final-test-methodology.md)
+相关：[CIM/PIM/NMC Taxonomy](../01-overview/cim-pim-nmc-taxonomy.md), [RAM: DRAM Commands](../../../../storage/RAM/wiki/05-dram-protocol-families/commands-act-rd-wr-pre.md), [NoC: Memory-Centric NoC](../../../../interconnect/NOC/wiki/06-ai-noc-specifics/memory-centric-noc.md), [BUS: DMA Interface](../../../../interconnect/BUS/wiki/04-microarchitecture-integration/axi-dma-system-interface.md), [FAB: Test Methodology](../../../../chip-development/FAB/wiki/05-final-test-and-reliability/final-test-methodology.md)
 
 ## 这页在回答什么问题
 

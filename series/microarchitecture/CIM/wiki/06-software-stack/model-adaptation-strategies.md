@@ -31,7 +31,7 @@ Mixed-signal CIM 需要同时适配 analog 局部误差和 digital correction。
 
 模型适配只能吸收稳定、统计可描述、部署时仍成立的误差。随机 aging、极端温度、retention 失效、写入失败和不可预测 host fallback 不能靠训练完全解决。
 
-因此，适配工具必须和 silicon measurement、calibration flow、runtime health monitor 相连。FAB wiki 的 [final test methodology](../../../../../FAB/wiki/05-final-test-and-reliability/final-test-methodology.md) 提醒我们，产品级误差模型来自测试与筛选，不是只来自仿真。
+因此，适配工具必须和 silicon measurement、calibration flow、runtime health monitor 相连。FAB wiki 的 [final test methodology](../../../../chip-development/FAB/wiki/05-final-test-and-reliability/final-test-methodology.md) 提醒我们，产品级误差模型来自测试与筛选，不是只来自仿真。
 
 ## 一句话理解
 

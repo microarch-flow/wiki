@@ -1,7 +1,7 @@
 # Runtime 与调度：Write 慢、Read 快的非对称性如何被利用
 
 上级：[06 Software Stack](./README.md)
-相关：[Host Integration](../05-architecture-and-system/cim-system-integration-with-host.md), [BUS: AXI DMA System Interface](../../../../interconnect/BUS/wiki/04-microarchitecture-integration/axi-dma-system-interface.md), [NoC: DMA Engine Interaction](../../../../interconnect/NOC/wiki/05-system-integration/dma-engine-noc-interaction.md), [RAM: DRAM Commands](../../../../storage/RAM/wiki/05-dram-protocol-families/commands-act-rd-wr-pre.md), [FAB: Reliability](../../../../../FAB/wiki/05-final-test-and-reliability/reliability-jedec-standards.md)
+相关：[Host Integration](../05-architecture-and-system/cim-system-integration-with-host.md), [BUS: AXI DMA System Interface](../../../../interconnect/BUS/wiki/04-microarchitecture-integration/axi-dma-system-interface.md), [NoC: DMA Engine Interaction](../../../../interconnect/NOC/wiki/05-system-integration/dma-engine-noc-interaction.md), [RAM: DRAM Commands](../../../../storage/RAM/wiki/05-dram-protocol-families/commands-act-rd-wr-pre.md), [FAB: Reliability](../../../../chip-development/FAB/wiki/05-final-test-and-reliability/reliability-jedec-standards.md)
 
 ## 这页在回答什么问题
 

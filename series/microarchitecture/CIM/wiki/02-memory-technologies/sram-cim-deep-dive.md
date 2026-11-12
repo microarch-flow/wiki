@@ -37,7 +37,7 @@ SRAM-CIM 的多比特支持有三种典型方式。第一是 bit-serial，把 IN
 
 ## 与工艺节点的关系
 
-Digital SRAM-CIM 可以更好跟随先进 CMOS 节点，因为逻辑、SRAM 和数字验证流程同源。Analog/mixed-signal SRAM-CIM 在先进节点上会遇到更紧的电压余量、更强 variation 和更复杂的 analog characterization。FAB wiki 的 [process nodes and PPA tradeoffs](../../../../../FAB/wiki/02-front-end-fabrication/process-nodes-and-ppa-tradeoffs.md) 对这个背景有更完整说明。
+Digital SRAM-CIM 可以更好跟随先进 CMOS 节点，因为逻辑、SRAM 和数字验证流程同源。Analog/mixed-signal SRAM-CIM 在先进节点上会遇到更紧的电压余量、更强 variation 和更复杂的 analog characterization。FAB wiki 的 [process nodes and PPA tradeoffs](../../../../chip-development/FAB/wiki/02-front-end-fabrication/process-nodes-and-ppa-tradeoffs.md) 对这个背景有更完整说明。
 
 因此，先进节点不自动让 SRAM-CIM 更容易。digital 路线受益于密度和速度，analog 路线可能因为电压 headroom 和 mismatch 变得更难。
 

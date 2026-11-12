@@ -1,7 +1,7 @@
 # Macro 设计的决策框架：从 Workload 到 Macro 参数
 
 上级：[04 Circuit And Macro](./README.md)
-相关：[Memory Tech Comparison Matrix](../02-memory-technologies/memory-tech-comparison-matrix.md), [Analog vs Digital Tradeoff Map](../03-compute-paradigms/analog-vs-digital-tradeoff-map.md), [FAB: Architecture to Process Selection](../../../../../FAB/wiki/06-cross-cutting-engineering/from-architecture-to-process-selection.md)
+相关：[Memory Tech Comparison Matrix](../02-memory-technologies/memory-tech-comparison-matrix.md), [Analog vs Digital Tradeoff Map](../03-compute-paradigms/analog-vs-digital-tradeoff-map.md), [FAB: Architecture to Process Selection](../../../../chip-development/FAB/wiki/06-cross-cutting-engineering/from-architecture-to-process-selection.md)
 
 ## 这页在回答什么问题
 
@@ -41,7 +41,7 @@ Mixed-signal CIM 的设计重点是选择 analog/digital 边界。边界靠前�
 
 ## 工艺与封装因素
 
-Digital SRAM-CIM 更能跟随先进 CMOS 节点；analog ReRAM/Flash/PCM 路线未必从先进节点直接受益，因为低电压、mismatch、analog headroom 和新器件集成会带来额外风险。3D CIM 和 memory-on-logic 研究可连接 FAB wiki 的 [3DIC fundamentals](../../../../../FAB/wiki/04-back-end-packaging/3d-routes/3dic-fundamentals.md)，但要分清两类边界：cell/array 垂直集成才可能属于 CIM macro；memory die/bank 上独立 compute unit 属于 PIM；HBM base die、interposer 或 package-side logic 上的 compute 属于 NMC。
+Digital SRAM-CIM 更能跟随先进 CMOS 节点；analog ReRAM/Flash/PCM 路线未必从先进节点直接受益，因为低电压、mismatch、analog headroom 和新器件集成会带来额外风险。3D CIM 和 memory-on-logic 研究可连接 FAB wiki 的 [3DIC fundamentals](../../../../chip-development/FAB/wiki/04-back-end-packaging/3d-routes/3dic-fundamentals.md)，但要分清两类边界：cell/array 垂直集成才可能属于 CIM macro；memory die/bank 上独立 compute unit 属于 PIM；HBM base die、interposer 或 package-side logic 上的 compute 属于 NMC。
 
 Memory technology 约束不能跳过：SRAM 适合 digital/mixed-signal；ReRAM/Flash 更适合 analog/mixed-signal；PCM/MRAM 是研究或窄场景；DRAM/HBM/GDDR 是 PIM 系统路线。macro 参数还会向 05 章传递，影响 tile interface、bank 组织、NoC reduction、memory hierarchy 和 host integration。
 

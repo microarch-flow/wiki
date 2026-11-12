@@ -1,7 +1,7 @@
 # Peripheral 开销：为什么 ADC/控制电路常常吃掉主要功耗与面积
 
 上级：[04 Circuit And Macro](./README.md)
-相关：[ADC/DAC/SA in CIM](./adc-dac-sa-in-cim.md), [Macro Design Tradeoff Framework](./macro-design-tradeoff-framework.md), [FAB: Process Nodes](../../../../../FAB/wiki/02-front-end-fabrication/process-nodes-and-ppa-tradeoffs.md), [BUS: Interconnect Components](../../../../interconnect/BUS/wiki/04-microarchitecture-integration/interconnect-components.md)
+相关：[ADC/DAC/SA in CIM](./adc-dac-sa-in-cim.md), [Macro Design Tradeoff Framework](./macro-design-tradeoff-framework.md), [FAB: Process Nodes](../../../../chip-development/FAB/wiki/02-front-end-fabrication/process-nodes-and-ppa-tradeoffs.md), [BUS: Interconnect Components](../../../../interconnect/BUS/wiki/04-microarchitecture-integration/interconnect-components.md)
 
 ## 这页在回答什么问题
 

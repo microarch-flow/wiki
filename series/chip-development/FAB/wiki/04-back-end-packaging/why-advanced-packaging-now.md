@@ -17,13 +17,13 @@
 
 AI/HPC 的算力增长需要外存带宽同步增长。继续依赖较远的板级内存连接，会面对 I/O 数量、单 pin 速率、功耗、SI/PI 和板级面积压力。HBM 用超宽近距接口解决带宽密度和每 bit 能耗问题，但它要求 memory stack 靠近 logic die，并使用比传统 substrate 更高密度的封装互连。
 
-这就是 HBM 把先进封装变成必答题的原因。RAM wiki 的 [HBM 协议](../../../series/storage/RAM/wiki/05-dram-protocol-families/hbm-stacked-wide-io.md) 解释了它为什么用宽接口而不是单纯拉高频率；本 wiki 后续会解释这个宽接口如何落到 2.5D/3D package。
+这就是 HBM 把先进封装变成必答题的原因。RAM wiki 的 [HBM 协议](../../../../storage/RAM/wiki/05-dram-protocol-families/hbm-stacked-wide-io.md) 解释了它为什么用宽接口而不是单纯拉高频率；本 wiki 后续会解释这个宽接口如何落到 2.5D/3D package。
 
 ## 大 die 的经济性逼出 chiplet
 
 随着单 die 面积增大，reticle、缺陷密度、良率和 mask 成本会共同推高风险。Chiplet 把一个大系统拆成多个 die，有机会改善单 die 良率、复用 IP、混合节点和扩展 SKU。
 
-但 chiplet 不是免费午餐。它需要封装内 D2D 互连、KGD、协议/PHY、package routing、热管理和更复杂测试。NoC wiki 的 [chiplet 与 die-to-die 互连](../../../series/interconnect/NOC/wiki/06-ai-noc-specifics/chiplet-and-die-to-die-interconnect.md) 从通信层解释了跨 die 代价；本章从封装层解释这些代价为什么存在。
+但 chiplet 不是免费午餐。它需要封装内 D2D 互连、KGD、协议/PHY、package routing、热管理和更复杂测试。NoC wiki 的 [chiplet 与 die-to-die 互连](../../../../interconnect/NOC/wiki/06-ai-noc-specifics/chiplet-and-die-to-die-interconnect.md) 从通信层解释了跨 die 代价；本章从封装层解释这些代价为什么存在。
 
 ## 功耗密度让 package 成为热和供电系统
 

@@ -20,7 +20,7 @@ Axelera 符合 CIM 的原因是：官方技术页把 D-IMC 描述为基于 SRAM 
 
 Metis 的产品口径更接近当前可部署硬件。官方 Metis AIPU 页面分别宣称单芯片最高 214 TOPS INT8、15 TOPS/W 能效和典型功耗 10 W。页面未证明三者在同一工作点、相同测量边界成立，不能相除推导持续 TOPS/W 或帧率；并强调 Voyager SDK 用于构建高性能 AI 应用。截至 2026-05-27 访问，Axelera store 页面展示 M.2、PCIe 和 Metis Compute Board 等形态，价格、发货和开发者入口都有公开页面；这说明官方提供过购买/评估入口，不等同于判断其规模化出货。来源：[Metis AIPU page](https://axelera.ai/ai-accelerators/aipu/metis), [Axelera store](https://store.axelera.ai/)。
 
-Axelera 的产业路线选择很明确：用 SRAM digital CIM 换取标准 CMOS、factory agnostic、数字验证和软件可控性。官方技术页强调其 SRAM-based D-IMC 使用标准 CMOS 工艺，材料和制造流程容易由 foundry 获得。这一点和 [RAM wiki 的 SRAM array/bitcell](../../../../../storage/RAM/wiki/02-sram-foundations/README.md)、[FAB wiki 的工艺/DFT/良率](../../../../../../FAB/wiki/02-front-end-fabrication/README.md) 直接相关：digital CIM 仍有 array compute mode 的验证问题，但比新型 analog memory 更容易进入现有制造生态。
+Axelera 的产业路线选择很明确：用 SRAM digital CIM 换取标准 CMOS、factory agnostic、数字验证和软件可控性。官方技术页强调其 SRAM-based D-IMC 使用标准 CMOS 工艺，材料和制造流程容易由 foundry 获得。这一点和 [RAM wiki 的 SRAM array/bitcell](../../../../../storage/RAM/wiki/02-sram-foundations/README.md)、[FAB wiki 的工艺/DFT/良率](../../../../../chip-development/FAB/wiki/02-front-end-fabrication/README.md) 直接相关：digital CIM 仍有 array compute mode 的验证问题，但比新型 analog memory 更容易进入现有制造生态。
 
 2025 年 10 月，Axelera 发布 Europa AIPU，宣称 8 个第二代 AI cores、每个 core 使用 D-IMC，并配合 RISC-V vector cores、128 MB on-chip L2 SRAM 和 LPDDR5 interface，目标从 edge 扩到更高性能的 multi-modal/edge server 场景。来源：[Europa announcement](https://axelera.ai/news/axelera-announces-europa-aipu-setting-new-industry-benchmark-for-ai-accelerator-performance-power-efficiency-and-affordability)。
 

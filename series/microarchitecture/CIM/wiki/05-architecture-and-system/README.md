@@ -1,7 +1,7 @@
 # 05 Architecture And System
 
 上级：[CIM Wiki](../README.md)
-相关：[04 Circuit And Macro](../04-circuit-and-macro/README.md), [NoC: Memory-Centric NoC](../../../../interconnect/NOC/wiki/06-ai-noc-specifics/memory-centric-noc.md), [RAM: HBM Wide I/O](../../../../storage/RAM/wiki/05-dram-protocol-families/hbm-stacked-wide-io.md), [BUS: AXI DMA Interface](../../../../interconnect/BUS/wiki/04-microarchitecture-integration/axi-dma-system-interface.md), [FAB: 3DIC](../../../../../FAB/wiki/04-back-end-packaging/3d-routes/3dic-fundamentals.md)
+相关：[04 Circuit And Macro](../04-circuit-and-macro/README.md), [NoC: Memory-Centric NoC](../../../../interconnect/NOC/wiki/06-ai-noc-specifics/memory-centric-noc.md), [RAM: HBM Wide I/O](../../../../storage/RAM/wiki/05-dram-protocol-families/hbm-stacked-wide-io.md), [BUS: AXI DMA Interface](../../../../interconnect/BUS/wiki/04-microarchitecture-integration/axi-dma-system-interface.md), [FAB: 3DIC](../../../../chip-development/FAB/wiki/04-back-end-packaging/3d-routes/3dic-fundamentals.md)
 
 ## 这页在回答什么问题
 

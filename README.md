@@ -25,7 +25,7 @@
 | 主机与设备如何交换事务？ | [PCIe 专题主页](./series/interconnect/PCIE/wiki/README.md)；[PCIe：链路与事务](./series/interconnect/PCIE/wiki/02-link-transaction-basics/README.md) | TLP、credit、completion 和往返延迟 |
 | 存储内计算如何改变数据路径？ | [CIM 专题主页](./series/microarchitecture/CIM/wiki/README.md)；[域入口](./series/microarchitecture/CIM/README.md)；[CIM：电路与宏](./series/microarchitecture/CIM/wiki/04-circuit-and-macro/README.md) | 阵列、外围电路、精度及服务时间 |
 | 电信号怎样转换为光链路？ | [CPO 专题主页](./series/interconnect/CPO/wiki/README.md)；[CPO：光链路基础](./series/interconnect/CPO/wiki/04-optical-engine/optical-link-basics.md) | 转换、传输、功率预算和误码假设 |
-| 工艺、封装和测试如何约束设计？ | [FAB 专题主页](./FAB/wiki/README.md)；[FAB：封装信号完整性](./FAB/wiki/06-cross-cutting-engineering/signal-integrity-in-package.md) | PVT、寄生参数、良率和可靠性边界 |
+| 工艺、封装和测试如何约束设计？ | [FAB 专题主页](./series/chip-development/FAB/wiki/README.md)；[FAB：封装信号完整性](./series/chip-development/FAB/wiki/06-cross-cutting-engineering/signal-integrity-in-package.md) | PVT、寄生参数、良率和可靠性边界 |
 | 高速串行数据怎样跨通道并恢复？ | [SerDes 专题主页](./series/interconnect/SERDES/wiki/README.md)；[SerDes：全局链路](./series/interconnect/SERDES/wiki/01-overview/README.md) | 通道、收发、训练、设计验证与系统建模 |
 | NAND 怎样在计算附近提供高带宽？ | [HBF 专题主页](./series/storage/HBF/wiki/README.md)；[HBF：一次读取](./series/storage/HBF/wiki/04-read-walkthrough.md) | 地址映射、阵列并行、维护与可靠性 |
 

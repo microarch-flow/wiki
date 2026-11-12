@@ -20,7 +20,7 @@
 
 `Vi` 是此例已经进入传输线的入射波幅度，不是任意驱动器的开路输出电压。若从驱动器参数开始算，还要包含源端阻抗和分压条件。
 
-示例沿用[封装信号完整性](../../../../../FAB/wiki/06-cross-cutting-engineering/signal-integrity-in-package.md)中的参考条件。差分链路需要使用对应的差分阻抗、参考面和模型，不能把单端 `50 Ω` 与差分 `100 Ω` 不加条件地混为同一参数。
+示例沿用[封装信号完整性](../../../../chip-development/FAB/wiki/06-cross-cutting-engineering/signal-integrity-in-package.md)中的参考条件。差分链路需要使用对应的差分阻抗、参考面和模型，不能把单端 `50 Ω` 与差分 `100 Ω` 不加条件地混为同一参数。
 
 ## 终端不是一个孤立数字
 

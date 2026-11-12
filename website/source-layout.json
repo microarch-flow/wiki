@@ -8,7 +8,7 @@
     "PCIE": "series/interconnect/PCIE",
     "CIM": "series/microarchitecture/CIM",
     "CPO": "series/interconnect/CPO",
-    "FAB": "FAB",
+    "FAB": "series/chip-development/FAB",
     "SERDES": "series/interconnect/SERDES",
     "HBF": "series/storage/HBF"
   },
