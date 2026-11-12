@@ -4,6 +4,7 @@ Run after `python website/prepare.py && mkdocs build`.
 """
 
 from html import unescape
+import json
 from pathlib import Path
 import re
 import sys
@@ -30,6 +31,43 @@ def page_url(relative):
 
 
 class GeneratedNavigationTests(unittest.TestCase):
+    def test_archived_reviews_are_reachable_but_not_in_reader_navigation(self):
+        for relative in (Path("index.html"), Path("microarchitecture/index.html"),
+                         Path("RAM/wiki/01-overview/index.html")):
+            html = (SITE / relative).read_text(encoding="utf-8")
+            start = html.index('<div class="md-sidebar md-sidebar--primary"')
+            end = html.index('<div class="md-sidebar md-sidebar--secondary"', start)
+            self.assertNotIn("reviews/", html[start:end], str(relative))
+            self.assertNotIn("评审记录", html[start:end], str(relative))
+
+        archive = SITE / "reviews"
+        retained = [
+            "2026-11-09-topic-review", "round-2",
+            *(f"round-2/{name}" for name in ("BUS", "CIM", "COMPUTE", "CPO", "DMA", "FAB", "NOC", "PCIE", "RAM")),
+            "round-3", "round-3/cases",
+        ]
+        for relative in retained:
+            self.assertTrue((archive / relative / "index.html").is_file(), relative)
+        self.assertTrue((archive / "round-3/model.py").is_file())
+        self.assertTrue((archive / "round-3/expected.json").is_file())
+        index = json.loads((SITE / "search/search_index.json").read_text(encoding="utf-8"))
+        locations = {entry["location"] for entry in index["docs"]}
+        self.assertFalse(any(location.startswith("reviews/") for location in locations))
+        self.assertIn("RAM/wiki/01-overview/", locations)
+        cases = {
+            "reviews/2026-11-09-topic-review/index.html": ["首页", "九专题基线问题与正文证据"],
+            "reviews/round-2/index.html": ["首页", "九专题逐篇评审"],
+            "reviews/round-2/BUS/index.html": ["首页", "片上总线逐篇评审"],
+            "reviews/round-3/cases/index.html": ["首页", "盲测题面（基线 84e459a）"],
+        }
+        for relative, expected in cases.items():
+            with self.subTest(page=relative):
+                html = (SITE / relative).read_text(encoding="utf-8")
+                breadcrumb = BREADCRUMB.search(html)
+                self.assertIsNotNone(breadcrumb)
+                labels = [unescape(x) for x in re.findall(r'<(?:a\s[^>]*|span(?:\s[^>]*)?)>(.*?)</(?:a|span)>', breadcrumb.group(1))]
+                self.assertEqual(labels, expected)
+
     def test_chip_examples_have_one_series_and_exclude_source_archives(self):
         directory = SITE / "series/chip-architectures"
         pages = sorted(directory.rglob("index.html"))
@@ -263,12 +301,13 @@ class GeneratedNavigationTests(unittest.TestCase):
             end = html.find('<div class="md-sidebar md-sidebar--secondary"', start)
             primary = html[start:end] if start >= 0 and end >= 0 else ""
             active = list(ACTIVE_LINK.finditer(primary))
-            if len(active) != 1 or 'aria-current="page"' not in active[0].group():
-                errors.append(f"{relative}: expected one accessible current navigation link")
-                continue
-            current = urlsplit(urljoin(page_url(relative), unescape(active[0].group(1)))).path
-            if current.rstrip("/") != urlsplit(page_url(relative)).path.rstrip("/"):
-                errors.append(f"{relative}: current navigation link points to {current}")
+            if relative.parts[0] != "reviews":
+                if len(active) != 1 or 'aria-current="page"' not in active[0].group():
+                    errors.append(f"{relative}: expected one accessible current navigation link")
+                    continue
+                current = urlsplit(urljoin(page_url(relative), unescape(active[0].group(1)))).path
+                if current.rstrip("/") != urlsplit(page_url(relative)).path.rstrip("/"):
+                    errors.append(f"{relative}: current navigation link points to {current}")
 
             breadcrumbs = BREADCRUMB.findall(html)
             if relative.as_posix() in LANDING_PAGES:

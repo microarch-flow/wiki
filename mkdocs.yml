@@ -5,6 +5,8 @@ repo_url: https://github.com/microarch-flow/wiki
 repo_name: microarch-flow/wiki
 docs_dir: .site-build/docs
 site_dir: .site-build/site
+not_in_nav: |
+  /reviews/
 hooks:
   - website/hooks.py
   - website/inference_math.py

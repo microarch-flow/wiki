@@ -350,11 +350,6 @@ def on_config(config, **kwargs):
             {"精选文章": "articles.md"},
             {"互动图解": "visuals.md"},
             *grouped_original_topics(root, MICRO),
-            {"评审记录": [
-                {"九专题基线问题": "reviews/2026-11-09-topic-review.md"},
-                {"第二轮逐篇评审": make_tree(root / "reviews" / "round-2", root)},
-                {"第三轮有限资源盲测": make_tree(root / "reviews" / "round-3", root)},
-            ]},
         ]},
         {STORAGE: [{"系列首页": "storage.md"}, *grouped_original_topics(root, STORAGE)]},
         {INTERCONNECT: [{"系列首页": "interconnect.md"}, *grouped_original_topics(root, INTERCONNECT)]},
@@ -391,6 +386,10 @@ def on_nav(nav, config, files, **kwargs):
 
 def on_page_markdown(markdown, page, **kwargs):
     """Add website interactions while keeping Markdown usable on GitHub."""
+    if page.file.src_uri.startswith("reviews/"):
+        # Keep the archived page reachable by URL without indexing it for readers.
+        search = page.meta.get("search")
+        page.meta["search"] = {**(search if isinstance(search, dict) else {}), "exclude": True}
     if has_breadcrumbs(page):
         markdown = strip_duplicate_parent(markdown, page, Path(kwargs["config"].docs_dir))
     if page.file.src_uri == "README.md":

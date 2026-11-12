@@ -213,8 +213,9 @@ class MultiRepositoryTests(unittest.TestCase):
             self.assertEqual(len(matches), 1)
             locations = {entry["location"] for entry in search["docs"]}
             for location in ("reviews/2026-11-09-topic-review/", "reviews/round-2/", "reviews/round-3/"):
-                self.assertIn(location, locations)
+                self.assertNotIn(location, locations)
                 self.assertTrue((site / location / "index.html").is_file())
+            self.assertFalse(any(location.startswith("reviews/") for location in locations))
             self.assertEqual((site / "reviews/round-3/model.py").read_text(encoding="utf-8"),
                              "print('fixture model')\n")
             self.assertEqual((site / "reviews/round-3/expected.json").read_text(encoding="utf-8"),
