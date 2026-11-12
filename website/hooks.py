@@ -14,7 +14,7 @@ _WEBSITE = str(Path(__file__).resolve().parent)
 if _WEBSITE not in sys.path:
     sys.path.insert(0, _WEBSITE)
 from sources import load_series, series_landing  # noqa: E402
-from ownership import GROUPS, MICRO, STORAGE, INTERCONNECT, DEVELOPMENT, WORKLOAD_GROUPS, INFERENCE_GROUPS, owner, workload_owner, development_owner, inference_owner  # noqa: E402
+from ownership import GROUPS, MICRO, STORAGE, INTERCONNECT, DEVELOPMENT, WORKLOAD_GROUPS, INFERENCE_GROUPS, HBM_READING_ENTRY, owner, workload_owner, development_owner, inference_owner  # noqa: E402
 
 
 TOPICS = (
@@ -189,15 +189,30 @@ def topic_tree(root, name):
     return items
 
 
-def owned_topic_tree(root, name, series, group):
+def owned_topic_tree(root, name, series, group, exclude=()):
     """Keep each original page in its one designated main topic."""
-    include = lambda path: owner(path.relative_to(root).as_posix()) == (series, group)
+    include = lambda path: (path.relative_to(root).as_posix() not in exclude
+                            and owner(path.relative_to(root).as_posix()) == (series, group))
     items = make_tree(root / name / "wiki", root, include=include)
     for filename, label in (("self-test-questions.md", "自测问题"), ("README.md", "专题仓库说明")):
         path = root / name / filename
         if path.is_file() and include(path):
             items.append({label: path.relative_to(root).as_posix()})
     return items
+
+
+def compact_storage_sections(items):
+    """Omit source-directory sections that contain only one retained page."""
+    compact = []
+    for item in items:
+        if isinstance(item, dict) and len(item) == 1:
+            label, children = next(iter(item.items()))
+            if isinstance(children, list):
+                children = compact_storage_sections(children)
+                compact.append(children[0] if len(children) == 1 else {label: children})
+                continue
+        compact.append(item)
+    return compact
 
 
 def grouped_original_topics(root, series):
@@ -207,9 +222,24 @@ def grouped_original_topics(root, series):
         if (series, group) == owner("electrical-timing-foundations.md"):
             entries.append("electrical-timing-foundations.md")
         for name, label in TOPICS:
-            tree = owned_topic_tree(root, name, series, group)
+            # HBM is a direct reading entry under DRAM, not a second main
+            # navigation entry nested inside the old protocol directory.
+            hbm = series == STORAGE and group == "DRAM 器件与接口"
+            tree = owned_topic_tree(root, name, series, group,
+                                    exclude={HBM_READING_ENTRY} if hbm else ())
             if tree:
-                entries.append({label: tree})
+                if series == STORAGE:
+                    entries.extend(compact_storage_sections(tree))
+                else:
+                    entries.append({label: tree})
+        if series == STORAGE and group == "DRAM 器件与接口" and (root / HBM_READING_ENTRY).is_file():
+            entries.append(HBM_READING_ENTRY)
+        # A sole directory around a whole storage topic repeats the topic's
+        # label (for example, DRAM controller / Memory Controller).
+        if series == STORAGE and len(entries) == 1 and isinstance(entries[0], dict):
+            children = next(iter(entries[0].values()))
+            if isinstance(children, list):
+                entries = children
         if entries:
             result.append({group: entries})
     return result

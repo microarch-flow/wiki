@@ -8,8 +8,8 @@ DEVELOPMENT = "芯片开发与实现"
 GROUPS = {
     MICRO: ("系列导读", "数值格式与算术数据通路", "时钟、流水线与吞吐", "计算阵列与数据流",
             "DMA 与异步数据搬运", "处理单元与芯片顶层组织", "存内计算 CIM", "制造与封测导读"),
-    STORAGE: ("RAM 基础导读与自测", "SRAM 阵列、端口与宏接口", "DRAM 阵列、命令与接口族",
-              "HBM 堆叠 DRAM 与宽接口", "HBF 高带宽闪存", "DRAM 控制器与请求调度", "存储层级、缓存与数据放置"),
+    STORAGE: ("存储层级与数据路径", "SRAM 器件与应用", "DRAM 器件与接口", "DRAM 控制器与请求调度",
+              "HBF 高带宽闪存", "存储系统集成与选型"),
     INTERCONNECT: ("片上事务与总线（BUS）", "片上网络（NoC）", "系统 I/O 互连（PCIe）",
                    "高速电链路（SerDes）", "共封装光学（CPO）"),
     DEVELOPMENT: ("工程流程与制造导读", "产品定义、成本与实现策略", "RTL 设计与集成", "功能验证、覆盖与阶段签核",
@@ -17,12 +17,8 @@ GROUPS = {
                   "硅后启动、测量与修订", "可靠性、良率与量产生命周期", "软件背景创始人导读"),
 }
 
-HBM = {
-    "RAM/wiki/05-dram-protocol-families/hbm-stacked-wide-io.md",
-    "RAM/wiki/08-packaging-integration/hbm-2.5d-3d-tsv.md",
-    "RAM/wiki/08-packaging-integration/why-hbm-is-expensive.md",
-    "RAM/wiki/09-ai-chip-memory-architecture/hbm-vs-lpddr-for-npu.md",
-}
+HBM_READING_ENTRY = "RAM/wiki/05-dram-protocol-families/hbm-stacked-wide-io.md"
+HBM_SYSTEM_SELECTION = "RAM/wiki/09-ai-chip-memory-architecture/hbm-vs-lpddr-for-npu.md"
 
 
 def owner(path):
@@ -30,8 +26,8 @@ def owner(path):
     path = str(path)
     if path == "electrical-timing-foundations.md":
         return MICRO, "时钟、流水线与吞吐"
-    if path in HBM:
-        return STORAGE, "HBM 堆叠 DRAM 与宽接口"
+    if path == HBM_SYSTEM_SELECTION:
+        return STORAGE, "存储系统集成与选型"
     if path.startswith("COMPUTE/"):
         for prefix, group in (
             ("02-datapath-foundations", "数值格式与算术数据通路"),
@@ -44,18 +40,19 @@ def owner(path):
             if path.startswith(f"COMPUTE/wiki/{prefix}/"):
                 return MICRO, group
         if path.startswith("COMPUTE/wiki/06-memory-discipline/"):
-            return STORAGE, "存储层级、缓存与数据放置"
+            return STORAGE, "存储层级与数据路径"
         return MICRO, "系列导读"
     if path.startswith("RAM/"):
         for prefixes, group in (
-            (("02-sram-foundations",), "SRAM 阵列、端口与宏接口"),
-            (("04-dram-foundations", "05-dram-protocol-families"), "DRAM 阵列、命令与接口族"),
+            (("02-sram-foundations", "03-sram-applications"), "SRAM 器件与应用"),
+            (("04-dram-foundations", "05-dram-protocol-families"), "DRAM 器件与接口"),
             (("06-memory-controller",), "DRAM 控制器与请求调度"),
-            (("03-sram-applications", "07-system-architecture", "08-packaging-integration", "09-ai-chip-memory-architecture"), "存储层级、缓存与数据放置"),
+            (("07-system-architecture", "09-ai-chip-memory-architecture"), "存储层级与数据路径"),
+            (("08-packaging-integration",), "存储系统集成与选型"),
         ):
             if any(path.startswith(f"RAM/wiki/{prefix}/") for prefix in prefixes):
                 return STORAGE, group
-        return STORAGE, "RAM 基础导读与自测"
+        return STORAGE, "存储层级与数据路径"
     for prefix, series, group in (
         ("DMA/", MICRO, "DMA 与异步数据搬运"),
         ("CIM/", MICRO, "存内计算 CIM"),

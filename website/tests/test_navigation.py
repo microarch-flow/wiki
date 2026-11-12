@@ -15,7 +15,8 @@ from urllib.parse import unquote, urljoin, urlsplit
 
 SITE = Path(__file__).resolve().parents[2] / ".site-build" / "site"
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
-from hooks import make_tree  # noqa: E402
+from hooks import grouped_original_topics, make_tree  # noqa: E402
+from ownership import STORAGE, owner  # noqa: E402
 
 LANDING_PAGES = {
     "index.html", "series/index.html", "microarchitecture/index.html",
@@ -31,6 +32,57 @@ def page_url(relative):
 
 
 class GeneratedNavigationTests(unittest.TestCase):
+    def test_storage_topics_cover_sources_once_and_expose_hbm(self):
+        docs = SITE.parent / "docs"
+        topics = grouped_original_topics(docs, STORAGE)
+        names = [next(iter(item)) for item in topics]
+        self.assertEqual(names, [
+            "存储层级与数据路径", "SRAM 器件与应用", "DRAM 器件与接口",
+            "DRAM 控制器与请求调度", "HBF 高带宽闪存", "存储系统集成与选型",
+        ])
+
+        def paths(node):
+            if isinstance(node, str):
+                yield node
+            elif isinstance(node, dict):
+                for child in node.values():
+                    yield from paths(child)
+            else:
+                for child in node:
+                    yield from paths(child)
+
+        assigned = list(paths(topics))
+        expected = {
+            path.relative_to(docs).as_posix()
+            for directory in ("RAM/wiki", "HBF/wiki", "COMPUTE/wiki/06-memory-discipline")
+            for path in (docs / directory).rglob("*.md")
+        }
+        for name in ("RAM", "HBF"):
+            for filename in ("README.md", "self-test-questions.md"):
+                path = docs / name / filename
+                if path.is_file():
+                    expected.add(path.relative_to(docs).as_posix())
+        self.assertEqual(len(assigned), len(set(assigned)))
+        self.assertEqual(set(assigned), expected)
+        for topic in topics:
+            children = next(iter(topic.values()))
+            source_labels = {next(iter(item)) for item in children if isinstance(item, dict)}
+            self.assertFalse(source_labels & {"RAM · 存储系统", "HBF · 高带宽闪存", "COMPUTE · 计算"})
+
+        dram = topics[2]["DRAM 器件与接口"]
+        hbm = "RAM/wiki/05-dram-protocol-families/hbm-stacked-wide-io.md"
+        self.assertIn(hbm, dram)
+        hbm_html = (SITE / "RAM/wiki/05-dram-protocol-families/hbm-stacked-wide-io/index.html").read_text(encoding="utf-8")
+        article = re.search(r"<article\b.*?</article>", hbm_html, re.DOTALL).group()
+        source_url = page_url(Path("RAM/wiki/05-dram-protocol-families/hbm-stacked-wide-io/index.html"))
+        targets = {urlsplit(urljoin(source_url, unescape(href))).path for href in re.findall(r'<a\s+[^>]*href="([^"]+)"', article)}
+        for target in (
+            "/RAM/wiki/08-packaging-integration/hbm-2.5d-3d-tsv/",
+            "/RAM/wiki/08-packaging-integration/why-hbm-is-expensive/",
+            "/RAM/wiki/09-ai-chip-memory-architecture/hbm-vs-lpddr-for-npu/",
+        ):
+            self.assertIn(target, targets)
+
     def test_archived_reviews_are_reachable_but_not_in_reader_navigation(self):
         for relative in (Path("index.html"), Path("microarchitecture/index.html"),
                          Path("RAM/wiki/01-overview/index.html")):
@@ -106,8 +158,11 @@ class GeneratedNavigationTests(unittest.TestCase):
 
     def test_primary_series_and_topic_for_moved_articles(self):
         cases = {
-            "RAM/wiki/05-dram-protocol-families/hbm-stacked-wide-io/index.html": ("存储系统", "HBM 堆叠 DRAM 与宽接口"),
-            "RAM/wiki/02-sram-foundations/6t-cell-bistable-storage/index.html": ("存储系统", "SRAM 阵列、端口与宏接口"),
+            "RAM/wiki/05-dram-protocol-families/hbm-stacked-wide-io/index.html": ("存储系统", "DRAM 器件与接口"),
+            "RAM/wiki/02-sram-foundations/6t-cell-bistable-storage/index.html": ("存储系统", "SRAM 器件与应用"),
+            "RAM/wiki/08-packaging-integration/hbm-2.5d-3d-tsv/index.html": ("存储系统", "存储系统集成与选型"),
+            "RAM/wiki/08-packaging-integration/why-hbm-is-expensive/index.html": ("存储系统", "存储系统集成与选型"),
+            "RAM/wiki/09-ai-chip-memory-architecture/hbm-vs-lpddr-for-npu/index.html": ("存储系统", "存储系统集成与选型"),
             "NOC/wiki/02-router-microarchitecture/credit-based-flow-control/index.html": ("芯片与系统互连", "片上网络（NoC）"),
             "SERDES/wiki/06-link-operation/pcie-training-case/index.html": ("芯片与系统互连", "高速电链路（SerDes）"),
             "DMA/wiki/04-programming-model/tiling-double-buffering/index.html": ("微架构", "DMA 与异步数据搬运"),
@@ -203,11 +258,15 @@ class GeneratedNavigationTests(unittest.TestCase):
                 self.assertIsNotNone(reading_section)
                 reading_items = re.findall(r'<li>\s*<a href="([^"]+)">(.*?)</a>', reading_section.group(1), re.DOTALL)
                 self.assertGreater(len(reading_items), 0)
-                moved = {"hbm-stacked-wide-io/", "hbm-2.5d-3d-tsv/", "why-hbm-is-expensive/", "hbm-vs-lpddr-for-npu/"}
-                expected = [(url, label) for url, label in clean(reading_items) if url not in moved]
+                chapter_source = f"RAM/wiki/{chapter.parent.name}/README.md"
+                def shares_section(url):
+                    article_source = f"RAM/wiki/{chapter.parent.name}/{url.rstrip('/')}.md"
+                    # HBM has a direct entry under DRAM, outside this chapter.
+                    return url != "hbm-stacked-wide-io/" and owner(article_source) == owner(chapter_source)
+                expected = [(url, label) for url, label in clean(reading_items) if shares_section(url)]
                 self.assertEqual(clean(nav_items), expected)
                 for url, _ in clean(reading_items):
-                    if url in moved:
+                    if not shares_section(url):
                         self.assertTrue((chapter.parent / url / "index.html").is_file())
 
         overview = (SITE / "RAM/wiki/01-overview/index.html").read_text(encoding="utf-8")
@@ -254,11 +313,11 @@ class GeneratedNavigationTests(unittest.TestCase):
     def test_article_paths_and_distinct_parent_links(self):
         cases = {
             "RAM/wiki/01-overview/problem-statement/index.html": [
-                "首页", "存储系统", "RAM 基础导读与自测", "RAM · 存储系统", "存储系统概览",
+                "首页", "存储系统", "存储层级与数据路径", "存储系统概览",
                 "为什么存储系统难设计？从一次读取看跨层约束",
             ],
             "RAM/wiki/02-sram-foundations/6t-cell-bistable-storage/index.html": [
-                "首页", "存储系统", "SRAM 阵列、端口与宏接口", "RAM · 存储系统", "SRAM 基础",
+                "首页", "存储系统", "SRAM 器件与应用", "SRAM 基础",
                 "6T SRAM cell：它如何保存、读取和写入 1 bit",
             ],
             "CPO/wiki/08-research/detailed-cards/cpo-status-challenges-solutions/index.html": [
