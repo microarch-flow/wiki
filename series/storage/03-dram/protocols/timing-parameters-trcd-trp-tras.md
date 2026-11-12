@@ -1,7 +1,7 @@
 # 关键 timing 参数：tRCD、tRP、tRAS、tCL 的物理来源
 
 上级：[DRAM 协议层](./README.md)
-相关：[ACT、RD、WR、PRE：DRAM 命令集为什么长这样](./commands-act-rd-wr-pre.md), [刷新：DRAM 的原罪和它的代价](../04-dram-foundations/refresh-the-fundamental-cost.md)
+相关：[ACT、RD、WR、PRE：DRAM 命令集为什么长这样](./commands-act-rd-wr-pre.md), [刷新：DRAM 的原罪和它的代价](../foundations/refresh-the-fundamental-cost.md)
 
 ## 这页在回答什么问题
 
@@ -64,7 +64,7 @@ PRE_earliest = max(tACT + nRAS,
 
 **手算例子，仅为假设**：在上述 `PL=0`、CS-to-CA latency 关闭的模式下，`AL=0`、`CWL=9`、`BL=8`、`nWR=12`，WR 命令在周期 0。`WL=9`；按上述名义栅格，写数据的首、末 transfer 和右开窗口终点分别为 9、12.5、13。写恢复的参考沿在 `0+9+8/2=13`，因此显式 PRE 不早于周期 `13+12=25`。如果 `tACT+nRAS=28`，则还要等到 28。其他命令总线、bank、刷新、数据总线和模式约束也须满足。改变 parity、CS-to-CA latency、burst 或 CRC 时须查目标器件；auto-precharge 的内部触发也不等于显式 PRE 命令。
 
-参考：[Micron 8Gb DDR4 数据手册](https://www.micron-electronic.com/pdf-80/mt40a1g8sa-075-h.pdf)，2017 Rev. M，WRITE Operation 第 239 页 Figure 188；[大学托管版本](https://classes.engineering.wustl.edu/permanant/cse260m/images/0/0c/8Gb_DDR4_SDRAM.pdf)也可供查阅。该资料明确区分写命令、数据结束后的参考沿和写恢复时间。模型实现见 [MC 记分板](../06-memory-controller/mc-modeling-for-simulation.md)。
+参考：[Micron 8Gb DDR4 数据手册](https://www.micron-electronic.com/pdf-80/mt40a1g8sa-075-h.pdf)，2017 Rev. M，WRITE Operation 第 239 页 Figure 188；[大学托管版本](https://classes.engineering.wustl.edu/permanant/cse260m/images/0/0c/8Gb_DDR4_SDRAM.pdf)也可供查阅。该资料明确区分写命令、数据结束后的参考沿和写恢复时间。模型实现见 [MC 记分板](../../04-dram-controller/mc-modeling-for-simulation.md)。
 
 ## 一句话理解
 

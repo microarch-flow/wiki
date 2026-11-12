@@ -35,7 +35,7 @@ Mixed-signal CIM 的核心设计点是边界：更晚 ADC 化可以保留 analog
 
 ## 与 RAM Sense Path 的关系
 
-传统 SRAM/DRAM sense path 追求可靠读出；CIM sense path 还要承载 partial sum 或 bitwise 判决。RAM wiki 中的 [read/write timing](../../../../storage/RAM/wiki/02-sram-foundations/read-write-cycle-timing.md) 和 [row-column decode sense amplify](../../../../storage/RAM/wiki/04-dram-foundations/row-column-decode-sense-amplify.md) 是理解这条路径的基础，但 CIM 会进一步牺牲一部分 margin 来换取局部计算。
+传统 SRAM/DRAM sense path 追求可靠读出；CIM sense path 还要承载 partial sum 或 bitwise 判决。RAM wiki 中的 [read/write timing](../../../../storage/02-sram/foundations/read-write-cycle-timing.md) 和 [row-column decode sense amplify](../../../../storage/03-dram/foundations/row-column-decode-sense-amplify.md) 是理解这条路径的基础，但 CIM 会进一步牺牲一部分 margin 来换取局部计算。
 
 DRAM/HBM/GDDR-PIM 中也有 PHY、sense path 和模拟接口，但那不是本页讨论的 analog CIM ADC 问题。PIM 的关键是 memory die/bank 侧的独立 compute unit、command/dataflow 和 host offload；HBM base die、interposer 或 package-side logic 上的 compute 属于 NMC 边界，不应拿来和 CIM column ADC 直接比较。
 

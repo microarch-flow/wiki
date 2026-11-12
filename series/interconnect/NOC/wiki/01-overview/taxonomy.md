@@ -121,7 +121,7 @@ flow control 回答的是“发送方如何知道下游能不能继续接收”�
 
 第二个是 QoS。BUS 里的 QoS 常围绕 master priority、channel arbitration 和 response fairness；NoC 里的 QoS 则会深入到 VC、traffic class、multi-plane 和 path contention。这不是 BUS 错了，而是 NoC 的共享资源层次更多。
 
-和 RAM 体系的关键衔接点则是：NoC 的 traffic class 和热点，经常是被 memory subsystem 反推出来的。比如 [RAM 分类框架](../../../../storage/RAM/wiki/01-overview/taxonomy.md) 里讨论的 bank 组织、以及 [把 register、cache、scratchpad、DRAM、HBM 看作一个系统](../../../../storage/RAM/wiki/07-system-architecture/memory-hierarchy-as-system.md) 里强调的层次角色，会直接决定 request/response 的压力分布。bank parallelism 不够、controller return path 偏置、HBM port placement 不均，这些问题都会在 NoC 上表现为特定拓扑区域或 response path 的拥塞，而不会体现在 topology 名词本身。
+和 RAM 体系的关键衔接点则是：NoC 的 traffic class 和热点，经常是被 memory subsystem 反推出来的。比如 [RAM 分类框架](../../../../storage/01-memory-hierarchy/overview/taxonomy.md) 里讨论的 bank 组织、以及 [把 register、cache、scratchpad、DRAM、HBM 看作一个系统](../../../../storage/01-memory-hierarchy/system-architecture/memory-hierarchy-as-system.md) 里强调的层次角色，会直接决定 request/response 的压力分布。bank parallelism 不够、controller return path 偏置、HBM port placement 不均，这些问题都会在 NoC 上表现为特定拓扑区域或 response path 的拥塞，而不会体现在 topology 名词本身。
 
 ## 常见误解
 

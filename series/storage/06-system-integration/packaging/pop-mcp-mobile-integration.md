@@ -1,7 +1,7 @@
 # PoP、MCP：移动端的集成方式
 
 上级：[封装与集成](./README.md)
-相关：[LPDDR：为了功耗放弃了什么](../05-dram-protocol-families/lpddr-low-power-mobile.md), [DIMM、SODIMM：传统封装形态的电气与机械约束](./dimm-sodimm-traditional-forms.md)
+相关：[LPDDR：为了功耗放弃了什么](../../03-dram/protocols/lpddr-low-power-mobile.md), [DIMM、SODIMM：传统封装形态的电气与机械约束](./dimm-sodimm-traditional-forms.md)
 
 ## 这页在回答什么问题
 

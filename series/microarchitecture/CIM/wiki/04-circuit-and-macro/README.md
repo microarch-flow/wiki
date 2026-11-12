@@ -45,7 +45,7 @@ CIM 的定义要求计算发生在 cell 内或紧邻 array path。第 04 章只�
 
 Macro 指标必须说明是否包含 WL driver、precharge、SA/ADC、DAC、sample/hold、reference、local buffer、controller、calibration 和 digital accumulation。只报告 array core 的 TOPS/W 不能外推到 chip，更不能和 PIM/NMC 的 system-level latency 横比。
 
-本章也会主动连接外部 wiki：SRAM bitline 和 SA 对应 RAM wiki 的 [wordline-bitline-sense-amp](../../../../storage/RAM/wiki/02-sram-foundations/wordline-bitline-sense-amp.md)；工艺节点和 analog headroom 对应 FAB wiki 的 [process nodes and PPA tradeoffs](../../../../chip-development/FAB/wiki/02-front-end-fabrication/process-nodes-and-ppa-tradeoffs.md)；多 macro reduction 会在 05 章连接 NoC wiki 的 [reduction networks](../../../../interconnect/NOC/wiki/06-ai-noc-specifics/reduction-and-collective-networks.md)；macro 与 host-visible command、activation/result transfer 的边界可参考 BUS wiki 的 [interconnect components](../../../../interconnect/BUS/wiki/04-microarchitecture-integration/interconnect-components.md)。
+本章也会主动连接外部 wiki：SRAM bitline 和 SA 对应 RAM wiki 的 [wordline-bitline-sense-amp](../../../../storage/02-sram/foundations/wordline-bitline-sense-amp.md)；工艺节点和 analog headroom 对应 FAB wiki 的 [process nodes and PPA tradeoffs](../../../../chip-development/FAB/wiki/02-front-end-fabrication/process-nodes-and-ppa-tradeoffs.md)；多 macro reduction 会在 05 章连接 NoC wiki 的 [reduction networks](../../../../interconnect/NOC/wiki/06-ai-noc-specifics/reduction-and-collective-networks.md)；macro 与 host-visible command、activation/result transfer 的边界可参考 BUS wiki 的 [interconnect components](../../../../interconnect/BUS/wiki/04-microarchitecture-integration/interconnect-components.md)。
 
 ## 一句话理解
 

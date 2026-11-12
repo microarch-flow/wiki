@@ -1,7 +1,7 @@
 # DRAM timing 参数速查
 
 上级：[参考资料](./README.md)
-相关：[关键 timing 参数：tRCD、tRP、tRAS、tCL 的物理来源](../05-dram-protocol-families/timing-parameters-trcd-trp-tras.md), [ACT、RD、WR、PRE：DRAM 命令集为什么长这样](../05-dram-protocol-families/commands-act-rd-wr-pre.md)
+相关：[关键 timing 参数：tRCD、tRP、tRAS、tCL 的物理来源](../../03-dram/protocols/timing-parameters-trcd-trp-tras.md), [ACT、RD、WR、PRE：DRAM 命令集为什么长这样](../../03-dram/protocols/commands-act-rd-wr-pre.md)
 
 ## 这页在回答什么问题
 
@@ -125,7 +125,7 @@ PRE >= max(tACT+nRAS, tRD+AL+nRTP, tWR_command+WL+BL/2+nWR)
 WL = AL + CWL
 ```
 
-若 `AL=0, CWL=9, nWR=12, WR@0`，写恢复参考沿为 `13`，PRE 不早于 `25`；仍须满足 `tACT+nRAS` 及其他约束。没有 RD 或 WR 时忽略对应项；同一打开行有多次命令时取各命令约束的最大值。模式、burst 长度、CRC 和参考沿由目标规格决定。详见 [完整推导](../05-dram-protocol-families/timing-parameters-trcd-trp-tras.md#ddr4-同-bank-显式-pre-的完整下界)。
+若 `AL=0, CWL=9, nWR=12, WR@0`，写恢复参考沿为 `13`，PRE 不早于 `25`；仍须满足 `tACT+nRAS` 及其他约束。没有 RD 或 WR 时忽略对应项；同一打开行有多次命令时取各命令约束的最大值。模式、burst 长度、CRC 和参考沿由目标规格决定。详见 [完整推导](../../03-dram/protocols/timing-parameters-trcd-trp-tras.md#ddr4-同-bank-显式-pre-的完整下界)。
 
 refresh 则可以脑内记成：
 

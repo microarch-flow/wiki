@@ -263,7 +263,7 @@ r[k] = 0.7 × a[k] + 0.2 × a[k−1]
 | [PCIe 分层架构](../PCIE/wiki/02-link-transaction-basics/layered-architecture-transaction-data-link-physical.md) | 从协议物理层链接到 SerDes 机制，再从训练案例返回 PCIe。 | PCIe 专题保留协议、事务、链路层及系统语义；本专题不复制整套 PCIe 规范。 |
 | [封装信号完整性](../../chip-development/FAB/wiki/06-cross-cutting-engineering/signal-integrity-in-package.md) | 复用反射算例及封装、回流和 SI/PI 联系。 | FAB 关注制造与封装约束；本专题聚焦 TX—通道—RX 的链路行为。 |
 | [CPO 光链路基础](../CPO/wiki/04-optical-engine/optical-link-basics.md) | 从电 SerDes 边界连接驱动、调制器、光通道和接收侧。 | 光功率预算与光器件留在 CPO；不能把光损耗预算直接套成电通道预算。 |
-| [DDR：双倍数据率](../../storage/RAM/wiki/05-dram-protocol-families/why-double-data-rate.md) | 对比并行、随路选通与嵌入时钟串行链路，说明采样与训练共性。 | 不把 DDR / HBM 的 PHY 简化为“没有串并转换”，也不把其整个接口称为常见长距 SerDes。 |
+| [DDR：双倍数据率](../../storage/03-dram/protocols/why-double-data-rate.md) | 对比并行、随路选通与嵌入时钟串行链路，说明采样与训练共性。 | 不把 DDR / HBM 的 PHY 简化为“没有串并转换”，也不把其整个接口称为常见长距 SerDes。 |
 
 专题已按现有配置接入网站；每阶段继续检查正文链接、导航、面包屑和搜索。`wiki-plan.md` 和原始聊天记录留在正文目录之外；公开发布按仓库既有流程另行处理。
 

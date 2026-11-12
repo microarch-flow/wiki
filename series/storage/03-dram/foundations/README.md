@@ -1,7 +1,7 @@
 # DRAM 基础
 
-上级：[`RAM/wiki/`](../)
-相关：[SRAM 基础](../02-sram-foundations/README.md), [DRAM 协议层](../05-dram-protocol-families/README.md)
+上级：[`RAM/wiki/`](../../01-memory-hierarchy/)
+相关：[SRAM 基础](../../02-sram/foundations/README.md), [DRAM 协议层](../protocols/README.md)
 
 ## 这页在回答什么问题
 

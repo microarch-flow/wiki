@@ -176,19 +176,19 @@
 ## 06-memory-discipline(5 题)
 
 49. [F] cache 的命中与服务时间可能依赖哪些初始状态、地址流、替换和仲裁规则？
-   [参考正文](./wiki/06-memory-discipline/cache-vs-scratchpad.md)
+   [参考正文](../../storage/01-memory-hierarchy/cache-scratchpad/cache-vs-scratchpad.md)
 
 50. [T] scratchpad 由软件显式放置数据；为什么地址已知仍不能保证整笔访问的完成时间？
-   [参考正文](./wiki/06-memory-discipline/cache-vs-scratchpad.md)
+   [参考正文](../../storage/01-memory-hierarchy/cache-scratchpad/cache-vs-scratchpad.md)
 
 51. [J] 单 bank、单读端口每拍接纳一次，两个请求周期 0 同时到达，服务延迟一拍。不同仲裁选择如何影响各自完成时刻？
-   [参考正文](./wiki/06-memory-discipline/cache-vs-scratchpad.md)
+   [参考正文](../../storage/01-memory-hierarchy/cache-scratchpad/cache-vs-scratchpad.md)
 
 52. [J] 什么 workload 特征可能使显式 scratchpad 管理有利？容量不足、动态访问或争用可能带来什么代价？
-   [参考正文](./wiki/06-memory-discipline/cache-vs-scratchpad.md)
+   [参考正文](../../storage/01-memory-hierarchy/cache-scratchpad/cache-vs-scratchpad.md)
 
 53. [T] 确定性模拟 cache 和 scratchpad 分别需要哪些状态、事件与资源规则？何时才使用有前提的统计近似？
-   [参考正文](./wiki/06-memory-discipline/cache-vs-scratchpad.md)
+   [参考正文](../../storage/01-memory-hierarchy/cache-scratchpad/cache-vs-scratchpad.md)
 
 ---
 
@@ -242,7 +242,7 @@
   参考：[数字格式](./wiki/02-datapath-foundations/number-formats-for-ai.md)、[权重加载](./wiki/03-systolic-array/weight-loading-and-trickle-feed.md)。
 
 - **C.** [T] 为什么显式 scratchpad 放置与一个通过 setup 的时钟约束，仍不足以证明每个请求的完成时间？
-  参考：[存储争用](./wiki/06-memory-discipline/cache-vs-scratchpad.md)、[时钟路径](./wiki/04-clocking-and-pipeline/global-clock-synchronization.md)。
+  参考：[存储争用](../../storage/01-memory-hierarchy/cache-scratchpad/cache-vs-scratchpad.md)、[时钟路径](./wiki/04-clocking-and-pipeline/global-clock-synchronization.md)。
 
 - **D.** [J] 同一字节依次跨 RF、阵列和外存边界时，如何分别计数、选择统计窗口并避免将层间计数误当片外流量？
   参考：[计算与通信指标](./wiki/01-overview/compute-communication-ratio.md)、[建模建议](./wiki/08-modeling-for-archax/modeling-insights.md)。

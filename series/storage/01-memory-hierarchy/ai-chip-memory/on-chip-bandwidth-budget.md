@@ -1,7 +1,7 @@
 # NPU 的 on-chip 带宽预算从哪来、到哪去
 
 上级：[AI 芯片内存架构](./README.md)
-相关：[Activation buffer 与 double buffering：数据搬运与计算如何重叠](./activation-buffer-and-double-buffering.md), [多 master 场景下的 QoS 与公平性](../06-memory-controller/qos-multi-master-arbitration.md)
+相关：[Activation buffer 与 double buffering：数据搬运与计算如何重叠](./activation-buffer-and-double-buffering.md), [多 master 场景下的 QoS 与公平性](../../04-dram-controller/qos-multi-master-arbitration.md)
 
 ## 这页在回答什么问题
 

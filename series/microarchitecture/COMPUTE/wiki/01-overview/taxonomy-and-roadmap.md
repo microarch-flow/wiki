@@ -64,7 +64,7 @@ COMPUTE 域聚焦"数据搬到之后怎么算、为什么算力单元长这样"�
 
 | 邻域 | 它负责的 | COMPUTE 这边的接口篇 | 边界一句话 |
 |---|---|---|---|
-| **RAM** | SRAM/DRAM 器件、MC、NPU 存储层次 | [cache-vs-scratchpad](../06-memory-discipline/cache-vs-scratchpad.md) | RAM 从器件看 SRAM;COMPUTE 从数据管理和资源争用分析同一块 SRAM |
+| **RAM** | SRAM/DRAM 器件、MC、NPU 存储层次 | [cache-vs-scratchpad](../../../../storage/01-memory-hierarchy/cache-scratchpad/cache-vs-scratchpad.md) | RAM 从器件看 SRAM;COMPUTE 从数据管理和资源争用分析同一块 SRAM |
 | **CIM** | 存内计算路线(SRAM/ReRAM/模拟/数字) | [why-systolic-array](../03-systolic-array/why-systolic-array.md)、[dataflow-taxonomy](../03-systolic-array/dataflow-taxonomy.md) | systolic 权重存数字 register 仍取数后算;CIM 读出即算。边界=驻留处是否就是计算处 |
 | **NOC** | 拓扑、路由、flow control | [weight-loading-and-trickle-feed](../03-systolic-array/weight-loading-and-trickle-feed.md)、[gpu-as-tiled-tpu](../07-chip-organization/gpu-as-tiled-tpu.md) | COMPUTE 定义阵列边界各方向的字节数、时刻和需求带宽；NOC 根据拓扑和仲裁提供服务与路由 |
 | **DMA** | 描述符、多维 stride、double-buffering | [weight-loading-and-trickle-feed](../03-systolic-array/weight-loading-and-trickle-feed.md) | trickle 提供窄带权重加载；满足独立 bank 和带宽等条件时可与计算重叠 |

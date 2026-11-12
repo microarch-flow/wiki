@@ -4,7 +4,7 @@
 
 上级：[SRAM 基础](./README.md)
 
-相关：[SRAM 端口与代价](./single-port-dual-port-multi-port.md) · [bank 地址映射与冲突](./sram-bank-address-mapping-conflicts.md) · [NPU 的 SRAM buffer](../03-sram-applications/npu-weight-buffer-activation-buffer.md)
+相关：[SRAM 端口与代价](./single-port-dual-port-multi-port.md) · [bank 地址映射与冲突](./sram-bank-address-mapping-conflicts.md) · [NPU 的 SRAM buffer](../applications/npu-weight-buffer-activation-buffer.md)
 
 <p class="ram-problem-lede">扩大容量不仅增加 cell 数量，也可能增加字线、位线和外围电路的负载。把存储划分成局部阵列或 bank，可以改变这些路径，但也会增加选择、布线和控制开销。</p>
 
@@ -48,4 +48,4 @@
 
 - [bank 地址映射与冲突](./sram-bank-address-mapping-conflicts.md)：从请求地址和访问模式推导 bank 竞争。
 - [先进工艺与 SRAM](./sram-process-scaling-challenge.md)：看器件变异和稳定性对组织选择的约束。
-- [NPU 的 SRAM buffer](../03-sram-applications/npu-weight-buffer-activation-buffer.md)：把阵列资源放回具体数据路径。
+- [NPU 的 SRAM buffer](../applications/npu-weight-buffer-activation-buffer.md)：把阵列资源放回具体数据路径。

@@ -1,7 +1,7 @@
 # 系统视角
 
 上级：[`RAM/wiki/`](../)
-相关：[Memory Controller](../06-memory-controller/README.md), [AI 芯片内存架构](../09-ai-chip-memory-architecture/README.md)
+相关：[Memory Controller](../../04-dram-controller/README.md), [AI 芯片内存架构](../ai-chip-memory/README.md)
 
 ## 这页在回答什么问题
 

@@ -1,7 +1,7 @@
 # SRAM 和 DRAM 在访问模式上的根本区别
 
 上级：[系统视角](./README.md)
-相关：[同样是 RAM，为什么 SRAM 和 DRAM 走向了完全不同的工程路径](../01-overview/sram-dram-divergence.md), [Open、close、adaptive page policy 的权衡](../06-memory-controller/page-policy-open-close-adaptive.md)
+相关：[同样是 RAM，为什么 SRAM 和 DRAM 走向了完全不同的工程路径](../overview/sram-dram-divergence.md), [Open、close、adaptive page policy 的权衡](../../04-dram-controller/page-policy-open-close-adaptive.md)
 
 ## 这页在回答什么问题
 

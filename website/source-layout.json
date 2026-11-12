@@ -1,6 +1,5 @@
 {
   "topics": {
-    "RAM": "series/storage/RAM",
     "COMPUTE": "series/microarchitecture/COMPUTE",
     "BUS": "series/interconnect/BUS",
     "NOC": "series/interconnect/NOC",
@@ -9,8 +8,41 @@
     "CIM": "series/microarchitecture/CIM",
     "CPO": "series/interconnect/CPO",
     "FAB": "series/chip-development/FAB",
-    "SERDES": "series/interconnect/SERDES",
-    "HBF": "series/storage/HBF"
+    "SERDES": "series/interconnect/SERDES"
+  },
+  "storage": {
+    "homepage": "series/storage/README.md",
+    "roots": [
+      "series/storage/01-memory-hierarchy",
+      "series/storage/02-sram",
+      "series/storage/03-dram",
+      "series/storage/04-dram-controller",
+      "series/storage/05-hbf",
+      "series/storage/06-system-integration",
+      "series/storage/assets"
+    ],
+    "mappings": [
+      {"kind": "file", "source": "series/storage/01-memory-hierarchy/README.md", "target": "RAM/wiki/README.md"},
+      {"kind": "directory", "source": "series/storage/01-memory-hierarchy/overview", "target": "RAM/wiki/01-overview"},
+      {"kind": "directory", "source": "series/storage/01-memory-hierarchy/system-architecture", "target": "RAM/wiki/07-system-architecture"},
+      {"kind": "directory", "source": "series/storage/01-memory-hierarchy/ai-chip-memory", "target": "RAM/wiki/09-ai-chip-memory-architecture"},
+      {"kind": "directory", "source": "series/storage/01-memory-hierarchy/reference", "target": "RAM/wiki/10-reference"},
+      {"kind": "file", "source": "series/storage/01-memory-hierarchy/self-test-questions.md", "target": "RAM/self-test-questions.md"},
+      {"kind": "directory", "source": "series/storage/01-memory-hierarchy/cache-scratchpad", "target": "COMPUTE/wiki/06-memory-discipline"},
+      {"kind": "directory", "source": "series/storage/02-sram/foundations", "target": "RAM/wiki/02-sram-foundations"},
+      {"kind": "directory", "source": "series/storage/02-sram/applications", "target": "RAM/wiki/03-sram-applications"},
+      {"kind": "directory", "source": "series/storage/03-dram/foundations", "target": "RAM/wiki/04-dram-foundations"},
+      {"kind": "directory", "source": "series/storage/03-dram/protocols", "target": "RAM/wiki/05-dram-protocol-families"},
+      {"kind": "file", "source": "series/storage/03-dram/hbm-stacked-wide-io.md", "target": "RAM/wiki/05-dram-protocol-families/hbm-stacked-wide-io.md"},
+      {"kind": "directory", "source": "series/storage/04-dram-controller", "target": "RAM/wiki/06-memory-controller"},
+      {"kind": "directory", "source": "series/storage/05-hbf", "target": "HBF/wiki"},
+      {"kind": "directory", "source": "series/storage/06-system-integration/packaging", "target": "RAM/wiki/08-packaging-integration"},
+      {"kind": "file", "source": "series/storage/06-system-integration/hbm-vs-lpddr-for-npu.md", "target": "RAM/wiki/09-ai-chip-memory-architecture/hbm-vs-lpddr-for-npu.md"},
+      {"kind": "directory", "source": "series/storage/assets", "target": "RAM/wiki/img"}
+    ],
+    "aliases": [
+      {"source": "series/storage/01-memory-hierarchy", "target": "RAM/wiki"}
+    ]
   },
   "foundations": {
     "article": "series/microarchitecture/foundations/electrical-timing-foundations.md",

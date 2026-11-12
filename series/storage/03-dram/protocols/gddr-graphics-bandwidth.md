@@ -1,7 +1,7 @@
 # GDDR：为带宽放弃了什么
 
 上级：[DRAM 协议层](./README.md)
-相关：[HBM：从协议层面看它和 DDR 的根本不同](./hbm-stacked-wide-io.md), [DDR、LPDDR、GDDR、HBM：四种 DRAM 协议的 trade-off 全景图](./ddr-lpddr-gddr-hbm-tradeoff-map.md)
+相关：[HBM：从协议层面看它和 DDR 的根本不同](../hbm-stacked-wide-io.md), [DDR、LPDDR、GDDR、HBM：四种 DRAM 协议的 trade-off 全景图](./ddr-lpddr-gddr-hbm-tradeoff-map.md)
 
 ## 这页在回答什么问题
 

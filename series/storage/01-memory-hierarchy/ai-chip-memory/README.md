@@ -1,7 +1,7 @@
 # AI 芯片内存架构
 
 上级：[`RAM/wiki/`](../)
-相关：[系统视角](../07-system-architecture/README.md), [封装与集成](../08-packaging-integration/README.md)
+相关：[系统视角](../system-architecture/README.md), [封装与集成](../../06-system-integration/packaging/README.md)
 
 ## 这页在回答什么问题
 
@@ -33,7 +33,7 @@
 2. [Weight buffer 设计](./weight-buffer-design.md)
 3. [激活缓冲与双缓冲](./activation-buffer-and-double-buffering.md)
 4. [片上带宽预算](./on-chip-bandwidth-budget.md)
-5. [HBM 与 LPDDR 选型](./hbm-vs-lpddr-for-npu.md)
+5. [HBM 与 LPDDR 选型](../../06-system-integration/hbm-vs-lpddr-for-npu.md)
 6. [数据搬运优先](./data-movement-first-principle.md)
 7. [存储瓶颈与计算瓶颈](./memory-bound-vs-compute-bound.md)
 

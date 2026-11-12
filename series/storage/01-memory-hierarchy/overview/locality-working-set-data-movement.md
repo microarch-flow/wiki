@@ -2,7 +2,7 @@
 
 上级：[RAM 存储系统概览](./README.md)
 
-相关：[存储系统为何难设计](./problem-statement.md) · [Scratchpad 与 cache](../03-sram-applications/scratchpad-vs-cache.md) · [存储层次与系统角色](../07-system-architecture/memory-hierarchy-as-system.md)
+相关：[存储系统为何难设计](./problem-statement.md) · [Scratchpad 与 cache](../../02-sram/applications/scratchpad-vs-cache.md) · [存储层次与系统角色](../system-architecture/memory-hierarchy-as-system.md)
 
 同一套存储系统，面对不同的访问序列，可能产生不同的数据搬运量。原因不仅是存储器的容量和速度不同，还包括数据何时被再次使用、相邻数据是否一起使用，以及数据在使用之间能否留在本地。
 
@@ -119,7 +119,7 @@ Cache miss 次数也不自动等于 DRAM 请求数。其他 cache 可能满足�
 ## 接下来怎么读？
 
 - [SRAM 与 DRAM 的分化](./sram-dram-divergence.md)：继续看存储方式如何影响访问与保持。
-- [Scratchpad 与 cache](../03-sram-applications/scratchpad-vs-cache.md)：比较硬件管理与显式管理的数据放置。
-- [存储层次与系统角色](../07-system-architecture/memory-hierarchy-as-system.md)：把不同存储资源与数据路径放回系统中观察。
-- [峰值与有效带宽](../07-system-architecture/effective-bandwidth-vs-peak.md)：进一步分析接口能力与实际流量之间的差异。
-- [数据搬运优先](../09-ai-chip-memory-architecture/data-movement-first-principle.md)：结合 buffer、dataflow 和调度讨论复用。
+- [Scratchpad 与 cache](../../02-sram/applications/scratchpad-vs-cache.md)：比较硬件管理与显式管理的数据放置。
+- [存储层次与系统角色](../system-architecture/memory-hierarchy-as-system.md)：把不同存储资源与数据路径放回系统中观察。
+- [峰值与有效带宽](../system-architecture/effective-bandwidth-vs-peak.md)：进一步分析接口能力与实际流量之间的差异。
+- [数据搬运优先](../ai-chip-memory/data-movement-first-principle.md)：结合 buffer、dataflow 和调度讨论复用。

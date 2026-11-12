@@ -95,7 +95,7 @@ AR fire ─> 目标处理 ─> R beat fire × N，最后一拍 RLAST（协议读
 | 冲突位置 | 全局总线 / 目标端口 / 中间链路 / bridge FIFO（见 [taxonomy](../01-overview/taxonomy.md)） |
 | 端口并发度 | 哪些 master×slave 对能并行 |
 
-**DDR / Memory Controller**：不在 BUS 模型内展开，作为一个带 service-time 分布的特殊 slave 接入；其内部 tRCD/tRP/tRAS、page policy、command scheduling 交给 [RAM Wiki 内存控制器章](../../../../storage/RAM/wiki/06-memory-controller/README.md)。BUS 模型只需在边界保留：请求大小、读写方向、地址（决定 row hit/miss）、QoS。
+**DDR / Memory Controller**：不在 BUS 模型内展开，作为一个带 service-time 分布的特殊 slave 接入；其内部 tRCD/tRP/tRAS、page policy、command scheduling 交给 [RAM Wiki 内存控制器章](../../../../storage/04-dram-controller/README.md)。BUS 模型只需在边界保留：请求大小、读写方向、地址（决定 row hit/miss）、QoS。
 
 ## 5. 定量主干
 

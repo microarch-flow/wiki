@@ -1,7 +1,7 @@
 # Bank 为什么是 DRAM 并行性的最小单位
 
 上级：[DRAM 基础](./README.md)
-相关：[Row buffer：DRAM 内部的小 cache](./row-buffer-as-cache.md), [Memory controller 如何影响 DRAM 的实际性能](../06-memory-controller/why-mc-is-the-real-bottleneck.md)
+相关：[Row buffer：DRAM 内部的小 cache](./row-buffer-as-cache.md), [Memory controller 如何影响 DRAM 的实际性能](../../04-dram-controller/why-mc-is-the-real-bottleneck.md)
 
 ## 这页在回答什么问题
 

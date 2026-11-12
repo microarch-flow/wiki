@@ -163,7 +163,7 @@ Setup 关心数据能否**足够早地到达下一个采样边沿**。Hold 关�
 ## 接下来怎么读？
 
 - [COMPUTE：时钟与流水线](../COMPUTE/wiki/04-clocking-and-pipeline/README.md)：从单条路径继续看流水线与吞吐。
-- [RAM：字线、位线与读出放大器](../../storage/RAM/wiki/02-sram-foundations/wordline-bitline-sense-amp.md)：看存储阵列中的电容、信号变化与感测。
+- [RAM：字线、位线与读出放大器](../../storage/02-sram/foundations/wordline-bitline-sense-amp.md)：看存储阵列中的电容、信号变化与感测。
 - [FAB：供电完整性](../../chip-development/FAB/wiki/06-cross-cutting-engineering/power-delivery-pi-pdn-decap.md)：了解电源网络对电路工作条件的影响。
 - [CPO：光链路基础](../../interconnect/CPO/wiki/04-optical-engine/optical-link-basics.md)：从电信号延伸到另一类数据传输路径。
 - [SerDes：全局链路](../../interconnect/SERDES/wiki/01-overview/README.md)：继续看发送、通道与接收端怎样处理高速信号。

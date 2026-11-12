@@ -4,7 +4,7 @@
 
 上级：[SRAM 基础](./README.md)
 
-相关：[SRAM 宏接口与读写语义](./sram-macro-interface-and-semantics.md) · [SRAM 阵列组织](./sram-array-organization.md) · [Register file](../03-sram-applications/register-file-as-sram.md)
+相关：[SRAM 宏接口与读写语义](./sram-macro-interface-and-semantics.md) · [SRAM 阵列组织](./sram-array-organization.md) · [Register file](../applications/register-file-as-sram.md)
 
 <p class="ram-problem-lede">端口决定哪些访问可以同时进入存储资源。增加并发能力可能需要更多 cell 接入、位线、外围电路或额外的系统组织；具体代价取决于实现和所承诺的访问规则。</p>
 
@@ -72,4 +72,4 @@ Banking 可以让访问不同 bank 的请求并行，但同一 bank 的访问仍
 
 - [SRAM 阵列组织](./sram-array-organization.md)：看端口和局部阵列怎样共享路径。
 - [bank 地址映射与冲突](./sram-bank-address-mapping-conflicts.md)：从地址分布计算 bank 竞争。
-- [Register file](../03-sram-applications/register-file-as-sram.md)：看多源操作数对并发访问的要求。
+- [Register file](../applications/register-file-as-sram.md)：看多源操作数对并发访问的要求。

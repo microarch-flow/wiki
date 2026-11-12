@@ -1,7 +1,7 @@
 # CPU 与 GPU 的资源组织：控制、并行与存储
 
 上级：[07 · 芯片顶层组织](./README.md)
-相关：[cache 与 scratchpad](../06-memory-discipline/cache-vs-scratchpad.md)、[阵列组织](./gpu-as-tiled-tpu.md)
+相关：[cache 与 scratchpad](../../../../storage/01-memory-hierarchy/cache-scratchpad/cache-vs-scratchpad.md)、[阵列组织](./gpu-as-tiled-tpu.md)
 
 ## 比较什么
 

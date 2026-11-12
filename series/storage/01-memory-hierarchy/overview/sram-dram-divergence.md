@@ -5,7 +5,7 @@
 
 上级：[RAM 存储系统概览](./README.md)
 
-相关：[RAM 分类与命名](./taxonomy.md) · [6T SRAM cell](../02-sram-foundations/6t-cell-bistable-storage.md) · [1T1C 存储单元](../04-dram-foundations/1t1c-cell-destructive-read.md)
+相关：[RAM 分类与命名](./taxonomy.md) · [6T SRAM cell](../../02-sram/foundations/6t-cell-bistable-storage.md) · [1T1C 存储单元](../../03-dram/foundations/1t1c-cell-destructive-read.md)
 
 <p class="ram-problem-lede">SRAM 和 DRAM 都能按地址访问数据，但常见单元保存数据的方式不同。这个差异影响保持、感测和阵列组织，也影响系统需要怎样安排访问。</p>
 
@@ -42,7 +42,7 @@
 
 第 2 步的恢复是行激活过程的一部分，不应额外假设每次 RD 后都有一条独立的“写回单元”命令。有关感测、恢复与列访问重叠的解释，可参考 [CMU 对 DRAM 延迟的研究](https://users.ece.cmu.edu/~omutlu/pub/understanding-latency-variation-in-DRAM-chips_sigmetrics16.pdf)。
 
-命令何时可以发出，还取决于协议和器件。例如，在 DDR4 的一种简化模式下，假设 `AL=0`，且 CA parity 和 CS-to-CA latency 均关闭，`tRCD` 约束外部 ACT 到 RD/WR，`tRAS` 约束 ACT 后何时可预充；此前的 RD 或 WR 也可能引入其他预充约束。具体参考边沿和模式条件见 [DRAM 时序参数](../05-dram-protocol-families/timing-parameters-trcd-trp-tras.md)。不能把这些参数直接当成所有模式下的完整端到端延迟。
+命令何时可以发出，还取决于协议和器件。例如，在 DDR4 的一种简化模式下，假设 `AL=0`，且 CA parity 和 CS-to-CA latency 均关闭，`tRCD` 约束外部 ACT 到 RD/WR，`tRAS` 约束 ACT 后何时可预充；此前的 RD 或 WR 也可能引入其他预充约束。具体参考边沿和模式条件见 [DRAM 时序参数](../../03-dram/protocols/timing-parameters-trcd-trp-tras.md)。不能把这些参数直接当成所有模式下的完整端到端延迟。
 
 ### 读取恢复与周期刷新
 
@@ -89,6 +89,6 @@ Cache 数据阵列和 scratchpad 常用 SRAM；主存或设备内存常使用 DR
 ## 接下来怎么读？
 
 - [学习路径与章节依赖](./learning-roadmap.md)：继续按目标选择后续章节。
-- [6T SRAM cell](../02-sram-foundations/6t-cell-bistable-storage.md)：看双稳态和读写操作。
-- [1T1C 存储单元](../04-dram-foundations/1t1c-cell-destructive-read.md)：看电荷共享、感测与恢复。
-- [DRAM 命令集](../05-dram-protocol-families/commands-act-rd-wr-pre.md)：看 ACT、RD、WR 和 PRE 的接口语义。
+- [6T SRAM cell](../../02-sram/foundations/6t-cell-bistable-storage.md)：看双稳态和读写操作。
+- [1T1C 存储单元](../../03-dram/foundations/1t1c-cell-destructive-read.md)：看电荷共享、感测与恢复。
+- [DRAM 命令集](../../03-dram/protocols/commands-act-rd-wr-pre.md)：看 ACT、RD、WR 和 PRE 的接口语义。

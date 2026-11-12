@@ -2,7 +2,7 @@
 
 上级：[SRAM 基础](./README.md)
 
-相关：[6T SRAM cell](./6t-cell-bistable-storage.md) · [SRAM 读写时序](./read-write-cycle-timing.md) · [行列解码与读出放大](../04-dram-foundations/row-column-decode-sense-amplify.md)
+相关：[6T SRAM cell](./6t-cell-bistable-storage.md) · [SRAM 读写时序](./read-write-cycle-timing.md) · [行列解码与读出放大](../../03-dram/foundations/row-column-decode-sense-amplify.md)
 
 <p class="ram-problem-lede">一个 cell 只保存一个 bit。要按地址读写多个 bit，还需要选择行和列，并通过位线把 cell 与外围电路连接起来。</p>
 
@@ -37,7 +37,7 @@
 
 当差分和使能时机满足读出电路的要求，sense amp 判决并输出数字结果。它不必等待较低位线降到完整的逻辑 0。预充位线也会扰动 cell 的低节点；**差分足够感测**和**cell 保持原值**是两个都需要满足的条件。单元内的具体路径见 [6T SRAM cell](./6t-cell-bistable-storage.md)。
 
-SRAM 的读感测一般不承担常见 1T1C DRAM 开行时的电容恢复过程。两者的内部职责和接口规则不同，见 [行列解码与读出放大](../04-dram-foundations/row-column-decode-sense-amplify.md)。
+SRAM 的读感测一般不承担常见 1T1C DRAM 开行时的电容恢复过程。两者的内部职责和接口规则不同，见 [行列解码与读出放大](../../03-dram/foundations/row-column-decode-sense-amplify.md)。
 
 ## 写：位线驱动 cell
 

@@ -1,7 +1,7 @@
 # 刷新：DRAM 的原罪和它的代价
 
 上级：[DRAM 基础](./README.md)
-相关：[1T1C cell，一颗电容为什么改变了一切](./1t1c-cell-destructive-read.md), [Refresh 调度：分散刷新、推迟刷新、bank-level refresh](../06-memory-controller/refresh-management-distributed-postponed.md)
+相关：[1T1C cell，一颗电容为什么改变了一切](./1t1c-cell-destructive-read.md), [Refresh 调度：分散刷新、推迟刷新、bank-level refresh](../../04-dram-controller/refresh-management-distributed-postponed.md)
 
 ## 这页在回答什么问题
 

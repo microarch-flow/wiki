@@ -1,7 +1,7 @@
 # 06 Software Stack
 
 上级：[CIM Wiki](../README.md)
-相关：[05 Architecture And System](../05-architecture-and-system/README.md), [BUS: DMA Path](../../../../interconnect/BUS/wiki/04-microarchitecture-integration/dma-descriptor-fetch-data-move-writeback.md), [RAM: Data Movement First Principle](../../../../storage/RAM/wiki/09-ai-chip-memory-architecture/data-movement-first-principle.md), [NoC: DMA Interaction](../../../../interconnect/NOC/wiki/05-system-integration/dma-engine-noc-interaction.md), [FAB: Final Test](../../../../chip-development/FAB/wiki/05-final-test-and-reliability/final-test-methodology.md)
+相关：[05 Architecture And System](../05-architecture-and-system/README.md), [BUS: DMA Path](../../../../interconnect/BUS/wiki/04-microarchitecture-integration/dma-descriptor-fetch-data-move-writeback.md), [RAM: Data Movement First Principle](../../../../storage/01-memory-hierarchy/ai-chip-memory/data-movement-first-principle.md), [NoC: DMA Interaction](../../../../interconnect/NOC/wiki/05-system-integration/dma-engine-noc-interaction.md), [FAB: Final Test](../../../../chip-development/FAB/wiki/05-final-test-and-reliability/final-test-methodology.md)
 
 ## 这页在回答什么问题
 

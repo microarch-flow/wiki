@@ -1,7 +1,7 @@
 # Bank group、prefetch、burst：高频接口下的必然演化
 
 上级：[DRAM 基础](./README.md)
-相关：[为什么要在时钟两边都传数据](../05-dram-protocol-families/why-double-data-rate.md), [DDR1 到 DDR5：每一代的核心改变是什么](../05-dram-protocol-families/ddr-generation-evolution.md)
+相关：[为什么要在时钟两边都传数据](../protocols/why-double-data-rate.md), [DDR1 到 DDR5：每一代的核心改变是什么](../protocols/ddr-generation-evolution.md)
 
 ## 这页在回答什么问题
 

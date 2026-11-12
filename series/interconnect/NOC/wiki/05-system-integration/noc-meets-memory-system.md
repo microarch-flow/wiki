@@ -2,7 +2,7 @@
 
 上级：[05 System Integration](./README.md)
 
-相关：[RAM: NPU memory hierarchy](../../../../storage/RAM/wiki/09-ai-chip-memory-architecture/npu-memory-hierarchy.md)、[RAM: memory controller](../../../../storage/RAM/wiki/06-memory-controller/why-mc-is-the-real-bottleneck.md)
+相关：[RAM: NPU memory hierarchy](../../../../storage/01-memory-hierarchy/ai-chip-memory/npu-memory-hierarchy.md)、[RAM: memory controller](../../../../storage/04-dram-controller/why-mc-is-the-real-bottleneck.md)
 
 ## 这页在回答什么问题
 

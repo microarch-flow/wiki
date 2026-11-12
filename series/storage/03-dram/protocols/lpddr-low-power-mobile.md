@@ -1,7 +1,7 @@
 # LPDDR：为了功耗放弃了什么
 
 上级：[DRAM 协议层](./README.md)
-相关：[DDR、LPDDR、GDDR、HBM：四种 DRAM 协议的 trade-off 全景图](./ddr-lpddr-gddr-hbm-tradeoff-map.md), [PoP、MCP：移动端的集成方式](../08-packaging-integration/pop-mcp-mobile-integration.md)
+相关：[DDR、LPDDR、GDDR、HBM：四种 DRAM 协议的 trade-off 全景图](./ddr-lpddr-gddr-hbm-tradeoff-map.md), [PoP、MCP：移动端的集成方式](../../06-system-integration/packaging/pop-mcp-mobile-integration.md)
 
 ## 这页在回答什么问题
 

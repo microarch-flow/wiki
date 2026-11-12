@@ -19,7 +19,7 @@ from mkdocs.config import load_config
 
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / "website"))
-from prepare import TOPICS, stage_site  # noqa: E402
+from prepare import SOURCE_TOPICS, stage_site  # noqa: E402
 
 
 def write(path, content):
@@ -29,8 +29,16 @@ def write(path, content):
 
 def fixture_wiki(root):
     write(root / "README.md", "# Repository overview\n")
-    for name in TOPICS:
+    for name in SOURCE_TOPICS:
         write(root / name / "wiki" / "README.md", f"# {name}\n")
+    storage = root / "series/storage"
+    storage_roots = ("01-memory-hierarchy", "02-sram", "03-dram", "04-dram-controller",
+                     "05-hbf", "06-system-integration", "assets")
+    for name in storage_roots:
+        (storage / name).mkdir(parents=True, exist_ok=True)
+    write(storage / "README.md", "# 存储系统\n")
+    write(storage / "01-memory-hierarchy/README.md", "# RAM\n")
+    write(storage / "05-hbf/README.md", "# HBF\n")
     write(root / "docs" / "reviews" / "2026-11-09-topic-review.md", "# Review\n")
     for number in (2, 3):
         write(root / "docs" / "reviews" / f"round-{number}" / "README.md", f"# Round {number}\n")
@@ -42,14 +50,23 @@ def fixture_wiki(root):
         "home.md": "# 首页\n\n<!-- site-series -->\n",
         "series.md": "# 系列\n\n<!-- site-series -->\n",
         "microarchitecture.md": "# 微架构\n",
-        "storage.md": "# 存储系统\n",
         "interconnect.md": "# 芯片与系统互连\n",
         "articles.md": "# 精选文章\n",
         "visuals.md": "# 互动图解\n",
     }.items():
         write(root / "website" / name, content)
     write(root / "website/source-layout.json", json.dumps({
-        "topics": {name: name for name in TOPICS},
+        "topics": {name: name for name in SOURCE_TOPICS},
+        "storage": {
+            "homepage": "series/storage/README.md",
+            "roots": [f"series/storage/{name}" for name in storage_roots],
+            "mappings": [
+                {"kind": "file", "source": "series/storage/01-memory-hierarchy/README.md", "target": "RAM/wiki/README.md"},
+                {"kind": "directory", "source": "series/storage/05-hbf", "target": "HBF/wiki"},
+                {"kind": "directory", "source": "series/storage/assets", "target": "RAM/wiki/img"},
+            ],
+            "aliases": [{"source": "series/storage/01-memory-hierarchy", "target": "RAM/wiki"}],
+        },
         "foundations": {"article": "electrical-timing-foundations.md", "images": "img"},
     }))
     shutil.copytree(ROOT / "website" / "assets", root / "website" / "assets")
@@ -80,6 +97,127 @@ def fixture_repo(path, files):
 
 
 class MultiRepositoryTests(unittest.TestCase):
+    def test_storage_split_preserves_public_links_search_and_coverage(self):
+        with tempfile.TemporaryDirectory() as temp:
+            temporary = Path(temp)
+            wiki = temporary / "wiki"
+            fixture_wiki(wiki)
+            storage = wiki / "series/storage"
+            write(storage / "README.md", (
+                "# 存储系统\n\n[SRAM](02-sram/foundations/README.md?view=1#sram)\n"
+                "[HBM](03-dram/hbm-stacked-wide-io.md#layers)\n"
+            ))
+            write(storage / "01-memory-hierarchy/overview/README.md", (
+                "# Overview\n\n"
+                "[DRAM](../../03-dram/protocols/README.md?mode=1#timing)\n"
+                "![图](../../assets/overview.svg?size=1#shape)\n"
+                "[上级](../)\n"
+                # A merged destination must not invent this source path.
+                "[缺失](../ai-chip-memory/hbm-vs-lpddr-for-npu.md#missing)\n"
+            ))
+            write(storage / "02-sram/foundations/README.md", "# SRAM\n\n## SRAM\n")
+            write(storage / "03-dram/protocols/README.md", (
+                "# DRAM\n\n## Timing\n\n"
+                "[概览](../../01-memory-hierarchy/overview/README.md#overview)\n"
+            ))
+            write(storage / "03-dram/hbm-stacked-wide-io.md", (
+                "# HBM\n\n## Layers\n\n"
+                "[封装](../06-system-integration/packaging/README.md?view=1#pkg)\n"
+            ))
+            write(storage / "06-system-integration/packaging/README.md", "# Packaging\n\n## Pkg\n")
+            write(storage / "06-system-integration/hbm-vs-lpddr-for-npu.md", "# Selection\n")
+            write(storage / "01-memory-hierarchy/ai-chip-memory/README.md", "# AI memory\n")
+            write(storage / "01-memory-hierarchy/cache-scratchpad/README.md", "# Cache\n")
+            write(storage / "assets/overview.svg", "<svg/>\n")
+            write(storage / "01-memory-hierarchy/task.md", "# Historical task\n")
+            write(wiki / "COMPUTE/wiki/README.md", (
+                "# COMPUTE\n\n[存储首页](../../series/storage/README.md#storage)\n"
+                "[缓存](../../series/storage/01-memory-hierarchy/cache-scratchpad/README.md#cache)\n"
+            ))
+
+            layout_path = wiki / "website/source-layout.json"
+            layout = json.loads(layout_path.read_text(encoding="utf-8"))
+            extra = [
+                ("directory", "01-memory-hierarchy/overview", "RAM/wiki/01-overview"),
+                ("directory", "02-sram/foundations", "RAM/wiki/02-sram-foundations"),
+                ("directory", "03-dram/protocols", "RAM/wiki/05-dram-protocol-families"),
+                ("file", "03-dram/hbm-stacked-wide-io.md", "RAM/wiki/05-dram-protocol-families/hbm-stacked-wide-io.md"),
+                ("directory", "06-system-integration/packaging", "RAM/wiki/08-packaging-integration"),
+                # Place the split file first to exercise merging in both orders.
+                ("file", "06-system-integration/hbm-vs-lpddr-for-npu.md", "RAM/wiki/09-ai-chip-memory-architecture/hbm-vs-lpddr-for-npu.md"),
+                ("directory", "01-memory-hierarchy/ai-chip-memory", "RAM/wiki/09-ai-chip-memory-architecture"),
+                ("directory", "01-memory-hierarchy/cache-scratchpad", "COMPUTE/wiki/06-memory-discipline"),
+            ]
+            layout["storage"]["mappings"].extend({"kind": kind, "source": f"series/storage/{source}", "target": target}
+                                                 for kind, source, target in extra)
+            layout_path.write_text(json.dumps(layout), encoding="utf-8")
+            registry = temporary / "series.json"
+            registry.write_text(json.dumps({"series": [{"title": "存储", "description": "storage", "page": "storage.md"}]}), encoding="utf-8")
+            build_root = temporary / "build"
+            stage_site(root=wiki, build_root=build_root, registry=registry)
+            docs = build_root / "docs"
+
+            landing = (docs / "storage.md").read_text(encoding="utf-8")
+            self.assertIn("[SRAM](RAM/wiki/02-sram-foundations/README.md?view=1#sram)", landing)
+            self.assertIn("[HBM](RAM/wiki/05-dram-protocol-families/hbm-stacked-wide-io.md#layers)", landing)
+            overview = (docs / "RAM/wiki/01-overview/README.md").read_text(encoding="utf-8")
+            self.assertIn("[DRAM](../05-dram-protocol-families/README.md?mode=1#timing)", overview)
+            self.assertIn("![图](../img/overview.svg?size=1#shape)", overview)
+            self.assertIn("[上级](../)", overview)
+            self.assertIn("[缺失](../ai-chip-memory/hbm-vs-lpddr-for-npu.md#missing)", overview)
+            hbm = (docs / "RAM/wiki/05-dram-protocol-families/hbm-stacked-wide-io.md").read_text(encoding="utf-8")
+            self.assertIn("[封装](../08-packaging-integration/README.md?view=1#pkg)", hbm)
+            compute = (docs / "COMPUTE/wiki/README.md").read_text(encoding="utf-8")
+            self.assertIn("[存储首页](../../storage.md#storage)", compute)
+            self.assertIn("[缓存](06-memory-discipline/README.md#cache)", compute)
+            self.assertTrue((docs / "RAM/wiki/09-ai-chip-memory-architecture/hbm-vs-lpddr-for-npu.md").is_file())
+            self.assertTrue((docs / "COMPUTE/wiki/06-memory-discipline/README.md").is_file())
+            self.assertFalse(any(docs.rglob("task.md")))
+
+            # The deliberately unresolved link above tests ghost mappings;
+            # remove it before the real build, which should have no bad links.
+            overview_source = storage / "01-memory-hierarchy/overview/README.md"
+            overview_source.write_text(overview_source.read_text(encoding="utf-8").replace(
+                "[缺失](../ai-chip-memory/hbm-vs-lpddr-for-npu.md#missing)\n", ""), encoding="utf-8")
+            stage_site(root=wiki, build_root=build_root, registry=registry)
+            site = temporary / "site"
+            config = load_config(config_file=str(ROOT / "mkdocs.yml"), docs_dir=str(docs), site_dir=str(site))
+            build(config)
+            self.assertTrue((site / "storage/index.html").is_file())
+            self.assertTrue((site / "RAM/wiki/05-dram-protocol-families/hbm-stacked-wide-io/index.html").is_file())
+            self.assertTrue((site / "COMPUTE/wiki/06-memory-discipline/index.html").is_file())
+            search = json.loads((site / "search/search_index.json").read_text(encoding="utf-8"))
+            locations = {entry["location"] for entry in search["docs"]}
+            self.assertIn("RAM/wiki/05-dram-protocol-families/hbm-stacked-wide-io/", locations)
+            self.assertIn("COMPUTE/wiki/06-memory-discipline/", locations)
+
+            # Fail closed for a new file inside or outside declared roots.
+            for path in (storage / "06-system-integration/new.md", storage / "new-topic/new.md", storage / "new.svg"):
+                write(path, "new\n")
+                with self.assertRaisesRegex(ValueError, "Storage mappings do not cover source files"):
+                    stage_site(root=wiki, build_root=build_root, registry=registry)
+                path.unlink()
+            self.assertEqual((docs / "storage.md").read_text(encoding="utf-8"), landing)
+
+            duplicate = storage / "01-memory-hierarchy/ai-chip-memory/hbm-vs-lpddr-for-npu.md"
+            write(duplicate, "# Duplicate\n")
+            with self.assertRaisesRegex(ValueError, "Storage output path collision"):
+                stage_site(root=wiki, build_root=build_root, registry=registry)
+            duplicate.unlink()
+
+            symlink = storage / "02-sram/foundations/leak.md"
+            symlink.symlink_to(temporary / "outside.md")
+            with self.assertRaisesRegex(ValueError, "symlink"):
+                stage_site(root=wiki, build_root=build_root, registry=registry)
+            symlink.unlink()
+
+            entry = layout["storage"]["mappings"][-1]
+            entry["target"] = "RAM/wiki/02-sram-foundations/cache"
+            layout_path.write_text(json.dumps(layout), encoding="utf-8")
+            with self.assertRaisesRegex(ValueError, "published navigation differ"):
+                stage_site(root=wiki, build_root=build_root, registry=registry)
+            self.assertEqual((docs / "storage.md").read_text(encoding="utf-8"), landing)
+
     def test_moved_sources_keep_site_paths_and_rewrite_cross_links(self):
         with tempfile.TemporaryDirectory() as temp:
             wiki = Path(temp) / "wiki"
@@ -165,13 +303,14 @@ class MultiRepositoryTests(unittest.TestCase):
 
             data["series"][0]["local"]["directory"] = "series/chip-development/process"
             registry.write_text(json.dumps(data), encoding="utf-8")
-            layout["topics"]["RAM"] = "../outside"
+            layout["storage"]["mappings"][0]["source"] = "../outside"
             layout_path.write_text(json.dumps(layout), encoding="utf-8")
             with self.assertRaisesRegex(ValueError, "inside the checkout"):
                 stage_site(root=wiki, build_root=build)
             self.assertEqual((docs / "series/chip-development/README.md").read_text(encoding="utf-8"), staged)
 
-            layout["topics"]["RAM"] = layout["topics"]["BUS"]
+            layout["storage"]["mappings"][0]["source"] = "series/storage/01-memory-hierarchy/README.md"
+            layout["topics"]["COMPUTE"] = layout["topics"]["BUS"]
             layout_path.write_text(json.dumps(layout), encoding="utf-8")
             with self.assertRaisesRegex(ValueError, "staged to multiple paths"):
                 stage_site(root=wiki, build_root=build)

@@ -1,7 +1,7 @@
 # MC 在 cycle-level 仿真里的建模方法
 
 上级：[Memory Controller](./README.md)
-相关：[多 master 场景下的 QoS 与公平性](./qos-multi-master-arbitration.md), [存储器在架构探索中的建模模板](../10-reference/memory-modeling-template.md)
+相关：[多 master 场景下的 QoS 与公平性](./qos-multi-master-arbitration.md), [存储器在架构探索中的建模模板](../01-memory-hierarchy/reference/memory-modeling-template.md)
 
 ## 这页在回答什么问题
 
@@ -141,7 +141,7 @@ on PRE(bank, now):
   next_act_ready[bank] = now + nRP
 ```
 
-其中 `WL=AL+CWL`。假设 WR 在周期 0，`AL=0, CWL=9, BL=8, nWR=12`，则写参考沿为 13，写项给出 `pre_ready>=25`；若 ACT 项给出 28，最终为 28。命令队列仍须检查命令总线、bank group、数据总线、refresh 和其他目标协议约束。自动预充要按目标规格建独立的内部事件。本例和更改模式后的校准边界见 [timing 正文](../05-dram-protocol-families/timing-parameters-trcd-trp-tras.md#ddr4-同-bank-显式-pre-的完整下界)。
+其中 `WL=AL+CWL`。假设 WR 在周期 0，`AL=0, CWL=9, BL=8, nWR=12`，则写参考沿为 13，写项给出 `pre_ready>=25`；若 ACT 项给出 28，最终为 28。命令队列仍须检查命令总线、bank group、数据总线、refresh 和其他目标协议约束。自动预充要按目标规格建独立的内部事件。本例和更改模式后的校准边界见 [timing 正文](../03-dram/protocols/timing-parameters-trcd-trp-tras.md#ddr4-同-bank-显式-pre-的完整下界)。
 
 仿真应能输出每个候选 PRE 的阻塞原因、各下界及发射周期。这样可以区分写恢复、行保持和共享资源造成的等待。
 

@@ -1,7 +1,7 @@
 # SRAM-CIM 基础：6T/8T/10T Cell 怎么变成计算单元
 
 上级：[02 Memory Technologies](./README.md)
-相关：[SRAM-CIM 深入](./sram-cim-deep-dive.md), [Digital CIM 基础](../03-compute-paradigms/digital-cim-fundamentals.md), [RAM: 6T SRAM Cell](../../../../storage/RAM/wiki/02-sram-foundations/6t-cell-bistable-storage.md)
+相关：[SRAM-CIM 深入](./sram-cim-deep-dive.md), [Digital CIM 基础](../03-compute-paradigms/digital-cim-fundamentals.md), [RAM: 6T SRAM Cell](../../../../storage/02-sram/foundations/6t-cell-bistable-storage.md)
 
 ## 这页在回答什么问题
 
@@ -9,7 +9,7 @@ SRAM 原本是 cache、scratchpad 和 register file 的存储阵列，为什么�
 
 ## SRAM-CIM 的起点是片上存储已经存在
 
-现代 SoC 本来就有大量 SRAM。RAM wiki 的 [SRAM array organization](../../../../storage/RAM/wiki/02-sram-foundations/sram-array-organization.md) 和 [scratchpad vs cache](../../../../storage/RAM/wiki/03-sram-applications/scratchpad-vs-cache.md) 已经说明，SRAM 的价值在于低延迟、高带宽、片上可控访问。SRAM-CIM 的动机是在这条既有数据路径上减少“读出到 MAC，再写回”的局部搬运。
+现代 SoC 本来就有大量 SRAM。RAM wiki 的 [SRAM array organization](../../../../storage/02-sram/foundations/sram-array-organization.md) 和 [scratchpad vs cache](../../../../storage/02-sram/applications/scratchpad-vs-cache.md) 已经说明，SRAM 的价值在于低延迟、高带宽、片上可控访问。SRAM-CIM 的动机是在这条既有数据路径上减少“读出到 MAC，再写回”的局部搬运。
 
 普通 SRAM 路径是：
 

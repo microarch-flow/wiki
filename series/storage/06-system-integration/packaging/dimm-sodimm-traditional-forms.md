@@ -1,7 +1,7 @@
 # DIMM、SODIMM：传统封装形态的电气与机械约束
 
 上级：[封装与集成](./README.md)
-相关：[PoP、MCP：移动端的集成方式](./pop-mcp-mobile-integration.md), [DDR、LPDDR、GDDR、HBM：四种 DRAM 协议的 trade-off 全景图](../05-dram-protocol-families/ddr-lpddr-gddr-hbm-tradeoff-map.md)
+相关：[PoP、MCP：移动端的集成方式](./pop-mcp-mobile-integration.md), [DDR、LPDDR、GDDR、HBM：四种 DRAM 协议的 trade-off 全景图](../../03-dram/protocols/ddr-lpddr-gddr-hbm-tradeoff-map.md)
 
 ## 这页在回答什么问题
 

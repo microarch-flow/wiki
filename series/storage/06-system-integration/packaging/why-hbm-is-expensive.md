@@ -1,7 +1,7 @@
 # HBM 的成本结构为什么这么高
 
 上级：[封装与集成](./README.md)
-相关：[HBM 的 2.5D、3D 集成与 TSV 技术](./hbm-2.5d-3d-tsv.md), [NPU 选 HBM 还是 LPDDR：决策框架](../09-ai-chip-memory-architecture/hbm-vs-lpddr-for-npu.md)
+相关：[HBM 的 2.5D、3D 集成与 TSV 技术](./hbm-2.5d-3d-tsv.md), [NPU 选 HBM 还是 LPDDR：决策框架](../hbm-vs-lpddr-for-npu.md)
 
 ## 这页在回答什么问题
 

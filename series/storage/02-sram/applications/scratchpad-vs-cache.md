@@ -1,7 +1,7 @@
 # Scratchpad 和 cache 都是 SRAM，差异在哪
 
 上级：[SRAM 应用形态](./README.md)
-相关：[Cache 里的 SRAM：tag 阵列与 data 阵列的差异](./cache-sram-tag-data-arrays.md), [“数据搬运优先”原则在 NPU 设计中的体现](../09-ai-chip-memory-architecture/data-movement-first-principle.md)
+相关：[Cache 里的 SRAM：tag 阵列与 data 阵列的差异](./cache-sram-tag-data-arrays.md), [“数据搬运优先”原则在 NPU 设计中的体现](../../01-memory-hierarchy/ai-chip-memory/data-movement-first-principle.md)
 
 ## 这页在回答什么问题
 

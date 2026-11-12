@@ -1,7 +1,7 @@
 # 存储器在架构探索中的建模模板
 
 上级：[参考资料](./README.md)
-相关：[MC 在 cycle-level 仿真里的建模方法](../06-memory-controller/mc-modeling-for-simulation.md), [把 register、cache、scratchpad、DRAM、HBM 看作一个系统](../07-system-architecture/memory-hierarchy-as-system.md)
+相关：[MC 在 cycle-level 仿真里的建模方法](../../04-dram-controller/mc-modeling-for-simulation.md), [把 register、cache、scratchpad、DRAM、HBM 看作一个系统](../system-architecture/memory-hierarchy-as-system.md)
 
 ## 这页在回答什么问题
 
@@ -160,7 +160,7 @@ ConstraintGuard {
 典型 guard 包括：
 
 - SRAM bank / port 冲突
-- DRAM `tRCD / tRAS / tRP / tRTP / tWR / tRFC`，以及所选模式的 `AL / WL / BL / PL` 和 CS-to-CA latency；显式 PRE 使用[指定模式的下界](../05-dram-protocol-families/timing-parameters-trcd-trp-tras.md#ddr4-同-bank-显式-pre-的完整下界)，其他模式按器件定义重算
+- DRAM `tRCD / tRAS / tRP / tRTP / tWR / tRFC`，以及所选模式的 `AL / WL / BL / PL` 和 CS-to-CA latency；显式 PRE 使用[指定模式的下界](../../03-dram/protocols/timing-parameters-trcd-trp-tras.md#ddr4-同-bank-显式-pre-的完整下界)，其他模式按器件定义重算
 - 读写方向切换窗口
 - refresh 占用窗口
 - low-power 唤醒窗口

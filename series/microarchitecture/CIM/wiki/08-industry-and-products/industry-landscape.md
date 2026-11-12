@@ -9,7 +9,7 @@
 
 **Startup** 的优势是可以重做计算范式。Mythic 选择 Flash-based analog CIM，是因为 analog array 可以把权重存储和矩阵乘法放在同一物理平面内，适合追求极端能效的 edge inference；代价是 calibration、良率、模型适配和客户信任都要自己证明。Axelera 选择 SRAM-based digital CIM，是因为它更接近标准 CMOS、标准 foundry 和数字验证流程，牺牲一部分 analog 极限能效，换来更可控的软件栈和产品形态。
 
-**Memory vendor** 的优势是掌握 DRAM/HBM/GDDR 供应链、封装和客户入口。Samsung HBM-PIM 与 SK hynix GDDR6-AiM/AiMX 的产业逻辑不是替代 AI accelerator，而是把部分 memory-bound 运算推到 memory die/bank 近侧，减少 [RAM wiki 的 DRAM/HBM 数据搬移](../../../../storage/RAM/wiki/05-dram-protocol-families/README.md)。这类路线的弱点是 memory die 面积、功耗、标准接口、controller 支持和客户软件栈都受既有 memory ecosystem 约束。
+**Memory vendor** 的优势是掌握 DRAM/HBM/GDDR 供应链、封装和客户入口。Samsung HBM-PIM 与 SK hynix GDDR6-AiM/AiMX 的产业逻辑不是替代 AI accelerator，而是把部分 memory-bound 运算推到 memory die/bank 近侧，减少 [RAM wiki 的 DRAM/HBM 数据搬移](../../../../storage/03-dram/protocols/README.md)。这类路线的弱点是 memory die 面积、功耗、标准接口、controller 支持和客户软件栈都受既有 memory ecosystem 约束。
 
 **Foundry/IP 公司** 不一定直接卖 CIM 产品，却控制工艺节点、SRAM bitcell、embedded NVM、3DIC、DFT 和良率模型。SRAM-CIM 如果想商业化，需要和 [FAB wiki 的 process node 与 DFT/test](../../../../chip-development/FAB/wiki/02-front-end-fabrication/README.md) 绑定；ReRAM/PCM/Flash CIM 如果想商业化，还要解决新器件集成、retention、endurance 和 inline test。foundry/IP 的产业价值是把“论文 macro”变成可复用 PDK/IP/测试方法，而不是做一次性 demo。
 

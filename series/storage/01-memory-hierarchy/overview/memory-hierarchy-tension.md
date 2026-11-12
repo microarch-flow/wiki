@@ -5,7 +5,7 @@
 
 上级：[RAM 存储系统概览](./README.md)
 
-相关：[存储系统为何难设计](./problem-statement.md) · [局部性与数据搬运](./locality-working-set-data-movement.md) · [带宽与延迟](../07-system-architecture/bandwidth-vs-latency-fundamental.md)
+相关：[存储系统为何难设计](./problem-statement.md) · [局部性与数据搬运](./locality-working-set-data-movement.md) · [带宽与延迟](../system-architecture/bandwidth-vs-latency-fundamental.md)
 
 <p class="ram-problem-lede">为什么不把所有数据都放进一块又大又快、又便宜又省电的存储器？因为容量、访问路径、并行资源和保持数据所需的电路，会共同占用面积、功率和成本预算。改变一处设计，可能同时改变其他几处。</p>
 
@@ -34,7 +34,7 @@
 - 如果沿同一条位线增加更多行，位线上连接的单元可能增多，导线和接入电路带来的寄生电容也可能增加。
 - 驱动与感测这些负载需要时间和能量；具体数值取决于电路、布局、工艺和工作点。
 
-设计者可以把阵列分成更小的局部阵列或 bank，控制每次访问需要驱动的范围。这样也可能增加译码、选择、外围电路或布线开销。划分多少、这些开销有多大，需要针对具体宏比较。关于阵列组织的进一步解释，见 [SRAM 阵列组织](../02-sram-foundations/sram-array-organization.md)。
+设计者可以把阵列分成更小的局部阵列或 bank，控制每次访问需要驱动的范围。这样也可能增加译码、选择、外围电路或布线开销。划分多少、这些开销有多大，需要针对具体宏比较。关于阵列组织的进一步解释，见 [SRAM 阵列组织](../../02-sram/foundations/sram-array-organization.md)。
 
 因此，不能从“容量增大”直接推出“访问延迟一定增大”。例如，新的组织或工艺可能缩短局部路径；增加 bank 也可能改善并行吞吐。反过来，如果只扩大阵列而不重新处理负载，时序和能耗就可能受到压力。[CACTI](https://github.com/HewlettPackard/cacti) 将容量、组织、访问时间、面积和功耗放在同一个模型中估算；其结果仍依赖模型参数，不等于实际宏的签核结果。
 
@@ -117,5 +117,5 @@ HBM 是一个跨层选择的例子。Micron 的 [HBM2E 资料](https://www.micro
 
 - [局部性与数据搬运](./locality-working-set-data-movement.md)：看工作集和访问序列如何改变跨层流量。
 - [SRAM 与 DRAM 的分化](./sram-dram-divergence.md)：继续看两种存储方式如何影响组织。
-- [带宽与延迟](../07-system-architecture/bandwidth-vs-latency-fundamental.md)：进一步区分响应时间与持续吞吐。
-- [HBM 的成本](../08-packaging-integration/why-hbm-is-expensive.md)：了解堆叠、测试和封装带来的成本因素。
+- [带宽与延迟](../system-architecture/bandwidth-vs-latency-fundamental.md)：进一步区分响应时间与持续吞吐。
+- [HBM 的成本](../../06-system-integration/packaging/why-hbm-is-expensive.md)：了解堆叠、测试和封装带来的成本因素。

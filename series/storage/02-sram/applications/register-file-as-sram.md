@@ -1,7 +1,7 @@
 # Register file 的访问角色与 SRAM 实现
 
 上级：[SRAM 应用形态](./README.md)
-相关：[单口、双口、多口 SRAM，端口数为什么是关键代价](../02-sram-foundations/single-port-dual-port-multi-port.md), [Cache 里的 SRAM：tag 阵列与 data 阵列的差异](./cache-sram-tag-data-arrays.md)
+相关：[单口、双口、多口 SRAM，端口数为什么是关键代价](../foundations/single-port-dual-port-multi-port.md), [Cache 里的 SRAM：tag 阵列与 data 阵列的差异](./cache-sram-tag-data-arrays.md)
 
 ## 这页在回答什么问题
 

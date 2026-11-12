@@ -1,7 +1,7 @@
 # Cache 和 DRAM 如何协同，miss 之后发生了什么
 
 上级：[系统视角](./README.md)
-相关：[Cache 里的 SRAM：tag 阵列与 data 阵列的差异](../03-sram-applications/cache-sram-tag-data-arrays.md), [地址映射：物理地址到 channel、rank、bank、row、col 的拆分艺术](../06-memory-controller/address-mapping-channel-rank-bank-row-col.md)
+相关：[Cache 里的 SRAM：tag 阵列与 data 阵列的差异](../../02-sram/applications/cache-sram-tag-data-arrays.md), [地址映射：物理地址到 channel、rank、bank、row、col 的拆分艺术](../../04-dram-controller/address-mapping-channel-rank-bank-row-col.md)
 
 ## 这页在回答什么问题
 

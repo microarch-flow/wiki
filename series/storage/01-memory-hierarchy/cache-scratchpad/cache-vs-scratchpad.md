@@ -1,7 +1,7 @@
 # Cache 与 scratchpad：数据放置和访问时间
 
 上级：[06 · 存储 discipline](./README.md)
-相关：[RAM：scratchpad 与 cache](../../../../storage/RAM/wiki/03-sram-applications/scratchpad-vs-cache.md)、[计算与通信指标](../01-overview/compute-communication-ratio.md)
+相关：[RAM：scratchpad 与 cache](../../02-sram/applications/scratchpad-vs-cache.md)、[计算与通信指标](../../../microarchitecture/COMPUTE/wiki/01-overview/compute-communication-ratio.md)
 
 ## 两种数据管理方式
 

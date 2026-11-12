@@ -1,7 +1,7 @@
 # DRAM 协议层
 
-上级：[`RAM/wiki/`](../)
-相关：[DRAM 基础](../04-dram-foundations/README.md), [Memory Controller](../06-memory-controller/README.md)
+上级：[`RAM/wiki/`](../../01-memory-hierarchy/)
+相关：[DRAM 基础](../foundations/README.md), [Memory Controller](../../04-dram-controller/README.md)
 
 ## 这页在回答什么问题
 
@@ -31,7 +31,7 @@
 4. [DDR 代际演进](./ddr-generation-evolution.md)
 5. [LPDDR 与低功耗](./lpddr-low-power-mobile.md)
 6. [GDDR 与高带宽](./gddr-graphics-bandwidth.md)
-7. [HBM 与 DDR 协议](./hbm-stacked-wide-io.md)
+7. [HBM 与 DDR 协议](../hbm-stacked-wide-io.md)
 8. [DRAM 协议对比](./ddr-lpddr-gddr-hbm-tradeoff-map.md)
 
 如果你这次主要想补“DDR/LPDDR/GDDR/HBM 到底怎么分家”的直觉，优先看 3 -> 8。第一次系统阅读，建议完整按 1 -> 8 顺序走。

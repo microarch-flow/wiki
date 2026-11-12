@@ -3,9 +3,9 @@
 <span id="这页在回答什么问题"></span>
 <span id="从-cell-到阵列和应用的学习边界"></span>
 
-上级：[RAM 专题主页](../README.md)
+上级：[RAM 专题主页](../../01-memory-hierarchy/README.md)
 
-相关：[SRAM 与 DRAM 的分化](../01-overview/sram-dram-divergence.md) · [SRAM 应用形态](../03-sram-applications/README.md)
+相关：[SRAM 与 DRAM 的分化](../../01-memory-hierarchy/overview/sram-dram-divergence.md) · [SRAM 应用形态](../applications/README.md)
 
 <p class="ram-problem-lede">SRAM 能保存数据，但一块可用于系统的 SRAM 不只有存储单元。字线、位线、外围电路、端口和控制规则，共同决定请求何时被接纳、数据何时可用，以及需要付出多少面积和能量。</p>
 
@@ -15,7 +15,7 @@
 
 一个常见 6T cell 用交叉耦合的反相器保存 1 bit。字线控制它与位线的连接；译码、预充、感测和写驱动等外围电路使一组 cell 可以被访问。许多 cell 和外围电路组合成 SRAM 宏；系统再按需要连接一个或多个宏。
 
-宏外还可能有地址映射、仲裁、响应跟踪或低功耗控制。它们不一定属于宏本身。例如，cache 和 scratchpad 都可能使用 SRAM，但还各自有不同的管理方式。它们的系统角色留到 [SRAM 应用形态](../03-sram-applications/README.md)讨论。
+宏外还可能有地址映射、仲裁、响应跟踪或低功耗控制。它们不一定属于宏本身。例如，cache 和 scratchpad 都可能使用 SRAM，但还各自有不同的管理方式。它们的系统角色留到 [SRAM 应用形态](../applications/README.md)讨论。
 
 [MIT 的 SRAM 与 cache 课程](https://ocw.mit.edu/courses/6-004-computation-structures-spring-2017/pages/c14/c14s1/)展示了单元、阵列和系统层次之间的关系。下面先看上层使用 SRAM 时会遇到的几个问题。
 

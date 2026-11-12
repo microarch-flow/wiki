@@ -1,7 +1,7 @@
 # CIM Macro 的基本原语：Array、Driver、Sense、Accumulator
 
 上级：[04 Circuit And Macro](./README.md)
-相关：[SRAM-CIM 深入](../02-memory-technologies/sram-cim-deep-dive.md), [Digital CIM 深入](../03-compute-paradigms/digital-cim-deep-dive.md), [RAM: Wordline Bitline Sense Amp](../../../../storage/RAM/wiki/02-sram-foundations/wordline-bitline-sense-amp.md), [NoC: Reduction Networks](../../../../interconnect/NOC/wiki/06-ai-noc-specifics/reduction-and-collective-networks.md)
+相关：[SRAM-CIM 深入](../02-memory-technologies/sram-cim-deep-dive.md), [Digital CIM 深入](../03-compute-paradigms/digital-cim-deep-dive.md), [RAM: Wordline Bitline Sense Amp](../../../../storage/02-sram/foundations/wordline-bitline-sense-amp.md), [NoC: Reduction Networks](../../../../interconnect/NOC/wiki/06-ai-noc-specifics/reduction-and-collective-networks.md)
 
 ## 这页在回答什么问题
 
@@ -43,7 +43,7 @@ Mixed-signal CIM 中，array 内保留 analog 或 charge/current-domain 局部�
 
 ## 和传统 SRAM/DRAM Macro 的区别
 
-传统 SRAM macro 的目标是可靠读写；CIM macro 的目标是让读写路径同时承担计算。这个变化会牺牲一部分读稳定性、面积、时序裕量或测试简洁性。与 RAM wiki 的 [SRAM array organization](../../../../storage/RAM/wiki/02-sram-foundations/sram-array-organization.md) 相比，CIM macro 修改的是 array 内部读出和局部归约语义，而不是只把 SRAM 当 scratchpad。
+传统 SRAM macro 的目标是可靠读写；CIM macro 的目标是让读写路径同时承担计算。这个变化会牺牲一部分读稳定性、面积、时序裕量或测试简洁性。与 RAM wiki 的 [SRAM array organization](../../../../storage/02-sram/foundations/sram-array-organization.md) 相比，CIM macro 修改的是 array 内部读出和局部归约语义，而不是只把 SRAM 当 scratchpad。
 
 DRAM/HBM/GDDR-PIM 则是另一类问题：它是在 memory die/bank 侧加独立 processing block，不是让 DRAM cell 或 bitline 成为本页意义上的 CIM macro 原语。若 compute 放在 HBM base die、interposer 或 package-side logic，则进入 NMC 边界。macro 输出继续进入 tile reduction 时，问题会连接 NoC 的 collective/reduction 网络；工艺选择则连接 FAB wiki 的 [process nodes and PPA](../../../../chip-development/FAB/wiki/02-front-end-fabrication/process-nodes-and-ppa-tradeoffs.md)。
 

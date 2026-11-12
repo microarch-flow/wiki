@@ -1,7 +1,7 @@
 # 把 register、cache、scratchpad、DRAM、HBM 看作一个系统
 
 上级：[系统视角](./README.md)
-相关：[速度、容量、成本、功耗四角矛盾的根源](../01-overview/memory-hierarchy-tension.md), [NPU 的存储层次：L0/L1/L2 SRAM 与 HBM/LPDDR](../09-ai-chip-memory-architecture/npu-memory-hierarchy.md)
+相关：[速度、容量、成本、功耗四角矛盾的根源](../overview/memory-hierarchy-tension.md), [NPU 的存储层次：L0/L1/L2 SRAM 与 HBM/LPDDR](../ai-chip-memory/npu-memory-hierarchy.md)
 
 ## 这页在回答什么问题
 

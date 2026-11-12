@@ -2,7 +2,7 @@
 
 上级：[SRAM 基础](./README.md)
 
-相关：[字线、位线与读出放大](./wordline-bitline-sense-amp.md) · [SRAM 宏接口与读写语义](./sram-macro-interface-and-semantics.md) · [DRAM 命令集](../05-dram-protocol-families/commands-act-rd-wr-pre.md)
+相关：[字线、位线与读出放大](./wordline-bitline-sense-amp.md) · [SRAM 宏接口与读写语义](./sram-macro-interface-and-semantics.md) · [DRAM 命令集](../../03-dram/protocols/commands-act-rd-wr-pre.md)
 
 <p class="ram-problem-lede">一次 SRAM 访问包含译码、选通、感测或写入等动作。上层看到的却是接口采样、数据有效和下一次接纳。要讨论时序，需要先分清这两个边界。</p>
 

@@ -1,7 +1,7 @@
 # 1T1C cell，一颗电容为什么改变了一切
 
 上级：[DRAM 基础](./README.md)
-相关：[刷新：DRAM 的原罪和它的代价](./refresh-the-fundamental-cost.md), [6T cell 为什么是 6 个晶体管，双稳态如何对抗扰动](../02-sram-foundations/6t-cell-bistable-storage.md)
+相关：[刷新：DRAM 的原罪和它的代价](./refresh-the-fundamental-cost.md), [6T cell 为什么是 6 个晶体管，双稳态如何对抗扰动](../../02-sram/foundations/6t-cell-bistable-storage.md)
 
 ## 这页在回答什么问题
 

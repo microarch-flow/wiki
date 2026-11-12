@@ -1,7 +1,7 @@
 # 行列解码与读出放大：为什么 DRAM 必须先开行
 
 上级：[DRAM 基础](./README.md)
-相关：[Row buffer：DRAM 内部的小 cache](./row-buffer-as-cache.md), [ACT、RD、WR、PRE：DRAM 命令集为什么长这样](../05-dram-protocol-families/commands-act-rd-wr-pre.md)
+相关：[Row buffer：DRAM 内部的小 cache](./row-buffer-as-cache.md), [ACT、RD、WR、PRE：DRAM 命令集为什么长这样](../protocols/commands-act-rd-wr-pre.md)
 
 ## 这页在回答什么问题
 
@@ -63,7 +63,7 @@ event ColumnWrite(bank_id, row_id, col_id, burst_len)
 event Precharge(bank_id)
 ```
 
-模型须分别记录 ACT 到列可用、ACT 到可关行的界限，而不是把恢复完成当成列访问前置。DDR4 的 additive latency 非零时需依器件命令语义调整外部命令时刻，参见[时序速查](../10-reference/timing-parameter-cheatsheet.md)。一个实用的访问代价框架可以直接写成：
+模型须分别记录 ACT 到列可用、ACT 到可关行的界限，而不是把恢复完成当成列访问前置。DDR4 的 additive latency 非零时需依器件命令语义调整外部命令时刻，参见[时序速查](../../01-memory-hierarchy/reference/timing-parameter-cheatsheet.md)。一个实用的访问代价框架可以直接写成：
 
 ```text
 cost(req) =

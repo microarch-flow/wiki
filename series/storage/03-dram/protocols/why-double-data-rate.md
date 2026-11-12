@@ -1,7 +1,7 @@
 # DDR：为什么要在时钟两边都传数据
 
 上级：[DRAM 协议层](./README.md)
-相关：[Bank group、prefetch、burst：高频接口下的必然演化](../04-dram-foundations/bank-group-prefetch-burst.md), [DDR1 到 DDR5：每一代的核心改变是什么](./ddr-generation-evolution.md)
+相关：[Bank group、prefetch、burst：高频接口下的必然演化](../foundations/bank-group-prefetch-burst.md), [DDR1 到 DDR5：每一代的核心改变是什么](./ddr-generation-evolution.md)
 
 ## 这页在回答什么问题
 

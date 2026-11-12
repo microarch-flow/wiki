@@ -9,7 +9,7 @@
 
 **Analog CIM** 把计算放在 bitline/crossbar/analog memory path 中，制造偏差会直接变成计算误差。各路线须依真实器件和读路径选测试：ReRAM 弱选择 crossbar 应检查旁路 sneak path 与 IR drop；Flash 关注阈值分布和漂移，PCM 关注电阻漂移与写入，公共 ADC 的偏置需单独激励与校准。选择器和隔离结构会改变旁路敏感度。测试不能只问“bit 是否正确”，还要问“模拟累加结果在不同 PVT 条件下是否仍落在量化容差内”。这会增加硅后校准、测试时间和 field recalibration 成本。
 
-**SRAM digital CIM** 更接近标准 CMOS，但不是免费产品化。它把 wordline/bitline/sense path 从单纯读写扩展成计算路径，DFT/BIST 需要覆盖 compute mode；timing closure 要同时满足 SRAM access、bit-serial/bit-parallel compute、local accumulation 和 array-to-array reduction。优势是可以复用 [RAM wiki 的 SRAM array/bitcell 知识](../../../../storage/RAM/wiki/02-sram-foundations/README.md) 和 [FAB wiki 的数字工艺](../../../../chip-development/FAB/wiki/02-front-end-fabrication/README.md)和[测试](../../../../chip-development/FAB/wiki/03-wafer-test-and-cp/README.md)，弱点是 SRAM 面积大、片上容量限制明显。
+**SRAM digital CIM** 更接近标准 CMOS，但不是免费产品化。它把 wordline/bitline/sense path 从单纯读写扩展成计算路径，DFT/BIST 需要覆盖 compute mode；timing closure 要同时满足 SRAM access、bit-serial/bit-parallel compute、local accumulation 和 array-to-array reduction。优势是可以复用 [RAM wiki 的 SRAM array/bitcell 知识](../../../../storage/02-sram/foundations/README.md) 和 [FAB wiki 的数字工艺](../../../../chip-development/FAB/wiki/02-front-end-fabrication/README.md)和[测试](../../../../chip-development/FAB/wiki/03-wafer-test-and-cp/README.md)，弱点是 SRAM 面积大、片上容量限制明显。
 
 **ReRAM/Flash/PCM/MRAM CIM** 的制造挑战更靠近器件和工艺集成。ReRAM/PCM 的多值电导让 analog MAC 更自然，但每个 cell 的可写性、漂移和寿命分布都会进入模型误差；Flash CIM 有较成熟的非易失存储基础，但 analog 权重编程和长期漂移仍要靠校准闭环。MRAM 更适合非易失数字/二值化方向，若要做高精度 analog CIM，会遇到电导可控性和读扰约束。
 

@@ -1,7 +1,7 @@
 # ACT、RD、WR、PRE：DRAM 命令集为什么长这样
 
 上级：[DRAM 协议层](./README.md)
-相关：[行列解码与读出放大：为什么 DRAM 必须先开行](../04-dram-foundations/row-column-decode-sense-amplify.md), [关键 timing 参数：tRCD、tRP、tRAS、tCL 的物理来源](./timing-parameters-trcd-trp-tras.md)
+相关：[行列解码与读出放大：为什么 DRAM 必须先开行](../foundations/row-column-decode-sense-amplify.md), [关键 timing 参数：tRCD、tRP、tRAS、tCL 的物理来源](./timing-parameters-trcd-trp-tras.md)
 
 ## 这页在回答什么问题
 

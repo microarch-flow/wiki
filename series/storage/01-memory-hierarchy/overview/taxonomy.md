@@ -5,7 +5,7 @@
 
 上级：[RAM 存储系统概览](./README.md)
 
-相关：[SRAM 与 DRAM 的分化](./sram-dram-divergence.md) · [DRAM 协议对比](../05-dram-protocol-families/ddr-lpddr-gddr-hbm-tradeoff-map.md) · [存储层次与系统角色](../07-system-architecture/memory-hierarchy-as-system.md)
+相关：[SRAM 与 DRAM 的分化](./sram-dram-divergence.md) · [DRAM 协议对比](../../03-dram/protocols/ddr-lpddr-gddr-hbm-tradeoff-map.md) · [存储层次与系统角色](../system-architecture/memory-hierarchy-as-system.md)
 
 <p class="ram-problem-lede">SRAM、cache、DDR 和 HBM 都与存储有关，但它们回答的问题不同：一个 bit 怎样保存、存储资源在系统里做什么、控制器怎样访问它，以及器件如何集成。先分清问题，才能正确描述一个系统。</p>
 
@@ -53,7 +53,7 @@ SRAM、DRAM 是存储技术名称；6T 和 1T1C 是常见单元结构，不是�
 
 Cache 的数据阵列和 scratchpad **常用 SRAM 实现**，但角色名称本身不规定唯一的 cell 技术。Cache 也不等于一块 SRAM：常见实现还需要 tag、命中判断、替换等机制。Scratchpad 的显式管理则需要关注搬运何时完成、数据何时可用和何时允许覆盖。
 
-例如，[NVIDIA 的 CUDA 编程指南](https://docs.nvidia.com/cuda/archive/13.2.2/cuda-programming-guide/02-basics/writing-cuda-kernels.html)把其 GPU 的 shared memory 描述为由使用者管理的 scratchpad，并说明在该指南讨论的实现中，它与 L1 cache 共用物理资源。这是具体平台的组织方式，不代表所有 GPU 或 NPU 都相同。两种管理方式的进一步比较见 [Scratchpad 与 cache](../03-sram-applications/scratchpad-vs-cache.md)。
+例如，[NVIDIA 的 CUDA 编程指南](https://docs.nvidia.com/cuda/archive/13.2.2/cuda-programming-guide/02-basics/writing-cuda-kernels.html)把其 GPU 的 shared memory 描述为由使用者管理的 scratchpad，并说明在该指南讨论的实现中，它与 L1 cache 共用物理资源。这是具体平台的组织方式，不代表所有 GPU 或 NPU 都相同。两种管理方式的进一步比较见 [Scratchpad 与 cache](../../02-sram/applications/scratchpad-vs-cache.md)。
 
 ## 4. 接口与协议：两端如何交换数据？
 
@@ -113,7 +113,7 @@ DDR4、DDR5、LPDDR、GDDR 和 HBM 的具体接口不能因为都涉及双倍数
 
 如果这个接口以 3,200 MT/s 传输，且每次传输的 64 bit 都是数据，则单方向理论数据率为 `3,200 × 10⁶ × 8 B/s = 25.6 GB/s`，这里 `1 GB = 10⁹ B`。这是数据引脚持续传输时的理论值，不计命令、刷新、读写切换或空闲造成的损失，也不是实测带宽。
 
-这个组合是为了说明命名和计算边界，不是对实际系统的测量。[Micron 的一个 DDR4 UDIMM 产品资料](https://www.micron.com/products/memory/dram-modules/udimm/part-catalog/part-detail/mta8atf1g64az-3g2e1)列出了单 rank、x64、8 颗 x8 器件和 3,200 MT/s 等字段。不同模块可能有不同的 rank、器件位宽或 ECC 配置，不能把此例当作 DIMM 的统一组织。进一步的层级说明见 [Channel、rank 与 chip](../04-dram-foundations/channel-rank-chip-hierarchy.md)。
+这个组合是为了说明命名和计算边界，不是对实际系统的测量。[Micron 的一个 DDR4 UDIMM 产品资料](https://www.micron.com/products/memory/dram-modules/udimm/part-catalog/part-detail/mta8atf1g64az-3g2e1)列出了单 rank、x64、8 颗 x8 器件和 3,200 MT/s 等字段。不同模块可能有不同的 rank、器件位宽或 ECC 配置，不能把此例当作 DIMM 的统一组织。进一步的层级说明见 [Channel、rank 与 chip](../../03-dram/foundations/channel-rank-chip-hierarchy.md)。
 
 ## 7. 例子二：HBM 不只是一个封装名称
 
@@ -154,5 +154,5 @@ DDR4、DDR5、LPDDR、GDDR 和 HBM 的具体接口不能因为都涉及双倍数
 
 - [速度·容量·成本·功耗](./memory-hierarchy-tension.md)：看不同实现如何在共同约束下取舍。
 - [SRAM 与 DRAM 的分化](./sram-dram-divergence.md)：从存储方式继续看两条技术路线。
-- [DRAM 协议对比](../05-dram-protocol-families/ddr-lpddr-gddr-hbm-tradeoff-map.md)：比较不同 DRAM 路线的系统目标。
-- [HBM 封装与 TSV](../08-packaging-integration/hbm-2.5d-3d-tsv.md)：进一步看 die 堆叠和系统集成。
+- [DRAM 协议对比](../../03-dram/protocols/ddr-lpddr-gddr-hbm-tradeoff-map.md)：比较不同 DRAM 路线的系统目标。
+- [HBM 封装与 TSV](../../06-system-integration/packaging/hbm-2.5d-3d-tsv.md)：进一步看 die 堆叠和系统集成。

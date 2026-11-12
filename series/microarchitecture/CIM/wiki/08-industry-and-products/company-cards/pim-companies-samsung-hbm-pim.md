@@ -18,7 +18,7 @@
 
 Samsung HBM-PIM 不归 CIM，因为它不是让 DRAM cell、bitline 或 sense path 直接执行 MAC；它是在 HBM DRAM bank 近侧放入独立计算单元，让一部分计算在 memory die/bank 内完成。Samsung 官方技术博客明确把它称为 Processing-in-Memory，并说 PIM 让 processor 实现在 DRAM 中，以减少数据移动、把部分计算从 processor offload 到 memory。来源：[Samsung HBM-PIM tech blog](https://semiconductor.samsung.com/news-events/tech-blog/hbm-pim-cutting-edge-memory-technology-to-accelerate-next-generation-ai/)。
 
-产业价值在于它从 memory vendor 入口切入 memory wall。HBM 已经通过 3D stack、TSV 和 wide I/O 提供高带宽；PIM 进一步尝试减少 HBM 和 GPU/accelerator 之间的反复搬移。这和 [RAM wiki 的 HBM/wide I/O](../../../../../storage/RAM/wiki/05-dram-protocol-families/README.md) 与 [FAB wiki 的 3DIC/HBM stack](../../../../../chip-development/FAB/wiki/04-back-end-packaging/3d-routes/3dic-fundamentals.md) 强相关。
+产业价值在于它从 memory vendor 入口切入 memory wall。HBM 已经通过 3D stack、TSV 和 wide I/O 提供高带宽；PIM 进一步尝试减少 HBM 和 GPU/accelerator 之间的反复搬移。这和 [RAM wiki 的 HBM/wide I/O](../../../../../storage/03-dram/protocols/README.md) 与 [FAB wiki 的 3DIC/HBM stack](../../../../../chip-development/FAB/wiki/04-back-end-packaging/3d-routes/3dic-fundamentals.md) 强相关。
 
 商业化难点不在 analog non-ideality，而在 ecosystem。[Samsung Hot Chips 2021](https://www.hc33.hotchips.org/assets/program/conference/day1/20210813_HC33_Aquabolt-XL_PIM_Jin_Kim_slide.pdf)报告用未修改的 GPU 和 HBM controller 验证芯片；软件栈负责生成和管理 PIM 操作。其 U280 FPGA 例使用定制 controller 配置以保证 PIM 命令顺序并禁用 auto-precharge；这不等于必须修改所有 GPU 或 controller 硬件。每对 even/odd bank 共用 PCU，要按模式和资源调度。Samsung 公开材料提到与 AI accelerator 系统测试和 AMD MI100 testing variant 等验证口径，但这类信息应读作 customer evaluation/technology demonstration，不应直接推断为主流 HBM 产品线已经普遍采用 PIM。
 

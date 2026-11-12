@@ -1,7 +1,7 @@
 # SRAM 应用形态
 
-上级：[`RAM/wiki/`](../)
-相关：[SRAM 基础](../02-sram-foundations/README.md), [系统视角](../07-system-architecture/README.md)
+上级：[`RAM/wiki/`](../../01-memory-hierarchy/)
+相关：[SRAM 基础](../foundations/README.md), [系统视角](../../01-memory-hierarchy/system-architecture/README.md)
 
 ## 这页在回答什么问题
 

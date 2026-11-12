@@ -1,7 +1,7 @@
 # Digital CIM：Bitwise Compute 与 SRAM 阵列的结合
 
 上级：[03 Compute Paradigms](./README.md)
-相关：[Digital CIM 深入](./digital-cim-deep-dive.md), [SRAM-CIM 基础](../02-memory-technologies/sram-cim-foundation.md), [RAM: SRAM Applications](../../../../storage/RAM/wiki/03-sram-applications/README.md)
+相关：[Digital CIM 深入](./digital-cim-deep-dive.md), [SRAM-CIM 基础](../02-memory-technologies/sram-cim-foundation.md), [RAM: SRAM Applications](../../../../storage/02-sram/applications/README.md)
 
 ## 这页在回答什么问题
 

@@ -1,7 +1,7 @@
 # 多通道、多 socket、NUMA：扩展带宽的代价
 
 上级：[系统视角](./README.md)
-相关：[地址映射：物理地址到 channel、rank、bank、row、col 的拆分艺术](../06-memory-controller/address-mapping-channel-rank-bank-row-col.md), [MCU、CPU、GPU、NPU 为什么选择不同存储器](./why-systems-choose-different-memory.md)
+相关：[地址映射：物理地址到 channel、rank、bank、row、col 的拆分艺术](../../04-dram-controller/address-mapping-channel-rank-bank-row-col.md), [MCU、CPU、GPU、NPU 为什么选择不同存储器](./why-systems-choose-different-memory.md)
 
 ## 这页在回答什么问题
 

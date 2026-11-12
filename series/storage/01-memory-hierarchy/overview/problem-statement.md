@@ -5,7 +5,7 @@
 
 上级：[RAM 存储系统概览](./README.md)
 
-相关：[速度、容量、成本、功耗四角矛盾的根源](./memory-hierarchy-tension.md) · [把 register、cache、scratchpad、DRAM、HBM 看作一个系统](../07-system-architecture/memory-hierarchy-as-system.md)
+相关：[速度、容量、成本、功耗四角矛盾的根源](./memory-hierarchy-tension.md) · [把 register、cache、scratchpad、DRAM、HBM 看作一个系统](../system-architecture/memory-hierarchy-as-system.md)
 
 <p class="ram-problem-lede">一次读取看起来只是“给地址、取数据”。在实际系统中，它可能要经过 cache 查找、互连、控制器排队、DRAM 访问和数据返回。每一层都有自己的状态与共享资源，工作负载又决定了这些资源何时发生竞争。</p>
 
@@ -45,8 +45,8 @@
 
 假设请求已经到达控制器，映射到同一个 bank 的目标行 R5。先忽略其他请求和 refresh，只比较请求到来时的 bank 行状态。
 
-[![目标行 R5 的三种状态：R5 已打开时等待条件满足后发出 RD；没有打开行时先 ACT 再 RD；其他行 R9 已打开时先 PRE、再 ACT、最后 RD。](../img/dram-row-state.svg)](../img/dram-row-state.svg){.ram-diagram-wide}
-[![目标行 R5 的三种状态：R5 已打开时等待条件满足后发出 RD；没有打开行时先 ACT 再 RD；其他行 R9 已打开时先 PRE、再 ACT、最后 RD。](../img/dram-row-state-mobile.svg)](../img/dram-row-state.svg){.ram-diagram-mobile}
+[![目标行 R5 的三种状态：R5 已打开时等待条件满足后发出 RD；没有打开行时先 ACT 再 RD；其他行 R9 已打开时先 PRE、再 ACT、最后 RD。](../../assets/dram-row-state.svg)](../../assets/dram-row-state.svg){.ram-diagram-wide}
+[![目标行 R5 的三种状态：R5 已打开时等待条件满足后发出 RD；没有打开行时先 ACT 再 RD；其他行 R9 已打开时先 PRE、再 ACT、最后 RD。](../../assets/dram-row-state-mobile.svg)](../../assets/dram-row-state.svg){.ram-diagram-mobile}
 
 *图 1：同一 bank 的命令依赖示意。箭头不是时间轴；点击图可查看大图。*
 
@@ -54,7 +54,7 @@
 - **关闭行**：没有打开的行。满足开行条件后，控制器先发 ACT 打开 R5，再在允许时发 RD。
 - **行冲突（row conflict）**：其他行 R9 已打开。控制器要先让 R9 满足关行条件并发 PRE，再等到允许开行时打开 R5，最后发 RD。
 
-ACT 表示开行，RD 发起列读取，PRE 关闭当前行并进行预充。图中省略了等待和数据返回：即使是行命中，RD 也要满足相关时序、模式和共享资源约束；发出 RD 后仍要等待数据传输。具体条件以目标协议和器件为准，可继续读 [ACT、RD、WR、PRE](../05-dram-protocol-families/commands-act-rd-wr-pre.md)。
+ACT 表示开行，RD 发起列读取，PRE 关闭当前行并进行预充。图中省略了等待和数据返回：即使是行命中，RD 也要满足相关时序、模式和共享资源约束；发出 RD 后仍要等待数据传输。具体条件以目标协议和器件为准，可继续读 [ACT、RD、WR、PRE](../../03-dram/protocols/commands-act-rd-wr-pre.md)。
 
 这些命令关系可对照 [TI DDR3 控制器手册的第 2.4.3–2.4.5 节](https://www.ti.com/lit/ug/spruhn7c/spruhn7c.pdf)。该手册描述的是具体实现；其中的时序参数不能直接套用到其他器件。
 
@@ -131,6 +131,6 @@ ACT 表示开行，RD 发起列读取，PRE 关闭当前行并进行预充。图
 
 - [速度·容量·成本·功耗](./memory-hierarchy-tension.md)：继续看存储方案的取舍。
 - [局部性与数据搬运](./locality-working-set-data-movement.md)：看访问序列和复用如何影响跨层流量。
-- [带宽与延迟](../07-system-architecture/bandwidth-vs-latency-fundamental.md)：进一步区分单次响应与持续吞吐。
-- [地址映射](../06-memory-controller/address-mapping-channel-rank-bank-row-col.md)：看地址怎样影响行局部性和并行机会。
-- [命令调度与 FR-FCFS](../06-memory-controller/command-scheduling-fr-fcfs.md)：看控制器如何在合法候选中选择命令。
+- [带宽与延迟](../system-architecture/bandwidth-vs-latency-fundamental.md)：进一步区分单次响应与持续吞吐。
+- [地址映射](../../04-dram-controller/address-mapping-channel-rank-bank-row-col.md)：看地址怎样影响行局部性和并行机会。
+- [命令调度与 FR-FCFS](../../04-dram-controller/command-scheduling-fr-fcfs.md)：看控制器如何在合法候选中选择命令。

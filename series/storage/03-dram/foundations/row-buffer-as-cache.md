@@ -1,7 +1,7 @@
 # Row buffer：DRAM 内部的小 cache
 
 上级：[DRAM 基础](./README.md)
-相关：[行列解码与读出放大：为什么 DRAM 必须先开行](./row-column-decode-sense-amplify.md), [Cache 里的 SRAM：tag 阵列与 data 阵列的差异](../03-sram-applications/cache-sram-tag-data-arrays.md)
+相关：[行列解码与读出放大：为什么 DRAM 必须先开行](./row-column-decode-sense-amplify.md), [Cache 里的 SRAM：tag 阵列与 data 阵列的差异](../../02-sram/applications/cache-sram-tag-data-arrays.md)
 
 ## 这页在回答什么问题
 

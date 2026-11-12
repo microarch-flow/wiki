@@ -1,7 +1,7 @@
 # DRAM 工艺路线：平面到堆叠到 3D
 
 上级：[DRAM 基础](./README.md)
-相关：[HBM 的 2.5D/3D 集成与 TSV 技术](../08-packaging-integration/hbm-2.5d-3d-tsv.md), [为什么 HBM 的成本结构很高](../08-packaging-integration/why-hbm-is-expensive.md)
+相关：[HBM 的 2.5D/3D 集成与 TSV 技术](../../06-system-integration/packaging/hbm-2.5d-3d-tsv.md), [为什么 HBM 的成本结构很高](../../06-system-integration/packaging/why-hbm-is-expensive.md)
 
 ## 这页在回答什么问题
 

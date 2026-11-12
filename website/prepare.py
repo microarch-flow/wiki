@@ -9,12 +9,17 @@ from pathlib import PurePosixPath
 import shutil
 import tempfile
 
+from ownership import GROUPS, STORAGE, owner
 from sources import copy_source, fetch_checkout, load_series, source_directory, validate_output_paths
 from stage_links import PublishedPaths
 
 
 ROOT = Path(__file__).resolve().parent.parent
 TOPICS = ("RAM", "COMPUTE", "BUS", "NOC", "DMA", "PCIE", "CIM", "CPO", "FAB", "SERDES", "HBF")
+SOURCE_TOPICS = tuple(name for name in TOPICS if name not in {"RAM", "HBF"})
+STORAGE_TOPICS = dict(zip((
+    "01-memory-hierarchy", "02-sram", "03-dram", "04-dram-controller", "05-hbf", "06-system-integration",
+), GROUPS[STORAGE]))
 
 
 def _path_inside(root, value, is_directory):
@@ -35,12 +40,27 @@ def _path_inside(root, value, is_directory):
 
 def load_layout(path):
     data = json.loads(Path(path).read_text(encoding="utf-8"))
-    if not isinstance(data, dict) or set(data) != {"topics", "foundations"}:
-        raise ValueError("Source layout needs topics and foundations")
-    if not isinstance(data["topics"], dict) or set(data["topics"]) != set(TOPICS):
-        raise ValueError("Source layout must map each existing topic exactly once")
+    if not isinstance(data, dict) or set(data) != {"topics", "foundations", "storage"}:
+        raise ValueError("Source layout needs topics, foundations and storage")
+    if not isinstance(data["topics"], dict) or set(data["topics"]) != set(SOURCE_TOPICS):
+        raise ValueError("Source layout must map each non-storage topic exactly once")
     if not isinstance(data["foundations"], dict) or set(data["foundations"]) != {"article", "images"}:
         raise ValueError("Source layout needs a foundations article and images directory")
+    storage = data["storage"]
+    if not isinstance(storage, dict) or set(storage) != {"homepage", "roots", "mappings", "aliases"}:
+        raise ValueError("Storage layout needs homepage, roots, mappings and aliases")
+    if not isinstance(storage["roots"], list) or not storage["roots"]:
+        raise ValueError("Storage layout needs source roots")
+    if not isinstance(storage["mappings"], list) or not storage["mappings"]:
+        raise ValueError("Storage layout needs source mappings")
+    if not isinstance(storage["aliases"], list):
+        raise ValueError("Storage aliases must be a list")
+    for item in storage["mappings"]:
+        if not isinstance(item, dict) or set(item) != {"kind", "source", "target"} or item["kind"] not in {"file", "directory"}:
+            raise ValueError("Each storage mapping needs kind, source and target")
+    for item in storage["aliases"]:
+        if not isinstance(item, dict) or set(item) != {"source", "target"}:
+            raise ValueError("Each storage alias needs source and target")
     return data
 
 
@@ -58,6 +78,126 @@ def _ignore_topic_maintenance(_directory, names):
     return {name for name in names if name in excluded_dirs or name.lower() in excluded_files}
 
 
+def _storage_source(root, value, is_directory):
+    path = _path_inside(root, value, is_directory)
+    storage = Path(root) / "series" / "storage"
+    if path == storage or storage not in path.parents:
+        raise ValueError(f"Storage source must be inside series/storage: {value!r}")
+    return path
+
+
+def _storage_target(docs, value):
+    if not isinstance(value, str) or not value or "\\" in value:
+        raise ValueError(f"Invalid storage target: {value!r}")
+    path = PurePosixPath(value)
+    if path.is_absolute() or not path.parts or any(part in {".", "..", ".git"} for part in path.parts):
+        raise ValueError(f"Storage target must stay inside the staged docs: {value!r}")
+    allowed = (PurePosixPath("RAM/wiki"), PurePosixPath("HBF/wiki"),
+               PurePosixPath("COMPUTE/wiki/06-memory-discipline"))
+    if path != PurePosixPath("RAM/self-test-questions.md") and not any(path == prefix or prefix in path.parents for prefix in allowed):
+        raise ValueError(f"Storage target is outside the preserved publication paths: {value!r}")
+    return Path(docs).joinpath(*path.parts)
+
+
+def _storage_files(source):
+    """List publishable files without exposing source maintenance material."""
+    _assert_no_symlinks(source)
+    files = []
+    for parent, directories, names in os.walk(source, followlinks=False):
+        ignored = _ignore_topic_maintenance(parent, directories + names)
+        directories[:] = [name for name in directories if name not in ignored]
+        files.extend(Path(parent) / name for name in names if name not in ignored)
+    return files
+
+
+def _storage_layout(root, storage):
+    roots = [_storage_source(root, item, True) for item in storage["roots"]]
+    for index, source in enumerate(roots):
+        if any(source == other or source in other.parents or other in source.parents for other in roots[:index]):
+            raise ValueError(f"Storage source roots overlap: {source}")
+    mappings = []
+    covered = set()
+    source_paths = []
+    for item in storage["mappings"]:
+        is_directory = item["kind"] == "directory"
+        source = _storage_source(root, item["source"], is_directory)
+        if not any(source == parent or parent in source.parents for parent in roots):
+            raise ValueError(f"Storage source is not in a declared root: {source}")
+        if any(source == other or source in other.parents or other in source.parents for other in source_paths):
+            raise ValueError(f"Storage source mappings overlap: {source}")
+        source_paths.append(source)
+        files = _storage_files(source) if is_directory else [source]
+        if not is_directory and source.name in _ignore_topic_maintenance(source.parent, [source.name]):
+            raise ValueError(f"Storage maintenance file cannot be published: {source}")
+        covered.update(files)
+        mappings.append((source, item["target"], is_directory, files))
+    homepage = _storage_source(root, storage["homepage"], False)
+    # Check the entire storage source tree, not only the declared roots. This
+    # catches new files or directories that were never added to the layout.
+    available = set(_storage_files(Path(root) / "series" / "storage"))
+    if homepage not in available:
+        raise ValueError(f"Storage homepage is not publishable: {homepage}")
+    available.remove(homepage)
+    if covered != available:
+        missing = sorted(str(path) for path in available - covered)
+        extra = sorted(str(path) for path in covered - available)
+        raise ValueError(f"Storage mappings do not cover source files: missing={missing}, extra={extra}")
+    return homepage, roots, mappings
+
+
+def _check_storage_topic(root, docs, source, destination):
+    """Ensure source placement and published navigation agree for each page."""
+    if source.suffix != ".md":
+        return
+    top = source.relative_to(Path(root) / "series" / "storage").parts[0]
+    if top == "assets":
+        return
+    expected = STORAGE_TOPICS.get(top)
+    if expected is None:
+        raise ValueError(f"Storage source has no navigation topic: {source}")
+    actual = owner(destination.relative_to(docs).as_posix())
+    if actual != (STORAGE, expected):
+        raise ValueError(f"Storage source and published navigation differ: {source} -> {destination} ({actual})")
+
+
+def _copy_storage(docs, published, mappings, aliases, root, roots):
+    for source, target_value, is_directory, files in mappings:
+        target = _storage_target(docs, target_value)
+        if is_directory:
+            target.mkdir(parents=True, exist_ok=True)
+            published.add(source, target)
+            for path in files:
+                relative = path.relative_to(source)
+                destination = target / relative
+                destination.parent.mkdir(parents=True, exist_ok=True)
+                # Register actual source directories only, even when multiple
+                # source trees are merged into one published directory.
+                parent = path.parent
+                while parent != source:
+                    published.add(parent, target / parent.relative_to(source))
+                    parent = parent.parent
+                if destination.exists():
+                    raise ValueError(f"Storage output path collision: {destination}")
+                _check_storage_topic(root, docs, path, destination)
+                shutil.copy2(path, destination)
+                published.add(path, destination)
+        else:
+            target.parent.mkdir(parents=True, exist_ok=True)
+            if target.exists():
+                raise ValueError(f"Storage output path collision: {target}")
+            _check_storage_topic(root, docs, source, target)
+            shutil.copy2(source, target)
+            published.add(source, target)
+    for alias in aliases:
+        source = _storage_source(root, alias["source"], True)
+        if not any(source == parent or parent in source.parents for parent in roots):
+            raise ValueError(f"Storage alias is not in a declared root: {source}")
+        destination = _storage_target(docs, alias["target"])
+        if not destination.is_dir():
+            raise ValueError(f"Storage alias target is not a staged directory: {destination}")
+        published.add(source, destination, rewrite_page=False)
+
+
 def stage_site(root=ROOT, build_root=None, registry=None, source_root=None, layout=None):
     """Build a complete staging tree before replacing the previous one.
 
@@ -71,7 +211,8 @@ def stage_site(root=ROOT, build_root=None, registry=None, source_root=None, layo
     source_root = Path(source_root) if source_root is not None else None
     entries = load_series(registry)
     layout_data = load_layout(layout)
-    topics = {name: _path_inside(root, layout_data["topics"][name], True) for name in TOPICS}
+    topics = {name: _path_inside(root, layout_data["topics"][name], True) for name in SOURCE_TOPICS}
+    storage_home, storage_roots, storage_mappings = _storage_layout(root, layout_data["storage"])
     article = _path_inside(root, layout_data["foundations"]["article"], False)
     images = _path_inside(root, layout_data["foundations"]["images"], True)
     reviews = _path_inside(root, "docs/reviews", True)
@@ -82,6 +223,10 @@ def stage_site(root=ROOT, build_root=None, registry=None, source_root=None, layo
         for local in local_sources:
             if source == local or source in local.parents or local in source.parents:
                 raise ValueError(f"Topic {topic} overlaps a local series source: {source} and {local}")
+    for source in [storage_home, *storage_roots]:
+        for local in local_sources:
+            if source == local or source in local.parents or local in source.parents:
+                raise ValueError(f"Storage overlaps a local series source: {source} and {local}")
     build_root.mkdir(parents=True, exist_ok=True)
 
     with tempfile.TemporaryDirectory(prefix=".stage-", dir=build_root) as temporary:
@@ -90,7 +235,7 @@ def stage_site(root=ROOT, build_root=None, registry=None, source_root=None, layo
         docs.mkdir()
         published = PublishedPaths(root, docs)
 
-        for name in TOPICS:
+        for name in SOURCE_TOPICS:
             source = topics[name]
             target = docs / name
             _assert_no_symlinks(source / "wiki")
@@ -103,6 +248,8 @@ def stage_site(root=ROOT, build_root=None, registry=None, source_root=None, layo
                         raise ValueError(f"Source contains a symlink: {source / filename}")
                     shutil.copy2(source / filename, target / filename)
                     published.add(source / filename, target / filename)
+
+        _copy_storage(docs, published, storage_mappings, layout_data["storage"]["aliases"], root, storage_roots)
 
         # Keep the published URLs stable when the review sources move.
         _assert_no_symlinks(reviews)
@@ -120,7 +267,8 @@ def stage_site(root=ROOT, build_root=None, registry=None, source_root=None, layo
         published.add(root / "README.md", docs / "README.md", rewrite_page=False)
         shutil.copy2(root / "website" / "series.md", docs / "series.md")
         shutil.copy2(root / "website" / "microarchitecture.md", docs / "microarchitecture.md")
-        shutil.copy2(root / "website" / "storage.md", docs / "storage.md")
+        shutil.copy2(storage_home, docs / "storage.md")
+        published.add(storage_home, docs / "storage.md")
         shutil.copy2(root / "website" / "interconnect.md", docs / "interconnect.md")
         shutil.copy2(root / "website" / "articles.md", docs / "articles.md")
         shutil.copy2(root / "website" / "visuals.md", docs / "visuals.md")

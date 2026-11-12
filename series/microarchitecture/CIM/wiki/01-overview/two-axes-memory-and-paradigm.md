@@ -51,9 +51,9 @@ PIM 不应直接塞进 analog/digital/mixed-signal CIM 三分法，因为 PIM �
 
 ## 与其他 wiki 的连接
 
-SRAM-CIM 要连接 RAM wiki 的 [6T SRAM cell](../../../../storage/RAM/wiki/02-sram-foundations/6t-cell-bistable-storage.md)、[SRAM array organization](../../../../storage/RAM/wiki/02-sram-foundations/sram-array-organization.md) 和 [scratchpad vs cache](../../../../storage/RAM/wiki/03-sram-applications/scratchpad-vs-cache.md)，因为 CIM 是 SRAM array 的一种非平凡使用方式，不是普通 cache。
+SRAM-CIM 要连接 RAM wiki 的 [6T SRAM cell](../../../../storage/02-sram/foundations/6t-cell-bistable-storage.md)、[SRAM array organization](../../../../storage/02-sram/foundations/sram-array-organization.md) 和 [scratchpad vs cache](../../../../storage/02-sram/applications/scratchpad-vs-cache.md)，因为 CIM 是 SRAM array 的一种非平凡使用方式，不是普通 cache。
 
-DRAM/HBM-PIM 要连接 RAM wiki 的 [bank organization](../../../../storage/RAM/wiki/04-dram-foundations/bank-organization-parallelism.md)、[HBM stacked wide I/O](../../../../storage/RAM/wiki/05-dram-protocol-families/hbm-stacked-wide-io.md) 和 [DRAM command timing](../../../../storage/RAM/wiki/05-dram-protocol-families/commands-act-rd-wr-pre.md)，因为 PIM 的难点在 command、bank/channel 粒度和 host 协同。
+DRAM/HBM-PIM 要连接 RAM wiki 的 [bank organization](../../../../storage/03-dram/foundations/bank-organization-parallelism.md)、[HBM stacked wide I/O](../../../../storage/03-dram/hbm-stacked-wide-io.md) 和 [DRAM command timing](../../../../storage/03-dram/protocols/commands-act-rd-wr-pre.md)，因为 PIM 的难点在 command、bank/channel 粒度和 host 协同。
 
 系统互连和 reduction 要连接 NoC wiki 的 [memory-centric NoC](../../../../interconnect/NOC/wiki/06-ai-noc-specifics/memory-centric-noc.md) 与 [reduction and collective networks](../../../../interconnect/NOC/wiki/06-ai-noc-specifics/reduction-and-collective-networks.md)，因为 CIM macro 一旦组成 tile/chip，瓶颈会从 array 移到数据流、归约和互连。
 

@@ -1,7 +1,7 @@
 # 精度与量化在电路层的实现约束
 
 上级：[04 Circuit And Macro](./README.md)
-相关：[Data Encoding Strategies](./data-encoding-strategies.md), [Analog vs Digital Tradeoff Map](../03-compute-paradigms/analog-vs-digital-tradeoff-map.md), [RAM: SRAM Applications](../../../../storage/RAM/wiki/03-sram-applications/README.md), [NoC: Reduction Networks](../../../../interconnect/NOC/wiki/06-ai-noc-specifics/reduction-and-collective-networks.md)
+相关：[Data Encoding Strategies](./data-encoding-strategies.md), [Analog vs Digital Tradeoff Map](../03-compute-paradigms/analog-vs-digital-tradeoff-map.md), [RAM: SRAM Applications](../../../../storage/02-sram/applications/README.md), [NoC: Reduction Networks](../../../../interconnect/NOC/wiki/06-ai-noc-specifics/reduction-and-collective-networks.md)
 
 ## 这页在回答什么问题
 
@@ -31,7 +31,7 @@ Mixed-signal CIM 的精度来自边界协同：array 内保留低比特 analog �
 
 CIM 的量化必须下沉到电路约束。scale 是否对称、zero-point 是否需要 offset current、signed weight 是否用 differential pair、outlier 是否触发 saturation、partial sum 是否溢出，都会改变 macro 设计。
 
-对于 ReRAM/Flash，multi-level state 的可分辨数量和 drift 决定 weight quantization 的真实上限。对于 SRAM，bit-serial 周期和 accumulator 宽度决定精度代价，相关存储背景可对照 RAM wiki 的 [SRAM applications](../../../../storage/RAM/wiki/03-sram-applications/README.md)。对于 DRAM/HBM/GDDR-PIM，量化约束来自 PIM compute unit 的数据格式和 memory-side bandwidth，而不是 CIM macro 的 cell/bitline 精度；若 compute 位于 HBM base die、interposer 或 package-side logic，则属于 NMC 边界。partial sum 离开 macro 后还会进入 tile reduction 和互连，可连接 NoC wiki 的 [reduction networks](../../../../interconnect/NOC/wiki/06-ai-noc-specifics/reduction-and-collective-networks.md)。
+对于 ReRAM/Flash，multi-level state 的可分辨数量和 drift 决定 weight quantization 的真实上限。对于 SRAM，bit-serial 周期和 accumulator 宽度决定精度代价，相关存储背景可对照 RAM wiki 的 [SRAM applications](../../../../storage/02-sram/applications/README.md)。对于 DRAM/HBM/GDDR-PIM，量化约束来自 PIM compute unit 的数据格式和 memory-side bandwidth，而不是 CIM macro 的 cell/bitline 精度；若 compute 位于 HBM base die、interposer 或 package-side logic，则属于 NMC 边界。partial sum 离开 macro 后还会进入 tile reduction 和互连，可连接 NoC wiki 的 [reduction networks](../../../../interconnect/NOC/wiki/06-ai-noc-specifics/reduction-and-collective-networks.md)。
 
 ## 常见误解
 

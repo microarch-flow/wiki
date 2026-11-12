@@ -1,7 +1,7 @@
 # Refresh 调度：分散刷新、推迟刷新、bank-level refresh
 
 上级：[Memory Controller](./README.md)
-相关：[刷新：DRAM 的原罪和它的代价](../04-dram-foundations/refresh-the-fundamental-cost.md), [写缓冲与 write drain：为什么读优先](./write-buffer-write-drain.md)
+相关：[刷新：DRAM 的原罪和它的代价](../03-dram/foundations/refresh-the-fundamental-cost.md), [写缓冲与 write drain：为什么读优先](./write-buffer-write-drain.md)
 
 ## 这页在回答什么问题
 

@@ -2,7 +2,7 @@
 
 上级：[SRAM 基础](./README.md)
 
-相关：[字线、位线与读出放大](./wordline-bitline-sense-amp.md) · [SRAM 读写时序](./read-write-cycle-timing.md) · [1T1C 存储单元](../04-dram-foundations/1t1c-cell-destructive-read.md)
+相关：[字线、位线与读出放大](./wordline-bitline-sense-amp.md) · [SRAM 读写时序](./read-write-cycle-timing.md) · [1T1C 存储单元](../../03-dram/foundations/1t1c-cell-destructive-read.md)
 
 <p class="ram-problem-lede">一个 6T SRAM cell 用六个晶体管保存 1 bit。四个晶体管构成两个交叉耦合的反相器，维持内部状态；另外两个晶体管受字线控制，将内部节点接到位线，用于读写。</p>
 
@@ -12,7 +12,7 @@
 
 ## 1. 先认识六个晶体管
 
-[![6T SRAM 电路连接：两个交叉耦合 CMOS 反相器连接 Q 和 QB；WL 控制两个访问 nMOS，分别将 BL 接到 Q、将 BLB 接到 QB。黑点表示连接，跨线弧表示不连接。](../img/6t-sram-cell.svg)](../img/6t-sram-cell.svg)
+[![6T SRAM 电路连接：两个交叉耦合 CMOS 反相器连接 Q 和 QB；WL 控制两个访问 nMOS，分别将 BL 接到 Q、将 BLB 接到 QB。黑点表示连接，跨线弧表示不连接。](../../assets/6t-sram-cell.svg)](../../assets/6t-sram-cell.svg)
 
 点击结构图可查看大图。
 

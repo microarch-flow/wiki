@@ -23,7 +23,7 @@
 | [03 · systolic array](./03-systolic-array/) | 阵列、dataflow、trickle-feed、sizing | 利用权重或数据复用，收益取决于映射 |
 | [04 · 时钟与流水](./04-clocking-and-pipeline/) | 全局时钟、流水寄存器、反馈环、频率≠吞吐 | 各时钟域的路径、II 与代价 |
 | [05 · FPGA vs ASIC](./05-fpga-vs-asic/) | LUT/mux 的可配置开销 | 固定逻辑与可配置实现的权衡 |
-| [06 · 存储 discipline](./06-memory-discipline/) | cache vs scratchpad | 数据放置与服务时间 |
+| [06 · 存储 discipline](../../../storage/01-memory-hierarchy/cache-scratchpad/) | cache vs scratchpad | 数据放置与服务时间 |
 | [07 · 芯片顶层组织](./07-chip-organization/) | CPU/GPU 核、脑vs芯片、GPU 与 TPU 局部矩阵结构 | 通用性与局部资源的权衡 |
 | [08 · 面向 archax 的建模](./08-modeling-for-archax/) | 7 条建模启示升格 | 提出带边界的模型与指标 |
 
@@ -41,7 +41,7 @@
 
 数据搬运、存储、互连和制造是其他域的主体。COMPUTE 与它们交换边界流量、带宽、时序和实现参数:
 
-- **RAM** — cache/scratchpad 数据放置与资源争用 → [06-memory-discipline](./06-memory-discipline/cache-vs-scratchpad.md)
+- **RAM** — cache/scratchpad 数据放置与资源争用 → [06-memory-discipline](../../../storage/01-memory-hierarchy/cache-scratchpad/cache-vs-scratchpad.md)
 - **CIM** — systolic 驻留 vs 存内计算的边界(驻留处是否就是计算处)→ [03 why-systolic](./03-systolic-array/why-systolic-array.md#5-与-cim-的边界)
 - **NOC / DMA** — 阵列进出口 / 跨单元带宽衔接片上互连 → [03 trickle-feed](./03-systolic-array/weight-loading-and-trickle-feed.md)、[07 gpu-as-tiled-tpu](./07-chip-organization/gpu-as-tiled-tpu.md)
 - **FAB** — 门数→die area→成本/良率 → [02 quadratic-bitwidth](./02-datapath-foundations/quadratic-bitwidth-scaling.md)、[05 fpga-vs-asic](./05-fpga-vs-asic/lut-mux-and-10x-overhead.md)

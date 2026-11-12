@@ -1,7 +1,7 @@
 # HBM 的 2.5D、3D 集成与 TSV 技术
 
 上级：[封装与集成](./README.md)
-相关：[HBM：从协议层面看它和 DDR 的根本不同](../05-dram-protocol-families/hbm-stacked-wide-io.md), [DRAM 工艺路线：平面到堆叠到 3D](../04-dram-foundations/dram-process-stacking-trends.md)
+相关：[HBM：从协议层面看它和 DDR 的根本不同](../../03-dram/hbm-stacked-wide-io.md), [DRAM 工艺路线：平面到堆叠到 3D](../../03-dram/foundations/dram-process-stacking-trends.md)
 
 ## 这页在回答什么问题
 

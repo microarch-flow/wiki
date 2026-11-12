@@ -4,7 +4,7 @@
 
 上级：[RAM 专题主页](../README.md)
 
-相关：[SRAM 6T cell](../02-sram-foundations/6t-cell-bistable-storage.md) · [存储层次与系统角色](../07-system-architecture/memory-hierarchy-as-system.md) · [学习路线](./learning-roadmap.md)
+相关：[SRAM 6T cell](../../02-sram/foundations/6t-cell-bistable-storage.md) · [存储层次与系统角色](../system-architecture/memory-hierarchy-as-system.md) · [学习路线](./learning-roadmap.md)
 
 计算单元需要持续取得数据，也需要保存计算结果。存储系统的任务，是在容量、访问时间、带宽、能耗和成本等约束下，提供这些数据。
 
@@ -23,7 +23,7 @@ RAM 是 random-access memory，通常译为随机存取存储器。它允许根�
 
 ## 2. 先看两条数据路径
 
-[![存储系统路径示意：处理器 cache 未命中后经内存控制器读取 DRAM；另一条路径中 DMA 将 DRAM 数据搬入 scratchpad，供计算单元使用。](../img/ram-system-overview.svg)](../img/ram-system-overview.svg)
+[![存储系统路径示意：处理器 cache 未命中后经内存控制器读取 DRAM；另一条路径中 DMA 将 DRAM 数据搬入 scratchpad，供计算单元使用。](../../assets/ram-system-overview.svg)](../../assets/ram-system-overview.svg)
 
 点击图可查看大图。图中是两个简化例子，并非所有芯片都采用相同连接。
 
@@ -127,4 +127,4 @@ DMA 是发起和执行搬运的模块；内存控制器负责对 DRAM 请求进�
 5. [SRAM 与 DRAM 的分化](./sram-dram-divergence.md)：从存储方式推导组织差异。
 6. [学习路径与章节依赖](./learning-roadmap.md)：按目标选择后续章节。
 
-如果想先深入一颗 SRAM 单元，可以直接阅读 [6T SRAM cell：它如何保存、读取和写入 1 bit](../02-sram-foundations/6t-cell-bistable-storage.md)。如果当前目标是 DRAM 建模，可以转到 [DRAM 基础](../04-dram-foundations/README.md)和 [Memory Controller](../06-memory-controller/README.md)。
+如果想先深入一颗 SRAM 单元，可以直接阅读 [6T SRAM cell：它如何保存、读取和写入 1 bit](../../02-sram/foundations/6t-cell-bistable-storage.md)。如果当前目标是 DRAM 建模，可以转到 [DRAM 基础](../../03-dram/foundations/README.md)和 [Memory Controller](../../04-dram-controller/README.md)。

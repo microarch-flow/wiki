@@ -62,4 +62,4 @@
 ## 接下来怎么读？
 
 - [SRAM 漏电与低功耗](./sram-power-leakage-retention.md)：继续看保持电压、断电和唤醒。
-- [SRAM 选型清单](../10-reference/sram-design-checklist.md)：按目标宏和系统需求检查参数。
+- [SRAM 选型清单](../../01-memory-hierarchy/reference/sram-design-checklist.md)：按目标宏和系统需求检查参数。
