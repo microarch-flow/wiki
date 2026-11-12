@@ -2,7 +2,7 @@
 
 Wiki 与博客的共同写作和设计要求见 [Wiki 与博客设计规则](../docs/wiki-blog-design-rules.md)。
 
-本网站使用 MkDocs Material。首页汇集技术系列。“芯片微架构笔记”来自本仓库中十一个专题的 `wiki/` 目录；“算法与模型（Workload Wiki）”来自 `microarch-flow/workload-wiki` 仓库。两者保留各自的 Markdown 源文件。`website/prepare.py` 将网站内容及已配置的外部系列复制到 `.site-build/docs/`，然后 MkDocs 生成静态网站。导航按专题、章节和文章展开，当前页面高亮显示。文章开头的面包屑根据同一导航层级生成；已有上级页面可以点击，没有首页的分组显示为文本。
+本网站使用 MkDocs Material。首页汇集技术系列。“芯片微架构笔记”来自本仓库中十一个专题的 `wiki/` 目录；“算法与模型（Workload Wiki）”的维护位置是本仓库的 `series/workload/`。`website/prepare.py` 将正文复制到 `.site-build/docs/`，然后 MkDocs 生成静态网站。导航按专题、章节和文章展开，当前页面高亮显示。文章开头的面包屑根据同一导航层级生成；已有上级页面可以点击，没有首页的分组显示为文本。
 
 导航由 `website/hooks.py` 根据目录与 Markdown 标题生成。章节首页中，如果“阅读顺序”或“接下来怎么读”包含指向同一目录文章的编号列表，导航优先使用该顺序；未列出的文章按文件名排序。网站构建时，如果文章开头的“上级”链接与面包屑中的上级页面相同，会在网页中省略该行；不同的链接和原始 Markdown 均保留。
 
@@ -10,9 +10,15 @@ RAM 专题的文章目录使用各章编号阅读列表中的链接文字作为�
 
 侧边导航由 `website/assets/javascripts/navigation.js` 补充交互：当前章节首页的标题可以展开或收起其目录，其他标题仍跳转到对应页面；长标题在可悬停设备上显示省略号并提供完整标题提示。触屏设备保留换行，以便查看完整名称。
 
-## 增加来自其他仓库的技术系列
+## 仓内来源与发布路径
 
-网站使用 `website/series.json` 配置系列。当前配置了本仓库的“芯片微架构笔记”和外部仓库的“算法与模型（Workload Wiki）”。接入其他系列时，在 `series` 数组中添加一个对象，例如：
+`website/series.json` 可以为仓内系列分别指定源码目录和发布路径。例如，Workload 的源码是 `series/workload/`，发布路径仍为 `external/workload-wiki/`。修改源码目录不必改变公开地址。仓内来源必须有唯一的 `README.md` 或 `index.md`；文章和图片留在所选目录内。构建会拒绝符号链接、路径越界及输出冲突，并排除 `AGENTS.md`、`raw/` 和非文章／图片附件。`series/` 才是正文维护位置，`.site-build/` 是生成目录。
+
+当前生产配置只使用本仓库的正文，不需要检出或联网读取旧 Workload 仓库。仓内内容变更随主仓 `main` 推送发布。
+
+## 可选：增加来自其他仓库的技术系列
+
+网站使用 `website/series.json` 配置系列。若以后确需从其他仓库构建，可以在 `series` 数组中添加一个对象，例如：
 
 ```json
 {
@@ -35,9 +41,7 @@ RAM 专题的文章目录使用各章编号阅读列表中的链接文字作为�
 
 **公开范围以整个所选目录为准**：其中的文章和资源都可能发布。接入前应先确认目录内容适合公开；不要把密钥或不应公开的资料放入该目录。来源不可访问、目录缺失或首页不符合要求时，构建会失败，不会静默省略该系列。
 
-Workload Wiki 当前选择仓库根目录，并在每次构建时读取 `main` 分支。因此，其根目录下的现有文档都会进入博客；后续添加的文章也会随下一次网站构建进入博客。系列入口为 `external/workload-wiki/`，原有微架构页面地址不变。
-
-默认构建从 GitHub 通过 HTTPS 获取公开仓库。本地预览也可以使用已检出的目录，避免联网：
+配置外部 `source` 时，构建从 GitHub 通过 HTTPS 获取公开仓库。本地预览也可以使用已检出的目录，避免联网：
 
 ```text
 本地来源目录/
@@ -52,7 +56,7 @@ mkdocs serve
 
 使用 `--source-root` 时，每个外部系列都必须有对应的本地检出目录；构建使用目录中的实际文件，包括未提交的修改，不校验其是否与 `ref` 一致。正常发布流程则按 `ref` 从 GitHub 获取版本。私有仓库需要另外配置有读取权限的检出步骤和凭据，再让构建使用这些本地检出目录；当前 workflow 没有自动配置私有仓库凭据。
 
-每个系列对象必须有 `title`、`description`，以及 `source`、`page`、`url` 中恰好一个。`page` 指向已放入构建目录的本地 Markdown 页面；`url` 指向独立网站的 HTTPS 地址。独立网站仍可添加入口，但其文章不会自动进入本网站的搜索索引。
+每个系列对象必须有 `title`、`description`，以及 `local`、`source`、`page`、`url` 中恰好一个。`page` 指向已放入构建目录的本地 Markdown 页面；`url` 指向独立网站的 HTTPS 地址。独立网站仍可添加入口，但其文章不会自动进入本网站的搜索索引。
 
 总入口继续使用当前 `/wiki/` 路径。站点名称在 `mkdocs.yml` 的 `site_name` 中修改；首页会自动使用该名称。
 
@@ -91,7 +95,7 @@ mkdocs build
 
 ### Workload Wiki 自动更新
 
-`workload-wiki` 的 `.github/workflows/rebuild-blog.yml` 在其 `main` 分支收到推送时，向本仓库发送 `content-updated` 事件。它也支持手动运行。收到事件后，本仓库的 Pages workflow 构建并部署网站，构建时读取 `workload-wiki` 的 `main` 分支。连续推送可能合并为较少的构建；最终页面使用构建时取得的版本。
+迁移验收期间，旧仓的重建通知暂时保留。收到事件后主仓会重建，但正文已经从 `series/workload/` 读取。旧仓的后续修改不会自动进入主站。公开地址验收后再退役旧通知。
 
 启用此流程需要在 `workload-wiki` 的 Actions secrets 中设置 `WIKI_DISPATCH_TOKEN`。可以使用只选择 `microarch-flow/wiki` 仓库、授予 **Contents: Read and write** 的 fine-grained personal access token。该权限也允许修改目标仓库内容；令牌应由仓库所有者管理，不要写入文件或聊天。令牌到期后需要更新 secret。默认的 `GITHUB_TOKEN` 仅限其所属仓库，不能用于访问另一个仓库。
 
