@@ -18,9 +18,9 @@ RAM 专题的文章目录使用各章编号阅读列表中的链接文字作为�
 
 暂存时，构建根据实际复制的文件，将源码中指向其他已发布源码的相对链接转换到对应暂存路径；原文件不变。网站首页等模板中的 HTML URL 按最终站点路径编写，不执行此转换。改动链接或目录后，应分别检查仓库源码链接与生成网站链接。
 
-`website/series.json` 可以为仓内系列分别指定源码目录和发布路径。例如，Workload 的源码是 `series/workload/`，发布路径仍为 `external/workload-wiki/`。修改源码目录不必改变公开地址。仓内来源必须有唯一的 `README.md` 或 `index.md`；文章和图片留在所选目录内。构建会拒绝符号链接、路径越界及输出冲突，并排除 `AGENTS.md`、`task.md`、`wiki-plan.md`、`raw/` 和非文章／图片附件。其他 Markdown 仍可能发布，加入仓内系列前必须逐项检查其公开范围。`series/` 才是正文维护位置，`.site-build/` 是生成目录。
+`website/series.json` 可以为仓内系列分别指定源码目录和发布路径。例如，Workload 的源码是 `series/workload/`，发布路径仍为 `external/workload-wiki/`。芯片开发流程从 `series/chip-development/process/` 暂存，FAB 由十一域映射单独暂存。修改源码目录不必改变公开地址。仓内来源必须有唯一的 `README.md` 或 `index.md`；文章和图片留在所选目录内。构建会拒绝符号链接、路径越界及输出冲突，并排除 `AGENTS.md`、`task.md`、`wiki-plan.md`、`raw/`、`wiki.old/`、`seed/` 和非文章／图片附件。其他 Markdown 仍可能发布，加入仓内系列前必须逐项检查其公开范围。`series/` 是正文维护位置，`.site-build/` 是生成目录。
 
-当前生产配置只使用本仓库的正文，不需要检出或联网读取旧 Workload 仓库。仓内内容变更随主仓 `main` 推送发布。
+当前生产配置只使用本仓库的正文，不需要检出或联网读取旧来源仓库。仓内内容变更随主仓 `main` 推送发布。
 
 ## 可选：增加来自其他仓库的技术系列
 
@@ -43,7 +43,7 @@ RAM 专题的文章目录使用各章编号阅读列表中的链接文字作为�
 
 构建时，`website/prepare.py` 获取指定版本，只将所选目录复制到临时构建目录。网站在首页和系列目录生成入口，并把文章加入统一导航、面包屑和搜索索引。其他仓库不需要单独发布 GitHub Pages。文章位于 `external/<slug>/` 下；**修改 slug 会改变该系列的 URL**。现有 Wiki 文章的路径不变。
 
-选定的目录必须有且只有一个 `README.md` 或 `index.md` 作为系列首页。文章使用小写 `.md` 扩展名。子目录可以按同一方式设置首页；章节首页的编号阅读列表可决定同目录文章的导航顺序。请把文章引用的图片和其他文件放在选定目录内，并检查指向目录外文件的链接。构建不会自动改写跨仓库或目录外链接。构建时会拒绝符号链接，不会复制 `.git` 元数据；如果源文件与 Markdown 生成的页面占用同一输出路径，也会报错。
+选定的目录必须有且只有一个 `README.md` 或 `index.md` 作为系列首页。文章使用小写 `.md` 扩展名。子目录可以按同一方式设置首页；章节首页的编号阅读列表可决定同目录文章的导航顺序。请把文章引用的图片和其他文件放在选定目录内，并检查指向目录外文件的链接。外部 `source` 的跨仓库或目录外链接不会自动改写。构建时会拒绝符号链接，不会复制 `.git` 元数据；如果源文件与 Markdown 生成的页面占用同一输出路径，也会报错。
 
 **公开范围以整个所选目录为准**：其中的文章和资源都可能发布。接入前应先确认目录内容适合公开；不要把密钥或不应公开的资料放入该目录。来源不可访问、目录缺失或首页不符合要求时，构建会失败，不会静默省略该系列。
 
@@ -109,7 +109,7 @@ mkdocs build
 - 总首页维护在 `website/home.md`，系列目录维护在 `website/series.md`，微架构系列首页维护在 `website/microarchitecture.md`，系列列表维护在 `website/series.json`。精选文章列表维护在 `website/articles.md`，互动图解维护在 `website/visuals.md`，图形与脚本位于 `website/assets/`。精选文章直接引用现有正文，后续可逐篇修改原文。
 - DRAM 图解只表示一次显式 PRE 读流程的逻辑阶段，不给出周期数或替代器件规格。
 - 双缓冲图解假设搬运和计算各占一个周期，且资源访问不冲突。它不代表实际设备的实测性能。
-- 电路与时序文章维护在根目录的 `electrical-timing-foundations.md`，原理图位于根目录 `img/`。公式区和路径卡片使用文中的 HTML 及 `site.css` 样式；构建时 `website/hooks.py` 只为该页添加阅读布局容器。公式不依赖外部脚本。
+- 电路与时序文章维护在 `series/microarchitecture/foundations/electrical-timing-foundations.md`，原理图位于其相邻的 `img/`。暂存后仍使用原根文章和 `img/` 路径。公式区和路径卡片使用文中的 HTML 及 `site.css` 样式；构建时 `website/hooks.py` 只为该页添加阅读布局容器。公式不依赖外部脚本。
 - 6T SRAM 文章通过 `website/hooks.py` 在正文标记处插入读写图解；模板位于 `website/partials/sram-demo.html`，状态与控制逻辑位于 `website/assets/javascripts/sram.js`。结构图和操作步骤都是教学示意，不是电路仿真。
 - RAM 概览同样通过正文标记插入 cache miss 图解；模板为 `website/partials/ram-overview-demo.html`，状态与控制逻辑为 `website/assets/javascripts/ram-overview.js`。图解采用文章中列出的单请求假设。文章中的计算与事件路径使用 `site.css` 中的说明块样式。
 - 修改图解时，同步检查状态文案、相关约束、链接，以及键盘操作和减少动态效果的设置。

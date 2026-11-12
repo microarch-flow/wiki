@@ -1,10 +1,24 @@
-# 微架构与物理实现学习入口
+# 芯片 Wiki 学习入口
 
 本 wiki 面向希望理解芯片，并建立可解释模拟器的读者。建议先读[电路到时序的共用基础](./series/microarchitecture/foundations/electrical-timing-foundations.md)。它从电容充电算到采样边沿，再说明这些连续过程如何成为离散事件模型的参数。
 
 网站版的本地预览、内容维护与 GitHub Pages 发布方法见[网站构建与维护](./website/README.md)。
 
 整理 Wiki 和博客时的写作、技术核查、导航与视觉要求见 [Wiki 与博客设计规则](./docs/wiki-blog-design-rules.md)。这些规则可以根据后续需求调整。
+
+## 七个系列的源码入口
+
+| 系列 | 内容 |
+| --- | --- |
+| [算法与模型](./series/workload/README.md) | 模型组件、视觉、自动驾驶、机器人和芯片工作负载 |
+| [推理运行时](./series/inference-runtime/README.md) | 推理阶段、内核、KV 缓存、调度和分布式服务；正文目前为草稿 |
+| [芯片微架构](./series/microarchitecture/README.md) | 计算、数据搬运、存内计算与共用电路基础 |
+| [存储系统](./series/storage/README.md) | SRAM、DRAM、HBM 和高带宽闪存 |
+| [芯片与系统互连](./series/interconnect/README.md) | 片上总线、网络、PCIe、SerDes 和光互连 |
+| [芯片架构实例](./series/chip-architectures/README.md) | 具体产品代际的计算、存储、互连和软件映射 |
+| [芯片开发与实现](./series/chip-development/README.md) | 开发流程、晶圆制造、封装与测试 |
+
+网站的[全部系列](https://microarch-flow.github.io/wiki/series/)提供公开阅读入口。源码目录归属与网站的文件级导航归属可以不同。
 
 ## 先回答哪些问题
 
