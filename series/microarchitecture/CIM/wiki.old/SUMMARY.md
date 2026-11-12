@@ -79,4 +79,4 @@
 
 ## 10 素材来源
 
-- [原始对话材料](../chat.md)
+- 原始对话材料：原索引指向 `../chat.md`。该文件在本地和已检查的 Git 历史中未找到。已发现同主题候选对话，但无法确认与原文件一致；暂不补写。[原索引（固定提交）](https://github.com/microarch-flow/CIM/blob/c532d9fd9b049ccdb3b7c646f3a4d9d44019c839/wiki/SUMMARY.md)

@@ -29,4 +29,6 @@ GitHub Pages 的既有网址通过暂存路径映射保留。GitHub 上指向 `m
 
 独立检出对照确认：四批完成后的 887 个页面、正文文字、已有锚点、17,423 条正文站内引用、20 个媒体文件、每页搜索记录和当前导航位置与基线一致。对 8,231 处原有源码相对引用，目标、查询参数和片段语义均保留；芯片开发新增的源码入口另有两条有效链接。
 
-原有 184 个 `wiki.old/` 跟踪文件已逐个比较，迁移前后字节相同。原有提交没有被改写；BUS、NoC、CIM 和 FAB 等抽样文件的 `git log --follow` 可追溯到移动前。源码检查仍发现一处基线已有的历史失效链接：`series/microarchitecture/CIM/wiki.old/SUMMARY.md` 指向原仓不存在的 `chat.md`。没有为它虚构目标。
+目录调整验收时，原有 184 个 `wiki.old/` 跟踪文件经逐个比较，迁移前后字节相同。原有提交没有被改写；BUS、NoC、CIM 和 FAB 等抽样文件的 `git log --follow` 可追溯到移动前。
+
+源码检查发现一处基线已有的历史失效链接：`series/microarchitecture/CIM/wiki.old/SUMMARY.md` 指向 `../chat.md`。后续检查了本地副本、主仓 Git 历史及来源仓库的可见分支、标签和提交，没有找到该文件。另发现同主题候选对话，但无法确认它与缺失文件一致。归档索引已保留原路径并改为非链接标注；没有补造对话。归档原链接仍可在[来源仓固定提交](https://github.com/microarch-flow/CIM/blob/c532d9fd9b049ccdb3b7c646f3a4d9d44019c839/wiki/SUMMARY.md)中查看。
