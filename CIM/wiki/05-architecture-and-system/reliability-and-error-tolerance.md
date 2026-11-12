@@ -1,7 +1,7 @@
 # 可靠性与误差容忍：Analog 路线的核心系统问题
 
 上级：[05 Architecture And System](./README.md)
-相关：[Non-Idealities and Error Sources](../04-circuit-and-macro/non-idealities-and-error-sources.md), [FAB: 3DIC Thermal Stress](../../../FAB/wiki/04-back-end-packaging/3d-routes/3dic-thermal-and-stress-challenges.md), [RAM: Refresh Cost](../../../RAM/wiki/04-dram-foundations/refresh-the-fundamental-cost.md), [BUS: MMIO Cache Interrupt](../../../series/interconnect/BUS/wiki/04-microarchitecture-integration/mmio-cache-interrupt-view.md)
+相关：[Non-Idealities and Error Sources](../04-circuit-and-macro/non-idealities-and-error-sources.md), [FAB: 3DIC Thermal Stress](../../../FAB/wiki/04-back-end-packaging/3d-routes/3dic-thermal-and-stress-challenges.md), [RAM: Refresh Cost](../../../series/storage/RAM/wiki/04-dram-foundations/refresh-the-fundamental-cost.md), [BUS: MMIO Cache Interrupt](../../../series/interconnect/BUS/wiki/04-microarchitecture-integration/mmio-cache-interrupt-view.md)
 
 ## 这页在回答什么问题
 
@@ -38,7 +38,7 @@ Mixed-signal CIM 同时面对两类问题。analog 段引入分布误差，digit
 
 ## PIM/NMC 对照
 
-DRAM/HBM/GDDR-PIM 的可靠性重点在 DRAM timing、refresh、bank scheduling、ECC、thermal 和 host coordination，不是 CIM analog error budget。RAM wiki 的 [refresh cost](../../../RAM/wiki/04-dram-foundations/refresh-the-fundamental-cost.md) 和 DRAM timing 背景更适合分析这类问题；host coordination 则会进入 BUS/MMIO/runtime interface。NMC 更依赖 package/die-to-die link、software isolation 和 system-level fault handling。
+DRAM/HBM/GDDR-PIM 的可靠性重点在 DRAM timing、refresh、bank scheduling、ECC、thermal 和 host coordination，不是 CIM analog error budget。RAM wiki 的 [refresh cost](../../../series/storage/RAM/wiki/04-dram-foundations/refresh-the-fundamental-cost.md) 和 DRAM timing 背景更适合分析这类问题；host coordination 则会进入 BUS/MMIO/runtime interface。NMC 更依赖 package/die-to-die link、software isolation 和 system-level fault handling。
 
 ## 一句话理解
 

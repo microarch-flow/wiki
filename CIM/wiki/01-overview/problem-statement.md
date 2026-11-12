@@ -1,7 +1,7 @@
 # Memory Wall 与 Von Neumann Bottleneck：为什么 CIM 在 AI 时代被重新点燃
 
 上级：[01 Overview](./README.md)
-相关：[CIM/PIM/NMC 的严格区分](./cim-pim-nmc-taxonomy.md), [两条正交主线](./two-axes-memory-and-paradigm.md), [RAM: Data Movement First Principle](../../../RAM/wiki/09-ai-chip-memory-architecture/data-movement-first-principle.md)
+相关：[CIM/PIM/NMC 的严格区分](./cim-pim-nmc-taxonomy.md), [两条正交主线](./two-axes-memory-and-paradigm.md), [RAM: Data Movement First Principle](../../../series/storage/RAM/wiki/09-ai-chip-memory-architecture/data-movement-first-principle.md)
 
 ## 这页在回答什么问题
 
@@ -22,7 +22,7 @@ DRAM / HBM
 
 Memory wall 指存储延迟或可用带宽的改善与计算能力增长不匹配；von Neumann bottleneck 指处理器与存储分离后需通过有限通路交换指令或数据。二者相关但不等同。
 
-这条路径的每一跳都在消耗能量和时延。一次低比特 MAC 的能耗可以做到很低，但把权重、激活和 partial sum 在 HBM、SRAM、NoC 和计算阵列之间反复搬运，往往比计算本身更贵。RAM wiki 的 [data movement first principle](../../../RAM/wiki/09-ai-chip-memory-architecture/data-movement-first-principle.md) 已经从 AI memory hierarchy 角度讲过这个问题；CIM/PIM/NMC 是同一矛盾在器件、电路和系统边界上的另一种回应。
+这条路径的每一跳都在消耗能量和时延。一次低比特 MAC 的能耗可以做到很低，但把权重、激活和 partial sum 在 HBM、SRAM、NoC 和计算阵列之间反复搬运，往往比计算本身更贵。RAM wiki 的 [data movement first principle](../../../series/storage/RAM/wiki/09-ai-chip-memory-architecture/data-movement-first-principle.md) 已经从 AI memory hierarchy 角度讲过这个问题；CIM/PIM/NMC 是同一矛盾在器件、电路和系统边界上的另一种回应。
 
 固定工作量的有效操作数 F 和指定边界的实际字节 Q。若 `F/Q < P/B`（P 为计算峰值、B 为该边界持续带宽上界），理想吞吐上界受该边界约束；它不保证实际能达到上界。权重片上复用时应减少 Q，不能按每次 MAC 都从 HBM 读取计算。迁移计算后 ADC、归约或结果回写仍可能成为新瓶颈。
 

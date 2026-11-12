@@ -56,7 +56,7 @@ DMA 性能分析里经常看见“理论上一笔 256B 搬运，为什么硬件�
 
 例如 AXI4，源 `0x0FF0`、目的 `0x2000`、长度 32 B、每 beat 8 B，源在 16 B 后到 4KB 边界。保守分块得到 `[0x0FF0,0x0FFF]` 和 `[0x1000,0x100F]` 两个 16 B 子块，每个读 burst 为 2 beat，至少两次 AR/R；目的端独立规划时可以是一笔 4-beat AW/W/B，也可按两块发送。若只剩 5 B，最后使用合法 size/lane 或 strobe；不能假定无效 byte 被写入。
 
-AXI4 的 4KB 与最大 beat 数、PCIe 的 MPS/MRRS 和请求边界、IOMMU page 映射是不同约束：page 不连续可能需要翻译或 scatter-gather，不自动等于 AXI 事务必须按物理页拆。算法还须验证地址宽度、溢出、权限和目标支持。见 [Arm IHI 0022H](https://developer.arm.com/-/media/Arm%20Developer%20Community/PDF/IHI0022H_amba_axi_protocol_spec.pdf?hash=6325311012DDADF238C35A6C0FD734E520754F82&la=en&revision=71bd7c57-2ed7-487b-bc3e-68c4ab56fa5f) 与 [RAM 地址映射](../../../RAM/wiki/06-memory-controller/address-mapping-channel-rank-bank-row-col.md)。
+AXI4 的 4KB 与最大 beat 数、PCIe 的 MPS/MRRS 和请求边界、IOMMU page 映射是不同约束：page 不连续可能需要翻译或 scatter-gather，不自动等于 AXI 事务必须按物理页拆。算法还须验证地址宽度、溢出、权限和目标支持。见 [Arm IHI 0022H](https://developer.arm.com/-/media/Arm%20Developer%20Community/PDF/IHI0022H_amba_axi_protocol_spec.pdf?hash=6325311012DDADF238C35A6C0FD734E520754F82&la=en&revision=71bd7c57-2ed7-487b-bc3e-68c4ab56fa5f) 与 [RAM 地址映射](../../../series/storage/RAM/wiki/06-memory-controller/address-mapping-channel-rank-bank-row-col.md)。
 
 ## Scatter-gather 的价值和代价
 

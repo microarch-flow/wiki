@@ -1,7 +1,7 @@
 # DRAM-PIM 基础：为什么在 DRAM Die 上加 Compute Unit
 
 上级：[02 Memory Technologies](./README.md)
-相关：[DRAM-PIM 深入](./dram-pim-deep-dive.md), [CIM/PIM/NMC Taxonomy](../01-overview/cim-pim-nmc-taxonomy.md), [RAM: Bank Organization](../../../RAM/wiki/04-dram-foundations/bank-organization-parallelism.md), [RAM: HBM](../../../RAM/wiki/05-dram-protocol-families/hbm-stacked-wide-io.md), [RAM: DRAM Commands](../../../RAM/wiki/05-dram-protocol-families/commands-act-rd-wr-pre.md)
+相关：[DRAM-PIM 深入](./dram-pim-deep-dive.md), [CIM/PIM/NMC Taxonomy](../01-overview/cim-pim-nmc-taxonomy.md), [RAM: Bank Organization](../../../series/storage/RAM/wiki/04-dram-foundations/bank-organization-parallelism.md), [RAM: HBM](../../../series/storage/RAM/wiki/05-dram-protocol-families/hbm-stacked-wide-io.md), [RAM: DRAM Commands](../../../series/storage/RAM/wiki/05-dram-protocol-families/commands-act-rd-wr-pre.md)
 
 ## 这页在回答什么问题
 
@@ -9,7 +9,7 @@ DRAM/HBM/GDDR-PIM 为什么放在 memory technology 横轴里，却又不叫 CIM
 
 ## DRAM-PIM 的问题来源
 
-DRAM 的价值是容量和成本，HBM/GDDR 的价值是高带宽。RAM wiki 的 [HBM stacked wide I/O](../../../RAM/wiki/05-dram-protocol-families/hbm-stacked-wide-io.md) 已经说明，HBM 通过堆叠和宽接口提高带宽；[DRAM commands](../../../RAM/wiki/05-dram-protocol-families/commands-act-rd-wr-pre.md) 说明 ACT/RD/WR/PRE 等命令路径为什么会影响 PIM interface 设计。PIM 的收益必须穿过这些 memory command 和 controller 约束，而不是只在 compute unit 内成立。
+DRAM 的价值是容量和成本，HBM/GDDR 的价值是高带宽。RAM wiki 的 [HBM stacked wide I/O](../../../series/storage/RAM/wiki/05-dram-protocol-families/hbm-stacked-wide-io.md) 已经说明，HBM 通过堆叠和宽接口提高带宽；[DRAM commands](../../../series/storage/RAM/wiki/05-dram-protocol-families/commands-act-rd-wr-pre.md) 说明 ACT/RD/WR/PRE 等命令路径为什么会影响 PIM interface 设计。PIM 的收益必须穿过这些 memory command 和 controller 约束，而不是只在 compute unit 内成立。
 
 DRAM-PIM 解决的问题是：当数据已经在 memory die/bank 中，能不能把一部分简单、规则、memory-bound 的计算也放到 memory die/bank 内，避免每次都把数据搬回 GPU/CPU/NPU。
 

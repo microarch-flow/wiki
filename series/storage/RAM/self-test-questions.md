@@ -271,16 +271,16 @@
 ## 跨 wiki 综合题（5 题）
 
 76. [J] DRAM controller 接到 AXI 总线时，如何处理 QoS 透传、read/write ordering、outstanding transaction 与 write-drain 策略之间的冲突？
-   [BUS outstanding 与排序](../series/interconnect/BUS/wiki/03-on-chip-protocol-families/axi-channel-id-outstanding.md)、[RAM write drain](./wiki/06-memory-controller/write-buffer-write-drain.md)
+   [BUS outstanding 与排序](../../interconnect/BUS/wiki/03-on-chip-protocol-families/axi-channel-id-outstanding.md)、[RAM write drain](./wiki/06-memory-controller/write-buffer-write-drain.md)
 
 77. [J] 多个 NPU tile 通过 NoC 共享 HBM 时，NoC 的 burst 聚合、拥塞和 response path 会如何改变 MC 看到的 row/bank 流量形状？
-   [NOC 流量](../series/interconnect/NOC/wiki/05-system-integration/traffic-patterns-and-characterization.md)、[RAM 控制器模型](./wiki/06-memory-controller/mc-modeling-for-simulation.md)
+   [NOC 流量](../../interconnect/NOC/wiki/05-system-integration/traffic-patterns-and-characterization.md)、[RAM 控制器模型](./wiki/06-memory-controller/mc-modeling-for-simulation.md)
 
 78. [J] 在 NPU double buffering 中，DMA refill 应如何同时对齐 DRAM 访问局部性和片上消费节拍？
-   [DMA 双缓冲](../DMA/wiki/04-programming-model/tiling-double-buffering.md)、[RAM activation buffer](./wiki/09-ai-chip-memory-architecture/activation-buffer-and-double-buffering.md)
+   [DMA 双缓冲](../../../DMA/wiki/04-programming-model/tiling-double-buffering.md)、[RAM activation buffer](./wiki/09-ai-chip-memory-architecture/activation-buffer-and-double-buffering.md)
 
 79. [J] HBM 的 interposer 路由、PDN/SI 和热约束可能如何影响持续带宽？package test 与良率又如何影响成本或可供货性，为什么不能直接把它们当作带宽损失？
-   [FAB 封装信号完整性](../FAB/wiki/06-cross-cutting-engineering/signal-integrity-in-package.md)、[RAM HBM 成本](./wiki/08-packaging-integration/why-hbm-is-expensive.md)
+   [FAB 封装信号完整性](../../../FAB/wiki/06-cross-cutting-engineering/signal-integrity-in-package.md)、[RAM HBM 成本](./wiki/08-packaging-integration/why-hbm-is-expensive.md)
 
 80. [J] 从 RAM 视角看，DRAM-PIM 与 SRAM-CIM 在数据位置、刷新/保持、外围计算开销和上层 memory hierarchy 边界上有什么本质差异？
-   [CIM DRAM-PIM](../CIM/wiki/02-memory-technologies/dram-pim-foundation.md)、[CIM SRAM-CIM](../CIM/wiki/02-memory-technologies/sram-cim-foundation.md)
+   [CIM DRAM-PIM](../../../CIM/wiki/02-memory-technologies/dram-pim-foundation.md)、[CIM SRAM-CIM](../../../CIM/wiki/02-memory-technologies/sram-cim-foundation.md)

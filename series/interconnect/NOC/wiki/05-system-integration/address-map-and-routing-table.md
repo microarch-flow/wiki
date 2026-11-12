@@ -2,7 +2,7 @@
 
 上级：[05 System Integration](./README.md)
 
-相关：[Source Routing For Deterministic Systems](../04-routing-and-flow-control/source-routing-for-deterministic-systems.md)、[Topology Physical Realization](../03-topology/topology-physical-realization.md)、[RAM: address mapping channel rank bank row col](../../../../../RAM/wiki/06-memory-controller/address-mapping-channel-rank-bank-row-col.md)
+相关：[Source Routing For Deterministic Systems](../04-routing-and-flow-control/source-routing-for-deterministic-systems.md)、[Topology Physical Realization](../03-topology/topology-physical-realization.md)、[RAM: address mapping channel rank bank row col](../../../../storage/RAM/wiki/06-memory-controller/address-mapping-channel-rank-bank-row-col.md)
 
 ## 这页在回答什么问题
 

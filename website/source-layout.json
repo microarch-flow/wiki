@@ -1,6 +1,6 @@
 {
   "topics": {
-    "RAM": "RAM",
+    "RAM": "series/storage/RAM",
     "COMPUTE": "COMPUTE",
     "BUS": "series/interconnect/BUS",
     "NOC": "series/interconnect/NOC",
@@ -10,7 +10,7 @@
     "CPO": "series/interconnect/CPO",
     "FAB": "FAB",
     "SERDES": "series/interconnect/SERDES",
-    "HBF": "HBF"
+    "HBF": "series/storage/HBF"
   },
   "foundations": {
     "article": "electrical-timing-foundations.md",

@@ -1,7 +1,7 @@
 # SRAM-CIM 深入：Bitline 加和、Charge Sharing、典型 Macro 结构
 
 上级：[02 Memory Technologies](./README.md)
-相关：[SRAM-CIM 基础](./sram-cim-foundation.md), [ADC/DAC/SA in CIM](../04-circuit-and-macro/adc-dac-sa-in-cim.md), [RAM: Wordline Bitline Sense Amp](../../../RAM/wiki/02-sram-foundations/wordline-bitline-sense-amp.md)
+相关：[SRAM-CIM 基础](./sram-cim-foundation.md), [ADC/DAC/SA in CIM](../04-circuit-and-macro/adc-dac-sa-in-cim.md), [RAM: Wordline Bitline Sense Amp](../../../series/storage/RAM/wiki/02-sram-foundations/wordline-bitline-sense-amp.md)
 
 ## 这页在回答什么问题
 

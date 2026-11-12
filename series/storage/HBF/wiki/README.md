@@ -28,7 +28,7 @@ High Bandwidth Flash（HBF，高带宽闪存）尝试把 NAND 的容量与封装
 
 - [RAM：存储层级作为系统](../../RAM/wiki/07-system-architecture/memory-hierarchy-as-system.md)：理解容量、带宽和访问距离的系统权衡。
 - [RAM：HBM 封装与 TSV](../../RAM/wiki/08-packaging-integration/hbm-2.5d-3d-tsv.md)：区分存储介质与堆叠封装。
-- [NoC：互连与存储系统](../../series/interconnect/NOC/wiki/05-system-integration/noc-meets-memory-system.md)：理解路径共享、流控和资源竞争。
-- [FAB：封装信号完整性](../../FAB/wiki/06-cross-cutting-engineering/signal-integrity-in-package.md)：理解近距互连仍需面对的物理约束。
+- [NoC：互连与存储系统](../../../interconnect/NOC/wiki/05-system-integration/noc-meets-memory-system.md)：理解路径共享、流控和资源竞争。
+- [FAB：封装信号完整性](../../../../FAB/wiki/06-cross-cutting-engineering/signal-integrity-in-package.md)：理解近距互连仍需面对的物理约束。
 
 外部资料的版本、适用范围和待验证问题集中列在[术语、资料与自测](./09-reference.md)。

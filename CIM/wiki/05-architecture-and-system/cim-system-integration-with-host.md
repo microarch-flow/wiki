@@ -27,7 +27,7 @@ Mixed-signal CIM 需要 host 或 runtime 处理更多 metadata：scale、zero-po
 
 MMIO 适合配置寄存器、doorbell 和状态查询；DMA 负责 activation、weight、output 和 calibration data 的搬运；interrupt/completion 负责同步。BUS wiki 的 [doorbell completion interrupt flow](../../../series/interconnect/BUS/wiki/04-microarchitecture-integration/doorbell-completion-interrupt-flow.md) 和 [IOMMU/SMMU DMA addressing](../../../series/interconnect/BUS/wiki/04-microarchitecture-integration/iommu-smmu-dma-addressing.md) 是这类集成的直接背景。
 
-SoC 内 CIM 还要经过片上 NoC 和 memory hierarchy，可对照 NoC wiki 的 [tile architecture](../../../series/interconnect/NOC/wiki/06-ai-noc-specifics/tile-architecture-and-noc.md) 与 RAM wiki 的 [NPU memory hierarchy](../../../RAM/wiki/09-ai-chip-memory-architecture/npu-memory-hierarchy.md)；PCIe card 要经过 host memory、IOMMU、DMA engine 和 driver；PIM/NMC 要通过 memory controller 或 vendor runtime 暴露能力。
+SoC 内 CIM 还要经过片上 NoC 和 memory hierarchy，可对照 NoC wiki 的 [tile architecture](../../../series/interconnect/NOC/wiki/06-ai-noc-specifics/tile-architecture-and-noc.md) 与 RAM wiki 的 [NPU memory hierarchy](../../../series/storage/RAM/wiki/09-ai-chip-memory-architecture/npu-memory-hierarchy.md)；PCIe card 要经过 host memory、IOMMU、DMA engine 和 driver；PIM/NMC 要通过 memory controller 或 vendor runtime 暴露能力。
 
 ## 一句话理解
 

@@ -1,7 +1,7 @@
 # Dataflow 在 CIM 上的映射：Weight Stationary 的天然契合与边界
 
 上级：[05 Architecture And System](./README.md)
-相关：[Data Encoding Strategies](../04-circuit-and-macro/data-encoding-strategies.md), [RAM: Data Movement First Principle](../../../RAM/wiki/09-ai-chip-memory-architecture/data-movement-first-principle.md), [NoC: Broadcast Multicast Tree](../../../series/interconnect/NOC/wiki/06-ai-noc-specifics/broadcast-multicast-tree.md)
+相关：[Data Encoding Strategies](../04-circuit-and-macro/data-encoding-strategies.md), [RAM: Data Movement First Principle](../../../series/storage/RAM/wiki/09-ai-chip-memory-architecture/data-movement-first-principle.md), [NoC: Broadcast Multicast Tree](../../../series/interconnect/NOC/wiki/06-ai-noc-specifics/broadcast-multicast-tree.md)
 
 ## 这页在回答什么问题
 

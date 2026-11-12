@@ -1,7 +1,7 @@
 # CNN：CIM 的标准应用场景及其上限
 
 上级：[07 Workloads](./README.md)
-相关：[Dataflow Mapping](../05-architecture-and-system/dataflow-mapping-on-cim.md), [Weight Mapping](../06-software-stack/weight-mapping-to-arrays.md), [NoC: Workload GEMM](../../../series/interconnect/NOC/wiki/06-ai-noc-specifics/workload-gemm-on-noc.md), [RAM: NPU Memory Hierarchy](../../../RAM/wiki/09-ai-chip-memory-architecture/npu-memory-hierarchy.md), [BUS: DMA Path](../../../series/interconnect/BUS/wiki/04-microarchitecture-integration/dma-descriptor-fetch-data-move-writeback.md)
+相关：[Dataflow Mapping](../05-architecture-and-system/dataflow-mapping-on-cim.md), [Weight Mapping](../06-software-stack/weight-mapping-to-arrays.md), [NoC: Workload GEMM](../../../series/interconnect/NOC/wiki/06-ai-noc-specifics/workload-gemm-on-noc.md), [RAM: NPU Memory Hierarchy](../../../series/storage/RAM/wiki/09-ai-chip-memory-architecture/npu-memory-hierarchy.md), [BUS: DMA Path](../../../series/interconnect/BUS/wiki/04-microarchitecture-integration/dma-descriptor-fetch-data-move-writeback.md)
 
 ## 这页在回答什么问题
 

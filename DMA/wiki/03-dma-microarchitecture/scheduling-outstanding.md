@@ -54,7 +54,7 @@ DMA 调度不是“先来先服务”这么简单。只要系统有多任务、�
 - writeback/completion 路径与 bulk data 共用瓶颈端口
 - 优先级策略让关键小流量长期被 bulk 流压住
 
-这些现象和 [RAM wiki 的 row locality / controller policy](../../../RAM/wiki/06-memory-controller/command-scheduling-fr-fcfs.md) 会形成直接耦合。DMA 看到的是“为什么回得慢”，DRAM controller 看到的是“为什么这些请求被这样排”。
+这些现象和 [RAM wiki 的 row locality / controller policy](../../../series/storage/RAM/wiki/06-memory-controller/command-scheduling-fr-fcfs.md) 会形成直接耦合。DMA 看到的是“为什么回得慢”，DRAM controller 看到的是“为什么这些请求被这样排”。
 
 ## 常见误解
 

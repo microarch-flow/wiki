@@ -17,7 +17,7 @@
 
 AI/HPC 的算力增长需要外存带宽同步增长。继续依赖较远的板级内存连接，会面对 I/O 数量、单 pin 速率、功耗、SI/PI 和板级面积压力。HBM 用超宽近距接口解决带宽密度和每 bit 能耗问题，但它要求 memory stack 靠近 logic die，并使用比传统 substrate 更高密度的封装互连。
 
-这就是 HBM 把先进封装变成必答题的原因。RAM wiki 的 [HBM 协议](../../../RAM/wiki/05-dram-protocol-families/hbm-stacked-wide-io.md) 解释了它为什么用宽接口而不是单纯拉高频率；本 wiki 后续会解释这个宽接口如何落到 2.5D/3D package。
+这就是 HBM 把先进封装变成必答题的原因。RAM wiki 的 [HBM 协议](../../../series/storage/RAM/wiki/05-dram-protocol-families/hbm-stacked-wide-io.md) 解释了它为什么用宽接口而不是单纯拉高频率；本 wiki 后续会解释这个宽接口如何落到 2.5D/3D package。
 
 ## 大 die 的经济性逼出 chiplet
 

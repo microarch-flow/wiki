@@ -1,7 +1,7 @@
 # 权重到 Array 的映射：Tiling、Duplication、Folding
 
 上级：[06 Software Stack](./README.md)
-相关：[Dataflow Mapping](../05-architecture-and-system/dataflow-mapping-on-cim.md), [Memory Hierarchy with CIM](../05-architecture-and-system/memory-hierarchy-with-cim.md), [RAM: SRAM Array](../../../RAM/wiki/02-sram-foundations/sram-array-organization.md), [NoC: Reduction Networks](../../../series/interconnect/NOC/wiki/06-ai-noc-specifics/reduction-and-collective-networks.md)
+相关：[Dataflow Mapping](../05-architecture-and-system/dataflow-mapping-on-cim.md), [Memory Hierarchy with CIM](../05-architecture-and-system/memory-hierarchy-with-cim.md), [RAM: SRAM Array](../../../series/storage/RAM/wiki/02-sram-foundations/sram-array-organization.md), [NoC: Reduction Networks](../../../series/interconnect/NOC/wiki/06-ai-noc-specifics/reduction-and-collective-networks.md)
 
 ## 这页在回答什么问题
 

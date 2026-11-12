@@ -1,7 +1,7 @@
 # DRAM-PIM 深入：HBM-PIM、AiM/AiMX、Bank-Level vs Channel-Level
 
 上级：[02 Memory Technologies](./README.md)
-相关：[DRAM-PIM 基础](./dram-pim-foundation.md), [Samsung HBM-PIM](../08-industry-and-products/company-cards/pim-companies-samsung-hbm-pim.md), [SK hynix AiM/AiMX](../08-industry-and-products/company-cards/pim-companies-sk-hynix-aim.md), [RAM: DRAM Commands](../../../RAM/wiki/05-dram-protocol-families/commands-act-rd-wr-pre.md)
+相关：[DRAM-PIM 基础](./dram-pim-foundation.md), [Samsung HBM-PIM](../08-industry-and-products/company-cards/pim-companies-samsung-hbm-pim.md), [SK hynix AiM/AiMX](../08-industry-and-products/company-cards/pim-companies-sk-hynix-aim.md), [RAM: DRAM Commands](../../../series/storage/RAM/wiki/05-dram-protocol-families/commands-act-rd-wr-pre.md)
 
 ## 这页在回答什么问题
 
@@ -49,7 +49,7 @@ DRAM-PIM 至少需要记录：
 | energy per byte moved | 判断减少搬运是否转成系统收益 |
 | bandwidth utilization | 判断 PIM 是否改善 memory-bound 路径 |
 | supported operation set | 判断能跑 kernel 还是只能做演示操作 |
-| command/controller changes | 判断生态改造成本；参考 RAM wiki 的 [DRAM command path](../../../RAM/wiki/05-dram-protocol-families/commands-act-rd-wr-pre.md) |
+| command/controller changes | 判断生态改造成本；参考 RAM wiki 的 [DRAM command path](../../../series/storage/RAM/wiki/05-dram-protocol-families/commands-act-rd-wr-pre.md) |
 | result return frequency | 判断 host synchronization 是否吞掉收益 |
 
 ## 一句话理解

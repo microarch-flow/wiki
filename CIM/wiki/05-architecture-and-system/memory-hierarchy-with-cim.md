@@ -1,7 +1,7 @@
 # CIM 系统的存储层次：On-Array、Buffer、Main Memory 的分工
 
 上级：[05 Architecture And System](./README.md)
-相关：[RAM: NPU Memory Hierarchy](../../../RAM/wiki/09-ai-chip-memory-architecture/npu-memory-hierarchy.md), [RAM: Scratchpad vs Cache](../../../RAM/wiki/03-sram-applications/scratchpad-vs-cache.md), [RAM: DRAM Commands](../../../RAM/wiki/05-dram-protocol-families/commands-act-rd-wr-pre.md)
+相关：[RAM: NPU Memory Hierarchy](../../../series/storage/RAM/wiki/09-ai-chip-memory-architecture/npu-memory-hierarchy.md), [RAM: Scratchpad vs Cache](../../../series/storage/RAM/wiki/03-sram-applications/scratchpad-vs-cache.md), [RAM: DRAM Commands](../../../series/storage/RAM/wiki/05-dram-protocol-families/commands-act-rd-wr-pre.md)
 
 ## 这页在回答什么问题
 
@@ -18,7 +18,7 @@ CIM 把一部分计算放进 memory array，是否就简化了 memory hierarchy�
 | HBM/DRAM | 大模型权重和 KV/cache | 带宽、latency、energy per byte |
 | host memory | runtime 管理和 fallback | 同步和接口成本 |
 
-CIM 的关键不是消灭上层 memory，而是减少某些高复用数据在层级间反复移动。RAM wiki 的 [data movement first principle](../../../RAM/wiki/09-ai-chip-memory-architecture/data-movement-first-principle.md) 仍然适用；tile 级 SRAM 更接近 [scratchpad/cache](../../../RAM/wiki/03-sram-applications/scratchpad-vs-cache.md) 的系统分工，而不是 CIM 定义本身。
+CIM 的关键不是消灭上层 memory，而是减少某些高复用数据在层级间反复移动。RAM wiki 的 [data movement first principle](../../../series/storage/RAM/wiki/09-ai-chip-memory-architecture/data-movement-first-principle.md) 仍然适用；tile 级 SRAM 更接近 [scratchpad/cache](../../../series/storage/RAM/wiki/03-sram-applications/scratchpad-vs-cache.md) 的系统分工，而不是 CIM 定义本身。
 
 ## 三条 Paradigm 的层次差异
 
@@ -30,7 +30,7 @@ Mixed-signal CIM 需要额外存储 scale、calibration、noise model 或 correc
 
 ## DRAM/HBM/GDDR-PIM 与 NMC 的区别
 
-PIM 把 compute 放进 memory die/bank 内独立单元，目标是减少 processor-memory 往返；它不是 on-array CIM hierarchy。PIM 的 hierarchy 要建模 bank/channel 粒度、command queue、result return 和 host-visible offload，背景可见 RAM wiki 的 [bank organization](../../../RAM/wiki/04-dram-foundations/bank-organization-parallelism.md)、[HBM stacked wide-IO](../../../RAM/wiki/05-dram-protocol-families/hbm-stacked-wide-io.md) 与 [DRAM command timing](../../../RAM/wiki/05-dram-protocol-families/commands-act-rd-wr-pre.md)。
+PIM 把 compute 放进 memory die/bank 内独立单元，目标是减少 processor-memory 往返；它不是 on-array CIM hierarchy。PIM 的 hierarchy 要建模 bank/channel 粒度、command queue、result return 和 host-visible offload，背景可见 RAM wiki 的 [bank organization](../../../series/storage/RAM/wiki/04-dram-foundations/bank-organization-parallelism.md)、[HBM stacked wide-IO](../../../series/storage/RAM/wiki/05-dram-protocol-families/hbm-stacked-wide-io.md) 与 [DRAM command timing](../../../series/storage/RAM/wiki/05-dram-protocol-families/commands-act-rd-wr-pre.md)。
 
 若 compute 放在 HBM base die、interposer 或 package-side logic，它属于 NMC。NMC hierarchy 要建模 die-to-die/package bandwidth、HBM stack proximity、coherency/interface 和 host offload latency，而不是 DRAM bank 内 command execution。
 

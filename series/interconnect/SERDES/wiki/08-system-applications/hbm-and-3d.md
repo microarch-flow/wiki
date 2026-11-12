@@ -18,7 +18,7 @@ HBM 是堆叠式 DRAM 与宽接口的系统。分析它时，应区分 **HBM 堆
 
 `2 Gb/s` 是本例自设条件，不是对该器件全部工作模式的声明；`GB` 按十进制计算。命令、读写切换、刷新、bank 冲突与控制器调度都可能使实际有效带宽更低。不能把单方向峰值同时计作读和写各自达到峰值。
 
-TSV 的数量、微凸点或混合键合方式，也不能单独推出协议、带宽或良率。堆栈结构可继续读 [HBM 封装架构](../../../../../FAB/wiki/04-back-end-packaging/hbm-as-case-study/ai-gpu-hbm-package-architecture.md)和 [HBM 存储协议](../../../../../RAM/wiki/05-dram-protocol-families/hbm-stacked-wide-io.md)。
+TSV 的数量、微凸点或混合键合方式，也不能单独推出协议、带宽或良率。堆栈结构可继续读 [HBM 封装架构](../../../../../FAB/wiki/04-back-end-packaging/hbm-as-case-study/ai-gpu-hbm-package-architecture.md)和 [HBM 存储协议](../../../../storage/RAM/wiki/05-dram-protocol-families/hbm-stacked-wide-io.md)。
 
 ## 接下来怎么读
 

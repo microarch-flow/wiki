@@ -2,7 +2,7 @@
 
 上级：[06 AI NOC Specifics](./README.md)
 
-相关：[Topology Physical Realization](../03-topology/topology-physical-realization.md)、[RAM: hbm 2.5d 3d tsv](../../../../../RAM/wiki/08-packaging-integration/hbm-2.5d-3d-tsv.md)
+相关：[Topology Physical Realization](../03-topology/topology-physical-realization.md)、[RAM: hbm 2.5d 3d tsv](../../../../storage/RAM/wiki/08-packaging-integration/hbm-2.5d-3d-tsv.md)
 
 ## 这页在回答什么问题
 

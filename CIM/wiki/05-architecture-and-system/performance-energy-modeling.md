@@ -1,7 +1,7 @@
 # 性能与能效建模：从 Macro 到 System 的指标推导
 
 上级：[05 Architecture And System](./README.md)
-相关：[Metrics Glossary](../09-research-frontier/metrics-glossary.md), [RAM: Memory Bound vs Compute Bound](../../../RAM/wiki/09-ai-chip-memory-architecture/memory-bound-vs-compute-bound.md), [NoC: Architecture Exploration Loop](../../../series/interconnect/NOC/wiki/07-evaluation-methodology/architecture-exploration-loop.md)
+相关：[Metrics Glossary](../09-research-frontier/metrics-glossary.md), [RAM: Memory Bound vs Compute Bound](../../../series/storage/RAM/wiki/09-ai-chip-memory-architecture/memory-bound-vs-compute-bound.md), [NoC: Architecture Exploration Loop](../../../series/interconnect/NOC/wiki/07-evaluation-methodology/architecture-exploration-loop.md)
 
 ## 这页在回答什么问题
 

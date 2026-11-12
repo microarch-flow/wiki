@@ -27,7 +27,7 @@ Mixed-signal CIM 常把输入或权重的一侧离散化，另一侧保留 analo
 
 ## 编码和 Memory Technology 的错配
 
-ReRAM/Flash 如果只按纯 binary digital 方式使用，会放弃 multi-level state 和 current summation 的核心优势。SRAM 如果追求高精度 analog multi-level weight，则需要多 cell、多周期或高精度外围，容易失去 CMOS 工程优势。DRAM/HBM/GDDR-PIM 的数据格式由 PIM instruction、bank/channel 粒度和 memory command 决定，不属于本页 CIM macro 编码主线；相关背景可连接 RAM wiki 的 [HBM stacked wide-IO](../../../RAM/wiki/05-dram-protocol-families/hbm-stacked-wide-io.md) 和 [DRAM row/column/sense path](../../../RAM/wiki/04-dram-foundations/row-column-decode-sense-amplify.md)。若这些格式通过 host-visible command 或 memory-mapped interface 暴露，还需要按 BUS wiki 的 [interconnect components](../../../series/interconnect/BUS/wiki/04-microarchitecture-integration/interconnect-components.md) 评估接口成本。
+ReRAM/Flash 如果只按纯 binary digital 方式使用，会放弃 multi-level state 和 current summation 的核心优势。SRAM 如果追求高精度 analog multi-level weight，则需要多 cell、多周期或高精度外围，容易失去 CMOS 工程优势。DRAM/HBM/GDDR-PIM 的数据格式由 PIM instruction、bank/channel 粒度和 memory command 决定，不属于本页 CIM macro 编码主线；相关背景可连接 RAM wiki 的 [HBM stacked wide-IO](../../../series/storage/RAM/wiki/05-dram-protocol-families/hbm-stacked-wide-io.md) 和 [DRAM row/column/sense path](../../../series/storage/RAM/wiki/04-dram-foundations/row-column-decode-sense-amplify.md)。若这些格式通过 host-visible command 或 memory-mapped interface 暴露，还需要按 BUS wiki 的 [interconnect components](../../../series/interconnect/BUS/wiki/04-microarchitecture-integration/interconnect-components.md) 评估接口成本。
 
 PCM 可以表达多级 resistance，但 drift、write-verify 和温度敏感性会让编码状态随时间变差。MRAM 更接近 binary reliable storage；若 read/sense path 参与比较或局部归约，可以做 digital-like CIM，但不适合作为 ReRAM 式 multi-level analog 编码主线。
 

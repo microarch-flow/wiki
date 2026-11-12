@@ -1,7 +1,7 @@
 # LLM Decode 阶段：Memory-Bound 工作负载与 CIM 的契合度
 
 上级：[07 Workloads](./README.md)
-相关：[Transformer on CIM](./transformer-on-cim.md), [RAM: HBM vs LPDDR for NPU](../../../RAM/wiki/09-ai-chip-memory-architecture/hbm-vs-lpddr-for-npu.md), [NoC: Decode KV Cache](../../../series/interconnect/NOC/wiki/06-ai-noc-specifics/workload-attention-decode-kv-cache.md), [BUS: DMA Completion](../../../series/interconnect/BUS/wiki/06-scenarios-case-studies/dma-completion-missing-case-card.md)
+相关：[Transformer on CIM](./transformer-on-cim.md), [RAM: HBM vs LPDDR for NPU](../../../series/storage/RAM/wiki/09-ai-chip-memory-architecture/hbm-vs-lpddr-for-npu.md), [NoC: Decode KV Cache](../../../series/interconnect/NOC/wiki/06-ai-noc-specifics/workload-attention-decode-kv-cache.md), [BUS: DMA Completion](../../../series/interconnect/BUS/wiki/06-scenarios-case-studies/dma-completion-missing-case-card.md)
 
 ## 这页在回答什么问题
 
