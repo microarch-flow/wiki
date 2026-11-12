@@ -14,7 +14,7 @@ _WEBSITE = str(Path(__file__).resolve().parent)
 if _WEBSITE not in sys.path:
     sys.path.insert(0, _WEBSITE)
 from sources import load_series, series_landing  # noqa: E402
-from ownership import GROUPS, MICRO, STORAGE, INTERCONNECT, WORKLOAD_GROUPS, owner, workload_owner  # noqa: E402
+from ownership import GROUPS, MICRO, STORAGE, INTERCONNECT, DEVELOPMENT, WORKLOAD_GROUPS, owner, workload_owner, development_owner  # noqa: E402
 
 
 TOPICS = (
@@ -226,6 +226,20 @@ def workload_tree(root, directory):
     return result
 
 
+def development_tree(root, directory):
+    landing = series_landing(directory)
+    result = [landing.relative_to(root).as_posix()]
+    for group in GROUPS[DEVELOPMENT]:
+        include = lambda path, g=group: path != landing and development_owner(path.relative_to(directory).as_posix()) == g
+        entries = make_tree(directory, root, ("README.md", "index.md"), include)
+        fab = owned_topic_tree(root, "FAB", DEVELOPMENT, group)
+        if fab:
+            entries.append({"FAB · 制造与封装": fab})
+        if entries:
+            result.append({group: entries})
+    return result
+
+
 def breadcrumb_ancestors(page):
     """Find ancestor sections and their landing pages, when available."""
     ancestors = []
@@ -340,7 +354,12 @@ def on_config(config, **kwargs):
             config.nav.append({entry["title"]: make_tree(directory, root, ("README.md", "index.md"))})
         elif entry["local"]:
             directory = root / entry["local"]["publish"]
-            tree = workload_tree(root, directory) if entry["local"]["publish"] == "external/workload-wiki" else make_tree(directory, root, ("README.md", "index.md"))
+            if entry["local"]["publish"] == "external/workload-wiki":
+                tree = workload_tree(root, directory)
+            elif entry["local"]["publish"] == "series/chip-development":
+                tree = development_tree(root, directory)
+            else:
+                tree = make_tree(directory, root, ("README.md", "index.md"))
             config.nav.append({entry["title"]: tree})
     validate_unique_navigation(config.nav)
     return config

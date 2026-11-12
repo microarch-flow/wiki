@@ -22,6 +22,14 @@
       "title": "芯片与系统互连",
       "description": "从片上事务和网络，到 PCIe、SerDes 与光互连。",
       "page": "interconnect.md"
+    },
+    {
+      "title": "芯片开发与实现",
+      "description": "从产品定义、设计验证到晶圆、封装、测试和量产。",
+      "local": {
+        "directory": "series/chip-development",
+        "publish": "series/chip-development"
+      }
     }
   ]
 }

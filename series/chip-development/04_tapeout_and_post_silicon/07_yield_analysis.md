@@ -1,5 +1,7 @@
 # Yield Analysis
 
+良率与缺陷密度的机制见 [FAB 晶圆测试章节](../../../FAB/wiki/03-wafer-test-and-cp/yield-and-defect-density.md)；跨阶段成本见 [良率经济性](../../../FAB/wiki/06-cross-cutting-engineering/yield-economics-across-stages.md)。
+
 ## 前置知识
 
 - 建议先读 [Characterization](./06_characterization.md)。

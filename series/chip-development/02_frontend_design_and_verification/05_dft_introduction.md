@@ -1,5 +1,7 @@
 # DFT 引入
 
+制造后的测试阶段可继续阅读 [晶圆筛测与 KGD](../../../FAB/wiki/03-wafer-test-and-cp/README.md) 和 [成品终测方法](../../../FAB/wiki/05-final-test-and-reliability/final-test-methodology.md)。
+
 ## 前置知识
 
 - 建议先读 [综合准备](./04_synthesis_preparation.md)。

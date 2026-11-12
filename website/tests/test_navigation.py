@@ -38,6 +38,11 @@ class GeneratedNavigationTests(unittest.TestCase):
             "SERDES/wiki/06-link-operation/pcie-training-case/index.html": ("芯片与系统互连", "高速电链路（SerDes）"),
             "DMA/wiki/04-programming-model/tiling-double-buffering/index.html": ("微架构", "DMA 与异步数据搬运"),
             "external/workload-wiki/01-foundation-model-components/contrastive-learning/index.html": ("算法与模型（Workload Wiki）", "表示学习与训练目标"),
+            "series/chip-development/02_frontend_design_and_verification/05_dft_introduction/index.html": ("芯片开发与实现", "可测性设计、晶圆筛测与终测"),
+            "FAB/wiki/03-wafer-test-and-cp/index.html": ("芯片开发与实现", "可测性设计、晶圆筛测与终测"),
+            "series/chip-development/04_tapeout_and_post_silicon/03_packaging/index.html": ("芯片开发与实现", "封装与多芯粒集成"),
+            "FAB/wiki/04-back-end-packaging/index.html": ("芯片开发与实现", "封装与多芯粒集成"),
+            "FAB/wiki/06-cross-cutting-engineering/yield-economics-across-stages/index.html": ("芯片开发与实现", "可靠性、良率与量产生命周期"),
         }
         for path, (series, topic) in cases.items():
             with self.subTest(path=path):

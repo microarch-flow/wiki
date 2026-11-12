@@ -1,5 +1,7 @@
 # Packaging
 
+封装活动的物理机制可继续阅读 [FAB 封装与集成](../../../FAB/wiki/04-back-end-packaging/README.md)。
+
 ## 前置知识
 
 - 建议先读 [Mask Making and Wafer Fab](./02_mask_making_and_wafer_fab.md)。
