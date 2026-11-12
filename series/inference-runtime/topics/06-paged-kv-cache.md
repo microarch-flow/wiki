@@ -1,6 +1,7 @@
 # 06 KV cache 管理:PagedAttention / Paged KV Cache
 
 > 状态:草稿
+> 注意：共享前缀的读取流量结论待核实，实际读流量取决于内核和缓存的复用方式。
 >
 > 一句话定位:把 OS 虚存分页搬到 KV 上——逻辑连续、物理分页、中间隔一层 block table 做地址翻译。它把 [`03`](03-naive-bottlenecks.md) 的 $\eta_\text{mem}$ 从 ~0.18 推到 ~0.99,既是 [`04`](04-dynamic-shape-batching.md) continuous batching「随时插入新请求」的物理前提,也是 [`07`](07-radix-prefix-reuse.md) 前缀复用的底座。
 
