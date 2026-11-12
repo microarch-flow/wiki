@@ -2,6 +2,8 @@
 
 > 本文以 GC200 为主要硬件例子，也提及上一代产品。原稿中的架构推测和商业分析不等于官方实现说明或独立验收结论。
 
+> 官方在线指南若暂时无法访问，可查[原仓固定提交保存的指南 PDF](https://github.com/microarch-flow/chip-architecture-wiki/blob/3086204c049a762eb59033f8141fba9e91f4c669/Graphcore_IPU/raw/docs-graphcore-ai-ipu-programmers-guide-en-latest.pdf)。下文图示的具体出处见[逐图台账](https://github.com/microarch-flow/wiki/blob/main/docs/migration/chip-image-provenance.md)。
+
 ## 芯片架构图
 
 > **图示说明：**IPU 由大量 tile 组成；tile 内包含处理器与本地存储，tile 通过 exchange fabric 通信。 [查看公开资料](https://docs.graphcore.ai/projects/ipu-programmers-guide/en/latest/about_ipu.html)。
@@ -43,7 +45,9 @@ tile = 多线程处理器 + 本地 SRAM + code memory + exchange 接口；整芯
 - AMP：每 tile 每周期 64 MAC，f16×f16、f32 累加；聚合峰值 250 TFLOP/s
 - 训练支持：每 tile 每 cycle 128 random bits、全速 stochastic rounding；支持 sparse gather load/store
 ## fabric
-一种 compiler-scheduled 的 NoC：无 router、无 queue/arbiter/packet overhead，寻址靠“时间 + select state”而非 header。
+Exchange fabric 提供 tile 间通信。BSP 程序显式安排计算、同步和交换阶段。仅凭这一编程模型，不能断定交换硬件没有 router、队列、仲裁或协议开销；具体实现需要结合所选器件的资料核实。
+
+以下两项参数来自原稿，尚需按器件代际及测量口径独立核对：
 - Exchange spine 1600×36b；每 tile 一条 36b send channel + 一个 1600-way receive mux，32b/cycle 收发
 - 编译器从 sync 起按 cycle 精确编排 transmit/receive/select；片上同步约 150 cycles，跨芯片约 15 ns/hop
 

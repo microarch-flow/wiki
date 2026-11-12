@@ -42,6 +42,7 @@
 ## 特别核对
 
 - Meta 的 `model_trends.png` 与 `perfw_vs_gpu.png` 分别对应 **第一代 MTIA 的 ISCA 2023 论文图 1 和图 12**。原稿末尾把它们与两张 MTIA 2i 的 ISCA 2025 架构图合并归入后者；本站已分代标注。第一张图包含预测趋势。
+- MTIA 第一代 DOI 页面在本次检查中返回 403；也可参阅[原仓固定提交保存的论文 PDF](https://github.com/microarch-flow/chip-architecture-wiki/blob/3086204c049a762eb59033f8141fba9e91f4c669/Meta_MTIA/raw/MTIA_v1.pdf)。该 PDF 不加入本站构建。
 - Cerebras 图覆盖 WSE-2／CS-2 和 WSE-3／CS-3。SambaNova 的 `spatial_vs_kernel.png` 是 SN10，其余所列图来自 SN40L。不要把不同代次的图作为同一芯片的实现细节。
 - Graphcore 五张图也可在[原仓固定提交保存的 IPU Programmer’s Guide PDF](https://github.com/microarch-flow/chip-architecture-wiki/blob/3086204c049a762eb59033f8141fba9e91f4c669/Graphcore_IPU/raw/docs-graphcore-ai-ipu-programmers-guide-en-latest.pdf)中核对。此链接指向原仓，不将 PDF 加入本站构建。
 - AWS `Architecture.png` 在原稿中标为自行推导，不能据此证明其著作权和再发布许可；跨核路径仍属推断。

@@ -111,4 +111,4 @@ MTIA 2i 的设计点建立在**推荐模型的 locality**上(模型相对小,wor
 - 和 **Graphcore/Cerebras/SambaNova** 相反:三家把架构新颖度当卖点去赢外部客户,普遍撞上软件生态 + workload 演化 + 商业兑现的墙;MTIA/AWS 用"自有海量需求"绕开了初创最缺的出货量与真实负载
 
 ---
-**来源与范围：**[MTIA 1 论文（ISCA 2023）](https://doi.org/10.1145/3579371.3589348)的图 1 和图 12 对应原稿的模型趋势与 TBE 对比；[MTIA 2i 论文（ISCA 2025）](https://aisystemcodesign.github.io/papers/MTIA-ISCA25.pdf)的图 1、图 2 和表 2 对应第二代架构和代际参数。产品名称还可参见 [Meta 产品路线说明](https://ai.meta.com/blog/meta-mtia-scale-ai-chips-for-billions)。
+**来源与范围：**[MTIA 1 论文（ISCA 2023）](https://doi.org/10.1145/3579371.3589348)的图 1 和图 12 对应原稿的模型趋势与 TBE 对比；若 DOI 页面不可访问，可参阅[原仓固定提交保存的论文 PDF](https://github.com/microarch-flow/chip-architecture-wiki/blob/3086204c049a762eb59033f8141fba9e91f4c669/Meta_MTIA/raw/MTIA_v1.pdf)。[MTIA 2i 论文（ISCA 2025）](https://aisystemcodesign.github.io/papers/MTIA-ISCA25.pdf)的图 1、图 2 和表 2 对应第二代架构和代际参数。产品名称还可参见 [Meta 产品路线说明](https://ai.meta.com/blog/meta-mtia-scale-ai-chips-for-billions)。
