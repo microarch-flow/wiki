@@ -46,6 +46,8 @@ def stage_site(root=ROOT, build_root=None, registry=None, source_root=None):
         shutil.copy2(root / "website" / "home.md", docs / "README.md")
         shutil.copy2(root / "website" / "series.md", docs / "series.md")
         shutil.copy2(root / "website" / "microarchitecture.md", docs / "microarchitecture.md")
+        shutil.copy2(root / "website" / "storage.md", docs / "storage.md")
+        shutil.copy2(root / "website" / "interconnect.md", docs / "interconnect.md")
         shutil.copy2(root / "website" / "articles.md", docs / "articles.md")
         shutil.copy2(root / "website" / "visuals.md", docs / "visuals.md")
         shutil.copytree(root / "website" / "assets", docs / "assets")

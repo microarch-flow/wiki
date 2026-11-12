@@ -29,7 +29,7 @@ hide:
   <section class="explore-section" id="topics">
     <div class="section-heading">
       <div><span class="section-number">EXPLORE THE TOPICS / 02</span><h2>选择一个专题</h2></div>
-      <p>十一个相互连接的视角，<br>从基础概念到系统问题。</p>
+      <p>从计算与搬运出发，<br>也可以沿链接阅读存储、互连与制造系列。</p>
     </div>
     <div class="topic-grid">
       <a class="topic-card" href="../RAM/wiki/"><span class="topic-number">01 / STORAGE</span><span class="topic-symbol">▦</span><h3>RAM <small>存储系统</small></h3><p>从 SRAM、DRAM 单元到存储层级和控制器。</p><span class="card-link">进入专题 ↗</span></a>

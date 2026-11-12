@@ -12,6 +12,16 @@
         "directory": "series/workload",
         "publish": "external/workload-wiki"
       }
+    },
+    {
+      "title": "存储系统",
+      "description": "从 SRAM、DRAM 与闪存，到控制器、缓存和数据放置。",
+      "page": "storage.md"
+    },
+    {
+      "title": "芯片与系统互连",
+      "description": "从片上事务和网络，到 PCIe、SerDes 与光互连。",
+      "page": "interconnect.md"
     }
   ]
 }

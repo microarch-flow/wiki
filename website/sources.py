@@ -114,7 +114,7 @@ def copy_source(source, destination, public_only=False):
                 continue
             path = Path(root) / name
             relative = path.relative_to(source)
-            if public_only and (name.startswith(".") or name in {"AGENTS.md", "SKILL.md"} or
+            if public_only and (name.startswith(".") or name.lower() in {"agents.md", "skill.md", "task.md", "wiki-plan.md"} or
                                 path.suffix.lower() not in {".md", ".svg", ".png", ".jpg", ".jpeg", ".gif", ".webp"}):
                 continue
             if path.suffix in {".markdown", ".mdown", ".mkdn", ".mkd"} or (path.suffix.lower() == ".md" and path.suffix != ".md"):

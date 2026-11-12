@@ -18,7 +18,7 @@ from hooks import make_tree  # noqa: E402
 
 LANDING_PAGES = {
     "index.html", "series/index.html", "microarchitecture/index.html",
-    "articles/index.html", "visuals/index.html",
+    "storage/index.html", "interconnect/index.html", "articles/index.html", "visuals/index.html",
 }
 ACTIVE_LINK = re.compile(r'<a\s+href="([^"]+)"\s+class="[^"]*\bmd-nav__link--active\b[^"]*"[^>]*>')
 BREADCRUMB = re.compile(r'<nav class="site-breadcrumbs"[^>]*>(.*?)</nav>', re.DOTALL)
@@ -30,6 +30,23 @@ def page_url(relative):
 
 
 class GeneratedNavigationTests(unittest.TestCase):
+    def test_primary_series_and_topic_for_moved_articles(self):
+        cases = {
+            "RAM/wiki/05-dram-protocol-families/hbm-stacked-wide-io/index.html": ("存储系统", "HBM 堆叠 DRAM 与宽接口"),
+            "RAM/wiki/02-sram-foundations/6t-cell-bistable-storage/index.html": ("存储系统", "SRAM 阵列、端口与宏接口"),
+            "NOC/wiki/02-router-microarchitecture/credit-based-flow-control/index.html": ("芯片与系统互连", "片上网络（NoC）"),
+            "SERDES/wiki/06-link-operation/pcie-training-case/index.html": ("芯片与系统互连", "高速电链路（SerDes）"),
+            "DMA/wiki/04-programming-model/tiling-double-buffering/index.html": ("微架构", "DMA 与异步数据搬运"),
+            "external/workload-wiki/01-foundation-model-components/contrastive-learning/index.html": ("算法与模型（Workload Wiki）", "表示学习与训练目标"),
+        }
+        for path, (series, topic) in cases.items():
+            with self.subTest(path=path):
+                html = (SITE / path).read_text(encoding="utf-8")
+                breadcrumb = BREADCRUMB.search(html)
+                self.assertIsNotNone(breadcrumb)
+                labels = [unescape(x) for x in re.findall(r'<(?:a\s[^>]*|span(?:\s[^>]*)?)>(.*?)</(?:a|span)>', breadcrumb.group(1))]
+                self.assertEqual(labels[1:3], [series, topic])
+
     def test_serdes_chapter_order_and_figures(self):
         counts = {
             "01-overview": 4, "02-signal-channel": 6, "03-transmitter": 5,
@@ -104,7 +121,12 @@ class GeneratedNavigationTests(unittest.TestCase):
                 self.assertIsNotNone(reading_section)
                 reading_items = re.findall(r'<li>\s*<a href="([^"]+)">(.*?)</a>', reading_section.group(1), re.DOTALL)
                 self.assertGreater(len(reading_items), 0)
-                self.assertEqual(clean(nav_items), clean(reading_items))
+                moved = {"hbm-stacked-wide-io/", "hbm-2.5d-3d-tsv/", "why-hbm-is-expensive/", "hbm-vs-lpddr-for-npu/"}
+                expected = [(url, label) for url, label in clean(reading_items) if url not in moved]
+                self.assertEqual(clean(nav_items), expected)
+                for url, _ in clean(reading_items):
+                    if url in moved:
+                        self.assertTrue((chapter.parent / url / "index.html").is_file())
 
         overview = (SITE / "RAM/wiki/01-overview/index.html").read_text(encoding="utf-8")
         self.assertIn('class="ram-calculation"', overview)
@@ -150,26 +172,26 @@ class GeneratedNavigationTests(unittest.TestCase):
     def test_article_paths_and_distinct_parent_links(self):
         cases = {
             "RAM/wiki/01-overview/problem-statement/index.html": [
-                "首页", "微架构", "专题", "RAM · 存储系统", "存储系统概览",
+                "首页", "存储系统", "RAM 基础导读与自测", "RAM · 存储系统", "存储系统概览",
                 "为什么存储系统难设计？从一次读取看跨层约束",
             ],
             "RAM/wiki/02-sram-foundations/6t-cell-bistable-storage/index.html": [
-                "首页", "微架构", "专题", "RAM · 存储系统", "SRAM 基础",
+                "首页", "存储系统", "SRAM 阵列、端口与宏接口", "RAM · 存储系统", "SRAM 基础",
                 "6T SRAM cell：它如何保存、读取和写入 1 bit",
             ],
             "CPO/wiki/08-research/detailed-cards/cpo-status-challenges-solutions/index.html": [
-                "首页", "微架构", "专题", "CPO · 光互连", "08 研究模板与术语",
+                "首页", "芯片与系统互连", "共封装光学（CPO）", "CPO · 光互连", "08 研究模板与术语",
                 "完整论文卡", "完整卡：CPO status, challenges, and solutions",
             ],
             "electrical-timing-foundations/index.html": [
-                "首页", "微架构", "基础", "从电荷到芯片时序：一条可手算的路径",
+                "首页", "微架构", "时钟、流水线与吞吐", "从电荷到芯片时序：一条可手算的路径",
             ],
             "SERDES/wiki/05-signaling-and-metrics/ber-confidence-and-fec/index.html": [
-                "首页", "微架构", "专题", "SerDes · 高速串行链路", "05 信号与指标：怎样读懂链路数据？",
+                "首页", "芯片与系统互连", "高速电链路（SerDes）", "SerDes · 高速串行链路", "05 信号与指标：怎样读懂链路数据？",
                 "BER、置信度与 FEC 怎样关联？",
             ],
             "SERDES/wiki/06-link-operation/pcie-training-case/index.html": [
-                "首页", "微架构", "专题", "SerDes · 高速串行链路", "06 初始化与链路训练：链路怎样建立和维持？",
+                "首页", "芯片与系统互连", "高速电链路（SerDes）", "SerDes · 高速串行链路", "06 初始化与链路训练：链路怎样建立和维持？",
                 "PCIe 链路训练案例：从现象到证据",
             ],
         }
@@ -182,7 +204,7 @@ class GeneratedNavigationTests(unittest.TestCase):
 
         ram = (SITE / "RAM/wiki/02-sram-foundations/index.html").read_text(encoding="utf-8")
         fab = (SITE / "FAB/wiki/07-industry-map/index.html").read_text(encoding="utf-8")
-        self.assertNotIn("<p>上级：", ram)
+        self.assertIn("<p>上级：", ram)
         self.assertIn("<p>上级:", fab)
 
     def test_current_navigation_and_breadcrumb_links(self):

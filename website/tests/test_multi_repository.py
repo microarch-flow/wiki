@@ -39,6 +39,8 @@ def fixture_wiki(root):
         "home.md": "# 首页\n\n<!-- site-series -->\n",
         "series.md": "# 系列\n\n<!-- site-series -->\n",
         "microarchitecture.md": "# 微架构\n",
+        "storage.md": "# 存储系统\n",
+        "interconnect.md": "# 芯片与系统互连\n",
         "articles.md": "# 精选文章\n",
         "visuals.md": "# 互动图解\n",
     }.items():
@@ -80,6 +82,7 @@ class MultiRepositoryTests(unittest.TestCase):
             write(wiki / "series/local/chapter/article.md", "# 本地正文\n\n![图](../img/chart.svg)\n")
             write(wiki / "series/local/img/chart.svg", "<svg xmlns='http://www.w3.org/2000/svg'/>\n")
             write(wiki / "series/local/AGENTS.md", "# 内部维护\n")
+            write(wiki / "series/local/task.md", "# 维护任务\n")
             write(wiki / "series/local/raw/private.md", "# 原始资料\n")
             write(wiki / "series/local/source.pdf", "not for publication\n")
             registry = temporary / "series.json"
@@ -92,7 +95,7 @@ class MultiRepositoryTests(unittest.TestCase):
                 stage_site(root=wiki, build_root=build_root, registry=registry)
             docs = build_root / "docs"
             self.assertTrue((docs / "external/legacy/img/chart.svg").is_file())
-            for name in ("AGENTS.md", "raw/private.md", "source.pdf"):
+            for name in ("AGENTS.md", "task.md", "raw/private.md", "source.pdf"):
                 self.assertFalse((docs / "external/legacy" / name).exists())
 
             site = temporary / "site"

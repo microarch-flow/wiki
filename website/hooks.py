@@ -14,6 +14,7 @@ _WEBSITE = str(Path(__file__).resolve().parent)
 if _WEBSITE not in sys.path:
     sys.path.insert(0, _WEBSITE)
 from sources import load_series, series_landing  # noqa: E402
+from ownership import GROUPS, MICRO, STORAGE, INTERCONNECT, WORKLOAD_GROUPS, owner, workload_owner  # noqa: E402
 
 
 TOPICS = (
@@ -151,16 +152,17 @@ def ram_sidebar_labels(root):
     return labels
 
 
-def make_tree(directory, root, index_names=("README.md",)):
+def make_tree(directory, root, index_names=("README.md",), include=None):
     items = []
+    include = include or (lambda path: True)
     indexes = [directory / name for name in index_names if (directory / name).is_file()]
     if len(indexes) > 1:
         raise ValueError(f"Directory has more than one index page: {directory}")
     index = indexes[0] if indexes else None
-    if index:
+    if index and include(index):
         items.append(index.relative_to(root).as_posix())
     summary = directory / "SUMMARY.md"
-    if summary.is_file():
+    if summary.is_file() and include(summary):
         items.append({"知识地图": summary.relative_to(root).as_posix()})
     priority = {name: number for number, name in enumerate(reading_order(directory, index.name if index else "README.md"))}
     for path in sorted(directory.iterdir(), key=lambda p: (priority.get(p.name, len(priority)), p.name.lower())):
@@ -169,8 +171,10 @@ def make_tree(directory, root, index_names=("README.md",)):
                 continue
             section_index = next((path / name for name in index_names if (path / name).is_file()), None)
             label = title(section_index) if section_index else path.name
-            items.append({label: make_tree(path, root, index_names)})
-        elif path.is_file() and path.suffix.lower() == ".md" and path.name not in {*index_names, "SUMMARY.md"}:
+            children = make_tree(path, root, index_names, include)
+            if children:
+                items.append({label: children})
+        elif path.is_file() and path.suffix.lower() == ".md" and path.name not in {*index_names, "SUMMARY.md"} and include(path):
             items.append(path.relative_to(root).as_posix())
     return items
 
@@ -185,14 +189,52 @@ def topic_tree(root, name):
     return items
 
 
+def owned_topic_tree(root, name, series, group):
+    """Keep each original page in its one designated main topic."""
+    include = lambda path: owner(path.relative_to(root).as_posix()) == (series, group)
+    items = make_tree(root / name / "wiki", root, include=include)
+    for filename, label in (("self-test-questions.md", "自测问题"), ("README.md", "专题仓库说明")):
+        path = root / name / filename
+        if path.is_file() and include(path):
+            items.append({label: path.relative_to(root).as_posix()})
+    return items
+
+
+def grouped_original_topics(root, series):
+    result = []
+    for group in GROUPS[series]:
+        entries = []
+        if (series, group) == owner("electrical-timing-foundations.md"):
+            entries.append("electrical-timing-foundations.md")
+        for name, label in TOPICS:
+            tree = owned_topic_tree(root, name, series, group)
+            if tree:
+                entries.append({label: tree})
+        if entries:
+            result.append({group: entries})
+    return result
+
+
+def workload_tree(root, directory):
+    landing = series_landing(directory)
+    result = [landing.relative_to(root).as_posix()]
+    for group in WORKLOAD_GROUPS:
+        include = lambda path, g=group: path != landing and workload_owner(path.relative_to(directory).as_posix()) == g
+        entries = make_tree(directory, root, ("README.md", "index.md"), include)
+        if entries:
+            result.append({group: entries})
+    return result
+
+
 def breadcrumb_ancestors(page):
     """Find ancestor sections and their landing pages, when available."""
     ancestors = []
     parent = page.parent
     while parent:
         index = next((item for item in parent.children if item.is_page and item.is_index), None)
-        if parent.title == "微架构":
-            index = next((item for item in parent.children if item.is_page and item.file.src_uri == "microarchitecture.md"), None)
+        landing = {"微架构": "microarchitecture.md", "存储系统": "storage.md", "芯片与系统互连": "interconnect.md"}.get(parent.title)
+        if landing:
+            index = next((item for item in parent.children if item.is_page and item.file.src_uri == landing), None)
         if index is None or index.file.src_uri != page.file.src_uri:
             ancestors.append((parent.title, index))
         parent = parent.parent
@@ -213,6 +255,8 @@ def strip_duplicate_parent(markdown, page, root):
         path = posixpath.normpath(posixpath.join(str(PurePosixPath(page.file.src_uri).parent), unquote(target.path)))
         if (root / path).is_dir():
             path = posixpath.join(path, "README.md")
+            if path not in ancestors and (root / path).is_file() and not target.query and not target.fragment:
+                lines[number] = line.replace(match.group(1), target.path.rstrip("/") + "/README.md")
         if path in ancestors:
             del lines[number]
         break
@@ -235,7 +279,24 @@ def render_breadcrumbs(page, root, sidebar_labels=None):
 
 
 def has_breadcrumbs(page):
-    return page.file.src_uri not in {"README.md", "series.md", "microarchitecture.md", "articles.md", "visuals.md"}
+    return page.file.src_uri not in {"README.md", "series.md", "microarchitecture.md", "storage.md", "interconnect.md", "articles.md", "visuals.md"}
+
+
+def validate_unique_navigation(entries):
+    """A page may have many reading links but only one main navigation entry."""
+    seen = set()
+    def visit(item):
+        if isinstance(item, list):
+            for child in item:
+                visit(child)
+        elif isinstance(item, dict):
+            for child in item.values():
+                visit(child)
+        elif isinstance(item, str) and item.endswith(".md"):
+            if item in seen:
+                raise ValueError(f"Page has more than one main navigation entry: {item}")
+            seen.add(item)
+    visit(entries)
 
 
 def on_config(config, **kwargs):
@@ -263,14 +324,15 @@ def on_config(config, **kwargs):
             {"微架构首页": "microarchitecture.md"},
             {"精选文章": "articles.md"},
             {"互动图解": "visuals.md"},
-            {"基础": ["electrical-timing-foundations.md"]},
-            {"专题": [{label: topic_tree(root, name)} for name, label in TOPICS]},
+            *grouped_original_topics(root, MICRO),
             {"评审记录": [
                 {"九专题基线问题": "reviews/2026-11-09-topic-review.md"},
                 {"第二轮逐篇评审": make_tree(root / "reviews" / "round-2", root)},
                 {"第三轮有限资源盲测": make_tree(root / "reviews" / "round-3", root)},
             ]},
         ]},
+        {STORAGE: [{"系列首页": "storage.md"}, *grouped_original_topics(root, STORAGE)]},
+        {INTERCONNECT: [{"系列首页": "interconnect.md"}, *grouped_original_topics(root, INTERCONNECT)]},
     ]
     for entry in series:
         if entry["source"]:
@@ -278,7 +340,9 @@ def on_config(config, **kwargs):
             config.nav.append({entry["title"]: make_tree(directory, root, ("README.md", "index.md"))})
         elif entry["local"]:
             directory = root / entry["local"]["publish"]
-            config.nav.append({entry["title"]: make_tree(directory, root, ("README.md", "index.md"))})
+            tree = workload_tree(root, directory) if entry["local"]["publish"] == "external/workload-wiki" else make_tree(directory, root, ("README.md", "index.md"))
+            config.nav.append({entry["title"]: tree})
+    validate_unique_navigation(config.nav)
     return config
 
 
