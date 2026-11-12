@@ -87,10 +87,50 @@ FAB 页面原位保留，主导航迁至芯片开发与实现系列。DFT 页面
 
 ## B6：芯片架构实例
 
-从 `chip-architecture-wiki@3086204c049a762eb59033f8141fba9e91f4c669` 导入五篇产品主文和一篇横向报告。纯导入提交为 `587affd`，六个文件的 Git blob 与来源一致。新系列首页和必要修复另行提交。
+从 `chip-architecture-wiki@3086204c049a762eb59033f8141fba9e91f4c669` 导入五篇产品主文和一篇横向报告。纯导入提交为 `587affd793827b527cd4ed7b8e99b62d531f52d4`，六个文件的 Git blob 与来源一致。新系列首页和必要修复另行提交。
 
 原文引用的 30 张图均登记原出处及许可状态，见[逐图台账](migration/chip-image-provenance.md)。转载许可未确认的图片没有复制到本站；正文保留说明及原发布资料链接。PDF、原始对话和网页快照留在原仓。Meta 图的第一代与第二代来源、Cerebras 的系统级与片上互连，以及报告中的旧附录路径已分别核对和标注。Graphcore 官方指南在核查时返回 502，原仓固定提交保存的指南可作为备查。
 
 独立复核后，报告区分设备执行确定性与服务尾延迟，收窄 Graphcore BSP、Groq 跨芯片网络和 Cerebras wavelet 的结论，并将存在口径差异的 Graphcore 带宽标为待核对。Meta 第一代 DOI 本次检查返回 403，补充了原仓固定版本论文的备查链接。这些网络结果仅代表检查时的访问情况。
 
 本地严格构建和 15 项测试通过；七篇系列页面的 112 条正文站内链接及片段检查通过。与 B0 对照，798 个旧页面、原锚点、相对引用和图片均保留，旧页面在搜索中各有一条记录。产品文章和横向报告中的商业判断及全部性能数字未逐项独立审阅。
+
+主仓提交 `caa54d1c948956606e0b4daaa7180f6fa0ba5790` 的 [Actions 43181074308](https://github.com/microarch-flow/wiki/actions/runs/43181074308) 构建和部署成功。日志中的四个系列均来自主仓本地目录。独立验收确认七个系列入口、芯片实例首页和六篇正文均返回 HTTP 200；七个实例页面在搜索中各有一条记录，导航高亮与面包屑符合归属。旧仓提交 [`602f8e6`](https://github.com/microarch-flow/chip-architecture-wiki/commit/602f8e6bedb6d4960f7b1e580d704d80e7413b66) 在公开验收后更新首页，保留原文和历史。
+
+对该提交独立干净检出的严格构建和 17 项测试通过。全站回归检查了 887 页和 17,423 条正文站内引用；相对于 B0，798 个旧页面、正文锚点及已引用的媒体没有缺失或变化，未发现失效的正文站内引用。这不等于逐一访问所有公开旧页面，也不涵盖外站链接和动态脚本产生的链接。
+
+## B7：收尾与来源核对
+
+| 批次 | 主仓关键提交 | 发布记录 |
+| --- | --- | --- |
+| B0 | `b6460bea23bd5109aa84d64e852f13f44486f0b3` | 基线记录 |
+| B1 | `ba6ea1ee71398583e2e4f6082337d45019c7577e` | [Actions 43175284964](https://github.com/microarch-flow/wiki/actions/runs/43175284964) |
+| B2 | `e1f5f08f15f49cb1dbc6b3ff6bd7e243bb0abe3a` | [Actions 43175496904](https://github.com/microarch-flow/wiki/actions/runs/43175496904) |
+| B3 | `190d59b232845ee04bafb8f5d28c0d669646d624` | [Actions 43176610817](https://github.com/microarch-flow/wiki/actions/runs/43176610817) |
+| B4 | `e0f99c35e6806c2cfc197fd3115d76ef2d296cf8` | [Actions 43177235541](https://github.com/microarch-flow/wiki/actions/runs/43177235541) |
+| B5 | `24775eb7bff749f4070c82b55e154f9a5a3e952a`；部署修复 `e6b6c2d3bcb5e5a72920425b6aa4d9edc96cf11f` | [Actions 43179213463](https://github.com/microarch-flow/wiki/actions/runs/43179213463) |
+| B6 | `ca9034a5a944609807db749ecf4bb08298cb1ebc`；复核及公式目录修复 `caa54d1c948956606e0b4daaa7180f6fa0ba5790` | [Actions 43181074308](https://github.com/microarch-flow/wiki/actions/runs/43181074308) |
+
+| 来源仓 | 导入来源 | 首页指向新位置的提交 | 从来源到该提交的差异 |
+| --- | --- | --- | --- |
+| workload-wiki | `c71d7e7348f6e666c8ee4fb934472d3d85c5a460` | [`0e4e005`](https://github.com/microarch-flow/workload-wiki/commit/0e4e0056ed29ce2ffa2af24fa5199d767911c0d9) | 首页提示；移除重建通知工作流 |
+| silicon-atlas | `6a384bb3d3b0d300d7e5c5bb1c3a2f66223ca7e3` | [`3ac30d7`](https://github.com/microarch-flow/silicon-atlas/commit/3ac30d72e24eea2eceed4462c4069753fe947947) | 仅首页提示 |
+| roofline-to-runtime | `4c7fe5611899c4002a35c8f2fa8ea92fde391672` | [`3623210`](https://github.com/microarch-flow/roofline-to-runtime/commit/36232109a88624737571dd17cd874bd9ff92ba21) | 仅首页提示 |
+| chip-architecture-wiki | `3086204c049a762eb59033f8141fba9e91f4c669` | [`602f8e6`](https://github.com/microarch-flow/chip-architecture-wiki/commit/602f8e6bedb6d4960f7b1e580d704d80e7413b66) | 仅首页提示 |
+
+这些提交不删除旧仓和历史，也不将旧仓设为只读。主仓 Pages 原来已选择 GitHub Actions，保留默认域名和 HTTPS；主仓的 `main` 推送及手动运行均可部署。仓库级 webhook 和其他旧仓通知未发现专用绑定；账户外发送方及令牌使用范围不能由这次可见设置证明。Workload 的 `WIKI_DISPATCH_TOKEN` 仓库 secret 截至本记录尚未删除；该 secret 不再被现有通知工作流引用，清理和底层令牌撤销是不同操作。
+
+## 待补专题的参考材料
+
+下列专题尚无独立正文，不在主导航建立空入口。资料只能支持后续写作，不表示对应专题已完成。
+
+| 待补专题 | 可参考的旧文或资料 |
+| --- | --- |
+| 模型图分区与执行后端 | [ONNX Runtime 执行后端](https://onnxruntime.ai/docs/execution-providers/)。可从后端能力查询与子图分配入手。 |
+| 执行控制、依赖与同步 | [DMA 队列与完成](../DMA/wiki/04-programming-model/queues-doorbells-completions.md)。需另补跨引擎的启动与完成边界。 |
+| 共享数据的缓存一致性与内存顺序 | [DMA 缓存一致性](../DMA/wiki/02-fundamentals/consistency-cache-coherency.md)及 [AXI 属性与屏障](../BUS/wiki/04-microarchitecture-integration/axi-attributes-cacheability-barrier.md)。二者仅覆盖局部案例。 |
+| UCIe | [SerDes 芯粒与 D2D](../SERDES/wiki/08-system-applications/chiplet-and-d2d.md)及 [UCIe 规范](https://www.uciexpress.org/specifications)。正式案例需注明规范版本。 |
+| CXL | [CXL 与 PCIe 的边界](../PCIE/wiki/07-advanced-topics/cxl-and-pcie-boundary.md)。需另补指定设备和协议的独立正文。 |
+| UALink | [UALink 联盟规范](https://ualinkconsortium.org/specification/)。需指定版本并建立完整的通信案例。 |
+| Groq TSP / LPU | [原仓固定提交的资料目录](https://github.com/microarch-flow/chip-architecture-wiki/tree/3086204c049a762eb59033f8141fba9e91f4c669/Groq_LPU)。需整理带出处的独立正文。 |
+| Microsoft Maia 100 | [原仓固定提交的资料目录](https://github.com/microarch-flow/chip-architecture-wiki/tree/3086204c049a762eb59033f8141fba9e91f4c669/Microsoft_Maia_100)。需区分公开事实与未知细节。 |
