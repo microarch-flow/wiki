@@ -45,6 +45,7 @@ def fixture_wiki(root):
         "visuals.md": "# 互动图解\n",
     }.items():
         write(root / "website" / name, content)
+    shutil.copy2(ROOT / "website" / "source-layout.json", root / "website" / "source-layout.json")
     shutil.copytree(ROOT / "website" / "assets", root / "website" / "assets")
 
 
@@ -73,6 +74,90 @@ def fixture_repo(path, files):
 
 
 class MultiRepositoryTests(unittest.TestCase):
+    def test_moved_sources_keep_site_paths_and_rewrite_cross_links(self):
+        with tempfile.TemporaryDirectory() as temp:
+            wiki = Path(temp) / "wiki"
+            fixture_wiki(wiki)
+            development = wiki / "series/chip-development"
+            development.mkdir(parents=True)
+            shutil.move(str(wiki / "FAB"), development / "FAB")
+            process = development / "process"
+            write(process / "README.md", (
+                "# Development\n\n"
+                "[FAB](../FAB/wiki/README.md?view=1#topic)\n"
+                "![图](../FAB/wiki/img/diagram.svg?size=1#shape)\n"
+                "[目录](../FAB/wiki/)\n"
+                "<a href=\"../FAB/wiki/README.md?view=1#topic\">FAB</a>\n"
+                "<img src=\"../FAB/wiki/img/diagram.svg?size=1#shape\">\n"
+                "[ref]: ../FAB/wiki/README.md?view=1#topic\n"
+                "`[code](../FAB/wiki/README.md)`\n"
+                "```markdown\n[code](../FAB/wiki/README.md)\n```\n"
+                "    [indented](../FAB/wiki/README.md)\n"
+                "<pre><a href=\"../FAB/wiki/README.md\">code</a></pre>\n"
+            ))
+            write(process / "AGENTS.md", "# private\n")
+            write(process / "wiki.old/private.md", "# private\n")
+            write(development / "FAB/wiki/README.md", "# FAB\n\n[流程](../../process/README.md?x=1#top)\n")
+            write(development / "FAB/wiki/img/diagram.svg", "<svg/>\n")
+            write(development / "FAB/wiki/AGENTS.md", "# private\n")
+            write(development / "FAB/wiki/raw/private.md", "# private\n")
+            write(development / "FAB/wiki.old/private.md", "# private\n")
+            write(wiki / "reviews/round-2/README.md", "# Review\n\n[FAB](../../series/chip-development/FAB/wiki/README.md#topic)\n")
+            layout_path = wiki / "website/source-layout.json"
+            layout = json.loads(layout_path.read_text(encoding="utf-8"))
+            layout["topics"]["FAB"] = "series/chip-development/FAB"
+            layout_path.write_text(json.dumps(layout), encoding="utf-8")
+            registry = wiki / "website/series.json"
+            registry.write_text(json.dumps({"series": [{
+                "title": "芯片开发与实现", "description": "development",
+                "local": {"directory": "series/chip-development/process", "publish": "series/chip-development"},
+            }]}), encoding="utf-8")
+            build = Path(temp) / "build"
+            stage_site(root=wiki, build_root=build)
+            docs = build / "docs"
+            staged = (docs / "series/chip-development/README.md").read_text(encoding="utf-8")
+            self.assertIn("[FAB](../../FAB/wiki/README.md?view=1#topic)", staged)
+            self.assertIn("![图](../../FAB/wiki/img/diagram.svg?size=1#shape)", staged)
+            self.assertIn("[目录](../../FAB/wiki/)", staged)
+            self.assertIn('<a href="../../FAB/wiki/?view=1#topic">FAB</a>', staged)
+            self.assertIn('<img src="../../FAB/wiki/img/diagram.svg?size=1#shape">', staged)
+            self.assertIn("[ref]: ../../FAB/wiki/README.md?view=1#topic", staged)
+            self.assertIn("`[code](../FAB/wiki/README.md)`", staged)
+            self.assertIn("```markdown\n[code](../FAB/wiki/README.md)\n```", staged)
+            self.assertIn("    [indented](../FAB/wiki/README.md)", staged)
+            self.assertIn('<pre><a href="../FAB/wiki/README.md">code</a></pre>', staged)
+            self.assertIn("[流程](../../series/chip-development/README.md?x=1#top)",
+                          (docs / "FAB/wiki/README.md").read_text(encoding="utf-8"))
+            self.assertIn("[FAB](../../FAB/wiki/README.md#topic)",
+                          (docs / "reviews/round-2/README.md").read_text(encoding="utf-8"))
+            for name in ("FAB/wiki/AGENTS.md", "FAB/wiki/raw/private.md", "FAB/wiki.old/private.md",
+                         "series/chip-development/AGENTS.md", "series/chip-development/wiki.old/private.md"):
+                self.assertFalse((docs / name).exists(), name)
+
+            # A topic nested inside the selected local series must not be
+            # recursively staged a second time (or expose its wiki.old).
+            write(development / "README.md", "# Development\n")
+            data = json.loads(registry.read_text(encoding="utf-8"))
+            data["series"][0]["local"]["directory"] = "series/chip-development"
+            registry.write_text(json.dumps(data), encoding="utf-8")
+            with self.assertRaisesRegex(ValueError, "overlaps a local series source"):
+                stage_site(root=wiki, build_root=build)
+            self.assertEqual((docs / "series/chip-development/README.md").read_text(encoding="utf-8"), staged)
+
+            data["series"][0]["local"]["directory"] = "series/chip-development/process"
+            registry.write_text(json.dumps(data), encoding="utf-8")
+            layout["topics"]["RAM"] = "../outside"
+            layout_path.write_text(json.dumps(layout), encoding="utf-8")
+            with self.assertRaisesRegex(ValueError, "inside the checkout"):
+                stage_site(root=wiki, build_root=build)
+            self.assertEqual((docs / "series/chip-development/README.md").read_text(encoding="utf-8"), staged)
+
+            layout["topics"]["RAM"] = layout["topics"]["BUS"]
+            layout_path.write_text(json.dumps(layout), encoding="utf-8")
+            with self.assertRaisesRegex(ValueError, "staged to multiple paths"):
+                stage_site(root=wiki, build_root=build)
+            self.assertEqual((docs / "series/chip-development/README.md").read_text(encoding="utf-8"), staged)
+
     def test_local_source_preserves_public_path_and_excludes_maintenance(self):
         with tempfile.TemporaryDirectory() as temp:
             temporary = Path(temp)

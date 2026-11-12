@@ -108,7 +108,7 @@ def copy_source(source, destination, public_only=False):
             if path.is_symlink():
                 raise ValueError(f"Source contains a symlink: {path}")
         directories[:] = [name for name in directories if name != ".git" and
-                          (not public_only or (not name.startswith(".") and name not in {"raw", "__pycache__"}))]
+                          (not public_only or (not name.startswith(".") and name not in {"raw", "__pycache__", "wiki.old", "seed"}))]
         for name in files:
             if name == ".git":
                 continue

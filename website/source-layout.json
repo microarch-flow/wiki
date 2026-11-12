@@ -1,0 +1,19 @@
+{
+  "topics": {
+    "RAM": "RAM",
+    "COMPUTE": "COMPUTE",
+    "BUS": "BUS",
+    "NOC": "NOC",
+    "DMA": "DMA",
+    "PCIE": "PCIE",
+    "CIM": "CIM",
+    "CPO": "CPO",
+    "FAB": "FAB",
+    "SERDES": "SERDES",
+    "HBF": "HBF"
+  },
+  "foundations": {
+    "article": "electrical-timing-foundations.md",
+    "images": "img"
+  }
+}
