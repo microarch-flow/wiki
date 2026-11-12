@@ -1,17 +1,25 @@
 {
   "series": [
     {
-      "title": "芯片微架构笔记",
-      "description": "从电路、存储和互连出发，理解芯片架构与系统建模。",
-      "page": "microarchitecture.md"
-    },
-    {
       "title": "算法与模型（Workload Wiki）",
       "description": "从基础组件到感知、自动驾驶、机器人和世界模型，并按需延伸到芯片工作负载。",
       "local": {
         "directory": "series/workload",
         "publish": "external/workload-wiki"
       }
+    },
+    {
+      "title": "推理运行时",
+      "description": "从推理阶段、内核、KV 缓存与调度，到分布式服务的草稿与分析。",
+      "local": {
+        "directory": "series/inference-runtime",
+        "publish": "series/inference-runtime"
+      }
+    },
+    {
+      "title": "芯片微架构笔记",
+      "description": "从电路、存储和互连出发，理解芯片架构与系统建模。",
+      "page": "microarchitecture.md"
     },
     {
       "title": "存储系统",
@@ -24,19 +32,19 @@
       "page": "interconnect.md"
     },
     {
+      "title": "芯片架构实例",
+      "description": "按产品代际阅读芯片的计算、存储、互连与软件映射。",
+      "local": {
+        "directory": "series/chip-architectures",
+        "publish": "series/chip-architectures"
+      }
+    },
+    {
       "title": "芯片开发与实现",
       "description": "从产品定义、设计验证到晶圆、封装、测试和量产。",
       "local": {
         "directory": "series/chip-development",
         "publish": "series/chip-development"
-      }
-    },
-    {
-      "title": "推理运行时",
-      "description": "从推理阶段、内核、KV 缓存与调度，到分布式服务的草稿与分析。",
-      "local": {
-        "directory": "series/inference-runtime",
-        "publish": "series/inference-runtime"
       }
     }
   ]

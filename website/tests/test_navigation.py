@@ -30,6 +30,21 @@ def page_url(relative):
 
 
 class GeneratedNavigationTests(unittest.TestCase):
+    def test_chip_examples_have_one_series_and_exclude_source_archives(self):
+        directory = SITE / "series/chip-architectures"
+        pages = sorted(directory.rglob("index.html"))
+        self.assertEqual(len(pages), 7)
+        for page in pages:
+            if page == directory / "index.html":
+                continue
+            html = page.read_text(encoding="utf-8")
+            breadcrumb = BREADCRUMB.search(html)
+            self.assertIsNotNone(breadcrumb, str(page))
+            labels = [unescape(x) for x in re.findall(r'<(?:a\s[^>]*|span(?:\s[^>]*)?)>(.*?)</(?:a|span)>', breadcrumb.group(1))]
+            self.assertEqual(labels[1], "芯片架构实例", str(page))
+        excluded = {".pdf", ".png", ".jpg", ".jpeg", ".webp"}
+        self.assertFalse([path for path in directory.rglob("*") if path.is_file() and path.suffix.lower() in excluded])
+
     def test_cross_series_reading_routes(self):
         html = (SITE / "microarchitecture/index.html").read_text(encoding="utf-8")
         routes = {
