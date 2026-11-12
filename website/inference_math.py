@@ -11,6 +11,13 @@ from pymdownx.arithmatex import ArithmatexExtension
 MARKER = "<!-- site-inference-math -->"
 
 
+def on_config(config, **kwargs):
+    """Register the local extension after MkDocs has loaded this hook by path."""
+    if not any(isinstance(item, InferenceMathExtension) for item in config.markdown_extensions):
+        config.markdown_extensions.append(InferenceMathExtension())
+    return config
+
+
 def on_page_markdown(markdown, page, **kwargs):
     """Mark inference pages; leave every other source untouched."""
     if page.file.src_uri.startswith("series/inference-runtime/"):
