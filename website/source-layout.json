@@ -1,19 +1,19 @@
 {
   "topics": {
     "RAM": "series/storage/RAM",
-    "COMPUTE": "COMPUTE",
+    "COMPUTE": "series/microarchitecture/COMPUTE",
     "BUS": "series/interconnect/BUS",
     "NOC": "series/interconnect/NOC",
-    "DMA": "DMA",
+    "DMA": "series/microarchitecture/DMA",
     "PCIE": "series/interconnect/PCIE",
-    "CIM": "CIM",
+    "CIM": "series/microarchitecture/CIM",
     "CPO": "series/interconnect/CPO",
     "FAB": "FAB",
     "SERDES": "series/interconnect/SERDES",
     "HBF": "series/storage/HBF"
   },
   "foundations": {
-    "article": "electrical-timing-foundations.md",
-    "images": "img"
+    "article": "series/microarchitecture/foundations/electrical-timing-foundations.md",
+    "images": "series/microarchitecture/foundations/img"
   }
 }

@@ -2,7 +2,7 @@
 
 上级：[04 微架构与系统集成](./README.md)
 
-相关：[DMA Wiki 首页](../../../../../DMA/wiki/README.md)、[MMIO、Cache 与 Interrupt 视角](./mmio-cache-interrupt-view.md)、[IOMMU、SMMU 与 DMA 寻址](./iommu-smmu-dma-addressing.md)、[AXI 与 DMA 的系统接口](./axi-dma-system-interface.md)、[PCIE Wiki: 队列、Doorbell、Completion 与 MSI-X](../../../PCIE/wiki/04-data-path-dma-interrupts/queues-doorbells-completions-msix.md)
+相关：[DMA Wiki 首页](../../../../microarchitecture/DMA/wiki/README.md)、[MMIO、Cache 与 Interrupt 视角](./mmio-cache-interrupt-view.md)、[IOMMU、SMMU 与 DMA 寻址](./iommu-smmu-dma-addressing.md)、[AXI 与 DMA 的系统接口](./axi-dma-system-interface.md)、[PCIE Wiki: 队列、Doorbell、Completion 与 MSI-X](../../../PCIE/wiki/04-data-path-dma-interrupts/queues-doorbells-completions-msix.md)
 
 ## 这页在回答什么问题
 

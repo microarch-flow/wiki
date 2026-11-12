@@ -21,7 +21,7 @@
 
 ### 路线 1：第一次看 CPO
 
-1. [电路到时序的共用基础](../../../../electrical-timing-foundations.md)
+1. [电路到时序的共用基础](../../../microarchitecture/foundations/electrical-timing-foundations.md)
 2. [光链路基础与功率预算](./04-optical-engine/optical-link-basics.md)
 3. [激光器、调制器和探测器](./04-optical-engine/laser-modulator-detector.md)
 4. [CPO 在解决什么问题](./01-overview/problem-statement.md)

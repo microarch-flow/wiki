@@ -2,7 +2,7 @@
 
 上级：[04 数据路径、DMA 与中断](./README.md)
 
-相关：[DMA Wiki: AXI / PCIe 视角下的 DMA](../../../../../DMA/wiki/05-system-integration/axi-pcie-view.md)、[队列、Doorbell、Completion 与 MSI-X](./queues-doorbells-completions-msix.md)
+相关：[DMA Wiki: AXI / PCIe 视角下的 DMA](../../../../microarchitecture/DMA/wiki/05-system-integration/axi-pcie-view.md)、[队列、Doorbell、Completion 与 MSI-X](./queues-doorbells-completions-msix.md)
 
 ## 这页在回答什么问题
 

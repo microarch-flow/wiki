@@ -2,7 +2,7 @@
 
 上级：[04 微架构与系统集成](./README.md)
 
-相关：[MMIO、Cache 与 Interrupt 视角](./mmio-cache-interrupt-view.md)、[DMA Descriptor Fetch、Data Move 与 Writeback](./dma-descriptor-fetch-data-move-writeback.md)、[Doorbell、Completion 与 Interrupt Flow](./doorbell-completion-interrupt-flow.md)、[Coherent Bus vs Non-Coherent Bus](../03-on-chip-protocol-families/coherent-bus-vs-noncoherent-bus.md)、[缓存一致性、IOMMU 与地址空间](../../../../../DMA/wiki/02-fundamentals/consistency-cache-coherency.md)
+相关：[MMIO、Cache 与 Interrupt 视角](./mmio-cache-interrupt-view.md)、[DMA Descriptor Fetch、Data Move 与 Writeback](./dma-descriptor-fetch-data-move-writeback.md)、[Doorbell、Completion 与 Interrupt Flow](./doorbell-completion-interrupt-flow.md)、[Coherent Bus vs Non-Coherent Bus](../03-on-chip-protocol-families/coherent-bus-vs-noncoherent-bus.md)、[缓存一致性、IOMMU 与地址空间](../../../../microarchitecture/DMA/wiki/02-fundamentals/consistency-cache-coherency.md)
 
 ## 这页在回答什么问题
 
@@ -121,7 +121,7 @@ AXI 属性定义一笔访问应被系统如何对待，barrier 定义多笔访�
 - 如果你在追 `descriptor、data、writeback 三段为什么语义不同`：看 [DMA Descriptor Fetch、Data Move 与 Writeback](./dma-descriptor-fetch-data-move-writeback.md)
 - 如果你在追 `MMIO 和普通内存的软件模型差别`：看 [MMIO、Cache 与 Interrupt 视角](./mmio-cache-interrupt-view.md)
 - 如果你在追 `doorbell 前后为什么要小心顺序`：看 [Doorbell、Completion 与 Interrupt Flow](./doorbell-completion-interrupt-flow.md)
-- 如果你在追 `coherent / non-coherent DMA 的系统前提`：看 [缓存一致性、IOMMU 与地址空间](../../../../../DMA/wiki/02-fundamentals/consistency-cache-coherency.md)
+- 如果你在追 `coherent / non-coherent DMA 的系统前提`：看 [缓存一致性、IOMMU 与地址空间](../../../../microarchitecture/DMA/wiki/02-fundamentals/consistency-cache-coherency.md)
 
 ## 建模启示
 

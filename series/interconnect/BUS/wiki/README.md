@@ -179,4 +179,4 @@
 - 每页尽量只回答一个核心问题
 - 优先区分 `transaction / protocol / interconnect / integration / observability`
 - 优先保留能转化成工程判断和系统分析的内容
-- 与 [DMA Wiki](../../../../DMA/wiki/README.md)、[NOC Wiki](../../NOC/wiki/README.md)、[RAM Wiki](../../../storage/RAM/wiki/01-overview/README.md) 保持可互相链接的术语体系
+- 与 [DMA Wiki](../../../microarchitecture/DMA/wiki/README.md)、[NOC Wiki](../../NOC/wiki/README.md)、[RAM Wiki](../../../storage/RAM/wiki/01-overview/README.md) 保持可互相链接的术语体系

@@ -2,7 +2,7 @@
 
 上级：[04 微架构与系统集成](./README.md)
 
-相关：[AXI Channel、ID 与 Outstanding](../03-on-chip-protocol-families/axi-channel-id-outstanding.md)、[AXI Burst、Alignment 与 Boundary](../03-on-chip-protocol-families/axi-burst-alignment-boundary.md)、[Doorbell、Completion 与 Interrupt Flow](./doorbell-completion-interrupt-flow.md)、[IOMMU、SMMU 与 DMA 寻址](./iommu-smmu-dma-addressing.md)、[DMA Wiki 首页](../../../../../DMA/wiki/README.md)
+相关：[AXI Channel、ID 与 Outstanding](../03-on-chip-protocol-families/axi-channel-id-outstanding.md)、[AXI Burst、Alignment 与 Boundary](../03-on-chip-protocol-families/axi-burst-alignment-boundary.md)、[Doorbell、Completion 与 Interrupt Flow](./doorbell-completion-interrupt-flow.md)、[IOMMU、SMMU 与 DMA 寻址](./iommu-smmu-dma-addressing.md)、[DMA Wiki 首页](../../../../microarchitecture/DMA/wiki/README.md)
 
 ## 这页在回答什么问题
 

@@ -160,7 +160,7 @@ SERDES/
 | `phy-serdes-protocol.md` | SerDes 的窄义串并转换与收发器广义用法；PHY、PCS/PMA、协议和实现边界。用具体协议作例，不把划分当成所有标准的共同定义。 | 把一个给定收发器的数据路径与 PCIe 分层对应；解释同一 SerDes IP 支持某协议不等于完整产品已支持该协议。[S1](#s1)、[S3](#s3) |
 | `rates-clocks-and-ui.md` | 比特率、符号率、并行字时钟、UI；NRZ 和 PAM4 的最小区别；发送与接收时钟可能不同。 | 核算 `32 × 312.5 MHz = 10 Gb/s` 的条件；反例：`32 × 156 MHz` 并不等于 `10 Gb/s`。[S4](#s4) |
 
-入口需要先链接[共用电路与时序基础](../../../electrical-timing-foundations.md)，并指出高速电路可以使用分时、半速率或多相结构；不能把线速率直接等同于每一级数字逻辑的时钟。
+入口需要先链接[共用电路与时序基础](../../microarchitecture/foundations/electrical-timing-foundations.md)，并指出高速电路可以使用分时、半速率或多相结构；不能把线速率直接等同于每一级数字逻辑的时钟。
 
 ### 4.2 电信号与通道：02
 
@@ -259,7 +259,7 @@ r[k] = 0.7 × a[k] + 0.2 × a[k−1]
 
 | 现有内容 | SerDes 专题如何使用 | 分工边界 |
 | --- | --- | --- |
-| [从电荷到芯片时序](../../../electrical-timing-foundations.md) | 作为电容、电压、边沿、setup / hold 的先修入口。 | 共用基础解释同步数字路径；SerDes 专题继续解释跨通道波形、时钟恢复和判决。 |
+| [从电荷到芯片时序](../../microarchitecture/foundations/electrical-timing-foundations.md) | 作为电容、电压、边沿、setup / hold 的先修入口。 | 共用基础解释同步数字路径；SerDes 专题继续解释跨通道波形、时钟恢复和判决。 |
 | [PCIe 分层架构](../PCIE/wiki/02-link-transaction-basics/layered-architecture-transaction-data-link-physical.md) | 从协议物理层链接到 SerDes 机制，再从训练案例返回 PCIe。 | PCIe 专题保留协议、事务、链路层及系统语义；本专题不复制整套 PCIe 规范。 |
 | [封装信号完整性](../../../FAB/wiki/06-cross-cutting-engineering/signal-integrity-in-package.md) | 复用反射算例及封装、回流和 SI/PI 联系。 | FAB 关注制造与封装约束；本专题聚焦 TX—通道—RX 的链路行为。 |
 | [CPO 光链路基础](../CPO/wiki/04-optical-engine/optical-link-basics.md) | 从电 SerDes 边界连接驱动、调制器、光通道和接收侧。 | 光功率预算与光器件留在 CPO；不能把光损耗预算直接套成电通道预算。 |

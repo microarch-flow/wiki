@@ -2,7 +2,7 @@
 
 上级：[04 微架构与系统集成](./README.md)
 
-相关：[DMA Wiki 首页](../../../../../DMA/wiki/README.md)、[缓存一致性、IOMMU 与地址空间](../../../../../DMA/wiki/02-fundamentals/consistency-cache-coherency.md)、[AXI 与 DMA 的系统接口](./axi-dma-system-interface.md)、[DMA Descriptor Fetch、Data Move 与 Writeback](./dma-descriptor-fetch-data-move-writeback.md)、[PCIE Wiki: IOMMU、地址翻译与设备隔离](../../../PCIE/wiki/03-configuration-enumeration-addressing/iommu-address-translation-device-isolation.md)
+相关：[DMA Wiki 首页](../../../../microarchitecture/DMA/wiki/README.md)、[缓存一致性、IOMMU 与地址空间](../../../../microarchitecture/DMA/wiki/02-fundamentals/consistency-cache-coherency.md)、[AXI 与 DMA 的系统接口](./axi-dma-system-interface.md)、[DMA Descriptor Fetch、Data Move 与 Writeback](./dma-descriptor-fetch-data-move-writeback.md)、[PCIE Wiki: IOMMU、地址翻译与设备隔离](../../../PCIE/wiki/03-configuration-enumeration-addressing/iommu-address-translation-device-isolation.md)
 
 ## 这页在回答什么问题
 

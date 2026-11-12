@@ -1,6 +1,6 @@
 # 芯片制造与封测
 
-从晶圆制造、筛测、封装到可靠性交付，本专题解释物理实现怎样约束架构和模拟器。先读[总览](01-overview/README.md)，再按问题选择章节。对 PVT、寄生参数与时序的关系，可先读[电路到时序的共用基础](../../electrical-timing-foundations.md)。
+从晶圆制造、筛测、封装到可靠性交付，本专题解释物理实现怎样约束架构和模拟器。先读[总览](01-overview/README.md)，再按问题选择章节。对 PVT、寄生参数与时序的关系，可先读[电路到时序的共用基础](../../series/microarchitecture/foundations/electrical-timing-foundations.md)。
 
 | 问题 | 入口 |
 | --- | --- |

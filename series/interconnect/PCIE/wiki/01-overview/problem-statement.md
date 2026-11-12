@@ -2,7 +2,7 @@
 
 上级：[01 概览与问题定义](./README.md)
 
-相关：[BUS Wiki](../../../BUS/wiki/README.md)、[DMA Wiki](../../../../../DMA/wiki/README.md)
+相关：[BUS Wiki](../../../BUS/wiki/README.md)、[DMA Wiki](../../../../microarchitecture/DMA/wiki/README.md)
 
 ## 这页在回答什么问题
 

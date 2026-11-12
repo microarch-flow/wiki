@@ -2,7 +2,7 @@
 
 上级：[03 片上总线协议族](./README.md)
 
-相关：[BUS 分类框架](../01-overview/taxonomy.md)、[AXI 属性、Cacheability 与 Barrier](../04-microarchitecture-integration/axi-attributes-cacheability-barrier.md)、[MMIO、Cache 与 Interrupt 视角](../04-microarchitecture-integration/mmio-cache-interrupt-view.md)、[缓存一致性、IOMMU 与地址空间](../../../../../DMA/wiki/02-fundamentals/consistency-cache-coherency.md)、[DMA 与 NoC](../../../../../DMA/wiki/05-system-integration/dma-and-noc.md)
+相关：[BUS 分类框架](../01-overview/taxonomy.md)、[AXI 属性、Cacheability 与 Barrier](../04-microarchitecture-integration/axi-attributes-cacheability-barrier.md)、[MMIO、Cache 与 Interrupt 视角](../04-microarchitecture-integration/mmio-cache-interrupt-view.md)、[缓存一致性、IOMMU 与地址空间](../../../../microarchitecture/DMA/wiki/02-fundamentals/consistency-cache-coherency.md)、[DMA 与 NoC](../../../../microarchitecture/DMA/wiki/05-system-integration/dma-and-noc.md)
 
 ## 这页在回答什么问题
 

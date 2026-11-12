@@ -129,8 +129,8 @@ FAB 页面原位保留，主导航迁至芯片开发与实现系列。DFT 页面
 | 待补专题 | 可参考的旧文或资料 |
 | --- | --- |
 | 模型图分区与执行后端 | [ONNX Runtime 执行后端](https://onnxruntime.ai/docs/execution-providers/)。可从后端能力查询与子图分配入手。 |
-| 执行控制、依赖与同步 | [DMA 队列与完成](../DMA/wiki/04-programming-model/queues-doorbells-completions.md)。需另补跨引擎的启动与完成边界。 |
-| 共享数据的缓存一致性与内存顺序 | [DMA 缓存一致性](../DMA/wiki/02-fundamentals/consistency-cache-coherency.md)及 [AXI 属性与屏障](../series/interconnect/BUS/wiki/04-microarchitecture-integration/axi-attributes-cacheability-barrier.md)。二者仅覆盖局部案例。 |
+| 执行控制、依赖与同步 | [DMA 队列与完成](../series/microarchitecture/DMA/wiki/04-programming-model/queues-doorbells-completions.md)。需另补跨引擎的启动与完成边界。 |
+| 共享数据的缓存一致性与内存顺序 | [DMA 缓存一致性](../series/microarchitecture/DMA/wiki/02-fundamentals/consistency-cache-coherency.md)及 [AXI 属性与屏障](../series/interconnect/BUS/wiki/04-microarchitecture-integration/axi-attributes-cacheability-barrier.md)。二者仅覆盖局部案例。 |
 | UCIe | [SerDes 芯粒与 D2D](../series/interconnect/SERDES/wiki/08-system-applications/chiplet-and-d2d.md)及 [UCIe 规范](https://www.uciexpress.org/specifications)。正式案例需注明规范版本。 |
 | CXL | [CXL 与 PCIe 的边界](../series/interconnect/PCIE/wiki/07-advanced-topics/cxl-and-pcie-boundary.md)。需另补指定设备和协议的独立正文。 |
 | UALink | [UALink 联盟规范](https://ualinkconsortium.org/specification/)。需指定版本并建立完整的通信案例。 |

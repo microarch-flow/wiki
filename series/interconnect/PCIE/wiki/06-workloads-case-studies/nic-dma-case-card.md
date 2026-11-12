@@ -2,7 +2,7 @@
 
 上级：[06 工作负载与案例](./README.md)
 
-相关：[DMA Wiki: PCIe NIC DMA 案例卡](../../../../../DMA/wiki/07-workloads-case-studies/pcie-nic-dma-case-card.md)
+相关：[DMA Wiki: PCIe NIC DMA 案例卡](../../../../microarchitecture/DMA/wiki/07-workloads-case-studies/pcie-nic-dma-case-card.md)
 
 ## 这页在回答什么问题
 
