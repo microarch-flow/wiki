@@ -28,11 +28,14 @@ def write(path, content):
 
 
 def fixture_wiki(root):
+    write(root / "README.md", "# Repository overview\n")
     for name in TOPICS:
         write(root / name / "wiki" / "README.md", f"# {name}\n")
-    write(root / "reviews" / "2026-11-09-topic-review.md", "# Review\n")
+    write(root / "docs" / "reviews" / "2026-11-09-topic-review.md", "# Review\n")
     for number in (2, 3):
-        write(root / "reviews" / f"round-{number}" / "README.md", f"# Round {number}\n")
+        write(root / "docs" / "reviews" / f"round-{number}" / "README.md", f"# Round {number}\n")
+    write(root / "docs/reviews/round-3/model.py", "print('fixture model')\n")
+    write(root / "docs/reviews/round-3/expected.json", '{"fixture": true}\n')
     write(root / "img" / "image.svg", "<svg xmlns='http://www.w3.org/2000/svg'/>\n")
     write(root / "electrical-timing-foundations.md", "# Timing\n")
     for name, content in {
@@ -100,12 +103,20 @@ class MultiRepositoryTests(unittest.TestCase):
             ))
             write(process / "AGENTS.md", "# private\n")
             write(process / "wiki.old/private.md", "# private\n")
-            write(development / "FAB/wiki/README.md", "# FAB\n\n[流程](../../process/README.md?x=1#top)\n")
+            write(development / "FAB/wiki/README.md", (
+                "# FAB\n\n[流程](../../process/README.md?x=1#top)\n"
+                "[评审](../../../../docs/reviews/round-2/README.md#topic)\n"
+            ))
             write(development / "FAB/wiki/img/diagram.svg", "<svg/>\n")
             write(development / "FAB/wiki/AGENTS.md", "# private\n")
             write(development / "FAB/wiki/raw/private.md", "# private\n")
             write(development / "FAB/wiki.old/private.md", "# private\n")
-            write(wiki / "reviews/round-2/README.md", "# Review\n\n[FAB](../../series/chip-development/FAB/wiki/README.md#topic)\n")
+            write(wiki / "docs/reviews/round-2/README.md", (
+                "# Review\n\n[FAB](../../../series/chip-development/FAB/wiki/README.md#topic)\n"
+                "[首页](../../../README.md?ref=review#overview)\n"
+            ))
+            template = "# 首页\n\n[模板链接](docs/reviews/round-2/README.md)\n"
+            write(wiki / "website/home.md", template)
             layout_path = wiki / "website/source-layout.json"
             layout = json.loads(layout_path.read_text(encoding="utf-8"))
             layout["topics"]["FAB"] = "series/chip-development/FAB"
@@ -131,8 +142,13 @@ class MultiRepositoryTests(unittest.TestCase):
             self.assertIn('<pre><a href="../FAB/wiki/README.md">code</a></pre>', staged)
             self.assertIn("[流程](../../series/chip-development/README.md?x=1#top)",
                           (docs / "FAB/wiki/README.md").read_text(encoding="utf-8"))
+            self.assertIn("[评审](../../reviews/round-2/README.md#topic)",
+                          (docs / "FAB/wiki/README.md").read_text(encoding="utf-8"))
             self.assertIn("[FAB](../../FAB/wiki/README.md#topic)",
                           (docs / "reviews/round-2/README.md").read_text(encoding="utf-8"))
+            self.assertIn("[首页](../../README.md?ref=review#overview)",
+                          (docs / "reviews/round-2/README.md").read_text(encoding="utf-8"))
+            self.assertEqual((docs / "README.md").read_text(encoding="utf-8"), template)
             for name in ("FAB/wiki/AGENTS.md", "FAB/wiki/raw/private.md", "FAB/wiki.old/private.md",
                          "series/chip-development/AGENTS.md", "series/chip-development/wiki.old/private.md"):
                 self.assertFalse((docs / name).exists(), name)
@@ -195,6 +211,14 @@ class MultiRepositoryTests(unittest.TestCase):
             search = json.loads((site / "search/search_index.json").read_text(encoding="utf-8"))
             matches = [entry for entry in search["docs"] if entry["location"] == "external/legacy/chapter/article/"]
             self.assertEqual(len(matches), 1)
+            locations = {entry["location"] for entry in search["docs"]}
+            for location in ("reviews/2026-11-09-topic-review/", "reviews/round-2/", "reviews/round-3/"):
+                self.assertIn(location, locations)
+                self.assertTrue((site / location / "index.html").is_file())
+            self.assertEqual((site / "reviews/round-3/model.py").read_text(encoding="utf-8"),
+                             "print('fixture model')\n")
+            self.assertEqual((site / "reviews/round-3/expected.json").read_text(encoding="utf-8"),
+                             '{"fixture": true}\n')
 
             (wiki / "series/local/leak.md").symlink_to(temporary / "outside.md")
             with self.assertRaisesRegex(ValueError, "symlink"):

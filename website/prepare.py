@@ -74,6 +74,7 @@ def stage_site(root=ROOT, build_root=None, registry=None, source_root=None, layo
     topics = {name: _path_inside(root, layout_data["topics"][name], True) for name in TOPICS}
     article = _path_inside(root, layout_data["foundations"]["article"], False)
     images = _path_inside(root, layout_data["foundations"]["images"], True)
+    reviews = _path_inside(root, "docs/reviews", True)
     local_sources = [source_directory(root, item["local"]["directory"]) for item in entries if "local" in item]
     # An explicitly staged topic must never also be included recursively in a
     # local series: this could duplicate published pages or expose wiki.old.
@@ -103,14 +104,20 @@ def stage_site(root=ROOT, build_root=None, registry=None, source_root=None, layo
                     shutil.copy2(source / filename, target / filename)
                     published.add(source / filename, target / filename)
 
-        shutil.copytree(root / "reviews", docs / "reviews")
-        published.add_tree(root / "reviews", docs / "reviews")
+        # Keep the published URLs stable when the review sources move.
+        _assert_no_symlinks(reviews)
+        shutil.copytree(reviews, docs / "reviews")
+        published.add_tree(reviews, docs / "reviews")
         _assert_no_symlinks(images)
         shutil.copytree(images, docs / "img")
         published.add_tree(images, docs / "img")
         shutil.copy2(article, docs / "electrical-timing-foundations.md")
         published.add(article, docs / "electrical-timing-foundations.md")
         shutil.copy2(root / "website" / "home.md", docs / "README.md")
+        # Source links to the repository overview lead to the published home.
+        # The copied website template is already written in site paths and must
+        # not be treated as source Markdown for link rewriting.
+        published.add(root / "README.md", docs / "README.md", rewrite_page=False)
         shutil.copy2(root / "website" / "series.md", docs / "series.md")
         shutil.copy2(root / "website" / "microarchitecture.md", docs / "microarchitecture.md")
         shutil.copy2(root / "website" / "storage.md", docs / "storage.md")

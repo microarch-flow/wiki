@@ -26,7 +26,7 @@ class PublishedPaths:
         self.paths = {}
         self.pages = {}
 
-    def add(self, source, destination):
+    def add(self, source, destination, *, rewrite_page=True):
         source = Path(source).absolute().relative_to(self.root).as_posix()
         destination_path = Path(destination).absolute()
         destination = destination_path.relative_to(self.docs).as_posix()
@@ -34,7 +34,7 @@ class PublishedPaths:
         if previous is not None and previous != destination:
             raise ValueError(f"Source is staged to multiple paths: {source}")
         self.paths[source] = destination
-        if destination_path.is_file() and destination_path.suffix == ".md":
+        if rewrite_page and destination_path.is_file() and destination_path.suffix == ".md":
             other = self.pages.get(destination)
             if other is not None and other != source:
                 raise ValueError(f"Multiple sources stage to {destination}")

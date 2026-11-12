@@ -19,7 +19,7 @@
 
 `series/workload/`、`series/inference-runtime/` 和 `series/chip-architectures/` 保持原源码路径。物理目录按专题整体归档；原有文章的主导航和文件级归属例外不变。
 
-`CIM/`、`FAB/`、`NOC/` 中的 `wiki.old/` 和各目录维护说明随专题保留，不因移动而进入站点。`reviews/` 保留原公开位置。根目录 `docs/`、`website/`、`.github/`、MkDocs 配置和本地忽略状态不作为正文目录移动。
+`CIM/`、`FAB/`、`NOC/` 中的 `wiki.old/` 和各目录维护说明随专题保留，不因移动而进入站点。七系列调整时，`reviews/` 的源码目录与公开位置均保留。根目录 `docs/`、`website/`、`.github/`、MkDocs 配置和本地忽略状态不作为正文目录移动。
 
 GitHub Pages 的既有网址通过暂存路径映射保留。GitHub 上指向 `main` 分支旧源码路径的链接不会因 Git 重命名自动跳转；固定提交的历史链接仍可访问。
 
@@ -32,3 +32,9 @@ GitHub Pages 的既有网址通过暂存路径映射保留。GitHub 上指向 `m
 目录调整验收时，原有 184 个 `wiki.old/` 跟踪文件经逐个比较，迁移前后字节相同。原有提交没有被改写；BUS、NoC、CIM 和 FAB 等抽样文件的 `git log --follow` 可追溯到移动前。
 
 源码检查发现一处基线已有的历史失效链接：`series/microarchitecture/CIM/wiki.old/SUMMARY.md` 指向 `../chat.md`。后续检查了本地副本、主仓 Git 历史及来源仓库的可见分支、标签和提交，没有找到该文件。另发现同主题候选对话，但无法确认它与缺失文件一致。归档索引已保留原路径并改为非链接标注；没有补造对话。归档原链接仍可在[来源仓固定提交](https://github.com/microarch-flow/CIM/blob/c532d9fd9b049ccdb3b7c646f3a4d9d44019c839/wiki/SUMMARY.md)中查看。
+
+## 评审记录归档
+
+七系列调整后，跨专题评审材料由根目录 `reviews/` 整体移至 `docs/reviews/`。基线报告、第二轮逐篇评审和第三轮盲测的题面、结果及参考模型继续保留。源码中的链接和盲测运行命令使用新路径。
+
+网站暂存仍将这些文件发布到 `reviews/`，以保留原有网页地址和搜索入口。Git 既有提交不作改写；查看旧提交时应使用该提交中的原始路径。
