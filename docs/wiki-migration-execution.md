@@ -43,9 +43,9 @@
 
 主仓提交 `e1f5f08f15f49cb1dbc6b3ff6bd7e243bb0abe3a` 的 [Actions 43175496904](https://github.com/microarch-flow/wiki/actions/runs/43175496904) 构建和部署均成功。日志显示 `Staged series ... from local series/workload`。公开首页、Workload 首页、Attention 深链接和原 HBM 深链接均返回 HTTP 200，正文与该提交的干净检出构建结果一致。
 
-公开验收后，旧仓提交 [`0e4e005`](https://github.com/microarch-flow/workload-wiki/commit/0e4e0056ed29ce2ffa2af24fa5199d767911c0d9) 删除重建通知工作流，并在旧首页标明新维护位置。源正文与历史保留。该次推送后，旧仓 Actions 运行列表没有出现新的通知运行；主仓也没有新的 `repository_dispatch` 运行。专用 secret 尚需单独处理。
+公开验收后，旧仓提交 [`0e4e005`](https://github.com/microarch-flow/workload-wiki/commit/0e4e0056ed29ce2ffa2af24fa5199d767911c0d9) 删除重建通知工作流，并在旧首页标明新维护位置。源正文与历史保留。该次推送后，旧仓 Actions 运行列表没有出现新的通知运行；主仓也没有新的 `repository_dispatch` 运行。专用 secret 的后续清理结果见 B7。
 
-独立审计检查了该账户可访问的 19 个仓库、共 21 条当前分支的完整 Git tree，未发现其他指向主站的发送工作流。主站 Actions 历史列出两次 `repository_dispatch`，均早于退役提交；旧仓通知日志与这两次运行的时间相吻合，但现有日志没有事件载荷，不能单凭时间证明来源。此审计不能排除账户外的服务或其他令牌持有者。已知发送方退役后，主站移除 `content-updated` 监听；`main` 推送和手动运行继续保留。移除监听后的[推送部署 43177596774](https://github.com/microarch-flow/wiki/actions/runs/43177596774) 和[手动部署 43177833460](https://github.com/microarch-flow/wiki/actions/runs/43177833460) 均成功。`WIKI_DISPATCH_TOKEN` 仓库 secret 的清理单独验收，不因此撤销底层令牌。
+独立审计检查了该账户可访问的 19 个仓库、共 21 条当前分支的完整 Git tree，未发现其他指向主站的发送工作流。主站 Actions 历史列出两次 `repository_dispatch`，均早于退役提交；旧仓通知日志与这两次运行的时间相吻合，但现有日志没有事件载荷，不能单凭时间证明来源。此审计不能排除账户外的服务或其他令牌持有者。已知发送方退役后，主站移除 `content-updated` 监听；`main` 推送和手动运行继续保留。移除监听后的[推送部署 43177596774](https://github.com/microarch-flow/wiki/actions/runs/43177596774) 和[手动部署 43177833460](https://github.com/microarch-flow/wiki/actions/runs/43177833460) 均成功。`WIKI_DISPATCH_TOKEN` 仓库 secret 已在 B7 单独验收清理，底层令牌未被撤销。
 
 ## B3：原位重排主导航
 
@@ -118,7 +118,9 @@ FAB 页面原位保留，主导航迁至芯片开发与实现系列。DFT 页面
 | roofline-to-runtime | `4c7fe5611899c4002a35c8f2fa8ea92fde391672` | [`3623210`](https://github.com/microarch-flow/roofline-to-runtime/commit/36232109a88624737571dd17cd874bd9ff92ba21) | 仅首页提示 |
 | chip-architecture-wiki | `3086204c049a762eb59033f8141fba9e91f4c669` | [`602f8e6`](https://github.com/microarch-flow/chip-architecture-wiki/commit/602f8e6bedb6d4960f7b1e580d704d80e7413b66) | 仅首页提示 |
 
-这些提交不删除旧仓和历史，也不将旧仓设为只读。主仓 Pages 原来已选择 GitHub Actions，保留默认域名和 HTTPS；主仓的 `main` 推送及手动运行均可部署。仓库级 webhook 和其他旧仓通知未发现专用绑定；账户外发送方及令牌使用范围不能由这次可见设置证明。Workload 的 `WIKI_DISPATCH_TOKEN` 仓库 secret 截至本记录尚未删除；该 secret 不再被现有通知工作流引用，清理和底层令牌撤销是不同操作。
+这些提交不删除旧仓和历史，也不将旧仓设为只读。主仓 Pages 原来已选择 GitHub Actions，保留默认域名和 HTTPS；主仓的 `main` 推送及手动运行均可部署。仓库级 webhook 和其他旧仓通知未发现专用绑定；账户外发送方及令牌使用范围不能由这次可见设置证明。
+
+2026-11-12，经用户确认并完成 GitHub 身份验证后，删除了 `workload-wiki` 的仓库 secret `WIKI_DISPATCH_TOKEN`。它原供已退役的重建通知工作流使用；当前旧仓不再保留该工作流，主站也已移除对应的 `repository_dispatch` 监听。刷新[旧仓 Actions Secret 设置页](https://github.com/microarch-flow/workload-wiki/settings/secrets/actions)后，Repository secrets 显示为空。此次只删除仓库保存的 secret，未撤销或修改底层令牌，也未记录其值。
 
 ## 待补专题的参考材料
 
