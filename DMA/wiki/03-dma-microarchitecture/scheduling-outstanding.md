@@ -2,7 +2,7 @@
 
 上级：[03 DMA 引擎微架构](./README.md)
 
-相关：[DMA 与 NoC](../05-system-integration/dma-and-noc.md)、[指标、瓶颈与实验设计](../06-performance-modeling/metrics-bottlenecks.md)、[BUS：AXI Channel、ID 与 Outstanding](../../../BUS/wiki/03-on-chip-protocol-families/axi-channel-id-outstanding.md)
+相关：[DMA 与 NoC](../05-system-integration/dma-and-noc.md)、[指标、瓶颈与实验设计](../06-performance-modeling/metrics-bottlenecks.md)、[BUS：AXI Channel、ID 与 Outstanding](../../../series/interconnect/BUS/wiki/03-on-chip-protocol-families/axi-channel-id-outstanding.md)
 
 ## 这页在回答什么问题
 

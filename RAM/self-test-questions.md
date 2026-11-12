@@ -271,10 +271,10 @@
 ## 跨 wiki 综合题（5 题）
 
 76. [J] DRAM controller 接到 AXI 总线时，如何处理 QoS 透传、read/write ordering、outstanding transaction 与 write-drain 策略之间的冲突？
-   [BUS outstanding 与排序](../BUS/wiki/03-on-chip-protocol-families/axi-channel-id-outstanding.md)、[RAM write drain](./wiki/06-memory-controller/write-buffer-write-drain.md)
+   [BUS outstanding 与排序](../series/interconnect/BUS/wiki/03-on-chip-protocol-families/axi-channel-id-outstanding.md)、[RAM write drain](./wiki/06-memory-controller/write-buffer-write-drain.md)
 
 77. [J] 多个 NPU tile 通过 NoC 共享 HBM 时，NoC 的 burst 聚合、拥塞和 response path 会如何改变 MC 看到的 row/bank 流量形状？
-   [NOC 流量](../NOC/wiki/05-system-integration/traffic-patterns-and-characterization.md)、[RAM 控制器模型](./wiki/06-memory-controller/mc-modeling-for-simulation.md)
+   [NOC 流量](../series/interconnect/NOC/wiki/05-system-integration/traffic-patterns-and-characterization.md)、[RAM 控制器模型](./wiki/06-memory-controller/mc-modeling-for-simulation.md)
 
 78. [J] 在 NPU double buffering 中，DMA refill 应如何同时对齐 DRAM 访问局部性和片上消费节拍？
    [DMA 双缓冲](../DMA/wiki/04-programming-model/tiling-double-buffering.md)、[RAM activation buffer](./wiki/09-ai-chip-memory-architecture/activation-buffer-and-double-buffering.md)

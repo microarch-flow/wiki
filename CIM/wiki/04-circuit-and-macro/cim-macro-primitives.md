@@ -1,7 +1,7 @@
 # CIM Macro 的基本原语：Array、Driver、Sense、Accumulator
 
 上级：[04 Circuit And Macro](./README.md)
-相关：[SRAM-CIM 深入](../02-memory-technologies/sram-cim-deep-dive.md), [Digital CIM 深入](../03-compute-paradigms/digital-cim-deep-dive.md), [RAM: Wordline Bitline Sense Amp](../../../RAM/wiki/02-sram-foundations/wordline-bitline-sense-amp.md), [NoC: Reduction Networks](../../../NOC/wiki/06-ai-noc-specifics/reduction-and-collective-networks.md)
+相关：[SRAM-CIM 深入](../02-memory-technologies/sram-cim-deep-dive.md), [Digital CIM 深入](../03-compute-paradigms/digital-cim-deep-dive.md), [RAM: Wordline Bitline Sense Amp](../../../RAM/wiki/02-sram-foundations/wordline-bitline-sense-amp.md), [NoC: Reduction Networks](../../../series/interconnect/NOC/wiki/06-ai-noc-specifics/reduction-and-collective-networks.md)
 
 ## 这页在回答什么问题
 

@@ -22,7 +22,7 @@
 
 UPMEM 的软件栈是它的核心。官方材料强调 DPU 可用 C 或 Rust 编程，不需要 OS；GitHub 上也公开了 DPU SDK demo、LLVM fork 和应用示例。来源：[UPMEM GitHub](https://github.com/upmem)。这使它比 analog CIM 更容易被系统软件工程师理解，但也要求程序员显式划分 host 代码和 DPU 代码，管理数据局部性。
 
-产业上，UPMEM 说明 near-data 路线可以先绕开 analog CIM 的校准和良率问题，但不能绕开系统集成问题。DPUs 数量越多，host 调度、数据分区、DPU-to-DPU 通信、global reduction、debug/profiling 和 fault isolation 就越重要；这些问题更接近 [NoC/backpressure/reduction](../../../../NOC/wiki/README.md) 与 [BUS/DMA/doorbell](../../../../BUS/wiki/README.md)，而不是 analog cell 物理。
+产业上，UPMEM 说明 near-data 路线可以先绕开 analog CIM 的校准和良率问题，但不能绕开系统集成问题。DPUs 数量越多，host 调度、数据分区、DPU-to-DPU 通信、global reduction、debug/profiling 和 fault isolation 就越重要；这些问题更接近 [NoC/backpressure/reduction](../../../../series/interconnect/NOC/wiki/README.md) 与 [BUS/DMA/doorbell](../../../../series/interconnect/BUS/wiki/README.md)，而不是 analog cell 物理。
 
 主要风险：
 

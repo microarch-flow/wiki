@@ -45,7 +45,7 @@
 - **CIM** — systolic 驻留 vs 存内计算的边界(驻留处是否就是计算处)→ [03 why-systolic](./03-systolic-array/why-systolic-array.md#5-与-cim-的边界)
 - **NOC / DMA** — 阵列进出口 / 跨单元带宽衔接片上互连 → [03 trickle-feed](./03-systolic-array/weight-loading-and-trickle-feed.md)、[07 gpu-as-tiled-tpu](./07-chip-organization/gpu-as-tiled-tpu.md)
 - **FAB** — 门数→die area→成本/良率 → [02 quadratic-bitwidth](./02-datapath-foundations/quadratic-bitwidth-scaling.md)、[05 fpga-vs-asic](./05-fpga-vs-asic/lut-mux-and-10x-overhead.md)
-- **Workload** — 低精度敏感性、dataflow 适配、batch↔吞吐/延迟 → [cnn-backbone（仓内相关页）](../../CIM/wiki/07-workloads/cnn-on-cim.md)、[attention-and-transformer（仓内相关页）](../../CIM/wiki/07-workloads/transformer-on-cim.md)、[attention-variants-and-efficiency（仓内相关页）](../../NOC/wiki/06-ai-noc-specifics/workload-attention-decode-kv-cache.md)；原素材另引用独立 Workload 仓库的同名页面，这里链接仓内相关主题，内容范围并不完全相同
+- **Workload** — 低精度敏感性、dataflow 适配、batch↔吞吐/延迟 → [cnn-backbone（仓内相关页）](../../CIM/wiki/07-workloads/cnn-on-cim.md)、[attention-and-transformer（仓内相关页）](../../CIM/wiki/07-workloads/transformer-on-cim.md)、[attention-variants-and-efficiency（仓内相关页）](../../series/interconnect/NOC/wiki/06-ai-noc-specifics/workload-attention-decode-kv-cache.md)；原素材另引用独立 Workload 仓库的同名页面，这里链接仓内相关主题，内容范围并不完全相同
 
 详见 [01-overview/taxonomy-and-roadmap](./01-overview/taxonomy-and-roadmap.md#3-域边界compute-不重写什么)。
 

@@ -1,7 +1,7 @@
 # GPU 与 TPU 的顶层组织：局部资源和跨单元通信
 
 上级：[07 · 芯片顶层组织](./README.md)
-相关：[阵列 sizing](../03-systolic-array/array-sizing-tradeoff.md)、[NoC 与存储系统](../../../NOC/wiki/05-system-integration/noc-meets-memory-system.md)
+相关：[阵列 sizing](../03-systolic-array/array-sizing-tradeoff.md)、[NoC 与存储系统](../../../series/interconnect/NOC/wiki/05-system-integration/noc-meets-memory-system.md)
 
 ## 芯片资源如何连接
 

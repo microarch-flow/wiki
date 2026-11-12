@@ -17,7 +17,7 @@
 - write completion 通过 `B` 通道闭环
 - outstanding 深度、本地 reorder 能力和 AXI ID 组织共同决定 latency hiding
 
-这正是为什么你必须把 DMA 的 burst 行为映射到 [BUS wiki 的 AXI 五通道](../../../BUS/wiki/03-on-chip-protocol-families/axi-five-channels-handshake.md) 和 [ID / outstanding](../../../BUS/wiki/03-on-chip-protocol-families/axi-channel-id-outstanding.md) 上去看。DMA 的“并发能力”在 AXI 视角里并不是抽象词，而是具体表现为它能同时挂多少 `AR/AW`、如何接 `R/B`、能否处理乱序返回。
+这正是为什么你必须把 DMA 的 burst 行为映射到 [BUS wiki 的 AXI 五通道](../../../series/interconnect/BUS/wiki/03-on-chip-protocol-families/axi-five-channels-handshake.md) 和 [ID / outstanding](../../../series/interconnect/BUS/wiki/03-on-chip-protocol-families/axi-channel-id-outstanding.md) 上去看。DMA 的“并发能力”在 AXI 视角里并不是抽象词，而是具体表现为它能同时挂多少 `AR/AW`、如何接 `R/B`、能否处理乱序返回。
 
 ## AXI DMA 最常见的系统约束是什么
 
@@ -41,16 +41,16 @@ AXI DMA 典型地深耦合于片上 memory hierarchy，因此它最常见的约�
 
 普通 PCIe Memory Write 是 posted，不产生与该写对应的事务级 Completion；Non-Flit 的逐跳 DLL ACK 只确认链路接收，不证明目标软件可消费。Memory Read 为 non-posted，一个请求可分成多个 CplD，必须收齐所需数据或按错误处理结束才释放读 Tag。AXI B 表示接口定义的写响应点，不自动证明数据已对 CPU cache 或下游消费者可见。
 
-AXI4 INCR burst 最多 256 beat，不得跨 4KB；其他 burst 类型有不同长度与对齐规则。PCIe Memory Read 的请求大小受 MRRS 与 4KB 边界等限制，带 payload 的 TLP 受 MPS 约束，Tag 限制在途读。具体模式和设备能力还须验证。详情见 [AXI burst](../../../BUS/wiki/03-on-chip-protocol-families/axi-burst-alignment-boundary.md) 和 [PCIe 建模参数](../../../PCIE/wiki/08-reference/pcie-modeling-params.md)。
+AXI4 INCR burst 最多 256 beat，不得跨 4KB；其他 burst 类型有不同长度与对齐规则。PCIe Memory Read 的请求大小受 MRRS 与 4KB 边界等限制，带 payload 的 TLP 受 MPS 约束，Tag 限制在途读。具体模式和设备能力还须验证。详情见 [AXI burst](../../../series/interconnect/BUS/wiki/03-on-chip-protocol-families/axi-burst-alignment-boundary.md) 和 [PCIe 建模参数](../../../series/interconnect/PCIE/wiki/08-reference/pcie-modeling-params.md)。
 
 这里必须明确区分两种 completion。PCIe 协议里的 completion 是“read request 在事务层得到了返回”；DMA 软件栈里的 completion 是“这笔数据移动对软件可见且可以推进状态机”。两者相关，但绝不是同一个概念。
 
 如果要系统补齐这条链，建议回看：
 
-- [PCIE: Posted / Non-Posted / Completion 与 Ordering](../../../PCIE/wiki/02-link-transaction-basics/posted-nonposted-completion-ordering.md)
-- [PCIE: TLP、DLLP 与 Completion 语义](../../../PCIE/wiki/02-link-transaction-basics/tlp-dllp-completion-basics.md)
-- [PCIE: PCIe Read Completion 延迟为什么敏感](../../../PCIE/wiki/04-data-path-dma-interrupts/pcie-read-completion-latency.md)
-- [PCIE: 队列、Doorbell、Completion 与 MSI-X](../../../PCIE/wiki/04-data-path-dma-interrupts/queues-doorbells-completions-msix.md)
+- [PCIE: Posted / Non-Posted / Completion 与 Ordering](../../../series/interconnect/PCIE/wiki/02-link-transaction-basics/posted-nonposted-completion-ordering.md)
+- [PCIE: TLP、DLLP 与 Completion 语义](../../../series/interconnect/PCIE/wiki/02-link-transaction-basics/tlp-dllp-completion-basics.md)
+- [PCIE: PCIe Read Completion 延迟为什么敏感](../../../series/interconnect/PCIE/wiki/04-data-path-dma-interrupts/pcie-read-completion-latency.md)
+- [PCIE: 队列、Doorbell、Completion 与 MSI-X](../../../series/interconnect/PCIE/wiki/04-data-path-dma-interrupts/queues-doorbells-completions-msix.md)
 
 ## 为什么 PCIe DMA 的“完成”更像软件契约问题
 

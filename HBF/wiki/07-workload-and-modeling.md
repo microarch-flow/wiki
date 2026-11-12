@@ -62,4 +62,4 @@ GB/W 是给定条件下的容量与功率之比；pJ/bit 是能耗与传输或�
 
 对一次模拟或实验，至少记录访问分布、预取策略、参数来源、平均和尾部延迟、有效带宽、缓存命中、各 channel 利用率、维护流量和错误假设。对比 HBM 或 SSD 时，还要说明容量、成本、封装、工作负载和观察边界是否一致。
 
-这种模型可以用于探索设计；没有实测校准时，结果属于假设驱动的估算，不能证明产品性能、系统收益或硬件可实现性。可继续参考 [RAM 存储层级](../../RAM/wiki/07-system-architecture/memory-hierarchy-as-system.md)和 [NoC 与存储系统](../../NOC/wiki/05-system-integration/noc-meets-memory-system.md)。
+这种模型可以用于探索设计；没有实测校准时，结果属于假设驱动的估算，不能证明产品性能、系统收益或硬件可实现性。可继续参考 [RAM 存储层级](../../RAM/wiki/07-system-architecture/memory-hierarchy-as-system.md)和 [NoC 与存储系统](../../series/interconnect/NOC/wiki/05-system-integration/noc-meets-memory-system.md)。

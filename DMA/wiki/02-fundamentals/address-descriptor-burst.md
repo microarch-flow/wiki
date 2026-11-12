@@ -2,7 +2,7 @@
 
 上级：[02 基础对象与传输语义](./README.md)
 
-相关：[DMA 引擎的组成](../03-dma-microarchitecture/engine-components.md)、[调度、Outstanding 与回包组织](../03-dma-microarchitecture/scheduling-outstanding.md)、[BUS：AXI Burst、Alignment 与 Boundary](../../../BUS/wiki/03-on-chip-protocol-families/axi-burst-alignment-boundary.md)
+相关：[DMA 引擎的组成](../03-dma-microarchitecture/engine-components.md)、[调度、Outstanding 与回包组织](../03-dma-microarchitecture/scheduling-outstanding.md)、[BUS：AXI Burst、Alignment 与 Boundary](../../../series/interconnect/BUS/wiki/03-on-chip-protocol-families/axi-burst-alignment-boundary.md)
 
 ## 这页在回答什么问题
 
@@ -16,7 +16,7 @@
 - `logical transfer-level`：软件眼里的一笔搬运任务
 - `transaction-level`：真正落到互连上的 read/write burst 或 packet
 
-很多 DMA 误解都来自把这三层压成一层。一个 descriptor 可以对应一笔逻辑任务，而这笔逻辑任务在 AXI 上会拆成多笔 `AR/AW` 请求和对应的 `R/W/B` 流；在 PCIe 上又可能变成多个 TLP。后面你在 [BUS wiki 的 AXI 五通道](../../../BUS/wiki/03-on-chip-protocol-families/axi-five-channels-handshake.md) 看到的通道行为，本质上就是 DMA 把上层任务翻译到底层事务后的样子。
+很多 DMA 误解都来自把这三层压成一层。一个 descriptor 可以对应一笔逻辑任务，而这笔逻辑任务在 AXI 上会拆成多笔 `AR/AW` 请求和对应的 `R/W/B` 流；在 PCIe 上又可能变成多个 TLP。后面你在 [BUS wiki 的 AXI 五通道](../../../series/interconnect/BUS/wiki/03-on-chip-protocol-families/axi-five-channels-handshake.md) 看到的通道行为，本质上就是 DMA 把上层任务翻译到底层事务后的样子。
 
 ## 为什么 DMA 会从寄存器编程演化到 descriptor
 

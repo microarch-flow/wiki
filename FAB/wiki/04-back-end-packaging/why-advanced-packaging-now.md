@@ -23,7 +23,7 @@ AI/HPC 的算力增长需要外存带宽同步增长。继续依赖较远的板�
 
 随着单 die 面积增大，reticle、缺陷密度、良率和 mask 成本会共同推高风险。Chiplet 把一个大系统拆成多个 die，有机会改善单 die 良率、复用 IP、混合节点和扩展 SKU。
 
-但 chiplet 不是免费午餐。它需要封装内 D2D 互连、KGD、协议/PHY、package routing、热管理和更复杂测试。NoC wiki 的 [chiplet 与 die-to-die 互连](../../../NOC/wiki/06-ai-noc-specifics/chiplet-and-die-to-die-interconnect.md) 从通信层解释了跨 die 代价；本章从封装层解释这些代价为什么存在。
+但 chiplet 不是免费午餐。它需要封装内 D2D 互连、KGD、协议/PHY、package routing、热管理和更复杂测试。NoC wiki 的 [chiplet 与 die-to-die 互连](../../../series/interconnect/NOC/wiki/06-ai-noc-specifics/chiplet-and-die-to-die-interconnect.md) 从通信层解释了跨 die 代价；本章从封装层解释这些代价为什么存在。
 
 ## 功耗密度让 package 成为热和供电系统
 

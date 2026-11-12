@@ -1,7 +1,7 @@
 # Peripheral 开销：为什么 ADC/控制电路常常吃掉主要功耗与面积
 
 上级：[04 Circuit And Macro](./README.md)
-相关：[ADC/DAC/SA in CIM](./adc-dac-sa-in-cim.md), [Macro Design Tradeoff Framework](./macro-design-tradeoff-framework.md), [FAB: Process Nodes](../../../FAB/wiki/02-front-end-fabrication/process-nodes-and-ppa-tradeoffs.md), [BUS: Interconnect Components](../../../BUS/wiki/04-microarchitecture-integration/interconnect-components.md)
+相关：[ADC/DAC/SA in CIM](./adc-dac-sa-in-cim.md), [Macro Design Tradeoff Framework](./macro-design-tradeoff-framework.md), [FAB: Process Nodes](../../../FAB/wiki/02-front-end-fabrication/process-nodes-and-ppa-tradeoffs.md), [BUS: Interconnect Components](../../../series/interconnect/BUS/wiki/04-microarchitecture-integration/interconnect-components.md)
 
 ## 这页在回答什么问题
 
@@ -38,7 +38,7 @@ Mixed-signal CIM 的外围最容易被低估，因为它把 analog array、SA/AD
 
 ## 与系统互连的边界
 
-Peripheral 不是最后一层开销。macro 输出还要进入 tile buffer、local reduction、NoC、memory-mapped command path 或 host interface。05 章会连接 NoC wiki 的 [memory-centric NoC](../../../NOC/wiki/06-ai-noc-specifics/memory-centric-noc.md)，解释为什么 macro-level saving 会在系统层继续衰减；BUS wiki 的 interconnect 组件则适合理解 activation/result transfer 和 host-visible movement。
+Peripheral 不是最后一层开销。macro 输出还要进入 tile buffer、local reduction、NoC、memory-mapped command path 或 host interface。05 章会连接 NoC wiki 的 [memory-centric NoC](../../../series/interconnect/NOC/wiki/06-ai-noc-specifics/memory-centric-noc.md)，解释为什么 macro-level saving 会在系统层继续衰减；BUS wiki 的 interconnect 组件则适合理解 activation/result transfer 和 host-visible movement。
 
 工艺节点也会改变 peripheral 口径。Digital SRAM-CIM 更能跟随主流 CMOS scaling；analog/mixed-signal CIM 受 matching、reference、layout parasitic、低电压 headroom 和 analog-friendly node 约束，不能把 digital PPA scaling 直接套到 ADC/DAC 和 reference 上。
 

@@ -1,7 +1,7 @@
 # CIM 阵列间的互连与 Reduction：与 NoC 的关系
 
 上级：[05 Architecture And System](./README.md)
-相关：[NoC: Reduction Networks](../../../NOC/wiki/06-ai-noc-specifics/reduction-and-collective-networks.md), [NoC: Memory-Centric NoC](../../../NOC/wiki/06-ai-noc-specifics/memory-centric-noc.md), [Peripheral Overhead](../04-circuit-and-macro/peripheral-overhead.md)
+相关：[NoC: Reduction Networks](../../../series/interconnect/NOC/wiki/06-ai-noc-specifics/reduction-and-collective-networks.md), [NoC: Memory-Centric NoC](../../../series/interconnect/NOC/wiki/06-ai-noc-specifics/memory-centric-noc.md), [Peripheral Overhead](../04-circuit-and-macro/peripheral-overhead.md)
 
 ## 这页在回答什么问题
 
@@ -30,7 +30,7 @@ Mixed-signal CIM 的互连压力取决于 analog/digital 边界。边界越靠�
 
 ## 拓扑选择
 
-小规模 tile 可用局部 bus、tree 或 crossbar；大规模 chip 需要 NoC、hierarchical reduction 或 multicast tree。NoC wiki 的 [broadcast multicast tree](../../../NOC/wiki/06-ai-noc-specifics/broadcast-multicast-tree.md) 和 [tile architecture](../../../NOC/wiki/06-ai-noc-specifics/tile-architecture-and-noc.md) 可作为背景。
+小规模 tile 可用局部 bus、tree 或 crossbar；大规模 chip 需要 NoC、hierarchical reduction 或 multicast tree。NoC wiki 的 [broadcast multicast tree](../../../series/interconnect/NOC/wiki/06-ai-noc-specifics/broadcast-multicast-tree.md) 和 [tile architecture](../../../series/interconnect/NOC/wiki/06-ai-noc-specifics/tile-architecture-and-noc.md) 可作为背景。
 
 选择拓扑时要看 traffic 方向。如果 activation 是一对多，broadcast tree 有价值；如果 partial sum 是多对一，reduction tree 更合适；如果 workload 频繁 fallback 或多层流水，general NoC 的灵活性更重要。
 

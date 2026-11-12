@@ -1,7 +1,7 @@
 # HBM：从协议层面看它和 DDR 的根本不同
 
 上级：[DRAM 协议层](./README.md)
-相关：[GDDR：为带宽放弃了什么](./gddr-graphics-bandwidth.md)、[HBM 的 2.5D/3D 集成与 TSV 技术](../08-packaging-integration/hbm-2.5d-3d-tsv.md)、[SerDes：HBM 与 3D 堆叠中的连接](../../../SERDES/wiki/08-system-applications/hbm-and-3d.md)
+相关：[GDDR：为带宽放弃了什么](./gddr-graphics-bandwidth.md)、[HBM 的 2.5D/3D 集成与 TSV 技术](../08-packaging-integration/hbm-2.5d-3d-tsv.md)、[SerDes：HBM 与 3D 堆叠中的连接](../../../series/interconnect/SERDES/wiki/08-system-applications/hbm-and-3d.md)
 
 ## 这页在回答什么问题
 

@@ -71,7 +71,7 @@ COMPUTE 域聚焦"数据搬到之后怎么算、为什么算力单元长这样"�
 | **FAB** | 工艺节点、PPA、良率、tape-out、封装 | [quadratic-bitwidth-scaling](../02-datapath-foundations/quadratic-bitwidth-scaling.md)、[pipeline-register-insertion](../04-clocking-and-pipeline/pipeline-register-insertion.md) | COMPUTE 给"省多少门";FAB 给"门→mm²→成本/良率" |
 | **Workload** | CNN/Transformer/BEV/VLA 等负载特征 | [dataflow-taxonomy](../03-systolic-array/dataflow-taxonomy.md)、[frequency-is-not-throughput](../04-clocking-and-pipeline/frequency-is-not-throughput.md) | COMPUTE 给硬件结构;Workload 给"什么负载的复用结构适配哪种 dataflow" |
 
-> 原素材引用独立 Workload 仓库的 `cnn-backbone`、`attention-and-transformer`、`attention-variants-and-efficiency`。这里分别提供 [CNN 仓内相关页](../../../CIM/wiki/07-workloads/cnn-on-cim.md)、[Transformer 仓内相关页](../../../CIM/wiki/07-workloads/transformer-on-cim.md)和 [decode/KV 仓内相关页](../../../NOC/wiki/06-ai-noc-specifics/workload-attention-decode-kv-cache.md)。这些相关页并非原文的镜像。
+> 原素材引用独立 Workload 仓库的 `cnn-backbone`、`attention-and-transformer`、`attention-variants-and-efficiency`。这里分别提供 [CNN 仓内相关页](../../../CIM/wiki/07-workloads/cnn-on-cim.md)、[Transformer 仓内相关页](../../../CIM/wiki/07-workloads/transformer-on-cim.md)和 [decode/KV 仓内相关页](../../../series/interconnect/NOC/wiki/06-ai-noc-specifics/workload-attention-decode-kv-cache.md)。这些相关页并非原文的镜像。
 
 ---
 

@@ -13,7 +13,7 @@
 
 **Foundry/IP 公司** 不一定直接卖 CIM 产品，却控制工艺节点、SRAM bitcell、embedded NVM、3DIC、DFT 和良率模型。SRAM-CIM 如果想商业化，需要和 [FAB wiki 的 process node 与 DFT/test](../../../FAB/wiki/02-front-end-fabrication/README.md) 绑定；ReRAM/PCM/Flash CIM 如果想商业化，还要解决新器件集成、retention、endurance 和 inline test。foundry/IP 的产业价值是把“论文 macro”变成可复用 PDK/IP/测试方法，而不是做一次性 demo。
 
-**System company** 关注的是部署路径。PCIe card、M.2 module、DIMM module、edge box、server appliance 会把问题从电路转成 [BUS wiki 的 PCIe/DMA/MMIO](../../../BUS/wiki/README.md)、driver、runtime、thermal、field update 和运维。系统公司采购时优先看模型能否跑在可维护的软件栈上、能否在客户现场稳定工作，而不是某个 macro 的峰值能效。
+**System company** 关注的是部署路径。PCIe card、M.2 module、DIMM module、edge box、server appliance 会把问题从电路转成 [BUS wiki 的 PCIe/DMA/MMIO](../../../series/interconnect/BUS/wiki/README.md)、driver、runtime、thermal、field update 和运维。系统公司采购时优先看模型能否跑在可维护的软件栈上、能否在客户现场稳定工作，而不是某个 macro 的峰值能效。
 
 **Academic spin-off** 的优势是能从器件、电路、模型协同设计切入；弱点是缺少产品验证和供应链控制。很多 ReRAM/PCM/MRAM CIM 方案在 09 章更有价值，因为它们回答的是“未来可能的器件-计算耦合方式”，不是“当下客户可以买到什么”。
 

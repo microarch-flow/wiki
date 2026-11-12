@@ -27,7 +27,7 @@ AI/HPC 芯片的系统需求把问题推到了封装前台。算力密度上升�
 
 HBM 是典型例子。它不是单纯更快的 DRAM，而是一种需要 stack、TSV、2.5D interposer/RDL/bridge、KGD、package PDN 和热设计共同支撑的系统形态。相关内存协议与系统意义可参考 RAM wiki 的 [HBM 协议章节](../../../RAM/wiki/05-dram-protocol-families/hbm-stacked-wide-io.md) 和 [HBM 2.5D/3D 集成](../../../RAM/wiki/08-packaging-integration/hbm-2.5d-3d-tsv.md)。
 
-Chiplet 也是类似逻辑。NoC wiki 中的 [chiplet 与 die-to-die 互连](../../../NOC/wiki/06-ai-noc-specifics/chiplet-and-die-to-die-interconnect.md) 讨论了跨 die 通信为什么不是“多几 hop”；本 wiki 后续会从封装侧解释这些跨 die link 为什么受到 bump pitch、interposer/RDL、热和测试限制。
+Chiplet 也是类似逻辑。NoC wiki 中的 [chiplet 与 die-to-die 互连](../../../series/interconnect/NOC/wiki/06-ai-noc-specifics/chiplet-and-die-to-die-interconnect.md) 讨论了跨 die 通信为什么不是“多几 hop”；本 wiki 后续会从封装侧解释这些跨 die link 为什么受到 bump pitch、interposer/RDL、热和测试限制。
 
 ## 工艺与封装的真实关系
 

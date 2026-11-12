@@ -19,14 +19,14 @@
 | --- | --- | --- |
 | SRAM 和 DRAM 如何保存并提供数据？ | [RAM 专题主页](./RAM/wiki/README.md)；[RAM：存储层级](./RAM/wiki/01-overview/README.md) | 时序、容量、bank 冲突、带宽 |
 | 运算单元如何形成吞吐？ | [COMPUTE 专题主页](./COMPUTE/wiki/README.md)；[COMPUTE：数据通路](./COMPUTE/wiki/02-datapath-foundations/README.md) | 流水线、操作延迟、资源占用 |
-| 多个模块如何共享片上通路？ | [BUS 专题主页](./BUS/wiki/README.md)；[域入口](./BUS/README.md)；[BUS：互连基础](./BUS/wiki/02-fundamentals/README.md) | 仲裁、握手、背压 |
-| 多节点如何路由和争用？ | [NOC 专题主页](./NOC/wiki/README.md)；[NOC：路由器](./NOC/wiki/02-router-microarchitecture/README.md) | 路由、缓冲、排队和流控 |
+| 多个模块如何共享片上通路？ | [BUS 专题主页](./series/interconnect/BUS/wiki/README.md)；[域入口](./series/interconnect/BUS/README.md)；[BUS：互连基础](./series/interconnect/BUS/wiki/02-fundamentals/README.md) | 仲裁、握手、背压 |
+| 多节点如何路由和争用？ | [NOC 专题主页](./series/interconnect/NOC/wiki/README.md)；[NOC：路由器](./series/interconnect/NOC/wiki/02-router-microarchitecture/README.md) | 路由、缓冲、排队和流控 |
 | 数据搬运如何与计算重叠？ | [DMA 专题主页](./DMA/wiki/README.md)；[域入口](./DMA/README.md)；[DMA：基础](./DMA/wiki/02-fundamentals/README.md) | 描述符、请求并发、完成事件 |
-| 主机与设备如何交换事务？ | [PCIe 专题主页](./PCIE/wiki/README.md)；[PCIe：链路与事务](./PCIE/wiki/02-link-transaction-basics/README.md) | TLP、credit、completion 和往返延迟 |
+| 主机与设备如何交换事务？ | [PCIe 专题主页](./series/interconnect/PCIE/wiki/README.md)；[PCIe：链路与事务](./series/interconnect/PCIE/wiki/02-link-transaction-basics/README.md) | TLP、credit、completion 和往返延迟 |
 | 存储内计算如何改变数据路径？ | [CIM 专题主页](./CIM/wiki/README.md)；[域入口](./CIM/README.md)；[CIM：电路与宏](./CIM/wiki/04-circuit-and-macro/README.md) | 阵列、外围电路、精度及服务时间 |
-| 电信号怎样转换为光链路？ | [CPO 专题主页](./CPO/wiki/README.md)；[CPO：光链路基础](./CPO/wiki/04-optical-engine/optical-link-basics.md) | 转换、传输、功率预算和误码假设 |
+| 电信号怎样转换为光链路？ | [CPO 专题主页](./series/interconnect/CPO/wiki/README.md)；[CPO：光链路基础](./series/interconnect/CPO/wiki/04-optical-engine/optical-link-basics.md) | 转换、传输、功率预算和误码假设 |
 | 工艺、封装和测试如何约束设计？ | [FAB 专题主页](./FAB/wiki/README.md)；[FAB：封装信号完整性](./FAB/wiki/06-cross-cutting-engineering/signal-integrity-in-package.md) | PVT、寄生参数、良率和可靠性边界 |
-| 高速串行数据怎样跨通道并恢复？ | [SerDes 专题主页](./SERDES/wiki/README.md)；[SerDes：全局链路](./SERDES/wiki/01-overview/README.md) | 通道、收发、训练、设计验证与系统建模 |
+| 高速串行数据怎样跨通道并恢复？ | [SerDes 专题主页](./series/interconnect/SERDES/wiki/README.md)；[SerDes：全局链路](./series/interconnect/SERDES/wiki/01-overview/README.md) | 通道、收发、训练、设计验证与系统建模 |
 | NAND 怎样在计算附近提供高带宽？ | [HBF 专题主页](./HBF/wiki/README.md)；[HBF：一次读取](./HBF/wiki/04-read-walkthrough.md) | 地址映射、阵列并行、维护与可靠性 |
 
 各专题的 `wiki` 是现行内容；`wiki.old` 是历史归档。产业与产品资料具有时效性，需要按原始来源和日期核验。

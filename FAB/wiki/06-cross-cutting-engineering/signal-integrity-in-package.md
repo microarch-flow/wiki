@@ -1,7 +1,7 @@
 # 封装内的信号完整性
 
 上级:[跨工艺共性问题](README.md)
-相关:[PI、PDN、Decap:供电完整性](power-delivery-pi-pdn-decap.md), [2.5D 路线](../04-back-end-packaging/2.5d-routes/README.md), [HBM 如何把产业逼向 2.5D 和 3D](../04-back-end-packaging/hbm-as-case-study/why-hbm-forces-2.5d-3d.md), [SerDes：电信号与通道](../../../SERDES/wiki/02-signal-channel/README.md)
+相关:[PI、PDN、Decap:供电完整性](power-delivery-pi-pdn-decap.md), [2.5D 路线](../04-back-end-packaging/2.5d-routes/README.md), [HBM 如何把产业逼向 2.5D 和 3D](../04-back-end-packaging/hbm-as-case-study/why-hbm-forces-2.5d-3d.md), [SerDes：电信号与通道](../../../series/interconnect/SERDES/wiki/02-signal-channel/README.md)
 
 ## 这页在回答什么问题
 

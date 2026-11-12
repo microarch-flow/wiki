@@ -15,7 +15,7 @@
 
 **PIM** 的风险集中在 memory die 面积、功耗预算、command/controller 和封装验证。HBM/GDDR 产品本来就被带宽、功耗、热和良率约束；加入 compute unit 后，memory vendor 必须证明不会破坏现有 memory timing、良率和客户 qualification。HBM-PIM 还要面对 TSV、stack thermal 和 accelerator card 集成，和 [FAB/HBM/3DIC 封装](../../../FAB/wiki/04-back-end-packaging/3d-routes/3dic-fundamentals.md) 直接相关。
 
-**NMC** 的风险集中在封装带宽、host interface、热设计和一致性模型。compute 放在 memory module、base die、interposer 或 package-side logic 附近时，物理同混程度降低，但要面对 [BUS wiki 的 PCIe/DMA/MMIO](../../../BUS/wiki/README.md)、[NoC 的 backpressure/reduction](../../../NOC/wiki/README.md)、die-to-die link、interposer routing 和系统级调试。
+**NMC** 的风险集中在封装带宽、host interface、热设计和一致性模型。compute 放在 memory module、base die、interposer 或 package-side logic 附近时，物理同混程度降低，但要面对 [BUS wiki 的 PCIe/DMA/MMIO](../../../series/interconnect/BUS/wiki/README.md)、[NoC 的 backpressure/reduction](../../../series/interconnect/NOC/wiki/README.md)、die-to-die link、interposer routing 和系统级调试。
 
 ## 一句话理解
 

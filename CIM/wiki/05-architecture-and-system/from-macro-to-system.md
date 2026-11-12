@@ -1,7 +1,7 @@
 # 从 Cell 到 System：Macro、Tile 与 Chip 的层级
 
 上级：[05 Architecture And System](./README.md)
-相关：[Macro Design Framework](../04-circuit-and-macro/macro-design-tradeoff-framework.md), [Peripheral Overhead](../04-circuit-and-macro/peripheral-overhead.md), [NoC: Tile Architecture](../../../NOC/wiki/06-ai-noc-specifics/tile-architecture-and-noc.md)
+相关：[Macro Design Framework](../04-circuit-and-macro/macro-design-tradeoff-framework.md), [Peripheral Overhead](../04-circuit-and-macro/peripheral-overhead.md), [NoC: Tile Architecture](../../../series/interconnect/NOC/wiki/06-ai-noc-specifics/tile-architecture-and-noc.md)
 
 ## 这页在回答什么问题
 
@@ -23,7 +23,7 @@ macro 到 tile 的第一道损耗来自 buffer 和 local reduction。沿 K 切�
 
 tile 到 chip 的第二道损耗来自 NoC、global buffer 和同步。CIM 把部分计算压进 array，不代表全局通信消失；多 tile 的 partial sum、activation broadcast 和 weight reload 仍会形成 traffic。
 
-chip 到 system 的第三道损耗来自 host 协同。host 要把算子下发、管理 DMA、处理不支持的 op、同步结果并处理异常路径；BUS wiki 的 [DMA path](../../../BUS/wiki/04-microarchitecture-integration/dma-descriptor-fetch-data-move-writeback.md) 是理解这类系统开销的基础。
+chip 到 system 的第三道损耗来自 host 协同。host 要把算子下发、管理 DMA、处理不支持的 op、同步结果并处理异常路径；BUS wiki 的 [DMA path](../../../series/interconnect/BUS/wiki/04-microarchitecture-integration/dma-descriptor-fetch-data-move-writeback.md) 是理解这类系统开销的基础。
 
 ## 三条 Paradigm 的收益衰减链
 

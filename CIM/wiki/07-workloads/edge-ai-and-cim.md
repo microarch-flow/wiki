@@ -1,7 +1,7 @@
 # Edge AI：能效需求驱动下 CIM 的现实定位
 
 上级：[07 Workloads](./README.md)
-相关：[CNN on CIM](./cnn-on-cim.md), [BUS: DMA CPU Peripheral Path](../../../BUS/wiki/04-microarchitecture-integration/dma-cpu-peripheral-memory-path.md), [FAB: Thermal Management](../../../FAB/wiki/06-cross-cutting-engineering/thermal-path-and-management.md)
+相关：[CNN on CIM](./cnn-on-cim.md), [BUS: DMA CPU Peripheral Path](../../../series/interconnect/BUS/wiki/04-microarchitecture-integration/dma-cpu-peripheral-memory-path.md), [FAB: Thermal Management](../../../FAB/wiki/06-cross-cutting-engineering/thermal-path-and-management.md)
 
 ## 这页在回答什么问题
 

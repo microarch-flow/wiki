@@ -2,14 +2,14 @@
   "topics": {
     "RAM": "RAM",
     "COMPUTE": "COMPUTE",
-    "BUS": "BUS",
-    "NOC": "NOC",
+    "BUS": "series/interconnect/BUS",
+    "NOC": "series/interconnect/NOC",
     "DMA": "DMA",
-    "PCIE": "PCIE",
+    "PCIE": "series/interconnect/PCIE",
     "CIM": "CIM",
-    "CPO": "CPO",
+    "CPO": "series/interconnect/CPO",
     "FAB": "FAB",
-    "SERDES": "SERDES",
+    "SERDES": "series/interconnect/SERDES",
     "HBF": "HBF"
   },
   "foundations": {

@@ -1,7 +1,7 @@
 # Transformer：Attention 与 KV Cache 给 CIM 带来的新挑战
 
 上级：[07 Workloads](./README.md)
-相关：[Model Adaptation](../06-software-stack/model-adaptation-strategies.md), [NoC: Attention Prefill](../../../NOC/wiki/06-ai-noc-specifics/workload-attention-prefill.md), [NoC: Attention Decode KV Cache](../../../NOC/wiki/06-ai-noc-specifics/workload-attention-decode-kv-cache.md)
+相关：[Model Adaptation](../06-software-stack/model-adaptation-strategies.md), [NoC: Attention Prefill](../../../series/interconnect/NOC/wiki/06-ai-noc-specifics/workload-attention-prefill.md), [NoC: Attention Decode KV Cache](../../../series/interconnect/NOC/wiki/06-ai-noc-specifics/workload-attention-decode-kv-cache.md)
 
 ## 这页在回答什么问题
 

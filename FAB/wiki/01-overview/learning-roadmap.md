@@ -56,11 +56,11 @@
 
 ## 与已有 BUS/RAM/NoC wiki 的读法
 
-如果你从 NoC 过来，建议先读 `04/3d-routes` 和 `06/signal-integrity-in-package.md`，再回看 NoC 的 [chiplet 与 die-to-die 互连](../../../NOC/wiki/06-ai-noc-specifics/chiplet-and-die-to-die-interconnect.md)。这样能把“跨 die 不是多几 hop”落到封装物理上。
+如果你从 NoC 过来，建议先读 `04/3d-routes` 和 `06/signal-integrity-in-package.md`，再回看 NoC 的 [chiplet 与 die-to-die 互连](../../../series/interconnect/NOC/wiki/06-ai-noc-specifics/chiplet-and-die-to-die-interconnect.md)。这样能把“跨 die 不是多几 hop”落到封装物理上。
 
 如果你从 RAM 过来，建议先读 `04/hbm-as-case-study`，再回看 RAM 的 [HBM 协议](../../../RAM/wiki/05-dram-protocol-families/hbm-stacked-wide-io.md) 与 [HBM 集成](../../../RAM/wiki/08-packaging-integration/hbm-2.5d-3d-tsv.md)。这样能把 HBM 的协议宽接口和 package 对象关系连起来。
 
-如果你从 BUS 过来，建议读 `02/interconnect-stack-beol.md` 和 `06/power-delivery-pi-pdn-decap.md`，再回看 BUS 的 [互连组件与数据路径分解](../../../BUS/wiki/04-microarchitecture-integration/interconnect-components.md)。这样能把片上路径模型和物理布线/供电约束连接起来。
+如果你从 BUS 过来，建议读 `02/interconnect-stack-beol.md` 和 `06/power-delivery-pi-pdn-decap.md`，再回看 BUS 的 [互连组件与数据路径分解](../../../series/interconnect/BUS/wiki/04-microarchitecture-integration/interconnect-components.md)。这样能把片上路径模型和物理布线/供电约束连接起来。
 
 ## 一句话理解
 

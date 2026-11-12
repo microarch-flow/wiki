@@ -1,7 +1,7 @@
 # 建模参数字典：从四元组到可实现参数表
 
 上级：[05 Architecture And System](./README.md)
-相关：[性能与能效建模](./performance-energy-modeling.md), [指标术语表](../09-research-frontier/metrics-glossary.md), [Peripheral 开销](../04-circuit-and-macro/peripheral-overhead.md), [Dataflow 映射](./dataflow-mapping-on-cim.md), [NoC: 架构探索循环](../../../NOC/wiki/07-evaluation-methodology/architecture-exploration-loop.md)
+相关：[性能与能效建模](./performance-energy-modeling.md), [指标术语表](../09-research-frontier/metrics-glossary.md), [Peripheral 开销](../04-circuit-and-macro/peripheral-overhead.md), [Dataflow 映射](./dataflow-mapping-on-cim.md), [NoC: 架构探索循环](../../../series/interconnect/NOC/wiki/07-evaluation-methodology/architecture-exploration-loop.md)
 
 ## 这页在回答什么问题
 
@@ -61,7 +61,7 @@
 | tile buffer 容量 | `buf_cap` | KB | 设计相关 | reload 频率、T_memory | 容量错配导致权重/激活反复 reload |
 | buffer 访问能耗 | `e_buf` | pJ/byte | SRAM 量级 | E_buffer | 借用 [RAM wiki](../../../RAM/wiki/09-ai-chip-memory-architecture/memory-bound-vs-compute-bound.md) 口径 |
 | NoC 带宽 | `bw_noc` | GB/s | 拓扑相关 | T_reduction、T_memory | partial sum traffic 是 CIM 特有压力 |
-| NoC 单跳能耗 | `e_noc` | pJ/byte/hop | 工艺/距离相关 | E_noc | 见 [NoC wiki](../../../NOC/wiki/06-ai-noc-specifics/memory-centric-noc.md) |
+| NoC 单跳能耗 | `e_noc` | pJ/byte/hop | 工艺/距离相关 | E_noc | 见 [NoC wiki](../../../series/interconnect/NOC/wiki/06-ai-noc-specifics/memory-centric-noc.md) |
 | HBM/DRAM 带宽 | `bw_mem` | GB/s | HBM 数百~TB/s | T_memory | memory-bound workload 的主导项 |
 | DRAM 访问能耗 | `e_dram` | pJ/byte | 远高于片上 SRAM | E_hbm_dram | energy/byte 是 PIM/NMC 收益的核心口径 |
 | host 偏移延迟 | `t_host` | µs | 接口相关 | T_host、T_sync | PCIe attached vs SoC 内嵌差异巨大 |

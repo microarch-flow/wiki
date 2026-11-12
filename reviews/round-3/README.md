@@ -21,7 +21,7 @@ python3 reviews/round-3/model.py --expand-dram D4
 ### 题设与正文各提供什么
 
 - **题设**固定了请求、地址、端口数、II、读延迟、DDR4 的模式和 timing、NoC 容量及事件相位，还规定资源合格时立即发送或接纳。它保证 DRAM 其他命令、DQ、刷新与调度约束已满足。这些数值是教学配置。
-- **正文**提供机制：SRAM 的 bank 与物理端口、II 与读延迟的区别；DRAM 行状态与 PRE/ACT/RD 的时序下界；NoC 的 slot credit、在途状态和按快照推进的规则。见 [SRAM 端口](../../RAM/wiki/02-sram-foundations/single-port-dual-port-multi-port.md)、[DRAM timing](../../RAM/wiki/05-dram-protocol-families/timing-parameters-trcd-trp-tras.md)、[NoC credit](../../NOC/wiki/02-router-microarchitecture/credit-based-flow-control.md)及[逐拍伪代码](../../NOC/wiki/08-simulator-construction/router-pipeline-pseudocode.md)。
+- **正文**提供机制：SRAM 的 bank 与物理端口、II 与读延迟的区别；DRAM 行状态与 PRE/ACT/RD 的时序下界；NoC 的 slot credit、在途状态和按快照推进的规则。见 [SRAM 端口](../../RAM/wiki/02-sram-foundations/single-port-dual-port-multi-port.md)、[DRAM timing](../../RAM/wiki/05-dram-protocol-families/timing-parameters-trcd-trp-tras.md)、[NoC credit](../../series/interconnect/NOC/wiki/02-router-microarchitecture/credit-based-flow-control.md)及[逐拍伪代码](../../series/interconnect/NOC/wiki/08-simulator-construction/router-pipeline-pseudocode.md)。
 - **题面记号的解释**：此处 `CL=14` 表示当前模式实际生效的 CAS 延迟，因 `AL=PL=0`，有效读延迟为 14 CK。若把 14 当成启用 Read DBI 前的基础值，还要给出模式及相应修正。题面没有声明器件料号、频率或 speed bin。[AMD PG201 的 CAS Latency 选项](https://docs.amd.com/r/3.4-English/pg201-zynq-ultrascale-plus-processing-system/DDR-Memory-Options)举例说明控制器如何处理 DBI 修正。
 
 ## 结果和触发条件

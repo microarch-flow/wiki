@@ -130,9 +130,9 @@ FAB 页面原位保留，主导航迁至芯片开发与实现系列。DFT 页面
 | --- | --- |
 | 模型图分区与执行后端 | [ONNX Runtime 执行后端](https://onnxruntime.ai/docs/execution-providers/)。可从后端能力查询与子图分配入手。 |
 | 执行控制、依赖与同步 | [DMA 队列与完成](../DMA/wiki/04-programming-model/queues-doorbells-completions.md)。需另补跨引擎的启动与完成边界。 |
-| 共享数据的缓存一致性与内存顺序 | [DMA 缓存一致性](../DMA/wiki/02-fundamentals/consistency-cache-coherency.md)及 [AXI 属性与屏障](../BUS/wiki/04-microarchitecture-integration/axi-attributes-cacheability-barrier.md)。二者仅覆盖局部案例。 |
-| UCIe | [SerDes 芯粒与 D2D](../SERDES/wiki/08-system-applications/chiplet-and-d2d.md)及 [UCIe 规范](https://www.uciexpress.org/specifications)。正式案例需注明规范版本。 |
-| CXL | [CXL 与 PCIe 的边界](../PCIE/wiki/07-advanced-topics/cxl-and-pcie-boundary.md)。需另补指定设备和协议的独立正文。 |
+| 共享数据的缓存一致性与内存顺序 | [DMA 缓存一致性](../DMA/wiki/02-fundamentals/consistency-cache-coherency.md)及 [AXI 属性与屏障](../series/interconnect/BUS/wiki/04-microarchitecture-integration/axi-attributes-cacheability-barrier.md)。二者仅覆盖局部案例。 |
+| UCIe | [SerDes 芯粒与 D2D](../series/interconnect/SERDES/wiki/08-system-applications/chiplet-and-d2d.md)及 [UCIe 规范](https://www.uciexpress.org/specifications)。正式案例需注明规范版本。 |
+| CXL | [CXL 与 PCIe 的边界](../series/interconnect/PCIE/wiki/07-advanced-topics/cxl-and-pcie-boundary.md)。需另补指定设备和协议的独立正文。 |
 | UALink | [UALink 联盟规范](https://ualinkconsortium.org/specification/)。需指定版本并建立完整的通信案例。 |
 | Groq TSP / LPU | [原仓固定提交的资料目录](https://github.com/microarch-flow/chip-architecture-wiki/tree/3086204c049a762eb59033f8141fba9e91f4c669/Groq_LPU)。需整理带出处的独立正文。 |
 | Microsoft Maia 100 | [原仓固定提交的资料目录](https://github.com/microarch-flow/chip-architecture-wiki/tree/3086204c049a762eb59033f8141fba9e91f4c669/Microsoft_Maia_100)。需区分公开事实与未知细节。 |
