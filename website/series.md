@@ -11,4 +11,5 @@ hide:
     <!-- site-series -->
     <div class="portal-future-card"><span class="portal-future-icon" aria-hidden="true">＋</span><div><h3>更多系列</h3><p>新的主题将在这里逐步汇集。</p></div></div>
   </div>
+  <p>跨系列阅读：<a href="../microarchitecture/#architecture-modeling">架构建模与性能分析</a>。</p>
 </div>

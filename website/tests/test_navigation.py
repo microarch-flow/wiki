@@ -30,6 +30,27 @@ def page_url(relative):
 
 
 class GeneratedNavigationTests(unittest.TestCase):
+    def test_cross_series_reading_routes(self):
+        html = (SITE / "microarchitecture/index.html").read_text(encoding="utf-8")
+        routes = {
+            "on-chip-data-supply": [
+                "DMA/wiki/04-programming-model/tiling-double-buffering/",
+                "RAM/wiki/02-sram-foundations/single-port-dual-port-multi-port/",
+                "COMPUTE/wiki/03-systolic-array/weight-loading-and-trickle-feed/",
+            ],
+            "architecture-modeling": [
+                "external/workload-wiki/06-chip-workload-analysis/workload-analysis-methodology/",
+                "RAM/wiki/06-memory-controller/mc-modeling-for-simulation/",
+                "NOC/wiki/08-simulator-construction/verification-and-calibration/",
+            ],
+        }
+        for anchor, targets in routes.items():
+            section = re.search(rf'<section\b[^>]*id="{anchor}"[^>]*>(.*?)</section>', html, re.DOTALL)
+            self.assertIsNotNone(section, anchor)
+            for target in targets:
+                self.assertIn(f'href="../{target}"', section.group(1))
+                self.assertTrue((SITE / target / "index.html").is_file(), target)
+
     def test_primary_series_and_topic_for_moved_articles(self):
         cases = {
             "RAM/wiki/05-dram-protocol-families/hbm-stacked-wide-io/index.html": ("存储系统", "HBM 堆叠 DRAM 与宽接口"),

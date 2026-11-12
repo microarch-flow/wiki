@@ -54,5 +54,22 @@ hide:
       <a class="reading-card" href="../DMA/wiki/04-programming-model/tiling-double-buffering/"><div><span>DMA · 数据路径</span><h3>分块与双缓冲</h3><p>探索搬运与计算重叠的条件。</p></div><b>↗</b></a>
     </div>
   </section>
+  <section class="reading-section" id="on-chip-data-supply">
+    <div class="section-heading"><div><span class="section-number">DATA SUPPLY / 04</span><h2>片上存储与数据供给</h2></div><p>沿一块数据的路径，<br>从搬运读到存储端口和阵列供数。</p></div>
+    <div class="reading-grid">
+      <a class="reading-card" href="../DMA/wiki/04-programming-model/tiling-double-buffering/"><div><span>01 / DMA</span><h3>分块与双缓冲</h3><p>观察搬运与计算重叠需要满足的条件。</p></div><b>↗</b></a>
+      <a class="reading-card" href="../RAM/wiki/02-sram-foundations/single-port-dual-port-multi-port/"><div><span>02 / SRAM</span><h3>单端口、双端口与多端口</h3><p>理解一次访问怎样使用存储端口。</p></div><b>↗</b></a>
+      <a class="reading-card" href="../COMPUTE/wiki/03-systolic-array/weight-loading-and-trickle-feed/"><div><span>03 / ARRAY</span><h3>权重加载与阵列供数</h3><p>继续追踪操作数如何进入计算阵列。</p></div><b>↗</b></a>
+    </div>
+  </section>
+
+  <section class="reading-section" id="architecture-modeling">
+    <div class="section-heading"><div><span class="section-number">MODELING ROUTE / 05</span><h2>架构建模与性能分析</h2></div><p>先定义工作负载，<br>再建立模型并检查预测。</p></div>
+    <div class="reading-grid">
+      <a class="reading-card" href="../external/workload-wiki/06-chip-workload-analysis/workload-analysis-methodology/"><div><span>01 / WORKLOAD</span><h3>工作负载分析方法</h3><p>固定输入、阶段、数据量与依赖。</p></div><b>↗</b></a>
+      <a class="reading-card" href="../RAM/wiki/06-memory-controller/mc-modeling-for-simulation/"><div><span>02 / MODEL</span><h3>DRAM 控制器建模</h3><p>把请求、状态与事件放入同一模型。</p></div><b>↗</b></a>
+      <a class="reading-card" href="../NOC/wiki/08-simulator-construction/verification-and-calibration/"><div><span>03 / VALIDATE</span><h3>模型验证与校准</h3><p>区分手算检查、参数校准和独立负载验证。</p></div><b>↗</b></a>
+    </div>
+  </section>
   <div class="home-footer"><span>芯片微架构笔记</span><span>READ · THINK · MODEL</span></div>
 </div>
