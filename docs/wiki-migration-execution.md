@@ -43,7 +43,9 @@
 
 主仓提交 `e1f5f08f15f49cb1dbc6b3ff6bd7e243bb0abe3a` 的 [Actions 43175496904](https://github.com/microarch-flow/wiki/actions/runs/43175496904) 构建和部署均成功。日志显示 `Staged series ... from local series/workload`。公开首页、Workload 首页、Attention 深链接和原 HBM 深链接均返回 HTTP 200，正文与该提交的干净检出构建结果一致。
 
-公开验收后，旧仓提交 [`0e4e005`](https://github.com/microarch-flow/workload-wiki/commit/0e4e0056ed29ce2ffa2af24fa5199d767911c0d9) 删除重建通知工作流，并在旧首页标明新维护位置。源正文与历史保留。该次推送后，旧仓 Actions 运行列表没有出现新的通知运行；主仓也没有新的 `repository_dispatch` 运行。专用 secret 和接收监听尚需在最终核对后处理。
+公开验收后，旧仓提交 [`0e4e005`](https://github.com/microarch-flow/workload-wiki/commit/0e4e0056ed29ce2ffa2af24fa5199d767911c0d9) 删除重建通知工作流，并在旧首页标明新维护位置。源正文与历史保留。该次推送后，旧仓 Actions 运行列表没有出现新的通知运行；主仓也没有新的 `repository_dispatch` 运行。专用 secret 尚需单独处理。
+
+独立审计检查了该账户可访问的 19 个仓库的默认分支 Git tree，未发现其他指向主站的发送工作流。主站 Actions 历史列出两次 `repository_dispatch`，均早于退役提交。此审计不能排除账户外的服务或其他令牌持有者。已知发送方退役后，主站移除 `content-updated` 监听；`main` 推送和手动运行继续保留。`WIKI_DISPATCH_TOKEN` 仓库 secret 的清理单独验收，不因此撤销底层令牌。
 
 ## B3：原位重排主导航
 
@@ -60,3 +62,5 @@
 FAB 页面原位保留，主导航迁至芯片开发与实现系列。DFT 页面链接晶圆筛测与终测；硅后良率和项目封装页面分别链接 FAB 的机制文章。新导入页面的 2,141 条站内正文链接及片段检查均通过。
 
 严格构建和 10 项测试通过。与 B0 对照，798 个旧页面、原正文锚点和 20 个图片资源均保留，每个旧页面在搜索索引中各有一条页面记录。DFT、FAB 晶圆筛测、项目封装、FAB 封装和良率页面的主系列、专题与面包屑通过检查。切换前再次核对 silicon-atlas 的 `main`，来源提交没有变化。
+
+主仓提交 `e0f99c35e6806c2cfc197fd3115d76ef2d296cf8` 的 [Actions 43177235541](https://github.com/microarch-flow/wiki/actions/runs/43177235541) 构建和部署成功。公开系列首页，以及 DFT、晶圆筛测、两种封装页面和两处良率页面均返回 HTTP 200，抽查的面包屑归属正确。

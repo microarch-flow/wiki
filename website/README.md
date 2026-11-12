@@ -93,15 +93,7 @@ mkdocs build
 
 仓库管理员在 GitHub 仓库的 **Settings → Pages → Build and deployment → Source** 中选择 **GitHub Actions**。将网站配置和内容提交并推送到 `main` 后，`.github/workflows/pages.yml` 会构建并部署；也可以在 Actions 页面手动运行该 workflow。检查运行结果，以 GitHub 显示的部署地址为准。
 
-其他仓库更新不会直接触发本仓库的 `push` workflow。网站 workflow 支持 `repository_dispatch` 的 `content-updated` 事件。来源仓库可以使用有权访问本仓库的凭据发送该事件，也可以手动运行本仓库的 Pages workflow。详见 [GitHub 的事件说明](https://docs.github.com/en/actions/reference/workflows-and-actions/events-that-trigger-workflows#repository_dispatch)和 [API 权限说明](https://docs.github.com/en/rest/repos/repos#create-a-repository-dispatch-event)。若 `ref` 固定为提交 SHA，重新构建仍使用该 SHA；需要修改配置才能发布新版本。
-
-### Workload Wiki 自动更新
-
-迁移验收期间，旧仓的重建通知暂时保留。收到事件后主仓会重建，但正文已经从 `series/workload/` 读取。旧仓的后续修改不会自动进入主站。公开地址验收后再退役旧通知。
-
-启用此流程需要在 `workload-wiki` 的 Actions secrets 中设置 `WIKI_DISPATCH_TOKEN`。可以使用只选择 `microarch-flow/wiki` 仓库、授予 **Contents: Read and write** 的 fine-grained personal access token。该权限也允许修改目标仓库内容；令牌应由仓库所有者管理，不要写入文件或聊天。令牌到期后需要更新 secret。默认的 `GITHUB_TOKEN` 仅限其所属仓库，不能用于访问另一个仓库。
-
-来源仓库的 workflow 成功仅表示 GitHub 已接受重建请求。要确认页面已更新，还需要检查本仓库的 Pages workflow 是否部署成功。如果 secret 缺失或失效，来源 workflow 会报错；更新 secret 后可手动重新运行。
+主站的日常发布由本仓库 `main` 推送或手动运行 Pages workflow 触发。旧 Workload 仓库的通知工作流和主站的 `content-updated` 监听均已退役。旧仓的修改不会进入主站；请直接修改主仓内的正文。若以后配置新的外部来源，必须另外设计并审核其更新方式。
 
 当前配置的预期地址是 `https://microarch-flow.github.io/wiki/`。若更换仓库或使用自定义域名，应调整 `mkdocs.yml` 中的 `site_url` 和 `repo_url`，并按 GitHub 的方式配置发布与域名。GitHub Pages 网站可能公开可访问，发布前请确认内容适合公开。
 
