@@ -27,3 +27,7 @@ span.arithmatex-inline-display {
 .inference-math-scroll-hint[hidden] {
   display: none;
 }
+
+.md-nav--secondary .inference-toc-math .katex {
+  font-size: 1em;
+}
