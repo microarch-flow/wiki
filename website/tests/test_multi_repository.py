@@ -45,7 +45,10 @@ def fixture_wiki(root):
         "visuals.md": "# 互动图解\n",
     }.items():
         write(root / "website" / name, content)
-    shutil.copy2(ROOT / "website" / "source-layout.json", root / "website" / "source-layout.json")
+    write(root / "website/source-layout.json", json.dumps({
+        "topics": {name: name for name in TOPICS},
+        "foundations": {"article": "electrical-timing-foundations.md", "images": "img"},
+    }))
     shutil.copytree(ROOT / "website" / "assets", root / "website" / "assets")
 
 
