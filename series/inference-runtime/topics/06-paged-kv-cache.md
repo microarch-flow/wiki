@@ -8,7 +8,7 @@
 
 回顾 [`03`](03-naive-bottlenecks.md) 瓶颈 1:朴素按 $s_\max$ **连续预留** KV → 内部碎片(预留未用)+ 外部碎片(变长块留洞)+ 过度预留,$\eta_\text{mem}\approx0.18$。这与 1960 年代 OS 面对的内存碎片**同构**,当年的答案是**虚拟内存分页**。PagedAttention 就是把 KV 当成「按需分页的虚拟地址空间」来管:
 
-> **逻辑连续 ≠ 物理连续。** 每条序列的 KV 在逻辑上是连续 token 流(token 0,1,2,…),物理上散落在一个全局 block 池里;中间隔一层 [block table](glossary.md#block-table) 做地址翻译。这层间接换来:按需分配(不预留)、外部碎片归零、跨序列共享。
+> **逻辑连续 ≠ 物理连续。** 每条序列的 KV 在逻辑上是连续 token 流(token 0,1,2,…),物理上散落在一个全局 block 池里;中间隔一层 [block table](../glossary.md#block-table) 做地址翻译。这层间接换来:按需分配(不预留)、外部碎片归零、跨序列共享。
 
 ## 机制 (Mechanism)
 

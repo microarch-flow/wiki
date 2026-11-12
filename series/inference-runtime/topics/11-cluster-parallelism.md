@@ -10,9 +10,9 @@ Llama-3 70B FP16 权重 140 GB > 80 GB([`01`](01-prefill-decode.md))→ 单卡�
 
 | 维度 | 切什么 | 通信模式 | 链路要求 | 主要换来 |
 |---|---|---|---|---|
-| **[TP](glossary.md#tp)** 张量并行 | 每层权重(层**内**) | 每层 2 次 all-reduce(同步、在关键路径) | **必须 NVLink**(节点内) | ↓延迟、↓单卡显存 |
-| **[PP](glossary.md#pp)** 流水线并行 | 层(层**间**分 stage) | 仅相邻 stage 点对点(小) | 容忍慢链路(跨节点) | ↑容量/吞吐 |
-| **[EP](glossary.md#ep)** 专家并行 | MoE 的专家 | 每 MoE 层 2 次 all-to-all | 中高(routing 流量) | 服务超大 MoE |
+| **[TP](../glossary.md#tp)** 张量并行 | 每层权重(层**内**) | 每层 2 次 all-reduce(同步、在关键路径) | **必须 NVLink**(节点内) | ↓延迟、↓单卡显存 |
+| **[PP](../glossary.md#pp)** 流水线并行 | 层(层**间**分 stage) | 仅相邻 stage 点对点(小) | 容忍慢链路(跨节点) | ↑容量/吞吐 |
+| **[EP](../glossary.md#ep)** 专家并行 | MoE 的专家 | 每 MoE 层 2 次 all-to-all | 中高(routing 流量) | 服务超大 MoE |
 
 实际是三者 + 数据并行(DP,整模型复制)的**组合**:总卡数 $=N_{tp}\cdot N_{pp}\cdot N_{ep}\cdot N_{dp}$。
 

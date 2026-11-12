@@ -6,13 +6,13 @@
 
 ## 概念 (Concept)
 
-一个"朴素引擎"= 把训练那套搬来做推理:**每请求预留一块定长 KV 缓冲、整批一起跑到全部结束、prefill 和 decode 不加区分塞进同一个 batch**。它能出正确结果,但把 [`02`](02-metrics-slo.md) 的 [goodput](glossary.md#goodput) 漏掉一大半。三处浪费的根源都在 [`01`](01-prefill-decode.md):
+一个"朴素引擎"= 把训练那套搬来做推理:**每请求预留一块定长 KV 缓冲、整批一起跑到全部结束、prefill 和 decode 不加区分塞进同一个 batch**。它能出正确结果,但把 [`02`](02-metrics-slo.md) 的 [goodput](../glossary.md#goodput) 漏掉一大半。三处浪费的根源都在 [`01`](01-prefill-decode.md):
 
 | 浪费 | 物理根源(来自 `01`) | 表现 | 解法(后续篇) |
 |---|---|---|---|
 | KV 显存碎片 | KV 字节随 $s$ 增长、**输出长度事先未知** | 显存装不下本可容纳的并发 | [`06` PagedAttention](06-paged-kv-cache.md) |
-| 静态批尾部浪费 | decode [memory-bound](glossary.md#memory-bound)、**长度异质** | 短请求陪长请求空转 | [`04` continuous batching](04-dynamic-shape-batching.md) |
-| prefill/decode 干扰 | 一个 [compute-bound](glossary.md#compute-bound)、一个 memory-bound | prefill 一来 decode 卡顿,ITL 尾爆 | [`04` chunked prefill](04-dynamic-shape-batching.md) / [`12` PD 分离](12-pd-disaggregation.md) |
+| 静态批尾部浪费 | decode [memory-bound](../glossary.md#memory-bound)、**长度异质** | 短请求陪长请求空转 | [`04` continuous batching](04-dynamic-shape-batching.md) |
+| prefill/decode 干扰 | 一个 [compute-bound](../glossary.md#compute-bound)、一个 memory-bound | prefill 一来 decode 卡顿,ITL 尾爆 | [`04` chunked prefill](04-dynamic-shape-batching.md) / [`12` PD 分离](12-pd-disaggregation.md) |
 
 下面逐个量化。
 
@@ -26,7 +26,7 @@
 - **外部碎片(external fragmentation)**:变长的连续块反复分配/释放,在显存里留下大小不一、装不下新请求的"洞"——即使空闲总量够。
 - **过度预留(over-reservation)**:按 $s_\max$ 占坑,直接把可并发数砍到远低于显存本可支撑的水平。
 
-> 这正是 [PagedAttention](glossary.md#paged-attention)(`06`)要解决的:像 OS 虚存分页一样,把 KV 切成定长 block 按需分配,**只在最后一个未满 block 里残留 ≤ block 大小的内部碎片,外部碎片归零**。
+> 这正是 [PagedAttention](../glossary.md#paged-attention)(`06`)要解决的:像 OS 虚存分页一样,把 KV 切成定长 block 按需分配,**只在最后一个未满 block 里残留 ≤ block 大小的内部碎片,外部碎片归零**。
 
 ### 瓶颈 2:静态批处理的尾部浪费
 
@@ -35,16 +35,16 @@
 1. **算力/带宽空转**:已完成的 slot 仍参与每步计算或占着 KV。
 2. **队头阻塞(head-of-line blocking)**:新请求要等整批排空才能进 → 排队时延 ↑ → TTFT ↑。
 
-> 解法是 [continuous batching](glossary.md#continuous-batching)(`04`):调度粒度从"一整批"降到"一个 iteration",完成即出、空位即补,把尾部浪费抹平。
+> 解法是 [continuous batching](../glossary.md#continuous-batching)(`04`):调度粒度从"一整批"降到"一个 iteration",完成即出、空位即补,把尾部浪费抹平。
 
 ### 瓶颈 3:prefill / decode 互相干扰
 
 朴素引擎把 prefill 和 decode 的 token 混进同一个 forward batch。但两者资源画像相反([`01`](01-prefill-decode.md)):prefill 是一次**长 compute 突发**(并行处理 $s_p$ 个 token),decode 要的是**高频小步**、对延迟敏感。混在一起两败俱伤:
 
-- 一个大 prefill 进来,**正在进行的所有 decode 被它顶住** → 该步 ITL 突然拉长一个数量级 → [ITL](glossary.md#itl) 的 p99(用户感知的"结巴")炸掉。
+- 一个大 prefill 进来,**正在进行的所有 decode 被它顶住** → 该步 ITL 突然拉长一个数量级 → [ITL](../glossary.md#itl) 的 p99(用户感知的"结巴")炸掉。
 - 反过来,decode token 挤占 batch,prefill 也吃不满算力。
 
-> 解法两条:[chunked prefill](glossary.md#chunked-prefill)(`04`)把长 prefill 切片、与 decode 交错,封顶单次卡顿;[PD 分离](glossary.md#pd-disaggregation)(`12`)干脆把两阶段放到不同硬件池,从物理上解耦。
+> 解法两条:[chunked prefill](../glossary.md#chunked-prefill)(`04`)把长 prefill 切片、与 decode 交错,封顶单次卡顿;[PD 分离](../glossary.md#pd-disaggregation)(`12`)干脆把两阶段放到不同硬件池,从物理上解耦。
 
 ## 量化与公式 (Quantification)
 
@@ -72,7 +72,7 @@ $$\eta_\text{batch} = \frac{\sum_i L_i}{b\cdot\max_i L_i} = \frac{\overline{L}}{
 
 一个 $s_p$ 的 prefill 占用算力时间 $T_\text{prefill}\approx 2P s_p/C$;它执行期间并发 decode 全部停摆,本步 ITL 被抬到 $\approx T_\text{prefill}$。
 
-**算例(2×H100 跑 70B)**:$s_p=4096$,FLOP $=2\times70\text{e}9\times4096\approx 5.7\times10^{14}$;2×H100 稠密 BF16 聚合 $\approx 1.98\times10^{15}$ FLOP/s,按 [MFU](glossary.md#mfu) 0.5 取 $\approx 1\times10^{15}$ 有效 → $T_\text{prefill}\approx 0.57$ s。一条本想要 25 ms ITL 的 decode,撞上这次 prefill 就是 **~570 ms 的一次卡顿,p99 ITL 直接 ×20+**。【估算,MFU 取 0.5;`15` 用你的实测 MFU 复算】
+**算例(2×H100 跑 70B)**:$s_p=4096$,FLOP $=2\times70\text{e}9\times4096\approx 5.7\times10^{14}$;2×H100 稠密 BF16 聚合 $\approx 1.98\times10^{15}$ FLOP/s,按 [MFU](../glossary.md#mfu) 0.5 取 $\approx 1\times10^{15}$ 有效 → $T_\text{prefill}\approx 0.57$ s。一条本想要 25 ms ITL 的 decode,撞上这次 prefill 就是 **~570 ms 的一次卡顿,p99 ITL 直接 ×20+**。【估算,MFU 取 0.5;`15` 用你的实测 MFU 复算】
 
 ### 三乘子合一:为什么朴素 goodput 只剩零头
 

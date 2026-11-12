@@ -10,36 +10,36 @@
 
 | # | 条目 | 文件 | 状态 |
 |---|---|---|---|
-| 01 | LLM 推理基础:自回归、Prefill/Decode、compute vs memory-bound、KV 字节公式(含 GQA/MQA) | `topics/01-prefill-decode.md` | 草稿 |
-| 02 | 服务指标与 SLO:TTFT / ITL / TPOT / throughput / goodput(被各篇与 SLA 判定引用) | `topics/02-metrics-slo.md` | 草稿 |
-| 03 | 朴素实现的瓶颈:KV 显存碎片、静态批尾部浪费、prefill/decode 互相干扰 | `topics/03-naive-bottlenecks.md` | 草稿 |
+| 01 | LLM 推理基础:自回归、Prefill/Decode、compute vs memory-bound、KV 字节公式(含 GQA/MQA) | [`01-prefill-decode.md`](topics/01-prefill-decode.md) | 草稿 |
+| 02 | 服务指标与 SLO:TTFT / ITL / TPOT / throughput / goodput(被各篇与 SLA 判定引用) | [`02-metrics-slo.md`](topics/02-metrics-slo.md) | 草稿 |
+| 03 | 朴素实现的瓶颈:KV 显存碎片、静态批尾部浪费、prefill/decode 互相干扰 | [`03-naive-bottlenecks.md`](topics/03-naive-bottlenecks.md) | 草稿 |
 
 ### 单机服务栈 (Single-node serving stack)
 
 | # | 条目 | 文件 | 状态 |
 |---|---|---|---|
-| 04 | 动态 shape 与变长:不 padding、cu_seqlens/ragged、continuous batching、chunked prefill | `topics/04-dynamic-shape-batching.md` | 草稿 |
-| 05 | 注意力核与解码 kernel:FlashAttention / FlashDecoding / paged kernel(为何 prefill 与 decode kernel 形态不同) | `topics/05-attention-kernels.md` | 草稿 |
-| 06 | KV cache 管理:PagedAttention(分页、block table、按层分桶、CoW 前缀共享) | `topics/06-paged-kv-cache.md` | 草稿 |
-| 07 | 前缀复用:RadixAttention(radix tree、最长前缀匹配、LRU)、与 API 层 prompt caching | `topics/07-radix-prefix-reuse.md` | 草稿 |
-| 08 | 调度:iteration 内调度循环、准入水位、抢占(recompute vs swap) | `topics/08-scheduling.md` | 草稿 |
+| 04 | 动态 shape 与变长:不 padding、cu_seqlens/ragged、continuous batching、chunked prefill | [`04-dynamic-shape-batching.md`](topics/04-dynamic-shape-batching.md) | 草稿 |
+| 05 | 注意力核与解码 kernel:FlashAttention / FlashDecoding / paged kernel(为何 prefill 与 decode kernel 形态不同) | [`05-attention-kernels.md`](topics/05-attention-kernels.md) | 草稿 |
+| 06 | KV cache 管理:PagedAttention(分页、block table、按层分桶、CoW 前缀共享) | [`06-paged-kv-cache.md`](topics/06-paged-kv-cache.md) | 草稿 |
+| 07 | 前缀复用:RadixAttention(radix tree、最长前缀匹配、LRU)、与 API 层 prompt caching | [`07-radix-prefix-reuse.md`](topics/07-radix-prefix-reuse.md) | 草稿 |
+| 08 | 调度:iteration 内调度循环、准入水位、抢占(recompute vs swap) | [`08-scheduling.md`](topics/08-scheduling.md) | 草稿 |
 
 ### 加速与扩展 (Acceleration & scale-out)
 
 | # | 条目 | 文件 | 状态 |
 |---|---|---|---|
-| 09 | 投机解码:draft-verify、rejection sampling 无损、加速比、Medusa/EAGLE/lookahead、与 batch 的张力 | `topics/09-speculative-decoding.md` | 草稿 |
-| 10 | 量化:权重 + KV(FP8/INT8/AWQ/GPTQ);精度档 $p$ 作为可扫参数对成本模型的影响 | `topics/10-quantization.md` | 草稿 |
-| 11 | 集群并行:TP / PP / EP、推理 vs 训练的差异 | `topics/11-cluster-parallelism.md` | 草稿 |
-| 12 | PD 分离 + KV 传输 / offload 分层存储(同一带宽公式换 NVLink↔PCIe↔NVMe 档) | `topics/12-pd-disaggregation.md` | 草稿 |
+| 09 | 投机解码:draft-verify、rejection sampling 无损、加速比、Medusa/EAGLE/lookahead、与 batch 的张力 | [`09-speculative-decoding.md`](topics/09-speculative-decoding.md) | 草稿 |
+| 10 | 量化:权重 + KV(FP8/INT8/AWQ/GPTQ);精度档 $p$ 作为可扫参数对成本模型的影响 | [`10-quantization.md`](topics/10-quantization.md) | 草稿 |
+| 11 | 集群并行:TP / PP / EP、推理 vs 训练的差异 | [`11-cluster-parallelism.md`](topics/11-cluster-parallelism.md) | 草稿 |
+| 12 | PD 分离 + KV 传输 / offload 分层存储(同一带宽公式换 NVLink↔PCIe↔NVMe 档) | [`12-pd-disaggregation.md`](topics/12-pd-disaggregation.md) | 草稿 |
 
 ### 应用层与收口 (App layer & synthesis)
 
 | # | 条目 | 文件 | 状态 |
 |---|---|---|---|
-| 13 | 约束解码:grammar / FSM / JSON-constrained 输出 | `topics/13-constrained-decoding.md` | 草稿 |
-| 14 | 框架对比:vLLM 与 SGLang 的核心设计与定位差异 | `topics/14-framework-comparison.md` | 草稿 |
-| 15 | 量化估算算例:Llama-3 70B + H100 80GB 推导 KV/token、最大并发、ITL、TTFT、吞吐 | `topics/15-quantitative-estimation.md` | 草稿 |
+| 13 | 约束解码:grammar / FSM / JSON-constrained 输出 | [`13-constrained-decoding.md`](topics/13-constrained-decoding.md) | 草稿 |
+| 14 | 框架对比:vLLM 与 SGLang 的核心设计与定位差异 | [`14-framework-comparison.md`](topics/14-framework-comparison.md) | 草稿 |
+| 15 | 量化估算算例:Llama-3 70B + H100 80GB 推导 KV/token、最大并发、ITL、TTFT、吞吐 | [`15-quantitative-estimation.md`](topics/15-quantitative-estimation.md) | 草稿 |
 
 每写完一篇,这里与该篇顶部状态行同步更新。
 

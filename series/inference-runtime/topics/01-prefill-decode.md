@@ -6,16 +6,16 @@
 
 ## 概念 (Concept)
 
-**自回归生成([autoregressive](glossary.md#autoregressive))**:LLM 逐 token 生成,第 $t$ 个 token 的输入是前 $t-1$ 个 token(prompt + 已生成),输出该位置下一个 token 的分布。因此生成在时间上**串行**——这是后面一切时延问题的物理起点。
+**自回归生成([autoregressive](../glossary.md#autoregressive))**:LLM 逐 token 生成,第 $t$ 个 token 的输入是前 $t-1$ 个 token(prompt + 已生成),输出该位置下一个 token 的分布。因此生成在时间上**串行**——这是后面一切时延问题的物理起点。
 
 一次推理被工程上拆成两个形态迥异的阶段:
 
 | 阶段 | 处理对象 | 形态 | 产出 |
 |---|---|---|---|
-| **[预填充](glossary.md#prefill) (prefill)** | 整段 prompt 的 $s_p$ 个 token | **一次** forward 并行处理全部位置 | 第 1 个输出 token + 填满 KV cache |
-| **[解码](glossary.md#decode) (decode)** | 每步 1 个新 token | 自回归,逐步循环 | 每步 1 个 token,追加进 KV cache |
+| **[预填充](../glossary.md#prefill) (prefill)** | 整段 prompt 的 $s_p$ 个 token | **一次** forward 并行处理全部位置 | 第 1 个输出 token + 填满 KV cache |
+| **[解码](../glossary.md#decode) (decode)** | 每步 1 个新 token | 自回归,逐步循环 | 每步 1 个 token,追加进 KV cache |
 
-**为什么需要 [KV 缓存](glossary.md#kv-cache)**:注意力中,当前 token 的 query 要和**所有历史 token** 的 key/value 做内积。若不缓存,decode 每生成一个 token 都要重算前面所有 token 的 $K,V$,第 $t$ 步代价 $O(t)$,整段 $O(s^2)$。缓存历史 $K,V$ 后,decode 每步只需:为新 token 算 1 个 $Q,K,V$,把新 $K,V$ 追加进 cache,再用新 $Q$ 与全量 cache 做注意力。**KV cache 用显存换重算**——它的字节数与带宽,是 decode 阶段成本模型的核心变量。
+**为什么需要 [KV 缓存](../glossary.md#kv-cache)**:注意力中,当前 token 的 query 要和**所有历史 token** 的 key/value 做内积。若不缓存,decode 每生成一个 token 都要重算前面所有 token 的 $K,V$,第 $t$ 步代价 $O(t)$,整段 $O(s^2)$。缓存历史 $K,V$ 后,decode 每步只需:为新 token 算 1 个 $Q,K,V$,把新 $K,V$ 追加进 cache,再用新 $Q$ 与全量 cache 做注意力。**KV cache 用显存换重算**——它的字节数与带宽,是 decode 阶段成本模型的核心变量。
 
 ## 机制 (Mechanism)
 
@@ -39,7 +39,7 @@
 
 ## 量化与公式 (Quantification)
 
-符号(沿用 [`_conventions.md`](_conventions.md) §4):$b$ batch,$s$ 上下文长度 [token],$L$ 层数,$h$ query 头数,$h_{kv}$ KV 头数,$d_h$ head dim,$d=h\,d_h$ hidden,$P$ 参数量,$p$ 字节/元素,$BW$ HBM 带宽 [byte/s],$C$ 算力 [FLOP/s]。
+符号(沿用 [`_conventions.md`](../_conventions.md) §4):$b$ batch,$s$ 上下文长度 [token],$L$ 层数,$h$ query 头数,$h_{kv}$ KV 头数,$d_h$ head dim,$d=h\,d_h$ hidden,$P$ 参数量,$p$ 字节/元素,$BW$ HBM 带宽 [byte/s],$C$ 算力 [FLOP/s]。
 
 ### (1) KV cache 字节数 —— 最常用的一条
 
@@ -50,7 +50,7 @@ $$\text{KV}_{\text{tok}} = 2 \cdot L \cdot h_{kv} \cdot d_h \cdot p \quad[\text{
 $$\text{KV}_{\text{total}} = b \cdot s \cdot \text{KV}_{\text{tok}} = 2\, b\, s\, L\, h_{kv}\, d_h\, p \quad[\text{byte}]$$
 
 - 前导 `2` = $K$ 与 $V$ 两份。
-- **[GQA](glossary.md#gqa) 因子**:多 query 头共享 KV 头,字节数相对 MHA($h_{kv}=h$)缩小 $h_{kv}/h$。[MQA](glossary.md#mqa) 是 $h_{kv}=1$ 的极端。这是现代大模型把 KV 压下来的头号手段——**不计 GQA 会把 KV/token 高估约 $h/h_{kv}$ 倍**。
+- **[GQA](../glossary.md#gqa) 因子**:多 query 头共享 KV 头,字节数相对 MHA($h_{kv}=h$)缩小 $h_{kv}/h$。[MQA](../glossary.md#mqa) 是 $h_{kv}=1$ 的极端。这是现代大模型把 KV 压下来的头号手段——**不计 GQA 会把 KV/token 高估约 $h/h_{kv}$ 倍**。
 
 **算例:Llama-3 70B,fp16。** 配置 $L=80,\ h=64,\ h_{kv}=8,\ d_h=128,\ d=8192$ 【精确值,官方 `config.json`;Llama-3 / 3.1 / 3.3 的 70B 这几个结构参数一致】,$p=2$:
 
@@ -62,7 +62,7 @@ $$\text{KV}_{\text{tok}} = 2\cdot 80\cdot 8\cdot 128\cdot 2 = 327{,}680\ \text{b
 
 ### (2) Decode 的算术强度与 roofline
 
-[Roofline](glossary.md#roofline) 拐点(ridge point)$= C/BW$ [FLOP/byte];[算术强度](glossary.md#arithmetic-intensity) $AI=\frac{\text{FLOP}}{\text{bytes from HBM}}$,$AI<$ ridge → [memory-bound](glossary.md#memory-bound)。
+[Roofline](../glossary.md#roofline) 拐点(ridge point)$= C/BW$ [FLOP/byte];[算术强度](../glossary.md#arithmetic-intensity) $AI=\frac{\text{FLOP}}{\text{bytes from HBM}}$,$AI<$ ridge → [memory-bound](../glossary.md#memory-bound)。
 
 一个 decode step(batch $b$,dense 模型):
 - **FLOP** $\approx 2Pb$(每参数 1 次乘加 = 2 FLOP,每请求过一遍全部权重)。
@@ -86,9 +86,9 @@ memory-bound 下,decode 单步时间被 HBM 流量决定:
 
 $$t_{\text{step}} \gtrsim \frac{P\,p + b\,s\,\text{KV}_{\text{tok}}}{BW},\qquad \text{ITL} = t_{\text{step}},\qquad \text{吞吐} = \frac{b}{t_{\text{step}}}=\frac{b\,BW}{P\,p+b\,s\,\text{KV}_{\text{tok}}}$$
 
-系统吞吐随 $b$ 增长但有上界:$b\to\infty$ 时 $\to \dfrac{BW}{s\,\text{KV}_{\text{tok}}}$ —— **长上下文下吞吐被 KV 带宽封顶,与算力无关**。([ITL/TTFT](glossary.md#itl) 的完整推导与 prefill 侧(compute-bound,TTFT $\approx 2Pb\,s_p/C$)留给 `15`。)
+系统吞吐随 $b$ 增长但有上界:$b\to\infty$ 时 $\to \dfrac{BW}{s\,\text{KV}_{\text{tok}}}$ —— **长上下文下吞吐被 KV 带宽封顶,与算力无关**。([ITL/TTFT](../glossary.md#itl) 的完整推导与 prefill 侧(compute-bound,TTFT $\approx 2Pb\,s_p/C$)留给 `15`。)
 
-> 现实性提示:Llama-3 70B fp16 权重 $=2P\,p\approx 140$ GB $>$ 80 GB,**单张 H100 装不下**,需 TP≥2 或量化(→ `10`、`11`)。本篇公式里的 $BW,C$ 届时换成「多卡聚合」或「量化后 $p$ 变小」即可复用。
+> 现实性提示:Llama-3 70B fp16 权重 $=P\,p\approx 140$ GB $>$ 80 GB,**单张 H100 装不下**,需 TP≥2 或量化(→ `10`、`11`)。本篇公式里的 $BW,C$ 届时换成「多卡聚合」或「量化后 $p$ 变小」即可复用。
 
 ## 与架构建模的接口 (Modeling Interface)
 

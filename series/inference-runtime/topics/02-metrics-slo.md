@@ -11,7 +11,7 @@
 - **单请求体验(latency)**:用户感知的快慢。
 - **系统效率(throughput / cost)**:单位硬件、单位时间、单位成本产出多少 token。
 
-二者对立的物理根源已在 [`01`](01-prefill-decode.md) 给出:decode 是 [memory-bound](glossary.md#memory-bound),**攒大 batch 提升系统吞吐,但每步要搬的 KV 字节变多 → 单请求 ITL 变长**。SLO(Service Level Objective)就是在这条 tradeoff 曲线上划一条线:**在不违反延迟约束的前提下,把吞吐/成本压到最优**。这条线正是 SLA 判定要算的东西。
+二者对立的物理根源已在 [`01`](01-prefill-decode.md) 给出:decode 是 [memory-bound](../glossary.md#memory-bound),**攒大 batch 提升系统吞吐,但每步要搬的 KV 字节变多 → 单请求 ITL 变长**。SLO(Service Level Objective)就是在这条 tradeoff 曲线上划一条线:**在不违反延迟约束的前提下,把吞吐/成本压到最优**。这条线正是 SLA 判定要算的东西。
 
 **一个请求的生命周期时间线**(后面所有指标都从这条线上取):
 
@@ -27,12 +27,12 @@
 
 | 指标 | 全称 | 精确定义 | 主导阶段 |
 |---|---|---|---|
-| **[TTFT](glossary.md#ttft)** | Time To First Token | 请求**到达**到吐出**第 1 个** token 的墙钟时间 = 排队等待 + prefill 计算(+ 第一步 decode) | prefill([compute-bound](glossary.md#compute-bound)) + 排队 |
+| **[TTFT](../glossary.md#ttft)** | Time To First Token | 请求**到达**到吐出**第 1 个** token 的墙钟时间 = 排队等待 + prefill 计算(+ 第一步 decode) | prefill([compute-bound](../glossary.md#compute-bound)) + 排队 |
 | **TPOT** | Time Per Output Token | 首 token 之后,**平均**每个输出 token 的时间 $=\dfrac{\text{E2E}-\text{TTFT}}{N_\text{out}-1}$ | decode(memory-bound) |
-| **[ITL](glossary.md#itl)** | Inter-Token Latency | 相邻两个输出 token 的**实际间隔**,是一个**分布**(有 jitter);其均值≈TPOT | decode |
+| **[ITL](../glossary.md#itl)** | Inter-Token Latency | 相邻两个输出 token 的**实际间隔**,是一个**分布**(有 jitter);其均值≈TPOT | decode |
 | **E2E** | End-to-End latency | 到达到**最后一个** token $=\text{TTFT}+(N_\text{out}-1)\cdot\text{TPOT}$ | 全程 |
 | **吞吐** | throughput | 单位时间产出 token 数;需指明口径(见下) | 系统级 |
-| **[goodput](glossary.md#goodput)** | — | 仅计**满足 SLO** 的请求贡献的吞吐 | 系统级 |
+| **[goodput](../glossary.md#goodput)** | — | 仅计**满足 SLO** 的请求贡献的吞吐 | 系统级 |
 | **MBU** | Model Bandwidth Utilization | decode 实测吞吐对应的 HBM 带宽 ÷ 峰值带宽,decode 效率上界指标 | decode |
 | **MFU** | Model FLOPs Utilization | prefill/训练实测 FLOP/s ÷ 峰值,compute 效率指标 | prefill |
 

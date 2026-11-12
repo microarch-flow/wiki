@@ -2,7 +2,7 @@
 
 > 状态:草稿
 >
-> 一句话定位:同一套 attention 数学,因 query 长度 $s_q$ 在两阶段相差悬殊(prefill 的 $s_p$ vs decode 的 1),落成两种**完全不同形态的 kernel**——prefill 是 compute-bound 的 GEMM-tiling(FlashAttention),decode 是 memory-bound 的 GEMV、但要靠 split-KV 抢回占用率(FlashDecoding),再叠分页 KV 的 gather。本篇解释 [`01`](01-prefill-decode.md) 的「理想带宽下界」与实测 TPOT 之间那个 [MBU](glossary.md#mbu) 效率因子从哪来。
+> 一句话定位:同一套 attention 数学,因 query 长度 $s_q$ 在两阶段相差悬殊(prefill 的 $s_p$ vs decode 的 1),落成两种**完全不同形态的 kernel**——prefill 是 compute-bound 的 GEMM-tiling(FlashAttention),decode 是 memory-bound 的 GEMV、但要靠 split-KV 抢回占用率(FlashDecoding),再叠分页 KV 的 gather。本篇解释 [`01`](01-prefill-decode.md) 的「理想带宽下界」与实测 TPOT 之间那个 [MBU](../glossary.md#mbu) 效率因子从哪来。
 
 ## 概念 (Concept)
 
@@ -15,7 +15,7 @@ attention 有两个独立的"长度"输入:**query 长度 $s_q$** 与 **KV 长�
 
 这个 **$s_q$ 的 "$s_p$ vs 1"** 就是 [`01`](01-prefill-decode.md) 的 compute/memory-bound 分野在 kernel 层的根:GEMM 把权重/KV 摊给很多 query 位置 → 高复用;GEMV 只有一个 query 位置 → 读一遍 KV 几乎不复用。
 
-两阶段共享一个内核难题:**(a)** 中间矩阵 $S=QK^\top$ 是 $O(s^2)$,不能落 HBM;**(b)** softmax 要按整行归一。[FlashAttention](glossary.md#flash-attention) 用 **tiling + online softmax** 一并解决——但**并行策略**两阶段必须不同,这是本篇的主线。
+两阶段共享一个内核难题:**(a)** 中间矩阵 $S=QK^\top$ 是 $O(s^2)$,不能落 HBM;**(b)** softmax 要按整行归一。[FlashAttention](../glossary.md#flash-attention) 用 **tiling + online softmax** 一并解决——但**并行策略**两阶段必须不同,这是本篇的主线。
 
 ## 机制 (Mechanism)
 
@@ -41,7 +41,7 @@ decode 的 $s_q=1$,attention 的**天然并行维只有 $b\times h$ 个独立工
 
 ### Paged attention kernel:在 gather 之上做 FlashDecoding
 
-KV 一旦分页([`06`](06-paged-kv-cache.md)),物理 block 散落,decode kernel 必须**按 [block table](glossary.md#block-table) 间接寻址、gather 散块进 SRAM 再算**。与 vanilla FA 的差别:多了指针追逐,load 以 block 为粒度。**block 大小 $B_\text{blk}$ 是旋钮**:大 block → load 更连续 / DMA 友好、指针查找少,但内部碎片大([`06`](06-paged-kv-cache.md));小 block 反之。现代 decode kernel = **paged + split-KV 合体**(vLLM paged-attention v2、FlashInfer 库),`04` 的 varlen/`cu_seqlens` 也由同类 kernel 吃进去。
+KV 一旦分页([`06`](06-paged-kv-cache.md)),物理 block 散落,decode kernel 必须**按 [block table](../glossary.md#block-table) 间接寻址、gather 散块进 SRAM 再算**。与 vanilla FA 的差别:多了指针追逐,load 以 block 为粒度。**block 大小 $B_\text{blk}$ 是旋钮**:大 block → load 更连续 / DMA 友好、指针查找少,但内部碎片大([`06`](06-paged-kv-cache.md));小 block 反之。现代 decode kernel = **paged + split-KV 合体**(vLLM paged-attention v2、FlashInfer 库),`04` 的 varlen/`cu_seqlens` 也由同类 kernel 吃进去。
 
 ## 量化与公式 (Quantification)
 

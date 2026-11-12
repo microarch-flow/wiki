@@ -32,7 +32,7 @@
 $$\texttt{cu\_seqlens} = [\,0,\ s_1,\ s_1{+}s_2,\ \dots,\ \textstyle\sum_i s_i\,]\quad(\text{长度 }b{+}1)$$
 
 - 可批的算子(QKV 投影、FFN、输出投影这些**大 GEMM**)对拍平后的 `[Σs_i, d]` 一把算,**完全不受变长影响**——它们本来就是逐 token 独立的。
-- 唯一与序列边界相关的是 **attention**:它必须只在每条序列**自己的段内**做。[FlashAttention](glossary.md#flash-attention) 的 **varlen 接口**吃 `cu_seqlens`,在 kernel 内对每段独立做注意力(等价于一个隐式的块对角 mask),既不算 pad、也不会跨序列串味。
+- 唯一与序列边界相关的是 **attention**:它必须只在每条序列**自己的段内**做。[FlashAttention](../glossary.md#flash-attention) 的 **varlen 接口**吃 `cu_seqlens`,在 kernel 内对每段独立做注意力(等价于一个隐式的块对角 mask),既不算 pad、也不会跨序列串味。
 - 这就是 Orca 说的 **selective batching(选择性批处理)**:**GEMM 批、attention 拆**。它是 continuous batching 能高效跑的底层前提——否则不同 KV 长度的序列没法共一个 attention 调用。
 
 > 与你硬件侧的接口:ragged/jagged tensor 本质是「数据相关的循环边界」,正是 archax 这类工具在 Execution IR 上要建模的不规则访存——`cu_seqlens` 就是把不规则性显式化成一个可索引的 metadata 数组,kernel 据此切 tile。
@@ -65,7 +65,7 @@ $$\texttt{cu\_seqlens} = [\,0,\ s_1,\ s_1{+}s_2,\ \dots,\ \textstyle\sum_i s_i\,
 - **stall 封顶**:一条 decode 撞上 prefill,最坏只等**一个 chunk** 的 forward,而非整段:
   $$\text{ITL}_\text{stall} \approx \frac{2P\,(T_\text{chunk}+b_d)}{C}\quad\text{(compute-bound)}\ \ \ll\ \ \frac{2P\,s_p}{C}=T_\text{prefill}$$
   **算例(2×H100 跑 70B,接 [`03`](03-naive-bottlenecks.md) 算例)**:整段 $s_p{=}4096$ 的 stall 是 ~570 ms;取 $T_\text{chunk}{=}512$ 切成 8 块,单次 stall 降到 $\approx 2\times70\text{e}9\times512/1\text{e}15\approx 72$ ms(忽略 $b_d$)。**ITL 尾从 ~570 ms 压到 ~70 ms,代价是这条 prompt 的 TTFT 略增(分 8 步走)。** 【估算,MFU 取 0.5;`15` 用实测复算】
-- **代价 / 不能无限小**:chunk 越小,(a) prefill 的 GEMM 的 $M$ 维越小、算术强度下降、[MFU](glossary.md#mfu) 掉;(b) 后续 chunk 做 attention 要重读前缀 KV,带来 $O(\sum_k k\cdot T_\text{chunk})$ 的额外 KV 读。故存在最优 $T_\text{chunk}^\*$ 平衡「decode stall ↓」与「prefill 吞吐 ↓」——这是要扫的设计点。
+- **代价 / 不能无限小**:chunk 越小,(a) prefill 的 GEMM 的 $M$ 维越小、算术强度下降、[MFU](../glossary.md#mfu) 掉;(b) 后续 chunk 做 attention 要重读前缀 KV,带来 $O(\sum_k k\cdot T_\text{chunk})$ 的额外 KV 读。故存在最优 $T_\text{chunk}^\*$ 平衡「decode stall ↓」与「prefill 吞吐 ↓」——这是要扫的设计点。
 
 ### (3) 实测收益(论文报告值,作量级参照)
 

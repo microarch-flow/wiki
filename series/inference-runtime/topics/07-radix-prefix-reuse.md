@@ -22,7 +22,7 @@
 
 ### radix tree(压缩前缀树)
 
-trie 的路径压缩版:**边标注 token 子串**(而非单 token),**节点对应一个被缓存的前缀**、持有指向 KV [block](glossary.md#paged-attention) 的引用(直接建在 [`06`](06-paged-kv-cache.md) 的分页 + 引用计数上)。
+trie 的路径压缩版:**边标注 token 子串**(而非单 token),**节点对应一个被缓存的前缀**、持有指向 KV [block](../glossary.md#paged-attention) 的引用(直接建在 [`06`](06-paged-kv-cache.md) 的分页 + 引用计数上)。
 
 - **插入**:沿树走最长公共前缀,在分叉处 split 节点,挂上新 suffix 分支。
 - **查询(最长前缀匹配)**:从根按 token 逐段匹配,走到不能再匹配处;这条路径上的 KV 全部可复用。
