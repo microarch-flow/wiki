@@ -1,0 +1,9 @@
+/* Long display equations remain readable without widening a narrow page. */
+div.arithmatex,
+span.arithmatex-inline-display {
+  display: block;
+  max-width: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding-block: 0.15rem;
+}

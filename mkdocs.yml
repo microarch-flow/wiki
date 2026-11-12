@@ -7,6 +7,7 @@ docs_dir: .site-build/docs
 site_dir: .site-build/site
 hooks:
   - website/hooks.py
+  - website/inference_math.py
 theme:
   name: material
   language: zh
@@ -37,6 +38,7 @@ markdown_extensions:
       permalink: true
       slugify: !!python/name:markdown.extensions.toc.slugify_unicode
   - pymdownx.highlight
+  - website.inference_math
   - pymdownx.superfences:
       custom_fences:
         - name: mermaid
@@ -44,10 +46,14 @@ markdown_extensions:
           format: !!python/name:pymdownx.superfences.fence_code_format
 extra_css:
   - assets/stylesheets/site.css
+  - assets/vendor/katex/katex.min.css
+  - assets/stylesheets/inference-math.css
 extra_javascript:
   - assets/javascripts/navigation.js
   - assets/javascripts/visuals.js
   - assets/javascripts/sram.js
   - assets/javascripts/ram-overview.js
+  - assets/vendor/katex/katex.min.js
+  - assets/javascripts/inference-math.js
 extra:
   generator: false
