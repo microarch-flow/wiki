@@ -64,6 +64,9 @@ class GeneratedNavigationTests(unittest.TestCase):
             "series/chip-development/04_tapeout_and_post_silicon/03_packaging/index.html": ("芯片开发与实现", "封装与多芯粒集成"),
             "FAB/wiki/04-back-end-packaging/index.html": ("芯片开发与实现", "封装与多芯粒集成"),
             "FAB/wiki/06-cross-cutting-engineering/yield-economics-across-stages/index.html": ("芯片开发与实现", "可靠性、良率与量产生命周期"),
+            "series/inference-runtime/topics/01-prefill-decode/index.html": ("推理运行时", "推理执行阶段与服务指标"),
+            "series/inference-runtime/topics/06-paged-kv-cache/index.html": ("推理运行时", "KV 缓存管理与前缀复用"),
+            "series/inference-runtime/topics/15-quantitative-estimation/index.html": ("推理运行时", "推理执行阶段与服务指标"),
         }
         for path, (series, topic) in cases.items():
             with self.subTest(path=path):

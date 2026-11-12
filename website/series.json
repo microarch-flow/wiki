@@ -30,6 +30,14 @@
         "directory": "series/chip-development",
         "publish": "series/chip-development"
       }
+    },
+    {
+      "title": "推理运行时",
+      "description": "从推理阶段、内核、KV 缓存与调度，到分布式服务的草稿与分析。",
+      "local": {
+        "directory": "series/inference-runtime",
+        "publish": "series/inference-runtime"
+      }
     }
   ]
 }

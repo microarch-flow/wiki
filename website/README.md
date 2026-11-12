@@ -74,7 +74,7 @@ python website/prepare.py
 mkdocs serve
 ```
 
-根据命令输出打开本地地址。编辑原始 wiki、其他来源目录、`website/home.md`、`website/series.md`、`website/microarchitecture.md`、`website/series.json`、`website/visuals.md` 或网站资源后，重新执行 `python website/prepare.py`，再启动或刷新预览。使用本地来源时，重新执行的命令也要带上 `--source-root`。`.site-build/` 是可重新生成的构建目录，不要直接在其中维护正文。
+根据命令输出打开本地地址。编辑原始 wiki、其他来源目录、`website/home.md`、`website/series.md`、`website/microarchitecture.md`、`website/series.json`、`website/visuals.md` 或网站资源后，重新执行 `python website/prepare.py`，再启动或刷新预览。如果用本地检出替代配置中的外仓 `source`，重新执行时也要带上 `--source-root`；仓内 `local` 来源不需要该参数。`.site-build/` 是可重新生成的构建目录，不要直接在其中维护正文。
 
 要只生成静态文件：
 
@@ -86,6 +86,8 @@ mkdocs build
 输出目录为 `.site-build/site/`。中文搜索使用 `jieba`；Mermaid 代码块由主题处理。没有联网的读者也可以使用已加载的网页和本地资源，实际离线能力仍取决于浏览器缓存与访问方式。
 
 构建时，`website/hooks.py` 会根据自定义 CSS 和 JavaScript 的内容生成版本参数，避免新页面继续使用浏览器缓存的旧资源。
+
+推理运行时草稿中的数学公式使用仓内 KaTeX 渲染，不依赖运行时访问外部 CDN。窄屏下的长公式可以横向滚动，并可通过键盘聚焦。其余系列的 Markdown 解析保持原有方式。
 
 构建完成后，可以运行 `python -m unittest discover -s website/tests`，检查各页面的当前导航项和面包屑链接。
 

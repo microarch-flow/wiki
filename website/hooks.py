@@ -14,7 +14,7 @@ _WEBSITE = str(Path(__file__).resolve().parent)
 if _WEBSITE not in sys.path:
     sys.path.insert(0, _WEBSITE)
 from sources import load_series, series_landing  # noqa: E402
-from ownership import GROUPS, MICRO, STORAGE, INTERCONNECT, DEVELOPMENT, WORKLOAD_GROUPS, owner, workload_owner, development_owner  # noqa: E402
+from ownership import GROUPS, MICRO, STORAGE, INTERCONNECT, DEVELOPMENT, WORKLOAD_GROUPS, INFERENCE_GROUPS, owner, workload_owner, development_owner, inference_owner  # noqa: E402
 
 
 TOPICS = (
@@ -240,6 +240,17 @@ def development_tree(root, directory):
     return result
 
 
+def inference_tree(root, directory):
+    landing = series_landing(directory)
+    result = [landing.relative_to(root).as_posix()]
+    pages = sorted(path for path in directory.rglob("*.md") if path != landing)
+    for group in INFERENCE_GROUPS:
+        entries = [path.relative_to(root).as_posix() for path in pages if inference_owner(path.relative_to(directory).as_posix()) == group]
+        if entries:
+            result.append({group: entries})
+    return result
+
+
 def breadcrumb_ancestors(page):
     """Find ancestor sections and their landing pages, when available."""
     ancestors = []
@@ -358,6 +369,8 @@ def on_config(config, **kwargs):
                 tree = workload_tree(root, directory)
             elif entry["local"]["publish"] == "series/chip-development":
                 tree = development_tree(root, directory)
+            elif entry["local"]["publish"] == "series/inference-runtime":
+                tree = inference_tree(root, directory)
             else:
                 tree = make_tree(directory, root, ("README.md", "index.md"))
             config.nav.append({entry["title"]: tree})

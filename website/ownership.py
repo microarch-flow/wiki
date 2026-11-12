@@ -121,6 +121,29 @@ def development_owner(path):
     return "工程流程与制造导读"
 
 
+INFERENCE_GROUPS = ("推理执行阶段与服务指标", "推理算子、内核与量化执行", "KV 缓存管理与前缀复用",
+                    "请求调度与动态批处理", "解码策略与输出约束", "分布式并行与分离式推理",
+                    "系列案例与估算", "术语与约定")
+
+
+def inference_owner(path):
+    """Assign the numbered inference drafts to their primary topics."""
+    path = str(path)
+    number = path.split("/", 1)[-1].split("-", 1)[0] if path.startswith("topics/") else ""
+    for numbers, group in (
+        ({"01", "02", "03", "15"}, "推理执行阶段与服务指标"),
+        ({"05", "10"}, "推理算子、内核与量化执行"),
+        ({"06", "07"}, "KV 缓存管理与前缀复用"),
+        ({"04", "08"}, "请求调度与动态批处理"),
+        ({"09", "13"}, "解码策略与输出约束"),
+        ({"11", "12"}, "分布式并行与分离式推理"),
+        ({"14"}, "系列案例与估算"),
+    ):
+        if number in numbers:
+            return group
+    return "术语与约定"
+
+
 WORKLOAD_GROUPS = ("系列导读与参考", "骨干网络与序列建模", "表示学习与训练目标", "自回归与扩散生成",
                    "视觉感知与三维场景表示", "自动驾驶感知、预测与规划", "机器人策略与视觉语言动作模型",
                    "世界模型与环境预测", "算法工作负载分析")
