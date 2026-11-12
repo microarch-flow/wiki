@@ -1,5 +1,11 @@
+# Graphcore IPU（Colossus Mk2 / GC200）
+
+> 本文以 GC200 为主要硬件例子，也提及上一代产品。原稿中的架构推测和商业分析不等于官方实现说明或独立验收结论。
+
 ## 芯片架构图
-![IPU internal architecture](assets/ipu_internal_architecture.png)
+
+> **图示说明：**IPU 由大量 tile 组成；tile 内包含处理器与本地存储，tile 通过 exchange fabric 通信。 [查看公开资料](https://docs.graphcore.ai/projects/ipu-programmers-guide/en/latest/about_ipu.html)。
+
 ## 执行模型
 IPU 使用 Bulk Synchronous Parallel 模型。一个任务会被拆成多个 step，每个 step 包含：
 
@@ -22,13 +28,13 @@ repeat:
 
 这个模型的架构意义很明确：计算和通信被分成阶段，通信是可编译、可调度、可分析的显式行为，而不是被隐藏在 cache miss 或动态内存系统之后。
 
-![Phases of task execution](assets/phases_of_task_execution.png)
+> **图示说明：**一次任务按本地计算、跨 tile 同步和数据交换分阶段执行。 [查看公开资料](https://docs.graphcore.ai/projects/ipu-programmers-guide/en/latest/about_ipu.html)。
 
-![Multiple phases in steps](assets/multiple_phases_in_steps.png)
+> **图示说明：**多次执行步骤沿时间重复同步、交换和计算阶段。 [查看公开资料](https://docs.graphcore.ai/projects/ipu-programmers-guide/en/latest/about_ipu.html)。
 
-![Sync, exchange and compute activity across tiles](assets/sync_exchange_compute_tiles.png)
+> **图示说明：**不同 tile 的计算时间可以不同；同步阶段协调进入后续交换。 [查看公开资料](https://docs.graphcore.ai/projects/ipu-programmers-guide/en/latest/about_ipu.html)。
 
-![PopVision execution activity across all tiles](assets/popvision_tile_activity.png)
+> **图示说明：**PopVision 示例展示一个 IPU 上各 tile 的执行活动；该图是具体程序的轨迹示例。 [查看公开资料](https://docs.graphcore.ai/projects/ipu-programmers-guide/en/latest/about_ipu.html)。
 
 ## tile特性
 tile = 多线程处理器 + 本地 SRAM + code memory + exchange 接口；整芯片是 MIMD，不是 SIMD。
@@ -72,7 +78,7 @@ Graphcore 峰值估值是 28亿美元（不是30亿），2016年从 Xmos 拆分�
 
 这套逻辑自洽，但它是一个**赌注**，不是定论——下面的失败正是赌注被证伪的过程。
 
-### 失败原因
+### 可能因素（原稿分析，待独立核验）
 1. **软件生态（最致命）**。硬件不差，但 Poplar 要求开发者用一套与 CUDA 完全不同的模型思考（MIMD、片上大 SRAM、BSP、显式 tile/exchange 编排），对只想跑 PyTorch 的客户是迁移成本。Nvidia 二十年 CUDA 护城河，绕不过去。
 2. **赌错 workload——而且对的那一半反而害了自己**。"模型更大"猜对了，"更稀疏/更图结构化"猜错了；恰恰"更大"最致命：大 dense 模型要的是 HBM 的容量+带宽，正好戳中 IPU 的弱项。市场走向 dense GEMM + 超大模型 + 渴求 HBM，"片上 SRAM 为王"的赌注落空，单颗 IPU 装不下大模型，被迫大量 inter-IPU 通信，而 off-chip 子系统又是它的弱项。
 3. **时机与节奏**。Nvidia 持续快速迭代，Graphcore 下一代"Good computer"远未就绪。在每 12–18 个月重定基准的市场里，节奏掉队等于出局。
@@ -87,3 +93,6 @@ Graphcore 峰值估值是 28亿美元（不是30亿），2016年从 Xmos 拆分�
 
 ### 我的判断
 最大的问题不是管理，也不是"芯片技术错了"，而是没意识到在 AI 加速器赛道，护城河是软件栈和生态，不是硅片本身。一个再优雅的 MIMD/大 SRAM 架构，如果 mapping 和编译对客户不够透明，就无法转化为出货量。
+
+
+**主要资料：**[IPU Programmer’s Guide](https://docs.graphcore.ai/projects/ipu-programmers-guide/en/latest/about_ipu.html)（[原仓固定提交保存的 PDF](https://github.com/microarch-flow/chip-architecture-wiki/blob/3086204c049a762eb59033f8141fba9e91f4c669/Graphcore_IPU/raw/docs-graphcore-ai-ipu-programmers-guide-en-latest.pdf)）、[Colossus Mk2 Hot Chips 2021](https://hc33.hotchips.org/assets/program/conference/day2/HC2021.Graphcore.SimonKnowles.v04.pdf)和[微基准研究](https://arxiv.org/abs/1912.03413)。对商业原因的解释是原稿观点，仍需独立核验。

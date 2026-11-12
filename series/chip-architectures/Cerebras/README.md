@@ -1,8 +1,10 @@
 # Cerebras WSE / CS 系统
 
+> WSE 指晶圆级芯片，CS 指包含 WSE 的系统。本文的 WSE-3 / CS-3 参数、WSE-2 core 机制和 CS-2 权重流式训练示例来自不同代际，不能直接视为同一设备的实测结果。原稿中的经营判断未在本次迁移中逐项核验。
+
 一句话定位：**不是"超大 GPU"，而是一台 wafer-scale 的 distributed-SRAM dataflow machine**——用整片晶圆上的几十万个小型可编程 dataflow core + 每 core 本地 SRAM + 静态路由 2D mesh + 权重流式输入，把传统多 GPU 系统里的 HBM 墙、模型并行复杂度和片间通信，尽量压进片上 fabric 和静态映射里。
 
-![从 small core 到整片 wafer：Core → Die → WSE](assets/wafer_scale_engine.png)
+> **图示说明：**WSE-2 的示意图从 core 扩展到 die 区域，再扩展到整片晶圆。 [查看公开资料](https://www.hc34.hotchips.org/assets/program/conference/day2/Machine%20Learning/HC2022_Cerebras_Final_v02.pdf#page=16)。
 
 ## 关键参数（WSE-3 / CS-3）
 | 项 | 值 |
@@ -25,7 +27,7 @@ core 不是"取指→译码→执行"的顺序处理器，而是**数据到达�
 - fabric 上的 data/control packet 到达 → 按 color/control **lookup handler** → DSR 描述的 tensor operand → datapath 执行 FMAC/AXPY → 写回本地 SRAM/accumulator 或发回 fabric
 - 因此 **fabric packet 既是数据传输，也是执行事件**——整片 fabric 是一台 dataflow engine
 
-![Dataflow Trigger：Data + Ctrl 经 fabric 输入触发 handler，DSR 选 tensor，datapath 执行 FMAC](assets/data_path.png)
+> **图示说明：**控制与输入数据可触发数据流操作，由计算路径和本地存储协同处理。 [查看公开资料](https://www.hc34.hotchips.org/assets/program/conference/day2/Machine%20Learning/HC2022_Cerebras_Final_v02.pdf#page=12)。
 
 与 Graphcore 的对比：Graphcore 更像"编译器排好的 BSP exchange machine"，Cerebras 更像"packet-triggered dataflow mesh machine"。
 
@@ -36,7 +38,7 @@ core 不是"取指→译码→执行"的顺序处理器，而是**数据到达�
 - **tensor 是 ISA 一等 operand**：如 `fmac [fpsum] = [fpsum], [fwd_wgt], r_in`；operand 可来自本地 SRAM，也可直接来自 fabric stream。底层仍是 SIMD datapath，但上层抽象不是 vector register 而是 DSR 描述的 tensor。
 - **microthreads**：单 core 内 8 个独立 tensor context，硬件按 input/output 可用性 + 优先级 cycle-level 交错，填补稀疏/动态数据流下的 pipeline bubble（不是 GPU warp）。
 
-![每 core 48KB SRAM：8 banks × 6kB，2×64b read / 1×64b write，喂 4×FP16 FMAC（WSE-2）](assets/SRAM.png)
+> **图示说明：**WSE-2 core 的本地 SRAM 按 bank 组织，并与乘加数据路径相连。 [查看公开资料](https://www.hc34.hotchips.org/assets/program/conference/day2/Machine%20Learning/HC2022_Cerebras_Final_v02.pdf#page=9)。
 
 ## fabric
 **wafer-scale static-routed dataflow NoC**：满足 NoC 定义，但不是 cache-coherent 通用 NoC，而是为 ML dataflow / weight broadcast / partial-sum reduction / sparse trigger 专门设计。
@@ -46,7 +48,7 @@ core 不是"取指→译码→执行"的顺序处理器，而是**数据到达�
 - **跨 die / wafer-scale 的真正难点**：84 个 die（12×7，每个 ~17mm×30mm、~10,156 core），跨 die 用 **scribe line 上 <1mm 高层金属短线** + source-synchronous parallel interface 连接，>100 万根线，靠 **冗余 + training + auto-correction 状态机** 绕过坏 link，**软件看到的是 fully uniform 2D mesh**（物理 mesh → 修复后逻辑 mesh → 编译器 route 拓扑 → 调度 dataflow，四层分离）
 - **能效来源**：不是 router 多神奇，而是**物理距离短**——把很多 GPU 需要跨芯片走 SerDes/NVLink 的通信，压成 wafer 内短线（HC2022 对比同面积 sub-fabric：vs A100 约 7× 带宽、66× pJ/bit、10× 功耗优势）
 
-![5-port fabric router（Buffers + Routes，各方向 32b）+ 2D mesh](assets/fabric.png)
+> **图示说明：**WSE-2 fabric 图展示 router、本地计算与二维互连。 [查看公开资料](https://www.hc34.hotchips.org/assets/program/conference/day2/Machine%20Learning/HC2022_Cerebras_Final_v02.pdf#page=17)。
 
 ## MatMul 映射：The Wafer is the MatMul Array
 把整片 wafer 当成一个巨大的 MatMul 阵列。Transformer activation `[Batch, Seq, Hidden]`：
@@ -54,22 +56,22 @@ core 不是"取指→译码→执行"的顺序处理器，而是**数据到达�
 - weight 从边缘 broadcast 进各列 → nonzero weight 到达触发 FMAC → partial sum 经 ring reduction → 输出 layout 直接适配下一层输入（**让上一层输出分布 = 下一层输入分布，减少中间重排**）
 - 单 WSE 可放下 up to 100k×100k 的 MatMul，**无需把单层切成 tensor/pipeline parallel**
 
-![activations[B][S][H] → 整片 wafer：H 映射 x 方向，B/S 映射 y 方向](assets/matmul_array.png)
+> **图示说明：**WSE-2 将激活张量的不同维度映射到晶圆计算阵列的两个方向。 [查看公开资料](https://www.hc34.hotchips.org/assets/program/conference/day2/Machine%20Learning/HC2022_Cerebras_Final_v02.pdf#page=21)。
 
 ## 存储与系统扩展（训练）：存算解耦
 - **MemoryX**：外置参数存储 + optimizer compute。4TB–2.4PB，可承载 200B–120T 权重 + optimizer state（DRAM + flash 混合）。**"120T 参数"是 MemoryX 的系统容量，不是片上 SRAM 容量**
 - **Weight Streaming**：权重存 MemoryX、按层流入 wafer、用完即丢；activation 常驻 wafer；gradient 流回 MemoryX 做 update。靠 coarse/fine-grained pipelining 把权重流入、梯度流出、optimizer update 与计算 overlap，掩盖延迟。代价是 MemoryX 带宽必须够、依赖大 batch 摊销
 
-![Weight Streaming：MemoryX 存权重/做 update，weights 流入 wafer、gradients 流回；activation 常驻](assets/weight_streaming.png)
+> **图示说明：**训练示例中，MemoryX 负责权重存储与更新；权重和梯度在 MemoryX 与计算系统之间流动。 [查看公开资料](https://hc33.hotchips.org/assets/program/conference/day2/HC2021.Cerebras.SeanLie.v1.pdf#page=15)。
 
 - **SwarmX**：MemoryX 与各 CS 之间的 broadcast/reduce fabric（tree 拓扑）。多系统扩展只做 **data parallel**——把模型并行通信转成更规则的 broadcast/reduce
 
-![SwarmX：MemoryX 经 tree 把 weights broadcast 给多个 CS-2，gradients 回程 reduce](assets/swarmx.png)
+> **图示说明：**SwarmX 把权重广播到多个 CS-2，并在返回路径上归约梯度。 [查看公开资料](https://hc33.hotchips.org/assets/program/conference/day2/HC2021.Cerebras.SeanLie.v1.pdf#page=23)。
 
 ## 稀疏：架构放大器
 核心等价关系：**Sparse GEMM = 每个非零 weight 一次 AXPY**。
 
-![All BLAS levels 全速：GEMM(BLAS-3)/GEMV(BLAS-2)/AXPY(BLAS-1)，Sparse GEMM = one AXPY per non-zero weight](assets/sparse_axpy.png)
+> **图示说明：**厂商用 GEMM、GEMV 和 AXPY 对比数据访问，并用非零权重对应的 AXPY 描述稀疏计算。 [查看公开资料](https://hc33.hotchips.org/assets/program/conference/day2/HC2021.Cerebras.SeanLie.v1.pdf#page=29)。
 - zero 在 **sender 端就过滤**（根本不发包），同时省下 compute / fabric traffic / 调度 / 功耗——不是 receiver 端 `if w==0 skip`
 - nonzero packet 到达直接触发 FMAC，天然支持 **fine-grained unstructured sparsity**（GPU tensor core 多偏 dense 或结构化稀疏）
 - 官方在 GPT-3 12k×12k MatMul 上展示稀疏度与加速接近线性
@@ -99,7 +101,7 @@ core 不是"取指→译码→执行"的顺序处理器，而是**数据到达�
 | 单用户 decode | 尽量 SRAM resident | 权重读取带宽、KV cache、串行依赖 | SRAM 带宽 + pipeline |
 | 70B+ 推理 | 多 WSE resident | 跨 WSE layer/pipeline 通信 | 多 wafer 映射 |
 
-![H100 把 LLM 放 HBM（3 TB/s）经外部总线喂 compute；WSE-3 把 LLM 放片上 SRAM（21 PB/s）紧贴 compute](assets/memory_wall.png)
+> **图示说明：**厂商以 H100 片外 HBM 带宽和 WSE-3 片上 SRAM 聚合带宽作示意；两者的存储层级和测量口径不同。 [查看公开资料](https://hc2024.hotchips.org/assets/program/conference/day2/72_HC2024.Cerebras.Sean.v03.final.pdf#page=32)。
 
 HC2024 把叙事转向推理：生成 1000 token 要 1000 次串行过模型、每次都读权重，故 memory bandwidth 是瓶颈。WSE-3 的 44GB SRAM 能放下 Llama3.1-8B FP16；70B（140GB FP16）需 4×WSE-3 的 176GB SRAM 承载。WSE-3 vs H100 的极端对比（约 57× 面积、880× 片上内存、7000× memory 带宽）是营销口径，但点出推理路线核心：**把权重放进 wafer SRAM，避免每 token 从 HBM 读**。
 > 训练叙事自洽；推理叙事吸引人但有条件——能否成立取决于模型/KV cache 是否真能塞进聚合 SRAM，以及 batch、延迟、吞吐、系统成本的具体权衡。
@@ -133,4 +135,4 @@ HC2024 把叙事转向推理：生成 1000 token 要 1000 次串行过模型、�
 - **灵活性 vs 通用性**：用通用动态性，换 wafer-scale 上可静态规划、低开销、高带宽的数据流执行——这条路在"workload 规则、可静态映射"时极强，越动态越吃亏
 
 ---
-*本文基于 raw/ 下官方资料（WSE-3 白皮书、HC2021/2022/2024）与对应 chat 梳理；经营/上市数据来自公开报道（截至 2026-06）。架构图取自官方幻灯片：`data_path`/`SRAM`/`fabric`/`wafer_scale_engine` 来自 HC2022，`weight_streaming`/`swarmx`/`sparse_axpy` 来自 HC2021，`matmul_array` 来自 HC2022，`memory_wall` 来自 HC2024。*
+**来源与范围：**[CS-2 与 MemoryX／SwarmX（Hot Chips 2021）](https://hc33.hotchips.org/assets/program/conference/day2/HC2021.Cerebras.SeanLie.v1.pdf)、[WSE-2 架构（Hot Chips 2022）](https://www.hc34.hotchips.org/assets/program/conference/day2/Machine%20Learning/HC2022_Cerebras_Final_v02.pdf)和 [WSE-3（Hot Chips 2024）](https://hc2024.hotchips.org/assets/program/conference/day2/72_HC2024.Cerebras.Sean.v03.final.pdf)。原稿的商业观察截至 2026-06。

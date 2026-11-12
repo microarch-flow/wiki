@@ -1,8 +1,10 @@
 # SambaNova RDU / RDA
 
+> 本文主要讨论 SN40L。SN10 的空间映射示例属于上一代。系统级内存数字和单个 RDU 参数需要分开阅读；原稿中的经营判断未在本次迁移中逐项核验。
+
 一句话定位：**CGRA 风格的空间数据流（spatial dataflow）AI 加速器**——不像 GPU 把模型拆成 kernel 逐个时分执行，也不像 TPU 围绕一块大 systolic array，而是把模型图的一段子图**空间映射**成"计算单元 PCU + 存储单元 PMU + 可编程片上通信 RDN"的可重构流水线。核心卖点不是单个矩阵阵列多强，而是**把 compute / memory / interconnect 都变成编译器可显式编排的资源**，从而做激进的算子融合、pipeline parallelism 和多模型 memory hierarchy 管理。
 
-![SN40L tile：PMU/PCU 成对 + mesh switch（S）+ 边缘 AGCU，1040 PCU/PMU](assets/tile_architecture.png)
+> **图示说明：**SN40L 示例将 PCU、PMU、片上交换和边缘接口组织为片上资源。 [查看公开资料](https://hc2024.hotchips.org/assets/program/conference/day1/48_HC2024.Sambanova.Prabhakar.final-withoutvideo.pdf#page=4)。
 
 ## 关键参数（SN40L，单 RDU/socket 口径）
 | 项 | 值 |
@@ -27,7 +29,7 @@ graph segment → 空间流水线
 
 编译器把每个 operator/buffer/transform 映射到不同 PCU/PMU 上，数据像流一样穿过这些资源；中间结果**不反复落 HBM**，算子之间**没有 kernel 边界**。这就是 SambaNova 说的 **spatial programming**——配置 RDU 物理资源，让数据在 fabric 上并行流动。
 
-![old way（kernel-by-kernel，受 memory 带宽/host 开销限制）vs dataflow way（spatial，消除中间 memory traffic）](assets/spatial_vs_kernel.png)
+> **图示说明：**SN10 厂商示例对比逐 kernel 执行和空间数据流映射；实际收益取决于工作负载与实现。 [查看公开资料](https://www.hc33.hotchips.org/assets/program/conference/day2/SambaNova%20HotChips%202021%20Aug%2023%20v1.pdf#page=23)。
 
 它真正想解决的是 **operator fusion + memory wall**：小模型/expert 常 operational intensity 低、图里有 transpose/shuffle/many-to-one 等复杂访问，GPU 受 kernel 模型 + SM 间通信 + cache/HBM materialize 限制很难完全 fuse。论文用 Monarch FFT 风格图说明：不 fusion 时 operational intensity 仅 39.5 ops/byte，部分 fusion 102.6，完全 spatial fusion 可达 410.4。
 
@@ -38,7 +40,7 @@ graph segment → 空间流水线
 - **Tail stage**：超越函数（exp/sigmoid）、casting、随机数、stochastic rounding，可与 body compute fuse
 - **Header + counters + control**：counters 跟踪 loop iteration、到上限发 control token——PCU 不是被指令流逐拍驱动，而是一个**有限状态的数据流计算 stage**
 
-![PCU：Header → SIMD/systolic body（+reduction）→ Tail，Vector/Scalar FIFO + Counters + Control Block](assets/pcu.png)
+> **图示说明：**SN40L 的 PCU 包含向量／矩阵计算、归约和控制资源。 [查看公开资料](https://hc2024.hotchips.org/assets/program/conference/day1/48_HC2024.Sambanova.Prabhakar.final-withoutvideo.pdf#page=5)。
 
 ## PMU（Pattern Memory Unit）：可编程 memory 流水线，不是普通 SRAM
 SambaNova 最有特色的部件。**PMU = banked SRAM + 地址生成器 + data alignment crossbar + predicate/banking + stream 接口**，承担三重角色：
@@ -46,7 +48,7 @@ SambaNova 最有特色的部件。**PMU = banked SRAM + 地址生成器 + data a
 - **address-generation engine**：fragmentable scalar ALU pipeline，每周期产 4 个地址；支持 bitfield extraction/shift 等复杂寻址；read/write 地址流水线可被软件**切分**，按读写模式分配 stage 数
 - **layout transformation unit**：data alignment crossbar 做 transpose/permute/dilation/downcast。关键技巧——**transpose 可以不是计算算子，而是 PMU 的读写布局行为**：写入时按对角条带格式存 bank，读出时直接读成转置 stream（GPU 上 transpose 往往是 fusion 难点，要跨 SM/落 cache）
 
-![PMU：Write/Read Data Align + Fragmentable Scalar ALU Pipeline + Addr Pred + Scratchpad Banks](assets/pmu.png)
+> **图示说明：**SN40L 的 PMU 将可编程存储、地址生成和数据对齐组合为数据供给路径。 [查看公开资料](https://hc2024.hotchips.org/assets/program/conference/day1/48_HC2024.Sambanova.Prabhakar.final-withoutvideo.pdf#page=6)。
 
 一句话：**PCU 让数据"算起来"，PMU 让数据"以正确的顺序、布局、带宽流起来"。**
 
@@ -71,14 +73,14 @@ DDR (大容量) : expert 仓库 / 大模型参数，低成本大容量 + 快速 
 ```
 策略是 **DDR = expert warehouse，HBM = active expert cache，SRAM = execution buffer**——不是"所有权重永远驻 HBM"。这对 Composition of Experts 很合理，但不一定等价适合单个超大 dense model 的低延迟 serving。
 
-![三层 memory 金字塔（系统级口径）：SRAM 8GB → HBM 1TB（25.6 TB/s）→ DDR 24TB（1600 GB/s）](assets/three_tier_memory.png)
+> **图示说明：**厂商图中的 SRAM、HBM 和 DDR 数字采用系统级聚合口径，不能当作单个 RDU 的容量。 [查看公开资料](https://hc2024.hotchips.org/assets/program/conference/day1/48_HC2024.Sambanova.Prabhakar.final-withoutvideo.pdf#page=3)。
 
 ## CoE（Composition of Experts）：SambaNova 的系统级叙事
 SN40L paper 的中心不是普通 LLM，而是 CoE——**多个独立训练/微调的小模型 + 一个 router model 组成系统**（区别于 MoE 的"模型内部专家层"）。论文 Samba-CoE 有 150 个 Llama2-7B expert、总参数 >1T，部署在一个 8-socket SN40L node：**所有 expert 权重放 DDR、router 放 HBM**；一次推理 = 跑 router → 从 DDR 拷贝选中 expert 到 HBM → 跑 expert。三层 memory 正是为这个假设优化（model switching 可 <0.01s）。
 
 背后的赌注：**未来企业 AI 不一定是一个巨型 monolithic LLM，而可能是大量 specialized 小模型的组合。**
 
-![CoE 系统价值：vs DGX H100 约 3.7× faster、19× smaller、15× faster model switching](assets/coe_cost.png)
+> **图示说明：**厂商展示模型服务和切换的系统级对比；解读时需核对工作负载、配置和测量口径。 [查看公开资料](https://hc2024.hotchips.org/assets/program/conference/day1/48_HC2024.Sambanova.Prabhakar.final-withoutvideo.pdf#page=22)。
 
 ## 编译器与 runtime：复杂度的真正所在
 - **SambaFlow**：把 PyTorch/TensorFlow 图抽取、优化、映射成空间布局 + 通信 pattern + pipeline schedule + PEF（可执行）。RDU 没有传统固定 ISA，而是**针对每个模型专门编程**，生成类似 application-specific accelerator 的映射
@@ -124,4 +126,4 @@ SN40L paper 的中心不是普通 LLM，而是 CoE——**多个独立训练/微
 - 与 **Graphcore** 同病相怜：技术上漂亮，但都撞上"软件生态 + workload 演化方向 + 商业兑现"三重墙。SambaNova 估值从 $50 亿跌到 $22 亿、被迫转型，本质和 Graphcore 一样——**优雅的空间数据流架构，若 mapping/编译对客户不够透明、又没踩中需求曲线，就难转化为出货量**
 
 ---
-*本文基于 raw/ 下官方资料（RDA 白皮书、HC2021 SN10、HC2024 SN40L、SN40L paper、RDARuntime paper）与对应 chat 梳理；经营数据来自公开报道（截至 2026-06）。架构图取自官方幻灯片：`tile_architecture`/`pcu`/`pmu`/`three_tier_memory`/`coe_cost` 来自 HC2024 SN40L，`spatial_vs_kernel` 来自 HC2021 SN10。三层 memory 图为系统级口径。*
+**来源与范围：**[SN10（Hot Chips 2021）](https://www.hc33.hotchips.org/assets/program/conference/day2/SambaNova%20HotChips%202021%20Aug%2023%20v1.pdf)、[SN40L（Hot Chips 2024）](https://hc2024.hotchips.org/assets/program/conference/day1/48_HC2024.Sambanova.Prabhakar.final-withoutvideo.pdf)和 [SN40L 论文](https://arxiv.org/abs/2405.07518)。原稿的商业观察截至 2026-06。

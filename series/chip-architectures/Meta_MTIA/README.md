@@ -1,10 +1,12 @@
 # Meta MTIA (v1 / v2)
 
-一句话定位：**面向 Meta 内部推荐系统(ranking & recommendation, R&R)推理的 RISC-V 控制型 many-PE 加速器**。它不是 LLM 芯片、不追 dense GEMM 峰值,而是用 **8×8 PE 阵列 + 每 PE 内 RISC-V 控制 + fixed-function 异步 dataflow 流水 + 大 SRAM + LPDDR(不用 HBM)**,把 Meta 海量 DLRM/推荐推理跑出**更低 TCO / 更好 perf/W**。和 AWS 类似、与三家初创相反:**护城河是垂直整合 + 自有海量 workload(captive demand)+ PyTorch 全栈,而非把新颖架构卖给别人**。
+> 本文比较 MTIA 1（第一代）与 MTIA 2i（第二代）。第一代论文中的模型趋势和 TBE 实验不能当作第二代测试结果。原稿中的经营判断未在本次迁移中逐项核验。
+
+一句话定位：MTIA 1 与 MTIA 2i 是面向 Meta 内部推荐和排序推理的 many-PE 加速器。芯片采用 **8×8 PE 阵列、RISC-V 控制、专用功能单元、片上 SRAM 和 LPDDR**。Meta 按自己的模型与软件栈设计芯片；能效和成本比较应限定具体模型、系统及测试条件。
 
 命名对照:**MTIA v1 = MTIA 1 = MTIA 100**(ISCA'23);**MTIA v2 = MTIA 2i = MTIA 200**(ISCA'25);后续 MTIA 300/400/450/500 是更快节奏的路线(300 转向 chiplet,400/450/500 转向 GenAI)。
 
-![MTIA 2i 整体架构:8×8 PE 阵列 + 四边 XBAR/NoC + MEM(共享SRAM)+ DDR Ctrl + LPDDR5 + Decompression + Control Core + Host Interface](assets/chip_architecture.png)
+> **图示说明：**MTIA 2i 将 8×8 PE 阵列与共享 SRAM、存储控制器和主机接口连接。 [查看公开资料](https://aisystemcodesign.github.io/papers/MTIA-ISCA25.pdf)。
 
 ## 关键参数(官方 ISCA'25 Table 2)
 | 维度 | MTIA 1 (v1) | MTIA 2i (v2) |
@@ -25,9 +27,9 @@
 v2 相对 v1:dense compute 约 **3.5×**、sparse compute 约 **7×**、PE local storage **3×**、SRAM 翻倍且带宽 3.5×、LPDDR 容量翻倍、NoC 带宽翻倍——而 die 面积只增 1.13×。
 
 ## 为什么做 MTIA:R&R 推理的规模与经济性
-Meta 的主要推理 workload 是推荐/排序(DLRM 类),不是 LLM。这类模型的特点:**embedding + dense MLP + feature interaction 混合、batch 受限、有较强 locality(working set 可放 SRAM)**。模型复杂度与体积逐年快速增长(下图),用 GPU 跑这类 workload perf/W 与 TCO 并不划算——这正是 MTIA 的切入点:用便宜的 **大 SRAM + LPDDR** 替代昂贵的 HBM,把这部分推理从 GPU 上接过来。对不适合 MTIA 的模型,Meta 仍用 GPU。
+MTIA 1 和 2i 主要面向推荐与排序推理。这类模型混合 embedding、dense MLP 和 feature interaction；其局部性、批大小和内存需求依具体模型变化。第一代论文图 1 展示了模型复杂度与大小的历史和预测趋势。Meta 用 SRAM 与 LPDDR 组织这一代芯片的存储层级，并同时使用其他加速器。
 
-![Meta 推理模型趋势:GFLOPS/sample 与模型体积(含 embedding)逐年攀升](assets/model_trends.png)
+> **图示说明：**第一代 MTIA 论文图 1 展示模型复杂度和内存占用的历史与预测趋势，并非所有年份都是实测值。 [查看公开资料](https://doi.org/10.1145/3579371.3589348)。
 
 ## 执行模型:RISC-V 生成 custom instruction,CP 调度,fixed-function 异步 dataflow
 不是 GPU 的 warp/SIMT,也不是纯 systolic。PE 上是 **asynchronous dataflow model**:
@@ -43,7 +45,7 @@ DPE / RE / SE / MLU / FI 异步执行(依赖满足即触发,DMA 与计算重叠)
 ## PE 微架构:Local Memory + fixed-function 粗粒度流水
 每个 PE = 两个 RISC-V core(scalar + 64B 宽 vector)+ 384KB Local Memory + 一组 fixed-function units,经 PE Interconnect 相连;fixed-function units 可直接访问 Local Memory 并**串成 coarse-grained pipeline**(数据从一个 unit 流到下一个)。
 
-![MTIA 2i PE 内部:FI / PE Interconnect / RISC-V(scalar,vector)/ Command Processor / Registers / Local Memory / MLU→DPE→RE→SE](assets/pe_internal.png)
+> **图示说明：**MTIA 2i 的 PE 包含 RISC-V 控制、Local Memory、命令处理和专用功能单元。 [查看公开资料](https://aisystemcodesign.github.io/papers/MTIA-ISCA25.pdf)。
 
 | 单元 | 职责 |
 |---|---|
@@ -76,7 +78,7 @@ MTIA 论文最有料的不是 PE 结构,而是**生产化经验**——最终线
 - dense 网络经 buffer placement + fusion + 额外 LLC tiling 可达 **>95% SRAM hit rate**;sparse 网络也能让 40–60% 访问命中 SRAM
 - 复杂 GEMM:把 activation 预载入各 PE 的分布式 Local Memory、跨 PE 列 **broadcast weights**(硬件 broadcast read 消除 NoC 争用)、weight tile 预取进 LLC 隐藏 DRAM 延迟——某些 shape latency 改善 45%,并达 >95% DRAM 带宽利用
 
-![TBE(embedding)perf/W:MTIA vs GPU,在推荐类访存密集 workload 上 MTIA 能效有竞争力](assets/perfw_vs_gpu.png)
+> **图示说明：**第一代 MTIA 与 GPU 在若干 TBE 参数和批大小下比较带宽功效；结果随测试形状变化，不能概括为 MTIA 2i 的普遍优势。 [查看公开资料](https://doi.org/10.1145/3579371.3589348)。
 
 ## 为什么不适合 LLM decode
 MTIA 2i 的设计点建立在**推荐模型的 locality**上(模型相对小,working set 可放 SRAM,最大化 SRAM reuse)。论文坦承:**一旦模型大小/复杂度超出 SRAM 容量,有限的 off-chip 带宽会让性能急剧下降**——GEMM 变成 DRAM-bandwidth-bound。对 Llama2-7B,prefill 能满足 600ms TTFT,但 **decode 满足不了每 token 60ms** 的要求(每 token 重复读大量权重/KV,LPDDR 带宽不够)。这印证:decode 看的是有效带宽 × reuse,不是峰值 FLOPS。
@@ -109,4 +111,4 @@ MTIA 2i 的设计点建立在**推荐模型的 locality**上(模型相对小,wor
 - 和 **Graphcore/Cerebras/SambaNova** 相反:三家把架构新颖度当卖点去赢外部客户,普遍撞上软件生态 + workload 演化 + 商业兑现的墙;MTIA/AWS 用"自有海量需求"绕开了初创最缺的出货量与真实负载
 
 ---
-*本文基于 raw/ 下官方论文(MTIA ISCA'23、ISCA'25)与对应 chat 梳理;命名/路线图来自公开报道(截至 2026-06)。规格数字以 ISCA'25 Table 2 为准。架构图取自论文:`chip_architecture`(Fig 1)、`pe_internal`(Fig 2)、`perfw_vs_gpu`、`model_trends`。*
+**来源与范围：**[MTIA 1 论文（ISCA 2023）](https://doi.org/10.1145/3579371.3589348)的图 1 和图 12 对应原稿的模型趋势与 TBE 对比；[MTIA 2i 论文（ISCA 2025）](https://aisystemcodesign.github.io/papers/MTIA-ISCA25.pdf)的图 1、图 2 和表 2 对应第二代架构和代际参数。产品名称还可参见 [Meta 产品路线说明](https://ai.meta.com/blog/meta-mtia-scale-ai-chips-for-billions)。

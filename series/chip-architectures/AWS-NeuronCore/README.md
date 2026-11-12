@@ -1,13 +1,15 @@
 # AWS Inferentia2 / NeuronCore-v2
 
+> 本文主要讨论 Inferentia2 和 NeuronCore-v2。横向报告的 Trainium2 使用 NeuronCore-v3，规格不能直接互换。原稿中的经营判断属于分析，未在本次迁移中逐项核验。
+
 一句话定位：**compiler-managed、software-managed SRAM 为中心的异构多引擎 AI tile**。和 Graphcore/Cerebras/SambaNova 那种"赌新颖架构范式"的初创不同，AWS 走的是另一条路——**架构相对保守（systolic + 向量/标量引擎 + scratchpad SRAM），真正的护城河是垂直整合（自研芯片 + Nitro + Graviton + 云）+ anchor 客户 + 成本**。NeuronCore-v2 同时用于推理芯片 Inferentia2 和训练芯片 Trainium1。
 
-## 架构总览（自绘推导图）
-下图为基于公开资料推导的整体架构图（非官方实现图）：左为 Inferentia2 芯片级视图，右为单个 NeuronCore-v2 内部视图，含 4 引擎/4 指令流、SBUF/PSUM、典型数据流与访问限制。
+## 架构总览
+原稿基于公开资料区分 Inferentia2 芯片级视图与单个 NeuronCore-v2 的引擎、SBUF/PSUM 和数据流。跨核路径属于推断，不是官方实现图。
 
-![AWS Inferentia2 / NeuronCore-v2 推导架构图（自绘）](assets/Architecture.png)
+> **图示说明：**原稿的推导图区分 Inferentia2 芯片和 NeuronCore-v2。它将核间路径标为推断；官方资料未给出其完整片上互连实现。 [查看公开资料](https://awsdocs-neuron.readthedocs-hosted.com/en/v2.29.1/nki/guides/architecture/trainium_inferentia2_arch.html)。
 
-![Inferentia2 芯片（官方框图）：2×NeuronCore-v2 + 2×HBM + DMA + Collective Communication + Host PCIe + 2×NeuronLink-v2](assets/inferentia2_chip.png)
+> **图示说明：**Inferentia2 设备图展示两个 NeuronCore-v2、HBM 和片外连接。 [查看公开资料](https://awsdocs-neuron.readthedocs-hosted.com/en/v2.9.1/general/arch/neuron-hardware/inferentia2.html)。
 
 > **公开信息边界（重要）**：AWS 只公开到 **NKI（Neuron Kernel Interface）可见的片上层级**——engine、SBUF/PSUM、DMA、semaphore；**没有**公开到 NoC/router/packet/事务层。所以两个 NeuronCore-v2 之间的片上互连拓扑、core-to-core 是否绕 HBM、collective engine 微架构等，本文只能保守表述，不能脑补成 GPU NVLink 语义。
 
@@ -53,7 +55,7 @@ hardware atomic semaphore（编译器自动插入同步）
 
 > 注意：NeuronCore-v2 官方只有 **4 个引擎**（Tensor/Vector/Scalar/GpSimd），**没有独立的 "Sync Engine"**；触发 DMA、同步是每个引擎指令流里的 control 指令能力 + 硬件 atomic semaphore，真正的搬运由设备级 32 个 DMA engine 执行。
 
-![NeuronCore-v2：Tensor / Vector / Scalar / GPSIMD 四类引擎 + On-chip SRAM](assets/neuroncore_v2_block.png)
+> **图示说明：**NeuronCore-v2 包含 Tensor、Vector、Scalar 和 GPSIMD 四类引擎，以及软件管理的片上存储。 [查看公开资料](https://awsdocs-neuron.readthedocs-hosted.com/en/v2.29.1/about-neuron/arch/neuron-hardware/neuron-core-v2.html)。
 
 ## 片上 memory：SBUF / PSUM 是 2D，软件管理
 两块 software-managed SRAM（**不是 cache**），都组织成 2D、各 128 partitions：
@@ -68,7 +70,7 @@ SBUF/PSUM tensor shape: [P, F]
 ```
 所以 NeuronCore 的 tile 不是普通 `[M,N]`，而是 `{partition_axis P≤128, free_axis F, buffer: SBUF|PSUM}`。
 
-![SBUF/PSUM 数据沿 P 维并行进入 compute engine、沿 F 维随时间流过 engine pipeline](assets/sbuf_streaming.png)
+> **图示说明：**数据访问沿 partition 维并行，并沿 free 维依次流经计算引擎。 [查看公开资料](https://awsdocs-neuron.readthedocs-hosted.com/en/v2.29.1/nki/guides/architecture/trainium_inferentia2_arch.html)。
 
 **端口冲突约束**（编译器负责串行化，不是任意 crossbar）：VectorE 与 GPSIMD 不能并行访问 SBUF；VectorE 与 ScalarE 不能并行访问 PSUM。
 
@@ -77,11 +79,11 @@ NKI 的 `nc_matmul(stationary, moving)` 在硬件上不是简单 `x@y`，而是�
 - **LoadStationary**：从 SBUF 读 `stationary[K,M]`，缓存进 Tensor Engine 内部
 - **MultiplyMoving**：从 SBUF 读 `moving[K,N]`，与已加载的 stationary 相乘，结果写 `output[M,N]` 到 PSUM
 
-![matmul：数学视图 x[M,K]@y[K,N]=out[M,N] ↔ Tensor Engine 视图 stationary/moving/PSUM/copy-to-SBUF](assets/matmul_mxkxn.png)
+> **图示说明：**矩阵乘法在数学视图中是 x[M,K] 与 y[K,N] 相乘；Tensor Engine 使用 stationary 和 moving 布局。 [查看公开资料](https://awsdocs-neuron.readthedocs-hosted.com/en/v2.29.1/nki/guides/architecture/trainium_inferentia2_arch.html)。
 
 K > 128 时用 **PSUM 近存累加**：多个 K-tile 连续累加进同一 PSUM bank，最后经 Vector/Scalar 做 post-op（bias/activation/cast）再写回 SBUF。这与 GPU tensor core 的 accumulator register file 不同——是**显式 PSUM SRAM accumulation**。
 
-![SBUF → Tensor Engine（128 行 × 128 列）→ PSUM（128 partitions）](assets/tensor_engine_sram.png)
+> **图示说明：**Tensor Engine 从 SBUF 读取输入，并将结果写入 PSUM；图示说明的是 NeuronCore-v2。 [查看公开资料](https://awsdocs-neuron.readthedocs-hosted.com/en/v2.29.1/nki/guides/architecture/trainium_inferentia2_arch.html)。
 
 典型单 core 数据流总览：
 ```text
@@ -133,4 +135,4 @@ NeuronCore-v2 是 Inferentia2（推理）与 Trainium1（训练）共用的核�
 - 启示：在 AI 加速器赛道，**"谁能稳定吸收产能并形成迭代闭环"可能比"谁的架构最优雅"更决定生死**。AWS 用 Annapurna + 云 + Anthropic 解决了初创最缺的两样东西——出货量和软件打磨的真实负载
 
 ---
-*本文基于 raw/ 下官方资料（Trainium/Inferentia2 NKI 架构指南、Inferentia2/NeuronCore-v2 架构页）与对应 chat 梳理；战略/商业背景来自公开报道（截至 2026-06）。架构图取自官方文档：`inferentia2_chip`/`neuroncore_v2_block` 来自架构页，`tensor_engine_sram`/`matmul_mxkxn`/`sbuf_streaming`（Fig 46/47/58）来自 NKI 架构指南。AWS 未公开 device 内部 NoC/fabric 层级，跨 core 数据路径为保守推断。*
+**来源与范围：**[Trainium/Inferentia2 NKI 架构指南](https://awsdocs-neuron.readthedocs-hosted.com/en/v2.29.1/nki/guides/architecture/trainium_inferentia2_arch.html)、[Inferentia2 架构](https://awsdocs-neuron.readthedocs-hosted.com/en/v2.9.1/general/arch/neuron-hardware/inferentia2.html)和 [NeuronCore-v2 架构](https://awsdocs-neuron.readthedocs-hosted.com/en/v2.29.1/about-neuron/arch/neuron-hardware/neuron-core-v2.html)。原稿的商业观察截至 2026-06；跨 core 路径仍是推断。
