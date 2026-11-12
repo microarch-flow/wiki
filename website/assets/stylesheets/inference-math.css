@@ -7,3 +7,23 @@ span.arithmatex-inline-display {
   overflow-y: hidden;
   padding-block: 0.15rem;
 }
+
+.arithmatex.is-scrollable {
+  border-bottom: 1px dashed currentColor;
+}
+
+.arithmatex.is-scrollable:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 2px;
+}
+
+.inference-math-scroll-hint {
+  display: block;
+  font-size: 0.7rem;
+  text-align: right;
+  opacity: 0.8;
+}
+
+.inference-math-scroll-hint[hidden] {
+  display: none;
+}
