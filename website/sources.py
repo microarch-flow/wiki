@@ -32,12 +32,25 @@ def load_series(registry):
         if name.strip() in titles:
             raise ValueError(f"Duplicate series title: {name.strip()}")
         titles.add(name.strip())
-        kinds = [kind for kind in ("page", "url", "source") if kind in item]
+        kinds = [kind for kind in ("page", "url", "source", "local") if kind in item]
         if len(kinds) != 1:
-            raise ValueError("Each series needs exactly one of page, url, or source")
-        if kinds[0] != "source":
+            raise ValueError("Each series needs exactly one of page, url, source, or local")
+        if kinds[0] in {"page", "url"}:
             if not isinstance(item[kinds[0]], str) or not item[kinds[0]].strip():
                 raise ValueError(f"Series {name!r} has an empty {kinds[0]}")
+            continue
+
+        if kinds[0] == "local":
+            local = item["local"]
+            if not isinstance(local, dict) or set(local) != {"directory", "publish"}:
+                raise ValueError(f"Series {name!r} needs a local directory and publish path")
+            for key in ("directory", "publish"):
+                value = local[key]
+                if not isinstance(value, str) or not value or "\\" in value:
+                    raise ValueError(f"Invalid local {key}: {value!r}")
+                path = PurePosixPath(value)
+                if path.is_absolute() or not path.parts or any(part in {".", "..", ".git"} for part in path.parts):
+                    raise ValueError(f"Local {key} must stay inside the checkout: {value!r}")
             continue
 
         source = item["source"]
@@ -83,23 +96,27 @@ def source_directory(checkout, directory):
     return path
 
 
-def copy_source(source, destination):
-    """Copy an explicitly selected directory; never publish Git metadata or symlinks."""
+def copy_source(source, destination, public_only=False):
+    """Copy a selected directory; local sources only publish prose and images."""
     series_landing(source)
     outputs = {}
     for root, directories, files in os.walk(source, followlinks=False):
-        directories[:] = [name for name in directories if name != ".git"]
         for name in directories + files:
             path = Path(root) / name
             if name == ".git":
                 continue
             if path.is_symlink():
                 raise ValueError(f"Source contains a symlink: {path}")
+        directories[:] = [name for name in directories if name != ".git" and
+                          (not public_only or (not name.startswith(".") and name not in {"raw", "__pycache__"}))]
         for name in files:
             if name == ".git":
                 continue
             path = Path(root) / name
             relative = path.relative_to(source)
+            if public_only and (name.startswith(".") or name in {"AGENTS.md", "SKILL.md"} or
+                                path.suffix.lower() not in {".md", ".svg", ".png", ".jpg", ".jpeg", ".gif", ".webp"}):
+                continue
             if path.suffix in {".markdown", ".mdown", ".mkdn", ".mkd"} or (path.suffix.lower() == ".md" and path.suffix != ".md"):
                 raise ValueError(f"Source Markdown files must use the .md extension: {path}")
             if path.suffix == ".md":
@@ -113,7 +130,36 @@ def copy_source(source, destination):
         for parent in output.parents:
             if parent in outputs:
                 raise ValueError(f"Source output path collision: {outputs[parent]} blocks {relative}")
-    shutil.copytree(source, destination, ignore=shutil.ignore_patterns(".git"))
+    if destination.exists():
+        raise ValueError(f"Source output path collision: destination already exists: {destination}")
+    if not public_only:
+        shutil.copytree(source, destination, ignore=shutil.ignore_patterns(".git"))
+        return
+    destination.mkdir(parents=True)
+    for relative in outputs.values():
+        target = destination / relative
+        target.parent.mkdir(parents=True, exist_ok=True)
+        shutil.copy2(source / relative, target)
+
+
+def validate_output_paths(docs):
+    """Reject collisions between all staged pages and assets, including sources."""
+    outputs = {}
+    for path in Path(docs).rglob("*"):
+        if not path.is_file():
+            continue
+        relative = path.relative_to(docs)
+        if path.suffix == ".md":
+            output = relative.parent / "index.html" if path.name in {"README.md", "index.md"} else relative.parent / path.stem / "index.html"
+        else:
+            output = relative
+        if output in outputs:
+            raise ValueError(f"Source output path collision: {outputs[output]} and {relative} both produce {output}")
+        outputs[output] = relative
+    for output, relative in outputs.items():
+        for parent in output.parents:
+            if parent in outputs:
+                raise ValueError(f"Source output path collision: {outputs[parent]} blocks {relative}")
 
 
 def fetch_checkout(source, destination):

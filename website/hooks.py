@@ -40,9 +40,13 @@ def read_series(root, registry=None):
         name = item["title"].strip()
         description = item["description"].strip()
         source = item.get("source")
+        local = item.get("local")
         page, url = item.get("page"), item.get("url")
         if source:
             landing = series_landing(root / "external" / source["slug"])
+            page = landing.relative_to(root).as_posix()
+        elif local:
+            landing = series_landing(root / local["publish"])
             page = landing.relative_to(root).as_posix()
         if page:
             path = PurePosixPath(page)
@@ -56,7 +60,7 @@ def read_series(root, registry=None):
             if parsed.scheme != "https" or not parsed.netloc:
                 raise ValueError(f"Series URL must be an absolute HTTPS URL: {url}")
             href = target = url
-        result.append({"title": name, "description": description, "href": href, "target": target, "source": source})
+        result.append({"title": name, "description": description, "href": href, "target": target, "source": source, "local": local})
     return result
 
 
@@ -271,6 +275,9 @@ def on_config(config, **kwargs):
     for entry in series:
         if entry["source"]:
             directory = root / "external" / entry["source"]["slug"]
+            config.nav.append({entry["title"]: make_tree(directory, root, ("README.md", "index.md"))})
+        elif entry["local"]:
+            directory = root / entry["local"]["publish"]
             config.nav.append({entry["title"]: make_tree(directory, root, ("README.md", "index.md"))})
     return config
 

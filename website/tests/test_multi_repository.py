@@ -71,6 +71,50 @@ def fixture_repo(path, files):
 
 
 class MultiRepositoryTests(unittest.TestCase):
+    def test_local_source_preserves_public_path_and_excludes_maintenance(self):
+        with tempfile.TemporaryDirectory() as temp:
+            temporary = Path(temp)
+            wiki = temporary / "wiki"
+            fixture_wiki(wiki)
+            write(wiki / "series/local/README.md", "# 本地系列\n\n[正文](chapter/article.md)\n")
+            write(wiki / "series/local/chapter/article.md", "# 本地正文\n\n![图](../img/chart.svg)\n")
+            write(wiki / "series/local/img/chart.svg", "<svg xmlns='http://www.w3.org/2000/svg'/>\n")
+            write(wiki / "series/local/AGENTS.md", "# 内部维护\n")
+            write(wiki / "series/local/raw/private.md", "# 原始资料\n")
+            write(wiki / "series/local/source.pdf", "not for publication\n")
+            registry = temporary / "series.json"
+            entries = [{"title": "微架构", "description": "本仓库", "page": "microarchitecture.md"},
+                       {"title": "本地系列", "description": "本地正文", "local": {
+                           "directory": "series/local", "publish": "external/legacy"}}]
+            registry.write_text(json.dumps({"series": entries}, ensure_ascii=False), encoding="utf-8")
+            build_root = temporary / "build"
+            with patch("prepare.fetch_checkout", side_effect=AssertionError("unexpected remote fetch")):
+                stage_site(root=wiki, build_root=build_root, registry=registry)
+            docs = build_root / "docs"
+            self.assertTrue((docs / "external/legacy/img/chart.svg").is_file())
+            for name in ("AGENTS.md", "raw/private.md", "source.pdf"):
+                self.assertFalse((docs / "external/legacy" / name).exists())
+
+            site = temporary / "site"
+            config = load_config(config_file=str(ROOT / "mkdocs.yml"), docs_dir=str(docs), site_dir=str(site))
+            build(config)
+            article = (site / "external/legacy/chapter/article/index.html").read_text(encoding="utf-8")
+            self.assertIn("本地系列", article)
+            self.assertIn('class="site-breadcrumbs"', article)
+            search = json.loads((site / "search/search_index.json").read_text(encoding="utf-8"))
+            matches = [entry for entry in search["docs"] if entry["location"] == "external/legacy/chapter/article/"]
+            self.assertEqual(len(matches), 1)
+
+            (wiki / "series/local/leak.md").symlink_to(temporary / "outside.md")
+            with self.assertRaisesRegex(ValueError, "symlink"):
+                stage_site(root=wiki, build_root=build_root, registry=registry)
+            (wiki / "series/local/leak.md").unlink()
+            entries[1]["local"]["publish"] = "microarchitecture"
+            registry.write_text(json.dumps({"series": entries}, ensure_ascii=False), encoding="utf-8")
+            with self.assertRaisesRegex(ValueError, "output path collision"):
+                stage_site(root=wiki, build_root=build_root, registry=registry)
+            self.assertTrue((docs / "external/legacy/chapter/article.md").is_file())
+
     def test_two_git_sources_build_with_shared_navigation_and_search(self):
         with tempfile.TemporaryDirectory() as temp:
             temporary = Path(temp)

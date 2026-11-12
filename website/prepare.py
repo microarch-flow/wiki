@@ -7,7 +7,7 @@ from pathlib import Path
 import shutil
 import tempfile
 
-from sources import copy_source, fetch_checkout, load_series, source_directory
+from sources import copy_source, fetch_checkout, load_series, source_directory, validate_output_paths
 
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -52,6 +52,12 @@ def stage_site(root=ROOT, build_root=None, registry=None, source_root=None):
 
         checkouts = {}
         for item in entries:
+            if "local" in item:
+                local = item["local"]
+                selected = source_directory(root, local["directory"])
+                copy_source(selected, docs / local["publish"], public_only=True)
+                print(f"Staged series {item['title']} from local {local['directory']}")
+                continue
             if "source" not in item:
                 continue
             source = item["source"]
@@ -70,6 +76,8 @@ def stage_site(root=ROOT, build_root=None, registry=None, source_root=None):
             selected = source_directory(checkout, source["directory"])
             copy_source(selected, docs / "external" / slug)
             print(f"Staged series {item['title']} from {source['repository']}:{source['directory']}")
+
+        validate_output_paths(docs)
 
         # Keep the registry outside docs: it is build metadata, not a site asset.
         (staging / "series.json").write_text(
