@@ -341,6 +341,32 @@ class GeneratedNavigationTests(unittest.TestCase):
         for href, label in links:
             self.assertEqual(names.get(urljoin(page_url(relative), unescape(href))), unescape(label))
 
+    def test_cache_scratchpad_comparison_keeps_legacy_entry(self):
+        main = Path("COMPUTE/wiki/06-memory-discipline/cache-vs-scratchpad/index.html")
+        legacy = Path("RAM/wiki/03-sram-applications/scratchpad-vs-cache/index.html")
+        main_html = (SITE / main).read_text(encoding="utf-8")
+        legacy_html = (SITE / legacy).read_text(encoding="utf-8")
+
+        for anchor in ("cache-与-scratchpad数据放置和访问时间", "两种数据管理方式", "同时访问的反例", "建模启示"):
+            self.assertIn(f'id="{anchor}"', main_html)
+        for anchor in ("scratchpad-和-cache-都是-sram差异在哪", "这页在回答什么问题", "地址管理与数据放置方式", "一句话理解", "建模启示"):
+            self.assertIn(f'id="{anchor}"', legacy_html)
+
+        article = re.search(r"<article\b.*?</article>", legacy_html, re.DOTALL).group()
+        targets = {urlsplit(urljoin(page_url(legacy), unescape(href))).path
+                   for href in re.findall(r'<a\s+[^>]*href="([^"]+)"', article)}
+        self.assertIn("/COMPUTE/wiki/06-memory-discipline/cache-vs-scratchpad/", targets)
+
+        entries = json.loads((SITE / "search/search_index.json").read_text(encoding="utf-8"))["docs"]
+        locations = {unquote(entry["location"]) for entry in entries}
+        self.assertIn("COMPUTE/wiki/06-memory-discipline/cache-vs-scratchpad/", locations)
+        self.assertIn("RAM/wiki/03-sram-applications/scratchpad-vs-cache/", locations)
+        self.assertTrue(any(
+            entry["location"].startswith("RAM/wiki/03-sram-applications/scratchpad-vs-cache/")
+            and "Scratchpad 和 cache 都是 SRAM，差异在哪" in (entry["title"] + entry["text"]).replace("\u200b", "")
+            for entry in entries
+        ))
+
     def test_numbered_reading_order_ignores_non_sibling_links(self):
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)

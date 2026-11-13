@@ -1,7 +1,7 @@
 # CIM 系统的存储层次：On-Array、Buffer、Main Memory 的分工
 
 上级：[05 Architecture And System](./README.md)
-相关：[RAM: NPU Memory Hierarchy](../../../../storage/01-memory-hierarchy/04-npu-case/npu-memory-hierarchy.md), [RAM: Scratchpad vs Cache](../../../../storage/02-sram/applications/scratchpad-vs-cache.md), [RAM: DRAM Commands](../../../../storage/03-dram/protocols/commands-act-rd-wr-pre.md)
+相关：[RAM: NPU Memory Hierarchy](../../../../storage/01-memory-hierarchy/04-npu-case/npu-memory-hierarchy.md), [RAM: Scratchpad vs Cache](../../../../storage/01-memory-hierarchy/02-access-paths/cache-vs-scratchpad.md), [RAM: DRAM Commands](../../../../storage/03-dram/protocols/commands-act-rd-wr-pre.md)
 
 ## 这页在回答什么问题
 
@@ -18,7 +18,7 @@ CIM 把一部分计算放进 memory array，是否就简化了 memory hierarchy�
 | HBM/DRAM | 大模型权重和 KV/cache | 带宽、latency、energy per byte |
 | host memory | runtime 管理和 fallback | 同步和接口成本 |
 
-CIM 的关键不是消灭上层 memory，而是减少某些高复用数据在层级间反复移动。RAM wiki 的 [data movement first principle](../../../../storage/01-memory-hierarchy/04-npu-case/data-movement-first-principle.md) 仍然适用；tile 级 SRAM 更接近 [scratchpad/cache](../../../../storage/02-sram/applications/scratchpad-vs-cache.md) 的系统分工，而不是 CIM 定义本身。
+CIM 的关键不是消灭上层 memory，而是减少某些高复用数据在层级间反复移动。RAM wiki 的 [data movement first principle](../../../../storage/01-memory-hierarchy/04-npu-case/data-movement-first-principle.md) 仍然适用；tile 级 SRAM 更接近 [scratchpad/cache](../../../../storage/01-memory-hierarchy/02-access-paths/cache-vs-scratchpad.md) 的系统分工，而不是 CIM 定义本身。
 
 ## 三条 Paradigm 的层次差异
 

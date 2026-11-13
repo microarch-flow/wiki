@@ -68,4 +68,4 @@ HBM 涉及堆叠 DRAM、接口和集成方式；它在系统中承担什么角�
 - [存储系统为何难设计](./problem-statement.md)：从一次请求看状态、共享资源和限制如何连接。
 - [局部性与数据搬运](./locality-working-set-data-movement.md)：用访问序列和流量算例分析复用。
 - [Cache 与 DRAM 协同](../02-access-paths/cache-dram-coordination.md)：继续看 miss、填充和写回。
-- [Scratchpad 和 cache 的实现](../../02-sram/applications/scratchpad-vs-cache.md)：比较管理方式及实现代价。
+- [Cache 的 tag 与 data](../../02-sram/applications/cache-sram-tag-data-arrays.md)：看命中判断和阵列组织。

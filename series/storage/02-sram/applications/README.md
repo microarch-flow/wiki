@@ -11,7 +11,7 @@
 
 上一章把 SRAM 作为物理与阵列基础讲完后，一个很自然的下一问是：如果底层都是 6T cell、字线位线、bank 切分和 retention 约束，为什么系统里还会出现这么多名字不同、接口不同、成本结构也不同的”片上存储”？这就像面粉只决定了你能做面食，但做成面包、馒头、面条还是披萨，取决于你要喂什么人、配什么菜、用什么烤箱。SRAM 只决定了底层介质的大方向，系统真正关心的，往往不是”这是不是 SRAM”，而是”谁来决定里面放什么、什么时候访问、并发语义多强、是否允许不确定命中、是否接受冲突、恢复代价多大”。
 
-这一章的任务，就是把这些不同应用形态的分叉点讲清楚。`register-file-as-sram.md` 会先处理最极端的一类：它和普通 SRAM 同根，但为了同拍多读多写，被迫接受极端的多端口代价，因此成为“最贵的一类 SRAM”。`cache-sram-tag-data-arrays.md` 处理的是另一条路线：底层仍是 SRAM，但上层引入 tag、比较、替换和命中不确定性，于是问题不再只是存储，而是“如何让硬件透明地赌数据局部性”。`scratchpad-vs-cache.md` 则把同样是片上 SRAM 的两种截然不同管理哲学正面对比出来：一个让硬件猜，一个让软件显式管。
+这一章讨论 SRAM 的不同应用形态。Register file 关注操作数访问和端口组织；cache 的 tag 与 data 阵列承担不同的查找和数据访问职责。[Scratchpad 与 cache 导读](./scratchpad-vs-cache.md)连接系统层的完整比较，说明两者怎样管理数据。
 
 后面的 `npu-weight-buffer-activation-buffer.md` 和 `tcm-itcm-dtcm-in-mcu.md` 则是把 SRAM 的应用进一步推向特定系统场景。NPU buffer 关心的是数据流角色、bank 并发和搬运调度，不会满足于一个笼统的“local SRAM”标签；MCU 里的 TCM 则把确定性压到比平均命中率更高的位置，所以它虽然也是 SRAM，却故意不走 cache 路线。这两篇的意义在于提醒你：应用形态不是在给同一件东西换名字，而是在表达系统把 SRAM 纳入整体架构时，优先保留了哪一组性质。
 
@@ -27,7 +27,7 @@
 
 1. [Register file](./register-file-as-sram.md)
 2. [Cache 的 tag 与 data](./cache-sram-tag-data-arrays.md)
-3. [Scratchpad 与 cache](./scratchpad-vs-cache.md)
+3. [Scratchpad 与 cache 导读](./scratchpad-vs-cache.md)
 4. [NPU 的 SRAM buffer](./npu-weight-buffer-activation-buffer.md)
 5. [TCM 与实时性](./tcm-itcm-dtcm-in-mcu.md)
 

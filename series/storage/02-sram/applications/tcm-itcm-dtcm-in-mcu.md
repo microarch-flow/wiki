@@ -1,7 +1,7 @@
 # MCU 里的 TCM，为什么实时性需要确定性 SRAM
 
 上级：[SRAM 应用形态](./README.md)
-相关：[Scratchpad 和 cache 都是 SRAM，差异在哪](./scratchpad-vs-cache.md), [MCU、CPU、GPU、NPU 为什么选择不同存储器](../../06-system-integration/why-systems-choose-different-memory.md)
+相关：[Cache 与 scratchpad](../../01-memory-hierarchy/02-access-paths/cache-vs-scratchpad.md), [MCU、CPU、GPU、NPU 为什么选择不同存储器](../../06-system-integration/why-systems-choose-different-memory.md)
 
 ## 这页在回答什么问题
 

@@ -17,21 +17,14 @@
 
 一个非常关键的差异在于：SRAM 的”历史依赖”较弱，DRAM 的”历史依赖”很强。换一种说法：SRAM 的定价更像超市——不管你之前买了什么，这瓶水就是 3 块钱；DRAM 的定价更像打车——你上一单去了机场，司机现在在机场附近，你叫他回市区接你就很贵（row conflict），而你让他在机场再接一单就很便宜（row hit）。对 SRAM 来说，本次访问是否便宜，和前一次访问落在哪一行通常没有直接关系；对 DRAM 来说，前一次甚至前几次访问决定了当前 bank 的 open row 状态，本次是否 row hit 几乎完全取决于这个历史。于是，SRAM 的代价更像由当前竞争决定，DRAM 的代价更像由当前竞争加上一段短历史共同决定。这个差别是系统行为完全不同的根源。
 
-可以用一个最简对照来抓住这种成本曲线差异：
+比较一笔请求时，可以先看它需要哪些资源和状态：
 
-```text
-SRAM:
-  cost(access) ~= base_access + port/bank_conflict_penalty
+| 存储资源 | 需要检查的条件 |
+| --- | --- |
+| SRAM | 目标 bank、兼容端口和共享返回通路何时可以接纳该请求，以及接纳后的接口延迟。 |
+| DRAM | 目标 bank 的行状态、命令时序、刷新以及共享命令和数据通道何时允许相关操作。 |
 
-DRAM:
-  cost(access) ~=
-      row_hit_cost
-      or row_miss_cost
-      or row_conflict_cost
-      + maybe refresh/turnaround/queueing penalties
-```
-
-这两行已经足够说明问题：SRAM 的代价波动通常来自“当前能不能排上这次本地访问”；DRAM 的代价波动则来自“当前 bank 处在什么状态、未来是否还要切换、总线是否还要腾方向”。
+这些条件可能同时阻塞同一笔请求，不能把重叠的等待逐项相加。行命中也仍可能在控制器或共享通道上等待。应分别确定请求接纳、操作发出和数据返回的时间，再计算所需边界内的延迟。
 
 这就解释了为什么同一种顺序访问模式，在两者身上体现的价值也不同。对 SRAM 而言，顺序访问的最大好处通常是让软件、编译器或硬件更容易做 burst、bank 分配和局部预取，但它不会像 DRAM 那样把一次高成本开行摊给整行后续访问。对 DRAM 而言，顺序访问如果映射得当，可能直接转化为多个列访问命中同一 row，从而把 activate 成本摊得很薄。因此，顺序性在 SRAM 上主要改善调度便利和冲突概率，在 DRAM 上则可能直接决定是否进入低成本模式。
 
@@ -41,15 +34,7 @@ DRAM:
 
 从系统设计角度看，这种差异会直接塑造层次分工。为什么小而确定的热数据、操作数和局部工作集会尽量留在 SRAM 一侧？因为那里更适合细粒度、低抖动、局部高频访问。为什么大容量数据最终要落到 DRAM/HBM 一侧，但又总想在上面叠 cache、scratchpad、tiling 或 prefetch？因为外层 DRAM 的原生代价函数对访问模式太敏感，系统必须在更内层先把访问塑形，尽量把坏模式截住。
 
-可以把这种分工压缩成一句非常实用的设计经验：
-
-```text
-SRAM 喜欢：
-  细粒度、频繁、本地、确定的访问
-
-DRAM 喜欢：
-  可聚合、可重排、可形成 row/bank 局部性的访问
-```
+比较时还要看请求的形状：片上 SRAM 常用于细粒度的本地访问；DRAM 的调度可能从可聚合的请求、行复用和跨 bank 并行中受益。实际效果取决于地址映射、共享资源和目标实现。
 
 这不是说 SRAM 不需要局部性，或者 DRAM 不支持细粒度请求，而是说它们“最划算的工作方式”不同。只要系统能把合适的访问留在合适的层，整体效率就会好很多；反之，若让大量细碎控制流直接扎进 DRAM，或让本可在 scratchpad 内循环的数据反复回外存，硬件就会显得异常低效，其实问题在于访问模式没有被放到正确层次。
 
@@ -65,31 +50,10 @@ SRAM 的成本主要看“当前本地资源是否冲突”，DRAM 的成本主�
 
 在模型里，千万不要把 SRAM 和 DRAM 都建成“容量不同、延迟不同”的同类资源。更合理的做法是让它们拥有不同的成本函数。对 SRAM，成本主要依赖 `port/bank occupancy`；对 DRAM，成本主要依赖 `row state / bank state / bus state`。
 
-一个非常直接的并列抽象可以写成：
-
-```text
-SRAM: accept_time = earliest time with legal bank + compatible port + shared output
-      completion = accept_time + interface_latency
-DRAM: each command issues at earliest selected time satisfying all state/timing guards
-      completion = data-return time after the scheduled command/burst
-```
+例如，若 SRAM 接口要求在接纳时预留目标 bank、兼容端口和返回通路，请求的接纳时间取决于这些资源何时同时可用。若系统提供返回缓冲，则还要按具体实现检查资源预留规则。DRAM 控制器则要在状态和时序条件允许时安排各条命令，并按数据返回事件确定完成时间。
 
 同一周期可能同时存在 bank 冲突、端口占用和刷新等待；不能把重叠时间直接相加。若需要归因，按互斥时间片或等待区间并集计数，并说明优先级。
 
 如果你在系统模型里把两者都近似成固定 latency，很容易得到错误结论：比如误以为把更多访问直接打到 DRAM 只是“平均慢一点”，而忽略它其实会因为 row conflict 和状态切换把尾延迟拉得很难看。反过来，如果你把 SRAM 也建成强历史依赖资源，就会错误高估它对访问顺序的敏感度。
 
-更进一步，若要让这页结论落到多层系统图里，可以给每一层标出“最痛的代价来源”：
-
-```text
-LayerCostSignature {
-  dominant_penalty: enum {
-    PORT_CONFLICT,
-    BANK_CONFLICT,
-    ROW_CONFLICT,
-    REFRESH_BLOCK,
-    TURNAROUND
-  }
-}
-```
-
-这个标记虽然粗，但对做体系结构判断非常有用。因为很多优化动作的本质，就是在把请求从一种 `dominant_penalty` 环境迁移到另一种更适合它的环境。
+在多层系统图里，可以分别记录端口冲突、bank 冲突、行切换、刷新和读写方向切换等等待。它们可能同时出现；若要判断主要限制，应先定义互斥的归因规则或统计实际等待区间。

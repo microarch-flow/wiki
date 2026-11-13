@@ -8,6 +8,12 @@
   --lime: #d6efa1;
 }
 
+:root, [data-md-color-scheme="default"] {
+  --md-code-bg-color: #f3f6ef;
+  --md-code-bg-color--light: #f3f6efb3;
+  --md-code-bg-color--lighter: #f3f6ef4d;
+}
+
 body { background: var(--paper); }
 .md-header { background: #173d35; box-shadow: none; }
 .md-header__title { font-weight: 700; letter-spacing: .02em; }
@@ -57,7 +63,6 @@ body { background: var(--paper); }
 .ram-event-sequence li:not(:last-child)::after { content: "→"; color: #739b7c; font-weight: 400; }
 .md-typeset .ram-overview-article table:not([class]) th, .md-typeset .ram-problem-article table:not([class]) th { background: #e3eee1; color: #214d3c; }
 .md-typeset .ram-overview-article table:not([class]) td, .md-typeset .ram-problem-article table:not([class]) td { background: #f8fbf6; }
-.md-typeset .ram-overview-article :not(pre) > code, .md-typeset .ram-problem-article :not(pre) > code { background: #e8f0e5; color: #294f40; }
 .ram-overview-article .ram-flow-node { background: #f8fbf6; }
 .md-typeset .ram-overview-article a.ram-overview-diagram-mobile { display: none; }
 

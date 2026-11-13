@@ -1,7 +1,7 @@
 # “数据搬运优先”原则在 NPU 设计中的体现
 
 上级：[AI 芯片内存架构](./README.md)
-相关：[Scratchpad 和 cache 都是 SRAM，差异在哪](../../02-sram/applications/scratchpad-vs-cache.md), [Memory bound vs compute bound 的本质与缓解策略](../03-performance/memory-bound-vs-compute-bound.md)
+相关：[Cache 与 scratchpad](../02-access-paths/cache-vs-scratchpad.md), [Memory bound vs compute bound 的本质与缓解策略](../03-performance/memory-bound-vs-compute-bound.md)
 
 ## 这页在回答什么问题
 

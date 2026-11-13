@@ -60,7 +60,7 @@
    [参考正文](../../02-sram/applications/cache-sram-tag-data-arrays.md)
 
 15. [T] 对一个可由编译器精确 tiling 的矩阵计算 workload，为什么 scratchpad 可能比 cache 更适合承载局部数据？
-   [参考正文](../../02-sram/applications/scratchpad-vs-cache.md)
+   [参考正文](../../01-memory-hierarchy/02-access-paths/cache-vs-scratchpad.md)
 
 16. [J] 在 MCU 中断和控制闭环中，TCM 的显式放置可能有什么价值？若端口或总线发生竞争，访问时间还需要哪些前提才能确定？
    [参考正文](../../02-sram/applications/tcm-itcm-dtcm-in-mcu.md)
