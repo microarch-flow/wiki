@@ -103,4 +103,4 @@ bank 并行度要由**地址映射、同拍请求、端口和共享路径**一�
 
 - [先进工艺与 SRAM](./sram-process-scaling-challenge.md)：看阵列扩展之外的稳定性约束。
 - [NPU 的 SRAM buffer](../applications/npu-weight-buffer-activation-buffer.md)：把 bank 和端口放到具体数据角色中。
-- [片上带宽预算](../../01-memory-hierarchy/ai-chip-memory/on-chip-bandwidth-budget.md)：进一步核对整条供数路径。
+- [片上带宽预算](../../01-memory-hierarchy/04-npu-case/on-chip-bandwidth-budget.md)：进一步核对整条供数路径。

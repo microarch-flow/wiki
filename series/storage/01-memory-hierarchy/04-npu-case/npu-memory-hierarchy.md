@@ -1,7 +1,7 @@
 # NPU 的存储层次：L0、L1、L2 SRAM 与 HBM、LPDDR
 
 上级：[AI 芯片内存架构](./README.md)
-相关：[把 register、cache、scratchpad、DRAM、HBM 看作一个系统](../system-architecture/memory-hierarchy-as-system.md), [NPU 里的 SRAM buffer：weight、activation、accumulator](../../02-sram/applications/npu-weight-buffer-activation-buffer.md)
+相关：[把 register、cache、scratchpad、DRAM、HBM 看作一个系统](../01-system-basics/memory-hierarchy-as-system.md), [NPU 里的 SRAM buffer：weight、activation、accumulator](../../02-sram/applications/npu-weight-buffer-activation-buffer.md)
 
 ## 这页在回答什么问题
 

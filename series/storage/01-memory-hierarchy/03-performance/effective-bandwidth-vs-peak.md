@@ -1,6 +1,6 @@
 # 峰值带宽 vs 有效带宽：损失发生在哪里
 
-上级：[系统视角](./README.md)
+上级：[存储层级与数据路径](../README.md)
 相关：[Memory controller 如何影响 DRAM 的实际性能](../../04-dram-controller/why-mc-is-the-real-bottleneck.md), [带宽与延迟：两个不同的目标](./bandwidth-vs-latency-fundamental.md)
 
 ## 这页在回答什么问题

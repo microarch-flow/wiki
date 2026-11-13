@@ -19,29 +19,252 @@
       "series/storage/04-dram-controller",
       "series/storage/05-hbf",
       "series/storage/06-system-integration",
+      "series/storage/reading-and-reference",
       "series/storage/assets"
     ],
     "mappings": [
-      {"kind": "file", "source": "series/storage/01-memory-hierarchy/README.md", "target": "RAM/wiki/README.md"},
-      {"kind": "directory", "source": "series/storage/01-memory-hierarchy/overview", "target": "RAM/wiki/01-overview"},
-      {"kind": "directory", "source": "series/storage/01-memory-hierarchy/system-architecture", "target": "RAM/wiki/07-system-architecture"},
-      {"kind": "directory", "source": "series/storage/01-memory-hierarchy/ai-chip-memory", "target": "RAM/wiki/09-ai-chip-memory-architecture"},
-      {"kind": "directory", "source": "series/storage/01-memory-hierarchy/reference", "target": "RAM/wiki/10-reference"},
-      {"kind": "file", "source": "series/storage/01-memory-hierarchy/self-test-questions.md", "target": "RAM/self-test-questions.md"},
-      {"kind": "directory", "source": "series/storage/01-memory-hierarchy/cache-scratchpad", "target": "COMPUTE/wiki/06-memory-discipline"},
-      {"kind": "directory", "source": "series/storage/02-sram/foundations", "target": "RAM/wiki/02-sram-foundations"},
-      {"kind": "directory", "source": "series/storage/02-sram/applications", "target": "RAM/wiki/03-sram-applications"},
-      {"kind": "directory", "source": "series/storage/03-dram/foundations", "target": "RAM/wiki/04-dram-foundations"},
-      {"kind": "directory", "source": "series/storage/03-dram/protocols", "target": "RAM/wiki/05-dram-protocol-families"},
-      {"kind": "file", "source": "series/storage/03-dram/hbm-stacked-wide-io.md", "target": "RAM/wiki/05-dram-protocol-families/hbm-stacked-wide-io.md"},
-      {"kind": "directory", "source": "series/storage/04-dram-controller", "target": "RAM/wiki/06-memory-controller"},
-      {"kind": "directory", "source": "series/storage/05-hbf", "target": "HBF/wiki"},
-      {"kind": "directory", "source": "series/storage/06-system-integration/packaging", "target": "RAM/wiki/08-packaging-integration"},
-      {"kind": "file", "source": "series/storage/06-system-integration/hbm-vs-lpddr-for-npu.md", "target": "RAM/wiki/09-ai-chip-memory-architecture/hbm-vs-lpddr-for-npu.md"},
-      {"kind": "directory", "source": "series/storage/assets", "target": "RAM/wiki/img"}
+      {
+        "kind": "file",
+        "source": "series/storage/reading-and-reference/01-reading/README.md",
+        "target": "RAM/wiki/README.md"
+      },
+      {
+        "kind": "file",
+        "source": "series/storage/01-memory-hierarchy/README.md",
+        "target": "RAM/wiki/01-overview/README.md"
+      },
+      {
+        "kind": "file",
+        "source": "series/storage/reading-and-reference/01-reading/learning-roadmap.md",
+        "target": "RAM/wiki/01-overview/learning-roadmap.md"
+      },
+      {
+        "kind": "file",
+        "source": "series/storage/01-memory-hierarchy/01-system-basics/problem-statement.md",
+        "target": "RAM/wiki/01-overview/problem-statement.md"
+      },
+      {
+        "kind": "file",
+        "source": "series/storage/01-memory-hierarchy/01-system-basics/taxonomy.md",
+        "target": "RAM/wiki/01-overview/taxonomy.md"
+      },
+      {
+        "kind": "file",
+        "source": "series/storage/01-memory-hierarchy/01-system-basics/memory-hierarchy-tension.md",
+        "target": "RAM/wiki/01-overview/memory-hierarchy-tension.md"
+      },
+      {
+        "kind": "file",
+        "source": "series/storage/01-memory-hierarchy/01-system-basics/locality-working-set-data-movement.md",
+        "target": "RAM/wiki/01-overview/locality-working-set-data-movement.md"
+      },
+      {
+        "kind": "file",
+        "source": "series/storage/01-memory-hierarchy/01-system-basics/sram-dram-divergence.md",
+        "target": "RAM/wiki/01-overview/sram-dram-divergence.md"
+      },
+      {
+        "kind": "file",
+        "source": "series/storage/01-memory-hierarchy/01-system-basics/README.md",
+        "target": "RAM/wiki/07-system-architecture/README.md"
+      },
+      {
+        "kind": "file",
+        "source": "series/storage/01-memory-hierarchy/01-system-basics/memory-hierarchy-as-system.md",
+        "target": "RAM/wiki/07-system-architecture/memory-hierarchy-as-system.md"
+      },
+      {
+        "kind": "file",
+        "source": "series/storage/06-system-integration/why-systems-choose-different-memory.md",
+        "target": "RAM/wiki/07-system-architecture/why-systems-choose-different-memory.md"
+      },
+      {
+        "kind": "file",
+        "source": "series/storage/01-memory-hierarchy/02-access-paths/cache-dram-coordination.md",
+        "target": "RAM/wiki/07-system-architecture/cache-dram-coordination.md"
+      },
+      {
+        "kind": "file",
+        "source": "series/storage/01-memory-hierarchy/02-access-paths/sram-vs-dram-access-pattern.md",
+        "target": "RAM/wiki/07-system-architecture/sram-vs-dram-access-pattern.md"
+      },
+      {
+        "kind": "file",
+        "source": "series/storage/01-memory-hierarchy/02-access-paths/numa-multi-channel-multi-socket.md",
+        "target": "RAM/wiki/07-system-architecture/numa-multi-channel-multi-socket.md"
+      },
+      {
+        "kind": "file",
+        "source": "series/storage/01-memory-hierarchy/03-performance/bandwidth-vs-latency-fundamental.md",
+        "target": "RAM/wiki/07-system-architecture/bandwidth-vs-latency-fundamental.md"
+      },
+      {
+        "kind": "file",
+        "source": "series/storage/01-memory-hierarchy/03-performance/effective-bandwidth-vs-peak.md",
+        "target": "RAM/wiki/07-system-architecture/effective-bandwidth-vs-peak.md"
+      },
+      {
+        "kind": "file",
+        "source": "series/storage/01-memory-hierarchy/03-performance/memory-bound-vs-compute-bound.md",
+        "target": "RAM/wiki/09-ai-chip-memory-architecture/memory-bound-vs-compute-bound.md"
+      },
+      {
+        "kind": "file",
+        "source": "series/storage/01-memory-hierarchy/04-npu-case/npu-memory-hierarchy.md",
+        "target": "RAM/wiki/09-ai-chip-memory-architecture/npu-memory-hierarchy.md"
+      },
+      {
+        "kind": "file",
+        "source": "series/storage/01-memory-hierarchy/04-npu-case/activation-buffer-and-double-buffering.md",
+        "target": "RAM/wiki/09-ai-chip-memory-architecture/activation-buffer-and-double-buffering.md"
+      },
+      {
+        "kind": "file",
+        "source": "series/storage/01-memory-hierarchy/04-npu-case/weight-buffer-design.md",
+        "target": "RAM/wiki/09-ai-chip-memory-architecture/weight-buffer-design.md"
+      },
+      {
+        "kind": "file",
+        "source": "series/storage/01-memory-hierarchy/04-npu-case/README.md",
+        "target": "RAM/wiki/09-ai-chip-memory-architecture/README.md"
+      },
+      {
+        "kind": "file",
+        "source": "series/storage/01-memory-hierarchy/04-npu-case/on-chip-bandwidth-budget.md",
+        "target": "RAM/wiki/09-ai-chip-memory-architecture/on-chip-bandwidth-budget.md"
+      },
+      {
+        "kind": "file",
+        "source": "series/storage/01-memory-hierarchy/04-npu-case/data-movement-first-principle.md",
+        "target": "RAM/wiki/09-ai-chip-memory-architecture/data-movement-first-principle.md"
+      },
+      {
+        "kind": "file",
+        "source": "series/storage/reading-and-reference/02-reference/first-principles.md",
+        "target": "RAM/wiki/10-reference/first-principles.md"
+      },
+      {
+        "kind": "file",
+        "source": "series/storage/reading-and-reference/02-reference/sram-design-checklist.md",
+        "target": "RAM/wiki/10-reference/sram-design-checklist.md"
+      },
+      {
+        "kind": "file",
+        "source": "series/storage/reading-and-reference/02-reference/memory-modeling-template.md",
+        "target": "RAM/wiki/10-reference/memory-modeling-template.md"
+      },
+      {
+        "kind": "file",
+        "source": "series/storage/reading-and-reference/02-reference/glossary.md",
+        "target": "RAM/wiki/10-reference/glossary.md"
+      },
+      {
+        "kind": "file",
+        "source": "series/storage/reading-and-reference/02-reference/high-frequency-questions.md",
+        "target": "RAM/wiki/10-reference/high-frequency-questions.md"
+      },
+      {
+        "kind": "file",
+        "source": "series/storage/reading-and-reference/02-reference/README.md",
+        "target": "RAM/wiki/10-reference/README.md"
+      },
+      {
+        "kind": "file",
+        "source": "series/storage/reading-and-reference/02-reference/dram-debug-checklist.md",
+        "target": "RAM/wiki/10-reference/dram-debug-checklist.md"
+      },
+      {
+        "kind": "file",
+        "source": "series/storage/reading-and-reference/02-reference/timing-parameter-cheatsheet.md",
+        "target": "RAM/wiki/10-reference/timing-parameter-cheatsheet.md"
+      },
+      {
+        "kind": "file",
+        "source": "series/storage/reading-and-reference/01-reading/self-test-questions.md",
+        "target": "RAM/self-test-questions.md"
+      },
+      {
+        "kind": "file",
+        "source": "series/storage/reading-and-reference/01-reading/cache-scratchpad-introduction.md",
+        "target": "COMPUTE/wiki/06-memory-discipline/README.md"
+      },
+      {
+        "kind": "file",
+        "source": "series/storage/01-memory-hierarchy/02-access-paths/cache-vs-scratchpad.md",
+        "target": "COMPUTE/wiki/06-memory-discipline/cache-vs-scratchpad.md"
+      },
+      {
+        "kind": "directory",
+        "source": "series/storage/02-sram/foundations",
+        "target": "RAM/wiki/02-sram-foundations"
+      },
+      {
+        "kind": "directory",
+        "source": "series/storage/02-sram/applications",
+        "target": "RAM/wiki/03-sram-applications"
+      },
+      {
+        "kind": "directory",
+        "source": "series/storage/03-dram/foundations",
+        "target": "RAM/wiki/04-dram-foundations"
+      },
+      {
+        "kind": "directory",
+        "source": "series/storage/03-dram/protocols",
+        "target": "RAM/wiki/05-dram-protocol-families"
+      },
+      {
+        "kind": "file",
+        "source": "series/storage/03-dram/hbm-stacked-wide-io.md",
+        "target": "RAM/wiki/05-dram-protocol-families/hbm-stacked-wide-io.md"
+      },
+      {
+        "kind": "directory",
+        "source": "series/storage/04-dram-controller",
+        "target": "RAM/wiki/06-memory-controller"
+      },
+      {
+        "kind": "directory",
+        "source": "series/storage/05-hbf",
+        "target": "HBF/wiki"
+      },
+      {
+        "kind": "directory",
+        "source": "series/storage/06-system-integration/packaging",
+        "target": "RAM/wiki/08-packaging-integration"
+      },
+      {
+        "kind": "file",
+        "source": "series/storage/06-system-integration/hbm-vs-lpddr-for-npu.md",
+        "target": "RAM/wiki/09-ai-chip-memory-architecture/hbm-vs-lpddr-for-npu.md"
+      },
+      {
+        "kind": "directory",
+        "source": "series/storage/assets",
+        "target": "RAM/wiki/img"
+      }
     ],
     "aliases": [
-      {"source": "series/storage/01-memory-hierarchy", "target": "RAM/wiki"}
+      {
+        "source": "series/storage/01-memory-hierarchy",
+        "target": "RAM/wiki/01-overview"
+      },
+      {
+        "source": "series/storage/01-memory-hierarchy/01-system-basics",
+        "target": "RAM/wiki/07-system-architecture"
+      },
+      {
+        "source": "series/storage/01-memory-hierarchy/04-npu-case",
+        "target": "RAM/wiki/09-ai-chip-memory-architecture"
+      },
+      {
+        "source": "series/storage/reading-and-reference/01-reading",
+        "target": "RAM/wiki"
+      },
+      {
+        "source": "series/storage/reading-and-reference/02-reference",
+        "target": "RAM/wiki/10-reference"
+      }
     ]
   },
   "foundations": {

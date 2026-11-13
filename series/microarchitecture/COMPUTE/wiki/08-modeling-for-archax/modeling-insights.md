@@ -25,7 +25,7 @@
 
 scratchpad 的显式放置不保证固定访问时间。假设单 bank 单读端口每拍接纳一次，A、B 在周期 0 同时到达，仲裁让 A 先发，服务延迟各一拍：A 在周期 1 完成，B 在周期 2 完成。端口、bank、DMA 和仲裁必须进入模型。
 
-cache 的命中依赖初态、地址流、替换、并发和仲裁。给定完整且确定的状态与规则，可以确定性模拟；未知输入或随机替换可使用标注前提的统计模型。两类资源都记录到达、接纳、完成与阻塞原因。详见 [cache 与 scratchpad](../../../../storage/01-memory-hierarchy/cache-scratchpad/cache-vs-scratchpad.md)。
+cache 的命中依赖初态、地址流、替换、并发和仲裁。给定完整且确定的状态与规则，可以确定性模拟；未知输入或随机替换可使用标注前提的统计模型。两类资源都记录到达、接纳、完成与阻塞原因。详见 [cache 与 scratchpad](../../../../storage/01-memory-hierarchy/02-access-paths/cache-vs-scratchpad.md)。
 
 ## 6. 资源拓扑与跨单元流量
 

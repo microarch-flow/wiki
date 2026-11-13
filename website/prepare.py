@@ -12,6 +12,7 @@ import tempfile
 from ownership import GROUPS, STORAGE, owner
 from sources import copy_source, fetch_checkout, load_series, source_directory, validate_output_paths
 from stage_links import PublishedPaths
+from storage_navigation import MEMORY_HOME, MEMORY_PAGE_SECTION, RESOURCE_PAGE_SECTION, STORAGE_RESOURCES
 
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -20,6 +21,7 @@ SOURCE_TOPICS = tuple(name for name in TOPICS if name not in {"RAM", "HBF"})
 STORAGE_TOPICS = dict(zip((
     "01-memory-hierarchy", "02-sram", "03-dram", "04-dram-controller", "05-hbf", "06-system-integration",
 ), GROUPS[STORAGE]))
+STORAGE_TOPICS["reading-and-reference"] = STORAGE_RESOURCES
 
 
 def _path_inside(root, value, is_directory):
@@ -149,7 +151,8 @@ def _check_storage_topic(root, docs, source, destination):
     """Ensure source placement and published navigation agree for each page."""
     if source.suffix != ".md":
         return
-    top = source.relative_to(Path(root) / "series" / "storage").parts[0]
+    parts = source.relative_to(Path(root) / "series" / "storage").parts
+    top = parts[0]
     if top == "assets":
         return
     expected = STORAGE_TOPICS.get(top)
@@ -158,6 +161,16 @@ def _check_storage_topic(root, docs, source, destination):
     actual = owner(destination.relative_to(docs).as_posix())
     if actual != (STORAGE, expected):
         raise ValueError(f"Storage source and published navigation differ: {source} -> {destination} ({actual})")
+    staged = destination.relative_to(docs).as_posix()
+    if top == "01-memory-hierarchy":
+        is_home = len(parts) == 2 and parts[1] == "README.md"
+        if ((is_home and staged != MEMORY_HOME) or
+                (not is_home and (len(parts) < 3 or
+                                  parts[1] != MEMORY_PAGE_SECTION.get(staged)))):
+            raise ValueError(f"Storage source and navigation section differ: {source} -> {destination}")
+    elif top == "reading-and-reference":
+        if len(parts) < 3 or parts[1] != RESOURCE_PAGE_SECTION.get(staged):
+            raise ValueError(f"Storage reference source and navigation section differ: {source} -> {destination}")
 
 
 def _copy_storage(docs, published, mappings, aliases, root, roots):

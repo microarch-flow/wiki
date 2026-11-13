@@ -15,8 +15,9 @@ from urllib.parse import unquote, urljoin, urlsplit
 
 SITE = Path(__file__).resolve().parents[2] / ".site-build" / "site"
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
-from hooks import grouped_original_topics, make_tree  # noqa: E402
+from hooks import grouped_original_topics, make_tree, storage_resources_tree  # noqa: E402
 from ownership import STORAGE, owner  # noqa: E402
+from storage_navigation import MEMORY_HOME, MEMORY_SECTIONS, RESOURCE_SECTIONS  # noqa: E402
 
 LANDING_PAGES = {
     "index.html", "series/index.html", "microarchitecture/index.html",
@@ -51,7 +52,8 @@ class GeneratedNavigationTests(unittest.TestCase):
                 for child in node:
                     yield from paths(child)
 
-        assigned = list(paths(topics))
+        resources = storage_resources_tree(docs)
+        assigned = list(paths([*topics, *resources]))
         expected = {
             path.relative_to(docs).as_posix()
             for directory in ("RAM/wiki", "HBF/wiki", "COMPUTE/wiki/06-memory-discipline")
@@ -64,6 +66,25 @@ class GeneratedNavigationTests(unittest.TestCase):
                     expected.add(path.relative_to(docs).as_posix())
         self.assertEqual(len(assigned), len(set(assigned)))
         self.assertEqual(set(assigned), expected)
+        memory = topics[0]["存储层级与数据路径"]
+        self.assertEqual(memory[0], {"专题首页": MEMORY_HOME})
+        self.assertEqual([next(iter(item)) for item in memory[1:]], [name for name, _, _ in MEMORY_SECTIONS])
+        for node, (name, _directory, pages) in zip(memory[1:], MEMORY_SECTIONS):
+            self.assertEqual(node[name], [{label: path} for label, path in pages])
+        self.assertEqual([next(iter(item)) for item in resources[0]["查阅与练习"]],
+                         [name for name, _, _ in RESOURCE_SECTIONS])
+        self.assertIn("RAM/wiki/07-system-architecture/why-systems-choose-different-memory.md",
+                      list(paths(topics[-1])))
+        homepage = (SITE / "RAM/wiki/01-overview/index.html").read_text(encoding="utf-8")
+        start = homepage.index('<div class="md-sidebar md-sidebar--primary"')
+        end = homepage.index('<div class="md-sidebar md-sidebar--secondary"', start)
+        self.assertIn('<span class="md-ellipsis">存储层级与数据路径</span>', homepage[start:end])
+        search = json.loads((SITE / "search/search_index.json").read_text(encoding="utf-8"))
+        locations = {entry["location"] for entry in search["docs"]}
+        for page in paths([memory, *resources]):
+            path = Path(page)
+            location = (path.parent.as_posix() if path.name == "README.md" else path.with_suffix("").as_posix()) + "/"
+            self.assertIn(location, locations, page)
         for topic in topics:
             children = next(iter(topic.values()))
             source_labels = {next(iter(item)) for item in children if isinstance(item, dict)}
@@ -245,6 +266,10 @@ class GeneratedNavigationTests(unittest.TestCase):
         clean = lambda items: [(unescape(url), unescape(" ".join(label.split()))) for url, label in items]
         for chapter in chapters:
             with self.subTest(chapter=chapter.parent.name):
+                # These old URLs are now grouped by source topic rather than
+                # their former on-disk publication directories.
+                if chapter.parent.name in {"01-overview", "07-system-architecture", "09-ai-chip-memory-architecture"}:
+                    continue
                 html = chapter.read_text(encoding="utf-8")
                 start = html.index('<div class="md-sidebar md-sidebar--primary"')
                 end = html.index('<div class="md-sidebar md-sidebar--secondary"', start)
@@ -313,7 +338,7 @@ class GeneratedNavigationTests(unittest.TestCase):
     def test_article_paths_and_distinct_parent_links(self):
         cases = {
             "RAM/wiki/01-overview/problem-statement/index.html": [
-                "首页", "存储系统", "存储层级与数据路径", "存储系统概览",
+                "首页", "存储系统", "存储层级与数据路径", "系统基础",
                 "为什么存储系统难设计？从一次读取看跨层约束",
             ],
             "RAM/wiki/02-sram-foundations/6t-cell-bistable-storage/index.html": [

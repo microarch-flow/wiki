@@ -1,7 +1,7 @@
 # FPGA vs ASIC：可配置性、LUT 与实现开销
 
 上级：[05 · FPGA vs ASIC](./README.md)
-相关：[mux 与数据搬运成本](../02-datapath-foundations/mux-and-data-movement-cost.md)、[cache vs scratchpad](../../../../storage/01-memory-hierarchy/cache-scratchpad/cache-vs-scratchpad.md)
+相关：[mux 与数据搬运成本](../02-datapath-foundations/mux-and-data-movement-cost.md)、[cache vs scratchpad](../../../../storage/01-memory-hierarchy/02-access-paths/cache-vs-scratchpad.md)
 
 ## 选择的输入和代价
 

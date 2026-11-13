@@ -1,7 +1,7 @@
 # 存储器在架构探索中的建模模板
 
 上级：[参考资料](./README.md)
-相关：[MC 在 cycle-level 仿真里的建模方法](../../04-dram-controller/mc-modeling-for-simulation.md), [把 register、cache、scratchpad、DRAM、HBM 看作一个系统](../system-architecture/memory-hierarchy-as-system.md)
+相关：[MC 在 cycle-level 仿真里的建模方法](../../04-dram-controller/mc-modeling-for-simulation.md), [把 register、cache、scratchpad、DRAM、HBM 看作一个系统](../../01-memory-hierarchy/01-system-basics/memory-hierarchy-as-system.md)
 
 ## 这页在回答什么问题
 

@@ -26,7 +26,7 @@ buffer A: [fill tile 0] [compute tile 0] [fill tile 2] [compute tile 2]
 buffer B:                [fill tile 1] [compute tile 1] [fill tile 3]
 ```
 
-理想情况下，当 tile 0 在 buffer A 中被下游消费时，tile 1 正在被搬进 buffer B；等 tile 0 结束，tile 1 就刚好就绪，然后两者交换角色。只要 `fill_time(next_tile) <= compute_time(current_tile)`，重叠就成立，外层访存的大部分表面延迟就能被隐藏在当前计算窗口里。
+理想情况下，tile 0 在 buffer A 中被消费时，tile 1 同时填入 buffer B。如果下一块填充能在当前计算开始时启动，两个 slot 的访问资源可并行，且依赖、可见性和容量条件均满足，那么 `fill_time(next_tile) <= compute_time(current_tile)` 可使下一块不晚于当前计算结束时就绪。这里的填充时间应计入实际争用；首块填充、末块完成和其他不能重叠的阶段仍要计入总时间。带数值的有限批次例子见 [DMA 双缓冲](../../../microarchitecture/DMA/wiki/04-programming-model/tiling-double-buffering.md)。
 
 但这里也埋着一个极常见的误区：`有 double buffer` 不等于 `延迟被隐藏了`。它只有在几项条件同时成立时才真正有效。第一，下一 tile 的数据量不能大到填充时间明显长于当前 tile 的计算时间。第二，填充路径本身不能被别的流量严重抢占，例如权重 refill、输出写回或片上共享网络热点。第三，buffer 组织必须允许“边填一个、边读另一个”，也就是 bank、端口和控制状态不能互相卡死。第四，tile 边界必须足够规整，否则切换开销、尾块不齐或依赖关系会吃掉重叠收益。
 

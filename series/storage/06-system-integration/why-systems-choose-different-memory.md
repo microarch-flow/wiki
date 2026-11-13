@@ -1,7 +1,7 @@
 # MCU、CPU、GPU、NPU 为什么选择不同存储器
 
-上级：[系统视角](./README.md)
-相关：[LPDDR：为了功耗放弃了什么](../../03-dram/protocols/lpddr-low-power-mobile.md), [HBM：从协议层面看它和 DDR 的根本不同](../../03-dram/hbm-stacked-wide-io.md)
+上级：[存储系统](../README.md)
+相关：[LPDDR：为了功耗放弃了什么](../03-dram/protocols/lpddr-low-power-mobile.md), [HBM：从协议层面看它和 DDR 的根本不同](../03-dram/hbm-stacked-wide-io.md)
 
 ## 这页在回答什么问题
 

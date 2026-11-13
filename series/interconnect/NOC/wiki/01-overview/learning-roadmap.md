@@ -81,7 +81,7 @@
 这里你需要主动和 BUS/RAM 体系联动，而不是把 NoC 当孤岛：
 
 - 对照 [AI 芯片里的 BUS vs NoC](../../../BUS/wiki/06-scenarios-case-studies/bus-vs-noc-in-ai-chip.md)，明确控制面和数据面的边界
-- 对照 [RAM 分类框架](../../../../storage/01-memory-hierarchy/overview/taxonomy.md) 和 [把 register、cache、scratchpad、DRAM、HBM 看作一个系统](../../../../storage/01-memory-hierarchy/system-architecture/memory-hierarchy-as-system.md)，理解为什么 response path 经常比 request path 更危险
+- 对照 [RAM 分类框架](../../../../storage/01-memory-hierarchy/01-system-basics/taxonomy.md) 和 [把 register、cache、scratchpad、DRAM、HBM 看作一个系统](../../../../storage/01-memory-hierarchy/01-system-basics/memory-hierarchy-as-system.md)，理解为什么 response path 经常比 request path 更危险
 
 ## 第五阶段：进入 AI NoC 主线
 

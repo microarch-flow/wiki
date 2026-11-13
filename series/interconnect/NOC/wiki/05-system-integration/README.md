@@ -2,7 +2,7 @@
 
 上级：[NOC Wiki](../README.md)
 
-相关：[Routing And Flow Control](../04-routing-and-flow-control/README.md)、[AI 芯片里的 BUS vs NoC](../../../BUS/wiki/06-scenarios-case-studies/bus-vs-noc-in-ai-chip.md)、[RAM: memory hierarchy as system](../../../../storage/01-memory-hierarchy/system-architecture/memory-hierarchy-as-system.md)
+相关：[Routing And Flow Control](../04-routing-and-flow-control/README.md)、[AI 芯片里的 BUS vs NoC](../../../BUS/wiki/06-scenarios-case-studies/bus-vs-noc-in-ai-chip.md)、[RAM: memory hierarchy as system](../../../../storage/01-memory-hierarchy/01-system-basics/memory-hierarchy-as-system.md)
 
 ## 这页在回答什么问题
 

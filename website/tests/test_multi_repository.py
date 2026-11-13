@@ -19,7 +19,7 @@ from mkdocs.config import load_config
 
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / "website"))
-from prepare import SOURCE_TOPICS, stage_site  # noqa: E402
+from prepare import SOURCE_TOPICS, _check_storage_topic, stage_site  # noqa: E402
 
 
 def write(path, content):
@@ -33,11 +33,12 @@ def fixture_wiki(root):
         write(root / name / "wiki" / "README.md", f"# {name}\n")
     storage = root / "series/storage"
     storage_roots = ("01-memory-hierarchy", "02-sram", "03-dram", "04-dram-controller",
-                     "05-hbf", "06-system-integration", "assets")
+                     "05-hbf", "06-system-integration", "reading-and-reference", "assets")
     for name in storage_roots:
         (storage / name).mkdir(parents=True, exist_ok=True)
     write(storage / "README.md", "# 存储系统\n")
-    write(storage / "01-memory-hierarchy/README.md", "# RAM\n")
+    write(storage / "01-memory-hierarchy/README.md", "# Overview\n")
+    write(storage / "reading-and-reference/01-reading/README.md", "# RAM\n")
     write(storage / "05-hbf/README.md", "# HBF\n")
     write(root / "docs" / "reviews" / "2026-11-09-topic-review.md", "# Review\n")
     for number in (2, 3):
@@ -61,11 +62,15 @@ def fixture_wiki(root):
             "homepage": "series/storage/README.md",
             "roots": [f"series/storage/{name}" for name in storage_roots],
             "mappings": [
-                {"kind": "file", "source": "series/storage/01-memory-hierarchy/README.md", "target": "RAM/wiki/README.md"},
+                {"kind": "file", "source": "series/storage/01-memory-hierarchy/README.md", "target": "RAM/wiki/01-overview/README.md"},
+                {"kind": "file", "source": "series/storage/reading-and-reference/01-reading/README.md", "target": "RAM/wiki/README.md"},
                 {"kind": "directory", "source": "series/storage/05-hbf", "target": "HBF/wiki"},
                 {"kind": "directory", "source": "series/storage/assets", "target": "RAM/wiki/img"},
             ],
-            "aliases": [{"source": "series/storage/01-memory-hierarchy", "target": "RAM/wiki"}],
+            "aliases": [
+                {"source": "series/storage/01-memory-hierarchy", "target": "RAM/wiki/01-overview"},
+                {"source": "series/storage/reading-and-reference/01-reading", "target": "RAM/wiki"},
+            ],
         },
         "foundations": {"article": "electrical-timing-foundations.md", "images": "img"},
     }))
@@ -97,6 +102,12 @@ def fixture_repo(path, files):
 
 
 class MultiRepositoryTests(unittest.TestCase):
+    def test_hierarchy_home_cannot_map_to_an_unregistered_page(self):
+        root, docs = Path("/repo"), Path("/stage")
+        source = root / "series/storage/01-memory-hierarchy/README.md"
+        with self.assertRaisesRegex(ValueError, "navigation section differ"):
+            _check_storage_topic(root, docs, source, docs / "RAM/wiki/01-overview/other.md")
+
     def test_storage_split_preserves_public_links_search_and_coverage(self):
         with tempfile.TemporaryDirectory() as temp:
             temporary = Path(temp)
@@ -107,18 +118,18 @@ class MultiRepositoryTests(unittest.TestCase):
                 "# 存储系统\n\n[SRAM](02-sram/foundations/README.md?view=1#sram)\n"
                 "[HBM](03-dram/hbm-stacked-wide-io.md#layers)\n"
             ))
-            write(storage / "01-memory-hierarchy/overview/README.md", (
+            write(storage / "01-memory-hierarchy/README.md", (
                 "# Overview\n\n"
-                "[DRAM](../../03-dram/protocols/README.md?mode=1#timing)\n"
-                "![图](../../assets/overview.svg?size=1#shape)\n"
-                "[上级](../)\n"
+                "[DRAM](../03-dram/protocols/README.md?mode=1#timing)\n"
+                "![图](../assets/overview.svg?size=1#shape)\n"
+                "[上级](../reading-and-reference/01-reading/)\n"
                 # A merged destination must not invent this source path.
-                "[缺失](../ai-chip-memory/hbm-vs-lpddr-for-npu.md#missing)\n"
+                "[缺失](04-npu-case/hbm-vs-lpddr-for-npu.md#missing)\n"
             ))
             write(storage / "02-sram/foundations/README.md", "# SRAM\n\n## SRAM\n")
             write(storage / "03-dram/protocols/README.md", (
                 "# DRAM\n\n## Timing\n\n"
-                "[概览](../../01-memory-hierarchy/overview/README.md#overview)\n"
+                "[概览](../../01-memory-hierarchy/README.md#overview)\n"
             ))
             write(storage / "03-dram/hbm-stacked-wide-io.md", (
                 "# HBM\n\n## Layers\n\n"
@@ -126,27 +137,26 @@ class MultiRepositoryTests(unittest.TestCase):
             ))
             write(storage / "06-system-integration/packaging/README.md", "# Packaging\n\n## Pkg\n")
             write(storage / "06-system-integration/hbm-vs-lpddr-for-npu.md", "# Selection\n")
-            write(storage / "01-memory-hierarchy/ai-chip-memory/README.md", "# AI memory\n")
-            write(storage / "01-memory-hierarchy/cache-scratchpad/README.md", "# Cache\n")
+            write(storage / "01-memory-hierarchy/04-npu-case/README.md", "# AI memory\n")
+            write(storage / "reading-and-reference/01-reading/cache-scratchpad-introduction.md", "# Cache\n")
             write(storage / "assets/overview.svg", "<svg/>\n")
             write(storage / "01-memory-hierarchy/task.md", "# Historical task\n")
             write(wiki / "COMPUTE/wiki/README.md", (
                 "# COMPUTE\n\n[存储首页](../../series/storage/README.md#storage)\n"
-                "[缓存](../../series/storage/01-memory-hierarchy/cache-scratchpad/README.md#cache)\n"
+                "[缓存](../../series/storage/reading-and-reference/01-reading/cache-scratchpad-introduction.md#cache)\n"
             ))
 
             layout_path = wiki / "website/source-layout.json"
             layout = json.loads(layout_path.read_text(encoding="utf-8"))
             extra = [
-                ("directory", "01-memory-hierarchy/overview", "RAM/wiki/01-overview"),
                 ("directory", "02-sram/foundations", "RAM/wiki/02-sram-foundations"),
                 ("directory", "03-dram/protocols", "RAM/wiki/05-dram-protocol-families"),
                 ("file", "03-dram/hbm-stacked-wide-io.md", "RAM/wiki/05-dram-protocol-families/hbm-stacked-wide-io.md"),
                 ("directory", "06-system-integration/packaging", "RAM/wiki/08-packaging-integration"),
                 # Place the split file first to exercise merging in both orders.
                 ("file", "06-system-integration/hbm-vs-lpddr-for-npu.md", "RAM/wiki/09-ai-chip-memory-architecture/hbm-vs-lpddr-for-npu.md"),
-                ("directory", "01-memory-hierarchy/ai-chip-memory", "RAM/wiki/09-ai-chip-memory-architecture"),
-                ("directory", "01-memory-hierarchy/cache-scratchpad", "COMPUTE/wiki/06-memory-discipline"),
+                ("directory", "01-memory-hierarchy/04-npu-case", "RAM/wiki/09-ai-chip-memory-architecture"),
+                ("file", "reading-and-reference/01-reading/cache-scratchpad-introduction.md", "COMPUTE/wiki/06-memory-discipline/README.md"),
             ]
             layout["storage"]["mappings"].extend({"kind": kind, "source": f"series/storage/{source}", "target": target}
                                                  for kind, source, target in extra)
@@ -164,7 +174,7 @@ class MultiRepositoryTests(unittest.TestCase):
             self.assertIn("[DRAM](../05-dram-protocol-families/README.md?mode=1#timing)", overview)
             self.assertIn("![图](../img/overview.svg?size=1#shape)", overview)
             self.assertIn("[上级](../)", overview)
-            self.assertIn("[缺失](../ai-chip-memory/hbm-vs-lpddr-for-npu.md#missing)", overview)
+            self.assertIn("[缺失](04-npu-case/hbm-vs-lpddr-for-npu.md#missing)", overview)
             hbm = (docs / "RAM/wiki/05-dram-protocol-families/hbm-stacked-wide-io.md").read_text(encoding="utf-8")
             self.assertIn("[封装](../08-packaging-integration/README.md?view=1#pkg)", hbm)
             compute = (docs / "COMPUTE/wiki/README.md").read_text(encoding="utf-8")
@@ -176,9 +186,9 @@ class MultiRepositoryTests(unittest.TestCase):
 
             # The deliberately unresolved link above tests ghost mappings;
             # remove it before the real build, which should have no bad links.
-            overview_source = storage / "01-memory-hierarchy/overview/README.md"
+            overview_source = storage / "01-memory-hierarchy/README.md"
             overview_source.write_text(overview_source.read_text(encoding="utf-8").replace(
-                "[缺失](../ai-chip-memory/hbm-vs-lpddr-for-npu.md#missing)\n", ""), encoding="utf-8")
+                "[缺失](04-npu-case/hbm-vs-lpddr-for-npu.md#missing)\n", ""), encoding="utf-8")
             stage_site(root=wiki, build_root=build_root, registry=registry)
             site = temporary / "site"
             config = load_config(config_file=str(ROOT / "mkdocs.yml"), docs_dir=str(docs), site_dir=str(site))
@@ -199,7 +209,7 @@ class MultiRepositoryTests(unittest.TestCase):
                 path.unlink()
             self.assertEqual((docs / "storage.md").read_text(encoding="utf-8"), landing)
 
-            duplicate = storage / "01-memory-hierarchy/ai-chip-memory/hbm-vs-lpddr-for-npu.md"
+            duplicate = storage / "01-memory-hierarchy/04-npu-case/hbm-vs-lpddr-for-npu.md"
             write(duplicate, "# Duplicate\n")
             with self.assertRaisesRegex(ValueError, "Storage output path collision"):
                 stage_site(root=wiki, build_root=build_root, registry=registry)
@@ -215,6 +225,15 @@ class MultiRepositoryTests(unittest.TestCase):
             entry["target"] = "RAM/wiki/02-sram-foundations/cache"
             layout_path.write_text(json.dumps(layout), encoding="utf-8")
             with self.assertRaisesRegex(ValueError, "published navigation differ"):
+                stage_site(root=wiki, build_root=build_root, registry=registry)
+            self.assertEqual((docs / "storage.md").read_text(encoding="utf-8"), landing)
+
+            entry["target"] = "COMPUTE/wiki/06-memory-discipline/README.md"
+            npu = next(item for item in layout["storage"]["mappings"]
+                       if item["source"].endswith("/04-npu-case"))
+            npu["target"] = "RAM/wiki/07-system-architecture"
+            layout_path.write_text(json.dumps(layout), encoding="utf-8")
+            with self.assertRaisesRegex(ValueError, "navigation section differ"):
                 stage_site(root=wiki, build_root=build_root, registry=registry)
             self.assertEqual((docs / "storage.md").read_text(encoding="utf-8"), landing)
 

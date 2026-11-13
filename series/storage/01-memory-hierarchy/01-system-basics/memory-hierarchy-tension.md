@@ -3,9 +3,9 @@
 <span id="这页在回答什么问题"></span>
 <span id="速度容量功耗与成本的耦合"></span>
 
-上级：[RAM 存储系统概览](./README.md)
+上级：[系统视角](./README.md)
 
-相关：[存储系统为何难设计](./problem-statement.md) · [局部性与数据搬运](./locality-working-set-data-movement.md) · [带宽与延迟](../system-architecture/bandwidth-vs-latency-fundamental.md)
+相关：[存储系统为何难设计](./problem-statement.md) · [局部性与数据搬运](./locality-working-set-data-movement.md) · [带宽与延迟](../03-performance/bandwidth-vs-latency-fundamental.md)
 
 <p class="ram-problem-lede">为什么不把所有数据都放进一块又大又快、又便宜又省电的存储器？因为容量、访问路径、并行资源和保持数据所需的电路，会共同占用面积、功率和成本预算。改变一处设计，可能同时改变其他几处。</p>
 
@@ -117,5 +117,5 @@ HBM 是一个跨层选择的例子。Micron 的 [HBM2E 资料](https://www.micro
 
 - [局部性与数据搬运](./locality-working-set-data-movement.md)：看工作集和访问序列如何改变跨层流量。
 - [SRAM 与 DRAM 的分化](./sram-dram-divergence.md)：继续看两种存储方式如何影响组织。
-- [带宽与延迟](../system-architecture/bandwidth-vs-latency-fundamental.md)：进一步区分响应时间与持续吞吐。
+- [带宽与延迟](../03-performance/bandwidth-vs-latency-fundamental.md)：进一步区分响应时间与持续吞吐。
 - [HBM 的成本](../../06-system-integration/packaging/why-hbm-is-expensive.md)：了解堆叠、测试和封装带来的成本因素。

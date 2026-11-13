@@ -1,7 +1,7 @@
 # 存储器设计的第一性原理清单
 
 上级：[参考资料](./README.md)
-相关：[为什么存储系统难设计？从一次读取看跨层约束](../overview/problem-statement.md), [“数据搬运优先”原则在 NPU 设计中的体现](../ai-chip-memory/data-movement-first-principle.md)
+相关：[为什么存储系统难设计？从一次读取看跨层约束](../../01-memory-hierarchy/01-system-basics/problem-statement.md), [“数据搬运优先”原则在 NPU 设计中的体现](../../01-memory-hierarchy/04-npu-case/data-movement-first-principle.md)
 
 ## 这页在回答什么问题
 
@@ -35,7 +35,7 @@ SRAM 选择了稳定、局部、可低延迟访问的路线，但每 bit 面积�
 
 近端路径和低争用有利于延迟，并行 bank 和端口可提高带宽。在资源充足时两者可以同时改善；在固定面积、功率、容量等约束下也可能互相竞争。比较须指定首字或末字端点与带宽边界。
 
-这条原则的用途，是在讨论“为什么不既快又宽”时快速落地。它提醒你：某项优化如果明显朝带宽方向走，比如更宽 I/O、更大 burst、更深 buffering，就不应再用低延迟思路去要求它保持同样性质。
+这条原则的用途，是为每个设计分别检查延迟与带宽。更宽 I/O、更大 burst 或更深 buffering 可能改变两者，也可能只改变其中一项。应在相同工作负载下明确测量端点和资源约束，再判断结果。
 
 **原理 5：DRAM 的真实行为是状态机行为，不是常数延迟行为**
 

@@ -1,7 +1,7 @@
 # AI 芯片内存架构
 
-上级：[`RAM/wiki/`](../)
-相关：[系统视角](../system-architecture/README.md), [封装与集成](../../06-system-integration/packaging/README.md)
+上级：[存储层级与数据路径](../README.md)
+相关：[系统视角](../01-system-basics/README.md), [封装与集成](../../06-system-integration/packaging/README.md)
 
 ## 这页在回答什么问题
 
@@ -13,7 +13,7 @@
 
 所以这一章的出发点，不应该是“某个 AI 芯片用了几级 cache”或者“用了 HBM 还是 LPDDR”，而应该是更朴素的问题：`一次计算所需的数据，沿着什么路径流动`。只有把这条路径画清楚，你才能理解为什么 AI 芯片往往会出现多级片上 SRAM、显式 double buffering、weight/activation/accumulator 分角色管理、极宽片上互连，以及外存路线必须和数据流一起设计。
 
-从这个角度看，AI 芯片内存架构的核心矛盾其实很直接。算力阵列希望每拍都吃到足够数据，否则大面积 MAC 会空转；外部 DRAM 或 HBM 虽然总带宽高，但离得远、访问有突发粒度、共享强、延迟不可忽略；片上 SRAM 虽然快，但面积贵、总量有限、bank 冲突真实存在。于是系统只能做一件事：把数据在层次中排好班，让高复用、时序敏感的数据留在更近处，把容量压力推给更远处，同时尽量避免同一份数据反复跨层搬运。
+从这个角度看，AI 芯片内存架构需要协调计算与数据供应。算力阵列需要足够的数据，否则 MAC 可能空转；外部 DRAM（例如 HBM 或 LPDDR）可能提供较高的聚合带宽，但其访问粒度、共享和延迟也会影响供数；片上 SRAM 的容量、面积和 bank 冲突受到约束。系统可以按复用和时序要求组织数据放置，减少不必要的跨层搬运；同时也要检查计算、依赖和其他资源是否成为瓶颈。
 
 这也是为什么 NPU 的存储层次通常看起来不像 CPU。CPU 更依赖对通用程序访问模式的平均优化，所以 cache hierarchy 很重要；而 AI 芯片面对的是更规则、更可预测、但数据量极大的张量流。打个比方：CPU 的 cache 更像超市——提前猜你可能想买什么并摆到货架上，猜对了就快，猜错了就得去仓库取；NPU 的 scratchpad 更像工业流水线旁的物料暂存区——每个工位要什么零件、什么时候要、从哪里运来，全部按生产计划提前编排好，根本不需要"猜"。这里真正昂贵的不是偶发 miss，而是持续的数据供应失配。所以很多 NPU 不把片上 SRAM 包装成“尽量透明的 cache”，而是更接近结构化 scratchpad 或 role-specific buffer：某一级负责喂 tile，某一级负责存 weight，某一级负责中间 partial sum，另一层负责跨 cluster 或跨 PE 共享。也就是说，AI 芯片的内存层次往往更像一套显式数据流管线，而不是一棵纯粹为 locality 猜测服务的缓存树。
 
@@ -27,21 +27,19 @@
 
 ## 阅读顺序
 
-建议按下面顺序阅读本目录：
+建议按下面顺序阅读本节：
 
 1. [NPU 存储层次](./npu-memory-hierarchy.md)
 2. [Weight buffer 设计](./weight-buffer-design.md)
 3. [激活缓冲与双缓冲](./activation-buffer-and-double-buffering.md)
 4. [片上带宽预算](./on-chip-bandwidth-budget.md)
-5. [HBM 与 LPDDR 选型](../../06-system-integration/hbm-vs-lpddr-for-npu.md)
-6. [数据搬运优先](./data-movement-first-principle.md)
-7. [存储瓶颈与计算瓶颈](./memory-bound-vs-compute-bound.md)
+5. [数据搬运优先](./data-movement-first-principle.md)
 
-如果你这次主要想补“为什么 NPU 经常先被数据流卡住而不是先被 MAC 数量卡住”，优先看 1 -> 4 和 6 -> 7。第一次系统阅读，建议完整按 1 -> 7 顺序走。
+需要诊断限制资源时，可读[存储瓶颈与计算瓶颈](../03-performance/memory-bound-vs-compute-bound.md)。需要比较外存路线时，可读[HBM 与 LPDDR 选型](../../06-system-integration/hbm-vs-lpddr-for-npu.md)；这两篇位于不同分组。
 
 ## 一句话理解
 
-AI 芯片内存架构的核心不是“堆多少级存储器”，而是按数据流角色把片上 SRAM、片外 DRAM/HBM 和层间带宽组织成一套能持续喂饱算力阵列的搬运系统。
+AI 芯片内存架构需要按数据流角色组织片上 SRAM、片外 DRAM 和层间带宽，并结合计算资源分析能否持续供数。HBM 是 DRAM 的一种。
 
 ## 建模启示
 

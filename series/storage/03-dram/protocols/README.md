@@ -1,6 +1,6 @@
 # DRAM 协议层
 
-上级：[`RAM/wiki/`](../../01-memory-hierarchy/)
+上级：[`RAM/wiki/`](../../reading-and-reference/01-reading/)
 相关：[DRAM 基础](../foundations/README.md), [Memory Controller](../../04-dram-controller/README.md)
 
 ## 这页在回答什么问题

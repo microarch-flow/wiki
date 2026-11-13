@@ -1,7 +1,7 @@
 # DRAM 系统调试 checklist
 
 上级：[参考资料](./README.md)
-相关：[Memory controller 如何影响 DRAM 的实际性能](../../04-dram-controller/why-mc-is-the-real-bottleneck.md), [峰值带宽 vs 有效带宽：损失发生在哪里](../system-architecture/effective-bandwidth-vs-peak.md)
+相关：[Memory controller 如何影响 DRAM 的实际性能](../../04-dram-controller/why-mc-is-the-real-bottleneck.md), [峰值带宽 vs 有效带宽：损失发生在哪里](../../01-memory-hierarchy/03-performance/effective-bandwidth-vs-peak.md)
 
 ## 这页在回答什么问题
 

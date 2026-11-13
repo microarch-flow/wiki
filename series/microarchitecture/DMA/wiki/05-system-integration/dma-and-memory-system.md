@@ -2,7 +2,7 @@
 
 上级：[05 系统集成](./README.md)
 
-相关：[Tiling、Double Buffer 与 Overlap](../04-programming-model/tiling-double-buffering.md)、[RAM：地址映射、Channel/Rank/Bank/Row/Col](../../../../storage/04-dram-controller/address-mapping-channel-rank-bank-row-col.md)、[RAM：访问模式与 Row Locality](../../../../storage/01-memory-hierarchy/system-architecture/sram-vs-dram-access-pattern.md)
+相关：[Tiling、Double Buffer 与 Overlap](../04-programming-model/tiling-double-buffering.md)、[RAM：地址映射、Channel/Rank/Bank/Row/Col](../../../../storage/04-dram-controller/address-mapping-channel-rank-bank-row-col.md)、[RAM：访问模式与 Row Locality](../../../../storage/01-memory-hierarchy/02-access-paths/sram-vs-dram-access-pattern.md)
 
 ## 这页在回答什么问题
 

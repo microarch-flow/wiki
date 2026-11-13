@@ -4,7 +4,7 @@
 
 上级：[SRAM 基础](./README.md)
 
-相关：[先进工艺与 SRAM](./sram-process-scaling-challenge.md) · [TCM 与实时性](../applications/tcm-itcm-dtcm-in-mcu.md) · [存储系统建模模板](../../01-memory-hierarchy/reference/memory-modeling-template.md)
+相关：[先进工艺与 SRAM](./sram-process-scaling-challenge.md) · [TCM 与实时性](../applications/tcm-itcm-dtcm-in-mcu.md) · [存储系统建模模板](../../reading-and-reference/02-reference/memory-modeling-template.md)
 
 <p class="ram-problem-lede">SRAM 在空闲时也可能消耗功率。降低供电或关闭电源可以改变这部分代价，但系统还需要决定保留哪些数据，以及何时能再次访问。</p>
 
@@ -74,4 +74,4 @@
 - [SRAM 应用形态](../applications/README.md)：继续看不同的系统角色怎样使用存储资源。
 - [NPU 的 SRAM buffer](../applications/npu-weight-buffer-activation-buffer.md)：看不同数据角色的驻留与访问需求。
 - [TCM 与实时性](../applications/tcm-itcm-dtcm-in-mcu.md)：看局部存储与系统时序要求。
-- [SRAM 选型清单](../../01-memory-hierarchy/reference/sram-design-checklist.md)：整理模式、端口和工作条件。
+- [SRAM 选型清单](../../reading-and-reference/02-reference/sram-design-checklist.md)：整理模式、端口和工作条件。

@@ -63,7 +63,7 @@ event ColumnWrite(bank_id, row_id, col_id, burst_len)
 event Precharge(bank_id)
 ```
 
-模型须分别记录 ACT 到列可用、ACT 到可关行的界限，而不是把恢复完成当成列访问前置。DDR4 的 additive latency 非零时需依器件命令语义调整外部命令时刻，参见[时序速查](../../01-memory-hierarchy/reference/timing-parameter-cheatsheet.md)。一个实用的访问代价框架可以直接写成：
+模型须分别记录 ACT 到列可用、ACT 到可关行的界限，而不是把恢复完成当成列访问前置。DDR4 的 additive latency 非零时需依器件命令语义调整外部命令时刻，参见[时序速查](../../reading-and-reference/02-reference/timing-parameter-cheatsheet.md)。一个实用的访问代价框架可以直接写成：
 
 ```text
 cost(req) =

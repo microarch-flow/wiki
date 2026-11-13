@@ -1,7 +1,7 @@
 # 带宽与延迟：两个不同的目标
 
-上级：[系统视角](./README.md)
-相关：[峰值带宽 vs 有效带宽：损失发生在哪里](./effective-bandwidth-vs-peak.md), [速度、容量、成本、功耗四角矛盾的根源](../overview/memory-hierarchy-tension.md)
+上级：[存储层级与数据路径](../README.md)
+相关：[峰值带宽 vs 有效带宽：损失发生在哪里](./effective-bandwidth-vs-peak.md), [速度、容量、成本、功耗四角矛盾的根源](../01-system-basics/memory-hierarchy-tension.md)
 
 ## 这页在回答什么问题
 

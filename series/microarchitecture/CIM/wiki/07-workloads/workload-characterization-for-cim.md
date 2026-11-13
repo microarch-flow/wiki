@@ -1,7 +1,7 @@
 # 什么样的 Workload 适合 CIM、什么样的不适合
 
 上级：[07 Workloads](./README.md)
-相关：[Problem Statement](../01-overview/problem-statement.md), [RAM: Data Movement First Principle](../../../../storage/01-memory-hierarchy/ai-chip-memory/data-movement-first-principle.md), [NoC: Memory-Centric NoC](../../../../interconnect/NOC/wiki/06-ai-noc-specifics/memory-centric-noc.md), [BUS: DMA Path](../../../../interconnect/BUS/wiki/04-microarchitecture-integration/dma-descriptor-fetch-data-move-writeback.md), [FAB: Process Variation](../../../../chip-development/FAB/wiki/02-front-end-fabrication/process-nodes-and-ppa-tradeoffs.md)
+相关：[Problem Statement](../01-overview/problem-statement.md), [RAM: Data Movement First Principle](../../../../storage/01-memory-hierarchy/04-npu-case/data-movement-first-principle.md), [NoC: Memory-Centric NoC](../../../../interconnect/NOC/wiki/06-ai-noc-specifics/memory-centric-noc.md), [BUS: DMA Path](../../../../interconnect/BUS/wiki/04-microarchitecture-integration/dma-descriptor-fetch-data-move-writeback.md), [FAB: Process Variation](../../../../chip-development/FAB/wiki/02-front-end-fabrication/process-nodes-and-ppa-tradeoffs.md)
 
 ## 这页在回答什么问题
 

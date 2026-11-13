@@ -1,7 +1,7 @@
 # 封装与集成
 
-上级：[`RAM/wiki/`](../../01-memory-hierarchy/)
-相关：[DRAM 协议层](../../03-dram/protocols/README.md), [AI 芯片内存架构](../../01-memory-hierarchy/ai-chip-memory/README.md)
+上级：[`RAM/wiki/`](../../reading-and-reference/01-reading/)
+相关：[DRAM 协议层](../../03-dram/protocols/README.md), [AI 芯片内存架构](../../01-memory-hierarchy/04-npu-case/README.md)
 
 ## 这页在回答什么问题
 

@@ -2,7 +2,7 @@
 
 上级：[SRAM 基础](./README.md)
 
-相关：[SRAM 读写时序](./read-write-cycle-timing.md) · [SRAM 端口与代价](./single-port-dual-port-multi-port.md) · [SRAM 选型清单](../../01-memory-hierarchy/reference/sram-design-checklist.md)
+相关：[SRAM 读写时序](./read-write-cycle-timing.md) · [SRAM 端口与代价](./single-port-dual-port-multi-port.md) · [SRAM 选型清单](../../reading-and-reference/02-reference/sram-design-checklist.md)
 
 <p class="ram-problem-lede">一块 SRAM 的容量和位宽，只说明它能存多少数据。要正确使用它，还要知道何时采样、哪些操作可以并发、数据何时有效，以及冲突时有什么保证。</p>
 

@@ -1,7 +1,7 @@
 # 系统视角
 
-上级：[`RAM/wiki/`](../)
-相关：[Memory Controller](../../04-dram-controller/README.md), [AI 芯片内存架构](../ai-chip-memory/README.md)
+上级：[存储层级与数据路径](../README.md)
+相关：[Memory Controller](../../04-dram-controller/README.md), [AI 芯片内存架构](../04-npu-case/README.md)
 
 ## 这页在回答什么问题
 
@@ -13,11 +13,11 @@
 
 例如，CPU 看到的一次 load miss，不只是“cache 没命中，去 DRAM 读一下”这么简单。它后面可能牵出 cache 的 tag/data 路径、controller 的地址映射、某个 bank 当前 open row 是否匹配、刷新是否刚好在挡路、总线是否处于写排空窗口，以及其他 master 是否也在抢同一条通路。NPU 看到的一次 tile 供数不足，也不只是“HBM 带宽不够”，而可能是片上 SRAM banking 没切好、DMA 节拍没对齐、外存 controller 为别的流量保了优先级、或总访问模式根本没把 row locality 用起来。系统层的意义，就在于把这些先前分散的局部机制重新组装成 workload 能感知的因果链。这就像医生诊断——心率、血压、血糖分别看都在正常范围内，但它们的组合和相互影响才能告诉你病人是不是真的健康。
 
-因此，这一章的结构会从几种最稳定的系统问题出发，而不是从具体器件名词出发。`bandwidth-vs-latency-fundamental.md` 先回答最常见也最容易被说空的话题：为什么带宽和延迟不能被当作同一个优化方向。`effective-bandwidth-vs-peak.md` 接着追问，为什么规格书上的峰值带宽很少直接兑现到真实程序。`cache-dram-coordination.md` 则把片上局部性层和片外主存层接起来，说明 miss 之后到底会发生什么。`numa-multi-channel-multi-socket.md` 把问题继续扩展到更大的系统资源图上，讨论扩带宽为什么几乎总伴随更复杂的拓扑代价。
+系统问题分布在本专题的几个组中。[带宽与延迟](../03-performance/bandwidth-vs-latency-fundamental.md)分别定义两项指标；[峰值与有效带宽](../03-performance/effective-bandwidth-vs-peak.md)分析规格上界与工作负载流量。[Cache 与 DRAM 协同](../02-access-paths/cache-dram-coordination.md)解释 miss 路径；[多通道与 NUMA](../02-access-paths/numa-multi-channel-multi-socket.md)讨论拓扑与数据放置。
 
-后面的 `memory-hierarchy-as-system.md` 和 `why-systems-choose-different-memory.md`，会进一步把视角从“一个控制器怎么调”扩展到“整个系统为何要这样分层”。也就是说，我们不再把 register file、cache、scratchpad、DDR、HBM 分别当作几个对象去背，而是要看它们在距离、容量、带宽和管理语义上如何构成一张互补网络。压轴的 `sram-vs-dram-access-pattern.md` 会回到最开始那条主线，把前面 SRAM 与 DRAM 的全部差异收成真正的系统判断：为什么同样叫“访问内存”，在 SRAM 上和在 DRAM 上的代价曲线完全不同。
+[存储层次与系统角色](./memory-hierarchy-as-system.md)比较 register file、cache、scratchpad、DDR 和 HBM 的职责。[系统的存储器选择](../../06-system-integration/why-systems-choose-different-memory.md)属于集成与选型专题。[SRAM 与 DRAM 访问模式](../02-access-paths/sram-vs-dram-access-pattern.md)则比较不同资源如何受请求形状影响。
 
-这一章还有一个很重要的边界：它讨论的是“系统如何感知并使用这些内存层次”，而不是再重复某一层的物理细节。比如带宽与延迟的讨论，不会重新解释 6T cell 或 1T1C cell 的电路，而会直接用前面的结论去解释为什么大容量层次几乎天然离计算更远、为什么高带宽路径常常以更高前置成本为代价。换句话说，本章默认前面的基础已经成立，然后把这些基础抽象成系统层的行为变量。
+本节关注系统如何使用存储层次。带宽与延迟文章使用系统路径和资源约束解释指标，不重新推导 6T 或 1T1C 电路。容量、物理距离和前置成本之间的关系仍取决于具体实现，不能只由层级名称推断。
 
 这也是从建模角度看非常关键的一步。前面的章节大多在回答“某类资源自身有什么状态”；这一章开始更多回答“这些资源之间通过什么拓扑和交互关系塑造端到端行为”。因此，从这里开始，`Resource / Topology / Interaction / Capability` 这套抽象会更自然地浮现出来。比如：
 
@@ -34,17 +34,16 @@
 
 ## 阅读顺序
 
-建议按下面顺序阅读本目录：
+下面的顺序对应“系统基础”中的文章：
 
-1. [带宽与延迟](./bandwidth-vs-latency-fundamental.md)
-2. [峰值与有效带宽](./effective-bandwidth-vs-peak.md)
-3. [Cache 与 DRAM 协同](./cache-dram-coordination.md)
-4. [多通道与 NUMA](./numa-multi-channel-multi-socket.md)
-5. [存储层次与系统角色](./memory-hierarchy-as-system.md)
-6. [SRAM 与 DRAM 访问模式](./sram-vs-dram-access-pattern.md)
-7. [系统的存储器选择](./why-systems-choose-different-memory.md)
+1. [存储系统为何难设计](./problem-statement.md)
+2. [RAM 分类与命名](./taxonomy.md)
+3. [存储层次与系统角色](./memory-hierarchy-as-system.md)
+4. [速度·容量·成本·功耗](./memory-hierarchy-tension.md)
+5. [局部性与数据搬运](./locality-working-set-data-movement.md)
+6. [SRAM 与 DRAM 的分化](./sram-dram-divergence.md)
 
-如果你这次主要想补“为什么系统里的内存表现总和器件参数表不一样”，优先看 1 -> 6。若你的重点是不同系统为什么选不同路线，再接着看 7。
+需要分析请求路径或性能指标时，可分别转到 [Cache 与 DRAM 协同](../02-access-paths/cache-dram-coordination.md)和[带宽与延迟](../03-performance/bandwidth-vs-latency-fundamental.md)。
 
 ## 一句话理解
 

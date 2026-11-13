@@ -59,7 +59,7 @@
 | 参数 | 符号 | 单位 | 示意量级 | 喂入 | 口径注意 |
 | --- | --- | --- | --- | --- | --- |
 | tile buffer 容量 | `buf_cap` | KB | 设计相关 | reload 频率、T_memory | 容量错配导致权重/激活反复 reload |
-| buffer 访问能耗 | `e_buf` | pJ/byte | SRAM 量级 | E_buffer | 借用 [RAM wiki](../../../../storage/01-memory-hierarchy/ai-chip-memory/memory-bound-vs-compute-bound.md) 口径 |
+| buffer 访问能耗 | `e_buf` | pJ/byte | SRAM 量级 | E_buffer | 借用 [RAM wiki](../../../../storage/01-memory-hierarchy/03-performance/memory-bound-vs-compute-bound.md) 口径 |
 | NoC 带宽 | `bw_noc` | GB/s | 拓扑相关 | T_reduction、T_memory | partial sum traffic 是 CIM 特有压力 |
 | NoC 单跳能耗 | `e_noc` | pJ/byte/hop | 工艺/距离相关 | E_noc | 见 [NoC wiki](../../../../interconnect/NOC/wiki/06-ai-noc-specifics/memory-centric-noc.md) |
 | HBM/DRAM 带宽 | `bw_mem` | GB/s | HBM 数百~TB/s | T_memory | memory-bound workload 的主导项 |

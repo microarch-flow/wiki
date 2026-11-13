@@ -2,7 +2,7 @@
 
 上级：[05 性能与调试](./README.md)
 
-相关：[设备 DMA 的读写路径](../04-data-path-dma-interrupts/device-dma-read-write-flow.md)、[RAM Wiki](../../../../storage/01-memory-hierarchy/README.md)
+相关：[设备 DMA 的读写路径](../04-data-path-dma-interrupts/device-dma-read-write-flow.md)、[RAM Wiki](../../../../storage/reading-and-reference/01-reading/README.md)
 
 ## 这页在回答什么问题
 

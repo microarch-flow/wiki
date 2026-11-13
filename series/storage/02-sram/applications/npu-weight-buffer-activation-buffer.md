@@ -1,7 +1,7 @@
 # NPU 里的 SRAM buffer：weight、activation、accumulator
 
 上级：[SRAM 应用形态](./README.md)
-相关：[bank、sub-array、mat：SRAM 阵列怎么划分才高效](../foundations/sram-array-organization.md), [NPU 的存储层次：L0/L1/L2 SRAM 与 HBM/LPDDR](../../01-memory-hierarchy/ai-chip-memory/npu-memory-hierarchy.md)
+相关：[bank、sub-array、mat：SRAM 阵列怎么划分才高效](../foundations/sram-array-organization.md), [NPU 的存储层次：L0/L1/L2 SRAM 与 HBM/LPDDR](../../01-memory-hierarchy/04-npu-case/npu-memory-hierarchy.md)
 
 ## 这页在回答什么问题
 

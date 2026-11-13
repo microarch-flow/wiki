@@ -1,7 +1,7 @@
 # 多 master 场景下的 QoS 与公平性
 
 上级：[Memory Controller](./README.md)
-相关：[命令调度：FR-FCFS 及其变体](./command-scheduling-fr-fcfs.md), [NPU 的 on-chip 带宽预算从哪来、到哪去](../01-memory-hierarchy/ai-chip-memory/on-chip-bandwidth-budget.md)
+相关：[命令调度：FR-FCFS 及其变体](./command-scheduling-fr-fcfs.md), [NPU 的 on-chip 带宽预算从哪来、到哪去](../01-memory-hierarchy/04-npu-case/on-chip-bandwidth-budget.md)
 
 ## 这页在回答什么问题
 

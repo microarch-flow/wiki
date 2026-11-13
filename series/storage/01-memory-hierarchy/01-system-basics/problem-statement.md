@@ -3,9 +3,9 @@
 <span id="为什么存储器是体系结构里最难的部分"></span>
 <span id="这页在回答什么问题"></span>
 
-上级：[RAM 存储系统概览](./README.md)
+上级：[系统视角](./README.md)
 
-相关：[速度、容量、成本、功耗四角矛盾的根源](./memory-hierarchy-tension.md) · [把 register、cache、scratchpad、DRAM、HBM 看作一个系统](../system-architecture/memory-hierarchy-as-system.md)
+相关：[速度、容量、成本、功耗四角矛盾的根源](./memory-hierarchy-tension.md) · [把 register、cache、scratchpad、DRAM、HBM 看作一个系统](memory-hierarchy-as-system.md)
 
 <p class="ram-problem-lede">一次读取看起来只是“给地址、取数据”。在实际系统中，它可能要经过 cache 查找、互连、控制器排队、DRAM 访问和数据返回。每一层都有自己的状态与共享资源，工作负载又决定了这些资源何时发生竞争。</p>
 
@@ -17,7 +17,7 @@
 
 ## 1. 从一次 cache miss 开始
 
-沿用[RAM 概览](./README.md)中的单请求例子：地址翻译已经完成；只有一个 cache 层参与查找，且该层未命中；目标数据位于 DRAM。本例没有其他请求争用，也不涉及脏块写回或一致性处理；完整数据块回填 cache 后，才向处理器响应。单层 cache 未命中的基本路径，也可以参考 [MIT 的存储层次课程](https://ocw.mit.edu/courses/6-004-computation-structures-spring-2017/pages/c14/c14s1/)。
+沿用[RAM 概览](../README.md)中的单请求例子：地址翻译已经完成；只有一个 cache 层参与查找，且该层未命中；目标数据位于 DRAM。本例没有其他请求争用，也不涉及脏块写回或一致性处理；完整数据块回填 cache 后，才向处理器响应。单层 cache 未命中的基本路径，也可以参考 [MIT 的存储层次课程](https://ocw.mit.edu/courses/6-004-computation-structures-spring-2017/pages/c14/c14s1/)。
 
 <ol class="ram-event-sequence" aria-label="本例中一次读取的主要阶段">
   <li>cache 未命中</li>
@@ -131,6 +131,6 @@ ACT 表示开行，RD 发起列读取，PRE 关闭当前行并进行预充。图
 
 - [速度·容量·成本·功耗](./memory-hierarchy-tension.md)：继续看存储方案的取舍。
 - [局部性与数据搬运](./locality-working-set-data-movement.md)：看访问序列和复用如何影响跨层流量。
-- [带宽与延迟](../system-architecture/bandwidth-vs-latency-fundamental.md)：进一步区分单次响应与持续吞吐。
+- [带宽与延迟](../03-performance/bandwidth-vs-latency-fundamental.md)：进一步区分单次响应与持续吞吐。
 - [地址映射](../../04-dram-controller/address-mapping-channel-rank-bank-row-col.md)：看地址怎样影响行局部性和并行机会。
 - [命令调度与 FR-FCFS](../../04-dram-controller/command-scheduling-fr-fcfs.md)：看控制器如何在合法候选中选择命令。

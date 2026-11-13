@@ -31,7 +31,7 @@
 
 | 学习问题 | 入口 | 与模拟器的关系 |
 | --- | --- | --- |
-| SRAM 和 DRAM 如何保存并提供数据？ | [RAM 专题主页](./series/storage/01-memory-hierarchy/README.md)；[RAM：存储层级](./series/storage/01-memory-hierarchy/overview/README.md) | 时序、容量、bank 冲突、带宽 |
+| SRAM 和 DRAM 如何保存并提供数据？ | [RAM 专题主页](./series/storage/reading-and-reference/01-reading/README.md)；[RAM：存储层级](./series/storage/01-memory-hierarchy/README.md) | 时序、容量、bank 冲突、带宽 |
 | 运算单元如何形成吞吐？ | [COMPUTE 专题主页](./series/microarchitecture/COMPUTE/wiki/README.md)；[COMPUTE：数据通路](./series/microarchitecture/COMPUTE/wiki/02-datapath-foundations/README.md) | 流水线、操作延迟、资源占用 |
 | 多个模块如何共享片上通路？ | [BUS 专题主页](./series/interconnect/BUS/wiki/README.md)；[域入口](./series/interconnect/BUS/README.md)；[BUS：互连基础](./series/interconnect/BUS/wiki/02-fundamentals/README.md) | 仲裁、握手、背压 |
 | 多节点如何路由和争用？ | [NOC 专题主页](./series/interconnect/NOC/wiki/README.md)；[NOC：路由器](./series/interconnect/NOC/wiki/02-router-microarchitecture/README.md) | 路由、缓冲、排队和流控 |

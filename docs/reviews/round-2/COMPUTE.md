@@ -59,8 +59,8 @@
 
 | 页面与处理 | 概念或用途 | 设计动机 | 触发条件与可观察结果 | 原文诊断与修订后复核 |
 |---|---|---|---|---|
-| [06 · 存储 discipline：cache 与 scratchpad](../../../series/storage/01-memory-hierarchy/cache-scratchpad/README.md) · 保留 | 导航软件显式放置与 cache 自动放置，区分位置确定和服务时间确定。 | 选择需要记录初态、替换策略还是需要记录 DMA、端口和仲裁。 | SPM 同 bank 可排队，已定初态和访问规则的 cache 可重复模拟；题目自带可追溯链接。 | 短文已对两边分别给一个可改变服务时间或命中行为的条件。 |
-| [Cache 与 scratchpad：数据放置和访问时间](../../../series/storage/01-memory-hierarchy/cache-scratchpad/cache-vs-scratchpad.md) · 保留 | cache 靠 tag/替换/填充自动管理，scratchpad 依靠软件约定的地址与生命周期。 | 两类存储各自还有共享端口、服务延迟与仲裁，需明确可见完成时间。 | 同 bank 单读口，周期 0 两个已知地址同时请求，先发者周期 1 完、后者周期 2 完；改 bank 或优先级影响结果。 | “同时访问的反例”给到达、接纳、完成，cache 亦明确确定性模拟所需初态和资源。 |
+| [06 · 存储 discipline：cache 与 scratchpad](../../../series/storage/reading-and-reference/01-reading/cache-scratchpad-introduction.md) · 保留 | 导航软件显式放置与 cache 自动放置，区分位置确定和服务时间确定。 | 选择需要记录初态、替换策略还是需要记录 DMA、端口和仲裁。 | SPM 同 bank 可排队，已定初态和访问规则的 cache 可重复模拟；题目自带可追溯链接。 | 短文已对两边分别给一个可改变服务时间或命中行为的条件。 |
+| [Cache 与 scratchpad：数据放置和访问时间](../../../series/storage/01-memory-hierarchy/02-access-paths/cache-vs-scratchpad.md) · 保留 | cache 靠 tag/替换/填充自动管理，scratchpad 依靠软件约定的地址与生命周期。 | 两类存储各自还有共享端口、服务延迟与仲裁，需明确可见完成时间。 | 同 bank 单读口，周期 0 两个已知地址同时请求，先发者周期 1 完、后者周期 2 完；改 bank 或优先级影响结果。 | “同时访问的反例”给到达、接纳、完成，cache 亦明确确定性模拟所需初态和资源。 |
 
 ## 07 · 芯片顶层组织
 

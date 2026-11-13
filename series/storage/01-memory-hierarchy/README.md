@@ -1,10 +1,10 @@
 # RAM 存储系统概览：数据如何从存储走到计算
 
-<!-- nav-title: 存储系统概览 -->
+<!-- nav-title: 存储层级与数据路径 -->
 
-上级：[RAM 专题主页](../README.md)
+上级：[存储系统](../README.md)
 
-相关：[SRAM 6T cell](../../02-sram/foundations/6t-cell-bistable-storage.md) · [存储层次与系统角色](../system-architecture/memory-hierarchy-as-system.md) · [学习路线](./learning-roadmap.md)
+相关：[SRAM 6T cell](../02-sram/foundations/6t-cell-bistable-storage.md) · [存储层次与系统角色](01-system-basics/memory-hierarchy-as-system.md) · [学习路线](../reading-and-reference/01-reading/learning-roadmap.md)
 
 计算单元需要持续取得数据，也需要保存计算结果。存储系统的任务，是在容量、访问时间、带宽、能耗和成本等约束下，提供这些数据。
 
@@ -23,7 +23,7 @@ RAM 是 random-access memory，通常译为随机存取存储器。它允许根�
 
 ## 2. 先看两条数据路径
 
-[![存储系统路径示意：处理器 cache 未命中后经内存控制器读取 DRAM；另一条路径中 DMA 将 DRAM 数据搬入 scratchpad，供计算单元使用。](../../assets/ram-system-overview.svg)](../../assets/ram-system-overview.svg)
+[![存储系统路径示意：处理器 cache 未命中后经内存控制器读取 DRAM；另一条路径中 DMA 将 DRAM 数据搬入 scratchpad，供计算单元使用。](../assets/ram-system-overview.svg)](../assets/ram-system-overview.svg)
 
 点击图可查看大图。图中是两个简化例子，并非所有芯片都采用相同连接。
 
@@ -118,13 +118,13 @@ DMA 是发起和执行搬运的模块；内存控制器负责对 DRAM 请求进�
 
 ## 8. 接下来怎么读？
 
-本章后续文章按问题逐步展开：
+本专题按四类问题组织文章，可以按当前目标选择：
 
-1. [存储系统为何难设计](./problem-statement.md)：观察约束如何跨层耦合。
-2. [RAM 分类与命名](./taxonomy.md)：区分单元、角色、接口和封装。
-3. [速度·容量·成本·功耗](./memory-hierarchy-tension.md)：区分设计目标及其代价。
-4. [局部性与数据搬运](./locality-working-set-data-movement.md)：看访问序列、工作集和复用如何影响跨层流量。
-5. [SRAM 与 DRAM 的分化](./sram-dram-divergence.md)：从存储方式推导组织差异。
-6. [学习路径与章节依赖](./learning-roadmap.md)：按目标选择后续章节。
+- **系统基础**：从[存储系统为何难设计](./01-system-basics/problem-statement.md)、[RAM 分类与命名](./01-system-basics/taxonomy.md)和[存储层次与系统角色](./01-system-basics/memory-hierarchy-as-system.md)建立共同概念。
+- **访问路径与数据管理**：阅读 [Cache 与 DRAM 协同](./02-access-paths/cache-dram-coordination.md)和 [Cache 与 scratchpad](./02-access-paths/cache-vs-scratchpad.md)，区分自动填充与显式放置。
+- **性能分析与瓶颈**：用[带宽与延迟](./03-performance/bandwidth-vs-latency-fundamental.md)、[峰值与有效带宽](./03-performance/effective-bandwidth-vs-peak.md)分析指定边界上的表现。
+- **NPU 数据路径案例**：从 [AI 芯片内存架构](./04-npu-case/README.md)进入，再按需查看局部 buffer 和片上带宽。
 
-如果想先深入一颗 SRAM 单元，可以直接阅读 [6T SRAM cell：它如何保存、读取和写入 1 bit](../../02-sram/foundations/6t-cell-bistable-storage.md)。如果当前目标是 DRAM 建模，可以转到 [DRAM 基础](../../03-dram/foundations/README.md)和 [Memory Controller](../../04-dram-controller/README.md)。
+更详细的原 RAM 章节阅读路线见[学习路径与章节依赖](../reading-and-reference/01-reading/learning-roadmap.md)。
+
+如果想先深入一颗 SRAM 单元，可以直接阅读 [6T SRAM cell：它如何保存、读取和写入 1 bit](../02-sram/foundations/6t-cell-bistable-storage.md)。如果当前目标是 DRAM 建模，可以转到 [DRAM 基础](../03-dram/foundations/README.md)和 [Memory Controller](../04-dram-controller/README.md)。

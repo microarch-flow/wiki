@@ -1,7 +1,7 @@
 # 07 Workloads
 
 上级：[CIM Wiki](../README.md)
-相关：[Workload Characterization](./workload-characterization-for-cim.md), [RAM: Memory Bound vs Compute Bound](../../../../storage/01-memory-hierarchy/ai-chip-memory/memory-bound-vs-compute-bound.md), [NoC: Attention Decode KV Cache](../../../../interconnect/NOC/wiki/06-ai-noc-specifics/workload-attention-decode-kv-cache.md), [BUS: DMA Path](../../../../interconnect/BUS/wiki/04-microarchitecture-integration/dma-descriptor-fetch-data-move-writeback.md), [FAB: Thermal Management](../../../../chip-development/FAB/wiki/06-cross-cutting-engineering/thermal-path-and-management.md)
+相关：[Workload Characterization](./workload-characterization-for-cim.md), [RAM: Memory Bound vs Compute Bound](../../../../storage/01-memory-hierarchy/03-performance/memory-bound-vs-compute-bound.md), [NoC: Attention Decode KV Cache](../../../../interconnect/NOC/wiki/06-ai-noc-specifics/workload-attention-decode-kv-cache.md), [BUS: DMA Path](../../../../interconnect/BUS/wiki/04-microarchitecture-integration/dma-descriptor-fetch-data-move-writeback.md), [FAB: Thermal Management](../../../../chip-development/FAB/wiki/06-cross-cutting-engineering/thermal-path-and-management.md)
 
 ## 这页在回答什么问题
 

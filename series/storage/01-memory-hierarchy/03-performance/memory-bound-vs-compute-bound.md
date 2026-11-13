@@ -1,7 +1,7 @@
 # Memory bound vs compute bound 的本质与缓解策略
 
-上级：[AI 芯片内存架构](./README.md)
-相关：[NPU 的 on-chip 带宽预算从哪来、到哪去](./on-chip-bandwidth-budget.md), [峰值带宽 vs 有效带宽：损失发生在哪里](../system-architecture/effective-bandwidth-vs-peak.md)
+上级：[存储层级与数据路径](../README.md)
+相关：[NPU 的 on-chip 带宽预算从哪来、到哪去](../04-npu-case/on-chip-bandwidth-budget.md), [峰值带宽 vs 有效带宽：损失发生在哪里](effective-bandwidth-vs-peak.md)
 
 ## 这页在回答什么问题
 

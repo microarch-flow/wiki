@@ -1,7 +1,7 @@
 # Cache 里的 SRAM：tag 阵列与 data 阵列的差异
 
 上级：[SRAM 应用形态](./README.md)
-相关：[Register file 为什么是一种特殊 SRAM](./register-file-as-sram.md), [Cache 和 DRAM 如何协同，miss 之后发生了什么](../../01-memory-hierarchy/system-architecture/cache-dram-coordination.md)
+相关：[Register file 为什么是一种特殊 SRAM](./register-file-as-sram.md), [Cache 和 DRAM 如何协同，miss 之后发生了什么](../../01-memory-hierarchy/02-access-paths/cache-dram-coordination.md)
 
 ## 这页在回答什么问题
 

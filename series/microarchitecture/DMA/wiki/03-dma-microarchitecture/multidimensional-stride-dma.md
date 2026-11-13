@@ -57,7 +57,7 @@ for r in [0, rows):
 - burst 是否被连续中断
 - completion 是按整体任务还是按子块推进
 
-这正是它和 [RAM wiki 的 row locality](../../../../storage/01-memory-hierarchy/system-architecture/sram-vs-dram-access-pattern.md) 必须连起来看的原因。某些 tile 大小与 stride 组合在软件视角里很规则，到了 memory controller 视角却可能极度不友好。
+这正是它和 [RAM wiki 的 row locality](../../../../storage/01-memory-hierarchy/02-access-paths/sram-vs-dram-access-pattern.md) 必须连起来看的原因。某些 tile 大小与 stride 组合在软件视角里很规则，到了 memory controller 视角却可能极度不友好。
 
 ## 什么时候 2D/3D DMA 反而不值
 

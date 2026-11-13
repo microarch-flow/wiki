@@ -15,6 +15,7 @@ if _WEBSITE not in sys.path:
     sys.path.insert(0, _WEBSITE)
 from sources import load_series, series_landing  # noqa: E402
 from ownership import GROUPS, MICRO, STORAGE, INTERCONNECT, DEVELOPMENT, WORKLOAD_GROUPS, INFERENCE_GROUPS, HBM_READING_ENTRY, owner, workload_owner, development_owner, inference_owner  # noqa: E402
+from storage_navigation import MEMORY_HOME, MEMORY_SECTIONS, MEMORY_TOPIC, RESOURCE_SECTIONS, STORAGE_RESOURCES  # noqa: E402
 
 
 TOPICS = (
@@ -215,9 +216,34 @@ def compact_storage_sections(items):
     return compact
 
 
+def storage_sections(root, sections):
+    """Build ordered sections from pages that exist in this staging tree."""
+    result = []
+    for label, _directory, pages in sections:
+        entries = [{short: page} for short, page in pages if (root / page).is_file()]
+        if entries:
+            result.append({label: entries})
+    return result
+
+
+def storage_memory_tree(root):
+    entries = [{"专题首页": MEMORY_HOME}] if (root / MEMORY_HOME).is_file() else []
+    return entries + storage_sections(root, MEMORY_SECTIONS)
+
+
+def storage_resources_tree(root):
+    sections = storage_sections(root, RESOURCE_SECTIONS)
+    return [{STORAGE_RESOURCES: sections}] if sections else []
+
+
 def grouped_original_topics(root, series):
     result = []
     for group in GROUPS[series]:
+        if series == STORAGE and group == MEMORY_TOPIC:
+            entries = storage_memory_tree(root)
+            if entries:
+                result.append({group: entries})
+            continue
         entries = []
         if (series, group) == owner("electrical-timing-foundations.md"):
             entries.append("electrical-timing-foundations.md")
@@ -322,7 +348,10 @@ def render_breadcrumbs(page, root, sidebar_labels=None):
     """Render links to real ancestor pages and the current article title."""
     items = [("首页", "/")]
     sidebar_labels = sidebar_labels or {}
-    items.extend((sidebar_labels.get(index.file.src_uri, (label,))[0] if index is not None else label,
+    storage_groups = {MEMORY_TOPIC, STORAGE_RESOURCES, *(name for name, _, _ in MEMORY_SECTIONS),
+                      *(name for name, _, _ in RESOURCE_SECTIONS)}
+    items.extend((sidebar_labels.get(index.file.src_uri, (label,))[0]
+                  if index is not None and label not in storage_groups else label,
                   index.url if index is not None else None) for label, index in breadcrumb_ancestors(page))
     links = [
         ('<li><a href="{}">{}</a></li>'.format(escape(get_relative_url(url, page.url), quote=True), escape(label))
@@ -354,10 +383,51 @@ def validate_unique_navigation(entries):
     visit(entries)
 
 
+def validate_storage_navigation(root, entries):
+    """Do not silently publish a storage page without its main navigation."""
+    assigned = set()
+
+    def collect(item):
+        if isinstance(item, str) and item.endswith(".md"):
+            assigned.add(item)
+        elif isinstance(item, dict):
+            for value in item.values():
+                collect(value)
+        elif isinstance(item, list):
+            for value in item:
+                collect(value)
+
+    collect(entries)
+    expected = {
+        path.relative_to(root).as_posix()
+        for directory in ("RAM/wiki", "HBF/wiki", "COMPUTE/wiki/06-memory-discipline")
+        for path in (root / directory).rglob("*.md")
+    }
+    for name in ("RAM", "HBF"):
+        for filename in ("README.md", "self-test-questions.md"):
+            path = root / name / filename
+            if path.is_file():
+                expected.add(path.relative_to(root).as_posix())
+    if assigned != expected:
+        raise ValueError(f"Storage navigation does not cover pages: missing={sorted(expected - assigned)}, extra={sorted(assigned - expected)}")
+
+
 def on_config(config, **kwargs):
     root = Path(config.docs_dir)
     series = read_series(root)
     config.extra["ram_sidebar_labels"] = ram_sidebar_labels(root)
+    # The storage source groups may merge several preserved URL directories.
+    # Use their declared order and labels rather than the old chapter indexes.
+    for _name, _directory, pages in (*MEMORY_SECTIONS, *RESOURCE_SECTIONS):
+        for short, path in pages:
+            if (root / path).is_file():
+                config.extra["ram_sidebar_labels"][path] = (short, title(root / path))
+    if (root / MEMORY_HOME).is_file():
+        # Material uses the topic's index page as its clickable section title.
+        config.extra["ram_sidebar_labels"][MEMORY_HOME] = (MEMORY_TOPIC, title(root / MEMORY_HOME))
+    storage_topics = grouped_original_topics(root, STORAGE)
+    storage_resources = storage_resources_tree(root)
+    validate_storage_navigation(root, [*storage_topics, *storage_resources])
     # These files use stable paths. A content-derived query prevents browsers
     # from combining freshly deployed HTML with a cached older CSS/JS file.
     for setting in ("extra_css", "extra_javascript"):
@@ -381,7 +451,7 @@ def on_config(config, **kwargs):
             {"互动图解": "visuals.md"},
             *grouped_original_topics(root, MICRO),
         ]},
-        {STORAGE: [{"系列首页": "storage.md"}, *grouped_original_topics(root, STORAGE)]},
+        {STORAGE: [{"系列首页": "storage.md"}, *storage_topics, *storage_resources]},
         {INTERCONNECT: [{"系列首页": "interconnect.md"}, *grouped_original_topics(root, INTERCONNECT)]},
     ]
     for entry in series:

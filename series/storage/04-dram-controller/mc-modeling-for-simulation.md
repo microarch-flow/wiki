@@ -1,7 +1,7 @@
 # MC 在 cycle-level 仿真里的建模方法
 
 上级：[Memory Controller](./README.md)
-相关：[多 master 场景下的 QoS 与公平性](./qos-multi-master-arbitration.md), [存储器在架构探索中的建模模板](../01-memory-hierarchy/reference/memory-modeling-template.md)
+相关：[多 master 场景下的 QoS 与公平性](./qos-multi-master-arbitration.md), [存储器在架构探索中的建模模板](../reading-and-reference/02-reference/memory-modeling-template.md)
 
 ## 这页在回答什么问题
 

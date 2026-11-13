@@ -3,9 +3,9 @@
 <span id="这页在回答什么问题"></span>
 <span id="区分单元组织接口角色和封装"></span>
 
-上级：[RAM 存储系统概览](./README.md)
+上级：[系统视角](./README.md)
 
-相关：[SRAM 与 DRAM 的分化](./sram-dram-divergence.md) · [DRAM 协议对比](../../03-dram/protocols/ddr-lpddr-gddr-hbm-tradeoff-map.md) · [存储层次与系统角色](../system-architecture/memory-hierarchy-as-system.md)
+相关：[SRAM 与 DRAM 的分化](./sram-dram-divergence.md) · [DRAM 协议对比](../../03-dram/protocols/ddr-lpddr-gddr-hbm-tradeoff-map.md) · [存储层次与系统角色](memory-hierarchy-as-system.md)
 
 <p class="ram-problem-lede">SRAM、cache、DDR 和 HBM 都与存储有关，但它们回答的问题不同：一个 bit 怎样保存、存储资源在系统里做什么、控制器怎样访问它，以及器件如何集成。先分清问题，才能正确描述一个系统。</p>
 

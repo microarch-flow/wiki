@@ -3,7 +3,7 @@
 <span id="这页在回答什么问题"></span>
 <span id="存储方式决定访问与密度"></span>
 
-上级：[RAM 存储系统概览](./README.md)
+上级：[系统视角](./README.md)
 
 相关：[RAM 分类与命名](./taxonomy.md) · [6T SRAM cell](../../02-sram/foundations/6t-cell-bistable-storage.md) · [1T1C 存储单元](../../03-dram/foundations/1t1c-cell-destructive-read.md)
 
@@ -88,7 +88,7 @@ Cache 数据阵列和 scratchpad 常用 SRAM；主存或设备内存常使用 DR
 
 ## 接下来怎么读？
 
-- [学习路径与章节依赖](./learning-roadmap.md)：继续按目标选择后续章节。
+- [学习路径与章节依赖](../../reading-and-reference/01-reading/learning-roadmap.md)：继续按目标选择后续章节。
 - [6T SRAM cell](../../02-sram/foundations/6t-cell-bistable-storage.md)：看双稳态和读写操作。
 - [1T1C 存储单元](../../03-dram/foundations/1t1c-cell-destructive-read.md)：看电荷共享、感测与恢复。
 - [DRAM 命令集](../../03-dram/protocols/commands-act-rd-wr-pre.md)：看 ACT、RD、WR 和 PRE 的接口语义。
