@@ -1,95 +1,118 @@
 # Cache 和 DRAM 如何协同，miss 之后发生了什么
 
 上级：[存储层级与数据路径](../README.md)
-相关：[Cache 里的 SRAM：tag 阵列与 data 阵列的差异](../../02-sram/applications/cache-sram-tag-data-arrays.md), [地址映射：物理地址到 channel、rank、bank、row、col 的拆分艺术](../../04-dram-controller/address-mapping-channel-rank-bank-row-col.md)
 
-## 这页在回答什么问题
+相关：[存储层次与系统角色](../01-system-basics/memory-hierarchy-as-system.md) · [Cache 的 tag 与 data](../../02-sram/applications/cache-sram-tag-data-arrays.md) · [Cache 与 scratchpad](./cache-vs-scratchpad.md)
 
-一次 cache miss 之后，系统内部到底会发生什么。更具体地说，从 miss 被发现、miss 状态被登记、请求被送到 memory controller、DRAM 返回数据、cache refill 或 writeback 完成，中间哪些环节在共同决定平均延迟、尾延迟和并发能力。
+一次读取在 L1 cache 中未命中，并不意味着处理器马上访问 DRAM。请求可能由下一层 cache 满足，也可能等待同一条 cache line 的填充；只有继续向下查找的部分请求，才会进入内存控制器。
 
-## cache miss 后的请求路径
+本文沿着一次读取，说明 miss 怎样被记录、请求怎样继续向下、数据怎样返回，以及脏数据写回为什么可能影响这条路径。Cache 与 scratchpad 的管理责任比较见相关链接，这里不再重复。
 
-很多关于内存系统的讨论，都会把“cache miss”当成一个自然边界：命中了就快，miss 了就去 DRAM。这种说法虽然方便，但会把最关键的系统行为全都压缩掉。真实系统里，miss 不是一个单点跳转，而是一串状态变化。请求并不是在 miss 的那个时刻”瞬移”到 DRAM；它要经过 miss 记录、合并、排队、映射、调度、返回、refill，甚至可能触发 victim line 的 writeback。这就像网购——你点了”下单”并不意味着包裹瞬间出现在你手里，后面还有仓库拣货、打包、分拣、运输、到站、派送一整条链路，每一步都可能排队或延迟。也就是说，miss 之后真正发生的，是 cache 层与 DRAM 层之间一段完整的协同过程。
+<span id="这页在回答什么问题"></span>
 
-最前面的动作发生在 cache 自己内部。一次访问 miss，首先意味着 tag 检查确认目标 line 不在本地，或者虽有 line 但状态不允许直接服务。此时 cache 不能只是简单地“发一个外存请求”然后忘掉，因为后续可能还有其他访问打到同一 line。于是很多实现会使用某种 miss status holding register，或等价的 miss tracking 结构，记录“这个 line 的 refill 正在路上”。这一步的价值，是把后续打到同一缺失 line 的请求合并起来，而不是让它们都独立冲向 DRAM。常见误解是认为 miss 数量就等于外存事务数量；实际上，miss 合并做得好坏，本身就是系统行为的重要分界点。就像办公室的打印任务——如果 10 个人分别提交了打印同一份文件的请求，聪明的打印队列只会实际打印一份然后复印分发，而不是重复打印 10 次。
+## 1. 先明确：在哪一级 miss？
 
-下一步，请求才真正越过 cache 层边界，进入下层互连与 memory controller。这里开始，cache 看到的“一个 cache line 地址”会被翻译成更细的 DRAM 结构坐标：channel、rank、bank、row、column。于是原本只是一个 miss 的请求，会突然拥有行局部性、bank 冲突、QoS 优先级、refresh 碰撞和总线方向切换这些全新命运。也就是说，cache miss 到了 DRAM 世界，不再只是“慢一点的数据取回”，而是在参与一套完全不同的调度规则。
+**Cache miss 是某一级 cache 对本次请求的判断，不是整套存储系统的最终结果。**例如，L1 miss 后可能 L2 hit；若 L2 也 miss，请求还可能由末级 cache 满足。支持缓存一致性的系统中，数据也可能由其他 cache 的副本提供，具体路径由协议与拓扑决定。
 
-这一步有一个特别重要的认识：cache line 粒度和 DRAM burst / row 结构之间的关系，会直接影响 miss 惩罚。若 cache line 大小、内存 burst 粒度与地址映射配合得好，一次 refill 可以较自然地落在少量连续列访问上；若配合得差，甚至可能触发额外事务拼接或效率损失。也就是说，cache 不是独立于 DRAM 设计的，它的 refill 粒度其实已经在暗中和 DRAM 协议粒度耦合。
+判断一次访问能否在本地完成，也不能只看 tag 是否相同。数据必须有效，状态还要允许本次操作。例如，写请求可能已经找到副本，却仍需取得写权限；这不一定需要重新从 DRAM 取数。[gem5 的内存系统说明](https://www.gem5.org/documentation/general_docs/memory_system/gem5_memory_system/)给出了这类权限升级不携带数据的具体模型例子，不能把该模型的全部规则直接当成所有处理器的规则。
 
-一个简化的 miss 路径可以写成：
+下面采用一个简化边界：地址已完成必要的翻译和权限检查，讨论可缓存的普通读取；所需副本确实不在当前 cache 中。暂不展开一致性事务。
 
-```text
-Load miss
-  -> tag miss detected
-  -> allocate miss status entry
-  -> send line request downstream
-  -> MC maps addr to channel/bank/row/col
-  -> DRAM command sequence executes
-  -> burst data returns
-  -> line refill into cache
-  -> waiting core/requesters wake up
-```
+<span id="cache-miss-后的请求路径"></span>
 
-如果这是一个 clean miss，路径可能到这里为止；但很多现实系统还要再叠一层：若 cache 需要为新 line 腾位置，而 victim line 是 dirty，则 miss 处理可能伴随 writeback。于是路径变成：
+## 2. 缺失请求怎样被记住？
 
-```text
-miss + dirty victim
-  -> maybe issue writeback of old line
-  -> issue refill of new line
-  -> serialize or overlap depending on implementation
-```
+请求发出后，cache 还需要知道：哪条 line 正在等待、哪些读取在等它，以及数据回来后应交给谁。非阻塞 cache 常用 **MSHR（Miss Status Holding Register，缺失状态跟踪项）**或等价结构保存这些信息。[gem5 Classic Caches](https://www.gem5.org/documentation/general_docs/memory_system/classic_caches/)就是使用 MSHR 和写缓冲的一种实现模型。
 
-这就说明了一点：一次 miss 的代价不只是”去外面读回来”，还可能包含”先把里面脏的送出去”。这就像酒店入住——如果房间满了，新客人要等的不只是”分配房间”的时间，还可能包括前一位客人退房、清洁打扫的时间。如果 writeback 不能很好隐藏或合并，尾延迟会明显恶化。
+若后续请求访问同一条尚未返回的 line，并且操作类型、权限和顺序要求允许，cache 可以把它登记为同一笔缺失事务的等待者。这叫**请求合并**。它减少的是重复的下游请求，不是把多个处理器读取变成同一条指令。
 
-从平均性能角度看，cache 和 DRAM 协同最重要的一个作用，是把许多原本会直接打到 DRAM 的小粒度访问，汇聚成更少、更块状、更可调度的外存事务。cache 命中把访问截住；cache miss 则把需求放大成 line granularity。对 DRAM 来说，这通常是有利的，因为 line refill 更接近 burst 友好的事务形状。于是 cache 不只是降低访问次数，也在替 DRAM 塑形请求流。常见误解是以为 cache 只通过“命中率”影响外存；更准确地说，它同时在影响外存看到的请求粒度、顺序和并发形态。
+考虑以下教学例子：
 
-但 cache 也可能把问题变复杂。比如多个 core 或多个 miss stream 同时触发大量 line refill，下游 controller 看到的就会是一串密集的 line-sized 读请求；若这些请求地址分布很差，row conflict 和 bank hotspot 依然会出现。再比如 write-back cache 在流量激烈变化时，可能把 demand read 和 dirty writeback 混在一起，放大写读切换压力。因此，cache 不是“天然把一切都整理好”的上游模块，而是一个可能改善、也可能重塑下游压力分布的中间层。
+- 一条 cache line 为 64 B，地址按 64 B 对齐；该 line 初始不在 L1 中。
+- A 读取 `0x1000` 处的 4 B，随后 B 读取 `0x1004` 处的 4 B。
+- B 到达时 A 的填充仍在进行，跟踪结构有足够空间；没有写入或一致性干扰。
+- L1 支持合并这两笔读取，下一级一次返回完整的 64 B。
 
-这也是为什么 `hit-under-miss`、`miss-under-miss` 能力会直接决定系统感觉“卡不卡”。若 cache 可以在一个 miss 尚未返回时继续服务其他命中，甚至继续跟踪多个并行 miss，那么前台 stall 会被明显削弱；若 cache 结构太保守，一个 miss 就把整个层级锁住，那么即使 DRAM 带宽本身不错，系统也会显得迟钝。换句话说，miss 之后发生了什么，不只是 DRAM 侧的问题，cache 自己的并发缺失承受能力也同样关键。
+| 时刻 | L1 做什么 | L1 向下一级发出的读取 |
+| --- | --- | --- |
+| A 到达 | 分配缺失跟踪项，登记 A | 请求包含 `0x1000` 的 line |
+| B 到达，填充未完成 | 找到已有跟踪项，登记 B | 不再重复请求同一 line |
+| 数据可用 | 分别向 A、B 返回所需的 4 B | 本例共一次 64 B 填充 |
 
-多级 cache 场景下，这条路径还会继续分层。L1 miss 不一定直接去 DRAM，可能先去 L2/L3；每一级都可能 hit、miss、merge、writeback。于是从核心角度看，“一次 miss”其实常常是一路沿层次树向下传播，直到某一级终于命中或真正打到主存。这个传播过程本身会决定端到端延迟分布：某些请求只在 L2 miss、很快被 LLC 命中；某些请求则一路穿透到 MC；还有些请求在 LLC 也 miss，并与其他 core 的流量互相干扰。也就是说，cache-DRAM coordination 从来不是单层边界，而是一条跨多层层次的接力。
+本例有两笔处理器读取，却只有一笔 L1 下游填充。它是否最终访问 DRAM，还要看下一层的状态。统计 miss 时也应注明计数口径：某些计数器将合并请求单独分类，不能仅凭一个名为“miss count”的数字推算外存事务数。
 
-从系统调优角度看，这条链里最常见的几个破口通常是：
+跟踪空间是有限的。新 line 需要跟踪项时，若没有空位，就必须等待或重试。同一跟踪项可容纳的等待者也可能有限。因此，即使数据总线暂时空闲，cache 仍可能无法接纳新的缺失请求。
 
-- miss 合并能力不足，导致同一 line 重复下发
-- refill / writeback 粒度与下游 burst 粒度不匹配
-- writeback 与 demand read 相撞，放大 write drain 压力
-- cache 允许的并行 miss 数太少，导致前台容易被一两个慢 miss 拖死
-- 地址映射让大量 refill 集中撞到少数 bank/channel
+## 3. 请求什么时候真正到达 DRAM？
 
-这说明“miss penalty”不是一个单常数，而是由 cache 设计、controller 设计和 DRAM 结构共同生成的。
+请求沿层次向下传播，每一级都可能命中、合并或排队。确实需要主存数据时，内存控制器才把物理地址映射到 channel、rank、bank、row 和 column，并按资源状态与时序约束安排命令。
 
-如果把这页的结论压回系统层，就是这样一句话：cache 和 DRAM 不是各干各的，cache 一方面在过滤外存请求，另一方面也在塑形外存请求；DRAM 则一方面在为 cache miss 兜底，另一方面也会通过自己的调度与冲突规律反过来决定 cache miss 最终看起来有多痛。真正的系统行为，正是这两个层次之间来回耦合的结果。
+这里有两种不同的“地址处理”：
 
-## 一句话理解
+- **地址翻译**：把虚拟地址转换为物理地址，并处理相应的访问权限。TLB 与页表遍历属于这条路径；它不等于 cache miss。
+- **DRAM 地址映射**：用物理地址选择内存通道及 DRAM 内部位置。它不负责把虚拟地址翻译为物理地址。
 
-一次 cache miss 不是“去 DRAM 读一下”这么简单，而是一次跨 cache tracking、controller 调度、DRAM 命令执行、refill/writeback 协同的完整事务链。
+实际处理器可以让部分翻译与 cache 查找重叠。本文从翻译后的边界开始，不规定它们必须串行。控制器的映射细节见[地址映射](../../04-dram-controller/address-mapping-channel-rank-bank-row-col.md)，DRAM 的状态差异见[SRAM 与 DRAM 访问模式](./sram-vs-dram-access-pattern.md)。
+
+一条确实走到 DRAM 的简化路径如下。各行表示职责，不表示每一步固定用一个周期，也不要求不同请求按同一顺序完成。
+
+| 环节 | 主要动作 | 可能等待什么 |
+| --- | --- | --- |
+| 当前 cache | 跟踪缺失、合并兼容请求 | 跟踪项、等待者空间 |
+| 下层 cache 与互连 | 继续查找或转发请求 | 队列、链路、访问端口 |
+| 内存控制器 | 地址映射、选择可执行命令 | bank 状态、时序、刷新、读写切换 |
+| DRAM 与返回通路 | 传输数据并返回请求方 | 数据总线、返回队列、片上链路 |
+| 当前 cache | 接收填充、更新状态、响应等待者 | 填充缓冲、阵列写端口、响应端口 |
+
+Cache line、DRAM burst 和 DRAM row 不是同一个单位。一条 line 需要多少个 burst，要看接口宽度、传输长度及具体组织；一个 row 通常可以服务多次列访问。不能把“一次 line 填充”直接等同于“一次激活行”。
+
+## 4. 数据返回，是否就算完成？
+
+**填充（refill）**是把取得的数据放入 cache 并建立可用状态。等待者何时能继续执行，取决于实现的完成条件：有的路径等待整条 line 可用；有的路径允许所需数据先返回，再继续填充其余部分。
+
+因此，“数据到达接口”“cache 更新完成”和“处理器拿到所需数据”可以是不同事件。分析延迟时应先选择起止边界，不要把所有步骤的名称都当成必须串行相加的时间。
+
+若新 line 需要替换旧 line，还要处理被替换的数据：
+
+- **干净副本**：在满足协议与替换条件后，通常无需写回数据；某些系统仍需通知其他管理结构。
+- **脏副本**：对 write-back cache，它包含尚未传播到下一级的修改，不能直接丢弃。系统需要保留这些数据并安排写回。
+
+[MIT 的 cache 教学资料](https://ocw.mit.edu/courses/6-004-computation-structures-spring-2017/pages/c14/c14s1/)用 dirty bit 说明了 write-back 替换时的基本责任。多级系统的写回目的地可以是下一级 cache，不一定直接是 DRAM。
+
+写回也不一定全部位于新读取的关键路径上。若有空闲写缓冲，旧数据可以先转移到缓冲中，再与新数据填充重叠；若缓冲已满，替换可能停住。即使能够重叠，写回仍会占用下游带宽，并与需求读取争用资源。
+
+## 5. 相同 miss 数，为什么等待仍会不同？
+
+两个系统都发生十次 miss，执行时间未必接近。至少要区分三类因素：
+
+1. **请求之间是否独立。**连续指针追踪必须等前一笔数据返回，才知道下一笔地址；多个独立数组的读取则可能同时推进。
+2. **cache 能否继续接纳请求。**Hit-under-miss 表示部分命中可以在已有 miss 未完成时继续服务；miss-under-miss 表示可以跟踪多个未完成的 miss。两者都受端口、队列和下游资源约束，并不保证任何请求都能并行。
+3. **下游是否有可用资源。**更多并发请求可能利用空闲 bank，也可能集中在同一 bank 或返回链路上继续排队。
+
+Cache 会过滤命中请求，也会把小粒度读取变成 line 填充，并产生写回或预取流量。因而外存看到的是经过 cache 改变后的请求流，而不是处理器原始访问序列。是否减少搬运，要看取回的数据有多少真正被使用，具体计数例子见[局部性与数据搬运](../01-system-basics/locality-working-set-data-movement.md)。
+
+<span id="一句话理解"></span>
+
+核心结论是：**miss penalty 是请求在整条路径上经历的结果，不只是 DRAM 的一个固定延迟。**平均访问延迟也不能直接相加为程序停顿时间，因为请求与计算可能重叠。
 
 ## 建模启示
 
-在模型里，cache miss 不应直接映射成一个固定的 `main_memory_latency`。更合理的做法是把 miss 建成一类带状态的事务，至少显式保留：`miss merge / outstanding miss slots / refill latency / dirty writeback interaction` 这几项。否则模型会严重低估多流 miss 和写回流量对外存的再塑形作用。
+先选择观察边界，再保留能解释目标问题的状态：
 
-一个最小可用的抽象草图可以写成：
+| 要解释的问题 | 至少需要观察什么 |
+| --- | --- |
+| 为什么下游请求少于上游读取？ | 每级命中、同 line 合并、填充粒度 |
+| 为什么空闲带宽没有被利用？ | 请求依赖、缺失跟踪项、接纳与重试 |
+| 为什么偶尔特别慢？ | 队列占用、脏替换、写缓冲、共享路径争用 |
+| 为什么地址布局改变后性能变化？ | 下游映射、bank 与行状态、请求顺序 |
 
-```text
-CacheMissModel {
-  line_bytes: int
-  max_outstanding_misses: int
-  merge_same_line_miss: bool
-  writeback_required_on_dirty_evict: bool
-}
-```
+一个粗略估算可以使用在明确条件下校准的 miss 延迟分布。但若要比较 MSHR 数量、合并策略或写回缓冲，就应显式记录相关资源的分配和释放；否则改变参数后，模型没有对应的机制可以产生差异。
 
-配合事件流：
+最小事件记录可以包含：请求到达、分配或合并缺失项、下游接纳、数据返回、响应等待者、释放跟踪项。脏替换另记写回入队与完成。事件之间的先后关系由目标实现决定，不应默认全部串行。
 
-```text
-event CacheMissDetect(req_id, line_addr)
-event MissEntryAllocate(line_addr)
-event RefillRequestSend(line_addr)
-event RefillDataReturn(line_addr)
-event CacheRefillCommit(line_addr)
-event DirtyVictimWriteback(victim_line_addr)
-```
+## 接下来怎么读？
 
-如果只关心平均 miss penalty，可以把下游 controller/DRAM 延迟折成一个经验分布；但只要你要分析多线程争用、MLP、tail latency 或 cache line 粒度对外存压力的影响，`max_outstanding_misses` 和 `merge_same_line_miss` 这类字段就必须显式存在。因为很多“内存慢”的感觉，实际上是 miss 并发管理在放大或缩小 DRAM 的真实代价。
+- [Cache 与 scratchpad](./cache-vs-scratchpad.md)：比较自动填充与显式数据放置的责任。
+- [SRAM 与 DRAM 访问模式](./sram-vs-dram-access-pattern.md)：看请求落到存储资源后，状态与冲突怎样影响服务。
+- [地址映射](../../04-dram-controller/address-mapping-channel-rank-bank-row-col.md)：看物理地址怎样分配到 channel、bank 和 row。
+- [带宽与延迟](../03-performance/bandwidth-vs-latency-fundamental.md)：区分单笔响应、并发和整体吞吐。

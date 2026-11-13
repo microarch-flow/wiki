@@ -85,6 +85,10 @@ Cache 需要用于查找和管理副本的结构，例如 tag、命中判断和�
 
 ## 接下来怎么读？
 
+本篇讨论管理责任；下一步可用具体地址序列检验这些安排：
+
+- [SRAM 与 DRAM 访问模式](./sram-vs-dram-access-pattern.md)：看 bank 冲突、行状态和访问顺序怎样改变等待。
+- [多通道与 NUMA](./numa-multi-channel-multi-socket.md)：看数据放置扩展到通道和节点后的影响。
 - [Cache 与 DRAM 协同](./cache-dram-coordination.md)：看 miss、请求合并、填充和写回。
 - [Cache 的 tag 与 data](../../02-sram/applications/cache-sram-tag-data-arrays.md)：看命中判断和 SRAM 阵列组织。
 - [局部性与数据搬运](../01-system-basics/locality-working-set-data-movement.md)：看访问序列、工作集和跨层流量。

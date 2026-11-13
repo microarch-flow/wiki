@@ -91,8 +91,19 @@ RAM 是 random-access memory，通常译为随机存取存储器：它允许根�
 本专题按四类问题组织文章：
 
 - **系统基础**：从[存储系统为何难设计](./01-system-basics/problem-statement.md)、[RAM 分类与命名](./01-system-basics/taxonomy.md)和[存储层次与系统角色](./01-system-basics/memory-hierarchy-as-system.md)建立共同概念。
-- **访问路径与数据管理**：阅读 [Cache 与 DRAM 协同](./02-access-paths/cache-dram-coordination.md)和 [Cache 与 scratchpad](./02-access-paths/cache-vs-scratchpad.md)，比较自动填充与显式放置。
+- **访问路径与数据管理**：沿着下面的阅读路线，依次看缺失请求、数据放置、访问冲突和跨节点路径。
 - **性能分析与瓶颈**：用[带宽与延迟](./03-performance/bandwidth-vs-latency-fundamental.md)、[峰值与有效带宽](./03-performance/effective-bandwidth-vs-peak.md)分析路径表现。
 - **NPU 数据路径案例**：从 [AI 芯片内存架构](./04-npu-case/README.md)进入，再按需查看局部 buffer 和片上带宽。
 
 想深入一颗 SRAM 单元，可阅读 [6T SRAM cell](../02-sram/foundations/6t-cell-bistable-storage.md)；想研究 DRAM 访问，可转到 [DRAM 基础](../03-dram/foundations/README.md)和 [Memory Controller](../04-dram-controller/README.md)。原 RAM 章节的阅读路线见[学习路径与章节依赖](../reading-and-reference/01-reading/learning-roadmap.md)。
+
+### 访问路径与数据管理：按哪条线读？
+
+这一类文章从“数据在哪里”走到“请求怎样得到数据”。先假设读者已了解存储层次、局部性和 SRAM/DRAM 的基本区别；不在这里重复器件内部结构。
+
+1. [Cache 与 DRAM 协同](./02-access-paths/cache-dram-coordination.md)：本层 miss 后，请求怎样被跟踪、合并、向下传递并完成？重点是一次请求的生命周期，不把每次 miss 都当成 DRAM 事务。
+2. [Cache 与 scratchpad](./02-access-paths/cache-vs-scratchpad.md)：数据由谁安排进入本地，什么时候可读、可覆盖？比较自动副本管理与显式放置，不重复展开 cache 的 miss 流程。
+3. [SRAM 与 DRAM 访问模式](./02-access-paths/sram-vs-dram-access-pattern.md)：数据放置确定后，同一批地址怎样造成 bank 冲突、行复用或行切换？用访问序列看机制，而不再比较存储单元。
+4. [多通道与 NUMA](./02-access-paths/numa-multi-channel-multi-socket.md)：路径扩到多个通道和节点后，地址、页面和线程放在哪里，怎样改变实际访问路径？
+
+这四篇覆盖本专题的主要系统问题，但不代替专门的协议和编程模型说明。需要安排显式搬运时，转到 [DMA 的地址、描述符与 burst](../../microarchitecture/DMA/wiki/02-fundamentals/address-descriptor-burst.md)及 [DMA 同步与一致性](../../microarchitecture/DMA/wiki/04-programming-model/synchronization-errors.md)；需要追踪物理地址落到哪个 channel、bank 和 row 时，转到[地址映射](../04-dram-controller/address-mapping-channel-rank-bank-row-col.md)。路径清楚后，再进入“性能分析与瓶颈”，区分访问响应时间、程序等待和有效带宽。
