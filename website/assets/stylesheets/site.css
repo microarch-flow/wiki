@@ -34,7 +34,9 @@ body { background: var(--paper); }
 .md-typeset table:not([class]) { background: var(--paper); border-color: var(--line); }
 .md-typeset table:not([class]) th { background: #eaf1e7; color: var(--ink); }
 .md-typeset code, .md-typeset pre > code { border-radius: .3rem; }
-.md-typeset blockquote { padding: .05rem .9rem; border-left: .18rem solid var(--note-border); border-radius: .2rem; background: var(--note-surface); color: var(--note-ink); }
+.md-typeset blockquote { padding: .05rem .9rem; border-radius: .2rem; background: var(--note-surface); color: var(--note-ink); }
+[dir="ltr"] .md-typeset blockquote { padding-left: .9rem; border-left: .18rem solid var(--note-border); }
+[dir="rtl"] .md-typeset blockquote { padding-right: .9rem; border-right: .18rem solid var(--note-border); }
 .md-footer { background: #163a32; }
 
 @media screen and (max-width: 76.234375em) {
