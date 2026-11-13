@@ -33,6 +33,28 @@ def page_url(relative):
 
 
 class GeneratedNavigationTests(unittest.TestCase):
+    def test_series_covers_have_accessible_images_and_working_links(self):
+        pages = (
+            "storage/index.html", "interconnect/index.html", "external/workload-wiki/index.html",
+            "series/inference-runtime/index.html", "series/chip-architectures/index.html",
+            "series/chip-development/index.html",
+        )
+        images = set()
+        for relative in pages:
+            with self.subTest(page=relative):
+                html = (SITE / relative).read_text(encoding="utf-8")
+                figure = re.search(r'<figure class="series-cover-art">(.*?)</figure>', html, re.DOTALL)
+                self.assertIsNotNone(figure)
+                image = re.search(r'<img\s+src="([^"]+)"\s+alt="([^"]+)"', figure.group(1))
+                self.assertIsNotNone(image)
+                self.assertTrue(image.group(2).strip())
+                target = urlsplit(urljoin(page_url(Path(relative)), unescape(image.group(1)))).path.lstrip("/")
+                self.assertTrue((SITE / target).is_file(), target)
+                images.add(target)
+                self.assertIn('href="#series-home-content"', html)
+                self.assertIn('id="series-home-content"', html)
+        self.assertEqual(len(images), len(pages))
+
     def test_storage_topics_cover_sources_once_and_expose_hbm(self):
         docs = SITE.parent / "docs"
         topics = grouped_original_topics(docs, STORAGE)

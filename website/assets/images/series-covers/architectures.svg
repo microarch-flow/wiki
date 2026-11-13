@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 520" role="img" aria-labelledby="title desc">
+  <title id="title">芯片架构的不同组织方式</title>
+  <desc id="desc">以三个抽象芯片示意对比计算阵列、片上存储和互连的不同组织方式。</desc>
+  <defs><pattern id="grid" width="28" height="28" patternUnits="userSpaceOnUse"><path d="M28 0H0V28" fill="none" stroke="#d6e6da"/></pattern></defs>
+  <rect width="760" height="520" rx="24" fill="#e8f0e8"/>
+  <rect x="20" y="20" width="720" height="480" rx="18" fill="url(#grid)"/>
+  <text x="74" y="72" fill="#557b6a" font-family="sans-serif" font-size="15" letter-spacing="2">ARCHITECTURES / ORGANIZATION</text>
+  <rect x="64" y="112" width="632" height="302" rx="22" fill="#123d35"/>
+  <rect x="77" y="125" width="606" height="276" rx="15" fill="#174b40" stroke="#8db3a1" stroke-opacity=".5"/>
+  <rect x="102" y="161" width="165" height="196" rx="10" fill="#246052" stroke="#8bb9a5" stroke-opacity=".65"/>
+  <rect x="118" y="181" width="133" height="94" rx="6" fill="#d6efa1"/>
+  <path d="M130 198h109M130 216h109M130 234h109M130 252h109M150 190v75M174 190v75M198 190v75M222 190v75" stroke="#99bc70"/>
+  <rect x="118" y="291" width="133" height="25" rx="5" fill="#8bb9a5"/>
+  <text x="184" y="339" text-anchor="middle" fill="#dcebd6" font-family="sans-serif" font-size="18" font-weight="700" letter-spacing="1.2">ARRAY</text>
+  <rect x="297" y="161" width="165" height="196" rx="10" fill="#246052" stroke="#8bb9a5" stroke-opacity=".65"/>
+  <g fill="#8bb9a5"><rect x="314" y="181" width="55" height="51" rx="5"/><rect x="390" y="181" width="55" height="51" rx="5"/><rect x="314" y="253" width="55" height="51" rx="5"/><rect x="390" y="253" width="55" height="51" rx="5"/></g>
+  <path d="M369 206h21M369 278h21M341 232v21M417 232v21" stroke="#d6efa1" stroke-width="3"/>
+  <g fill="#d6efa1"><rect x="324" y="191" width="18" height="12" rx="2"/><rect x="400" y="191" width="18" height="12" rx="2"/><rect x="324" y="263" width="18" height="12" rx="2"/><rect x="400" y="263" width="18" height="12" rx="2"/></g>
+  <text x="379" y="339" text-anchor="middle" fill="#dcebd6" font-family="sans-serif" font-size="18" font-weight="700" letter-spacing="1.2">TILES</text>
+  <rect x="492" y="161" width="165" height="196" rx="10" fill="#246052" stroke="#8bb9a5" stroke-opacity=".65"/>
+  <rect x="510" y="181" width="128" height="127" rx="7" fill="#8bb9a5"/>
+  <rect x="523" y="194" width="45" height="37" rx="4" fill="#d6efa1"/><rect x="580" y="194" width="45" height="37" rx="4" fill="#d6efa1"/>
+  <rect x="523" y="247" width="102" height="18" rx="4" fill="#387666"/><rect x="523" y="275" width="102" height="18" rx="4" fill="#e2bd90"/>
+  <text x="574" y="339" text-anchor="middle" fill="#dcebd6" font-family="sans-serif" font-size="18" font-weight="700" letter-spacing="1.2">INTEGRATION</text>
+  <text x="76" y="468" fill="#557b6a" font-family="sans-serif" font-size="19" letter-spacing="1.2">COMPUTE · MEMORY · INTERCONNECT</text>
+  <circle cx="655" cy="462" r="7" fill="#db9d77"/><circle cx="678" cy="462" r="7" fill="#b3ca9d"/>
+</svg>

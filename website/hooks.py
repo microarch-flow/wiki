@@ -32,6 +32,64 @@ TOPICS = (
     ("HBF", "HBF · 高带宽闪存"),
 )
 
+# Illustrations belong to series landing pages; article sources remain usable
+# outside the site and retain their original headings and links.
+SERIES_COVERS = {
+    "storage.md": (
+        "storage.svg", "存储系统 / 系列首页", "计算、缓存、控制器与 DRAM",
+        "计算请求经过 cache 和控制器访问 DRAM，数据沿路径返回。", "",
+    ),
+    "interconnect.md": (
+        "interconnect.svg", "芯片与系统互连 / 系列首页", "端点、片上网络与链路",
+        "请求从一个端点经过片上互连与链路，到达另一个端点。", "",
+    ),
+    "external/workload-wiki/README.md": (
+        "workload.svg", "算法与模型 / 系列首页", "输入、模型、输出与计算需求",
+        "输入经过模型得到输出，并可进一步分析计算和数据需求。", "",
+    ),
+    "series/inference-runtime/README.md": (
+        "inference.svg", "推理运行时 / 系列首页", "请求、调度、Prefill、Decode 与 KV cache",
+        "推理请求经过调度、预填充和解码，执行时使用 KV cache。",
+        "从推理阶段、请求调度和 KV cache 出发，理解模型如何提供服务。",
+    ),
+    "series/chip-architectures/README.md": (
+        "architectures.svg", "芯片架构实例 / 系列首页", "计算、存储和互连的不同组织",
+        "三个抽象示意展示计算阵列、片上存储与互连的不同组织。", "",
+    ),
+    "series/chip-development/README.md": (
+        "development.svg", "芯片开发与实现 / 系列首页", "定义、设计、验证、制造与测试",
+        "芯片开发从产品定义、设计和验证，延伸到制造、测试和交付。", "",
+    ),
+}
+
+
+def render_series_cover(html, page, docs):
+    """Frame the existing first heading and introduction with a themed figure."""
+    cover = SERIES_COVERS.get(page.file.src_uri)
+    if cover is None:
+        return html
+    match = re.match(r"\s*(<h1\b[^>]*>.*?</h1>)\s*(<p(?:\s[^>]*)?>.*?</p>)?", html, re.DOTALL)
+    if not match:
+        return html
+    asset, label, caption, alt, fallback = cover
+    heading, lead = match.group(1), match.group(2)
+    intro = lead or (f"<p>{escape(fallback)}</p>" if fallback else "")
+    source = get_relative_url(f"assets/images/series-covers/{asset}", page.url)
+    version = sha256((docs / "assets" / "images" / "series-covers" / asset).read_bytes()).hexdigest()[:12]
+    source = f"{source}?v={version}"
+    return (
+        '<section class="series-cover">'
+        '<div class="series-cover-copy">'
+        f'<p class="series-cover-label"><span aria-hidden="true"></span>{escape(label)}</p>'
+        f'{heading}{intro}'
+        '<a class="series-cover-action" href="#series-home-content">浏览系列内容 <span aria-hidden="true">↘</span></a>'
+        '</div><figure class="series-cover-art">'
+        f'<img src="{escape(source, quote=True)}" alt="{escape(alt, quote=True)}">'
+        f'<figcaption><span>FIG. 01</span> {escape(caption)} · 概念示意</figcaption>'
+        '</figure></section>'
+        f'<div class="series-home-content" id="series-home-content">{html[match.end():]}</div>'
+    )
+
 
 def read_series(root, registry=None):
     """Read the registry staged together with the site's source documents."""
@@ -534,6 +592,7 @@ def on_page_markdown(markdown, page, **kwargs):
 
 def on_page_content(html, page, **kwargs):
     """Add article breadcrumbs and scope customized article layouts."""
+    html = render_series_cover(html, page, Path(kwargs["config"].docs_dir))
     if page.file.src_uri == "electrical-timing-foundations.md":
         html = f'<div class="timing-article">\n{html}\n</div>'
     elif page.file.src_uri == "RAM/wiki/01-overview/README.md":

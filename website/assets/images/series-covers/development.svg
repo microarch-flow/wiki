@@ -1,0 +1,34 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 520" role="img" aria-labelledby="title desc">
+  <title id="title">芯片开发与实现流程</title>
+  <desc id="desc">从产品定义、设计和验证，到制造、测试和交付的简化流程。</desc>
+  <defs>
+    <pattern id="grid" width="28" height="28" patternUnits="userSpaceOnUse"><path d="M28 0H0V28" fill="none" stroke="#d6e6da"/></pattern>
+    <marker id="arrow" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0L8 4L0 8Z" fill="#d6efa1"/></marker>
+  </defs>
+  <rect width="760" height="520" rx="24" fill="#e8f0e8"/>
+  <rect x="20" y="20" width="720" height="480" rx="18" fill="url(#grid)"/>
+  <text x="74" y="72" fill="#557b6a" font-family="sans-serif" font-size="15" letter-spacing="2">CHIP DEVELOPMENT / LIFECYCLE</text>
+  <rect x="64" y="112" width="632" height="302" rx="22" fill="#123d35"/>
+  <rect x="77" y="125" width="606" height="276" rx="15" fill="#174b40" stroke="#8db3a1" stroke-opacity=".5"/>
+  <path d="M232 203H290M428 203H486M553 240v29H173v20M232 325H290M428 325H486" fill="none" stroke="#cfe9a5" stroke-width="3" marker-end="url(#arrow)"/>
+  <rect x="99" y="166" width="133" height="73" rx="8" fill="#d6efa1"/>
+  <path d="M115 184h51M115 197h83M115 210h70" stroke="#96ba70" stroke-width="3" stroke-linecap="round"/>
+  <text x="165" y="229" text-anchor="middle" fill="#173e34" font-family="sans-serif" font-size="18" font-weight="700" letter-spacing="1.3">DEFINE</text>
+  <rect x="295" y="166" width="133" height="73" rx="8" fill="#8bb9a5"/>
+  <path d="M311 184h99M311 197h68M311 210h80" stroke="#427968" stroke-width="3" stroke-linecap="round"/>
+  <text x="361" y="229" text-anchor="middle" fill="#173e34" font-family="sans-serif" font-size="18" font-weight="700" letter-spacing="1.3">DESIGN</text>
+  <rect x="491" y="166" width="133" height="73" rx="8" fill="#387666"/>
+  <path d="M508 184l7 7 13-15M538 188h68M508 208l7 7 13-15M538 212h52" fill="none" stroke="#b4d6b9" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+  <text x="557" y="229" text-anchor="middle" fill="#e7f1df" font-family="sans-serif" font-size="18" font-weight="700" letter-spacing="1.3">VERIFY</text>
+  <rect x="99" y="289" width="133" height="73" rx="8" fill="#8bb9a5"/>
+  <circle cx="165" cy="312" r="16" fill="none" stroke="#427968" stroke-width="3"/><path d="M153 312h24M165 300v24" stroke="#427968" stroke-width="2"/>
+  <text x="165" y="350" text-anchor="middle" fill="#173e34" font-family="sans-serif" font-size="18" font-weight="700" letter-spacing="1.3">BUILD</text>
+  <rect x="295" y="289" width="133" height="73" rx="8" fill="#387666"/>
+  <path d="M315 315h17l8-12 10 24 9-16h45" fill="none" stroke="#b4d6b9" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+  <text x="361" y="350" text-anchor="middle" fill="#e7f1df" font-family="sans-serif" font-size="18" font-weight="700" letter-spacing="1.3">TEST</text>
+  <rect x="491" y="289" width="133" height="73" rx="8" fill="#e2bd90"/>
+  <path d="M531 305h52v25h-52zM531 314h52M557 305v25" fill="none" stroke="#ad825b" stroke-width="2.5"/>
+  <text x="557" y="350" text-anchor="middle" fill="#403b2e" font-family="sans-serif" font-size="18" font-weight="700" letter-spacing="1.3">DELIVER</text>
+  <text x="76" y="468" fill="#557b6a" font-family="sans-serif" font-size="19" letter-spacing="1.2">DESIGN · MANUFACTURE · VALIDATE</text>
+  <circle cx="655" cy="462" r="7" fill="#db9d77"/><circle cx="678" cy="462" r="7" fill="#b3ca9d"/>
+</svg>

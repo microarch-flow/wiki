@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 520" role="img" aria-labelledby="title desc">
+  <title id="title">算法与模型的输入输出</title>
+  <desc id="desc">输入经过模型得到输出，并可进一步分析计算、数据和工作负载。</desc>
+  <defs>
+    <pattern id="grid" width="28" height="28" patternUnits="userSpaceOnUse"><path d="M28 0H0V28" fill="none" stroke="#d6e6da"/></pattern>
+    <marker id="arrow" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0L8 4L0 8Z" fill="#d6efa1"/></marker>
+  </defs>
+  <rect width="760" height="520" rx="24" fill="#e8f0e8"/>
+  <rect x="20" y="20" width="720" height="480" rx="18" fill="url(#grid)"/>
+  <text x="74" y="72" fill="#557b6a" font-family="sans-serif" font-size="15" letter-spacing="2">ALGORITHMS / MODEL TO WORKLOAD</text>
+  <rect x="64" y="112" width="632" height="302" rx="22" fill="#123d35"/>
+  <rect x="77" y="125" width="606" height="276" rx="15" fill="#174b40" stroke="#8db3a1" stroke-opacity=".5"/>
+  <rect x="103" y="176" width="125" height="121" rx="9" fill="#d6efa1"/>
+  <g fill="#99bc70"><rect x="119" y="192" width="21" height="20" rx="2"/><rect x="145" y="192" width="21" height="20" rx="2"/><rect x="171" y="192" width="21" height="20" rx="2"/><rect x="119" y="217" width="21" height="20" rx="2"/><rect x="145" y="217" width="21" height="20" rx="2"/><rect x="171" y="217" width="21" height="20" rx="2"/></g>
+  <text x="165" y="277" text-anchor="middle" fill="#173e34" font-family="sans-serif" font-size="19" font-weight="700" letter-spacing="1.4">INPUT</text>
+  <rect x="298" y="156" width="164" height="159" rx="10" fill="#387666"/>
+  <path d="M328 188L380 177L431 188M328 188v40l52 23 51-23v-40M328 228v39l52 22 51-22v-39M380 177v112" fill="none" stroke="#b4d6b9" stroke-width="2.5"/>
+  <circle cx="328" cy="188" r="5" fill="#d6efa1"/><circle cx="380" cy="177" r="5" fill="#d6efa1"/><circle cx="431" cy="188" r="5" fill="#d6efa1"/><circle cx="380" cy="251" r="5" fill="#e2bd90"/>
+  <text x="380" y="301" text-anchor="middle" fill="#edf5df" font-family="sans-serif" font-size="19" font-weight="700" letter-spacing="1.6">MODEL</text>
+  <rect x="532" y="176" width="125" height="121" rx="9" fill="#8bb9a5"/>
+  <path d="M550 201h86M550 218h63M550 235h77" stroke="#427968" stroke-width="5" stroke-linecap="round"/>
+  <text x="594" y="277" text-anchor="middle" fill="#173e34" font-family="sans-serif" font-size="19" font-weight="700" letter-spacing="1.4">OUTPUT</text>
+  <path d="M228 235H291M462 235H525" fill="none" stroke="#d6efa1" stroke-width="3" marker-end="url(#arrow)"/>
+  <rect x="298" y="341" width="164" height="30" rx="6" fill="#e2bd90"/>
+  <text x="380" y="361" text-anchor="middle" fill="#403b2e" font-family="sans-serif" font-size="18" font-weight="700" letter-spacing="1.4">WORKLOAD</text>
+  <path d="M380 315V336" fill="none" stroke="#b4d6b9" stroke-width="2"/>
+  <text x="76" y="468" fill="#557b6a" font-family="sans-serif" font-size="19" letter-spacing="1.2">INPUT · MODEL · COMPUTATION</text>
+  <circle cx="655" cy="462" r="7" fill="#db9d77"/><circle cx="678" cy="462" r="7" fill="#b3ca9d"/>
+</svg>
