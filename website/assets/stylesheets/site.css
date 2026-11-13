@@ -6,6 +6,9 @@
   --paper: #f5f6ef;
   --line: #dce5da;
   --lime: #d6efa1;
+  --note-surface: #e8f0e5;
+  --note-ink: #294f40;
+  --note-border: #6d9c7c;
 }
 
 :root, [data-md-color-scheme="default"] {
@@ -31,8 +34,15 @@ body { background: var(--paper); }
 .md-typeset table:not([class]) { background: var(--paper); border-color: var(--line); }
 .md-typeset table:not([class]) th { background: #eaf1e7; color: var(--ink); }
 .md-typeset code, .md-typeset pre > code { border-radius: .3rem; }
+.md-typeset blockquote { padding: .05rem .9rem; border-left: .18rem solid var(--note-border); border-radius: .2rem; background: var(--note-surface); color: var(--note-ink); }
 .md-footer { background: #163a32; }
 
+@media screen and (max-width: 76.234375em) {
+  .md-sidebar--primary,
+  .md-sidebar--primary .md-nav,
+  .md-sidebar--primary .md-nav__title ~ .md-nav__list { background-color: var(--paper); }
+  .md-sidebar--primary .md-nav__title:not([for="__drawer"]) { background-color: var(--note-surface); color: var(--note-ink); }
+}
 @media screen and (min-width: 60em) {
   .md-sidebar--secondary .md-nav__title { background: var(--paper); box-shadow: 0 0 .4rem .4rem var(--paper); }
 }
@@ -64,7 +74,7 @@ body { background: var(--paper); }
 .md-typeset .site-breadcrumbs [aria-current="page"] { color: #284e3c; font-weight: 700; }
 
 /* Explanatory blocks in RAM articles are not source code. */
-.md-typeset .ram-calculation, .md-typeset .ram-event-sequence { margin: 1.1rem 0; padding: .85rem 1rem; border: 1px solid #cee0ce; border-left: .18rem solid #70a081; border-radius: .35rem; background: #e9f2e7; color: #254d3b; }
+.md-typeset .ram-calculation, .md-typeset .ram-event-sequence { margin: 1.1rem 0; padding: .85rem 1rem; border: 1px solid #cee0ce; border-left: .18rem solid var(--note-border); border-radius: .35rem; background: var(--note-surface); color: var(--note-ink); }
 .ram-calculation { display: flex; flex-direction: column; gap: .3rem; }
 .ram-calculation strong { color: #1d5a3d; }
 .md-typeset .ram-event-sequence { display: flex; flex-wrap: wrap; gap: .3rem .55rem; list-style: none; }
@@ -85,7 +95,7 @@ body { background: var(--paper); }
   .md-typeset .ram-overview-article a.ram-overview-diagram-wide { display: none; }
   .md-typeset .ram-overview-article a.ram-overview-diagram-mobile { display: block; }
 }
-.md-typeset .timing-lede, .md-typeset .ram-problem-lede { padding: .85rem 1rem; border-left: .18rem solid #6d9c7c; border-radius: .2rem; background: #e8f0e5; color: #294f40; font-weight: 600; }
+.md-typeset .timing-lede, .md-typeset .ram-problem-lede { padding: .85rem 1rem; border-left: .18rem solid var(--note-border); border-radius: .2rem; background: var(--note-surface); color: var(--note-ink); font-weight: 600; }
 .timing-journey, .timing-milestones { display: grid; gap: .45rem; margin: 1.3rem 0; }
 .timing-journey { grid-template-columns: repeat(4, minmax(0, 1fr)); }
 .timing-milestones { grid-template-columns: repeat(3, minmax(0, 1fr)); }
@@ -93,7 +103,7 @@ body { background: var(--paper); }
 .timing-journey span, .timing-milestones span { display: block; color: #527c63; font-size: .56rem; font-weight: 700; letter-spacing: .03em; }
 .timing-journey strong, .timing-milestones strong { display: block; margin-top: .2rem; color: #214d3c; font-size: .74rem; }
 .timing-journey small, .timing-milestones small { display: block; margin-top: .15rem; color: #617b69; font-size: .61rem; line-height: 1.6; }
-.timing-equation { display: flex; flex-wrap: wrap; align-items: baseline; gap: .3rem 1.5rem; overflow-x: auto; margin: 1.15rem 0; padding: .8rem 1rem; border: 1px solid #cee0ce; border-left: .18rem solid #70a081; border-radius: .35rem; background: #e9f2e7; color: #1d493a; font-family: Georgia, 'Times New Roman', serif; font-size: .84rem; line-height: 1.7; }
+.timing-equation { display: flex; flex-wrap: wrap; align-items: baseline; gap: .3rem 1.5rem; overflow-x: auto; margin: 1.15rem 0; padding: .8rem 1rem; border: 1px solid #cee0ce; border-left: .18rem solid var(--note-border); border-radius: .35rem; background: var(--note-surface); color: #1d493a; font-family: Georgia, 'Times New Roman', serif; font-size: .84rem; line-height: 1.7; }
 .timing-equation > span { white-space: nowrap; }
 .timing-equation sub, .timing-equation sup { line-height: 0; }
 
