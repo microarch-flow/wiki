@@ -28,9 +28,18 @@ body { background: var(--paper); }
 .md-typeset a { color: #32745e; }
 .md-typeset :is(p, li, td) a:not([class]) { color: #006e80; text-decoration: underline; text-decoration-color: #83b2b8; text-decoration-thickness: .075em; text-underline-offset: .17em; }
 .md-typeset :is(p, li, td) a:not([class]):hover { color: #004d5d; text-decoration-color: currentColor; }
-.md-typeset table:not([class]) { border-color: var(--line); }
+.md-typeset table:not([class]) { background: var(--paper); border-color: var(--line); }
+.md-typeset table:not([class]) th { background: #eaf1e7; color: var(--ink); }
 .md-typeset code, .md-typeset pre > code { border-radius: .3rem; }
 .md-footer { background: #163a32; }
+
+@media screen and (min-width: 60em) {
+  .md-sidebar--secondary .md-nav__title { background: var(--paper); box-shadow: 0 0 .4rem .4rem var(--paper); }
+}
+@media screen and (min-width: 76.25em) {
+  .md-sidebar--primary .md-nav__title,
+  .md-sidebar--primary .md-nav--lifted > .md-nav__list > .md-nav__item--active > .md-nav__link { background: var(--paper); box-shadow: 0 0 .4rem .4rem var(--paper); }
+}
 
 /* Keep the current article distinct from its ancestor sections. */
 .md-sidebar--primary .md-nav__link > .md-ellipsis { display: block; flex: 1 1 auto; min-width: 0; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
@@ -61,8 +70,6 @@ body { background: var(--paper); }
 .md-typeset .ram-event-sequence { display: flex; flex-wrap: wrap; gap: .3rem .55rem; list-style: none; }
 .md-typeset .ram-event-sequence li { display: inline-flex; align-items: center; gap: .55rem; margin: 0; font-weight: 600; }
 .ram-event-sequence li:not(:last-child)::after { content: "→"; color: #739b7c; font-weight: 400; }
-.md-typeset .ram-overview-article table:not([class]) th, .md-typeset .ram-problem-article table:not([class]) th { background: #e3eee1; color: #214d3c; }
-.md-typeset .ram-overview-article table:not([class]) td, .md-typeset .ram-problem-article table:not([class]) td { background: #f8fbf6; }
 .ram-overview-article .ram-flow-node { background: #f8fbf6; }
 .md-typeset .ram-overview-article a.ram-overview-diagram-mobile { display: none; }
 
@@ -78,8 +85,6 @@ body { background: var(--paper); }
   .md-typeset .ram-overview-article a.ram-overview-diagram-wide { display: none; }
   .md-typeset .ram-overview-article a.ram-overview-diagram-mobile { display: block; }
 }
-.md-typeset .timing-article table:not([class]) th { background: #e3eee1; color: #214d3c; }
-.md-typeset .timing-article table:not([class]) td { background: #f8fbf6; }
 .md-typeset .timing-lede, .md-typeset .ram-problem-lede { padding: .85rem 1rem; border-left: .18rem solid #6d9c7c; border-radius: .2rem; background: #e8f0e5; color: #294f40; font-weight: 600; }
 .timing-journey, .timing-milestones { display: grid; gap: .45rem; margin: 1.3rem 0; }
 .timing-journey { grid-template-columns: repeat(4, minmax(0, 1fr)); }
