@@ -59,6 +59,7 @@ body { background: var(--paper); }
 .md-typeset .ram-overview-article table:not([class]) td, .md-typeset .ram-problem-article table:not([class]) td { background: #f8fbf6; }
 .md-typeset .ram-overview-article :not(pre) > code, .md-typeset .ram-problem-article :not(pre) > code { background: #e8f0e5; color: #294f40; }
 .ram-overview-article .ram-flow-node { background: #f8fbf6; }
+.md-typeset .ram-overview-article a.ram-overview-diagram-mobile { display: none; }
 
 /* Reading layout for the explanatory articles. */
 .md-typeset .timing-article, .md-typeset .ram-problem-article { max-width: 48rem; margin-bottom: 4rem; }
@@ -69,6 +70,8 @@ body { background: var(--paper); }
 @media screen and (max-width: 40em) {
   .md-typeset .ram-problem-article a.ram-diagram-wide { display: none; }
   .md-typeset .ram-problem-article a.ram-diagram-mobile { display: block; }
+  .md-typeset .ram-overview-article a.ram-overview-diagram-wide { display: none; }
+  .md-typeset .ram-overview-article a.ram-overview-diagram-mobile { display: block; }
 }
 .md-typeset .timing-article table:not([class]) th { background: #e3eee1; color: #214d3c; }
 .md-typeset .timing-article table:not([class]) td { background: #f8fbf6; }
@@ -311,7 +314,8 @@ body { background: var(--paper); }
 .ram-flow-node span { margin-top: .18rem; color: #829687; font-size: .52rem; }
 .ram-flow-node.active { border-color: #81a986; background: #e4f2cf; box-shadow: 0 0 0 3px #b6d8a433; animation: ram-flow-focus 1.8s ease-in-out infinite; }
 @keyframes ram-flow-focus { 50% { box-shadow: 0 0 0 5px #b6d8a455; } }
-.ram-flow-connector { align-self: center; color: #80a88a; font-size: .85rem; line-height: 1; }
+.ram-flow-connector { align-self: center; color: #80a88a; font-size: .85rem; line-height: 1; opacity: .3; }
+.ram-flow-connector.active { color: #397758; font-weight: 700; opacity: 1; }
 .ram-flow-connector::before { content: '→'; }
 .ram-overview-demo[data-direction="return"] .ram-flow-connector::before { content: '←'; }
 .ram-flow-progress { display: flex; flex-wrap: wrap; justify-content: space-between; gap: .4rem; margin-top: 1rem; color: #6e8c78; font-size: .55rem; font-weight: 700; }

@@ -4,127 +4,95 @@
 
 上级：[存储系统](../README.md)
 
-相关：[SRAM 6T cell](../02-sram/foundations/6t-cell-bistable-storage.md) · [存储层次与系统角色](01-system-basics/memory-hierarchy-as-system.md) · [学习路线](../reading-and-reference/01-reading/learning-roadmap.md)
+相关：[存储层次与系统角色](01-system-basics/memory-hierarchy-as-system.md) · [局部性与数据搬运](01-system-basics/locality-working-set-data-movement.md) · [学习路线](../reading-and-reference/01-reading/learning-roadmap.md)
 
-计算单元需要持续取得数据，也需要保存计算结果。存储系统的任务，是在容量、访问时间、带宽、能耗和成本等约束下，提供这些数据。
+计算需要输入数据，也会产生需要保存的结果。存储系统要在容量、访问时间、带宽、能耗和成本等约束下，把数据提供给计算单元。
 
-一次读取并不只涉及一颗存储单元。请求可能经过 cache、片上互连和内存控制器，最后由存储阵列服务。每一层有自己的输入、输出和资源限制。本篇先建立这张全景图，再进入 SRAM、DRAM 和控制器的细节。
+数据可以放在哪里？读取时经过哪些资源？一次搬运怎样服务后续计算？本文用处理器读取和加速器搬运两个例子，建立理解存储层级与数据路径的基础。
 
-## 1. RAM 是什么？
+## 1. 为什么需要存储层级？ {#1-ram-是什么}
 
-RAM 是 random-access memory，通常译为随机存取存储器。它允许根据地址访问存储位置，不需要像顺序介质那样，从开头依次经过所有更早位置。这个名称本身**不保证所有地址的访问时间相同**，也不保证任意时刻都能无冲突地访问任意位置。
+计算经常需要快速访问一小部分数据，也需要保存更大的数据集合。靠近计算的存储资源可以承担频繁访问，但增加容量、端口和带宽需要面积、功耗和布线等资源。系统因此会结合多种存储资源，让不同位置承担不同职责。
 
-本专题主要讨论两类常见 RAM：
+近端存储能否减少搬运，与工作负载的**局部性**和数据能否保留有关：数据在被取回后，是否会在一段时间内再次使用；相邻数据被一起取回后，是否会被后续计算使用。如果数据一直没有再次使用，或者复用前已经被替换，本地副本就不能带来同样的收益。[MIT 的存储层次课程](https://ocw.mit.edu/courses/6-004-computation-structures-spring-2017/pages/c14/c14s1/)用 cache 和局部性解释了这种分层方式。
 
-- **SRAM**：常见的 6T cell 用交叉耦合电路维持状态。保持数据需要满足供电等条件，但不需要 DRAM 式周期刷新。
-- **DRAM**：常见的 1T1C cell 用电容电荷表示状态。读取与恢复、周期刷新和 bank 状态会影响访问过程。
+RAM 是 random-access memory，通常译为随机存取存储器：它允许根据地址选择存储位置，不必从头顺序经过更早的位置。随机存取本身不保证所有地址访问时间相同，也不保证多个请求没有资源冲突。
 
-这里讨论的是易失性 SRAM 和 DRAM。是否掉电保持由具体存储技术和设计决定，不能仅从“随机存取”这个名字推断。
+### 存储技术、系统角色与接口 {#4-不要把不同层的名字混在一起}
+
+理解一条数据路径时，要区分资源是什么，以及系统怎样使用它：
+
+- **SRAM 和 DRAM**是存储技术；它们各有保存数据和组织访问的方式。
+- **Cache** 和 **scratchpad** 是系统角色。Cache 通常由硬件查找、填充和替换数据；scratchpad 通常由软件、编译器或其他调度机制安排数据放置与使用。
+- **DDR 等接口**规定控制器和相应存储器之间怎样交换命令、数据及时序。一个系统会同时涉及存储技术、角色和接口。
+
+例如，cache 的数据阵列和 scratchpad 常用 SRAM；主存或设备内存常用 DRAM。Cache 还需要 tag、命中判断和替换等逻辑，不能把它等同于 SRAM。名称的进一步区分见 [RAM 分类与命名](./01-system-basics/taxonomy.md)。
+
+### SRAM 与 DRAM 的常见用途 {#5-sram-和-dram-的基本差异}
+
+常见 SRAM 单元用双稳态电路保存数据，不需要 DRAM 式周期刷新；常见 DRAM 单元用电荷保存数据，需要按器件要求维持数据。SRAM 常用于片上局部存储，DRAM 常用于容量较大的主存或设备内存。单元结构、访问过程和系统选择的关系见 [SRAM 与 DRAM 的分化](./01-system-basics/sram-dram-divergence.md)。
 
 ## 2. 先看两条数据路径
 
-[![存储系统路径示意：处理器 cache 未命中后经内存控制器读取 DRAM；另一条路径中 DMA 将 DRAM 数据搬入 scratchpad，供计算单元使用。](../assets/ram-system-overview.svg)](../assets/ram-system-overview.svg)
+[![处理器例子中，请求从处理器经 cache 和内存控制器到 DRAM，数据沿反方向返回。加速器例子中，DMA 发起读取和写入请求，数据从 DRAM 经控制器和片上互连到 scratchpad，再供计算单元使用。](../assets/ram-system-overview.svg?v=bb10dad340f4)](../assets/ram-system-overview.svg){.ram-overview-diagram-wide}
+[![处理器例子中，请求从处理器经 cache 和内存控制器到 DRAM，数据沿反方向返回。加速器例子中，DMA 发起读取和写入请求，数据从 DRAM 经控制器和片上互连到 scratchpad，再供计算单元使用。](../assets/ram-system-overview-mobile.svg?v=3ebd87e14804)](../assets/ram-system-overview.svg){.ram-overview-diagram-mobile}
 
-点击图可查看大图。图中是两个简化例子，并非所有芯片都采用相同连接。
+图中虚线表示请求，实线表示数据的源和目的地。连线表示逻辑关系，不限定 DMA 的内部数据通路；点击图可查看大图。
 
 ### 路径 A：处理器读取，cache 未命中
 
-假设处理器请求的数据不在参与查找的 cache 中，所需数据位于 DRAM。请求会向下游传递；内存控制器接收并调度访问；数据返回后，可按该系统的策略回填 cache，再交给处理器。
+处理器发出读取后，cache 根据地址查找数据。命中时，cache 可以直接返回所需数据；未命中时，请求继续发往下一级。在多级 cache 中，某一级 miss 可能由下一级 cache 满足。
 
-这里的 **cache** 是系统角色和管理机制。它通常包含用 SRAM 实现的数据阵列，但还需要 tag、命中判断、替换及其他控制逻辑。cache 命中时不一定需要访问 DRAM。
+下文采用一级 cache 的例子：所需数据不在 cache 中，内存控制器接收并调度读取，DRAM 返回数据，cache 填充后再响应处理器。
 
 ### 路径 B：DMA 将数据搬入 scratchpad
 
-在另一个假设系统中，软件或硬件调度 DMA 从 DRAM 读取一块数据，将其写入片上的 scratchpad；计算单元在数据准备好后从 scratchpad 读取。scratchpad 是显式管理的数据存放区域，常以 SRAM 实现。
+在另一个系统中，DMA 发起读取外存和写入 scratchpad 的请求。数据经过控制器与片上互连，进入 scratchpad。搬运完成且满足同步和可见性条件后，计算单元才能使用这批数据。
 
-DMA 是发起和执行搬运的模块；内存控制器负责对 DRAM 请求进行调度。具体连接可能经过 NoC、其他 buffer 或不同的控制器。计算何时可以使用数据，还取决于 DMA 完成事件、同步和可见性契约，不能只凭“已发出请求”判断。
+这里 DMA 负责发起和执行搬运，内存控制器负责调度 DRAM 访问；图中将请求与数据路径分开表示。其他系统也可以用计算线程或异步复制指令安排数据移动。例如，[CUDA 编程指南](https://docs.nvidia.com/cuda/archive/13.2.2/cuda-programming-guide/03-advanced/advanced-kernel-programming.html#asynchronous-data-copies)介绍了线程复制与异步复制到 shared memory 的方式。
 
-## 3. 逐步看一次 cache miss
+## 3. 跟踪一次读取与后续复用 {#3-逐步看一次-cache-miss}
 
-下面只研究一笔读请求。假设地址翻译已经完成；只有一个 cache 层参与示例，且该层未命中；目标数据位于 DRAM。还假设没有其他请求争用、不需要脏块写回或一致性处理，并且本例在完整回填后才向处理器返回所需数据。
+假设数组 `A` 的每个元素占 4 B，起始地址按 64 B 对齐；一级 cache 的 cache line 为 64 B。处理器顺序读取 `A[0]` 和 `A[1]`。
+
+第一笔读取在 cache 中 miss，所需数据位于 DRAM。本例假设地址翻译已完成，cache 在完整填充该行后才响应；不考虑预取、其他请求、脏块写回和一致性交换，且该行在第二次读取前保持有效。
 
 <!-- ram-overview-demo -->
 
-在这些假设下，过程可以分成六个逻辑阶段：
+各资源在这个例子中承担不同职责：
 
-1. **发出读取**：处理器向 cache 提交地址和读请求。
-2. **查找未命中**：cache 没有可用于满足该请求的数据，向下游发起读取。
-3. **控制器接收**：内存控制器接收请求，并按队列、地址映射和时序约束安排访问。
-4. **DRAM 服务**：目标 DRAM 阵列执行所需操作。具体命令取决于目标 bank 的当前状态和协议约束。
-5. **数据返回并回填**：数据经返回路径到达 cache，本例假设完整块回填后才继续。
-6. **请求得到响应**：处理器取得所需数据。数据返回与指令退休是不同边界，后者由处理器实现决定。
-
-这些阶段不是等长周期，也不意味着真实系统必须完全串行。其他设计可能有多级 cache、并发请求、提前返回所需字节、额外一致性动作或不同的回填策略。[MIT 的 cache 与存储层次课程](https://ocw.mit.edu/courses/6-004-computation-structures-spring-2017/pages/c14/c14s1/)给出了 cache 命中、未命中与数据回填的基础模型。
-
-## 4. 不要把不同层的名字混在一起
-
-| 要回答的问题 | 所属维度 | 示例 |
+| 资源 | 接收什么 | 完成什么 |
 | --- | --- | --- |
-| 单个 bit 如何保存？ | 存储单元 | 6T SRAM cell、1T1C DRAM cell |
-| 单元怎样组成可访问资源？ | 阵列与组织 | SRAM bank、DRAM bank、row buffer |
-| 存储资源在系统中做什么？ | 系统角色 | cache、scratchpad、register file、主存 |
-| 控制器如何与 DRAM 交换命令和数据？ | 接口与协议 | DDR、LPDDR、GDDR、HBM 接口 |
-| 存储器如何与计算芯片集成？ | 封装与系统集成 | DIMM、PoP、堆叠 die、2.5D interposer |
+| 处理器 | 程序需要的地址与读取大小 | 发出对 `A[0]` 的读取；取得数据后提供给后续计算。 |
+| Cache | 已翻译的地址和读取请求 | 查找数据；首次 miss 后请求包含 `A[0]` 的 cache line，并在数据返回后填充。 |
+| 内存控制器 | 下游读取请求 | 根据地址映射、资源状态和时序条件安排 DRAM 访问。 |
+| DRAM | 控制器发出的命令 | 按当前 bank 状态与协议条件服务读取，返回所需数据。 |
 
-这些维度可以组合，但不是完全独立的自由选项。例如，HBM 不只是一个系统角色：它是一类基于堆叠 DRAM 的内存及其接口体系；具体系统再决定它承担什么角色、如何集成。Micron 的 [HBM2E 技术说明](https://assets.micron.com/adobe/assets/urn%3Aaaid%3Aaem%3A275edf31-79e3-4b6c-8bbd-a233babe9281/original/as/micron-hbm2e-memory-wp.pdf)展示了一种堆叠 DRAM 与系统级封装方案。
+完整的 64 B cache line 回到 cache 后，处理器取得其中的 4 B `A[0]`。接下来读取 `A[1]`：它位于同一条仍有效的 cache line，因此可以在 cache 命中，不需要再次为这次读取访问 DRAM。
 
-比较两种方案时，先说明正在比较哪一维，再给出工作负载、目标和约束。例如：“在同一工作负载下比较两种外存方案的容量、有效带宽和成本”，比只问“HBM 和 DDR 哪个更先进”更容易得到可验证的结论。
+第一次跨层搬运带回了相邻数据，第二次读取使用了其中的一部分。这是**空间局部性**的一种利用方式。如果后续再读取仍然有效的 `A[0]`，则体现了对同一数据的时间复用。块大小、访问顺序和数据是否留在本地都会影响收益，详见[局部性与数据搬运](./01-system-basics/locality-working-set-data-movement.md)。
 
-## 5. SRAM 和 DRAM 的基本差异
+在常见的 load/store 模型中，读取结果可写入寄存器，或通过转发供执行单元使用。计算得到的结果可以继续留在寄存器或局部存储中，也可以由 store 更新 cache 或其他存储层；何时更新下层由系统策略决定。Scratchpad 路径同样需要安排计算结果的去向。
 
-| 问题 | 常见 SRAM | 常见 DRAM |
-| --- | --- | --- |
-| 如何保存状态？ | 6T cell 中的交叉耦合电路维持两个稳定状态。 | 1T1C cell 用电容上的电荷表示状态。 |
-| 维持数据需要什么？ | 满足供电、保持电压和噪声等条件；无需 DRAM 式周期刷新。 | 除供电等条件外，还须按器件要求刷新。 |
-| 读操作有什么边界？ | 通过位线和感测电路读取；读扰动不能使 cell 翻转。 | 常见 DRAM 的 ACT 包含感测与恢复；访问受行状态和时序约束。 |
-| 常见系统用途 | cache 数据阵列、scratchpad、片上 buffer 等。 | 主存或设备内存等大容量存储层。 |
+## 4. 怎样观察这条路径？ {#6-用同一边界比较延迟和带宽}
 
-这些是常见设计取向，不是普遍的速度或面积定律。实际延迟、密度、能耗和成本还取决于工艺、容量、外围电路、接口、封装及工作点。register file 也可能采用其他电路实现，不能仅凭它的系统角色断定一定使用某种 SRAM cell。
+观察一次读取时，**延迟**描述请求从指定起点到指定终点花费的时间。例如，处理器发出读取到取得所需数据的时间。观察一段持续数据流时，**带宽**是指定接口上，在给定时间窗口内传输的数据量除以窗口长度。
 
-## 6. 用同一边界比较延迟和带宽
+统计带宽还要说明数据口径：接口传输的 payload 可能包含任务没有使用的字节；任务有效带宽只统计任务需要的字节。同一份流量按两种口径统计，结果可能不同。有关窗口、边界和损失的例子见[带宽与延迟](./03-performance/bandwidth-vs-latency-fundamental.md)和[峰值与有效带宽](./03-performance/effective-bandwidth-vs-peak.md)。
 
-**延迟**描述一笔请求从指定起点到指定终点经过的时间。例如，从控制器接收读请求，到请求数据对该控制器的上游接口可见。换一个起点或终点，数值就可能不同。
+一笔 miss 的耗时也可能包含互连、控制器或共享通路的等待。多笔请求能否并发，以及它们落到哪些 bank，会影响持续供数。沿途检查请求和资源状态，有助于找到限制，详见[存储系统为何难设计](./01-system-basics/problem-statement.md)。
 
-**带宽**描述某段时间内经过指定接口的数据量。必须说明方向、观察窗口和计数内容，例如是否只计算有效 payload。峰值带宽是给定接口配置下的理论上界；实际观测值还会受请求、冲突、调度和测量窗口影响。
+### 对建模有什么启示？ {#7-对建模有什么启示}
 
-例如，假设某单向数据通道最多传输 `16 B/cycle`。在一个长度为 10 个周期的观察窗口内，通道实际传输了 64 B 有效数据，则：
+先确定模型要回答的问题，再选择需要保留的细节。描述数据路径时，至少要说明请求从哪里到哪里、经过哪些资源，以及在什么边界观察延迟或带宽；如果要解释争用，还要表示对应的共享资源和等待。
 
-<div class="ram-calculation">
-  <span>窗口平均有效带宽 = 64 B / 10 cycle = <strong>6.4 B/cycle</strong></span>
-  <span>相对峰值利用率 = 6.4 / 16 = <strong>40%</strong></span>
-</div>
+## 5. 接下来怎么读？ {#8-接下来怎么读}
 
-这里的 `6.4 B/cycle` 只描述这个窗口，不自动等于长期稳态带宽。它也不能单独说明空闲周期由 refresh、bank 冲突、请求不足还是其他原因造成。定位原因需要更多状态或事件。
-
-## 7. 对建模有什么启示？
-
-先选定问题，再决定模型需要保留哪些细节。
-
-- 如果只做粗略容量或平均性能估算，可以把一部分内部过程折叠成经过校准的参数，但应说明它无法回答哪些冲突或尾延迟问题。
-- 如果要解释共享资源等待，需要明确请求的接纳、排队、服务和响应边界，以及相关端口、bank 或链路的占用规则。
-- 如果要研究 DRAM 命令调度，需要进一步定义地址映射、bank/row 状态、命令时序和 refresh 规则。需要哪些状态取决于目标协议和模型范围。
-
-一个简化的事件视角可以是：
-
-<ol class="ram-event-sequence" aria-label="简化的请求处理过程">
-  <li>请求接纳</li>
-  <li>等待资源</li>
-  <li>存储服务</li>
-  <li>数据返回</li>
-  <li>响应可见</li>
-</ol>
-
-这只是依赖关系，不表示每个阶段都独占一个周期，也不假设所有阶段不能重叠。器件参数、时钟域、观察点和模型假设应一起记录。架构模型的结果不能单独证明电路稳定性或真实芯片性能。
-
-## 8. 接下来怎么读？
-
-本专题按四类问题组织文章，可以按当前目标选择：
+本专题按四类问题组织文章：
 
 - **系统基础**：从[存储系统为何难设计](./01-system-basics/problem-statement.md)、[RAM 分类与命名](./01-system-basics/taxonomy.md)和[存储层次与系统角色](./01-system-basics/memory-hierarchy-as-system.md)建立共同概念。
-- **访问路径与数据管理**：阅读 [Cache 与 DRAM 协同](./02-access-paths/cache-dram-coordination.md)和 [Cache 与 scratchpad](./02-access-paths/cache-vs-scratchpad.md)，区分自动填充与显式放置。
-- **性能分析与瓶颈**：用[带宽与延迟](./03-performance/bandwidth-vs-latency-fundamental.md)、[峰值与有效带宽](./03-performance/effective-bandwidth-vs-peak.md)分析指定边界上的表现。
+- **访问路径与数据管理**：阅读 [Cache 与 DRAM 协同](./02-access-paths/cache-dram-coordination.md)和 [Cache 与 scratchpad](./02-access-paths/cache-vs-scratchpad.md)，比较自动填充与显式放置。
+- **性能分析与瓶颈**：用[带宽与延迟](./03-performance/bandwidth-vs-latency-fundamental.md)、[峰值与有效带宽](./03-performance/effective-bandwidth-vs-peak.md)分析路径表现。
 - **NPU 数据路径案例**：从 [AI 芯片内存架构](./04-npu-case/README.md)进入，再按需查看局部 buffer 和片上带宽。
 
-更详细的原 RAM 章节阅读路线见[学习路径与章节依赖](../reading-and-reference/01-reading/learning-roadmap.md)。
-
-如果想先深入一颗 SRAM 单元，可以直接阅读 [6T SRAM cell：它如何保存、读取和写入 1 bit](../02-sram/foundations/6t-cell-bistable-storage.md)。如果当前目标是 DRAM 建模，可以转到 [DRAM 基础](../03-dram/foundations/README.md)和 [Memory Controller](../04-dram-controller/README.md)。
+想深入一颗 SRAM 单元，可阅读 [6T SRAM cell](../02-sram/foundations/6t-cell-bistable-storage.md)；想研究 DRAM 访问，可转到 [DRAM 基础](../03-dram/foundations/README.md)和 [Memory Controller](../04-dram-controller/README.md)。原 RAM 章节的阅读路线见[学习路径与章节依赖](../reading-and-reference/01-reading/learning-roadmap.md)。

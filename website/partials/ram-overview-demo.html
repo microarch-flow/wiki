@@ -1,17 +1,17 @@
 <div class="ram-overview-demo" data-ram-overview data-direction="request">
-  <div class="ram-flow-header"><div><span>INTERACTIVE / MEMORY PATH</span><h3>一笔读取如何返回？</h3></div><b>单请求示例</b></div>
-  <p class="ram-flow-intro">按“下一步”跟踪请求和数据。每一步表示逻辑阶段，不代表相同的时间间隔。</p>
+  <div class="ram-flow-header"><div><span>INTERACTIVE / MEMORY PATH</span><h3>一次 miss 后如何复用？</h3></div><b>两次顺序读取</b></div>
+  <p class="ram-flow-intro">按“下一步”跟踪首次读取和后续命中。每一步表示逻辑阶段，不代表相同的时间间隔。</p>
   <div class="ram-flow-track" aria-label="处理器、cache、内存控制器和 DRAM 之间的示例路径">
     <div class="ram-flow-node active" data-ram-node="cpu"><small>01 / REQUESTER</small><strong>处理器</strong><span>发起读取</span></div>
-    <div class="ram-flow-connector" aria-hidden="true"></div>
+    <div class="ram-flow-connector active" data-ram-link="cpu-cache" aria-hidden="true"></div>
     <div class="ram-flow-node" data-ram-node="cache"><small>02 / ON-CHIP</small><strong>Cache</strong><span>查找与回填</span></div>
-    <div class="ram-flow-connector" aria-hidden="true"></div>
+    <div class="ram-flow-connector" data-ram-link="cache-controller" aria-hidden="true"></div>
     <div class="ram-flow-node" data-ram-node="controller"><small>03 / CONTROL</small><strong>内存控制器</strong><span>接收与调度</span></div>
-    <div class="ram-flow-connector" aria-hidden="true"></div>
+    <div class="ram-flow-connector" data-ram-link="controller-dram" aria-hidden="true"></div>
     <div class="ram-flow-node" data-ram-node="dram"><small>04 / STORAGE</small><strong>DRAM</strong><span>服务读取</span></div>
   </div>
-  <div class="ram-flow-progress"><span data-ram-field="counter">01 / 06</span><span data-ram-field="path">处理器 → Cache</span></div>
-  <div class="ram-flow-status" role="status" aria-live="polite"><strong data-ram-field="name">处理器发出读取</strong><p data-ram-field="description">处理器向 cache 提交已经完成地址翻译的读请求。</p></div>
+  <div class="ram-flow-progress"><span data-ram-field="counter">01 / 07</span><span data-ram-field="path">处理器 → Cache</span></div>
+  <div class="ram-flow-status" role="status" aria-live="polite"><strong data-ram-field="name">处理器读取 A[0]</strong><p data-ram-field="description">处理器向 cache 提交已完成地址翻译的 4 B 读请求。</p></div>
   <div class="ram-flow-controls"><button type="button" data-ram-action="prev" disabled>上一步</button><button type="button" data-ram-action="next" class="ram-flow-next" disabled>下一步 →</button><button type="button" data-ram-action="play" disabled>自动播放</button><button type="button" data-ram-action="reset" disabled>重置</button></div>
-  <noscript><p>启用 JavaScript 后可播放图解；下方正文保留了各步骤。</p></noscript>
+  <noscript><p>启用 JavaScript 后可播放图解；下方正文描述了读取和复用的过程。</p></noscript>
 </div>

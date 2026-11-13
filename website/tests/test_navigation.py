@@ -317,8 +317,11 @@ class GeneratedNavigationTests(unittest.TestCase):
                         self.assertTrue((chapter.parent / url / "index.html").is_file())
 
         overview = (SITE / "RAM/wiki/01-overview/index.html").read_text(encoding="utf-8")
-        self.assertIn('class="ram-calculation"', overview)
-        self.assertIn('class="ram-event-sequence"', overview)
+        self.assertIn('data-ram-overview', overview)
+        self.assertIn('ram-overview-diagram-mobile', overview)
+        self.assertIn('id="6-用同一边界比较延迟和带宽"', overview)
+        self.assertIn('id="7-对建模有什么启示"', overview)
+        self.assertIn('A[1]', overview)
 
     def test_ram_sidebar_short_names_keep_full_article_titles(self):
         relative = Path("RAM/wiki/01-overview/problem-statement/index.html")
