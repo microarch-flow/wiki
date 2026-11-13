@@ -51,9 +51,7 @@ SRAM、DRAM 是存储技术名称；6T 和 1T1C 是常见单元结构，不是�
 | Register file | 为执行单元提供寄存器操作数，并接收结果写回。 |
 | 主存或设备内存 | 为系统或设备提供较大范围的数据存放空间；具体可见性和用途由系统定义。 |
 
-Cache 的数据阵列和 scratchpad **常用 SRAM 实现**，但角色名称本身不规定唯一的 cell 技术。Cache 也不等于一块 SRAM：常见实现还需要 tag、命中判断、替换等机制。Scratchpad 的显式管理则需要关注搬运何时完成、数据何时可用和何时允许覆盖。
-
-例如，[NVIDIA 的 CUDA 编程指南](https://docs.nvidia.com/cuda/archive/13.2.2/cuda-programming-guide/02-basics/writing-cuda-kernels.html)把其 GPU 的 shared memory 描述为由使用者管理的 scratchpad，并说明在该指南讨论的实现中，它与 L1 cache 共用物理资源。这是具体平台的组织方式，不代表所有 GPU 或 NPU 都相同。两种管理方式的进一步比较见 [Scratchpad 与 cache](../../02-sram/applications/scratchpad-vs-cache.md)。
+Cache 的数据阵列和 scratchpad **常用 SRAM 实现**，但角色名称本身不规定唯一的 cell 技术。角色怎样管理数据，以及它与实现技术如何对应，见[存储层次与系统角色](./memory-hierarchy-as-system.md)。
 
 ## 4. 接口与协议：两端如何交换数据？
 
