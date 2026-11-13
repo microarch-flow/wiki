@@ -4,7 +4,7 @@
 
 上级：[存储层级与数据路径](../README.md)
 
-相关：[存储层次与系统角色](../01-system-basics/memory-hierarchy-as-system.md) · [Cache 与 DRAM 协同](./cache-dram-coordination.md) · [Cache 的 tag 与 data](../../02-sram/applications/cache-sram-tag-data-arrays.md)
+相关：[存储层次与系统角色](../01-system-basics/memory-hierarchy-as-system.md) · [Cache miss 的处理](./cache-dram-coordination.md) · [Cache 的 tag 与 data](../../02-sram/applications/cache-sram-tag-data-arrays.md)
 
 计算单元需要的数据，可能先从较远的存储搬到本地。Cache 和 scratchpad 都能提供本地数据，但它们采用不同的放置和访问方式：前者通常由硬件管理副本，后者通常由软件、编译器或显式调度机制安排数据。
 
@@ -24,13 +24,26 @@ Cache 的按需填充由实际请求触发。预取可以预测未来访问，�
 
 [NVIDIA 的 CUDA 编程指南](https://docs.nvidia.com/cuda/archive/13.2.1/cuda-programming-guide/02-basics/writing-cuda-kernels.html)把其 GPU 的 shared memory 描述为使用者管理的 scratchpad，并介绍了线程间同步与 bank 冲突。它说明了一种具体的编程和硬件组织方式。
 
+两种角色可以同时存在于一个系统。例如，计算线程可能通过 cache 访问全局数据，也可能访问显式管理的本地存储。即使硬件承担了 scratchpad 的复制，仍要看系统约定：谁安排数据放置，以及谁保证使用与覆盖的顺序。
+
 ## 一次读取如何发生？
 
-**Cache 路径：**请求到达后，cache 用地址和当前状态判断是否能服务。命中时，按接口规则返回数据；未命中时，可能登记缺失请求并向下一级请求数据。若需要替换已有的脏数据，某些实现还要安排写回。下一级可以是另一层 cache 或内存，具体填充和响应顺序取决于实现。完整的 miss、请求合并和写回过程见 [Cache 与 DRAM 协同](./cache-dram-coordination.md)。
+**Cache 路径：**请求到达后，cache 用地址和当前状态判断是否能服务。命中时，按接口规则返回数据；未命中时，可能登记缺失请求并向下一级请求数据。若需要替换已有的脏数据，某些实现还要安排写回。下一级可以是另一层 cache 或内存，具体填充和响应顺序取决于实现。完整的 miss、请求合并和写回过程见 [Cache miss 的处理](./cache-dram-coordination.md)。
 
 **Scratchpad 路径：**使用方先为数据安排本地区域，再通过适用的写入或搬运方式准备数据。搬运完成并满足可见性要求后，计算单元按本地地址读取。所有相关消费者使用完毕后，该区域才能按系统约定被覆盖；如果结果需要交给其他参与方，还要安排写出及同步。
 
 两条路径的关键区别是**管理责任**。Cache 的使用方通常不需要为每条 line 安排填充；scratchpad 的使用方可以控制放置和复用，但也要保证容量、搬运和数据依赖都安排正确。
+
+例如，一块输入数据先搬入 scratchpad。计算读取输入后，在同一区域产生结果，并且不会覆盖尚未读取的输入；随后 DMA 从该区域写出结果。使用方需要安排以下交接：
+
+| 阶段 | 需要满足的条件 |
+| --- | --- |
+| 安排与填入 | 预留足够的本地区域，并保证填入时不会覆盖仍在使用的数据。 |
+| 开始消费 | 所需数据的填入已经完成，且按接口和同步约定对计算单元可见。 |
+| 使用与写出 | 计算按依赖关系读写；若需要 DMA 写出结果，还要按系统规则让 DMA 看到这些结果。 |
+| 复用区域 | 已安排且会访问这块区域的操作都已完成；这包括 DMA 读取结果的操作。 |
+
+这里的“完成”和“可见”是不同问题：前者描述指定操作的完成事件，后者描述另一参与方能否按约定看到数据。实际系统可能用同一个机制满足两项要求，也可能需要额外同步。
 
 ## 同一份数据，等待为什么可能不同？
 
@@ -69,7 +82,12 @@ Cache 需要用于查找和管理副本的结构，例如 tag、命中判断和�
 
 在访问模式难以提前确定的场合，cache 可以透明地响应按需访问；scratchpad 则要求使用方规划数据何时进入、保留和离开。当数据依赖和复用方式可提前安排时，显式管理有助于控制搬运和数据生命周期，但软件或调度机制也要承担这些工作。
 
-比较性能时，应分别观察本地命中或读取时间、跨层流量、搬运完成时间和共享资源等待。以 cache 的平均访问时间为例：若 `H` 是命中访问的平均完整延迟，`M` 是未命中访问的平均完整延迟，`m` 是 miss 比例，且它们采用相同的请求与响应边界，则平均访问延迟为 `(1 − m) × H + m × M`。令增量 miss penalty `P = M − H`，也可以写成 `H + m × P`。
+比较性能时，应分别观察本地命中或读取时间、跨层流量、搬运完成时间和共享资源等待。以 cache 的平均访问时间为例：若 H 是命中访问的平均完整延迟，M 是未命中访问的平均完整延迟，m 是同一组访问中的 miss 比例，且它们采用相同的请求与响应边界，则：
+
+<div class="ram-calculation">
+  <span>平均访问延迟 = (1 − m) × H + m × M</span>
+  <span>令增量 miss penalty P = M − H，也可写成 H + m × P</span>
+</div>
 
 这个平均值描述单次访问的平均响应时间，不能反映完整的延迟分布，也不能直接相加为程序停顿时间：多笔请求及计算可能重叠。跨层流量、工作集和复用的计数方法见[局部性与数据搬运](../01-system-basics/locality-working-set-data-movement.md)。
 
@@ -87,9 +105,9 @@ Cache 需要用于查找和管理副本的结构，例如 tag、命中判断和�
 
 本篇讨论管理责任；下一步可用具体地址序列检验这些安排：
 
-- [SRAM 与 DRAM 访问模式](./sram-vs-dram-access-pattern.md)：看 bank 冲突、行状态和访问顺序怎样改变等待。
+- [SRAM bank 与 DRAM 行状态](./sram-vs-dram-access-pattern.md)：看 bank 冲突、行状态和访问顺序怎样改变等待。
 - [多通道与 NUMA](./numa-multi-channel-multi-socket.md)：看数据放置扩展到通道和节点后的影响。
-- [Cache 与 DRAM 协同](./cache-dram-coordination.md)：看 miss、请求合并、填充和写回。
+- [Cache miss 的处理](./cache-dram-coordination.md)：看 miss、请求合并、填充和写回。
 - [Cache 的 tag 与 data](../../02-sram/applications/cache-sram-tag-data-arrays.md)：看命中判断和 SRAM 阵列组织。
 - [局部性与数据搬运](../01-system-basics/locality-working-set-data-movement.md)：看访问序列、工作集和跨层流量。
 - [NPU 的 SRAM buffer](../../02-sram/applications/npu-weight-buffer-activation-buffer.md)：看数据角色、端口与搬运调度。

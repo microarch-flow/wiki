@@ -1,10 +1,12 @@
-# Cache 和 DRAM 如何协同，miss 之后发生了什么
+# Cache miss 的处理：请求跟踪、填充与写回
+
+<span id="cache-和-dram-如何协同miss-之后发生了什么"></span>
 
 上级：[存储层级与数据路径](../README.md)
 
 相关：[存储层次与系统角色](../01-system-basics/memory-hierarchy-as-system.md) · [Cache 的 tag 与 data](../../02-sram/applications/cache-sram-tag-data-arrays.md) · [Cache 与 scratchpad](./cache-vs-scratchpad.md)
 
-一次读取在 L1 cache 中未命中，并不意味着处理器马上访问 DRAM。请求可能由下一层 cache 满足，也可能等待同一条 cache line 的填充；只有继续向下查找的部分请求，才会进入内存控制器。
+一次读取在 L1 cache 中未命中，并不意味着处理器马上访问 DRAM。请求可能由下一层 cache 满足，也可能等待同一条 cache line 的填充；只有继续向下查找的部分请求，才会进入内存控制器。理解 Cache 与 DRAM 协同，首先要看缺失请求经过了哪些层次。
 
 本文沿着一次读取，说明 miss 怎样被记录、请求怎样继续向下、数据怎样返回，以及脏数据写回为什么可能影响这条路径。Cache 与 scratchpad 的管理责任比较见相关链接，这里不再重复。
 
@@ -23,6 +25,17 @@
 ## 2. 缺失请求怎样被记住？
 
 请求发出后，cache 还需要知道：哪条 line 正在等待、哪些读取在等它，以及数据回来后应交给谁。非阻塞 cache 常用 **MSHR（Miss Status Holding Register，缺失状态跟踪项）**或等价结构保存这些信息。[gem5 Classic Caches](https://www.gem5.org/documentation/general_docs/memory_system/classic_caches/)就是使用 MSHR 和写缓冲的一种实现模型。
+
+下面是一次读取缺失的主要事件。它不规定每个事件必须占用一个周期：
+
+<ol class="ram-event-sequence" aria-label="一次读取缺失的主要事件">
+  <li>登记缺失</li>
+  <li>下游服务</li>
+  <li>所需数据返回</li>
+  <li>响应与状态更新</li>
+</ol>
+
+兼容的后续请求可以在填充期间加入等待。响应等待者、填充其余数据和释放跟踪项的具体先后由实现决定；脏数据写回也可能与这条路径部分重叠。
 
 若后续请求访问同一条尚未返回的 line，并且操作类型、权限和顺序要求允许，cache 可以把它登记为同一笔缺失事务的等待者。这叫**请求合并**。它减少的是重复的下游请求，不是把多个处理器读取变成同一条指令。
 
@@ -43,16 +56,20 @@
 
 跟踪空间是有限的。新 line 需要跟踪项时，若没有空位，就必须等待或重试。同一跟踪项可容纳的等待者也可能有限。因此，即使数据总线暂时空闲，cache 仍可能无法接纳新的缺失请求。
 
-## 3. 请求什么时候真正到达 DRAM？
+<span id="3-请求什么时候真正到达-dram"></span>
 
-请求沿层次向下传播，每一级都可能命中、合并或排队。确实需要主存数据时，内存控制器才把物理地址映射到 channel、rank、bank、row 和 column，并按资源状态与时序约束安排命令。
+## 3. Cache 与 DRAM 协同：请求什么时候到达 DRAM？
+
+请求沿层次向下传播，每一级都可能命中、合并或排队。确实需要主存数据时，系统按物理地址选择相应的内存资源；控制器根据目标位置、资源状态与时序约束安排 DRAM 命令。
+
+选择通道或控制器的位置取决于实现，不一定都在同一个控制器内部。例如，[AMD Versal NoC 的控制器交错](https://docs.amd.com/r/en-US/pg313-network-on-chip/Memory-Controller-Interleaving?contentId=qkTBmUtiLy8lA6tBe51vGg)可以在请求进入目标控制器前，按地址把事务分配到多个控制器。各控制器再处理其服务范围内的 DRAM 访问。
 
 这里有两种不同的“地址处理”：
 
 - **地址翻译**：把虚拟地址转换为物理地址，并处理相应的访问权限。TLB 与页表遍历属于这条路径；它不等于 cache miss。
-- **DRAM 地址映射**：用物理地址选择内存通道及 DRAM 内部位置。它不负责把虚拟地址翻译为物理地址。
+- **内存资源地址映射**：用物理地址选择内存通道及 DRAM 内部位置。相关选择可以分布在互连和控制器等部件中；它不负责把虚拟地址翻译为物理地址。
 
-实际处理器可以让部分翻译与 cache 查找重叠。本文从翻译后的边界开始，不规定它们必须串行。控制器的映射细节见[地址映射](../../04-dram-controller/address-mapping-channel-rank-bank-row-col.md)，DRAM 的状态差异见[SRAM 与 DRAM 访问模式](./sram-vs-dram-access-pattern.md)。
+实际处理器可以让部分翻译与 cache 查找重叠。本文从翻译后的边界开始，不规定它们必须串行。控制器的映射细节见[地址映射](../../04-dram-controller/address-mapping-channel-rank-bank-row-col.md)，DRAM 的状态差异见[SRAM bank 与 DRAM 行状态](./sram-vs-dram-access-pattern.md)。
 
 一条确实走到 DRAM 的简化路径如下。各行表示职责，不表示每一步固定用一个周期，也不要求不同请求按同一顺序完成。
 
@@ -60,7 +77,7 @@
 | --- | --- | --- |
 | 当前 cache | 跟踪缺失、合并兼容请求 | 跟踪项、等待者空间 |
 | 下层 cache 与互连 | 继续查找或转发请求 | 队列、链路、访问端口 |
-| 内存控制器 | 地址映射、选择可执行命令 | bank 状态、时序、刷新、读写切换 |
+| 内存控制器 | 根据地址和资源状态选择可执行命令 | bank 状态、时序、刷新、读写切换 |
 | DRAM 与返回通路 | 传输数据并返回请求方 | 数据总线、返回队列、片上链路 |
 | 当前 cache | 接收填充、更新状态、响应等待者 | 填充缓冲、阵列写端口、响应端口 |
 
@@ -113,6 +130,6 @@ Cache 会过滤命中请求，也会把小粒度读取变成 line 填充，并�
 ## 接下来怎么读？
 
 - [Cache 与 scratchpad](./cache-vs-scratchpad.md)：比较自动填充与显式数据放置的责任。
-- [SRAM 与 DRAM 访问模式](./sram-vs-dram-access-pattern.md)：看请求落到存储资源后，状态与冲突怎样影响服务。
+- [SRAM bank 与 DRAM 行状态](./sram-vs-dram-access-pattern.md)：看请求落到存储资源后，状态与冲突怎样影响服务。
 - [地址映射](../../04-dram-controller/address-mapping-channel-rank-bank-row-col.md)：看物理地址怎样分配到 channel、bank 和 row。
 - [带宽与延迟](../03-performance/bandwidth-vs-latency-fundamental.md)：区分单笔响应、并发和整体吞吐。

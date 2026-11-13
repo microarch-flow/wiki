@@ -18,9 +18,9 @@ MEMORY_SECTIONS = (
         ("SRAM 与 DRAM 的分化", "RAM/wiki/01-overview/sram-dram-divergence.md"),
     )),
     ("访问路径与数据管理", "02-access-paths", (
-        ("Cache 与 DRAM 协同", "RAM/wiki/07-system-architecture/cache-dram-coordination.md"),
+        ("Cache miss 的处理", "RAM/wiki/07-system-architecture/cache-dram-coordination.md"),
         ("Cache 与 scratchpad", "COMPUTE/wiki/06-memory-discipline/cache-vs-scratchpad.md"),
-        ("SRAM 与 DRAM 访问模式", "RAM/wiki/07-system-architecture/sram-vs-dram-access-pattern.md"),
+        ("SRAM bank 与 DRAM 行状态", "RAM/wiki/07-system-architecture/sram-vs-dram-access-pattern.md"),
         ("多通道与 NUMA", "RAM/wiki/07-system-architecture/numa-multi-channel-multi-socket.md"),
     )),
     ("性能分析与瓶颈", "03-performance", (

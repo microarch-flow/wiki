@@ -101,9 +101,9 @@ RAM 是 random-access memory，通常译为随机存取存储器：它允许根�
 
 这一类文章从“数据在哪里”走到“请求怎样得到数据”。先假设读者已了解存储层次、局部性和 SRAM/DRAM 的基本区别；不在这里重复器件内部结构。
 
-1. [Cache 与 DRAM 协同](./02-access-paths/cache-dram-coordination.md)：本层 miss 后，请求怎样被跟踪、合并、向下传递并完成？重点是一次请求的生命周期，不把每次 miss 都当成 DRAM 事务。
+1. [Cache miss 的处理](./02-access-paths/cache-dram-coordination.md)：本层 miss 后，请求怎样被跟踪、合并、向下传递并完成？重点是一次请求的生命周期，不把每次 miss 都当成 DRAM 事务。
 2. [Cache 与 scratchpad](./02-access-paths/cache-vs-scratchpad.md)：数据由谁安排进入本地，什么时候可读、可覆盖？比较自动副本管理与显式放置，不重复展开 cache 的 miss 流程。
-3. [SRAM 与 DRAM 访问模式](./02-access-paths/sram-vs-dram-access-pattern.md)：数据放置确定后，同一批地址怎样造成 bank 冲突、行复用或行切换？用访问序列看机制，而不再比较存储单元。
+3. [SRAM bank 与 DRAM 行状态](./02-access-paths/sram-vs-dram-access-pattern.md)：请求映射到资源后，怎样造成 bank 冲突、行复用或行切换？用访问序列看机制，而不再比较存储单元。
 4. [多通道与 NUMA](./02-access-paths/numa-multi-channel-multi-socket.md)：路径扩到多个通道和节点后，地址、页面和线程放在哪里，怎样改变实际访问路径？
 
 这四篇覆盖本专题的主要系统问题，但不代替专门的协议和编程模型说明。需要安排显式搬运时，转到 [DMA 的地址、描述符与 burst](../../microarchitecture/DMA/wiki/02-fundamentals/address-descriptor-burst.md)及 [DMA 同步与一致性](../../microarchitecture/DMA/wiki/04-programming-model/synchronization-errors.md)；需要追踪物理地址落到哪个 channel、bank 和 row 时，转到[地址映射](../04-dram-controller/address-mapping-channel-rank-bank-row-col.md)。路径清楚后，再进入“性能分析与瓶颈”，区分访问响应时间、程序等待和有效带宽。

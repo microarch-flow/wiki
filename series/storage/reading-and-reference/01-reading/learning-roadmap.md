@@ -57,7 +57,7 @@
 
 ## 5. 想定位系统瓶颈：先统一观察边界
 
-先读[带宽与延迟](../../01-memory-hierarchy/03-performance/bandwidth-vs-latency-fundamental.md)和[峰值与有效带宽](../../01-memory-hierarchy/03-performance/effective-bandwidth-vs-peak.md)，明确观察的是哪条路径、哪段时间和哪些字节。再读 [Cache 与 DRAM 协同](../../01-memory-hierarchy/02-access-paths/cache-dram-coordination.md)，沿请求路径检查缓存、互连、控制器和存储器。
+先读[带宽与延迟](../../01-memory-hierarchy/03-performance/bandwidth-vs-latency-fundamental.md)和[峰值与有效带宽](../../01-memory-hierarchy/03-performance/effective-bandwidth-vs-peak.md)，明确观察的是哪条路径、哪段时间和哪些字节。再读 [Cache miss 的处理](../../01-memory-hierarchy/02-access-paths/cache-dram-coordination.md)，沿请求路径检查缓存、互连、控制器和存储器。
 
 如果怀疑请求集中到少数 bank，继续看[地址映射](../../04-dram-controller/address-mapping-channel-rank-bank-row-col.md)；如果怀疑排队或命令选择影响结果，继续看[命令调度与 FR-FCFS](../../04-dram-controller/command-scheduling-fr-fcfs.md)。行命中率或接口利用率都需要结合请求供给和观测点解释，不能单独证明瓶颈在哪里。
 

@@ -1,7 +1,7 @@
 # Open、close、adaptive page policy 的权衡
 
 上级：[Memory Controller](./README.md)
-相关：[命令调度：FR-FCFS 及其变体](./command-scheduling-fr-fcfs.md), [SRAM 和 DRAM 在访问模式上的根本区别](../01-memory-hierarchy/02-access-paths/sram-vs-dram-access-pattern.md)
+相关：[命令调度：FR-FCFS 及其变体](./command-scheduling-fr-fcfs.md), [SRAM bank 与 DRAM 行状态](../01-memory-hierarchy/02-access-paths/sram-vs-dram-access-pattern.md)
 
 ## 这页在回答什么问题
 

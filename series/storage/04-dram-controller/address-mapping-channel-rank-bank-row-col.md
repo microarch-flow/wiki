@@ -1,7 +1,7 @@
 # 地址映射：物理地址到 channel、rank、bank、row、col 的拆分艺术
 
 上级：[Memory Controller](./README.md)
-相关：[Memory controller 如何影响 DRAM 的实际性能](./why-mc-is-the-real-bottleneck.md), [多通道、多 socket、NUMA：扩展带宽的代价](../01-memory-hierarchy/02-access-paths/numa-multi-channel-multi-socket.md)
+相关：[Memory controller 如何影响 DRAM 的实际性能](./why-mc-is-the-real-bottleneck.md), [多通道与 NUMA](../01-memory-hierarchy/02-access-paths/numa-multi-channel-multi-socket.md)
 
 ## 这页在回答什么问题
 
