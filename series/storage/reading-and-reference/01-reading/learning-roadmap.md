@@ -18,8 +18,8 @@
 | [存储系统概览](../../01-memory-hierarchy/README.md) | 存储资源有哪些角色？请求、工作负载和设计约束如何联系起来？ |
 | [SRAM 基础](../../02-sram/foundations/README.md) | 6T cell、读写路径、端口和阵列组织如何工作？ |
 | [SRAM 应用形态](../../02-sram/applications/README.md) | Cache、scratchpad、register file 和其他角色如何使用存储资源？ |
-| [DRAM 基础](../../03-dram/foundations/README.md) | 1T1C cell、row buffer、bank 和刷新带来哪些约束？ |
-| [DRAM 协议层](../../03-dram/protocols/README.md) | 控制器使用什么命令、时序和接口访问 DRAM？ |
+| [DRAM 单元与阵列](../../03-dram/foundations/README.md) | 1T1C cell、row buffer、bank 和刷新带来哪些约束？ |
+| [DRAM 命令与接口](../../03-dram/protocols/README.md) | 控制器使用什么命令、时序和接口访问 DRAM？ |
 | [Memory Controller](../../04-dram-controller/README.md) | 请求如何映射、排队和调度？哪些资源会竞争？ |
 | [系统视角](../../01-memory-hierarchy/01-system-basics/README.md) | 多层存储与互连怎样共同影响延迟和有效带宽？ |
 | [封装与集成](../../06-system-integration/packaging/README.md) | DIMM、堆叠和封装连接怎样影响系统选择？ |

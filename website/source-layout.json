@@ -214,11 +214,6 @@
         "target": "RAM/wiki/05-dram-protocol-families"
       },
       {
-        "kind": "file",
-        "source": "series/storage/03-dram/hbm-stacked-wide-io.md",
-        "target": "RAM/wiki/05-dram-protocol-families/hbm-stacked-wide-io.md"
-      },
-      {
         "kind": "directory",
         "source": "series/storage/04-dram-controller",
         "target": "RAM/wiki/06-memory-controller"

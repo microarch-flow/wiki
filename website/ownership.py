@@ -19,7 +19,6 @@ GROUPS = {
                   "硅后启动、测量与修订", "可靠性、良率与量产生命周期", "软件背景创始人导读"),
 }
 
-HBM_READING_ENTRY = "RAM/wiki/05-dram-protocol-families/hbm-stacked-wide-io.md"
 HBM_SYSTEM_SELECTION = "RAM/wiki/09-ai-chip-memory-architecture/hbm-vs-lpddr-for-npu.md"
 
 

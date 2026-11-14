@@ -1,90 +1,25 @@
-# Bank 为什么是 DRAM 并行性的最小单位
+# DRAM bank：独立行状态与共享资源
 
-上级：[DRAM 基础](./README.md)
-相关：[Row buffer：DRAM 内部的小 cache](./row-buffer-as-cache.md), [Memory controller 如何影响 DRAM 的实际性能](../../04-dram-controller/why-mc-is-the-real-bottleneck.md)
+上级：<span id="bank-为什么是-dram-并行性的最小单位"></span>[DRAM 单元与阵列](./README.md)
+
+相关：[Row buffer 与行状态](./row-buffer-as-cache.md) · [控制器与性能](../../04-dram-controller/why-mc-is-the-real-bottleneck.md)
 
 ## 这页在回答什么问题
 
-为什么 DRAM 的并行性不是从 channel 才开始，而是先从 bank 这个内部组织单位开始。更具体地说，bank 到底隔离了哪些状态、共享了哪些资源，以及为什么“bank 数量更多”并不自动等于“真实带宽就更高”。
+Bank 为什么有利于并行，又为什么增加 bank 不一定按比例增加带宽？在常见标准接口中，bank 是可见的行状态管理单位；这不意味着它是物理阵列中最小的并行单位。
 
 ## 独立 bank 状态与共享资源
 
-一旦理解了 row buffer 和 open row 这套机制，接下来的自然问题就是：如果 DRAM 每次只能在一个打开行上便宜访问，那它如何支撑系统所需的高吞吐？答案之一就是 bank。bank 的核心作用，不是单纯把容量切块，而是把”打开行状态”和一部分阵列操作状态复制出多份，让不同访问流有机会在 DRAM 内部并行推进。想象一家只有一个灶台的餐厅——无论来多少客人，厨师一次只能炒一道菜，换菜还得先刷锅。bank 就相当于给餐厅装了多个独立灶台：灶台 A 炒宫保鸡丁的同时，灶台 B 可以煮麻辣烫，互不等待。没有 bank，DRAM 会几乎退化成一个只能围绕单一 open row 来回切换的大阵列，row conflict 会频繁到难以忍受。
+不同 bank 可以分别维护行状态，并在时序允许时交错感测、恢复或列操作。但它们通常共享部分命令/地址和数据通路，还受到跨 bank 激活、bank group 和功耗约束。是否能同时进行某两个动作，必须查具体代际和器件。
 
-最直观的理解方式是把 bank 看成“一个相对独立维护 open row 和 sense amp 工作副本的子阵列”。每个 bank 通常都有自己的一组行阵列、对应的 row buffer / sense amp 阵列，以及与之关联的局部状态。这样一来，bank A 可以保持 row 100 打开，bank B 同时保持 row 37 打开，后续请求如果分别命中这两个 bank 的当前 open row，就都能享受较低访问成本。换句话说，bank 把原本只能有一个的“当前打开行”状态复制成了多个并存状态，这正是 DRAM 内部并行度的第一来源。
+假设某个 channel 的共享 DQ 执行四次同方向 BL8 传输，每次以 DDR 方式占用 4 CK；即使四次分别来自不同 bank，在没有空隙的理想情况下也要占用 **16 CK**。bank 并行可以隐藏部分阵列等待，却不会把同一组 DQ 变成四条总线。
 
-这也是为什么说 bank 是 DRAM 并行性的最小单位。对 controller 来说，很多调度和命中判断首先不是在 channel 级发生，而是在“这个请求落到哪个 bank、那个 bank 当前 open 的是哪一行、那个 bank 什么时候才会再次 ready”这一层发生。即使只有一个 channel，只要内部有多个 bank，系统仍然可能通过 bank 级并行把多个请求交织起来：一个 bank 正在做 activate 或 precharge 时，另一个 bank 也许已经可以服务列访问。常见误解是把 DRAM 并行只理解成“多 channel 带宽叠加”；实际上，在进入多 channel 之前，bank-level parallelism 已经决定了单颗 DRAM 器件的大部分可调度空间。
-
-但 bank 并不意味着完全独立。理解 bank 的关键，不只是看它隔离了什么，还要看它仍然共享什么。它隔离的是每个 bank 自己的行阵列、open row 状态以及一部分局部 timing 演化；它共享的则可能包括通道上的命令总线、数据总线、I/O 引脚、电源噪声预算、某些全局时序约束，甚至在更细粒度上还会共享 bank group 级别的高速接口资源。继续用餐厅比喻：每个灶台是独立的（隔离），但所有灶台共用一条上菜通道和一个出餐窗口（共享）。即使五个灶台同时炒完了五道菜，也不能五盘同时从窗口挤出去。也就是说，多个 bank 可以让“阵列内部工作”并行，但最终把数据送出芯片、发送命令或满足某些总线级切换约束时，它们仍然会在更高层相互争用。
-
-这个“局部独立、全局共享”的结构，正是 DRAM 性能分析容易出错的地方。你如果只看到 bank 数量，可能会以为 `N` 个 bank 就能提供近似 `N` 倍并行；但真实情况是，只有当请求流足够分散、row locality 不太差、命令总线没有被占满、读写方向切换没有太频繁时，这些 bank 才能真正同时把价值释放出来。若多个请求虽然落到不同 bank，却需要争抢同一个数据总线发送 burst，或者在时间上反复触发全局受限的命令间隔，那么 bank 数再多也不等于吞吐线性上升。
-
-bank 存在的另一个重要目的，是让 row 冲突的损失局部化。假设没有 bank，任何换行都会把整个阵列当前状态推翻——就像只有一个灶台时，换菜必须刷锅，正在炖的汤也得倒掉。有了 bank，至少 bank A 的 row conflict 不会直接把 bank B 正在打开的行冲掉——灶台 A 刷锅不影响灶台 B 继续炖汤。这样 controller 才能把不同地址流映射到不同 bank，试图在“保行局部性”和“扩并行度”之间折中。于是 bank 不只是硬件分块，更是地址映射的目标对象。后面讲地址映射时你会看到，物理地址如何切到 bank 位，几乎直接决定了系统是在利用 bank 并行，还是在制造 bank hotspot。
-
-这里也能看出 bank 和 row buffer 的关系。row buffer 是“每个 bank 当前已打开行的工作副本”，bank 则是“这种副本状态的复制容器”。如果没有 bank，row buffer 命中只是极少数幸运情况；有了多个 bank，不同数据流就有机会各自维持一条短期工作集。因此，你可以把 bank 理解成 row locality 与 memory-level parallelism 之间的桥梁：一方面它允许多个 row buffer 状态并存，另一方面它让 controller 能在多个候选 bank 之间挑选下一个服务对象。
-
-不过 bank 也不是免费午餐。bank 数增加意味着更多局部阵列、更复杂的译码与布线、更大的控制状态空间，也往往伴随更复杂的地址映射和更高的功耗活动粒度。尤其在高频接口下，bank 再继续增加之后，问题会逐渐从“有没有足够多的独立阵列”转移到“这些阵列怎样共享高速 I/O”。这也是为什么后面会出现 `bank group`、prefetch、burst 这些进一步桥接 cell 速度与接口速度的机制。换句话说，bank 解决了第一层阵列并行问题，但它不会自动解决 I/O 和协议层的并行瓶颈。
-
-一个简单的多 bank 交织时序，可以帮助理解它为什么重要：
-
-```text
-时间从左向右；以下间隔仅示意，不代表合法时钟周期
-Bank 0    ACT A ------------ RD A ---------->
-Bank 1         ACT B ------------ RD B ----->
-Bank 2                    ACT C ------- RD C
-```
-
-这个图想表达的不是精确 JEDEC timing，而是“一个 bank 在做 activate 时，另一个 bank 仍可推进自己的状态”。同一个 bank 不可同时保持两个打开行。若请求都命中已打开的同一行，可连续发多条 RD/WR，无须每次 PRE/ACT；若换行，则先满足关行和重新 ACT 的时序。分散到不同 bank 才能同时维持不同行，但命令及 DQ 等共享约束仍须检查。
-
-再看一个反例也很重要。假设相邻地址被映射得过于集中，四个连续请求都落到同一 bank 的不同行，即便器件内部有很多 bank，controller 看到的仍然可能是：
-
-```text
-Req0: [若已有其他打开行则 PRE] / ACT / RD on bank 0
-Req1: PRE/ACT/RD on bank 0
-Req2: PRE/ACT/RD on bank 0
-Req3: PRE/ACT/RD on bank 0
-```
-
-这时 bank 并行形同虚设。也就是说，bank 是潜在并行资源，不是自动实现的并行结果。它是否真正转化为有效带宽，取决于地址映射、访问模式、page policy 和控制器调度能否配合。
-
-因此，理解 bank 最稳妥的方式不是把它当成“容量子块”，而是把它当成“可独立维护 open-row 状态、但仍受更高层共享资源约束的最小可调度阵列单元”。后面一切关于 FR-FCFS、page policy、地址交织、bank group、effective bandwidth 的分析，都会围绕这个定义展开。
+芯片内部还可能有 subarray 等更细粒度组织。CMU 提出的 [SALP](https://users.ece.cmu.edu/~yoonguk/papers/kim-isca12.pdf) 探索了利用 subarray 并行的改动；它是研究方案，不能据此假设所有商用 DRAM 都公开相同能力。
 
 ## 一句话理解
 
-Bank 是 DRAM 内部并行性的最小单位，因为它复制了 open-row 状态和局部阵列工作能力；但它只隔离了部分代价，命令总线、数据总线和更高层时序资源仍然共享。
+Bank 提供可独立管理的行状态；实际并行度仍受器件和共享接口限制。
 
 ## 建模启示
 
-对建模来说，bank 不应只是一个容量切片索引，而必须是显式状态对象。至少要给每个 bank 单独建模 `open_row`、`ready_cycle` 和可能的 `refresh/blocking state`，否则模型无法表达 bank-level parallelism，也无法表达热点映射和 row conflict。
-
-一个最小可用的状态草图可以是：
-
-```text
-DramBankModel {
-  open_row: row_id | INVALID
-  ready_cycle: cycle
-  state: enum { IDLE, ACTIVATING, ACTIVE, PRECHARGING, REFRESHING }
-}
-```
-
-在 channel 层还要再保留共享资源：
-
-```text
-DramChannelSharedState {
-  cmd_bus_ready_cycle: cycle
-  data_bus_ready_cycle: cycle
-}
-```
-
-如果只关心粗粒度吞吐，可以把多个 bank 的效果折叠成一个“并行度系数”；但只要你要分析地址映射、QoS、FR-FCFS 或 row-hit-rate，最好显式建成 `bank array + shared bus` 这两层。因为 DRAM 的核心不是“有多少 bank”，而是“bank 的局部独立性与全局共享性怎样共同塑造服务过程”。
-
-一个足够简洁但有解释力的服务框架可以写成：
-
-```text
-for req in schedulable_requests:
-  bank = map_to_bank(req.addr)
-  if bank.ready_cycle <= now and shared.cmd_bus_ready_cycle <= now:
-      issue_command(req, bank)
-```
-
-这里只保留了最小骨架，但已经足以让后面的调度策略和冲突分析有真正的落脚点。
+将 bank 的状态与 channel 的命令、DQ 和跨 bank 约束分开建模。若目标设备提供其他粒度的并行机制，再依据其规格扩展。

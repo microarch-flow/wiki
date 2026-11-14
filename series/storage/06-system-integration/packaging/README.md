@@ -1,7 +1,7 @@
 # 封装与集成
 
 上级：[`RAM/wiki/`](../../reading-and-reference/01-reading/)
-相关：[DRAM 协议层](../../03-dram/protocols/README.md), [NPU 数据路径与存储组织](../../01-memory-hierarchy/04-npu-case/README.md)
+相关：[DRAM 命令与接口](../../03-dram/protocols/README.md), [NPU 数据路径与存储组织](../../01-memory-hierarchy/04-npu-case/README.md)
 
 ## 这页在回答什么问题
 

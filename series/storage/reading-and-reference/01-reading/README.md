@@ -9,7 +9,7 @@
 | 1 | [01 概览](../../01-memory-hierarchy/README.md) | 区分物理单元、接口、系统角色与封装。 |
 | 2 | [02 SRAM 基础](../../02-sram/foundations/README.md) | 从 6T 单元到阵列、端口和宏时序。 |
 | 3 | [03 SRAM 应用](../../02-sram/applications/README.md) | 用 SRAM 基础解释 cache、scratchpad 和 buffer。 |
-| 4 | [04 DRAM 基础](../../03-dram/foundations/README.md) | 从 1T1C 单元到 row buffer、bank 和 refresh。 |
+| 4 | [04 DRAM 单元与阵列](../../03-dram/foundations/README.md) | 从 1T1C 单元到 row buffer、bank 和 refresh。 |
 | 5 | [05 DRAM 协议](../../03-dram/protocols/README.md) | 用阵列行为解释命令、时序和 DDR 家族。 |
 | 6 | [06 Memory Controller](../../04-dram-controller/README.md) | 在协议约束下调度请求，并建模资源竞争。 |
 | 7 | [07 系统架构](../../01-memory-hierarchy/01-system-basics/README.md) | 分析多级存储、有效带宽和系统访问延迟。 |

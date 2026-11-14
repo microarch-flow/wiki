@@ -114,7 +114,14 @@ class GeneratedNavigationTests(unittest.TestCase):
 
         dram = topics[2]["DRAM 器件与接口"]
         hbm = "RAM/wiki/05-dram-protocol-families/hbm-stacked-wide-io.md"
-        self.assertIn(hbm, dram)
+        self.assertEqual([next(iter(section)) for section in dram],
+                         ["DRAM 单元与阵列", "DRAM 命令与接口"])
+        self.assertEqual(list(paths(dram)).count(hbm), 1)
+        self.assertIn(hbm, list(paths(dram[1])))
+        for page in paths(dram):
+            path = Path(page)
+            location = (path.parent.as_posix() if path.name == "README.md" else path.with_suffix("").as_posix()) + "/"
+            self.assertIn(location, locations, page)
         hbm_html = (SITE / "RAM/wiki/05-dram-protocol-families/hbm-stacked-wide-io/index.html").read_text(encoding="utf-8")
         article = re.search(r"<article\b.*?</article>", hbm_html, re.DOTALL).group()
         source_url = page_url(Path("RAM/wiki/05-dram-protocol-families/hbm-stacked-wide-io/index.html"))
@@ -308,8 +315,7 @@ class GeneratedNavigationTests(unittest.TestCase):
                 chapter_source = f"RAM/wiki/{chapter.parent.name}/README.md"
                 def shares_section(url):
                     article_source = f"RAM/wiki/{chapter.parent.name}/{url.rstrip('/')}.md"
-                    # HBM has a direct entry under DRAM, outside this chapter.
-                    return url != "hbm-stacked-wide-io/" and owner(article_source) == owner(chapter_source)
+                    return owner(article_source) == owner(chapter_source)
                 expected = [(url, label) for url, label in clean(reading_items) if shares_section(url)]
                 self.assertEqual(clean(nav_items), expected)
                 for url, _ in clean(reading_items):

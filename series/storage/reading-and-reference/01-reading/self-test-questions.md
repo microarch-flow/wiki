@@ -140,7 +140,7 @@
    [参考正文](../../03-dram/protocols/lpddr-low-power-mobile.md)
 
 39. [T] GDDR 继续提高 pin-rate，而 HBM 缩短距离并扩大位宽；这两条路线分别是在缓解哪类互连和能耗压力？
-   [参考正文](../../03-dram/hbm-stacked-wide-io.md)
+   [参考正文](../../03-dram/protocols/hbm-stacked-wide-io.md)
 
 40. [J] 在 DDR、LPDDR、GDDR、HBM 之间选型时，为什么“峰值带宽最高”不能作为唯一排序标准？
    [参考正文](../../03-dram/protocols/ddr-lpddr-gddr-hbm-tradeoff-map.md)

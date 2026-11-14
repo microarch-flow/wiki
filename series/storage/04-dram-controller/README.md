@@ -1,7 +1,7 @@
 # Memory Controller
 
 上级：[`RAM/wiki/`](../reading-and-reference/01-reading/)
-相关：[DRAM 协议层](../03-dram/protocols/README.md), [系统视角](../01-memory-hierarchy/01-system-basics/README.md)
+相关：[DRAM 命令与接口](../03-dram/protocols/README.md), [系统视角](../01-memory-hierarchy/01-system-basics/README.md)
 
 ## 这页在回答什么问题
 

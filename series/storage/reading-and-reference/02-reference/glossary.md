@@ -1,7 +1,7 @@
 # 术语表
 
 上级：[参考资料](./README.md)
-相关：[RAM 家族的分类与命名体系](../../01-memory-hierarchy/01-system-basics/taxonomy.md), [DRAM 协议层](../../03-dram/protocols/README.md)
+相关：[RAM 家族的分类与命名体系](../../01-memory-hierarchy/01-system-basics/taxonomy.md), [DRAM 命令与接口](../../03-dram/protocols/README.md)
 
 ## 这页在回答什么问题
 

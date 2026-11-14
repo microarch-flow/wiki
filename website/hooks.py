@@ -14,7 +14,7 @@ _WEBSITE = str(Path(__file__).resolve().parent)
 if _WEBSITE not in sys.path:
     sys.path.insert(0, _WEBSITE)
 from sources import load_series, series_landing  # noqa: E402
-from ownership import GROUPS, MICRO, STORAGE, INTERCONNECT, DEVELOPMENT, WORKLOAD_GROUPS, INFERENCE_GROUPS, HBM_READING_ENTRY, owner, workload_owner, development_owner, inference_owner  # noqa: E402
+from ownership import GROUPS, MICRO, STORAGE, INTERCONNECT, DEVELOPMENT, WORKLOAD_GROUPS, INFERENCE_GROUPS, owner, workload_owner, development_owner, inference_owner  # noqa: E402
 from storage_navigation import MEMORY_HOME, MEMORY_SECTIONS, MEMORY_TOPIC, RESOURCE_SECTIONS, STORAGE_RESOURCES  # noqa: E402
 
 
@@ -306,18 +306,12 @@ def grouped_original_topics(root, series):
         if (series, group) == owner("electrical-timing-foundations.md"):
             entries.append("electrical-timing-foundations.md")
         for name, label in TOPICS:
-            # HBM is a direct reading entry under DRAM, not a second main
-            # navigation entry nested inside the old protocol directory.
-            hbm = series == STORAGE and group == "DRAM 器件与接口"
-            tree = owned_topic_tree(root, name, series, group,
-                                    exclude={HBM_READING_ENTRY} if hbm else ())
+            tree = owned_topic_tree(root, name, series, group)
             if tree:
                 if series == STORAGE:
                     entries.extend(compact_storage_sections(tree))
                 else:
                     entries.append({label: tree})
-        if series == STORAGE and group == "DRAM 器件与接口" and (root / HBM_READING_ENTRY).is_file():
-            entries.append(HBM_READING_ENTRY)
         # A sole directory around a whole storage topic repeats the topic's
         # label (for example, DRAM controller / Memory Controller).
         if series == STORAGE and len(entries) == 1 and isinstance(entries[0], dict):
