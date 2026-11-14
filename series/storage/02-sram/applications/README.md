@@ -1,59 +1,41 @@
 # SRAM 应用形态
 
-上级：[`RAM/wiki/`](../../reading-and-reference/01-reading/)
-相关：[SRAM 基础](../foundations/README.md), [系统视角](../../01-memory-hierarchy/01-system-basics/README.md)
+上级：[存储系统](../../README.md)
+
+相关：[SRAM 基础](../foundations/README.md) · [系统基础](../../01-memory-hierarchy/01-system-basics/README.md) · [RAM 阅读路线](../../reading-and-reference/01-reading/README.md)
 
 ## 这页在回答什么问题
 
-同样都建立在 SRAM 之上，为什么 register file、cache、scratchpad、TCM 和 NPU buffer 会长成完全不同的系统对象。这一章要回答的不是“它们都用 SRAM 做”，而是“底层约束相同的情况下，上层为什么会演化出不同的管理语义、端口组织和数据流角色”。
+Register file、cache、scratchpad、TCM 和 NPU buffer 的使用目标不同。它们可能采用 SRAM，也可能包含其他存储实现。本章从数据放置、访问并发和时间约束出发，解释这些角色如何使用存储资源。
 
 ## 不同系统角色如何使用 SRAM
 
-上一章把 SRAM 作为物理与阵列基础讲完后，一个很自然的下一问是：如果底层都是 6T cell、字线位线、bank 切分和 retention 约束，为什么系统里还会出现这么多名字不同、接口不同、成本结构也不同的”片上存储”？这就像面粉只决定了你能做面食，但做成面包、馒头、面条还是披萨，取决于你要喂什么人、配什么菜、用什么烤箱。SRAM 只决定了底层介质的大方向，系统真正关心的，往往不是”这是不是 SRAM”，而是”谁来决定里面放什么、什么时候访问、并发语义多强、是否允许不确定命中、是否接受冲突、恢复代价多大”。
+| 角色 | 主要问题 | 需要确认的边界 |
+| --- | --- | --- |
+| Register file | 执行管线如何取得操作数和写回结果？ | 读写需求、端口、旁路和冲突处理。 |
+| Cache | 硬件怎样判断数据是否在本地？ | tag、data、命中路径和替换策略。 |
+| Scratchpad | 使用方怎样放置与访问局部数据？ | 地址空间、搬运、同步与共享资源。 |
+| TCM | 紧耦合访问在什么条件下可预测？ | 访问路径、其他请求者、仲裁和时限。 |
+| NPU buffer | 权重、激活和部分和如何供给计算？ | 数据生命周期、实际存储位置、带宽与调度。 |
 
-这一章讨论 SRAM 的不同应用形态。Register file 关注操作数访问和端口组织；cache 的 tag 与 data 阵列承担不同的查找和数据访问职责。[Scratchpad 与 cache 导读](./scratchpad-vs-cache.md)连接系统层的完整比较，说明两者怎样管理数据。
+这些名称描述系统角色，不规定必须使用 6T cell 或某个端口组织。例如，寄存器堆也可以由触发器或锁存器实现；同一块 SRAM 可以按配置承担多种数据角色。具体电路与接口仍须结合目标设计。
 
-后面的 `npu-weight-buffer-activation-buffer.md` 和 `tcm-itcm-dtcm-in-mcu.md` 则是把 SRAM 的应用进一步推向特定系统场景。NPU buffer 关心的是数据流角色、bank 并发和搬运调度，不会满足于一个笼统的“local SRAM”标签；MCU 里的 TCM 则把确定性压到比平均命中率更高的位置，所以它虽然也是 SRAM，却故意不走 cache 路线。这两篇的意义在于提醒你：应用形态不是在给同一件东西换名字，而是在表达系统把 SRAM 纳入整体架构时，优先保留了哪一组性质。
-
-这也是为什么本章必须放在 SRAM 基础之后、DRAM 主线之前。放在前面，你会很容易把 register file、cache、scratchpad 看成几个独立名词，而不知道它们背后其实是在争夺同一组底层资源约束：端口数、bank 数、访问确定性、局部容量、唤醒粒度和软件可控性。放在 DRAM 之后又会模糊重点，因为本章真正要建立的是“同一物理介质的多种系统语义”，不是“不同物理介质的系统比较”。只有先把 SRAM 基础立住，再来看这些形态，很多系统差异才会显得是必然，而不是风格偏好。
-
-读这一章时，有一个特别有用的判断框架——就像医生问诊时的标准四问：每遇到一种 SRAM 形态，先问四个问题。第一，谁负责决定里面放什么（是硬件自动管理，还是软件显式控制）？第二，并发访问需求来自哪里（是多源操作数、命中查找、DMA 搬运还是多 tile 同时取数）？第三，冲突和 miss 能不能接受，还是必须给出确定性服务？第四，数据生命周期有多长，是否值得做 retention、复制、双缓冲或预取。很多看似属于“架构风格”的分歧，顺着这四个问题往下推，最后都会回到前一章讲过的 SRAM 物理与阵列约束。
-
-从建模角度看，这一章也标志着一个重要转变。到这里为止，SRAM 不再只是一个 `capacity + latency + bank_count` 的底层对象，而开始被包装成不同的系统资源类型：有的更像多端口操作数仓库，有的更像概率命中的透明层，有的更像确定性本地存储，有的更像为某种数据流量身定制的局部 buffer。也就是说，同样的 SRAM 物理原型，会在这里分裂成不同的使用语义模型。后面进入 `07-system-architecture/` 时，系统性能差异很多时候正是从这些语义差异，而不是从 bitcell 差异开始放大的。
+Cache 与 scratchpad 的管理责任和访问路径，在系统层的 [Cache 与 scratchpad](../../01-memory-hierarchy/02-access-paths/cache-vs-scratchpad.md)中统一比较。本章保留一个[阅读入口](./scratchpad-vs-cache.md)，不重复该比较。
 
 ## 阅读顺序
 
-建议按下面顺序阅读本目录：
+1. [Register file](./register-file-as-sram.md)：从操作数供给看逻辑需求、端口与旁路。
+2. [Cache 的 tag 与 data](./cache-sram-tag-data-arrays.md)：看查找、比较和数据选择。
+3. [Scratchpad 与 cache 导读](./scratchpad-vs-cache.md)：进入系统层比较。
+4. [TCM 与实时性](./tcm-itcm-dtcm-in-mcu.md)：分析紧耦合路径与共享带来的等待。
+5. [NPU 的 SRAM buffer](./npu-weight-buffer-activation-buffer.md)：从数据角色进入 NPU 的供数与搬运。
 
-1. [Register file](./register-file-as-sram.md)
-2. [Cache 的 tag 与 data](./cache-sram-tag-data-arrays.md)
-3. [Scratchpad 与 cache 导读](./scratchpad-vs-cache.md)
-4. [NPU 的 SRAM buffer](./npu-weight-buffer-activation-buffer.md)
-5. [TCM 与实时性](./tcm-itcm-dtcm-in-mcu.md)
-
-如果你更关心通用处理器和软件可见语义，优先看 1 -> 3。若你的重点是 AI 芯片和实时系统，再接着看 4 -> 5。
+若主要研究实时系统，可以在第 3 篇后进入 TCM；若主要研究加速器，可直接读第 5 篇，再进入 [NPU 数据路径与存储组织](../../01-memory-hierarchy/04-npu-case/README.md)。
 
 ## 一句话理解
 
-这一章要讲清的不是“哪些东西用 SRAM 做”，而是“同样的 SRAM 介质在不同系统目标下，会被包装成完全不同的资源语义和并发语义”。
+SRAM 是一种存储技术；应用角色还规定数据如何被放置、访问和管理。
 
 ## 建模启示
 
-本章对应的核心建模动作，是把统一的 `SramArrayModel` 进一步实例化成几类不同的系统资源，而不是继续把所有片上 SRAM 都视为同一种模块。至少应该区分 `operand_storage`、`hardware_managed_cache`、`software_managed_scratchpad`、`deterministic_tcm`、`stream_buffer` 这几类角色，因为它们对冲突、命中、并发和生命周期的解释完全不同。
-
-一个适合作为后续各页公用入口的抽象草图可以是：
-
-```text
-SramBackedResource {
-  storage_impl: SramArrayModel
-  role: enum { REGFILE, CACHE, SCRATCHPAD, TCM, STREAM_BUFFER }
-  allocation_policy: enum { FIXED, HW_MANAGED, SW_MANAGED, DMA_SCHEDULED }
-  miss_semantics: enum { NONE, STALL, REFILL, SOFTWARE_VISIBLE }
-  service_structure: { port_types, bank_count, shared_resources }
-  read_ii_cycles: int
-  write_ii_cycles: int
-  arbitration_and_guarantees: object
-}
-```
-
-如果只关心底层时延，本章的语义层可以先忽略；但只要进入系统吞吐、编程模型或 AI 数据流分析，这些字段就必须显式存在。因为很多“同样容量的 SRAM 为什么效果完全不同”的问题，答案根本不在物理层，而在资源语义层。
+先确定要观察的请求与完成边界，再按问题保留必要的地址映射、端口、仲裁和响应时序。比较不同角色时，还需表示适用的命中与填充、软件放置与同步、旁路，以及数据搬运；不能仅用相同容量推断相同的系统行为。

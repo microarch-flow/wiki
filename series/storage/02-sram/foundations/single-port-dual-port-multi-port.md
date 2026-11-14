@@ -1,10 +1,8 @@
-# 单口、双口、多口 SRAM，端口数为什么是关键代价
-
-<span id="这页在回答什么问题"></span>
+# SRAM 端口：读写并发与实现代价
 
 上级：[SRAM 基础](./README.md)
 
-相关：[SRAM 宏接口与读写语义](./sram-macro-interface-and-semantics.md) · [SRAM 阵列组织](./sram-array-organization.md) · [Register file](../applications/register-file-as-sram.md)
+相关：<span id="单口双口多口-sram端口数为什么是关键代价"></span><span id="这页在回答什么问题"></span>[SRAM 宏接口与读写语义](./sram-macro-interface-and-semantics.md) · [SRAM 阵列组织](./sram-array-organization.md) · [Register file](../applications/register-file-as-sram.md)
 
 <p class="ram-problem-lede">端口决定哪些访问可以同时进入存储资源。增加并发能力可能需要更多 cell 接入、位线、外围电路或额外的系统组织；具体代价取决于实现和所承诺的访问规则。</p>
 
@@ -53,6 +51,13 @@
 
 - **复制**：把数据存入多个副本，以支持更多读请求。写入需要同步更新、等待或采用其他一致性机制；存储容量和写路径会付出代价。
 - **时分复用**：在不同内部时隙使用同一个物理端口。它可能减少物理端口，但要求时钟、调度和接口延迟满足系统约束。
+
+| 方案 | 可提供的机会 | 主要约束与代价 |
+| --- | --- | --- |
+| 真多端口 | 宏明确支持的多个物理访问可并发。 | cell、外围与布线成本；仍须检查碰撞规则。 |
+| Banking | 不同 bank 的请求可在资源独立时并行。 | 同 bank 冲突、地址映射和共享路径。 |
+| 复制 | 多个副本可分别提供读路径。 | 额外存储与写入同步。 |
+| 时分复用 | 多个逻辑请求使用不同内部时隙。 | 时隙调度、内部时钟和接口延迟。 |
 
 Banking 可以让访问不同 bank 的请求并行，但同一 bank 的访问仍会竞争，且不同 bank 也可能共享上游或返回路径。地址如何映射到 bank，见 [bank 地址映射与冲突](./sram-bank-address-mapping-conflicts.md)。
 

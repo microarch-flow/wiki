@@ -1,10 +1,8 @@
-# 漏电、保持电压、low-power SRAM 设计
-
-<span id="这页在回答什么问题"></span>
+# SRAM 低功耗：漏电、保持与唤醒
 
 上级：[SRAM 基础](./README.md)
 
-相关：[先进工艺与 SRAM](./sram-process-scaling-challenge.md) · [TCM 与实时性](../applications/tcm-itcm-dtcm-in-mcu.md) · [存储系统建模模板](../../reading-and-reference/02-reference/memory-modeling-template.md)
+相关：<span id="漏电保持电压low-power-sram-设计"></span><span id="这页在回答什么问题"></span>[先进工艺与 SRAM](./sram-process-scaling-challenge.md) · [TCM 与实时性](../applications/tcm-itcm-dtcm-in-mcu.md) · [存储系统建模模板](../../reading-and-reference/02-reference/memory-modeling-template.md)
 
 <p class="ram-problem-lede">SRAM 在空闲时也可能消耗功率。降低供电或关闭电源可以改变这部分代价，但系统还需要决定保留哪些数据，以及何时能再次访问。</p>
 
@@ -22,7 +20,14 @@
 | 保持 | 按目标宏的条件保留指定数据；进入该状态后是否还能直接访问，由宏定义。 |
 | 不保证保持 | 相关存储电源可能关闭；系统不能假定数据仍有效，恢复后可能需要初始化或重装。 |
 
-保持电压与正常读写所需的最低电压应分别确认。即使保持状态保住了内容，也不代表可以在该状态立即执行正常读写；恢复时间、隔离信号和允许访问的时刻都要查目标规格。
+下图是用于说明边界的状态转换，不规定所有宏都具有这些状态或允许这些转移：
+
+<div class="ram-calculation">
+  <span>保持路径：可访问 → 进入保持 → 保持 → 唤醒 → 可访问</span>
+  <span>不保持路径：可访问 → 断电或不保证保持 → 恢复供电 → 初始化或重装 → 可访问</span>
+</div>
+
+进入、唤醒与恢复期间能否接纳请求、内容何时有效，应按目标接口确认。保持电压与正常读写所需的最低电压应分别确认。即使保持状态保住了内容，也不代表可以在该状态立即执行正常读写；恢复时间、隔离信号和允许访问的时刻都要查目标规格。
 
 以 [ST 的 STM32WBA 低功耗说明](https://wiki.st.com/stm32mcu/wiki/Connectivity%3ASTM32CubeWBA_Low_Power_Management)为例，其部分 Standby 配置可以选择保留 SRAM 内容，并使用低功耗供电。器件退出 Standby 还涉及系统复位与重新配置。这是器件级实例，不代表所有 SRAM 宏具有同样的模式或唤醒行为。
 
@@ -71,6 +76,7 @@
 
 ## 接下来怎么读？
 
+- [SRAM 可靠性](./sram-reliability-ecc-mbist-repair.md)：继续看初始化、ECC、测试与修复。
 - [SRAM 应用形态](../applications/README.md)：继续看不同的系统角色怎样使用存储资源。
 - [NPU 的 SRAM buffer](../applications/npu-weight-buffer-activation-buffer.md)：看不同数据角色的驻留与访问需求。
 - [TCM 与实时性](../applications/tcm-itcm-dtcm-in-mcu.md)：看局部存储与系统时序要求。

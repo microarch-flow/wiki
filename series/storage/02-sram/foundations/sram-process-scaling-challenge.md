@@ -1,18 +1,18 @@
-# 为什么 SRAM 在先进制程下不再线性 scale
-
-<span id="这页在回答什么问题"></span>
+# SRAM 工艺缩放：密度、Vmin 与良率
 
 上级：[SRAM 基础](./README.md)
 
-相关：[6T SRAM cell](./6t-cell-bistable-storage.md) · [SRAM 阵列组织](./sram-array-organization.md) · [SRAM 漏电与低功耗](./sram-power-leakage-retention.md)
+相关：<span id="为什么-sram-在先进制程下不再线性-scale"></span><span id="这页在回答什么问题"></span>[6T SRAM cell](./6t-cell-bistable-storage.md) · [SRAM 阵列组织](./sram-array-organization.md) · [SRAM 漏电与低功耗](./sram-power-leakage-retention.md)
 
 <p class="ram-problem-lede">工艺变化可能改善 SRAM 的密度、速度或能效，但这些指标不一定按同一比例变化。比较时还要看 cell 类型、外围电路、工作电压和目标良率。</p>
 
 这里的“不再线性 scale”表示不能用一个统一的缩放系数推断全部结果，不表示 SRAM 停止进步，也不表示每一代工艺都会让每个指标变差。
 
-## bitcell 缩放、Vmin 与变异
+## 为什么 SRAM 在先进制程下不再线性 scale？ {#bitcell-缩放vmin-与变异}
 
 一个 6T cell 的面积受器件尺寸和版图规则约束，包括接触、布线及相邻器件的安排。完整 SRAM 宏还包含译码、感测、写驱动、电源和其他外围电路。即使 cell 面积缩小，宏面积也不会必然按完全相同比例缩小。
+
+用一个归一化算例说明外围占比：假设同容量宏原来的总面积为 100，其中 cell 占 70、其他部分占 30。若 cell 数不变、每个 cell 面积减少 20%，而其他面积不变，新总面积为 `70 × 0.8 + 30 = 86`，仅减少 14%。这些比例都是教学假设，不是工艺或产品数据。
 
 同一工艺中还可能有不同的 cell 选择。[Intel 的 32 nm 工艺介绍](https://www.intel.com/content/dam/doc/technology-brief/32nm-soc-platform-technology-presentation.pdf)展示了面向高速、低电压和高密度的不同 SRAM cell。这个例子说明选型目标会影响 cell 设计；不能用该资料中的面积直接推断其他节点或完整宏的结果。
 
@@ -62,4 +62,5 @@
 ## 接下来怎么读？
 
 - [SRAM 漏电与低功耗](./sram-power-leakage-retention.md)：继续看保持电压、断电和唤醒。
+- [SRAM 可靠性](./sram-reliability-ecc-mbist-repair.md)：区分 ECC、测试与冗余修复。
 - [SRAM 选型清单](../../reading-and-reference/02-reference/sram-design-checklist.md)：按目标宏和系统需求检查参数。

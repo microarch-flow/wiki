@@ -421,8 +421,26 @@ class GeneratedNavigationTests(unittest.TestCase):
 
         ram = (SITE / "RAM/wiki/02-sram-foundations/index.html").read_text(encoding="utf-8")
         fab = (SITE / "FAB/wiki/07-industry-map/index.html").read_text(encoding="utf-8")
-        self.assertIn("<p>上级：", ram)
+        # SRAM parent is already in breadcrumbs; the historical RAM route remains available.
+        self.assertNotIn("<p>上级：", ram)
+        self.assertIn(">RAM 阅读路线</a>", ram)
         self.assertIn("<p>上级:", fab)
+
+    def test_sram_reading_order_and_reliability_search(self):
+        applications = (SITE / "RAM/wiki/03-sram-applications/index.html").read_text(encoding="utf-8")
+        reading = re.search(r'<h2\b[^>]*>[^<]*阅读顺序.*?</h2>.*?<ol>(.*?)</ol>', applications, re.DOTALL)
+        self.assertIsNotNone(reading)
+        links = re.findall(r'<li>\s*<a href="([^"]+)">', reading.group(1))
+        self.assertEqual(links, [
+            "register-file-as-sram/", "cache-sram-tag-data-arrays/", "scratchpad-vs-cache/",
+            "tcm-itcm-dtcm-in-mcu/", "npu-weight-buffer-activation-buffer/",
+        ])
+        foundations = (SITE / "RAM/wiki/02-sram-foundations/index.html").read_text(encoding="utf-8")
+        self.assertIn('href="sram-reliability-ecc-mbist-repair/"', foundations)
+        index = json.loads((SITE / "search/search_index.json").read_text(encoding="utf-8"))
+        self.assertIn("RAM/wiki/02-sram-foundations/sram-reliability-ecc-mbist-repair/",
+                      {entry["location"] for entry in index["docs"]})
+        self.assertFalse(any(entry["location"].startswith("reviews/") for entry in index["docs"]))
 
     def test_current_navigation_and_breadcrumb_links(self):
         self.assertTrue(SITE.is_dir(), "Build the site before running this test")

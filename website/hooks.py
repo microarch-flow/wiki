@@ -614,8 +614,11 @@ def on_page_content(html, page, **kwargs):
         "RAM/wiki/02-sram-foundations/sram-bank-address-mapping-conflicts.md",
         "RAM/wiki/02-sram-foundations/sram-process-scaling-challenge.md",
         "RAM/wiki/02-sram-foundations/sram-power-leakage-retention.md",
+        "RAM/wiki/02-sram-foundations/sram-reliability-ecc-mbist-repair.md",
     }:
         html = f'<div class="ram-problem-article">\n{html}\n</div>'
+    elif page.file.src_uri.startswith("RAM/wiki/03-sram-applications/"):
+        html = f'<div class="sram-application-article">\n{html}\n</div>'
     if has_breadcrumbs(page):
         config = kwargs["config"]
         html = render_breadcrumbs(page, Path(config.docs_dir), config.extra.get("ram_sidebar_labels")) + "\n" + html

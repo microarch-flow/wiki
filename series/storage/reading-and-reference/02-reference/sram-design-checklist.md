@@ -1,7 +1,7 @@
 # SRAM 设计与选型 checklist
 
 上级：[参考资料](./README.md)
-相关：[单口、双口、多口 SRAM，端口数为什么是关键代价](../../02-sram/foundations/single-port-dual-port-multi-port.md), [为什么 SRAM 在先进制程下不再线性 scale](../../02-sram/foundations/sram-process-scaling-challenge.md)
+相关：[SRAM 端口：读写并发与实现代价](../../02-sram/foundations/single-port-dual-port-multi-port.md), [SRAM 工艺缩放：密度、Vmin 与良率](../../02-sram/foundations/sram-process-scaling-challenge.md)
 
 ## 这页在回答什么问题
 

@@ -1,14 +1,14 @@
-# SRAM 宏接口：怎样正确发起读写
+# SRAM 宏接口：地址、时序与访问语义
 
 上级：[SRAM 基础](./README.md)
 
-相关：[SRAM 读写时序](./read-write-cycle-timing.md) · [SRAM 端口与代价](./single-port-dual-port-multi-port.md) · [SRAM 选型清单](../../reading-and-reference/02-reference/sram-design-checklist.md)
+相关：<span id="sram-宏接口怎样正确发起读写"></span>[SRAM 读写时序](./read-write-cycle-timing.md) · [SRAM 端口与代价](./single-port-dual-port-multi-port.md) · [SRAM 选型清单](../../reading-and-reference/02-reference/sram-design-checklist.md)
 
 <p class="ram-problem-lede">一块 SRAM 的容量和位宽，只说明它能存多少数据。要正确使用它，还要知道何时采样、哪些操作可以并发、数据何时有效，以及冲突时有什么保证。</p>
 
 本文从使用者视角看 SRAM 宏的接口。它不要求所有宏采用同一组信号或同一种时序。具体设计应以所选宏的接口说明、工作模式和时序库为准。一次访问内部的电气过程见 [SRAM 读写时序](./read-write-cycle-timing.md)。
 
-## 1. 宏向外提供什么？
+## 1. SRAM 宏接口：怎样正确发起读写 {#1-宏向外提供什么}
 
 SRAM 宏可以看成一个有明确容量和访问规则的存储模块。上游提供地址和操作；写入还需要数据和可能存在的写掩码；读取则在规定时间后提供数据。有些宏还暴露时钟、片选、复位、低功耗或测试信号。
 
@@ -74,6 +74,8 @@ SRAM 宏可以看成一个有明确容量和访问规则的存储模块。上游
 例如，假设某个同步宏在上升沿 `n` 接纳读请求，输出在随后稳定；接收寄存器在上升沿 `n+1` 采样。这个例子还要求输出到接收端的最大延迟满足建立时间，最小延迟满足保持时间，且两端工作在所假设的时钟关系下。
 
 **读延迟**描述所选起点到结果可见或被采样的时间；**接纳间隔**描述同一资源最早隔多久能再接纳请求。假设某宏允许每个上升沿接纳一笔读，它的接纳间隔就是一拍；这不意味着数据在请求采样的同一瞬间就有效。能否连续接纳、允许怎样的读写组合，都应以目标宏为准。
+
+异步 SRAM 的接口边界不同：地址、片选和输出使能变化后，输出按器件规定的访问时间稳定，并非由宏的采样时钟沿定义。以 [Alliance Memory AS6C62256 数据手册](https://www.alliancememory.com/wp-content/uploads/pdf/AS6C62256%2023%20March%202016%20rev1.2.pdf)为例，需分别检查地址访问、片选及输出使能相关时序，并满足其读周期条件。系统使用寄存器接收时仍须检查接收端时序。
 
 检查真实时序时，还应确认 PVT、输入转换、输出负载、时钟脉宽及输入 setup/hold 等条件。[OpenRAM 的表征说明](https://github.com/VLSIDA/OpenRAM/blob/stable/docs/source/characterization.md)展示了一个生成时序和功耗模型的流程；该流程的结果只适用于相应生成配置和表征条件。
 

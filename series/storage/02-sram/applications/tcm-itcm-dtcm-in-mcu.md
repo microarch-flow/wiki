@@ -1,65 +1,39 @@
-# MCU 里的 TCM，为什么实时性需要确定性 SRAM
+# TCM：紧耦合存储与实时访问边界
 
 上级：[SRAM 应用形态](./README.md)
-相关：[Cache 与 scratchpad](../../01-memory-hierarchy/02-access-paths/cache-vs-scratchpad.md), [MCU、CPU、GPU、NPU 为什么选择不同存储器](../../06-system-integration/why-systems-choose-different-memory.md)
+
+相关：<span id="mcu-里的-tcm为什么实时性需要确定性-sram"></span>[Cache 与 scratchpad](../../01-memory-hierarchy/02-access-paths/cache-vs-scratchpad.md) · [不同系统如何选择存储器](../../06-system-integration/why-systems-choose-different-memory.md)
 
 ## 这页在回答什么问题
 
-为什么很多 MCU 和实时处理器宁愿给出一块容量不大、地址固定、功能朴素的 TCM，也不把同样面积全部拿去做 cache。更具体地说，在实时系统里，为什么“最坏情况可预测”常常比“平均情况更快”更值钱。
+MCU 里的 TCM 常用于对响应时间有要求的代码和数据。本页讨论紧耦合访问怎样帮助分析实时性，以及共享路径何时会引入等待。
 
-## TCM 的访问路径与实时性
+## MCU 里的 TCM：确定性 SRAM 与访问路径 {#tcm-的访问路径与实时性}
 
-如果站在通用计算的直觉上看，TCM 似乎有点”保守”——就像在高铁时代还有人坚持修建有轨电车。它通常不像 cache 那样透明、灵活，也不会自动根据局部性帮你提平均性能；很多时候它只是片上一块通过固定地址窗口访问的 SRAM，分成 `ITCM` 和 `DTCM`，分别给指令和数据走。可一旦系统目标从”平均吞吐更高”切换成”中断响应可控、控制回路抖动小、deadline 不丢”，TCM 的价值就会突然变得非常直接——独占路径、端口和固定服务延迟的 TCM 更容易证明时限；共享端口时仍可能等待。因为在实时系统里，真正危险的不是平均慢一点，而是某一次突然慢很多。
+Tightly Coupled Memory（TCM）通常通过与处理器紧耦合的路径访问，地址由软件或系统配置管理。它常用于 SRAM，但名称本身不保证某种 cell、端口或固定端到端延迟。ITCM 和 DTCM 分别强调指令和数据路径；实际地址映射、可访问类型和其他主设备的连接以具体处理器和 SoC 为准。
 
-先把 TCM 的定位说清。`ITCM` 通常指 instruction tightly coupled memory，`DTCM` 指 data tightly coupled memory。它们之所以叫 tightly coupled，不是因为物理上神秘地“更近”，而是因为它们往往通过比 cache/memory hierarchy 更直接、更固定的路径接到核心上，地址映射固定，访问语义简单，命中与否不是概率事件。只要代码或数据被放进 TCM，对处理器来说，这一段访问延迟和带宽行为就更接近一个确定的本地 SRAM 资源，而不是一个可能 hit、可能 miss、可能触发 refill 的层次化对象。
+### 固定宏延迟与请求等待
 
-这和 cache 的差别，不在”谁更快”这么简单，而在延迟分布的形状不同。想象两条通勤路线：cache 像走市区路线，大多数时候 20 分钟到，但偶尔遇上事故堵车要 2 小时；独占、固定服务时间的 TCM 像走专用车道，可给出固定访问时间；共享时还需计仲裁。对上班通勤来说，市区路线平均更快，偶尔迟到能忍受；但如果你是救护车司机，一次堵车就可能出人命——你一定选专用车道。MCU 里的中断处理、控制环、驱动时序和安全监控路径就是”救护车”：一个 ISR 如果平时 5 个周期取到指令，偶尔因为 I-cache miss 变成几十上百个周期，系统看到的不是”平均还行”，而是 deadline 被打穿。
+假设一块教学 TCM 有一个每拍接纳一笔请求的 `1RW` 资源。请求被接纳后，读结果在下一拍可用。CPU 和另一个请求者在第 0 拍各提交一笔独立读取，仲裁恰好先选另一请求者；没有其他阻塞：
 
-这就是为什么实时系统更关注 `WCET`，也就是 worst-case execution time，而不只关注 average latency。TCM 的核心价值，就是帮助系统把一部分关键路径从依赖 cache 状态和替换的存储层次里剥离出来。只要最关键的代码段放进 ITCM，最关键的数据结构放进 DTCM，这些访问的时间边界就会更容易被分析和保证。常见误解是把 TCM 理解成”没有 cache 那么高级的老式 SRAM”；更准确的说法是，TCM 不是在追求更高级，而是在追求更可证明——就像机械表不是比智能手表落后，而是在追求不依赖电池的持续可靠性。
+| 时刻 | 操作 |
+| --- | --- |
+| 第 0 拍 | 另一请求者的读被接纳；CPU 请求等待。 |
+| 第 1 拍 | 另一请求者的结果可用；CPU 的读被接纳。 |
+| 第 2 拍 | CPU 的结果可用。 |
 
-为什么要分成 ITCM 和 DTCM，也不只是命名习惯。代码流和数据流在实时处理器里往往有不同的带宽、并发和隔离需求。指令流更在意稳定取指和分支后的恢复成本，因此 ITCM 常常优先服务时间关键代码路径。数据流则可能混合栈、控制变量、DMA 交换区、采样窗口或中断共享数据，DTCM 需要更清晰的数据放置策略和与外设/DMA 的协同。把两者分开，一方面可以减轻结构冲突，另一方面也让软件更容易明确地把“哪些代码必须 deterministic、哪些数据必须 deterministic”区分出来。
+宏从接纳到结果可用仍为一拍，但 CPU 从提交到结果可用经历两拍。若其他请求者始终有更高优先级且没有服务保证，仅凭宏的固定延迟不能推出 CPU 等待的有限上界。实际最坏情况还需要结合仲裁、请求频率、互连、处理器流水线和中断规则分析。
 
-从 SRAM 应用谱系看，TCM 更接近 scratchpad，而不是 cache。它通常没有 tag compare、没有替换逻辑、没有命中不确定性，也不会偷偷把某块数据驱逐掉。你放进去的东西，只要不被软件或 DMA 自己改掉，就会稳定待在那里。代价当然也很清楚：软件、链接脚本、启动加载流程、驱动和运行时系统必须显式知道什么应该进 TCM，容量也通常比“理想上想放进去的一切”小得多。也就是说，TCM 不是消灭复杂性，而是把复杂性从硬件局部性猜测，换成软件显式布局与容量管理。
+### 具体器件的连接需要核对
 
-这个 trade-off 对 MCU 特别合适，是因为许多 MCU 工作负载本来就能清楚区分关键与非关键路径。控制闭环代码、中断向量、启动代码、实时滤波核心、少量关键控制数据，都可以明确标记为“必须低抖动”；而大块非关键代码、配置数据或偶发访问数据则可以留在更便宜、更大的外部 Flash、SRAM 或普通存储层里。换句话说，MCU 往往不需要一个“尽量聪明地帮我优化一切访问”的系统，而需要一个“保证关键那部分永远可控，剩下的再谈平均效率”的系统。
+例如，[STM32H7A3/B3 与 H7B0 参考手册](https://www.st.com/resource/en/reference_manual/dm00463927-stm32h7a3-b3-and-stm32h7b0-value-line-advanced-arm-based-32-bit-mcus-stmicroelectronics.pdf)描述的 ITCM 和 DTCM 总线均支持指令与数据访问；该器件的 MDMA 可通过 AHBS 访问 TCM，而 DMA1/2 的可达范围不同。这是特定器件的连接，不能推广为所有 MCU 的规则。查看目标设备时，应同时确认地址别名、权限、路径、争用和初始化要求。
 
-这也解释了为什么很多 MCU 或实时核会同时存在 cache 和 TCM，而不是二选一。cache 适合服务那些控制流更复杂、但 deadline 没那么硬的访问；TCM 适合承载那些必须给出稳定边界的路径。两者放在一起，实际上是在把“平均优化”和“最坏情况优化”分摊给不同的 SRAM 形态。常见误解是认为有了 TCM 就不需要 cache，或者反过来有了 cache 就不需要 TCM；真正合理的设计通常是承认两者目标不同，因此让关键路径和普通路径走不同的内存契约。
-
-从系统实现角度看，TCM 的另一个价值是分析简单。没有 tag、没有 replacement、没有 coherence 投机，访问路径更短，时序来源也更少。这不仅有利于实时分析，也有利于 safety case 和功能验证。因为你需要证明的事情少了：给定地址映射、仲裁规则和少量 DMA 交互，你更容易推导最坏访问时间。对功能安全或车规控制器来说，这种“容易证明”本身就是强价值，而不是附加属性。
-
-当然，TCM 也不是免费午餐。它的容量通常有限，软件需要显式决定放什么进去，放错了会造成容量浪费或关键路径没保住；如果 DMA 和 CPU 共享 DTCM，还要小心银行冲突和仲裁；若系统后续 workload 变得更动态，纯 TCM 模式可能会增加软件维护成本。因此 TCM 的最佳使用方式，不是把所有热数据都塞进去，而是围绕 deadline 和 jitter 敏感度，挑出最需要 deterministic 行为的那一部分。
-
-所以，TCM 的核心不是“更快的 SRAM”，而是“更可控的 SRAM”。它牺牲的是 cache 那种对平均局部性的自动适配，换来的是关键路径的低抖动、固定边界和更可分析的系统行为。把这一点看清，后面再讨论 MCU、CPU、GPU、NPU 为什么会选择不同的存储器路线时，实时系统的判断逻辑就会非常清楚。
+把关键代码或数据放入 TCM 可能减少 cache 命中状态带来的变化，但仍需证明从事件到结果的整条路径满足时限。执行环境中的中断、其他总线主设备、流水线和软件同步也可能影响结果。
 
 ## 一句话理解
 
-TCM 的价值不在于它平均更快，而在于地址由软件放置、访问不受 tag 替换影响；独占资源时服务时间可固定，共享时须计仲裁和最坏等待。给定地址序列、初始标签和替换状态的确定性 cache 也可确定地模拟 hit/miss。
+TCM 的紧耦合路径可以帮助建立可预测的访问边界；端到端时间仍由实际路径和共享资源决定。
 
 ## 建模启示
 
-在性能模型里，TCM 不应被建成“小 cache”，而更应该被建成 `software-placed deterministic SRAM region`。最关键的字段不是 hit rate，而是 `fixed_access_latency`、`address_region`、`cpu_dma_contention_rule` 以及是否允许与普通 memory path 并存。
-
-一个够用的抽象草图可以是：
-
-```text
-TcmModel {
-  type: enum { ITCM, DTCM }
-  capacity_bytes: uint64
-  fixed_access_latency_cycles: int
-  bank_count: int
-  address_base: uint64
-  address_limit: uint64
-  cpu_dma_shared: bool
-  arbitration_policy: enum { CPU_PRIORITY, FIXED_SLOT, ROUND_ROBIN }
-}
-```
-
-对应事件流可以写成：
-
-```text
-event TcmAccess(req_id, addr, master)
-event TcmService(req_id, bank_id)
-event TcmConflict(req_id_a, req_id_b, bank_id)
-```
-
-如果只关心功能，`fixed_access_latency_cycles` 可能已经足够；但只要你关心实时性或 DMA 并发，`cpu_dma_shared` 和 `arbitration_policy` 就必须显式存在。因为很多系统中的抖动，不是来自 TCM 本身“像 cache 一样 miss”，而是来自关键路径和 DMA 或其他 master 在同一块 deterministic SRAM 上发生了竞争。
+记录地址映射、每个请求者的可达性、端口、接纳间隔和仲裁保证，分别统计提交、接纳和结果可见时刻。分析实时任务时，用有界的干扰条件和可验证的仲裁规则推导最坏等待；只设一个固定 `TCM latency` 无法表达共享竞争。

@@ -436,3 +436,11 @@ body { background: var(--paper); }
   min-width: 720px;
   max-width: none;
 }
+
+/* Keep permalink controls from wrapping onto an empty line in SRAM headings. */
+@media (max-width: 44.984375em) {
+  .md-typeset .ram-problem-article h1,
+  .md-typeset .sram-application-article h1 { position: relative; }
+  .md-typeset .ram-problem-article h1 > .headerlink,
+  .md-typeset .sram-application-article h1 > .headerlink { position: absolute; }
+}

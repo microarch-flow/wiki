@@ -1,10 +1,8 @@
-# bank、sub-array、mat：SRAM 阵列怎么划分才高效
-
-<span id="这页在回答什么问题"></span>
+# SRAM 阵列组织：局部阵列、bank 与共享路径
 
 上级：[SRAM 基础](./README.md)
 
-相关：[SRAM 端口与代价](./single-port-dual-port-multi-port.md) · [bank 地址映射与冲突](./sram-bank-address-mapping-conflicts.md) · [NPU 的 SRAM buffer](../applications/npu-weight-buffer-activation-buffer.md)
+相关：<span id="banksub-arraymatsram-阵列怎么划分才高效"></span><span id="这页在回答什么问题"></span>[SRAM 端口与代价](./single-port-dual-port-multi-port.md) · [bank 地址映射与冲突](./sram-bank-address-mapping-conflicts.md) · [NPU 的 SRAM buffer](../applications/npu-weight-buffer-activation-buffer.md)
 
 <p class="ram-problem-lede">扩大容量不仅增加 cell 数量，也可能增加字线、位线和外围电路的负载。把存储划分成局部阵列或 bank，可以改变这些路径，但也会增加选择、布线和控制开销。</p>
 
@@ -18,13 +16,19 @@
 
 [CACTI](https://github.com/HewlettPackard/cacti) 是一个用于估算存储结构访问时间、面积和功耗的模型，支持比较不同组织。它的结果依赖模型、输入和工艺假设，不能直接当作实际宏的签核数据。
 
-## mat、sub-array 与 bank
+## bank、sub-array、mat：SRAM 阵列怎么划分？ {#matsub-array-与-bank}
 
 可以先把一个**局部阵列**理解为一组共享部分字线、位线或外围电路的 cell。多个局部阵列再通过译码和选择网络组成较大的存储资源。有些资料将这些层级称为 mat 或 sub-array，但两者的包含关系并不统一。
 
 `bank` 常用于表示一个具有某种独立访问能力的资源边界。它可能是宏内部的一部分，也可能由系统中的一个或多个宏组成。两个 bank 能否同时接纳请求，要看各自端口、控制和共享路径；bank 数量本身不足以回答。
 
 例如，假设一块教学存储有 4 个 bank，每个 bank 的数据容量为 `32 KiB`，合计 `128 KiB`。如果每个 bank 又由两个 `16 KiB` 局部阵列组成，共有 8 个局部阵列。这个算术只描述容量划分，并不能证明有 8 个独立端口，也不限定 mat 与 sub-array 的命名。
+
+| 教学组织 | 容量划分 | 本例额外假设 |
+| --- | --- | --- |
+| 存储资源 | 4 个 bank，共 128 KiB。 | 下例的响应共享一条输出路径。 |
+| 每个 bank | 2 个局部阵列，共 32 KiB。 | 各 bank 独立接纳读；局部阵列不因此获得独立端口。 |
+| 每个局部阵列 | 16 KiB。 | 此处只指定容量，不指定外围电路如何共享。 |
 
 ## 并发、能耗与物理布局
 

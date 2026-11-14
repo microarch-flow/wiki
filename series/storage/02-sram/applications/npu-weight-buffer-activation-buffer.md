@@ -1,66 +1,35 @@
-# NPU 里的 SRAM buffer：weight、activation、accumulator
+# NPU 的 SRAM：权重、激活与部分和
 
 上级：[SRAM 应用形态](./README.md)
-相关：[bank、sub-array、mat：SRAM 阵列怎么划分才高效](../foundations/sram-array-organization.md), [NPU 存储层次](../../01-memory-hierarchy/04-npu-case/npu-memory-hierarchy.md)
+
+相关：<span id="npu-里的-sram-bufferweightactivationaccumulator"></span>[bank 地址映射与冲突](../foundations/sram-bank-address-mapping-conflicts.md) · [NPU 数据路径与存储组织](../../01-memory-hierarchy/04-npu-case/README.md)
 
 ## 这页在回答什么问题
 
-NPU 里的片上 SRAM 为什么不会被笼统地叫“cache”，而是按 weight、activation、accumulator 分成不同 buffer；这些角色为什么对应不同的数据复用和端口需求。
+NPU 里的 SRAM buffer 怎样服务 weight、activation 和 accumulator？本页解释数据角色与实际存储资源的关系，再用请求冲突和分路径带宽说明建模边界。
 
 ## NPU 本地 buffer 的数据角色
 
-NPU 的片上 SRAM 如果只被叫作”一块本地缓存”，就像把厨房里的冰箱、灶台和砧板统称为”厨房设备”——技术上没错，但在讨论工作流时毫无用处。在大多数 NPU 数据流里，权重、激活和部分和并不是同一种”数据对象”，它们的生命周期、搬运方向、复用距离和并发压力都不同。这些角色对容量和访问路径提出不同要求；具体物理组织可共享，也可分别配置。
+权重和输入激活被读取以执行计算；部分和保存尚未完成的累加结果，可能留在处理单元寄存器、专用累加器或 SRAM 中。输出完成后，再按系统的数据路径写到下一层存储或其他计算单元。数据复用、搬运时刻和保存位置由映射与实现决定。
 
-先看 weight buffer。权重最典型的特点是 `读多写极少`——就像菜谱：你从书架上拿下来（从 HBM 装入），然后反复翻看（重复读取），直到这道菜做完才放回去。在推理场景里，一块权重通常从 HBM、LPDDR 或上一级 SRAM 装入片上后，会被重复读取很多次，直到当前 layer、tile 或 channel block 处理完成。它的设计价值不在”能不能随机写”，而在”能不能让一次装载服务尽可能长的复用距离”。这意味着 weight buffer 常常优先追求三件事：较高净容量效率、较高读带宽、以及按 PE 阵列分发时的并行供数能力。常见误解是把 weight buffer 简化成“只读 SRAM”；更准确的说法是，它是一个为读主导复用而优化的 staged storage。
+逻辑角色不必一一对应独立的物理宏。[NVDLA v1 的卷积缓冲区](https://nvdla.org/hw/v1/ias/unit_description.html#convolution-buffer)总计 512 KiB，由 16 个 32 KiB bank 组成；输入数据、权重和压缩权重元数据按配置使用逻辑缓冲区。其每个 bank 使用双端口 SRAM。这个实例说明可配置的共享组织，不代表所有 NPU 有相同容量、端口或数据流。
 
-activation buffer 的约束则不同。激活数据往往既要被写入，也要被较快地消费。它一方面承接外层输入流或上游 layer 输出，另一方面要按当前 tile 的计算节奏被多个计算单元重复读取。在卷积、attention 或 GEMM 映射里，activation 的复用可以很强，但这种复用通常更短、更依赖 tiling 和窗口滑动方式，也更容易被双缓冲节拍左右。所以 activation buffer 的关键设计变量，往往不是“尽量大”，而是“能否在当前 tile 被消费时，同时把下一块 tile 搬进来”。这也是为什么 activation buffer 天然和 DMA overlap、double buffering、bank interleave 绑得很紧。
+### 同一 bank 的读写冲突
 
-accumulator buffer 或 partial-sum buffer 又是第三类完全不同的对象。如果说 weight buffer 像菜谱、activation buffer 像食材传送带，那 accumulator buffer 更像炒锅——食材进去之后不是放着不动，而是不断被翻炒、加料、再翻炒。它承担的是 `高频读改写`。一次 MAC 之后，部分和要么继续留在本地等待下一次累加，要么在若干轮累加后再写回外层。于是 accumulator buffer 最敏感的不是”能放多少”，而是”局部读改写回路有多短、每拍能承受多少并发更新”。如果它的端口、bank 组织或本地带宽设计不够，算力阵列会先在 psum 更新路径上堵住。常见误解是把 accumulator 也视为普通输入 buffer；实际上，它更像一个为局部反馈回路定制的工作区。
+假设另一台教学 NPU 的局部 SRAM 共有 4 个 bank，每个 bank 是每拍只能接纳一笔读或写的 `1RW` 资源。某拍，计算需要从 bank 0 读取激活，同时搬运引擎要向 bank 0 写入下一批权重。即使其他 bank 空闲，bank 0 也只能先接纳其中一笔；另一笔等待仲裁。把权重放到其他可并发 bank 可能消除本次冲突，但需要新的布局和调度，不能自动解决其他路径瓶颈。
 
-把这三类 buffer 放在一起比较，会发现它们至少在四个维度上天然不同。第一，生命周期不同。权重可能跨多个 tile 常驻，activation 常随 tile 滚动，psum 往往在较短窗口内不断更新后被导出。第二，读写方向不同。权重偏只读，activation 常常是“边装边读”，psum 则偏“边读边写回”。第三，复用模式不同。权重更像广播到多个 consumer，activation 更像流经局部窗口，psum 更像围绕单个输出元素反复回流。第四，性能风险不同。权重 buffer 配小了，外层带宽压力会上升；activation buffer 组织不好，流水 overlap 会失效；accumulator buffer 扛不住，则会直接在最内层把阵列停住。
+如果部分和保存在处理单元寄存器，上例就不应额外计入一次部分和 SRAM 访问；如果它被读写到 SRAM，则要按实际地址、次数和端口重新分析。双缓冲也只有在存储分区、搬运路径和计算阶段确实能够重叠时才产生相应收益。
 
-这些差异会直接反映到 SRAM 组织方式上。weight buffer 更适合围绕读带宽和容量效率组织，可以容忍较弱的写路径，但需要良好的银行化分发能力。activation buffer 更强调搬运与消费并行，因此更需要和 bank 切分、prefetch 粒度、双缓冲边界一起设计。accumulator buffer 更关注本地反馈路径和更新热点，往往要求更高的局部写带宽、更短的数据返回路径，甚至更贴近 PE 的分布式布局。若三者共享 local SRAM，模型仍要保留各自访问轨迹并在共享端口仲裁；若独立，则各自建模。
+### 总带宽不能替代各路径的需求
 
-这也是为什么 NPU 里的这些 buffer 更像 scratchpad，而不像 cache。它们的价值不来自硬件去猜哪些数据可能会复用，而来自设计者提前知道哪些数据一定会复用、复用多久、该以什么顺序搬。对 weight，设计者通常知道这一块权重会服务哪一批输出通道；对 activation，通常知道当前 tile 的消费顺序；对 psum，通常知道哪一组输出元素会在本地累计多少轮。既然局部性是可设计的，而不是可碰运气的，把这些 buffer 交给 cache 式自动替换通常不是最优解。
+假设一个计算窗口需要读取 8 B 权重和 8 B 激活，两类数据分别使用独立路径。权重路径最多 1 B/拍，激活路径最多 7 B/拍。用总需求除以总带宽得到 `16 / 8 = 2 拍`，只是忽略路径分配的乐观下界；权重路径单独就至少需要 `8 / 1 = 8 拍`。这些带宽是假设的持续上限，实际竞争和执行依赖可能使时间更长。
 
-还有一个很重要的后果是：NPU 的片上 SRAM 容量不能只看总量，还须记录每个角色的同时占用和对物理资源的绑定。16 MB 若是共享池，应计算 weight/activation 等角色的合计占用峰值，并对共享 bank、端口和带宽仲裁；若是专用宏，则分别检查各宏容量与端口。psum 若驻留 PE 寄存器，不应强加一个 SRAM 容量分区。因为很多设计瓶颈根本不在总容量，而在某一类 buffer 的读写不对称、bank 冲突或 refill 节拍没有对齐。后面到了 `weight-buffer-design.md`、`activation-buffer-and-double-buffering.md` 和 `on-chip-bandwidth-budget.md`，这种按角色而不是按总量思考的必要性会进一步变得明确。
-
-按角色管理可约束共享池中的容量与端口竞争。例如权重 refill 和 activation 读取争同一 bank 时，仲裁与预留决定两者何时前进。独立宏可提供隔离，但可能浪费闲置容量；共享池可提升容量利用率，却需要考虑冲突和调度。两种实现均需根据实际访问轨迹评估。
-
-因此，weight、activation 和 partial sum 是不同的逻辑角色。它们可绑定到独立 SRAM，也可共享同一物理 SRAM 的容量、bank 和端口；partial sum 也可驻留在 PE 寄存器而非独立 buffer。实际绑定决定容量约束和仲裁，不能由角色数推断物理宏数。理解这一点，后面讨论 NPU 内存层次和带宽预算时，你就不会把片上 SRAM 误看成“只要够大就行”的单一资源。
+系统内的片外存储可能采用 DRAM，包括 HBM 等不同接口和封装；片上还有不同层级的 SRAM。分析时应按实际连接和方向核对每条路径，不把 HBM 与 DRAM 当成互斥类别。关于数据流、分块及完整带宽预算，继续阅读 [NPU 数据路径与存储组织](../../01-memory-hierarchy/04-npu-case/README.md)。
 
 ## 一句话理解
 
-weight、activation 和 partial sum 的生命周期、读写方向和带宽需求不同，必须按角色追踪；它们可绑定到专用或共享物理资源，psum 也可驻留 PE。容量和端口约束按实际绑定及同时占用计算。
+NPU 的权重、激活和部分和是数据角色；它们能否及时供给计算，取决于实际放置、端口、搬运和各路径的服务能力。
 
 ## 建模启示
 
-在架构模型里，NPU 片上 SRAM 不能只建成一个统一的 `onchip_buffer_bytes`。至少应区分数据角色，并显式绑定到实际物理资源，因为它们的瓶颈和调度语义不同。weight buffer 更像 `read-mostly staged storage`，activation buffer 更像 `streamed tile buffer`，accumulator buffer 更像 `high-frequency read-modify-write workspace`。
-
-一个最小可用的抽象草图可以是：
-
-```text
-NpuBufferModel {
-  role: enum { WEIGHT, ACTIVATION, ACCUMULATOR }
-  physical_resource_id: id  # 不同角色可绑定同一资源
-  capacity_bytes: uint64  # 共享时由物理资源统一约束占用峰值
-  psum_location: enum { PE_REGISTER, SRAM, OTHER }
-  bank_count: int
-  read_bw_bytes_per_cycle: int
-  write_bw_bytes_per_cycle: int
-  refill_source: enum { DRAM, HBM, UPPER_SRAM }
-  supports_double_buffer: bool
-}
-```
-
-对应事件流可以写成：
-
-```text
-event BufferFillStart(role, tile_id)
-event BufferFillDone(role, tile_id)
-event BufferRead(role, bank_id, consumer_id)
-event BufferWrite(role, bank_id, producer_id)
-event BufferDrain(role, tile_id)
-```
-
-如果只做粗粒度 roofline 估算，可以把三者折成总片上容量和总片上带宽；但只要你想解释“为什么同样 16 MB 片上 SRAM，两个 NPU 的吞吐差这么多”，必须保留三类角色的访问轨迹及其物理绑定。共享宏时共同检查容量峰值、bank 和端口仲裁；独立宏则分别检查。
+先为每个数据角色确定生产者、消费者、容量和生命周期，再映射到实际存储、bank 和互连。分别统计各路径的读写字节、接纳和等待，并保留调度、复用与重叠条件。不要仅用 `容量 + 总带宽` 推断计算利用率。
