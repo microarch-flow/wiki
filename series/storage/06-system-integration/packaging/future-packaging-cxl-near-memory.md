@@ -1,7 +1,7 @@
 # CXL、近存计算与未来封装方向
 
 上级：[封装与集成](./README.md)
-相关：[把 register、cache、scratchpad、DRAM、HBM 看作一个系统](../../01-memory-hierarchy/01-system-basics/memory-hierarchy-as-system.md), [Memory bound vs compute bound 的本质与缓解策略](../../01-memory-hierarchy/03-performance/memory-bound-vs-compute-bound.md)
+相关：[把 register、cache、scratchpad、DRAM、HBM 看作一个系统](../../01-memory-hierarchy/01-system-basics/memory-hierarchy-as-system.md), [存储瓶颈与计算瓶颈](../../01-memory-hierarchy/03-performance/memory-bound-vs-compute-bound.md)
 
 ## 这页在回答什么问题
 

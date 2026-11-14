@@ -1,7 +1,7 @@
 # Memory controller 如何影响 DRAM 的实际性能
 
 上级：[Memory Controller](./README.md)
-相关：[命令调度：FR-FCFS 及其变体](./command-scheduling-fr-fcfs.md), [峰值带宽 vs 有效带宽：损失发生在哪里](../01-memory-hierarchy/03-performance/effective-bandwidth-vs-peak.md)
+相关：[命令调度：FR-FCFS 及其变体](./command-scheduling-fr-fcfs.md), [峰值与有效带宽](../01-memory-hierarchy/03-performance/effective-bandwidth-vs-peak.md)
 
 ## 这页在回答什么问题
 

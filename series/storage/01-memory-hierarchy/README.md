@@ -78,7 +78,7 @@ RAM 是 random-access memory，通常译为随机存取存储器：它允许根�
 
 观察一次读取时，**延迟**描述请求从指定起点到指定终点花费的时间。例如，处理器发出读取到取得所需数据的时间。观察一段持续数据流时，**带宽**是指定接口上，在给定时间窗口内传输的数据量除以窗口长度。
 
-统计带宽还要说明数据口径：接口传输的 payload 可能包含任务没有使用的字节；任务有效带宽只统计任务需要的字节。同一份流量按两种口径统计，结果可能不同。有关窗口、边界和损失的例子见[带宽与延迟](./03-performance/bandwidth-vs-latency-fundamental.md)和[峰值与有效带宽](./03-performance/effective-bandwidth-vs-peak.md)。
+统计带宽还要说明数据口径：接口传输的 payload 可能包含任务没有使用的字节；任务逻辑读取量也可能因片上复用而大于外存传输量。同一接口的有用传输字节和任务侧的逻辑字节不一定相同。有关窗口、边界和损失的例子见[带宽与延迟](./03-performance/bandwidth-vs-latency-fundamental.md)和[峰值与有效带宽](./03-performance/effective-bandwidth-vs-peak.md)。
 
 一笔 miss 的耗时也可能包含互连、控制器或共享通路的等待。多笔请求能否并发，以及它们落到哪些 bank，会影响持续供数。沿途检查请求和资源状态，有助于找到限制，详见[存储系统为何难设计](./01-system-basics/problem-statement.md)。
 
@@ -92,7 +92,7 @@ RAM 是 random-access memory，通常译为随机存取存储器：它允许根�
 
 - **系统基础**：从[存储系统为何难设计](./01-system-basics/problem-statement.md)、[RAM 分类与命名](./01-system-basics/taxonomy.md)和[存储层次与系统角色](./01-system-basics/memory-hierarchy-as-system.md)建立共同概念。
 - **访问路径与数据管理**：沿着下面的阅读路线，依次看缺失请求、数据放置、访问冲突和跨节点路径。
-- **性能分析与瓶颈**：用[带宽与延迟](./03-performance/bandwidth-vs-latency-fundamental.md)、[峰值与有效带宽](./03-performance/effective-bandwidth-vs-peak.md)分析路径表现。
+- **性能分析与瓶颈**：从[带宽与延迟](./03-performance/bandwidth-vs-latency-fundamental.md)开始，再按下面的阅读路线分析流量和性能限制。
 - **NPU 数据路径案例**：从 [AI 芯片内存架构](./04-npu-case/README.md)进入，再按需查看局部 buffer 和片上带宽。
 
 想深入一颗 SRAM 单元，可阅读 [6T SRAM cell](../02-sram/foundations/6t-cell-bistable-storage.md)；想研究 DRAM 访问，可转到 [DRAM 基础](../03-dram/foundations/README.md)和 [Memory Controller](../04-dram-controller/README.md)。原 RAM 章节的阅读路线见[学习路径与章节依赖](../reading-and-reference/01-reading/learning-roadmap.md)。
@@ -107,3 +107,9 @@ RAM 是 random-access memory，通常译为随机存取存储器：它允许根�
 4. [多通道与 NUMA](./02-access-paths/numa-multi-channel-multi-socket.md)：路径扩到多个通道和节点后，地址、页面和线程放在哪里，怎样改变实际访问路径？
 
 这四篇覆盖本专题的主要系统问题，但不代替专门的协议和编程模型说明。需要安排显式搬运时，转到 [DMA 的地址、描述符与 burst](../../microarchitecture/DMA/wiki/02-fundamentals/address-descriptor-burst.md)及 [DMA 同步与一致性](../../microarchitecture/DMA/wiki/04-programming-model/synchronization-errors.md)；需要追踪物理地址落到哪个 channel、bank 和 row 时，转到[地址映射](../04-dram-controller/address-mapping-channel-rank-bank-row-col.md)。路径清楚后，再进入“性能分析与瓶颈”，区分访问响应时间、程序等待和有效带宽。
+
+### 性能分析与瓶颈：按什么顺序读？
+
+1. [带宽与延迟](./03-performance/bandwidth-vs-latency-fundamental.md)：定义请求的响应时间、接口上的字节率，以及并发和排队的作用。
+2. [峰值与有效带宽](./03-performance/effective-bandwidth-vs-peak.md)：区分接口能力、实际传输字节与任务逻辑字节，再分析差距。
+3. [存储瓶颈与计算瓶颈](./03-performance/memory-bound-vs-compute-bound.md)：结合性能上界、实测状态和对照实验定位限制。
