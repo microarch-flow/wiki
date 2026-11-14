@@ -10,7 +10,7 @@ Wiki 与博客的共同写作和设计要求见 [Wiki 与博客设计规则](../
 
 存储系统的源码和导航按相同的六个专题组织，省略 RAM、HBF 等来源名称造成的重复层级。HBM 阅读入口属于 DRAM 专题；HBM 的封装、成本与选型文章属于系统集成专题，两者通过正文链接关联。源码已迁入 `series/storage/` 下对应的专题目录；原发布网址保持不变。
 
-“存储层级与数据路径”的导航按 `website/storage_navigation.py` 中的四组和阅读顺序生成。四组名称分别对应 `01-memory-hierarchy/` 下的 `01-system-basics/`、`02-access-paths/`、`03-performance/`、`04-npu-case/`。跨专题阅读路线、自测和参考资料位于 `series/storage/reading-and-reference/`，在网站中作为“查阅与练习”展示，不是第七个技术专题。
+“存储层级与数据路径”的导航按 `website/storage_navigation.py` 中的四组和阅读顺序生成。“系统基础”“访问路径与数据管理”“性能分析与瓶颈”“NPU 数据路径与存储组织”分别对应 `01-memory-hierarchy/` 下的 `01-system-basics/`、`02-access-paths/`、`03-performance/`、`04-npu-case/`。跨专题阅读路线、自测和参考资料位于 `series/storage/reading-and-reference/`，在网站中作为“查阅与练习”展示，不是第七个技术专题。
 
 其他 RAM 章节的文章目录使用各章编号阅读列表中的链接文字作为短名称。完整文章标题保留在正文与悬停提示中。章节首页可在 Markdown 中添加 `<!-- nav-title: 短名称 -->`，为侧边导航和上级面包屑指定短名称。没有短名称时，继续使用文章标题。
 

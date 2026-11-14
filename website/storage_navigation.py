@@ -28,13 +28,13 @@ MEMORY_SECTIONS = (
         ("峰值与有效带宽", "RAM/wiki/07-system-architecture/effective-bandwidth-vs-peak.md"),
         ("存储瓶颈与计算瓶颈", "RAM/wiki/09-ai-chip-memory-architecture/memory-bound-vs-compute-bound.md"),
     )),
-    ("NPU 数据路径案例", "04-npu-case", (
-        ("AI 芯片内存架构", "RAM/wiki/09-ai-chip-memory-architecture/README.md"),
+    ("NPU 数据路径与存储组织", "04-npu-case", (
+        ("NPU 数据路径与存储组织", "RAM/wiki/09-ai-chip-memory-architecture/README.md"),
         ("NPU 存储层次", "RAM/wiki/09-ai-chip-memory-architecture/npu-memory-hierarchy.md"),
-        ("Weight buffer 设计", "RAM/wiki/09-ai-chip-memory-architecture/weight-buffer-design.md"),
+        ("数据搬运与复用", "RAM/wiki/09-ai-chip-memory-architecture/data-movement-first-principle.md"),
+        ("权重缓冲区", "RAM/wiki/09-ai-chip-memory-architecture/weight-buffer-design.md"),
         ("激活缓冲与双缓冲", "RAM/wiki/09-ai-chip-memory-architecture/activation-buffer-and-double-buffering.md"),
         ("片上带宽预算", "RAM/wiki/09-ai-chip-memory-architecture/on-chip-bandwidth-budget.md"),
-        ("数据搬运优先", "RAM/wiki/09-ai-chip-memory-architecture/data-movement-first-principle.md"),
     )),
 )
 

@@ -1,7 +1,7 @@
 # 存储器设计的第一性原理清单
 
 上级：[参考资料](./README.md)
-相关：[为什么存储系统难设计？从一次读取看跨层约束](../../01-memory-hierarchy/01-system-basics/problem-statement.md), [“数据搬运优先”原则在 NPU 设计中的体现](../../01-memory-hierarchy/04-npu-case/data-movement-first-principle.md)
+相关：[为什么存储系统难设计？从一次读取看跨层约束](../../01-memory-hierarchy/01-system-basics/problem-statement.md), [NPU 数据搬运与复用](../../01-memory-hierarchy/04-npu-case/data-movement-first-principle.md)
 
 ## 这页在回答什么问题
 

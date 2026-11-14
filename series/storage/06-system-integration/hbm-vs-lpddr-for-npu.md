@@ -1,7 +1,7 @@
 # NPU 选 HBM 还是 LPDDR：决策框架
 
-上级：[AI 芯片内存架构](../01-memory-hierarchy/04-npu-case/README.md)
-相关：[LPDDR：为了功耗放弃了什么](../03-dram/protocols/lpddr-low-power-mobile.md), [HBM 的成本结构为什么这么高](packaging/why-hbm-is-expensive.md)
+上级：[存储系统](../README.md)
+相关：[NPU 数据路径与存储组织](../01-memory-hierarchy/04-npu-case/README.md), [LPDDR：为了功耗放弃了什么](../03-dram/protocols/lpddr-low-power-mobile.md), [HBM 的成本结构为什么这么高](packaging/why-hbm-is-expensive.md)
 
 ## 这页在回答什么问题
 

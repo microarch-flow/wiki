@@ -122,4 +122,4 @@ Cache miss 次数也不自动等于 DRAM 请求数。其他 cache 可能满足�
 - [Cache 与 scratchpad](../02-access-paths/cache-vs-scratchpad.md)：比较硬件管理与显式管理的数据放置。
 - [存储层次与系统角色](memory-hierarchy-as-system.md)：把不同存储资源与数据路径放回系统中观察。
 - [峰值与有效带宽](../03-performance/effective-bandwidth-vs-peak.md)：进一步分析接口能力与实际流量之间的差异。
-- [数据搬运优先](../04-npu-case/data-movement-first-principle.md)：结合 buffer、dataflow 和调度讨论复用。
+- [数据搬运与复用](../04-npu-case/data-movement-first-principle.md)：结合 NPU 数据路径和调度讨论复用。

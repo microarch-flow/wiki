@@ -93,7 +93,7 @@ RAM 是 random-access memory，通常译为随机存取存储器：它允许根�
 - **系统基础**：从[存储系统为何难设计](./01-system-basics/problem-statement.md)、[RAM 分类与命名](./01-system-basics/taxonomy.md)和[存储层次与系统角色](./01-system-basics/memory-hierarchy-as-system.md)建立共同概念。
 - **访问路径与数据管理**：沿着下面的阅读路线，依次看缺失请求、数据放置、访问冲突和跨节点路径。
 - **性能分析与瓶颈**：从[带宽与延迟](./03-performance/bandwidth-vs-latency-fundamental.md)开始，再按下面的阅读路线分析流量和性能限制。
-- **NPU 数据路径案例**：从 [AI 芯片内存架构](./04-npu-case/README.md)进入，再按需查看局部 buffer 和片上带宽。
+- **[NPU 数据路径与存储组织](./04-npu-case/README.md)**：依次分析存储层次、数据复用、缓冲时序和片上带宽。
 
 想深入一颗 SRAM 单元，可阅读 [6T SRAM cell](../02-sram/foundations/6t-cell-bistable-storage.md)；想研究 DRAM 访问，可转到 [DRAM 基础](../03-dram/foundations/README.md)和 [Memory Controller](../04-dram-controller/README.md)。原 RAM 章节的阅读路线见[学习路径与章节依赖](../reading-and-reference/01-reading/learning-roadmap.md)。
 

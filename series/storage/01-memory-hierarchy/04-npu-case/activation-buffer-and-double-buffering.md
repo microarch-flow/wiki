@@ -1,95 +1,82 @@
-# Activation buffer 与 double buffering：数据搬运与计算如何重叠
+# 激活缓冲与双缓冲：搬运和计算何时能重叠
 
-上级：[AI 芯片内存架构](./README.md)
-相关：[Weight buffer 的容量与组织：从 model size 反推](./weight-buffer-design.md), [“数据搬运优先”原则在 NPU 设计中的体现](./data-movement-first-principle.md)
+<span id="activation-buffer-与-double-buffering数据搬运与计算如何重叠"></span>
+
+上级：[NPU 数据路径与存储组织](./README.md)
+
+相关：[权重缓冲区](./weight-buffer-design.md) · [数据搬运与复用](./data-movement-first-principle.md)
 
 ## 这页在回答什么问题
 
-activation buffer 为什么经常决定流水能不能跑满；double buffering 又是在什么条件下真的隐藏了外层访存，而不是只是把容量翻倍。
+激活缓冲区怎样连接数据生产和消费？双缓冲（double buffering）需要满足什么条件，才能让下一块的填充与当前块的计算同时进行？
 
 ## activation 的生产、消费与缓冲
 
-如果说 weight buffer 更多是在解决“某块权重值不值得多留一会儿”，那么 activation buffer 更直接地在解决另一件事：`下一块将被计算消耗的数据，能不能准时到位`。这两件事看起来都属于片上 SRAM，但系统含义完全不同。权重更像读主导、重用拉长的驻留对象；activation 更像一条持续向前推进的输入流，它既要被搬进来，又要被按下游节拍稳定地消耗掉。于是 activation buffer 往往比 weight buffer 更直接决定流水线能不能跑满。
+激活数据可能来自外存、其他片上存储或上游计算。缓冲区接收这些数据，再按下游计算要求提供数据。生产和消费的时间安排或速率可能不同；这不表示两者必然处于不同的硬件时钟域。
 
-这件事在 AI 芯片里尤其关键，因为 activation 的生产和消费常常来自两个不同节拍域。上游可能是 HBM、LPDDR 或更高层 SRAM，它们按 burst 和 tile 粒度交付数据；下游则是阵列、PE cluster 或某个算子阶段，它们希望在每拍或每几个拍上拿到规整切片。activation buffer 的核心作用，就是把这两个节拍域接起来。它既像暂存池，又像节拍转换器，还像数据整形器。只要其中任一角色没做好，下游就会看到最糟糕的情况：算力明明够、权重也在本地，但输入块还没到。
+激活可以在一个 tile 内或跨 tile 复用，具体取决于算子和映射。缓冲区可能还要配合布局转换或 bank 分配。容量足够只是前提：填充、重排和计算读取若共享端口或链路，仍可能互相等待。
 
-从访问模式上看，activation 和 weight 的差别很大。weight 通常是“装一次，读很多次”；activation 更常见的是“写入一块，随后在较短窗口内被读若干次，然后很快被下一块替换”。这种生命周期更短、滚动更快的特性，使 activation buffer 天然和 `double buffering`、`prefetch`、`DMA overlap` 绑在一起。因为它不只是要存下当前 tile，还要在当前 tile 被消费时，尽可能把下一 tile 也准备好。
+## Activation buffer 与 double buffering 的关系
 
-这就是 double buffering 的直观来源。它最常见的说法是“两个 buffer 轮流用，一个算，一个搬”，这当然没错，但还是太表面。更准确地说，double buffering 是在利用 activation 流的阶段性规律，把”数据搬入”和”当前计算消费”这两件原本串行的事情，尽量改造成并行。也就是说，它本质上不是容量优化，而是时间重叠优化。想象一个餐厅的传菜窗口：如果只有一个窗台，厨师做完一盘菜放上去，服务员端走，窗台空了，厨师才能放下一盘——做菜和上菜是串行的。如果有两个窗台，厨师可以在服务员端走 A 窗台的菜时，把下一盘放到 B 窗台上。两个窗台不是为了同时摆两倍的菜，而是为了让”出菜”和”上菜”同时进行。
+双缓冲为数据块准备两个可以轮换的槽位。一个槽位供计算消费时，另一个槽位可填充下一块。它以额外空间为重叠创造条件，也可用于权重或其他数据，不专属于 activation。
 
-如果写成最简单的节拍图，大致就是这样：
+对每个槽位，可以用以下状态描述完整生命周期：
 
-```text
-time ---->
+<ul class="ram-event-sequence">
+  <li>空闲</li><li>填充</li><li>就绪</li><li>消费</li><li>可复用</li>
+</ul>
 
-buffer A: [fill tile 0] [compute tile 0] [fill tile 2] [compute tile 2]
-buffer B:                [fill tile 1] [compute tile 1] [fill tile 3]
-```
+开始消费前，填充必须完成，并满足目标系统要求的同步和可见性条件。开始覆盖前，所有需要该槽位的消费者必须完成。若多个消费者或其他异步操作仍在使用该数据，不能只凭某一个计算单元结束就复用槽位。
 
-理想情况下，tile 0 在 buffer A 中被消费时，tile 1 同时填入 buffer B。如果下一块填充能在当前计算开始时启动，两个 slot 的访问资源可并行，且依赖、可见性和容量条件均满足，那么 `fill_time(next_tile) <= compute_time(current_tile)` 可使下一块不晚于当前计算结束时就绪。这里的填充时间应计入实际争用；首块填充、末块完成和其他不能重叠的阶段仍要计入总时间。带数值的有限批次例子见 [DMA 双缓冲](../../../microarchitecture/DMA/wiki/04-programming-model/tiling-double-buffering.md)。
+[CUDA 编程指南](https://docs.nvidia.com/cuda/archive/13.2.0/cuda-programming-guide/03-advanced/advanced-kernel-programming.html#asynchronous-data-copies)对 GPU 的共享内存复制说明了填充后和覆盖前的同步需求。它是一个具体平台的例子；NPU 的搬运引擎、指令和同步接口应以目标实现为准。
 
-但这里也埋着一个极常见的误区：`有 double buffer` 不等于 `延迟被隐藏了`。它只有在几项条件同时成立时才真正有效。第一，下一 tile 的数据量不能大到填充时间明显长于当前 tile 的计算时间。第二，填充路径本身不能被别的流量严重抢占，例如权重 refill、输出写回或片上共享网络热点。第三，buffer 组织必须允许“边填一个、边读另一个”，也就是 bank、端口和控制状态不能互相卡死。第四，tile 边界必须足够规整，否则切换开销、尾块不齐或依赖关系会吃掉重叠收益。
+## 用三个 tile 检查时间重叠
 
-换句话说，double buffering 真正在买的，不是“多一份容量”，而是“一个独立的下一拍准备窗口”。如果外层供数太慢，这个窗口会空；如果内部仲裁太重，这个窗口会堵；如果 tile 太小，窗口建立起来的管理成本反而不划算。所以判断 double buffering 是否有意义，不能只看架构图上有没有两个框，而要看它有没有形成稳定的 `producer-consumer overlap`。
+沿用[2×2 PE 的构造例子](./npu-memory-hierarchy.md#一个贯穿本组文章的构造例子)。假设每个激活 tile 为 8 B，填入一个槽位需 6 cycle；阵列消费一块需 4 cycle。两个槽位各能装下一块，填充与计算资源独立，各自一次处理一块；计算只在整块就绪后开始。
 
-activation buffer 之所以经常成为流水瓶颈，还因为它更容易受到 `数据整形` 的压力。上游吐出来的数据顺序，未必正好就是阵列最想要的顺序。尤其在卷积、attention、gather/scatter 或者带有 layout transform 的场景里，activation 往往需要在进入计算阵列前经历重排、打包、分 lane 或 bank interleave。也就是说，activation buffer 并不只是一个“把数据摆着等用”的箱子，它常常承担了一部分轻量 reformatting。这个过程如果和搬运、消费竞争同一组 bank 或同一条内部链路，就会让本该隐藏的延迟重新露出来。
+为单独观察输入重叠，假设权重已就绪，忽略结果写回以及额外的命令启动、同步和仲裁开销；首块填充仍计入总时间。以下时间区间左闭右开：
 
-从 `Topology` 视角看，activation buffer 还处在一个比 weight buffer 更容易被共享流量打扰的位置。因为 activation 常常是“来自上游算子输出，又流向下游算子输入”的中间态数据，所以它既可能承接外存 DMA，也可能承接片上其他 cluster、其他 stage 的结果。这样一来，它就不只是一个单一 source 的输入池，而更像一个局部交通枢纽。就像火车站的中转站台——同时有列车到站、有旅客换乘、有行李转运，站台的物理面积可能够大，但如果进出通道只有一条，高峰期照样堵死。交通枢纽的典型问题不是容量本身，而是同时到站、同时出站时的冲突。很多系统看上去 activation buffer 很大，但真跑起来吞吐上不去，问题往往不在字节数，而在同一时刻既要 fill、又要 read、还要做内部重排。
+| 时间 | 填充 | 计算 |
+| --- | --- | --- |
+| 0–6 | tile 0 → 槽 A | 等待 tile 0 |
+| 6–10 | tile 1 → 槽 B | 消费 tile 0 |
+| 10–12 | 继续填充 tile 1 | 等待 tile 1 |
+| 12–16 | tile 2 → 槽 A | 消费 tile 1 |
+| 16–18 | 继续填充 tile 2 | 等待 tile 2 |
+| 18–22 | 无 | 消费 tile 2 |
 
-因此，activation buffer 的设计通常要同时回答三个问题。第一，`当前 tile` 如何被下游稳定消费。第二，`下一 tile` 能否在当前 tile 期间被无冲突地搬入。第三，如果 activation 来自多个上游路径，进入本地前是否需要额外整形。只有这三件事一起被解决，double buffering 才是有效的；少任何一项，它都可能沦为只是把 buffer 从一份做成两份。
+串行处理三个 tile 需要 3 × (6 + 4) = 30 cycle。上述双缓冲执行需要 22 cycle。填充比计算慢，阵列仍有等待，但两者已经部分重叠。
 
-这也说明了为什么 activation buffer 的容量不能单独分析。很多人会问：“这一级 buffer 要不要加倍？”但真正该问的是：“当前 tile 有多大、下游 compute 窗口有多长、下一 tile 的 refill 路径有多宽、两者能否物理并发？”如果 compute window 本来就很短，或者 refill path 明显更慢，那么加一个完整双缓冲可能仍然遮不住延迟；这时更合理的优化反而可能是改 tile 形状、提高上游 burst 效率、增加 bank 并行度，或者减小需要频繁切换的 activation 工作集。
+对相同大小的 N 个 tile，若每次填充为 D、每次计算为 C，并满足例子中的独立资源、依赖和零额外开销假设，N ≥ 1 时：
 
-在不同 workload 上，这个问题的形状也不同。卷积类 workload 常常更依赖滑窗与空间重用，activation buffer 会深度参与行列块滚动；attention 类 workload 常常面临更大、更动态的 token/block 组织，buffer 需要吸收更复杂的序列分块节奏；Mixture-of-Experts 或稀疏访问场景下，activation 的到达顺序和消费顺序可能更不规整，double buffering 的理想重叠更难维持。也就是说，activation buffer 的难点不是一个通用存储公式，而是它对 workload 的时间形状高度敏感。就像同一个行李传送带系统，在处理标准尺寸行李箱时运转流畅，但一旦来了超长滑雪板、不规则形状的乐器盒，传送带就可能卡顿——不是带子不够长，而是它的节奏和分拣逻辑没法适配这种非标形状。
+<div class="ram-calculation">
+  <span>理想总时间 = D + C + (N − 1) × max(D, C)</span>
+</div>
 
-因此，本页真正要建立的判断是：activation buffer 是 AI 芯片流水稳定性的关键节点，而 double buffering 只是它最常见的一种时序组织方法。double buffering 的价值来自重叠，不来自名字；activation buffer 的价值来自把上游粗粒度、可能有抖动的数据流，改造成下游阵列可以持续吞下的局部稳定流。后面到了 `on-chip-bandwidth-budget.md`，你会看到这种“重叠是否真的成立”最终会落到片上和片外两侧带宽是否同时够用。
+这里包含首块填充和最后一块计算，不包含被排除的结果写回。N = 0 时没有这项工作。稳态完成间隔是 max(D, C)，不能把它当成首块完成时间或有限批次总时间。
+
+## 哪些条件会改变结果？
+
+如果下一块能在当前计算开始时填充，两个槽位和访问路径可并行，依赖与可见性均满足，且下一块填充时间不大于当前块计算时间，那么下一块可以在当前计算结束前就绪。这是该安排下隐藏下一块填充等待的充分条件。
+
+实际情况还要检查：
+
+- 槽位是否各有足够容量；若与权重等共享 SRAM，还要检查同时占用。
+- 填充写入、计算读取和结果写回是否竞争 bank、端口或互连。
+- tile 尾块、布局转换、同步和上游数据依赖是否改变准备时间。
+- 输出是否有独立空间和路径；如果结果写回不能重叠，应计入任务时间。
+
+因此，有两个槽位不代表所有等待都会消失；填充慢于计算也不代表完全没有重叠收益。[NVDLA v1 编程指南](https://nvdla.org/hw/v1/ias/programming_guide.html#convolution-pipeline-programming)给出了为重叠权重加载与计算而预留额外缓冲的具体实现例子。
 
 ## 一句话理解
 
-activation buffer 的核心任务是把上游 bursty 输入流变成下游稳定供数流，而 double buffering 只有在 refill、banking 和 tile 窗口都匹配时，才真的能把搬运延迟隐藏在当前计算后面。
+双缓冲用额外空间和正确的同步为搬运、计算重叠创造条件；实际收益取决于时间、依赖和物理资源能否同时满足。
 
 ## 建模启示
 
-在模型里，activation buffer 不能只用一个 `capacity_bytes` 表示。至少还要显式建出两个状态：`当前被消费的 tile` 和 `正在被填充的 tile`。否则你根本无法判断 double buffering 是否真的在工作。
+记录每个槽位的占用数据、填充完成和可见时点、消费者完成时点，以及共享端口的等待。只用一个“支持双缓冲”的布尔值，不能推断特定任务确实发生了重叠。
 
-一个最小可用抽象可以写成：
+## 接下来怎么读？
 
-```text
-ActivationBuffer {
-  slot_count: int
-  slot_bytes: int
-  bank_count: int
-  read_bw_Bps: float
-  fill_bw_Bps: float
-  supports_simultaneous_fill_and_read: bool
-  format_transform_cost_ns: float
-}
-```
-
-对应的 tile 生命周期可以写成：
-
-```text
-ActivationTileState {
-  tile_id: int
-  state: enum { empty, filling, ready, consuming, drained }
-  bytes_total: int
-  bytes_filled: int
-  bytes_consumed: int
-}
-```
-
-仿真时最值得保留的事件有：
-
-- `ActivationFillStart/Done(tile_id, slot)`
-- `ActivationConsumeStart/Done(tile_id, slot)`
-- `ActivationSwap(slot_a, slot_b)`
-- `ActivationStall(reason)`
-
-其中 `reason` 至少区分：
-
-- refill_not_done
-- bank_conflict
-- format_transform_busy
-- downstream_backpressure
-
-如果这些状态都在，模型就能回答一个真实问题：吞吐下降到底是因为 activation buffer 太小，还是 double buffering 没建立起来，还是其实建立起来了但 bank 和重排链路在中间漏水。
+- [片上带宽预算](./on-chip-bandwidth-budget.md)：分析输入、输出和其他流量同时使用资源时的限制。
+- [DMA 的 tiling 与双缓冲](../../../microarchitecture/DMA/wiki/04-programming-model/tiling-double-buffering.md)：查看另一个有限批次时序例子。

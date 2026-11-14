@@ -23,7 +23,7 @@
 | [Memory Controller](../../04-dram-controller/README.md) | 请求如何映射、排队和调度？哪些资源会竞争？ |
 | [系统视角](../../01-memory-hierarchy/01-system-basics/README.md) | 多层存储与互连怎样共同影响延迟和有效带宽？ |
 | [封装与集成](../../06-system-integration/packaging/README.md) | DIMM、堆叠和封装连接怎样影响系统选择？ |
-| [AI 芯片内存架构](../../01-memory-hierarchy/04-npu-case/README.md) | NPU 怎样安排 buffer、数据复用和外存供数？ |
+| [NPU 数据路径与存储组织](../../01-memory-hierarchy/04-npu-case/README.md) | NPU 怎样安排 buffer、数据复用和外存供数？ |
 | [参考资料](../02-reference/README.md) | 术语、时序、检查清单和建模模板如何查阅？ |
 
 如果希望系统学习，可以按上表从概览读到 AI 芯片章节，并在需要时查阅参考资料。这个顺序先介绍部件，再组合成系统；它不是唯一的学习顺序。
@@ -50,7 +50,7 @@
 
 1. 读 [SRAM 宏接口与读写语义](../../02-sram/foundations/sram-macro-interface-and-semantics.md)、[SRAM 端口与代价](../../02-sram/foundations/single-port-dual-port-multi-port.md)、[SRAM 阵列组织](../../02-sram/foundations/sram-array-organization.md)和 [bank 地址映射与冲突](../../02-sram/foundations/sram-bank-address-mapping-conflicts.md)，确定接口、端口、bank 和共享通路的含义。
 2. 读 [Cache 与 scratchpad](../../01-memory-hierarchy/02-access-paths/cache-vs-scratchpad.md)和 [NPU 的 SRAM buffer](../../02-sram/applications/npu-weight-buffer-activation-buffer.md)，区分数据角色与管理方式。
-3. 按问题选择 [Weight buffer 设计](../../01-memory-hierarchy/04-npu-case/weight-buffer-design.md)、[激活缓冲与双缓冲](../../01-memory-hierarchy/04-npu-case/activation-buffer-and-double-buffering.md)和[片上带宽预算](../../01-memory-hierarchy/04-npu-case/on-chip-bandwidth-budget.md)。
+3. 阅读 [NPU 数据路径与存储组织](../../01-memory-hierarchy/04-npu-case/README.md)，或按问题选择[权重缓冲区](../../01-memory-hierarchy/04-npu-case/weight-buffer-design.md)、[激活缓冲与双缓冲](../../01-memory-hierarchy/04-npu-case/activation-buffer-and-double-buffering.md)和[片上带宽预算](../../01-memory-hierarchy/04-npu-case/on-chip-bandwidth-budget.md)。
 4. 如果涉及 DMA 与计算的交接，再看 DMA 专题的[同步、一致性与常见错误](../../../microarchitecture/DMA/wiki/04-programming-model/synchronization-errors.md)。
 
 分析双缓冲时，要确认数据何时可见、何时允许覆盖，以及搬运和计算是否真的有独立资源。若问题还涉及外存选型或控制器瓶颈，应补读 DRAM 协议、控制器和封装章节，不能只用片上 buffer 参数代替外存路径。
