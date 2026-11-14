@@ -77,7 +77,7 @@ DRAM 地址映射决定请求落在哪个 bank 和哪一行。控制器处理请
 
 若要给这个 DRAM 例子计算时间，还必须指定到达时点、控制器调度、器件模式和时序。例如，ACT 到列命令、PRE 到下一次 ACT 都可能有最短间隔；ACT 和先前的读取也会分别约束 PRE 的最早时点。列命令之后不等于数据立即返回。这些约束可能重叠。不能只把 ACT 和 PRE 的数量乘以固定时间，就当成请求延迟。具体参考边沿及模式条件见 [DRAM 时序参数](../../03-dram/protocols/timing-parameters-trcd-trp-tras.md)。
 
-行策略会改变这个例子的条件。例如，关闭页策略可能在访问后关闭行，不能直接沿用表中的计数。具体策略见 [Open、close、adaptive page policy](../../04-dram-controller/page-policy-open-close-adaptive.md)。
+行策略会改变这个例子的条件。例如，关闭页策略可能在访问后关闭行，不能直接沿用表中的计数。具体策略见 [行缓冲策略](../../04-dram-controller/page-policy-open-close-adaptive.md)。
 
 ## 4. 连续地址不等于连续使用同一资源
 

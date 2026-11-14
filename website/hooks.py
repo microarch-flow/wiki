@@ -640,6 +640,27 @@ def on_post_page(output, page, **kwargs):
                 match.group(3), escape(short), match.group(5),
             )
 
-        output = output[:start] + link.sub(shorten, output[start:end]) + output[end:]
+        primary = link.sub(shorten, output[start:end])
+        # Material renders the active page twice: an anchor for wide screens
+        # and a TOC label for the mobile drawer. Give both the same short name.
+        current = labels.get(unquote(page.url).lstrip("/"))
+        if current and current[0] != current[1]:
+            short, full = current
+            toc_label = re.compile(
+                r'(<label\b(?=[^>]*\bclass="[^"]*\bmd-nav__link--active\b[^"]*")'
+                r'(?=[^>]*\bfor="__toc")[^>]*)(>\s*<span class="md-ellipsis">)'
+                r'(.*?)(</span>)', re.DOTALL,
+            )
+
+            def shorten_active_label(match):
+                attrs = match.group(1)
+                if not re.search(r'\btitle\s*=', attrs):
+                    attrs += ' title="{}"'.format(escape(full, quote=True))
+                if not re.search(r'\baria-label\s*=', attrs):
+                    attrs += ' aria-label="{}"'.format(escape(full, quote=True))
+                return attrs + match.group(2) + escape(short) + match.group(4)
+
+            primary = toc_label.sub(shorten_active_label, primary)
+        output = output[:start] + primary + output[end:]
     active_link = r'(<a\b[^>]*\bclass="[^"]*\bmd-nav__link--active\b[^"]*"[^>]*)(>)'
     return re.sub(active_link, lambda match: match.group(0) if "aria-current=" in match.group(1) else match.group(1) + ' aria-current="page"' + match.group(2), output)

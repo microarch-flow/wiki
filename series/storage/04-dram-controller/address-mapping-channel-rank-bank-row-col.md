@@ -1,84 +1,50 @@
-# 地址映射：物理地址到 channel、rank、bank、row、col 的拆分艺术
+# DRAM 地址映射：请求如何落到通道、bank 和行
 
-上级：[Memory Controller](./README.md)
-相关：[Memory controller 如何影响 DRAM 的实际性能](./why-mc-is-the-real-bottleneck.md), [多通道与 NUMA](../01-memory-hierarchy/02-access-paths/numa-multi-channel-multi-socket.md)
+上级：<span id="地址映射物理地址到-channelrankbankrowcol-的拆分艺术"></span>[DRAM 控制器与请求调度](./README.md)
+
+相关：[控制器：从请求到响应](./why-mc-is-the-real-bottleneck.md) · [多通道与 NUMA](../01-memory-hierarchy/02-access-paths/numa-multi-channel-multi-socket.md) · [行缓冲](../03-dram/foundations/row-buffer-as-cache.md)
 
 ## 这页在回答什么问题
 
-为什么物理地址到 channel、rank、bank、row、column 的映射，不是一个低层实现细节，而是直接决定 DRAM 请求流最终长成什么冲突形状和并行形状的系统级策略。更具体地说，同一串程序地址在不同映射下，为什么会表现出完全不同的 row locality、bank hotspot 和通道均衡结果。
+物理地址怎样选择 channel、rank、bank group、bank、row 和 column？同一地址流经过不同映射，可能形成不同的行复用与并行机会。本页讨论控制器一侧的地址解释；操作系统的虚拟页到物理页映射另见[多通道与 NUMA](../01-memory-hierarchy/02-access-paths/numa-multi-channel-multi-socket.md)。
 
-## 地址位如何选择通道、bank 和行
+## 物理地址到 channel、rank、bank、row、col 的映射 {#地址位如何选择通道bank-和行}
 
-很多人第一次看到 DRAM 地址映射，会把它想成一个“把若干位切给 channel/bank/row/col”的工程表格，好像只要切对了能寻址就行。这个视角最大的问题，是把映射当成被动翻译。真实系统里，地址映射远不只是把线接对，而是在决定：程序产生的一维地址流，最终会被投影成怎样的多维 DRAM 访问图形。这就像一个剧院的座位分配系统——同一批观众（地址流），按编号顺序坐（映射 A）可能让前三排挤满、后面空荡荡；按奇偶分散坐（映射 B）则每排都坐几个人。观众是同一批，但座位分配策略完全改变了剧院的拥挤分布。投影方式不同，row-hit-rate、bank parallelism、channel balance、refresh 受扰形状，甚至不同 master 之间是否互相踩踏，都会跟着变。
+输入是系统指定地址空间内的字节地址和访问大小。实现先处理地址范围及事务对齐，再选择资源和器件地址。最低位可能表示字节偏移，某些列位可能由 burst 隐含；各字段不一定连续，也可能通过 XOR 等函数组合。具体 channel 选择可以在控制器之外进行。
 
-理解映射最稳的起点，是先把地址流和 DRAM 结构同时摆出来。程序看到的是线性物理地址空间，但 DRAM 看到的是 `channel -> rank -> bank -> row -> column` 这样的层次结构。也就是说，controller 必须决定地址中的哪些位决定列内偏移，哪些位决定行，哪些位决定 bank/channel。这个决定本质上是在回答一个策略问题：相邻地址到底应该尽量留在同一 row 以提高 row hit，还是尽量打散到不同 bank/channel 以提高并行度？
+输出至少应能区分目标 channel、rank、bank group、bank、row、column 和 burst 内字节位置。完整的 bank 身份需要包含其上级资源：不同 rank 或 bank group 内的同号 bank 不是同一个 bank。[AMD 的 LPDDR 地址表](https://docs.amd.com/r/en-US/pg397-lpddrmc-ultrascale-mc/Address-Bit-Table?contentId=RblY29SRJecu~n9B65Q~sw)展示了一个具体实现中 bank group、列位与 burst 对齐的关系；它不是所有产品的固定切分。
 
-如果把更多低位分给 `column`，那么连续地址更容易留在同一 row 内，只是列偏移在变化。这通常有利于提升 row locality，因为顺序访问更可能形成长 row-hit 序列。但代价是，如果 workload 本身已经流式且并行度高，你可能把太多流量都压在少数 bank 上，导致 bank hotspot。反过来，如果把一些较低位更早切给 `bank` 或 `channel`，相邻地址会更快被打散到不同 bank/channel，bank-level parallelism 和 channel balance 可能更好，但同一 row 连续命中的机会会减少。也就是说，地址映射天然是在 `row reuse` 和 `resource striping` 之间做 trade-off。
+### 用同一地址流比较两种映射
 
-考虑 4 bank、每行 8 个 cache-line 列，访问 line index `0..7`，初始全部关行，按序服务并采用 open-page。令 `a` 为 line index。两个映射均使用全部地址位且可逆：
+假设有 4 个 bank，每行有 8 个 cache-line 列。使用 line index `a`，访问 0—7；初始所有 bank 关行，按该顺序服务，且访问后保持行打开。以下只比较行状态，不计算具体时序或完成时间。byte offset 已在形成 line index 时去除。
 
-```text
-Map X: col=a[2:0], bank=a[4:3], row=a[其余高位]
-Map Y: bank=a[1:0], col=a[4:2], row=a[其余高位]
-访问      0    1    2    3    4    5    6    7
-X bank    0    0    0    0    0    0    0    0
-X col     0    1    2    3    4    5    6    7
-Y bank    0    1    2    3    0    1    2    3
-Y col     0    0    0    0    1    1    1    1
-```
+X 倾向于将相邻 line 留在同一行；Y 更早在 bank 之间交错。
 
-所有 row 均为 0。X 的 bank0 先 miss、后 7 hit；Y 的每个 bank 各先 miss、后 1 hit，总共 4 hit。Y 让四个 bank 有并行机会，但该序列的 hit 数较少；能否更快还取决于命令/DQ 共享和到达时序。若使用 XOR hash，也须证明地址变换可逆或有等价的完整寻址规则，避免不同物理地址别名。
+| 地址字段 | 映射 X | 映射 Y |
+| --- | --- | --- |
+| bank | `a[4:3]` | `a[1:0]` |
+| 列 | `a[2:0]` | `a[4:2]` |
+| 行 | `a[5:]` | `a[5:]` |
 
-这也解释了为什么映射必须和 FR-FCFS、page policy 一起理解。FR-FCFS 喜欢 row hit，如果映射天然保住了更多同 row 连续性，它就更容易吃到收益；close-page 或随机访问负载下，过强的 row-local 映射反而可能把大量请求压在少数 bank 上，让冲突更严重。换句话说，地址映射不是单独的预处理步骤，而是在决定 controller 后续能看到什么样的优化机会。
+| 映射 | 0—7 的 bank 序列 | 行命中数 |
+| --- | --- | --- |
+| X | 0、0、0、0、0、0、0、0 | 7 |
+| Y | 0、1、2、3、0、1、2、3 | 4 |
 
-映射还直接影响 `bank hotspot`。如果多个活跃流、不同行为模式的 master 恰好在某种映射下不断打到同一 bank，即使系统里其他 bank 很空，那个 bank 也会被排队、冲突和 refresh 影响压得很重。表面上看是“内存带宽没打满”，实则是映射把流量塑形成了坏的空间分布。常见误解是把热点归咎于 DRAM bank 数不够；很多时候 bank 数够，只是映射让你没用上。就像一个停车场有 200 个车位，但导航系统把所有车都指向同一层——看起来"停车场满了"，其实是导航策略的问题，不是车位不够。
+两种映射使用的地址位均被保留。在此序列中，所有目标行都是 0。X 第一次打开 bank 0，后续 7 次命中；Y 的四个 bank 各先打开一次，再各命中一次。Y 提供更多 bank 并行机会，但两种方案谁更快，还取决于请求到达时间、CA/DQ 共享和命令时序。
 
-这在多 master 场景下尤其关键。CPU 流、DMA 流、GPU 流、NPU 流看到的是不同粒度和不同节奏的地址序列。某种对单一流很好的映射，对混合负载未必好。比如把相邻地址 aggressively striping 到 bank/channel，也许对大流量带宽型访问很好，但对一条希望保住 row locality 的控制流或 latency-sensitive 请求却可能不友好。也就是说，映射策略天然具有 workload 偏好，而不是 universally optimal。
+后续[命令调度](./command-scheduling-fr-fcfs.md)和[行策略](./page-policy-open-close-adaptive.md)沿用映射 X 的地址：完成 0—7 后，bank 0 保留打开的 row 0。接下来访问 line 1 或 2 仍指向 bank 0、row 0；访问 line 32 则指向 bank 0、row 1。后两篇分别改变这些请求的到达时间或未来选择，不假定整段访问一开始都在队列中。
 
-还有一个常被低估的点：地址映射实际上在改写 refresh 与写排空的冲击形状。因为 refresh 和 write drain 的影响都是在 bank/channel 这些结构上发生的，如果某个 workload 的热地址被映射得过于集中，那么 refresh 一旦打到那个热点 bank，体验会非常糟；若映射更均衡，refresh 干扰可能被局部化得更好。同理，写流若被映射得更分散，write buffer 排空时也更有机会利用多 bank 并行。换句话说，映射不只影响 row hit，还在塑造所有“共享资源碰撞”的空间分布。
+### 映射需要满足什么条件？
 
-从工程实现角度看，映射也不是只有一种教科书方案。控制器可以选择不同位交织顺序、不同 channel striping 粒度、甚至引入某种 hash 或 XOR 混合，来避免简单线性地址模式在物理结构上形成过于规律的热点。引入这类变换的目的并不是“把映射做复杂”，而是让一些常见访问模式更平均地散布到 bank/channel 上。不过它也不是免费午餐：一旦过度打散，局部性可见度会下降，row-hit-rate 可能被牺牲。
+在被映射的有效地址范围内，不同字节不能因错误的位丢失而意外别名。对使用 XOR 的方案，要检查变换后是否仍有足够信息区分所有受支持地址；地址窗口、保留区和不支持的区域还要按系统契约处理。并非所有映射都能仅用连续 `bit_range` 描述。
 
-因此，地址映射从来不是“切位正确就行”，而是一个真正的系统策略。它在把程序地址映射成 DRAM 物理地址的同时，也在替 workload 选择“以后更像 row-friendly、还是更像 bank-friendly；更像局部复用、还是更像宽条带分发”的命运。后面系统里看到的有效带宽、bank 冲突、row hit、甚至 QoS 现象，很多都是它早早埋下的结果。
-
-如果要压缩成最实用的一句判断，那就是：地址映射决定的是请求流在 DRAM 结构中的几何形状。你不是在给地址贴标签，而是在决定它们在 channel/rank/bank/row/col 空间里怎样聚、怎样散、怎样相撞。因此它一定是策略问题，不是小实现细节。
+映射会影响控制器看到的热点与行局部性，但最终统计还受重排、关行和刷新影响。按相同请求流比较映射时，应记录每个 channel/bank 的请求量、命中或冲突的统计时点，以及队列等待；不要从连续地址直接断言一定命中同一行。
 
 ## 一句话理解
 
-地址映射的本质，是把程序的一维地址流投影成 DRAM 的多维结构访问形状；它直接决定请求更像“留在同一 row 反复命中”，还是“被打散到不同 bank/channel 并行推进”。
+地址映射将字节请求分配到具体资源；行复用与并行机会都取决于映射和实际请求流。
 
 ## 建模启示
 
-在模型里，地址映射不应被隐藏在 `addr -> bank,row,col` 的固定函数后面，而最好作为可替换策略显式存在。因为一旦你想比较 workload 行为、controller 政策或多 master 干扰，就需要改映射而不仅仅改请求流。
-
-一个最小可用的抽象可以写成：
-
-```text
-AddressMappingPolicy {
-  scheme: enum { ROW_LOCALITY_FIRST, BANK_STRIPING_FIRST, XOR_HASHED }
-  channel_bits: bit_range
-  bank_bits: bit_range
-  row_bits: bit_range
-  col_bits: bit_range
-}
-```
-
-配合一个映射函数：
-
-```text
-map(addr, policy) -> {channel, rank, bank, row, col}
-```
-
-如果只关心粗粒度带宽，可以把映射效果折成两个经验指标：`row_hit_rate` 和 `bank_balance_score`；但只要你要比较不同 access pattern，或要解释“为什么两个 workload 在同一 DRAM 上表现差很多”，映射策略就应该显式保留。因为它决定的不是一个小常数，而是后续整个调度空间的形状。
-
-一个实用的观测量集合可以直接定义成：
-
-```text
-ObservedMappingEffects {
-  row_hit_rate: float
-  bank_hotspot_score: float
-  channel_balance_score: float
-}
-```
-
-这三个量虽然简化，但已经足以把“映射只是实现细节”这个误解彻底打掉。
+将地址范围、字节偏移、事务切分、channel/rank/bank group/bank/row/column 及可选哈希一起定义。比较结果时保持初始状态、请求顺序和策略一致，并明确地址变换的有效范围。

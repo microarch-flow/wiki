@@ -1,124 +1,44 @@
-# 命令调度：FR-FCFS 及其变体
+# DRAM 命令调度：就绪判断与 FR-FCFS
 
-上级：[Memory Controller](./README.md)
-相关：[Memory controller 如何影响 DRAM 的实际性能](./why-mc-is-the-real-bottleneck.md), [Open、close、adaptive page policy 的权衡](./page-policy-open-close-adaptive.md)
+上级：<span id="命令调度fr-fcfs-及其变体"></span>[DRAM 控制器与请求调度](./README.md)
+
+相关：[DRAM 地址映射](./address-mapping-channel-rank-bank-row-col.md) · [行保留与预充策略](./page-policy-open-close-adaptive.md) · [同 bank PRE 记分板](./mc-modeling-for-simulation.md#同-bank-pre-记分板)
 
 ## 这页在回答什么问题
 
-FR-FCFS 如何利用已打开行，以及在什么条件下改变吞吐或请求等待。收益和公平性都取决于候选命令、到达时序与资源约束。
+命令调度：FR-FCFS 及其变体，如何在可服务的请求之间选择？本页先定义一个教学规则，再说明行命中收益和等待风险；不同控制器对 ready 和优先顺序可以有不同实现。
 
-## 就绪命令选择与等待代价
+## 命令调度：FR-FCFS 及其变体 {#就绪命令选择与等待代价}
 
-FR-FCFS，即 `First-Ready, First-Come-First-Serve`，利用当前打开行的局部性。若有多个合法候选，优先服务 row-hit 可能避免一部分 PRE/ACT；实际效果取决于其他请求、总线和时序。只有一个候选，或所有候选都命中同一行时，本页规则可能与 FCFS 选择相同命令。
+先区分三件事：**已入队**表示请求已被接收；**行命中**表示目标 bank 当前打开目标行；**命令合法**表示该命令满足当前状态、时序、模式和共享资源约束。行命中也可能因为列命令间隔或未来 DQ 窗口被占用而暂时不能发。
 
-这里的 ready 包括完整的命令合法性。对 PRE，须同时检查 ACT、同 bank 的 RD 和 WR 所形成的下界；参见 [MC PRE 记分板](./mc-modeling-for-simulation.md#同-bank-pre-记分板)。
+本页采用的 FR-FCFS 教学变体：对每个可参与仲裁的请求，根据当前 bank 状态生成下一条必需命令；过滤所有当前不合法的候选；优先选择目标行已打开且可发的 RD/WR；同类候选按请求到达时间、再按稳定标识排序。PRE 和 ACT 可以是合法候选，但不被算作当前列命令命中。没有候选时，等待下一次到达、资源释放或时序变为合法的事件，再重新判断。
 
-本文使用一个明确的 FR-FCFS 变体。先根据当前 bank 状态，为每个请求生成下一条必需命令；再过滤掉不满足所有 timing、模式和共享资源 guard 的命令。在剩余合法候选中，优先发目标行已打开的 RD/WR；同类候选按请求到达时间排序。PRE 和 ACT 是非 row-hit 候选，即使它们为某个未来请求做准备，也不能算当前 row-hit。没有合法候选时等待下一事件，之后重新计算。
+[Memory Access Scheduling 原始论文](https://groups.csail.mit.edu/cag/PSRG/papers/rixner_isca27.pdf)讨论了最早就绪与其他重排策略；[gem5 的 DRAM 接口实现](https://github.com/gem5/gem5/blob/stable/src/mem/dram_interface.cc)还考虑列命令时刻和能否隐藏 bank 准备。它们说明必须定义具体规则，不能仅凭 FR-FCFS 名称推断每一步。
 
-在相同资源和调度条件下，row hit 通常省去本次请求的 PRE/ACT；多个候选可选时优先服务它可能减少切行并提高吞吐。具体收益取决于流量、数据总线和其他约束，也可能增加其他请求的等待。对有行局部性的 workload，应通过仿真或测量检查吞吐、尾延迟和公平性。
+### 一个可复核的仲裁例子
 
-一个条件化例子说明它可能如何减少切行。假设当前时刻不早于周期 12，同一 bank 的 open row 是 `R10`，队列里有三笔请求，且当前 A/C 的 RD 和 B 的 PRE 均合法：
+沿用[地址映射 X](./address-mapping-channel-rank-bank-row-col.md)：先前的 line 0—7 已完成，bank 0 的 row 0 保持打开。把该时刻重新记为周期 0，并假设之前的适用时序均已满足。较早到达的请求 B 读取 line 32，需要 row 1；A1 和 A2 分别读取 line 1、2，需要当前 row 0。A1 与 B 在周期 0 已到，A2 在周期 1 到达。采用 open-page，观察区间内无刷新或其他干扰。仅为演示，设 AL=0、读后 PRE 最小间隔 `nRTP=4 CK`、连续读列命令间隔 `nCCD=4 CK`，其他适用约束及 DQ 窗口在所列时刻均已满足。
 
-```text
-Req A: bank0, row10, col1   arrival=10
-Req B: bank0, row22, col8   arrival=8
-Req C: bank0, row10, col9   arrival=12
-```
+| 时刻 | 合法候选 | 本页规则的选择 |
+| --- | --- | --- |
+| 0 | B 所需的 PRE；A1 的 RD | A1 的 RD，暂不关闭 row 0。 |
+| 1—3 | A1 的读后恢复尚未满足，A2 的列间隔也未满足 | 等待下一个合法时刻。 |
+| 4 | B 的 PRE；A2 的 RD | A2 的 RD；其后 PRE 还须满足 A2 的读后约束。 |
+| 8 | 假设没有新的限制，B 的 PRE 可以再次成为候选 | 之后仍需按 `tRP` 等规则准备 row 1。 |
 
-若完全按到达顺序，controller 可能会想先做 `Req B`，但这意味着：
+这些数字是构造的 CK 规则，不是具体器件参数，也没有给出数据返回时间。如果 B 的 PRE 在 A2 可发之前已经合法且被选中，或者目标 DQ 窗口不合法，命令次序可能不同。
 
-```text
-PRE(row10) -> ACT(row22) -> RD(B)
-```
+### 吞吐与等待
 
-之后如果还要回到 `Req A/C`，又得再切回 row10。按本页规则先发 A 的 RD；若 A 之后 C 的 RD 在 B 的 PRE 可发之前成为下一条合法命令，则可得到：
+行命中可以避免本次请求的切行操作；当有可选择的候选时，它可能减少切换。持续到达的行命中也可能延后其他行的请求。实际等待还受队列容量、刷新、最大开行时间、写排空和强制服务规则影响；不能仅凭策略名证明吞吐收益或无限饥饿。
 
-```text
-RD(A) -> RD(C) -> PRE(row10) -> ACT(row22) -> RD(B)
-```
-
-在该时序下，两次 row10 访问共享开行，减少切行。若 C 的 RD 尚不合法，而 B 的 PRE 已合法，调度器可先发 PRE；不能把示意顺序当作所有 timing 配置的必然结果。
-
-持续竞争时，该规则可能增加非 row-hit 请求的等待。是否发生饥饿还取决于合法候选何时出现、资源占用、请求流及是否存在 aging 或服务上限；不能仅凭策略名称断言不公平。
-
-再看一个更尖锐的例子。假设 bank1 当前 open row 是 `R5`，某个流 `S` 连续不断地访问 row5 的不同列；同时另一个流 `T` 偶尔访问 bank1 的 row9。队列可能持续呈现：
-
-```text
-S1: bank1 row5
-T1: bank1 row9
-S2: bank1 row5
-S3: bank1 row5
-S4: bank1 row5
-...
-```
-
-假设每次存在发射机会时都有合法 row5 RD 与 T1 的 PRE 竞争，其他时刻 T1 的 PRE 不合法或没有发令机会，并且没有 aging、连续命中上限或其他强制服务机制。此时 row-hit 会反复获选：
-
-```text
-RD(S1) -> RD(S2) -> RD(S3) -> RD(S4) -> ...
-```
-
-而 `T1` 可能长期等不到 `PRE(row5) -> ACT(row9)` 这一步真正发生。也就是说，FR-FCFS 的吞吐提升，来自把“昂贵切换”尽量推迟；但被推迟的请求恰恰会形成尾延迟长尾。
-
-这就是为什么 FR-FCFS 虽然经典，却很少会在真实系统里原封不动裸跑。很多控制器会在它外面叠加各种“变体保护”：老化机制、服务计数、最大连续 row-hit 数限制、read/write 分级队列、per-thread/per-master fairness cap，或者直接在 QoS 场景里为高优先级流保底。所有这些变体的核心目标都一样：保住 FR-FCFS 对 row locality 的利用，但别让它把某些请求永远饿在门外。
-
-FR-FCFS 的候选还取决于 page policy：close-page 可能减少连续 hit 的机会；open-page 可能保留更多复用，也可能延长冲突请求的等待。实际差异要看访问和命令合法时刻，不能仅由策略名决定。
-
-它还和地址映射高度耦合。若地址映射把相关请求分散到不同 bank，FR-FCFS 也许更容易在多 bank 间交织，既吃 row-hit 又保并行；若映射让某些流集中撞到同一 bank，则 FR-FCFS 会更像“偏爱某一小撮幸运行”的策略。因此，看到 FR-FCFS 表现好或差，不应只评价调度本身，还要问：请求流是怎么被映射成 row/bank 结构的。
-
-从建模角度看，本页变体先过滤合法命令，再按 row-hit 和到达时间排序。它可作为吞吐基线；若目标包括 QoS、实时性或隔离，需要检验等待分布，并在需要时加入明确的服务约束。
-
-可用候选不同、且选择会影响未来切行或排队时，row-hit 优先才可能改变结果。相同候选顺序、单候选或无持续等待压力时，它可以与 FCFS 表现相同。
+Aging、连续命中上限和多源仲裁可以改变选择，但参数本身不自动证明等待上界。相关保证与观测方法见 [QoS、公平性与隔离](./qos-multi-master-arbitration.md)。
 
 ## 一句话理解
 
-本页 FR-FCFS 变体在合法候选中优先 row-hit，再按到达顺序选择。它可能减少切行，也可能在持续竞争下增加其他请求的等待；两者都要看具体请求流和时序。
+本页变体先筛选合法命令，再优先可发的行命中；它可能减少切行，也可能增加其他请求的等待。
 
 ## 建模启示
 
-模型先按完整 guard 过滤，再对合法候选按 row-hit 和到达时间排序。not-ready 命令不能发射；row-hit 必须在每次仲裁时依据目标 bank 当前打开行和下一命令重新判断。
-
-一个简化的调度伪码可以写成：
-
-```text
-candidates = []  # 每次仲裁重新构造
-for req in pending_requests:
-    bank = bank_state[req.bank_id]
-    cmd = next_required_command(req, bank)
-    if cmd is not NONE and all_guards_allow(cmd):
-        hit = cmd in {RD, WR} and bank.open_row == req.target_row
-        candidates.append({req, cmd, hit})
-if candidates is empty:
-    wait_until_next_event()
-else:
-    chosen = min(candidates, key=lambda c: (not c.hit,
-                                            c.req.arrival_cycle,
-                                            c.req.stable_id))
-    issue_if_still_legal_and_update_state_atomically(chosen)
-# 下一次仲裁重新生成候选；PRE/ACT 可能改变其他请求的行状态
-```
-
-`next_required_command` 对已经发出列命令、仅等待数据或响应的请求返回 `NONE`，防止重复发射。若原子发射时 guard 已被其他同刻动作改变，则不发出旧候选，依据新状态重新仲裁。
-
-若要探索 starvation 缓解，可先过滤合法候选，再使用 aging 作为另一种策略：
-
-```text
-priority = row_hit_bonus_if_applicable + age_weight * waiting_cycles
-```
-
-一个够用的数据结构草图可以是：
-
-```text
-SchedReq {
-  stable_id: id
-  arrival_cycle: cycle
-  bank_id: (channel, rank, bank_group, bank)
-  target_row: row_id
-  row_hit: bool  # 每次根据当前状态重新计算
-  ready: bool    # 当前下一命令是否满足全部 guard
-  waiting_cycles: cycle
-  source_master: MasterId
-}
-```
-
-评估 tail latency、QoS 或多 master 场景时，应比较原规则与 aging/fairness 变体。单独设置 aging 权重不自动证明等待上界；还需约束到达、不可抢占占用、刷新和资源服务。
+每次仲裁重新读取当前 bank 状态并构造候选。已经发出列命令、正在等待数据或响应的请求不能再次生成相同列命令。发射时应原子检查并更新共享约束；同一时刻的其他操作改变资源后，需要重新判断候选。

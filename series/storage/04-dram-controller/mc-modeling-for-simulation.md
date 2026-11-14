@@ -1,203 +1,88 @@
-# MC 在 cycle-level 仿真里的建模方法
+# DRAM 控制器建模：状态、事件与验证
 
-上级：[Memory Controller](./README.md)
-相关：[多 master 场景下的 QoS 与公平性](./qos-multi-master-arbitration.md), [存储器在架构探索中的建模模板](../reading-and-reference/02-reference/memory-modeling-template.md)
+上级：<span id="mc-在-cycle-level-仿真里的建模方法"></span>[DRAM 控制器与请求调度](./README.md)
+
+相关：[DRAM 命令时序](../03-dram/protocols/timing-parameters-trcd-trp-tras.md) · [QoS、公平性与隔离](./qos-multi-master-arbitration.md) · [存储器建模模板](../reading-and-reference/02-reference/memory-modeling-template.md)
 
 ## 这页在回答什么问题
 
-如果目标是做 cycle-level 或 event-driven 仿真，memory controller 到底该保留哪些状态和事件，哪些细节可以折叠掉。更具体地说，怎样才能把前面整章讲过的 row/bank/timing/refresh/QoS 这些约束，压缩成一个既有解释力、又不会过度复杂的仿真模型。
+MC 在 cycle-level 仿真里的建模方法，应保留哪些状态和事件，才能回答指定问题？本文给出可裁剪的模型边界、命令合法性示例和验证办法；它不是任何特定 DRAM 协议的完整实现。
 
-## 保留哪些离散状态和事件
+## MC 在 cycle-level 仿真里的建模方法 {#保留哪些离散状态和事件}
 
-到了这一章最后，最容易犯的错误有两个。一个错误是把前面所有机制都原封不动搬进模型——就像画一张地图时把每棵树、每块砖都标上去，结果地图比真实城市还复杂，没人能用。另一个错误则相反：为了简化，直接把 controller 压成一个 `avg_latency + peak_bw` 黑盒——就像把整座城市画成一个点，你确实能在全国地图上找到它，但你永远无法用它导航，于是前面所有 row locality、bank conflict、refresh 插空、write drain、QoS 差异都消失了。真正有用的建模方法，通常介于这两者之间：保留那些会改变性能形状的显式状态，折叠那些不改变决策结构的电路细节。
+先选择要回答的问题，再选粒度：
 
-判断“哪些必须保留”的最稳标准，不是看它在真实硬件里是否存在，而是看它是否会改变 controller 的选择空间。沿着这个标准，至少有五类东西通常必须显式建模。第一类是 `bank/open-row state`，因为没有它就没有 row hit/miss/conflict，也没有 FR-FCFS 和 page policy 的意义。第二类是 `timing guards`，因为 controller 之所以不能任意发命令，就是被这些 guard 限制。第三类是 `request queues and command issue logic`，因为调度的本质就是在多个候选请求间做选择。第四类是 `refresh/write-drain/QoS mode state`，因为这些机制会改变命令发射顺序和资源可见性。第五类是 `address mapping policy`，因为它决定请求流被塑形成怎样的 bank/channel 几何。
+| 模型 | 适合的问题 | 不能仅凭该模型推断 |
+| --- | --- | --- |
+| 已校准的固定或统计延迟与带宽 | 已有条件下的早期系统估算。 | 未校准的新地址映射、调度或刷新策略的细节。 |
+| 请求队列与 bank 行状态 | 比较明确假设下的行复用、排队和资源竞争。 | 未建模的具体命令时序和电气行为。 |
+| 命令与数据事件 | 检查所实现模式下的发令、DQ 窗口和策略交互。 | 模拟电压波形、器件正确性或所有未实现模式。 |
 
-与之相对，有些细节通常可以折叠。比如单个 sense amp 的模拟放大波形、位线连续电压变化、具体电源噪声耦合、训练电路内部实现，这些对绝大多数架构探索并不会改变 controller 的离散决策结构。你可以把它们压成若干 timing guard 或能耗参数，而不必显式仿真电压演化。换句话说，MC 模型的目标不是把 DRAM 芯片”仿真得像示波器波形一样真”，而是把”什么时候能发哪条命令、发了之后谁会等、总线何时被占、哪些请求会被拖长尾”这类系统行为做对。好的 MC 模型就像一张好的城市交通地图：你不需要画出每栋楼的砖缝，但主干道、红绿灯、单行线和收费站必须标清楚，因为它们决定了你能不能顺利从 A 到 B。
+状态需要与问题对应。研究页策略时要有行状态和关行决策；研究写排空时要有写队列和方向切换；研究刷新和 QoS 时要有义务、作用范围与相应仲裁。更细的模型仍需参数来源和验证，粒度本身不保证准确。
 
 ## 状态与事件循环
 
-一个比较稳的最小状态集合，可以写成下面这样：
+命令模型通常需要请求队列及其容量、每个 bank 的行和忙碌状态、独立命令域的发射能力、DQ 的**未来传输区间**、必要的跨 bank 时间约束，以及刷新和策略状态。完整 bank 标识至少包含所建模的 channel、rank、bank group 和 bank；可以用一一对应的展平标识代替。
 
-```text
-McState {
-  now: cycle
+仅保存当前 DQ 方向和一个“现在是否空闲”的标志不足以检查未来重叠。对给定模式，可在列命令发射时按其读写延迟和 burst 长度预留未来数据窗口，再检查已有窗口与读写转向约束。具体 DQ/DQS 边沿和保护间隔应按目标器件实现。
 
-  req_queue[master]: queue<MemReq>
-  write_buffer: queue<MemReq>
+按目标协议需要跟踪不同 bank group 的 `tCCD`、不同 bank 的 `tRRD`，以及 `tFAW` 的滚动 ACT 窗口；同 bank 的再次 ACT、PRE、刷新和电源状态有其他约束。这些名称和适用关系不能无条件套用到所有 DRAM 家族。
 
-  bank_state[(channel, rank, bank_group, bank)] {
-    open_row: row_id | INVALID
-    mode: enum { IDLE, ACTIVATING, ACTIVE, PRECHARGING, REFRESHING }
-    ready_cycle: cycle
-    last_act_cycle: cycle
-    last_pre_cycle: cycle
-    pre_ready_cycle: cycle  # 对本行 ACT、每个 RD/WR 的下界取最大值
-  }
-
-  shared_state[channel] {
-    cmd_bus_ready_cycle: cycle
-    data_bus_ready_cycle: cycle
-    bus_direction: enum { READ, WRITE, TURNAROUND }
-  }
-
-  refresh_state[scope] {
-    next_due_cycle: cycle
-    postpone_budget: int
-  }
-
-  policy_state {
-    scheduler_mode
-    page_policy_mode
-    write_drain_mode
-  }
-}
-```
-
-这里的 bank ID 是完整 `(channel, rank, bank_group, bank)` 元组；也可用对该元组一一映射的唯一展平 ID。同一 channel 的两个 rank 即使局部 bank 编号相同，也要保存各自的 open_row 和 timing 状态。refresh scope 也须带完整层级 ID。
-
-这套状态看起来已经不少，但它们基本都和“controller 下一拍能不能做什么选择”直接相关。反过来，如果某个状态删掉后，策略空间并没有变，只是数值精度稍粗，那么它通常就是可以折叠的候选。
-
-在 event-driven 视角下，controller 的主循环通常也不复杂，核心就是四步：
-
-```text
-1. 接收新请求并入队
-2. 根据地址映射更新请求的 channel/bank/row/col 解释
-3. 根据 bank/timing/refresh 状态筛出当前 legal 的候选命令
-4. 根据调度/QoS/page policy 选择下一条命令发射
-```
-
-可以把它写成一个很简化的伪码：
+一个事件驱动模型可以按下列顺序推进。这里将同一时刻的到达和完成事件先处理，再做命令仲裁；若模型采用其他顺序，需要明确并保持一致。
 
 ```text
 while simulation_running:
-  collect_arrivals(now)
-  update_completed_events(now)
-  for each independent_CA_domain in deterministic_order:
-      candidates = build_legal_cmds(now, state, independent_CA_domain)
-      cmd = select_cmd(candidates, policy_state)
-      if cmd exists:
-          issue(cmd, state)  # 原子预留并更新共享 guard
-  now = next_event_or_next_cycle()
+    process_arrivals_and_completions(now)
+    for domain in independent_command_domains:
+        candidates = candidates_for(domain, state)
+        legal = filter_legal(candidates, state)
+        chosen = choose_by_policy(legal)
+        if chosen exists:
+            issue_and_reserve_atomically(chosen)
+    now = earliest_future_event_after(now)
 ```
 
-每个独立 CA 域可在同一时间戳各发一条合法命令；若实现支持同域多发，须逐条重新检查并更新共享 guard，或做联合预留。不同 channel 的上游资源若共享也须仲裁。
+独立命令域按固定顺序遍历；`filter_legal` 检查全部适用时序、状态、顺序及资源约束。示例假设每个域在一个发射槽最多发射一条命令。若模型支持同一域同时发射多条命令，需要逐条重新检查并预留资源；不同域的同刻动作共享资源时，也需要重新检查或联合预留。若没有候选，下一时刻必须考虑 `tRCD`、`tRP`、刷新恢复和独立命令域下一发射槽等事件，不能只等待外部请求。策略还要及时安排强制刷新和必要准备，单次合法发射不保证未来截止条件一定满足。若系统空闲，可等待未来到达；若仍有待处理请求却找不到任何未来事件，应报告模型错误或无法前进的原因。
 
-这里真正决定模型解释力的，不是 `while` 循环本身，而是 `build_legal_cmds` 和 `select_cmd` 里保留了哪些状态依赖。只要这两块做对，模型就能自然长出 row-hit 优先、refresh 插入、write drain 和 QoS 抢占这些行为。
+[DRAMsim3](https://github.com/umd-memsys/DRAMsim3)将 bank 状态、channel 状态、命令队列和配置分开组织，可作为一种模拟器结构参考；它的具体策略不等于所有控制器的设计。
 
 ## 折叠模型的适用边界
 
-如果目标只是做吞吐趋势比较，而不是逐条请求延迟分析，那么模型可以再简化一层。例如你可以不显式发 `ACT/RD/PRE` 三条命令，而直接把请求分类成 `ROW_HIT / ROW_MISS / ROW_CONFLICT` 三类成本，再叠加 refresh blocking 和 bus turnaround penalty。这种模型依然能保留 DRAM 最关键的非均匀性，却比全命令级更轻：
+对同一发射事件，假设各前置动作已经完成，三个独立约束给出的最早时刻分别为 row ready@10、refresh release@8、DQ ready@6，则最早发射为 **max(10, 8, 6) = 10**，不是三者相加。若刷新阻止了此前的 ACT，就必须先重新计算 ACT 和 row ready；不能沿用旧的 10。
 
-```text
-if bank.open_row == target_row:
-    service_cost = row_hit_cost
-elif bank.open_row == INVALID:
-    service_cost = row_miss_cost
-else:
-    service_cost = row_conflict_cost
-```
-
-刷新、转向和行时序可能同时阻塞同一发射事件，不能直接相加。例如某列命令的三个独立下界分别为 row ready@10、refresh release@8、DQ ready@6，则最早为 `max(10,8,6)=10`，不是 `10+8+6`。这要求各下界已经包含各自前置依赖；若刷新阻止此前 ACT，应先重算 ACT 和 row ready。也可在实际时间线上取等待区间的并集，或把时间片按互斥规则归因。
-
-这类“折叠后的半结构模型”在很多 design-space exploration 里很实用，因为它保留了决定性的不均匀成本来源，又不至于把命令级细节全部拉进来。
-
-但有些场景下，你就不能再这么折。只要你的目标涉及下面几类问题，controller 模型最好显式到命令/状态级：
-
-- 比较不同 page policy 或 FR-FCFS 变体
-- 研究 refresh postpone / bank-level refresh 的尾延迟影响
-- 看多 master QoS、公平性和 starvation
-- 分析读写混合流量中的 write drain 行为
-- 用 archax 这类框架评估 deterministic NPU 外存可预测性
-
-因为这些问题的答案，正是来自 controller 在离散状态边界上如何做选择，而不是来自一个平均延迟数字。
-
-如果要和更高层系统建模对接，一个很有效的方式是把 memory controller 显式放进 `Resource / Topology / Interaction / Capability` 这四个轴里。这里可以第一次用这套抽象，因为到本章已经进入系统级建模边界：
-
-- `Resource`：channel、bank、data bus、refresh budget、write buffer
-- `Topology`：master 到 channel 的连接关系，channel 到 rank/bank 的层次
-- `Interaction`：读请求、写请求、refresh 命令、turnaround、precharge/activate 序列
-- `Capability`：峰值带宽、可并行 bank 数、QoS 保底能力、可推迟 refresh 的窗口
-
-这套映射的价值在于，它能把“controller 不只是一个算法，而是一个受资源和拓扑约束的调度器”这件事表达清楚。
-
-最后还要强调一个很现实的建模原则：不要试图让模型一开始就同时精准回答带宽、平均延迟、p99 延迟、功耗、热和公平性全部问题。更稳妥的做法是先选清目标，再决定需要保留哪些 controller 结构。如果只关心吞吐上界，命令级 QoS 细节可以先弱化；如果关心 SLA 和实时性，refresh/QoS/page policy 必须保留；如果关心系统架构路线选型，则地址映射与 bank 并行形状往往比某个精确 tCL 数值更重要。模型应该服务问题，而不是反过来为了“细”而细。
-
-所以，这一页真正要建立的不是某一种唯一正确的 MC 模型，而是一套裁剪准则：凡是会改变命令可发性、请求重排结果或资源共享形状的状态，都应该显式保留；凡是只影响底层连续电气细节、却不改变策略空间的部分，通常可以折叠。按这个原则，你就能在不同精度目标下得到一族合理的 controller 模型，而不是一个要么太粗、要么太重的极端。
+折叠等待时，可以在明确的时间线上计算阻塞区间并集，或使用互斥的归因规则。把行命中、刷新和转向折成固定平均值可用于校准范围内的粗估，但不能自动预测改变到达顺序、映射或仲裁后的结果。
 
 ## 同 bank PRE 记分板
 
-以下是 DDR4 BL8、无写 CRC、CA parity 关闭（PL=0）且 CS-to-CA latency 关闭的显式 PRE 示例。时间戳均以命令采样 CK 周期表示，参数应由所选器件、速率和模式计算。`pre_ready_cycle` 在 ACT 时初始化，在每次列命令时更新；不能只记一个 `ready_cycle`，然后忘记之前的写恢复。启用其他模式须按目标器件重新检查每个 guard，不能机械地给所有命令间隔加 PL。
+以下仅示意 DDR4、BL8、无写 CRC、CA parity 和 CS-to-CA latency 关闭的显式 PRE。时间以命令采样 CK 为单位，`nRAS`、`nRTP`、`nWR`、`nRP` 由目标器件及模式换算；`WL = AL + CWL`。其他协议条件仍须另查。
 
 ```text
 on ACT(bank, now):
-  pre_ready[bank] = now + nRAS
+    pre_ready[bank] = now + nRAS
 on RD(bank, now):
-  pre_ready[bank] = max(pre_ready[bank], now + AL + nRTP)
+    pre_ready[bank] = max(
+        pre_ready[bank], now + AL + nRTP)
 on WR(bank, now):
-  pre_ready[bank] = max(pre_ready[bank], now + WL + BL/2 + nWR)
-can_issue_PRE = bank_is_open && now >= pre_ready[bank] && other_guards_allow
+    write_ref = now + WL + BL/2
+    pre_ready[bank] = max(
+        pre_ready[bank], write_ref + nWR)
+can_issue_PRE = (bank_is_open
+    and now >= pre_ready[bank]
+    and other_guards_allow)
 on PRE(bank, now):
-  next_act_ready[bank] = now + nRP
+    next_act_ready[bank] = now + nRP
 ```
 
-其中 `WL=AL+CWL`。假设 WR 在周期 0，`AL=0, CWL=9, BL=8, nWR=12`，则写参考沿为 13，写项给出 `pre_ready>=25`；若 ACT 项给出 28，最终为 28。命令队列仍须检查命令总线、bank group、数据总线、refresh 和其他目标协议约束。自动预充要按目标规格建独立的内部事件。本例和更改模式后的校准边界见 [timing 正文](../03-dram/protocols/timing-parameters-trcd-trp-tras.md#ddr4-同-bank-显式-pre-的完整下界)。
+例如 WR 在周期 0，`AL=0、CWL=9、BL=8、nWR=12`：名义写数据窗口为 `[9, 13)`，写恢复参考沿为 13，写项要求 PRE 不早于 25。若同一行的 ACT 项要求 28，则这两项共同要求不早于 28；还须检查其他命令、总线、刷新和模式条件。自动预充应按目标规则建内部事件。详细依据见[时序文章](../03-dram/protocols/timing-parameters-trcd-trp-tras.md#ddr4-同-bank-显式-pre-的完整下界)。
 
-仿真应能输出每个候选 PRE 的阻塞原因、各下界及发射周期。这样可以区分写恢复、行保持和共享资源造成的等待。
+### 用小例子验证模型
+
+至少检查：两个真正独立的命令域可以在同一时刻各发合法命令；同一 DQ 的未来读写窗口不能冲突；PRE 同时满足 ACT 与所有列命令下界；刷新作用域及截止前准备正确；已发列命令不会重复发射；同址读写顺序和响应关联符合所选接口。为每个阻塞候选记录原因与释放时刻，便于定位分歧。
 
 ## 一句话理解
 
-MC 建模的关键，不是把所有 DRAM 细节都搬进仿真，而是显式保留那些会改变命令可发性、调度选择和资源共享形状的状态，把其余连续电气细节折叠成 timing 和能耗参数。
+模型应保留影响目标问题的资源、状态和事件，并用具体规则验证命令与数据的合法性。
 
 ## 建模启示
 
-如果要直接落成可实现的仿真骨架，一个很实用的最小接口是：
-
-```text
-struct MemReq {
-  addr: uint64
-  is_write: bool
-  bytes: int
-  source: MasterId
-  arrival_cycle: cycle
-  mapped_channel: int
-  mapped_rank: int
-  mapped_bank_group: int
-  mapped_bank: int  # 与 channel/rank/BG 组合构成唯一 bank ID
-  mapped_row: row_id
-  mapped_col: col_id
-}
-
-struct McObservedMetrics {
-  avg_latency: float
-  p99_latency: float
-  row_hit_rate: float
-  bank_utilization[(channel, rank, bank_group, bank)]
-  bus_utilization[channel]
-  refresh_block_cycles: cycle
-  write_drain_cycles: cycle
-}
-```
-
-一个最小事件集合可以是：
-
-```text
-event ReqArrive(req)
-event CmdIssue(cmd, bank_id)  # bank_id 为完整元组或唯一展平 ID
-event DataBurstStart(req)
-event DataBurstDone(req)
-event RefreshStart(scope)
-event RefreshDone(scope)
-event TurnaroundStart(dir)
-event TurnaroundDone(dir)
-```
-
-如果你要在 archax 里做 deterministic NPU 外存建模，我建议至少保留：
-
-- `address_mapping_policy`
-- `bank_state/open_row`
-- `refresh scope + postpone budget`
-- `write_drain mode`
-- `per-master QoS priority / max wait`
-
-因为这五类状态基本已经决定了“外存是否可预测”这件事。反过来，若你只是做 very-early-stage route screening，可以把命令流折叠成 `row_hit / miss / conflict + 去重后的 refresh/turnaround 等待` 模型，先跑趋势，再决定是否需要更细。
+明确输入地址、大小、方向、到达时间、依赖和来源，以及输出响应与统计的边界。比较 NPU 外存可预测性时，还需检查流量到达、共享路径、队列、维护动作和系统契约；列出策略参数不等于证明等待上界。

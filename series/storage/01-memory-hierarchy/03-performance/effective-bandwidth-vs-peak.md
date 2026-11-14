@@ -4,7 +4,7 @@
 
 上级：[存储层级与数据路径](../README.md)
 
-相关：[带宽与延迟](./bandwidth-vs-latency-fundamental.md) · [Memory controller 如何影响 DRAM 的实际性能](../../04-dram-controller/why-mc-is-the-real-bottleneck.md) · [局部性与数据搬运](../01-system-basics/locality-working-set-data-movement.md)
+相关：[带宽与延迟](./bandwidth-vs-latency-fundamental.md) · [DRAM 控制器：从请求到响应与性能](../../04-dram-controller/why-mc-is-the-real-bottleneck.md) · [局部性与数据搬运](../01-system-basics/locality-working-set-data-movement.md)
 
 ## 这页在回答什么问题
 
@@ -99,4 +99,4 @@
 
 - [带宽与延迟](./bandwidth-vs-latency-fundamental.md)：对齐请求响应时间、窗口带宽和并发。
 - [存储瓶颈与计算瓶颈](./memory-bound-vs-compute-bound.md)：结合工作量和资源上界判断下一步实验。
-- [Memory controller 如何影响 DRAM 的实际性能](../../04-dram-controller/why-mc-is-the-real-bottleneck.md)：查看控制器、器件和上游请求的共同作用。
+- [DRAM 控制器：从请求到响应与性能](../../04-dram-controller/why-mc-is-the-real-bottleneck.md)：查看控制器、器件和上游请求的共同作用。

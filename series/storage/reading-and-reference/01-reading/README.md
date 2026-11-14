@@ -11,7 +11,7 @@
 | 3 | [03 SRAM 应用](../../02-sram/applications/README.md) | 用 SRAM 基础解释 cache、scratchpad 和 buffer。 |
 | 4 | [04 DRAM 单元与阵列](../../03-dram/foundations/README.md) | 从 1T1C 单元到 row buffer、bank 和 refresh。 |
 | 5 | [05 DRAM 协议](../../03-dram/protocols/README.md) | 用阵列行为解释命令、时序和 DDR 家族。 |
-| 6 | [06 Memory Controller](../../04-dram-controller/README.md) | 在协议约束下调度请求，并建模资源竞争。 |
+| 6 | [06 DRAM 控制器与请求调度](../../04-dram-controller/README.md) | 在协议约束下调度请求，并建模资源竞争。 |
 | 7 | [07 系统架构](../../01-memory-hierarchy/01-system-basics/README.md) | 分析多级存储、有效带宽和系统访问延迟。 |
 | 8 | [08 封装与集成](../../06-system-integration/packaging/README.md) | 连接封装、接口距离、带宽与成本。 |
 | 9 | [09 AI 芯片存储](../../01-memory-hierarchy/04-npu-case/README.md) | 将上述知识用于 NPU buffer、数据流和外存。 |

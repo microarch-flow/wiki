@@ -1,107 +1,48 @@
-# 写缓冲与 write drain：为什么读优先
+# 写缓冲与写排空：读写切换和顺序
 
-上级：[Memory Controller](./README.md)
-相关：[命令调度：FR-FCFS 及其变体](./command-scheduling-fr-fcfs.md), [多 master 场景下的 QoS 与公平性](./qos-multi-master-arbitration.md)
+上级：<span id="写缓冲与-write-drain为什么读优先"></span>[DRAM 控制器与请求调度](./README.md)
+
+相关：[命令调度与 FR-FCFS](./command-scheduling-fr-fcfs.md) · [QoS、公平性与隔离](./qos-multi-master-arbitration.md)
 
 ## 这页在回答什么问题
 
-为什么很多 DRAM 控制器几乎都会默认“读优先”，并把写请求先积累进 write buffer，等到合适时机再集中排空。更准确地说，这不是经验偏好，而是由读请求的系统敏感度和总线方向切换代价共同推出来的策略。
+写缓冲与 write drain（写排空）怎样影响共享数据通道？为什么有些控制器优先服务读，又怎样防止写请求无法前进？策略依系统目标而定，读写也都可能位于关键路径。
 
 ## 写队列与总线方向切换
 
-如果只从功能语义上看，读和写似乎都是普通内存请求：一个要把数据取回来，一个要把数据送出去，排队公平一点似乎最合理。真实 DRAM 系统很少这样做。大多数控制器会明显偏向读请求，把写请求先缓存在 write buffer 中，只在写积累到一定程度、或者满足某些时机条件时，才进入所谓 `write drain` 阶段集中服务。这种设计并不是“写不重要”，而是在承认读写在系统影响和总线代价上并不对称。
+在常见双向 DQ 接口上，读数据由 DRAM 送向控制器，写数据由控制器送向 DRAM。改变方向时，信号驱动及协议时序可能要求间隔。控制器可以在允许重排的范围内连续服务一批同方向请求，减少切换；但更长的批次也可能增加另一方向的等待。
 
-第一层原因来自 `可见性敏感度`。读请求几乎总是阻塞前台执行——就像外卖骑手等你出餐：你不出菜他就站在那里等，后面的单全堆着；而写请求更像往仓库码货，货先堆在门口也不影响前面做生意。读请求几乎总是直接阻塞前台执行：CPU load miss 读不到数据就卡住流水，GPU wavefront/NPU tile 等不到关键输入就会 stall，DMA 若在为消费侧供数，读不出来也会直接影响下游。写请求则常常有更强的缓冲弹性。很多 store 在进入写队列后，发起核心就可以继续前进；不少 DMA 或外设写也只要缓冲区没满，就不一定立刻要求外存完成。因此，从系统感知角度，读更像“前台阻塞操作”，写更像“后台可延后工作”。这就是“读优先”的第一层根源。
+### 同一工作量的比较
 
-第二层原因来自 `总线方向切换代价`。DRAM 数据总线不是理想双向管道，读数据从 DRAM 送向 controller，写数据则从 controller 送向 DRAM。每次在读和写之间切换，通常都要付出 bus turnaround 的等待窗口，相关 timing 约束会让总线短时间内不能立刻满效率工作。若 controller 完全按请求到达顺序交错服务读写，例如 `R-W-R-W-R-W`，看起来公平，实际上会把大量时间浪费在反复切换方向上。于是更高效的办法往往是：先尽量把一批读做完，再在某个时刻切到写方向，把积累的写一口气排掉。也就是说，write drain 的存在，本质上是在把”频繁的小损失”换成”更少次的大切换”。这和洗碗的道理一样——你可以做一道菜洗一次碗（频繁切换），也可以先把脏碗攒一盆，做完所有菜后一口气洗完（集中排空）。后者每次从做菜切换到洗碗确实要花一小段准备时间，但你只切换一次，而不是十次。
+假设 2 个读和 2 个写均已到达，彼此无地址、顺序或其他依赖，且允许重排。每次数据传输占 4 CK，任一方向切换均额外占 2 CK，首次传输前不计切换，其他命令和时序均不产生空隙。这些是用于算术的假设，不是器件规格。
 
-一个极简例子就能看出差别：
+| DQ 数据传输顺序 | 方向切换 | 数据与切换占用窗口 |
+| --- | --- | --- |
+| R → W → R → W | 3 次 | 4 × 4 + 3 × 2 = 22 CK |
+| R → R → W → W | 1 次 | 4 × 4 + 1 × 2 = 18 CK |
 
-```text
-Naive interleave:
-  R -> turn -> W -> turn -> R -> turn -> W
+比较中读写数量相同。真实接口的读到写、写到读间隔可能不同，数据窗口还可能被 bank、命令与刷新约束；不能把这个例子的差值当作实际加速比。减少切换也可能让个别请求等待更久。
 
-Write drain style:
-  R -> R -> R -> turn -> W -> W -> W
-```
+### 为什么读优先，何时排空？
 
-后者未必让每一笔写更早完成，但它明显减少了方向切换次数，因此总线有效利用率通常更高。常见误解是认为 write drain 只是“懒得立即写回”；实际上，它是在显式优化共享数据总线的方向开销。
+有些控制器优先服务对前台执行敏感的读，同时把部分写先放入缓冲。预取读未必处于关键路径；同步写、缓冲满或有时限的写也可能迫使上游等待。
 
-第三层原因来自写请求自身更适合被局部性优化。写请求进入 buffer 后，controller 往往有更多机会观察到它们在 row/bank 上的聚集关系。若多笔写刚好落到相同或相邻 row，集中写出时可以像读一样利用 row locality，把 activate 成本摊薄。因此，write buffer 不只是一个临时停车场，它还给 controller 提供了重排和聚合写事务的窗口。读请求当然也会受益于重排，但它们通常更急，更不适合长时间等待“凑局部性”。
+写缓冲吸收尚未送往 DRAM 的写数据。一个常见方案设置高、低水位：写积累到高水位后进入排空模式，下降到低水位且有需要服务的读时再考虑退出。空闲时排空、等待时间阈值或显式完成要求也可能触发写服务。阈值之间的滞回可以减少模式反复切换，但本身不证明写请求一定及时完成。
 
-但既然写可以缓，为什么不一直缓下去？因为 write buffer 不是无限的，写请求也不是永远不重要。若长期只偏爱读请求，写队列会逐渐堆满，一旦 buffer 空间逼近阈值，新的写可能无法继续吸收，甚至反过来阻塞前端；某些一致性或同步语义也可能要求写在有限时间内真正落到内存。因此 controller 通常会设定几个触发条件：比如写队列深度超过高水位、当前读请求较少、刷新窗口刚好不敏感、或者需要为后续请求腾出空间。到了这些时刻，就进入 write drain，把一批写尽量连续处理完。
+例如低水位为 2，而队列仅有一笔将到期的写：控制器可锁定该请求并保留服务承诺，按合法顺序完成它所需的 PRE、ACT 和 WR，而不因占用低于水位立即撤销承诺。若刷新、上游依赖或更高优先级事务可以无限阻塞它，仍不能据此证明 deadline 一定满足。
 
-一个简单的状态机可以这样理解：
+[gem5 的控制器源码](https://github.com/gem5/gem5/blob/stable/src/mem/mem_ctrl.cc)展示了一种高低水位、最小切换批次和队列实现；具体阈值和空闲排空规则不应推广到所有控制器。
 
-```text
-if an urgent write is pending:
-    enter WRITE_DRAIN and keep its service commitment until its WR is issued
-elif write buffer reaches high watermark or writes exist with no reads ready:
-    enter WRITE_DRAIN
-elif in WRITE_DRAIN and buffer is at/below low watermark and reads are ready:
-    return to READ_PREF
-# 各命令仍须满足 bank、CA、DQ 与 refresh 的合法时刻
-```
+### 同址读写如何保持正确？
 
-这里最关键的是 `high watermark / low watermark` 这种滞回式设计。没有滞回，controller 可能会在读优先和写排空之间来回抖动，方向切换优势反而被削弱。滞回让“读模式”和“写排空模式”各自能维持一个足够长的片段，从而真的减少 turnaround 次数。
+假设系统契约要求以下访问有顺序：旧写 W0 覆盖字节 0、1；较新写 W1 覆盖字节 1；随后读 R 覆盖字节 0—3。若写仍在缓冲中，R 的字节 0 应反映 W0，字节 1 应反映 W1，字节 2、3 则来自有效的未覆盖数据。实现可以按允许的规则转发和合并，或等待相关写按要求完成；不能直接返回包含旧字节 0、1 的 DRAM 数据。
 
-这也解释了为什么 write drain 和 FR-FCFS 常常要一起看。FR-FCFS 在一个模式内部喜欢追 row-hit；write drain 则决定当前整个控制器是偏向服务读还是偏向服务写。两者叠加起来，控制器才会呈现真实行为：平时以读优先、在读模式里尽量吃 row-hit；当写堆太多时，切到写模式、在写模式里也继续利用 row locality。也就是说，write drain 不是替代命令调度，而是在更高层决定“现在该优化哪一类事务”。
-
-写优先策略为什么通常不成立，也就很清楚了。写请求虽然也会影响吞吐，但它们对前台 stall 的直接伤害往往比读低；同时，过于积极地提前排空写会让高敏感读请求在本不必要的时候等待，总体系统体验更差。只有在非常特定的系统目标下，例如某些流式输出设备或写密集后端任务，controller 才可能显著提高写优先级。但对大多数通用处理器和加速器，读优先几乎是默认合理起点。
-
-当然，读优先也不是没有代价。它可能让某些写请求尾延迟很长，也可能在多 master 场景下让写密集流长期处于从属地位。如果系统里有显式的写时限、持久性语义、DMA backpressure 或下游 buffer 满溢风险，controller 就不能简单地把写永远当后台任务。这也是为什么 write drain 最终会和 QoS、仲裁和流量隔离问题连起来：有些写虽然“不是读”，但也未必真的不急。
-
-从建模角度压缩一下，write drain 的本质可以概括成一句话：controller 正在把一个双向共享总线上的混合请求流，重塑成更少方向切换、更多同类聚合的服务序列。它优化的是总线效率和前台感知延迟，但代价是写完成时间分布更不均匀。因此，只要你的模型里还有读写共用的数据总线，就不应该把二者简单视为对称负载。
+真实实现还需处理字节掩码、多个未完成写、跨 burst、原子操作和一致性/接口顺序。[AMD 的地址冲突处理](https://docs.amd.com/r/en-US/ug1085-zynq-ultrascale-trm/Address-Collision-Handling?contentId=tnIWh__7PmnTW6Xds48YPA)展示了特定控制器的处理方式。
 
 ## 一句话理解
 
-读优先和 write drain 的本质，是利用“读更像前台阻塞、写更像可缓后台任务”这一系统不对称性，再加上减少总线方向切换的硬收益，把请求流重塑成更高效的服务序列。
+写缓冲和批量排空可以减少方向切换，但必须同时处理队列容量、写进度与读写顺序。
 
 ## 建模启示
 
-在模型里，读写请求不应共享完全相同的调度优先级和代价函数。最少应显式保留 `bus direction state`、`write_buffer_occupancy` 和 `drain threshold`，否则模型无法表达为什么读写交错时有效带宽会明显下降，也无法表达为什么写可以先缓后排。
-
-一个够用的状态草图可以写成：
-
-```text
-WriteDrainModel {
-  mode: enum { READ_PREF, WRITE_DRAIN }
-  write_buffer_occupancy: int
-  high_watermark: int
-  low_watermark: int
-  urgent_write_id: ReqId | NONE  # 锁定需保证前进的写
-  bus_direction: enum { READ, WRITE, TURNAROUND }
-}
-```
-
-对应切换逻辑可以写成：
-
-```text
-if urgent_write_id is NONE and an_unissued_write_nears_deadline():
-    urgent_write_id = select_urgent_write()
-
-if urgent_write_id is not NONE:
-    mode = WRITE_DRAIN  # 高于低水位退出条件，直至该请求 WR 发出
-elif not writes_pending:
-    mode = READ_PREF
-elif mode == READ_PREF and (write_buffer_occupancy >= high_watermark or not reads_ready):
-    mode = WRITE_DRAIN
-elif mode == WRITE_DRAIN and write_buffer_occupancy <= low_watermark and reads_ready:
-    mode = READ_PREF
-
-resolve_overlapping_read_after_write_by_forwarding_or_ordering()
-if urgent_write_id is not NONE:
-    select_required_legal_PRE_ACT_or_WR_for(urgent_write_id)
-else:
-    select_legal_command_according_to_mode()
-if selected_command_is_legal_under_all_guards():
-    issue_and_update_state_atomically()
-    if urgent_write_id is not NONE and issued_WR_for(urgent_write_id):
-        urgent_write_id = NONE
-```
-
-例如低水位为 2、队列中有一笔将到期写，同时有就绪读：控制器锁定该写并保持 write-drain，先发所需合法 PRE/ACT，随后发 WR；不能因占用 1 而立即切回读。锁定只保证策略不会自行撤销承诺；若 refresh、其他优先请求或依赖可无限阻塞，仍不能据此证明 deadline 一定满足。
-
-接收写入 buffer、对其他访问可见、以及到达持久性域是三个不同完成点，具体应由协议和系统契约定义。例：较旧写覆盖地址 X 的 1 B，随后读覆盖该字节；控制器必须正确转发该字节并合并未覆盖字节，或等待写按顺序完成，不能直接返回旧 DRAM 数据。空闲排空和写时限避免低水位以下写入无限滞留。
-
-如果只关心粗粒度平均性能，可以把 turnaround 折成一个读写切换惩罚；但只要你要分析 tail latency、DMA backpressure 或混合读写 workload，就最好显式保留 `WRITE_DRAIN` 这一模式。因为很多系统不是“写更慢”，而是“写被故意延后到某些时间片集中完成”。
+按研究目标记录写队列容量、水位、服务承诺和 DQ 传输窗口。区分上游接收、相关访问可见、数据写入及系统定义的响应或持久化边界；队列接收和 WR 命令发射都不自动代表所有这些边界已经完成。

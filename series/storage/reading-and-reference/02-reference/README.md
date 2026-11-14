@@ -1,7 +1,7 @@
 # 参考资料
 
 上级：[`RAM/wiki/`](../01-reading/)
-相关：[学习路径与各章节依赖关系](../01-reading/learning-roadmap.md), [MC 在 cycle-level 仿真里的建模方法](../../04-dram-controller/mc-modeling-for-simulation.md)
+相关：[学习路径与各章节依赖关系](../01-reading/learning-roadmap.md), [DRAM 控制器建模：状态、事件与验证](../../04-dram-controller/mc-modeling-for-simulation.md)
 
 ## 这页在回答什么问题
 

@@ -20,7 +20,7 @@
 | [SRAM 应用形态](../../02-sram/applications/README.md) | Cache、scratchpad、register file 和其他角色如何使用存储资源？ |
 | [DRAM 单元与阵列](../../03-dram/foundations/README.md) | 1T1C cell、row buffer、bank 和刷新带来哪些约束？ |
 | [DRAM 命令与接口](../../03-dram/protocols/README.md) | 控制器使用什么命令、时序和接口访问 DRAM？ |
-| [Memory Controller](../../04-dram-controller/README.md) | 请求如何映射、排队和调度？哪些资源会竞争？ |
+| [DRAM 控制器与请求调度](../../04-dram-controller/README.md) | 请求如何映射、排队和调度？哪些资源会竞争？ |
 | [系统视角](../../01-memory-hierarchy/01-system-basics/README.md) | 多层存储与互连怎样共同影响延迟和有效带宽？ |
 | [封装与集成](../../06-system-integration/packaging/README.md) | DIMM、堆叠和封装连接怎样影响系统选择？ |
 | [NPU 数据路径与存储组织](../../01-memory-hierarchy/04-npu-case/README.md) | NPU 怎样安排 buffer、数据复用和外存供数？ |

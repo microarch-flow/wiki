@@ -133,6 +133,39 @@ class GeneratedNavigationTests(unittest.TestCase):
         ):
             self.assertIn(target, targets)
 
+    def test_memory_controller_order_and_legacy_anchors(self):
+        group = grouped_original_topics(SITE.parent / "docs", STORAGE)[3]["DRAM 控制器与请求调度"]
+        root = "RAM/wiki/06-memory-controller/"
+        entries = [
+            ("README.md", "memory-controller"),
+            ("why-mc-is-the-real-bottleneck.md", "memory-controller-如何影响-dram-的实际性能"),
+            ("address-mapping-channel-rank-bank-row-col.md", "地址映射物理地址到-channelrankbankrowcol-的拆分艺术"),
+            ("command-scheduling-fr-fcfs.md", "命令调度fr-fcfs-及其变体"),
+            ("page-policy-open-close-adaptive.md", "opencloseadaptive-page-policy-的权衡"),
+            ("write-buffer-write-drain.md", "写缓冲与-write-drain为什么读优先"),
+            ("refresh-management-distributed-postponed.md", "refresh-调度分散刷新推迟刷新bank-level-refresh"),
+            ("qos-multi-master-arbitration.md", "多-master-场景下的-qos-与公平性"),
+            ("mc-modeling-for-simulation.md", "mc-在-cycle-level-仿真里的建模方法"),
+        ]
+        self.assertEqual(group, [root + name for name, _ in entries])
+        search = json.loads((SITE / "search/search_index.json").read_text(encoding="utf-8"))
+        locations = {entry["location"] for entry in search["docs"]}
+        for name, anchor in entries:
+            slug = "" if name == "README.md" else name.removesuffix(".md") + "/"
+            page = SITE / root / slug / "index.html"
+            self.assertTrue(page.is_file(), str(page))
+            self.assertIn(f'id="{anchor}"', page.read_text(encoding="utf-8"))
+            self.assertIn(root + slug, locations)
+
+        article = (SITE / root / "command-scheduling-fr-fcfs/index.html").read_text(encoding="utf-8")
+        start = article.index('<div class="md-sidebar md-sidebar--primary"')
+        end = article.index('<div class="md-sidebar md-sidebar--secondary"', start)
+        active = re.search(r'<label\b[^>]*md-nav__link--active[^>]*for="__toc"[^>]*>\s*'
+                           r'<span class="md-ellipsis">(.*?)</span>', article[start:end], re.DOTALL)
+        self.assertIsNotNone(active)
+        self.assertEqual(unescape(active.group(1).strip()), "命令调度与 FR-FCFS")
+        self.assertIn('aria-label="DRAM 命令调度：就绪判断与 FR-FCFS"', active.group())
+
     def test_archived_reviews_are_reachable_but_not_in_reader_navigation(self):
         for relative in (Path("index.html"), Path("microarchitecture/index.html"),
                          Path("RAM/wiki/01-overview/index.html")):
