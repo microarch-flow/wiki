@@ -4,6 +4,25 @@ MEMORY_TOPIC = "存储层级与数据路径"
 STORAGE_RESOURCES = "查阅与练习"
 MEMORY_HOME = "RAM/wiki/01-overview/README.md"
 SYSTEM_SELECTION = "RAM/wiki/07-system-architecture/why-systems-choose-different-memory.md"
+INTEGRATION_TOPIC = "存储系统集成与选型"
+INTEGRATION_HOME = "RAM/wiki/system-integration/README.md"
+INTEGRATION_PACKAGING = (
+    ("封装与集成", "RAM/wiki/08-packaging-integration/README.md"),
+    ("DIMM 与 SODIMM", "RAM/wiki/08-packaging-integration/dimm-sodimm-traditional-forms.md"),
+    ("PoP 与 MCP", "RAM/wiki/08-packaging-integration/pop-mcp-mobile-integration.md"),
+    ("HBM 堆叠与互连", "RAM/wiki/08-packaging-integration/hbm-2.5d-3d-tsv.md"),
+    ("HBM 成本", "RAM/wiki/08-packaging-integration/why-hbm-is-expensive.md"),
+)
+INTEGRATION_AFTER = (
+    ("NPU 的 HBM 与 LPDDR 选型", "RAM/wiki/09-ai-chip-memory-architecture/hbm-vs-lpddr-for-npu.md"),
+    ("CXL 与近存计算", "RAM/wiki/08-packaging-integration/future-packaging-cxl-near-memory.md"),
+)
+INTEGRATION_PAGE_SECTION = {
+    INTEGRATION_HOME: "",
+    SYSTEM_SELECTION: "",
+    **{page: "packaging" for _, page in INTEGRATION_PACKAGING},
+    **{page: "" for _, page in INTEGRATION_AFTER},
+}
 
 # Entries use the preserved staging paths. prepare.py validates that every
 # page's current source directory matches its section before it is published.

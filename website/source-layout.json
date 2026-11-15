@@ -224,6 +224,11 @@
         "target": "HBF/wiki"
       },
       {
+        "kind": "file",
+        "source": "series/storage/06-system-integration/README.md",
+        "target": "RAM/wiki/system-integration/README.md"
+      },
+      {
         "kind": "directory",
         "source": "series/storage/06-system-integration/packaging",
         "target": "RAM/wiki/08-packaging-integration"

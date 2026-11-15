@@ -17,7 +17,9 @@ SITE = Path(__file__).resolve().parents[2] / ".site-build" / "site"
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from hooks import grouped_original_topics, make_tree, storage_resources_tree  # noqa: E402
 from ownership import STORAGE, owner  # noqa: E402
-from storage_navigation import MEMORY_HOME, MEMORY_SECTIONS, RESOURCE_SECTIONS  # noqa: E402
+from storage_navigation import (INTEGRATION_AFTER, INTEGRATION_HOME, INTEGRATION_PACKAGING,
+                                MEMORY_HOME, MEMORY_SECTIONS, RESOURCE_SECTIONS,
+                                SYSTEM_SELECTION)  # noqa: E402
 
 LANDING_PAGES = {
     "index.html", "series/index.html", "microarchitecture/index.html",
@@ -33,6 +35,40 @@ def page_url(relative):
 
 
 class GeneratedNavigationTests(unittest.TestCase):
+    def test_integration_navigation_legacy_anchors_and_search(self):
+        group = grouped_original_topics(SITE.parent / "docs", STORAGE)[5]["存储系统集成与选型"]
+        self.assertEqual(group, [
+            {"存储系统集成与选型": INTEGRATION_HOME},
+            {"不同系统的存储选型": SYSTEM_SELECTION},
+            {"封装与集成": [{label: path} for label, path in INTEGRATION_PACKAGING]},
+            *[{label: path} for label, path in INTEGRATION_AFTER],
+        ])
+        legacy = {
+            SYSTEM_SELECTION: ("mcucpugpunpu-为什么选择不同存储器", "不同处理器的存储目标"),
+            INTEGRATION_PACKAGING[0][1]: ("封装与集成", "封装如何改变存储接口边界", "阅读顺序"),
+            INTEGRATION_PACKAGING[1][1]: ("dimmsodimm传统封装形态的电气与机械约束", "模块化容量与板级链路"),
+            INTEGRATION_PACKAGING[2][1]: ("popmcp移动端的集成方式", "移动封装的位置与容量取舍"),
+            INTEGRATION_PACKAGING[3][1]: ("hbm-的-25d3d-集成与-tsv-技术", "tsv堆叠与近距宽接口"),
+            INTEGRATION_PACKAGING[4][1]: ("hbm-的成本结构为什么这么高", "堆叠良率与封装成本"),
+            INTEGRATION_AFTER[0][1]: ("npu-选-hbm-还是-lpddr决策框架", "从工作负载反推外存需求"),
+            INTEGRATION_AFTER[1][1]: ("cxl近存计算与未来封装方向", "协议计算位置与封装的边界"),
+        }
+        locations = {entry["location"] for entry in json.loads(
+            (SITE / "search/search_index.json").read_text(encoding="utf-8"))["docs"]}
+        for name, anchors in legacy.items():
+            path = Path(name)
+            directory = path.parent if path.name == "README.md" else path.with_suffix("")
+            html = (SITE / directory / "index.html").read_text(encoding="utf-8")
+            for anchor in (*anchors, "这页在回答什么问题", "一句话理解", "建模启示"):
+                self.assertIn(f'id="{anchor}"', html, (name, anchor))
+            self.assertIn(directory.as_posix() + "/", locations)
+        self.assertIn("RAM/wiki/system-integration/", locations)
+        cxl = (SITE / "RAM/wiki/08-packaging-integration/future-packaging-cxl-near-memory/index.html").read_text(encoding="utf-8")
+        breadcrumb = BREADCRUMB.search(cxl).group(1)
+        self.assertIn("存储系统集成与选型", breadcrumb)
+        self.assertNotIn("封装与集成", breadcrumb)
+        self.assertIn("system-integration/", breadcrumb)
+
     def test_series_covers_have_accessible_images_and_working_links(self):
         pages = (
             "storage/index.html", "interconnect/index.html", "external/workload-wiki/index.html",

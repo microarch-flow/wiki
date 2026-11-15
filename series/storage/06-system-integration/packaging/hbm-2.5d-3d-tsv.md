@@ -1,83 +1,40 @@
-# HBM 的 2.5D、3D 集成与 TSV 技术
+# HBM 的堆叠与封装内互连
 
-上级：[封装与集成](./README.md)
-相关：[HBM：从协议层面看它和 DDR 的根本不同](../../03-dram/protocols/hbm-stacked-wide-io.md), [DRAM 工艺路线：平面到堆叠到 3D](../../03-dram/foundations/dram-process-stacking-trends.md)
+<span id="hbm-的-25d3d-集成与-tsv-技术"></span>
+
+上级：[存储模块、封装与集成](./README.md)
+相关：[HBM 接口与伪通道](../../03-dram/protocols/hbm-stacked-wide-io.md) · [HBM 成本](./why-hbm-is-expensive.md)
 
 ## 这页在回答什么问题
 
-为什么 HBM 几乎天然要和 2.5D、3D、TSV 这些集成技术绑在一起。更具体地说，这些技术各自解决了什么物理问题，它们如何共同把“超宽近距 I/O”从协议设想变成真正可落地的系统形态。
+HBM 的 DRAM die 怎样在 stack 内连接？stack 又怎样连接计算 die？这两个问题分别涉及垂直堆叠和封装内互连，不能只用“3D 封装”一个词回答。
 
 ## TSV、堆叠与近距宽接口
 
-上一章已经把 HBM 的协议逻辑讲清了：它的根本分叉不是继续提高单 pin 速率，而是把接口做得极宽、距离做得极短、每根线的压力做得更低。但只要你再多问一步，“这几千根线到底怎么落下来”，封装和集成问题就会立刻成为主角。HBM 的高带宽不是凭空从协议定义里长出来的，它需要一套物理前提：内存 die 之间要能高密度互连，内存 stack 与计算 die 之间要能在极短距离上铺开超宽 I/O，同时整体还要可制造、可测试、可供电、可散热。2.5D、3D 和 TSV 正是在解决这些前提。
+HBM 将多个 DRAM die 组织成 stack，并通过宽接口与计算侧通信。TSV（through-silicon via，硅通孔）提供穿过硅片的垂直连接路径，配合键合等结构，将堆叠 die 的信号和供电连接起来。stack 的容量与内部连接，不等于计算 die 到 stack 的完整接口。
 
-先从 `TSV` 开始。TSV，through-silicon via，本质上是在硅片垂直方向上打通高密度互连路径。对 HBM 来说，它最关键的作用不是“显得很先进”，而是让多层 DRAM die 可以在竖直方向上真正交换大量信号、电源和控制连线，而不用再依赖传统封装里的绕远水平路径。没有 TSV，多 die 堆叠很难在保持高密度互连的同时真正形成一个可工作的高 I/O 内存 stack。也就是说，TSV 是让”多层 DRAM 真正像一个整体”而不是”几颗芯片简单叠在一起”的基础。你可以把 TSV 想象成多层写字楼里的电梯井——没有电梯，楼层虽然叠在一起，但人和货物要在各层之间流动就极其困难；有了电梯，每一层才真正成为一栋可工作大楼的一部分。
+| 观察范围 | 要回答的问题 | 常见实现 |
+| --- | --- | --- |
+| HBM stack 内部 | 多层 DRAM die 如何连接？ | die 堆叠与 TSV 等垂直互连。 |
+| 计算 die 到 stack | 大量信号如何在封装内连接？ | 硅中介层、RDL 中介层或局部硅桥等。 |
+| 系统级 3D | 计算与其他 die 是否垂直集成？ | 取决于产品，不能仅凭 HBM stack 是 3D 推出。 |
 
-再看 `3D stack`。前一章已经讲过 DRAM 自身工艺开始向垂直维度借空间，而 HBM 在产品层真正把这件事推进成了多层 die 堆叠。它的核心价值有两点：第一，在更小 footprint 上放下更多 DRAM 容量；第二，把大量 I/O 组织在 stack 底部和顶部路径上，为后续与计算 die 的宽接口对接创造条件。你可以把 HBM stack 理解成：先把“多颗高密度 DRAM die 如何在一个局部体积里组织起来”这道题解决，再去回答“它们如何和计算 die 高带宽相连”。
+“DRAM die 堆叠”也不等同于在一个 die 内把存储单元做成立体结构。[DRAM 工艺与堆叠](../../03-dram/foundations/dram-process-stacking-trends.md)进一步区分这些层次。
 
-但 HBM 只做到 stack 还不够。即使 stack 内部已经靠 TSV 把多层 die 接通，如果 stack 和计算 die 之间仍然靠传统长板级链路连接，那么前面想用超宽低 pin-rate 解决的问题会立刻又回来：线太长、功耗太高、信号太难、位宽也很难拉开。这就是 `2.5D` 集成要解决的核心问题。所谓 2.5D，本质上是让多个 die，尤其是计算 die 与 HBM stack，在同一个封装内通过高密度中介层并排放置，再利用中介层上的极细互连把超宽接口真正落下来。它不是简单的”比 2D 多一点”，而是在说：我不一定把计算 die 真正堆到内存之上，但我会把它们拉到足够近，让板级长距离问题消失。打个比方：如果 3D 是把仓库直接建在工厂楼上（垂直堆叠），2.5D 就是把仓库和工厂建在同一个产业园区的相邻地块上，用园区内部的高速传送带连接——不如直接叠上去那么近，但已经比从城市另一头运货好太多了。
+2.5D 常用于描述多个 die 在封装内并排、通过高密度结构互连。实现不局限于完整的硅中介层：[TSMC CoWoS](https://3dfabric.tsmc.com/english/dedicatedFoundry/technology/cowos.htm)分别介绍硅中介层、RDL 及结合局部硅互连的方案；[Intel Agilex 7 M 系列](https://www.intel.com/content/www/us/en/docs/programmable/773264/23-4-3-0-0/hbm2e-in-m-series-devices.html)使用 EMIB 硅桥连接 HBM2E。两者是具体实现，不代表所有 HBM 系统都相同。
 
-为什么很多 HBM 系统更常见的是 2.5D 而不是计算 die 与内存直接做系统级 3D 叠放，根本原因在工程取舍。真正的 3D 系统级堆叠可以把距离再缩得更短，但热、供电、测试、良率耦合和设计复杂度会显著上升。2.5D 则提供了一个相对可控的中间点：它已经能把互连距离压到足以支撑 HBM 的超宽接口，又避免了直接把大功耗计算 die 压在内存 stack 上方或下方所带来的很多极端耦合问题。也就是说，2.5D 之所以流行，不是因为它“名字适中”，而是因为它在带宽收益和系统复杂度之间找到了当前产业最愿意接受的平衡点。
+### 宽接口怎样形成带宽
 
-可以把这三者的作用压成一个分工图：
+在指定方向和 payload 位宽下，接口理论峰值可按 **每引脚传输率 × 数据引脚数 ÷ 8** 计算；多个独立接口可以在满足相同统计条件时相加。传输率已用每秒传输次数表示时，不再额外乘以 DDR 的双沿系数。
 
-```text
-TSV:
-  解决 stack 内部的垂直高密度互连
+例如，假设一个 stack 有 1,024 条 payload 数据线、每条为 3.2 Gb/s，单方向理论峰值为 **409.6 GB/s**。这是用于理解数量关系的接口估算，不包含刷新、命令限制、竞争和上游供数损失。实际 HBM 代际、通道和伪通道组织见 [HBM 接口文章](../../03-dram/protocols/hbm-stacked-wide-io.md)。
 
-3D stack:
-  解决多层 DRAM die 的容量与I/O组织
-
-2.5D interposer:
-  解决 HBM stack 与计算 die 之间的超宽近距连接
-```
-
-把它们混成一个“HBM 用了先进封装”当然也没错，但从系统判断上看，这样太粗。真正重要的是：每一层技术都在为“超宽近距 I/O”补一个不同的物理前提。
-
-这也解释了为什么 HBM 不只是换了内存颗粒，而是换了整条实现链。传统 DDR/GDDR 里，内存颗粒、封装和板卡还相对可分；HBM 里，stack、base/logic die、interposer、计算 die、供电和散热都更强耦合。你不再能把”外存选择”看成系统最后阶段的可插拔决定，而要在很早的架构阶段就决定：是否愿意把计算和内存绑进同一个高复杂度封装系统。就像结婚和租房的区别——DIMM/GDDR 路线更像合租，双方相对独立，搬走也容易；HBM 路线更像把两家人的户型打通成一套，装修更精致、空间利用更好，但一旦决定了就很难再拆开。
-
-这种耦合带来的最大收益，是 `带宽密度`。不是简单的总带宽，而是单位面积、单位距离上你能铺开多少可用带宽。对于 GPU、AI 加速器和 HPC 芯片，这一点比“绝对频率更高”更关键，因为算力密度也在持续上升，外存若不能以相似密度贴近，就会很快被片上/片外搬运链条拖住。HBM 之所以价值突出，就在于它让“更高总带宽”和“更短互连、更低每 bit I/O 压力”同时成立。
-
-但代价也不是抽象的“贵一点”。首先是制造链条更长：多层 DRAM die 要先 thinning、TSV、对准、键合；stack 自身要中测；再与 interposer 和计算 die 集成；最后还要做封装级测试。其次是良率耦合更强：某一层 die、某个 TSV、某段中介层互连出问题，都可能影响整套封装价值。再次是热更难处理：内存 stack 和高功耗计算 die 离得更近，系统热路径更受约束。常见误解是把 HBM 路线的代价理解成“单颗芯片更先进”；更准确的说法是，它把多层本来可以分开的风险和复杂度耦合成了一个整体。
-
-还要特别澄清一个边界：HBM stack 自己已经是 3D 堆叠，但“HBM 系统是不是 3D 集成系统”还要看计算 die 和 stack 之间的组织方式。很多主流产品是 HBM stack + compute die 的 2.5D 并排集成，而不是整个系统做成计算 die 与内存 stack 的垂直直堆。也就是说，“HBM 用了 3D”这句话只对 stack 内部一定成立；对整个系统层则要更精确地区分是 2.5D 还是系统级 3D。
-
-所以，本页真正要建立的不是几个封装名词的定义，而是一条很具体的系统判断：HBM 的高带宽不是协议单独给出来的，而是 TSV 让 stack 内部垂直互连成立，3D stack 让多层 DRAM 容量和 I/O 组织成立，2.5D/3D 集成再让 stack 与计算 die 之间的超宽近距连接成立。缺少其中任何一层，HBM 都不会是今天这个形态。
+近距互连使高密度布线更可行，但不消除供电、信号完整性、热、机械应力和测试问题。比较“带宽密度”时，还须说明分母是接口边缘长度、封装面积，还是其他基准。
 
 ## 一句话理解
 
-HBM 之所以必须与 TSV、3D stack、2.5D/3D 集成绑在一起，是因为它的超宽近距 I/O 不是单一协议特性，而是多层物理前提共同成立后的系统结果。
+HBM 的垂直堆叠和计算侧宽互连解决不同的问题；一个系统可以同时使用两者。
 
 ## 建模启示
 
-在模型里，HBM 不应只被表示成“一个高带宽内存节点”，而最好拆成至少两层：`memory stack capability` 和 `package integration capability`。前者决定堆叠容量与 I/O 组织，后者决定与计算 die 之间的距离、位宽和能耗边界。
-
-一个够用的抽象草图可以写成：
-
-```text
-HbmStackModel {
-  stack_count: int
-  dies_per_stack: int
-  tsv_density_norm: float
-  capacity_per_stack_GB: float
-}
-
-HbmIntegrationModel {
-  integration_form: enum { INTERPOSER_2P5D, SYSTEM_3D }
-  reach_mm_norm: float
-  io_width_norm: float
-  io_energy_per_bit_pJ: float
-  thermal_coupling_norm: float
-  yield_coupling_norm: float
-}
-```
-
-如果只关心总带宽，也许可以把这两层折成一个 `peak_bw`；但只要你在做路线选型、成本/热分析或产品级架构探索，这种拆分非常重要。因为 HBM 的真正 trade-off 并不是“带宽更高一点”，而是“stack 组织能力 × 集成复杂度” 的联合作用。
-
-一个很实用的比较框架可以写成：
-
-```text
-route_score = f(total_bw, bw_density, io_energy, thermal_coupling, yield_coupling)
-```
-
-它能帮助模型直接表达：HBM 赢的地方是 `total_bw / bw_density / io_energy`，输的地方则是 `thermal_coupling / yield_coupling / package complexity`。
+分别记录 stack 数量、每 stack 容量和接口组织，以及计算侧连接、共享路径、供电和热边界。峰值带宽是接口上界；实际带宽需要结合访问形状和测量窗口。制造和测试细节可进一步阅读 [FAB 的 HBM 封装案例](../../../chip-development/FAB/wiki/04-back-end-packaging/hbm-as-case-study/README.md)。

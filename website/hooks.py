@@ -15,7 +15,9 @@ if _WEBSITE not in sys.path:
     sys.path.insert(0, _WEBSITE)
 from sources import load_series, series_landing  # noqa: E402
 from ownership import GROUPS, MICRO, STORAGE, INTERCONNECT, DEVELOPMENT, WORKLOAD_GROUPS, INFERENCE_GROUPS, owner, workload_owner, development_owner, inference_owner  # noqa: E402
-from storage_navigation import MEMORY_HOME, MEMORY_SECTIONS, MEMORY_TOPIC, RESOURCE_SECTIONS, STORAGE_RESOURCES  # noqa: E402
+from storage_navigation import (INTEGRATION_AFTER, INTEGRATION_HOME, INTEGRATION_PACKAGING,
+                                INTEGRATION_TOPIC, MEMORY_HOME, MEMORY_SECTIONS, MEMORY_TOPIC,
+                                RESOURCE_SECTIONS, STORAGE_RESOURCES, SYSTEM_SELECTION)  # noqa: E402
 
 
 TOPICS = (
@@ -293,6 +295,18 @@ def storage_memory_tree(root):
     return entries + storage_sections(root, MEMORY_SECTIONS)
 
 
+def storage_integration_tree(root):
+    """Present source-aligned integration sections while retaining published URLs."""
+    entries = [{INTEGRATION_TOPIC: INTEGRATION_HOME}] if (root / INTEGRATION_HOME).is_file() else []
+    if (root / SYSTEM_SELECTION).is_file():
+        entries.append({"不同系统的存储选型": SYSTEM_SELECTION})
+    packaging = [{label: path} for label, path in INTEGRATION_PACKAGING if (root / path).is_file()]
+    if packaging:
+        entries.append({"封装与集成": packaging})
+    entries.extend({label: path} for label, path in INTEGRATION_AFTER if (root / path).is_file())
+    return entries
+
+
 def storage_resources_tree(root):
     sections = storage_sections(root, RESOURCE_SECTIONS)
     return [{STORAGE_RESOURCES: sections}] if sections else []
@@ -303,6 +317,11 @@ def grouped_original_topics(root, series):
     for group in GROUPS[series]:
         if series == STORAGE and group == MEMORY_TOPIC:
             entries = storage_memory_tree(root)
+            if entries:
+                result.append({group: entries})
+            continue
+        if series == STORAGE and group == INTEGRATION_TOPIC:
+            entries = storage_integration_tree(root)
             if entries:
                 result.append({group: entries})
             continue
@@ -481,6 +500,11 @@ def on_config(config, **kwargs):
     if (root / MEMORY_HOME).is_file():
         # Material uses the topic's index page as its clickable section title.
         config.extra["storage_sidebar_labels"][MEMORY_HOME] = (MEMORY_TOPIC, title(root / MEMORY_HOME))
+    for short, path in (("不同系统的存储选型", SYSTEM_SELECTION), *INTEGRATION_PACKAGING, *INTEGRATION_AFTER):
+        if (root / path).is_file():
+            config.extra["storage_sidebar_labels"][path] = (short, title(root / path))
+    if (root / INTEGRATION_HOME).is_file():
+        config.extra["storage_sidebar_labels"][INTEGRATION_HOME] = (INTEGRATION_TOPIC, title(root / INTEGRATION_HOME))
     storage_topics = grouped_original_topics(root, STORAGE)
     storage_resources = storage_resources_tree(root)
     validate_storage_navigation(root, [*storage_topics, *storage_resources])

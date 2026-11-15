@@ -102,6 +102,14 @@ def fixture_repo(path, files):
 
 
 class MultiRepositoryTests(unittest.TestCase):
+    def test_integration_source_section_must_match_navigation(self):
+        root, docs = Path("/repo"), Path("/stage")
+        source = root / "series/storage/06-system-integration/packaging/future-packaging-cxl-near-memory.md"
+        destination = docs / "RAM/wiki/08-packaging-integration/future-packaging-cxl-near-memory.md"
+        with self.assertRaisesRegex(ValueError, "integration source and navigation section differ"):
+            _check_storage_topic(root, docs, source, destination)
+        _check_storage_topic(root, docs, source.parent.parent / source.name, destination)
+
     def test_hierarchy_home_cannot_map_to_an_unregistered_page(self):
         root, docs = Path("/repo"), Path("/stage")
         source = root / "series/storage/01-memory-hierarchy/README.md"

@@ -12,6 +12,8 @@ Wiki 与博客的共同写作和设计要求见 [Wiki 与博客设计规则](../
 
 “存储层级与数据路径”的导航按 `website/storage_navigation.py` 中的四组和阅读顺序生成。“系统基础”“访问路径与数据管理”“性能分析与瓶颈”“NPU 数据路径与存储组织”分别对应 `01-memory-hierarchy/` 下的 `01-system-basics/`、`02-access-paths/`、`03-performance/`、`04-npu-case/`。跨专题阅读路线、自测和参考资料位于 `series/storage/reading-and-reference/`，在网站中作为“查阅与练习”展示，不是第七个技术专题。
 
+“存储系统集成与选型”的专题导读、系统选型、封装子章、NPU 选型和 CXL/近存计算按 `website/storage_navigation.py` 的顺序展示。源码的 `06-system-integration/packaging/` 对应封装子章；CXL 文章位于专题根目录，仍发布在其历史网址下。调整或新增页面时，须同时更新源码映射、导航条目和来源位置校验。
+
 其他 RAM 章节和 HBF 专题的文章目录使用编号阅读列表中的链接文字作为短名称。完整文章标题保留在正文、辅助技术标签与悬停提示中。章节首页可在 Markdown 中添加 `<!-- nav-title: 短名称 -->`，为侧边导航和上级面包屑指定短名称。没有短名称时，继续使用文章标题。
 
 侧边导航由 `website/assets/javascripts/navigation.js` 补充交互：当前章节首页的标题可以展开或收起其目录，其他标题仍跳转到对应页面；长标题在可悬停设备上显示省略号并提供完整标题提示。触屏设备保留换行，以便查看完整名称。
