@@ -194,11 +194,15 @@ def reading_order(directory, index_name="README.md"):
     return [name for name, _ in reading_items(directory, index_name)]
 
 
-def ram_sidebar_labels(root):
-    """Use RAM chapter reading-list labels as concise sidebar names."""
+def storage_sidebar_labels(root):
+    """Use storage reading-list labels as concise sidebar names."""
     labels = {}
     wiki = root / "RAM" / "wiki"
-    for chapter in sorted(path for path in wiki.iterdir() if path.is_dir()):
+    chapters = sorted(path for path in wiki.iterdir() if path.is_dir())
+    hbf = root / "HBF" / "wiki"
+    if hbf.is_dir():
+        chapters.append(hbf)
+    for chapter in chapters:
         index = chapter / "README.md"
         if not index.is_file():
             continue
@@ -467,16 +471,16 @@ def validate_storage_navigation(root, entries):
 def on_config(config, **kwargs):
     root = Path(config.docs_dir)
     series = read_series(root)
-    config.extra["ram_sidebar_labels"] = ram_sidebar_labels(root)
+    config.extra["storage_sidebar_labels"] = storage_sidebar_labels(root)
     # The storage source groups may merge several preserved URL directories.
     # Use their declared order and labels rather than the old chapter indexes.
     for _name, _directory, pages in (*MEMORY_SECTIONS, *RESOURCE_SECTIONS):
         for short, path in pages:
             if (root / path).is_file():
-                config.extra["ram_sidebar_labels"][path] = (short, title(root / path))
+                config.extra["storage_sidebar_labels"][path] = (short, title(root / path))
     if (root / MEMORY_HOME).is_file():
         # Material uses the topic's index page as its clickable section title.
-        config.extra["ram_sidebar_labels"][MEMORY_HOME] = (MEMORY_TOPIC, title(root / MEMORY_HOME))
+        config.extra["storage_sidebar_labels"][MEMORY_HOME] = (MEMORY_TOPIC, title(root / MEMORY_HOME))
     storage_topics = grouped_original_topics(root, STORAGE)
     storage_resources = storage_resources_tree(root)
     validate_storage_navigation(root, [*storage_topics, *storage_resources])
@@ -527,8 +531,8 @@ def on_config(config, **kwargs):
 
 def on_nav(nav, config, files, **kwargs):
     """Resolve source paths to generated URLs for sidebar labels."""
-    labels = config.extra.get("ram_sidebar_labels", {})
-    config.extra["ram_sidebar_urls"] = {
+    labels = config.extra.get("storage_sidebar_labels", {})
+    config.extra["storage_sidebar_urls"] = {
         file.url: labels[path]
         for path in labels
         if (file := files.get_file_from_path(path)) is not None
@@ -615,13 +619,13 @@ def on_page_content(html, page, **kwargs):
         html = f'<div class="sram-application-article">\n{html}\n</div>'
     if has_breadcrumbs(page):
         config = kwargs["config"]
-        html = render_breadcrumbs(page, Path(config.docs_dir), config.extra.get("ram_sidebar_labels")) + "\n" + html
+        html = render_breadcrumbs(page, Path(config.docs_dir), config.extra.get("storage_sidebar_labels")) + "\n" + html
     return html
 
 
 def on_post_page(output, page, **kwargs):
-    """Shorten RAM sidebar labels and expose the current page accessibly."""
-    labels = kwargs["config"].extra.get("ram_sidebar_urls", {})
+    """Shorten storage sidebar labels and expose the current page accessibly."""
+    labels = kwargs["config"].extra.get("storage_sidebar_urls", {})
     start = output.find('<div class="md-sidebar md-sidebar--primary"')
     end = output.find('<div class="md-sidebar md-sidebar--secondary"', start)
     if labels and start >= 0 and end >= 0:

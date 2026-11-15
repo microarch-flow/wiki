@@ -32,6 +32,8 @@ Cache 对地址做查找，并按实现规则处理命中、缺失和替换。�
 
 HBM 涉及堆叠 DRAM、接口和集成方式；它在系统中承担什么角色，要看具体配置。例如，[Intel Xeon Max 的配置指南](https://cdrdv2-public.intel.com/769060/354227-intel-xeon-cpu-max-series-configuration-and-tuning-guide.pdf)描述了将 HBM 用作 DDR 主存的 memory-side cache 的模式，也描述了将 HBM 和 DDR 作为不同内存区域使用的模式。
 
+[HBF 高带宽闪存](../../05-hbf/01-position.md)则将 NAND 与近计算接口结合。它的读写与维护约束不同于 HBM；是否在系统中增加这一层，以及由谁管理数据，取决于具体架构。
+
 同样，DDR4 SDRAM 是具体 DRAM 产品和接口家族；单独的 DDR 还可能表示双倍数据率传输方式。比较接口或器件时，应先写清具体名称和配置。
 
 ## 数据交接：何时可以被另一个参与方使用？

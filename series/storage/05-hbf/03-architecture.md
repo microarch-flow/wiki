@@ -1,8 +1,10 @@
-# HBF 结构：core die、base die 和接口
+# HBF 结构：NAND、base die 与主机接口
 
-上级：[HBF Wiki](./README.md)
+<span id="hbf-结构core-diebase-die-和接口"></span>
 
-HBF 的核心结构可以分为三部分：保存数据的 NAND core die、处理请求和控制的 base die，以及连接它们的堆叠互连。host/xPU 通过封装内接口访问 HBF。下面以 [OCP HBF v0.7，第 4–5 节](https://www.opencompute.org/documents/ocp-hbf-architecture-specification-v0-7-0-final-pdf/)为准描述功能边界。
+上级：[HBF 高带宽闪存](./README.md)
+
+HBF 结构中的 core die、base die 和接口分别做什么？保存数据的 NAND core die、处理请求和控制的 base die，以及连接它们的堆叠互连构成主要部分。host/xPU 通过封装内接口访问 HBF。下面以 [OCP HBF v0.7，第 3–5 节](https://www.opencompute.org/documents/ocp-hbf-architecture-specification-v0-7-0-final-pdf/)为准描述功能边界。
 
 ## 数据经过哪些模块
 
@@ -34,10 +36,14 @@ channel 是访问接口的划分；die 是物理芯片；bank 或 plane 是内�
 
 UCIe 提供 die-to-die 的接口架构；AXI 描述上层事务接口。OCP v0.7 将 AXI 事务映射到 UCIe host interface。协议事务、链路传输和 NAND 内部命令处于不同层级：一条 xPU 读取不会把 WL、BL 电压直接发送给应用程序。
 
+v0.7 将 HBF 描述为**非一致性设备**。AXI over UCIe 的存在本身不表示 host cache 会自动与 HBF 保持一致。系统若使用缓存、DMA 或其他数据副本，需要按其接口与软件约定安排同步和数据可见性；具体系统也可能另行提供一致性机制。
+
 该版本的示例使用独立的 host channel；每个 UCIe channel 内可以有一个或多个**虚拟 AXI 接口**。虚拟接口的数量不是物理 UCIe channel 的数量。host 的全局地址分配、channel 局部地址和内部 bank/die 映射，也需要分别理解。详见[地址映射与性能](./05-mapping-and-performance.md)。
 
 ## 可选的 scratchpad
 
 OCP v0.7 还描述了可选的 base-die SRAM scratchpad。它由 host 软件管理，断电后不保持数据；它不是 NAND page，也不是所有 HBF 产品都必须提供的功能。其大小、延迟和可用性应以产品规格为准。不要把它当成 HBF NAND 的默认缓存命中保证。
+
+三种缓冲要分别建模：NAND **page buffer**参与阵列感测；base-die 的 **bank cache buffer**缓存读取数据；可选 **scratchpad**则是 host 显式管理的独立 SRAM 地址区域。即使名称相近，也不能据此合并它们的容量、替换规则或断电行为。
 
 下一篇沿着[一次 4 KiB 读取](./04-read-walkthrough.md)观察这些模块如何协作。

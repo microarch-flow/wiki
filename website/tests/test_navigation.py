@@ -166,6 +166,40 @@ class GeneratedNavigationTests(unittest.TestCase):
         self.assertEqual(unescape(active.group(1).strip()), "命令调度与 FR-FCFS")
         self.assertIn('aria-label="DRAM 命令调度：就绪判断与 FR-FCFS"', active.group())
 
+    def test_hbf_order_search_anchors_and_mobile_label(self):
+        group = grouped_original_topics(SITE.parent / "docs", STORAGE)[4]["HBF 高带宽闪存"]
+        root = "HBF/wiki/"
+        entries = [
+            ("README.md", "hbf-wiki从-nand-到近计算存储系统"),
+            ("01-position.md", "hbf-的位置为什么需要新的存储层"),
+            ("02-nand-foundations.md", "nand-基础从电荷到-page-和-block"),
+            ("03-architecture.md", "hbf-结构core-diebase-die-和接口"),
+            ("04-read-walkthrough.md", "一次-4-kib-读取从请求到数据返回"),
+            ("05-mapping-and-performance.md", "地址映射并行度与带宽"),
+            ("06-write-and-reliability.md", "写入ftl-与可靠性管理"),
+            ("07-workload-and-modeling.md", "ai-工作负载与系统建模"),
+            ("08-spec-and-industry.md", "规范产品目标与量产进展"),
+            ("09-reference.md", "术语资料与自测"),
+        ]
+        self.assertEqual(group, [root + name for name, _ in entries])
+        search = json.loads((SITE / "search/search_index.json").read_text(encoding="utf-8"))
+        locations = {entry["location"] for entry in search["docs"]}
+        for name, anchor in entries:
+            slug = "" if name == "README.md" else name.removesuffix(".md") + "/"
+            page = SITE / root / slug / "index.html"
+            self.assertTrue(page.is_file(), str(page))
+            self.assertIn(f'id="{anchor}"', page.read_text(encoding="utf-8"))
+            self.assertIn(root + slug, locations)
+
+        html = (SITE / root / "06-write-and-reliability/index.html").read_text(encoding="utf-8")
+        start = html.index('<div class="md-sidebar md-sidebar--primary"')
+        end = html.index('<div class="md-sidebar md-sidebar--secondary"', start)
+        active = re.search(r'<label\b[^>]*md-nav__link--active[^>]*for="__toc"[^>]*>\s*'
+                           r'<span class="md-ellipsis">(.*?)</span>', html[start:end], re.DOTALL)
+        self.assertIsNotNone(active)
+        self.assertEqual(unescape(active.group(1).strip()), "写入与可靠性")
+        self.assertIn('aria-label="HBF 写入与可靠性：主机和设备如何分工"', active.group())
+
     def test_archived_reviews_are_reachable_but_not_in_reader_navigation(self):
         for relative in (Path("index.html"), Path("microarchitecture/index.html"),
                          Path("RAM/wiki/01-overview/index.html")):

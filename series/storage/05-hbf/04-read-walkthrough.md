@@ -1,12 +1,14 @@
-# 一次 4 KiB 读取：从请求到数据返回
+# 一次 HBF 读取：从 4 KiB 请求到数据返回
 
-上级：[HBF Wiki](./README.md)
+<span id="一次-4-kib-读取从请求到数据返回"></span>
 
-假设 xPU 需要读取已经写入 HBF 的一段 4 KiB 权重。本文沿请求和数据两个方向追踪。目标是识别每个阶段的职责与等待条件，不是声称某一产品严格执行下面的微操作顺序。
+上级：[HBF 高带宽闪存](./README.md)
+
+一次 4 KiB 读取从请求到数据返回，会经过哪些资源？假设 xPU 需要读取已经写入 HBF 的一段权重。本文沿请求和数据两个方向追踪，识别每个阶段的职责与等待条件。
 
 ## 前提和观察边界
 
-- 目标数据已有效写入；请求地址按 4 KiB 对齐，并位于一个 host channel 的地址空间。
+- 目标数据已有效写入；host 的教学映射使用 16 个 channel、4 KiB 轮转条带。全局地址 `[0x5000, 0x6000)` 落在 channel 5 的局部第 0 页。
 - 假设访问 NAND 区域，base die 的相关缓存未命中；没有错误、重试或刷新干扰。
 - 讨论一次完整的 4 KiB 逻辑数据读取。host 接口可以把它表达为多个更小的事务。
 - 不指定实际 die、plane、WL、地址位布局和具体延迟。数据从返回接口到计算单元的后续搬运也因系统而异。
@@ -17,15 +19,15 @@
 
 应用或计算单元需要一段地址范围。host 的内存系统根据自身地址转换、数据布局和 channel 分配形成对 HBF 的访问。OCP v0.7 区分 host 全局地址与 UCIe channel 局部地址；channel 选择和地址分配不应全部归给 base die。
 
-对于该版本，host 读地址以 64 B 为粒度，并受对齐和 4 KiB page 边界约束。完整 4 KiB 含 64 个 64 B 单位。规范描述了用多个读取命令获取它，或在产品支持时使用 burst。上层的“读 4 KiB”因此不必等于一条物理接口事务。[OCP v0.7，第 4.1、4.6、5.3 节](https://www.opencompute.org/documents/ocp-hbf-architecture-specification-v0-7-0-final-pdf/)
+对于该版本，host 读地址以 64 B 为粒度，并受对齐和 4 KiB page 边界约束。完整 4 KiB 含 64 个 64 B 单位。规范第 5.3.1 节描述以不同 AXI ID 发送 64 个读取命令，或者在产品支持时使用 burst。前一种方式不表示 64 个命令必须同时在途；实际并发还受 host 和产品的 outstanding 限制。上层的“读 4 KiB”因此不必等于一条接口事务。[OCP v0.7，第 4.1、4.6、5.3 节](https://www.opencompute.org/documents/ocp-hbf-architecture-specification-v0-7-0-final-pdf/)
 
-在本例中，假设 host 已把这段范围分配给 channel 5。这个编号只是例子；没有提供地址位，就不能据此还原真实映射。
+这个 channel 编号来自上面的教学映射，不代表具体产品的地址位布局。映射计算见[下一篇](./05-mapping-and-performance.md#一个可计算的交错例子)。
 
 ## 2. Base die 接收和调度请求
 
 请求经 UCIe 到达 base die。base die 处理事务和顺序约束，将 channel 局部地址映射到它管理的 NAND 资源，并检查能否由缓存满足。本例假设缓存未命中，因此需要发起 core die 读取。
 
-OCP v0.7 描述每 bank 的缓存，并规定同一 bank 的 sense 请求顺序。不同 AXI ID 的读取完成可能乱序，同一 ID 内有顺序约束。能否合并、重叠和重排，要同时看地址、ID、bank 状态和具体产品支持。
+OCP v0.7 描述每 bank 的两个缓存 buffer，可保存至少两个 page，并规定同一 bank 的 sense 请求顺序。不同 AXI ID 的读取完成可能乱序，同一 ID 内有顺序约束。host 要按返回 ID 和数据位置关联响应；全部需要的数据与状态有效后，才能把这次逻辑读取交给消费者。能否合并、重叠和重排，要同时看地址、ID、bank 状态和具体产品支持。
 
 ## 3. Core die 执行阵列感测
 

@@ -1,8 +1,10 @@
-# 术语、资料与自测
+# HBF 术语、资料与自测
 
-上级：[HBF Wiki](./README.md)
+<span id="术语资料与自测"></span>
 
-本页帮助读者检查术语和证据边界。技术规范、厂商目标和教学假设应分别引用。资料核查日期为 2026-11-11。
+上级：[HBF 高带宽闪存](./README.md)
+
+本页提供 HBF 术语、资料与自测，帮助读者检查证据边界。技术规范、厂商目标和教学假设应分别引用。资料核查日期为 2026-11-15。
 
 ## 术语
 
@@ -13,12 +15,17 @@
 | core die | 保存 NAND 阵列及相关电路的 die |
 | base die | 处理 host 接口、内部调度、ECC 和管理等功能的 die |
 | channel | 接口或内部通路的划分；使用时必须说明是哪一层 |
+| 虚拟 AXI 接口 | 一个 UCIe host channel 内可配置的事务接口；不等同于物理 channel |
+| device logical unit | v0.7 示例中 base die 与 core die 之间的 4 KiB 逻辑访问单位 |
+| 非一致性 | v0.7 不把 HBF 描述为自动与 host cache 保持一致的设备；系统同步规则另定 |
 | bank / plane | NAND 内部组织与资源名称；具体映射和独立性取决于实现 |
 | WL / BL | wordline / bitline；分别参与选择、控制与感测路径 |
 | page / block | 读取或编程相关的数据单位 / 常见的 NAND 擦除单位 |
 | FTL | Flash Translation Layer；常用于管理逻辑地址与 NAND 物理位置 |
 | ECC | Error Correction Code；用于检测和纠正一定范围内的数据错误 |
 | P/E | program/erase，即编程/擦除；循环次数与磨损有关 |
+| 写放大 | 同一时间窗口内，NAND 实际编程字节数与 host 写入字节数之比；需说明统计边界 |
+| NAND 数据刷新 | 按保持或读干扰等条件重新保存数据；不同于 DRAM 周期性 refresh |
 | GB / GiB | 10⁹ B / 2³⁰ B；两者数值不能直接互换 |
 
 ## 一手资料
@@ -29,6 +36,10 @@
 4. [Sandisk，财年 2027 第一季度材料，第 5 页](https://investor.sandisk.com/static-files/4ca97b6e-7da4-4d52-b4ac-0e80f462716f)：首颗 die tape-out 和样品路线图状态。
 5. [Western Digital，Flash 101 and Flash Management](https://documents.sandisk.com/content/dam/asset-library/en_us/assets/public/western-digital/collateral/white-paper/white-paper-sandisk-flash101-management.pdf)：NAND、保持、干扰和管理机制的通用背景；不能把其中旧器件数值当作 HBF 产品规格。
 6. [KIOXIA，NAND 耐久性技术说明，2024](https://americas.kioxia.com/content/dam/kioxia/en-us/business/memory/mlc-nand/asset/KIOXIA_TBW_WAF_NAND_Endurance_Technical_Brief.pdf)：P/E 磨损和电荷存储结构的背景。
+7. [Sandisk，NAND 读取通过电压专利](https://patents.google.com/patent/US10283208B2/en)：展示另一种读取电压符号定义，不代表所有器件采用该实现。
+8. [SK hynix，H3 混合 HBM/HBF 架构研究摘要](https://research.skhynix.com/blog/insights/detail/summary-h3-hybrid-architecture-using-high-bandwidth-memory-and-high-bandwidth-flash-for-cost-efficient-llm-inference)：特定数据放置、预取和仿真方案，不是产品实测。
+
+本专题最初整理一段 HBF 讨论；当时只能取得讨论后段。前置 NAND 基础根据公开资料补充，本专题不是对完整原讨论的逐字归档。
 
 ## 还需要验证什么
 

@@ -6,7 +6,7 @@
 - **SRAM 器件与应用**：[SRAM 基础](./02-sram/foundations/README.md) · [SRAM 应用](./02-sram/applications/README.md)。
 - **DRAM 器件与接口**：[DRAM 单元与阵列](./03-dram/foundations/README.md) · [DRAM 命令与接口](./03-dram/protocols/README.md) · [HBM 阅读入口](./03-dram/protocols/hbm-stacked-wide-io.md)。
 - **DRAM 控制器与请求调度**：[控制器导读](./04-dram-controller/README.md)，了解地址映射、调度与刷新。
-- **HBF 高带宽闪存**：[HBF Wiki](./05-hbf/README.md)，从 NAND 和 base die 到软件访问路径。
+- **HBF 高带宽闪存**：[HBF 专题导读](./05-hbf/README.md)，从 NAND 和 base die 到软件访问路径。
 - **存储系统集成与选型**：[封装与集成](./06-system-integration/packaging/README.md) · [HBM 堆叠与集成](./06-system-integration/packaging/hbm-2.5d-3d-tsv.md) · [HBM 成本](./06-system-integration/packaging/why-hbm-is-expensive.md) · [HBM 与 LPDDR 选型](./06-system-integration/hbm-vs-lpddr-for-npu.md)。
 
 按原章节顺序阅读可从 [RAM 阅读路线](./reading-and-reference/01-reading/README.md)开始。需要查阅或练习时，可查看[参考资料](./reading-and-reference/02-reference/README.md)和[自测问题](./reading-and-reference/01-reading/self-test-questions.md)。

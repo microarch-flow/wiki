@@ -1,8 +1,10 @@
-# 规范、产品目标与量产进展
+# HBF 规范、产品目标与研发进度
 
-上级：[HBF Wiki](./README.md)
+<span id="规范产品目标与量产进展"></span>
 
-**资料核查日期：2026-11-11。** 本页区分规范描述、厂商目标、设计里程碑和实际交付。它们是不同类型的证据。公开路线图会变化；使用具体数字前应重新核查版本和产品资料。
+上级：[HBF 高带宽闪存](./README.md)
+
+**资料核查日期：2026-11-15。** 规范、产品目标与量产进展分别需要什么证据？本页区分规范描述、厂商目标、设计里程碑和实际交付。公开路线图会变化；使用具体数字前应重新核查版本和产品资料。
 
 ## OCP v0.7 描述了什么
 
@@ -38,9 +40,9 @@ Sandisk 的 **1.6 TB/s 读取目标**与 OCP 表格的 **Grade 3 3.072 TB/s 最�
 
 | 时间与证据 | 可以确认的内容 | 不能由此确认 |
 | --- | --- | --- |
-| 2025-08，Sandisk 与 SK hynix 合作公告 | 双方宣布合作建立 HBF 规范；Sandisk 当时提出 HBF 内存样品和推理设备样品的目标时间 | 这些目标已经兑现 |
+| 2025-08，Sandisk 与 SK hynix 合作公告 | 双方宣布合作建立 HBF 规范；Sandisk 当时提出 2026 年下半年 HBF 内存样品、2027 年初推理设备样品的目标 | 这些目标已经兑现 |
 | 2026-08，OCP v0.7 与 SK hynix 公告 | 已公开一个版本的技术规范及容量、带宽等级说明 | 规范内所有等级已有商业产品量产 |
-| 2026-10，Sandisk 财年 2027 第一季度材料 | Sandisk 报告首颗 HBF memory die 已 tape-out，并表示首批 HBF 产品样品仍计划在下一日历年提供 | 样品已交付、良率达标或已规模量产 |
+| 2026-10，Sandisk 财年 2027 第一季度材料 | Sandisk 报告首颗 HBF memory die 已 tape-out，并表示首批 HBF 产品样品仍计划在 2027 年提供 | 样品已交付、良率达标或已规模量产 |
 
 来源：[Sandisk 2025 合作公告](https://investor.sandisk.com/news-releases/news-release-details/sandisk-collaborate-sk-hynix-drive-standardization-high)；[SK hynix 2026 规范公告](https://news.skhynix.com/en/hbf-at-fms-2026/)；[Sandisk 财年 2027 第一季度材料，第 5 页](https://investor.sandisk.com/static-files/4ca97b6e-7da4-4d52-b4ac-0e80f462716f)。
 

@@ -1,8 +1,10 @@
-# NAND 基础：从电荷到 page 和 block
+# NAND 基础：电荷、阵列与 page、block
 
-上级：[HBF Wiki](./README.md)
+<span id="nand-基础从电荷到-page-和-block"></span>
 
-NAND flash 用存储单元中的电荷状态影响晶体管的阈值电压。读取时，外围电路施加参考电压，观察通路的响应，再把它判定为数字数据。要理解 HBF，先区分单元状态、阵列读取粒度和堆叠封装。
+上级：[HBF 高带宽闪存](./README.md)
+
+NAND 基础从电荷到 page 和 block：存储单元中的电荷状态影响晶体管的阈值电压。读取时，外围电路施加参考电压，观察通路的响应，再把它判定为数字数据。要理解 HBF，先区分单元状态、阵列读取粒度和堆叠封装。
 
 这里是通用 NAND 教学模型。实际器件的电压、判决、并行度和版图由厂商决定，不能从示意图直接推导 HBF 的电路参数。参考 [Western Digital，Flash 101 and Flash Management](https://documents.sandisk.com/content/dam/asset-library/en_us/assets/public/western-digital/collateral/white-paper/white-paper-sandisk-flash101-management.pdf) 和 [KIOXIA，NAND 耐久性技术说明](https://americas.kioxia.com/content/dam/kioxia/en-us/business/memory/mlc-nand/asset/KIOXIA_TBW_WAF_NAND_Endurance_Technical_Brief.pdf)。
 
@@ -31,7 +33,7 @@ SLC 使用两个可区分的状态，通常表示每 cell 1 bit。MLC、TLC 和 
 
 读出过程还受选择晶体管、阵列切分和外围电路限制。上面的顺序帮助理解因果关系，不是某个 HBF 真实电压波形。多 bit/cell 的逻辑 page、物理 WL 与多次判决之间也不必是一对一关系。
 
-在常用的教学符号中，目标 WL 的参考条件可写成 Vread；相关未选 WL 的通过条件可写成 Vpass。Vpass 的作用是让未选 cell 尽量不妨碍对目标状态的判断。重复施加读取条件也可能造成读干扰，因此读密集不等于没有可靠性管理。
+在本页的教学符号中，将目标 WL 的读取参考电压记为 Vread，将相关未选 WL 的通过电压记为 Vpass。通过电压使未选 cell 尽量不阻断感测通路。**符号随资料而变**：例如 [Sandisk 的一项 NAND 专利](https://patents.google.com/patent/US10283208B2/en)用 Vread 表示未选 WL 的读取通过电压。阅读其他器件资料时应先查其定义。重复施加读取条件也可能造成读干扰，因此读密集不等于没有可靠性管理。
 
 ## page 与 block 分别做什么
 
