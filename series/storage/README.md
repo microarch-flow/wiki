@@ -9,6 +9,6 @@
 - **HBF 高带宽闪存**：[HBF 专题导读](./05-hbf/README.md)，从 NAND 和 base die 到软件访问路径。
 - **存储系统集成与选型**：[专题导读](./06-system-integration/README.md) · [封装与集成](./06-system-integration/packaging/README.md) · [HBM 与 LPDDR 选型](./06-system-integration/hbm-vs-lpddr-for-npu.md) · [CXL 与近存计算](./06-system-integration/future-packaging-cxl-near-memory.md)。
 
-按原章节顺序阅读可从 [RAM 阅读路线](./reading-and-reference/01-reading/README.md)开始。需要查阅或练习时，可查看[参考资料](./reading-and-reference/02-reference/README.md)和[自测问题](./reading-and-reference/01-reading/self-test-questions.md)。
+需要选择学习路径、查阅资料或练习时，请从[查阅与练习](./reading-and-reference/README.md)开始。按原章节顺序阅读可从[原 RAM 阅读路线](./reading-and-reference/01-reading/README.md)进入。
 
 制造与封装机制见 [FAB](../chip-development/FAB/wiki/README.md)。[DMA 双缓冲](../microarchitecture/DMA/wiki/04-programming-model/tiling-double-buffering.md)说明搬运与计算如何配合。

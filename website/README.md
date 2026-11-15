@@ -10,7 +10,7 @@ Wiki 与博客的共同写作和设计要求见 [Wiki 与博客设计规则](../
 
 存储系统的源码和导航按相同的六个专题组织，省略 RAM、HBF 等来源名称造成的重复层级。HBM 器件与接口文章位于 DRAM 命令与接口的阅读顺序中；HBM 的封装、成本与选型文章属于系统集成专题，两者通过正文链接关联。源码已迁入 `series/storage/` 下对应的专题目录；原发布网址保持不变。
 
-“存储层级与数据路径”的导航按 `website/storage_navigation.py` 中的四组和阅读顺序生成。“系统基础”“访问路径与数据管理”“性能分析与瓶颈”“NPU 数据路径与存储组织”分别对应 `01-memory-hierarchy/` 下的 `01-system-basics/`、`02-access-paths/`、`03-performance/`、`04-npu-case/`。跨专题阅读路线、自测和参考资料位于 `series/storage/reading-and-reference/`，在网站中作为“查阅与练习”展示，不是第七个技术专题。
+“存储层级与数据路径”的导航按 `website/storage_navigation.py` 中的四组和阅读顺序生成。“系统基础”“访问路径与数据管理”“性能分析与瓶颈”“NPU 数据路径与存储组织”分别对应 `01-memory-hierarchy/` 下的 `01-system-basics/`、`02-access-paths/`、`03-performance/`、`04-npu-case/`。跨专题阅读路线、自测和参考资料位于 `series/storage/reading-and-reference/`，在网站中作为“查阅与练习”展示，不是第七个技术专题。根目录的总导读及 `01-reading/`、`02-reference/` 两组分别对应网站首页、阅读路线与自测、参考资料与工具；原 RAM 路线兼作阅读分组入口，并保留历史章节。页面路径和顺序由 `website/storage_navigation.py` 与 `website/source-layout.json` 共同维护。
 
 “存储系统集成与选型”的专题导读、系统选型、封装子章、NPU 选型和 CXL/近存计算按 `website/storage_navigation.py` 的顺序展示。源码的 `06-system-integration/packaging/` 对应封装子章；CXL 文章位于专题根目录，仍发布在其历史网址下。调整或新增页面时，须同时更新源码映射、导航条目和来源位置校验。
 

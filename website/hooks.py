@@ -17,7 +17,7 @@ from sources import load_series, series_landing  # noqa: E402
 from ownership import GROUPS, MICRO, STORAGE, INTERCONNECT, DEVELOPMENT, WORKLOAD_GROUPS, INFERENCE_GROUPS, owner, workload_owner, development_owner, inference_owner  # noqa: E402
 from storage_navigation import (INTEGRATION_AFTER, INTEGRATION_HOME, INTEGRATION_PACKAGING,
                                 INTEGRATION_TOPIC, MEMORY_HOME, MEMORY_SECTIONS, MEMORY_TOPIC,
-                                RESOURCE_SECTIONS, STORAGE_RESOURCES, SYSTEM_SELECTION)  # noqa: E402
+                                RESOURCE_HOME, RESOURCE_SECTIONS, STORAGE_RESOURCES, SYSTEM_SELECTION)  # noqa: E402
 
 
 TOPICS = (
@@ -308,8 +308,9 @@ def storage_integration_tree(root):
 
 
 def storage_resources_tree(root):
+    entries = [{STORAGE_RESOURCES: RESOURCE_HOME}] if (root / RESOURCE_HOME).is_file() else []
     sections = storage_sections(root, RESOURCE_SECTIONS)
-    return [{STORAGE_RESOURCES: sections}] if sections else []
+    return [{STORAGE_RESOURCES: entries + sections}] if entries or sections else []
 
 
 def grouped_original_topics(root, series):
@@ -500,6 +501,8 @@ def on_config(config, **kwargs):
     if (root / MEMORY_HOME).is_file():
         # Material uses the topic's index page as its clickable section title.
         config.extra["storage_sidebar_labels"][MEMORY_HOME] = (MEMORY_TOPIC, title(root / MEMORY_HOME))
+    if (root / RESOURCE_HOME).is_file():
+        config.extra["storage_sidebar_labels"][RESOURCE_HOME] = (STORAGE_RESOURCES, title(root / RESOURCE_HOME))
     for short, path in (("不同系统的存储选型", SYSTEM_SELECTION), *INTEGRATION_PACKAGING, *INTEGRATION_AFTER):
         if (root / path).is_file():
             config.extra["storage_sidebar_labels"][path] = (short, title(root / path))

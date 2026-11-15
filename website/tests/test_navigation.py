@@ -18,7 +18,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from hooks import grouped_original_topics, make_tree, storage_resources_tree  # noqa: E402
 from ownership import STORAGE, owner  # noqa: E402
 from storage_navigation import (INTEGRATION_AFTER, INTEGRATION_HOME, INTEGRATION_PACKAGING,
-                                MEMORY_HOME, MEMORY_SECTIONS, RESOURCE_SECTIONS,
+                                MEMORY_HOME, MEMORY_SECTIONS, RESOURCE_HOME, RESOURCE_SECTIONS,
                                 SYSTEM_SELECTION)  # noqa: E402
 
 LANDING_PAGES = {
@@ -35,6 +35,31 @@ def page_url(relative):
 
 
 class GeneratedNavigationTests(unittest.TestCase):
+    def test_self_test_question_numbers_continue_across_sections(self):
+        html = (SITE / "RAM/self-test-questions/index.html").read_text(encoding="utf-8")
+        article = re.search(r'<article\b[^>]*>(.*?)</article>', html, re.DOTALL).group(1)
+        sections = re.findall(r'<ol start="(\d+)">(.*?)</ol>', article, re.DOTALL)
+        starts_and_counts = [(int(start), len(re.findall(r'<li\b', content))) for start, content in sections]
+        self.assertEqual(starts_and_counts, [(1, 5), (6, 8), (14, 7), (21, 10), (31, 10),
+                                             (41, 12), (53, 10), (63, 5), (68, 8), (76, 5), (81, 2)])
+
+    def test_reference_legacy_urls_anchors_and_search(self):
+        fixture = Path(__file__).parent / "fixtures/storage-reference-legacy-anchors.json"
+        legacy = json.loads(fixture.read_text(encoding="utf-8"))
+        search = json.loads((SITE / "search/search_index.json").read_text(encoding="utf-8"))["docs"]
+        locations = {entry["location"] for entry in search}
+        for path, anchors in legacy.items():
+            with self.subTest(page=path):
+                html = (SITE / path / "index.html").read_text(encoding="utf-8")
+                ids = re.findall(r'\bid="([^"]+)"', html)
+                for anchor in anchors:
+                    self.assertEqual(ids.count(anchor), 1, (path, anchor))
+                self.assertIn(path + "/", locations)
+                breadcrumb = BREADCRUMB.search(html).group(1)
+                self.assertIn("查阅与练习", breadcrumb)
+        self.assertIn("RAM/wiki/reading-and-reference/", locations)
+        self.assertFalse(any(item["location"].startswith("reviews/") for item in search))
+
     def test_integration_navigation_legacy_anchors_and_search(self):
         group = grouped_original_topics(SITE.parent / "docs", STORAGE)[5]["存储系统集成与选型"]
         self.assertEqual(group, [
@@ -129,8 +154,11 @@ class GeneratedNavigationTests(unittest.TestCase):
         self.assertEqual([next(iter(item)) for item in memory[1:]], [name for name, _, _ in MEMORY_SECTIONS])
         for node, (name, _directory, pages) in zip(memory[1:], MEMORY_SECTIONS):
             self.assertEqual(node[name], [{label: path} for label, path in pages])
-        self.assertEqual([next(iter(item)) for item in resources[0]["查阅与练习"]],
+        self.assertEqual(resources[0]["查阅与练习"][0], {"查阅与练习": RESOURCE_HOME})
+        self.assertEqual([next(iter(item)) for item in resources[0]["查阅与练习"][1:]],
                          [name for name, _, _ in RESOURCE_SECTIONS])
+        for node, (name, _directory, pages) in zip(resources[0]["查阅与练习"][1:], RESOURCE_SECTIONS):
+            self.assertEqual(node[name], [{label: path} for label, path in pages])
         self.assertIn("RAM/wiki/07-system-architecture/why-systems-choose-different-memory.md",
                       list(paths(topics[-1])))
         homepage = (SITE / "RAM/wiki/01-overview/index.html").read_text(encoding="utf-8")

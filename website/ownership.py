@@ -1,6 +1,6 @@
 """Assign each existing article to one main series and topic."""
 
-from storage_navigation import INTEGRATION_HOME, INTEGRATION_TOPIC, RESOURCE_PAGE_SECTION, STORAGE_RESOURCES, SYSTEM_SELECTION
+from storage_navigation import INTEGRATION_HOME, INTEGRATION_TOPIC, RESOURCE_HOME, RESOURCE_PAGE_SECTION, STORAGE_RESOURCES, SYSTEM_SELECTION
 
 MICRO = "微架构"
 STORAGE = "存储系统"
@@ -27,7 +27,7 @@ def owner(path):
     path = str(path)
     if path == "electrical-timing-foundations.md":
         return MICRO, "时钟、流水线与吞吐"
-    if path in RESOURCE_PAGE_SECTION or path.startswith("RAM/wiki/10-reference/"):
+    if path == RESOURCE_HOME or path in RESOURCE_PAGE_SECTION or path.startswith("RAM/wiki/10-reference/"):
         return STORAGE, STORAGE_RESOURCES
     if path in {INTEGRATION_HOME, SYSTEM_SELECTION}:
         return STORAGE, INTEGRATION_TOPIC

@@ -1,184 +1,67 @@
-# DRAM timing 参数速查
+# DRAM 时序参数速查
 
-上级：[参考资料](./README.md)
-相关：[关键 timing 参数：tRCD、tRP、tRAS、tCL 的物理来源](../../03-dram/protocols/timing-parameters-trcd-trp-tras.md), [ACT、RD、WR、PRE：DRAM 命令集为什么长这样](../../03-dram/protocols/commands-act-rd-wr-pre.md)
+<span id="dram-timing-参数速查"></span>
+
+上级：[参考资料与工具](./README.md)
+相关：[时序参数的物理来源与完整推导](../../03-dram/protocols/timing-parameters-trcd-trp-tras.md) · [DRAM 命令](../../03-dram/protocols/commands-act-rd-wr-pre.md)
 
 ## 这页在回答什么问题
 
-如果只想快速回忆主要 timing 参数分别约束哪段行为、影响哪类冲突，这页应该提供怎样的紧凑对照。
+原“DRAM timing 参数速查”用于查找命令约束的参考动作和作用范围。此页不提供通用参数值：先确定器件、协议代际、速率、温度、模式和单位，再查该器件手册。不同模式可能修改参考沿或引入额外限制。
 
 ## 按参考动作查找时序约束
 
-这一页不重复解释所有物理细节，而是把最常见的 DRAM timing 参数压成一个对照表。除特别说明，以下 DDR4 外部命令简式假设 CA parity 关闭（PL=0）且 CS-to-CA latency 关闭。开启其他模式须按器件手册定义采样沿和 guard，不能机械给每个命令间隔加 PL。
+下表中的外部命令简式以 DDR4 的 CA parity 关闭（PL=0）、CS-to-CA latency 关闭为前提。AL 表示 additive latency。CK 表示时钟周期，不能与传输次数或纳秒混用。
 
 ## 核心参数
 
-`tRCD`
-
-- 全称：`Row to Column Delay`
-- 约束：DDR4 的 `ACT -> 内部 RD/WR`；外部列命令可提前 AL，仍需满足其他命令规则
-- 在等什么：开行后整行感测和 row buffer 稳定到可列访问
-- 主要影响：row miss 的首个列访问成本
-
-`tCL`
-
-- 全称：`CAS Latency`
-- 约束：在上述 PL=0 模式下，外部 `RD -> first data out` 的名义延迟是 `RL = AL + CL`，且 AL=0 时等于 CL。Alliance Memory AS4C512M8D4A 的 CA parity 模式为 `RL=AL+CL+PL`，`WL=AL+CWL+PL`；AL=0、CL=11、PL=4 的读例为 15 CK。见[原厂手册表 29 注 3 与 Burst Read 示例](https://www.alliancememory.com/wp-content/uploads/AllianceMemory_4Gb_DDR4_AS4C512M8D4A-75BCN_75BIN_Aug2022_Ver1.0.pdf)。
-- 在等什么：列路径、内部预取、I/O 启动把首拍数据推出去
-- 主要影响：读请求从列命令到外部可见数据的返回时间
-
-`tRAS`
-
-- 全称：`Row Active Time`
-- 约束：`ACT -> PRE` 的最短保持时间
-- 在等什么：感测、恢复以及该行必须活够的最短窗口
-- 主要影响：一行最早多久才能安全关闭
-
-`tRP`
-
-- 全称：`Row Precharge Time`
-- 约束：`PRE -> next ACT`
-- 在等什么：关行后位线和相关状态恢复到下一次开行前的初始条件
-- 主要影响：row conflict 后切换到下一行的成本
-
-`tWR`
-
-- 全称：`Write Recovery Time`
-- 约束：写数据 burst 结束后的指定参考沿到 PRE；并非 `WR` 命令沿直接加 `tWR`
-- 在等什么：写入后数据真正写回 cell 并稳定
-- 主要影响：写后不能立刻关行，写密集场景会受影响
-
-`tRFC`
-
-- 全称：`Refresh Cycle Time`
-- 约束：refresh 占用窗口
-- 在等什么：一次 refresh 操作完整占用并释放相关阵列资源
-- 主要影响：refresh 对正常请求的阻塞长度
-
-`tRTP`
-
-- 全称：`Read to Precharge`
-- 约束：DDR4 显式 PRE 对同 bank 外部 RD 的下界含 `RD + AL + nRTP`；还要同时满足 `ACT + nRAS` 等约束。参考沿及可用值以器件模式为准。
-- 主要影响：读后最早关行时刻，不是首数据返回时刻。
-
-`tCCD`
-
-- 全称：`Column to Column Delay`
-- 约束：所选 DDR4 模式下同 rank 的连续同向 RD→RD 或 WR→WR 列命令间隔；同 bank group 的 tCCD_L 与跨组 tCCD_S 分开。读写反向切换另检查方向、rank 和 DQ 时序
-- 在等什么：列访问管线和数据总线节奏
-- 主要影响：连续 burst 的列吞吐节拍
-
-`tBURST`
-
-- 含义：一次 burst 在数据总线上持续占用的时间
-- 约束：一条读写命令在总线侧实际持续多长
-- 在等什么：不是等待，而是 burst 本身的传输长度
-- 主要影响：总线占用与列命令节拍配合
-
-`tRRD`
-
-- 全称：`Row to Row Delay`
-- 约束：DDR4 同 rank 不同 bank 的相邻 `ACT` 最小间隔；同 bank group 用 tRRD_L，跨组用 tRRD_S。相同 bank 的再次 ACT 另受 tRC/PRE 等约束
-- 在等什么：开行相关的瞬时资源和电流冲击限制
-- 主要影响：多 bank 并行开行速度
-
-`tFAW`
-
-- 全称：`Four Activate Window`
-- 约束：同 rank 的滚动 tFAW 时间窗内至多四次 ACT；第五次 ACT 的时刻不早于前四次中最早 ACT + tFAW，且仍须满足 tRRD 等其他约束
-- 在等什么：功耗/电流峰值约束，而不是单条命令逻辑依赖
-- 主要影响：密集多 bank 开行时的并行度
+| 参数 | 主要约束与参考动作 | 适用范围或注意事项 |
+| --- | --- | --- |
+| tRCD | ACT 到内部 RD/WR 的最小间隔 | 外部列命令可提前 AL；还须满足其他规则。 |
+| CL / RL | 读命令到首数据的名义周期数 | 本页模式 RL = AL + CL；AC 数据有效窗口另按手册检查。 |
+| tRAS | ACT 到同 bank 显式 PRE 的最小间隔 | 即使没有列命令，也须满足。 |
+| tRP | PRE 到同 bank 下一次 ACT 的最小间隔 | 行切换还须考虑 tRC 等限制。 |
+| tRC | 同 bank 两次 ACT 的最小间隔 | 与 PRE、tRAS、tRP 等约束一起检查。 |
+| tRTP | 读后到 PRE 的约束 | 本页模式为每条外部 RD + AL + nRTP；并非首数据返回时刻。 |
+| tWR | 写数据后的恢复时间 | 起点是器件规定的数据参考沿，不是 WR 命令沿。 |
+| tCCD_L / tCCD_S | 同 rank 连续同向列命令最小间隔 | DDR4 同 bank group 与跨组分别检查；读写反向还受转换约束。 |
+| tRRD_L / tRRD_S | 同 rank 不同 bank 的相邻 ACT 间隔 | 同组与跨组分别检查；同 bank 另查 tRC。 |
+| tFAW | 同 rank 滚动窗口内最多四次 ACT | 第五次不早于最早一次 ACT + tFAW，并同时满足 tRRD。 |
+| tBURST | burst 的数据传输持续时间 | DDR4 BL8 占 4 CK；不同协议及模式以手册为准。 |
+| tRFC | 指定刷新命令后的恢复间隔 | 刷新范围及恢复时间依命令、模式和器件而变。 |
+| tREFI | 对应刷新模式的平均刷新间隔 | 延后或提前有协议和器件规定的限制；温度和刷新模式可能改变要求。 |
+| tWTR | 写到读的转换限制 | 同时核对数据参考沿、bank group、rank 和其他总线约束。 |
 
 ## 先记哪几条最重要
 
-如果你只想先抓主干，优先记下面这组：
-
-- `tRCD`：开行后多久能列访问
-- `RL=AL+CL`：外部读命令后首数据的名义时刻（CK 周期）
-- `tRAS`：一行至少要开多久
-- `tRP`：关行后多久能开下一行
-- `tRTP / tWR`：读后和写数据后何时能关行；参考沿不同
-- `tRFC`：一次 refresh 会挡多久
-
-只靠这五条，你已经能解释很多最基本的现象：
-
-- 为什么 row hit 比 row miss 便宜
-- 为什么 row conflict 更贵
-- 为什么 refresh 会制造尾延迟
-- 为什么 DRAM 不是固定延迟数组
+先分清 ACT→列访问、ACT→PRE、PRE→下一次 ACT、读或写→PRE、刷新→恢复。每一段都有自己的起点和作用域。特别是写恢复从数据参考沿计算，不能直接把 nWR 加到 WR 命令时刻。
 
 ## 把它们串成脑内时序
 
-你可以把整个过程想象成去银行保险柜取东西：先让工作人员打开保险柜（ACT，等 tRCD），然后找到你的格子取出物品（RD，等 RL=AL+CL），取完后工作人员要锁好保险柜（PRE，等 tRP），你才能请求打开另一个保险柜。如果你要取的东西在同一个已打开的保险柜里，就省掉了开锁和关锁的时间——这就是 row hit 快的原因。
+在 AL=0、PL=0、CS-to-CA latency 关闭的 DDR4 模式下，ACT 后至少等待 tRCD 才能发出受该约束的列命令；显式 PRE 还受 ACT、各次读写以及其他规则共同约束。下式只展示 BL8、无写 CRC 模式下的主要同 bank 下界；缺失的 RD 或 WR 项省略，多次命令逐条取最大值。
 
-下面的命令示意假设 `AL=0`、PL=0 且 CS-to-CA latency 关闭：
+<div class="ram-calculation" markdown>
+**PRE 不早于** max（ACT 时刻 + nRAS，所有 RD 时刻 + AL + nRTP，所有 WR 时刻 + WL + BL / 2 + nWR）
 
-```text
-ACT --tRCD--> RD --RL=AL+CL--> first data
-ACT ---------tRAS--------> PRE --tRP--> next ACT
-```
+**WL** = AL + CWL
+</div>
 
-DDR4 BL8、禁用写 CRC、PL=0 且 CS-to-CA latency 关闭的显式 PRE 必须同时满足。时间戳、AL、CWL、nRAS/nRTP/nWR 均以 CK 周期计；BL 是传输次数，BL8 占 4 CK：
+所有时间戳、AL、CWL、nRAS、nRTP 和 nWR 使用 CK；BL 是传输次数。例如 AL=0、CWL=9、nWR=12，WR 在周期 0，则 WL=9，写恢复参考沿为周期 13，写约束要求 PRE 不早于周期 25。若 ACT+nRAS 或其他限制更晚，应取更晚时刻。这个例子不是器件的通用时序值。详细条件和数据手册见[完整推导](../../03-dram/protocols/timing-parameters-trcd-trp-tras.md#ddr4-同-bank-显式-pre-的完整下界)。
 
-```text
-PRE >= max(tACT+nRAS, tRD+AL+nRTP, tWR_command+WL+BL/2+nWR)
-WL = AL + CWL
-```
-
-若 `AL=0, CWL=9, nWR=12, WR@0`，写恢复参考沿为 `13`，PRE 不早于 `25`；仍须满足 `tACT+nRAS` 及其他约束。没有 RD 或 WR 时忽略对应项；同一打开行有多次命令时取各命令约束的最大值。模式、burst 长度、CRC 和参考沿由目标规格决定。详见 [完整推导](../../03-dram/protocols/timing-parameters-trcd-trp-tras.md#ddr4-同-bank-显式-pre-的完整下界)。
-
-refresh 则可以脑内记成：
-
-```text
-REF --tRFC--> normal requests can fully resume
-```
+[Alliance Memory DDR4 手册](https://www.alliancememory.com/wp-content/uploads/AllianceMemory_4Gb_DDR4_AS4C512M8D4A-75BCN_75BIN_Aug2022_Ver1.0.pdf)同时给出 CA parity 模式下包含 PL 的 RL/WL；不能将本页 PL=0 简式直接用于其他模式。
 
 ## 它们分别更影响谁
 
-如果你的请求主要是：
-
-- `row miss`：AL=0 时更敏感 `tRCD + RL`
-- `row conflict`：AL=0 时更敏感 `tRP + tRCD + RL`
-- `write-heavy`：更敏感 `tWR`
-- `many-bank parallel ACT`：更敏感 `tRRD / tFAW`
-- `refresh-sensitive workload`：更敏感 `tRFC`
-
-也就是说，不同参数并不是平均影响所有场景，而是在不同访问形状下放大不同代价。
+行未打开时，tRCD 影响首个列访问；行冲突还涉及 PRE 与下一次 ACT。密集跨 bank 激活要检查 tRRD 和 tFAW。刷新对哪些请求造成阻塞，取决于命令覆盖范围、状态和流量。
 
 ## 不该怎么记
 
-最容易犯的错有三个：
-
-- 把所有 timing 参数都记成“神秘常数”
-- 把 `MT/s` 的提升误当成所有 timing 绝对时间都同步大幅变短
-- 把 DRAM 访问时间压成一个固定 latency，忽略 row hit/miss/conflict 分层
-
-如果只避免这三种错，很多 controller 和系统行为就已经容易解释得多。
+不要把器件数据率当作内部阵列时钟，也不要把 row hit、closed-row miss 和 row conflict 的实际延迟简化成彼此固定的数字。排队、命令时序及总线竞争都可能改变结果。刷新也不总是整个器件同时不可用；例如 AMD 的控制器区分 [LPDDR5/5X all-bank 和 per-bank 刷新](https://docs.amd.com/r/en-US/pg456-integrated-mc/LPDDR5/5X-Refresh-Options)，具体支持范围以实现为准。
 
 ## 一句话理解
 
-DRAM timing 参数不是一堆要死记的符号，而是在给“开行、列访问、恢复、关行、刷新”这些动作之间的物理等待窗口起名字。
+时序参数规定动作之间的限制；正确使用必须同时确定参考沿、单位、作用域与模式。
 
 ## 建模启示
 
-做模型时，这页最直接的用途不是提供“精确数字”，而是提醒你最少要保留哪些命令间约束。一个很粗但够用的层次可以是：
-
-```text
-row_hit_cost
-row_miss_cost
-row_conflict_cost
-refresh_block_cost
-```
-
-如果要再细一点，在本页所述 PL=0 且 CS-to-CA latency 关闭的模式下，至少把下面这些 guard 保留下来：
-
-```text
-external RD/WR + AL >= ACT + nRCD  # 同时检查其他命令规则
-RD -> nominal first data after RL=AL+CL; check AC timing window
-ACT -> PRE guarded by tRAS
-PRE -> next ACT guarded by tRP
-PRE guarded by max(ACT+nRAS, each RD+AL+nRTP, each WR+WL+BL/2+nWR)
-REF blocks service for tRFC
-```
-
-只要这些约束还在，模型就还能表达 DRAM 访问成本为什么是分层的；一旦全被折成一个统一 latency，很多后续结论都会失真。
+需要比较命令调度时，记录各 bank 状态、每条相关命令的时刻、刷新覆盖范围及共享命令和数据通路的预留。所有适用的 guard 同时成立才可发命令；简化平均延迟模型不能独立证明命令轨迹合法。

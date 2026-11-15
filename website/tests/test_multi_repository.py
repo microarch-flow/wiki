@@ -102,6 +102,18 @@ def fixture_repo(path, files):
 
 
 class MultiRepositoryTests(unittest.TestCase):
+    def test_reference_source_and_navigation_section_match(self):
+        root, docs = Path("/repo"), Path("/stage")
+        base = root / "series/storage/reading-and-reference"
+        home = docs / "RAM/wiki/reading-and-reference/README.md"
+        _check_storage_topic(root, docs, base / "README.md", home)
+        with self.assertRaisesRegex(ValueError, "navigation section differ"):
+            _check_storage_topic(root, docs, base / "02-reference/README.md", home)
+        page = docs / "RAM/wiki/10-reference/glossary.md"
+        _check_storage_topic(root, docs, base / "02-reference/glossary.md", page)
+        with self.assertRaisesRegex(ValueError, "navigation section differ"):
+            _check_storage_topic(root, docs, base / "01-reading/glossary.md", page)
+
     def test_integration_source_section_must_match_navigation(self):
         root, docs = Path("/repo"), Path("/stage")
         source = root / "series/storage/06-system-integration/packaging/future-packaging-cxl-near-memory.md"

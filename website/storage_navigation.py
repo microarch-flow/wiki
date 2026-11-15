@@ -2,6 +2,7 @@
 
 MEMORY_TOPIC = "存储层级与数据路径"
 STORAGE_RESOURCES = "查阅与练习"
+RESOURCE_HOME = "RAM/wiki/reading-and-reference/README.md"
 MEMORY_HOME = "RAM/wiki/01-overview/README.md"
 SYSTEM_SELECTION = "RAM/wiki/07-system-architecture/why-systems-choose-different-memory.md"
 INTEGRATION_TOPIC = "存储系统集成与选型"
@@ -59,19 +60,19 @@ MEMORY_SECTIONS = (
 
 RESOURCE_SECTIONS = (
     ("阅读路线与自测", "01-reading", (
-        ("RAM 阅读路线", "RAM/wiki/README.md"),
-        ("学习路径与章节依赖", "RAM/wiki/01-overview/learning-roadmap.md"),
+        ("阅读路线与自测", "RAM/wiki/README.md"),
+        ("按目标选择学习路径", "RAM/wiki/01-overview/learning-roadmap.md"),
         ("自测问题", "RAM/self-test-questions.md"),
         ("Cache 与 scratchpad 原入口", "COMPUTE/wiki/06-memory-discipline/README.md"),
     )),
-    ("参考资料", "02-reference", (
-        ("参考资料", "RAM/wiki/10-reference/README.md"),
-        ("存储设计第一性原理", "RAM/wiki/10-reference/first-principles.md"),
+    ("参考资料与工具", "02-reference", (
+        ("参考资料与工具", "RAM/wiki/10-reference/README.md"),
         ("术语表", "RAM/wiki/10-reference/glossary.md"),
         ("高频问答", "RAM/wiki/10-reference/high-frequency-questions.md"),
+        ("跨层分析要点", "RAM/wiki/10-reference/first-principles.md"),
         ("DRAM 时序速查", "RAM/wiki/10-reference/timing-parameter-cheatsheet.md"),
         ("SRAM 选型清单", "RAM/wiki/10-reference/sram-design-checklist.md"),
-        ("DRAM 调试清单", "RAM/wiki/10-reference/dram-debug-checklist.md"),
+        ("DRAM 性能排查清单", "RAM/wiki/10-reference/dram-debug-checklist.md"),
         ("存储系统建模模板", "RAM/wiki/10-reference/memory-modeling-template.md"),
     )),
 )

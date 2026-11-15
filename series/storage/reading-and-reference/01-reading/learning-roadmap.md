@@ -3,7 +3,7 @@
 <span id="这页在回答什么问题"></span>
 <span id="先修知识与学习次序"></span>
 
-上级：[RAM 阅读路线](./README.md)
+上级：[阅读路线与自测](./README.md) · [查阅与练习总导读](../README.md)
 
 相关：[RAM 分类与命名](../../01-memory-hierarchy/01-system-basics/taxonomy.md) · [存储系统建模模板](../02-reference/memory-modeling-template.md)
 
@@ -24,9 +24,11 @@
 | [系统视角](../../01-memory-hierarchy/01-system-basics/README.md) | 多层存储与互连怎样共同影响延迟和有效带宽？ |
 | [封装与集成](../../06-system-integration/packaging/README.md) | DIMM、堆叠和封装连接怎样影响系统选择？ |
 | [NPU 数据路径与存储组织](../../01-memory-hierarchy/04-npu-case/README.md) | NPU 怎样安排 buffer、数据复用和外存供数？ |
-| [参考资料](../02-reference/README.md) | 术语、时序、检查清单和建模模板如何查阅？ |
+| [HBF 高带宽闪存](../../05-hbf/README.md) | NAND、高带宽访问、写入与可靠性有哪些边界？ |
+| [存储系统集成与选型](../../06-system-integration/README.md) | 怎样综合容量、带宽、封装、功耗和成本选择系统方案？ |
+| [参考资料与工具](../02-reference/README.md) | 术语、时序、检查清单和建模模板如何查阅？ |
 
-如果希望系统学习，可以按上表从概览读到 AI 芯片章节，并在需要时查阅参考资料。这个顺序先介绍部件，再组合成系统；它不是唯一的学习顺序。
+上表按知识依赖列出入口；当前网站按六个专题组织，详见[总导读](../README.md)。如果希望系统学习，可以先读概览，再按问题选择器件、控制器和系统内容，并在需要时查阅参考资料。这个顺序先介绍部件，再组合成系统；它不是唯一的学习顺序。
 
 ## 2. 想先建立全貌：从请求和指标入手
 
@@ -53,6 +55,8 @@
 3. 阅读 [NPU 数据路径与存储组织](../../01-memory-hierarchy/04-npu-case/README.md)，或按问题选择[权重缓冲区](../../01-memory-hierarchy/04-npu-case/weight-buffer-design.md)、[激活缓冲与双缓冲](../../01-memory-hierarchy/04-npu-case/activation-buffer-and-double-buffering.md)和[片上带宽预算](../../01-memory-hierarchy/04-npu-case/on-chip-bandwidth-budget.md)。
 4. 如果涉及 DMA 与计算的交接，再看 DMA 专题的[同步、一致性与常见错误](../../../microarchitecture/DMA/wiki/04-programming-model/synchronization-errors.md)。
 
+设计还涉及可靠性时，补读 [SRAM 可靠性、ECC 与测试修复](../../02-sram/foundations/sram-reliability-ecc-mbist-repair.md)，确认初始化、错误处理及部分写语义。
+
 分析双缓冲时，要确认数据何时可见、何时允许覆盖，以及搬运和计算是否真的有独立资源。若问题还涉及外存选型或控制器瓶颈，应补读 DRAM 协议、控制器和封装章节，不能只用片上 buffer 参数代替外存路径。
 
 ## 5. 想定位系统瓶颈：先统一观察边界
@@ -68,6 +72,10 @@
 另一些内容是为了建立更完整的理解而推荐先读。例如，比较 SRAM bank 冲突时，可以先依据目标宏的端口和地址映射建模，不必先模拟每根位线的电气行为。但如果要解释 cell 稳定性或电路时序，就需要回到相应电路和器件资料。
 
 模型细节应随问题选择。[gem5 的 SimpleMemory 文档](https://www.gem5.org/documentation/general_docs/stdlib_api/gem5.components.memory.simple.html)描述了用延迟和带宽配置的简化存储系统；[gem5 的控制器说明](https://www.gem5.org/2020/05/27/memory-controller.html)则讨论队列、调度和存储接口。两类模型能回答的问题不同。它们的参数和结果都需要限定工作条件，不能仅凭模型存在就当作真实芯片测量。
+
+## 7. 想比较 HBF 与其他存储：从工作负载到接口
+
+先读 [HBF 定位](../../05-hbf/01-position.md)与 [NAND 基础](../../05-hbf/02-nand-foundations.md)，再读 [写入与可靠性](../../05-hbf/06-write-and-reliability.md)及[工作负载与建模](../../05-hbf/07-workload-and-modeling.md)。比较 HBM 或其他存储时，分别记录容量、有效读取和写入、接口、数据管理及恢复边界；HBF 不能当作另一种 DRAM。需要综合封装与成本时，转到[存储系统集成与选型](../../06-system-integration/README.md)。
 
 ## 一句话理解
 

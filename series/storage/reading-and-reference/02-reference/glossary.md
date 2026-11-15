@@ -9,9 +9,7 @@
 
 ## 术语按所属层级组织
 
-这一页不是为了把所有出现过的名词堆成一本字典，而是为了统一边界。存储器讨论最常见的问题，不是完全不知道一个词，而是把几个本来不在同一层的词放到一起硬比。例如把 `SRAM` 和 `HBM` 当成同层对象，把 `cache` 和 `DDR` 放在一列里，把 `DIMM` 和 `LPDDR` 当成同类选项。这就像把"钢铁"（材料）、"桥梁"（结构）和"高速公路"（系统）放在同一张比较表里评谁更好——它们根本不在同一个维度上。这些混层一旦发生，后面的分析几乎一定会歪。
-
-因此，这份术语表按“它属于哪一层”来组织，而不是按字母顺序排。你可以把它理解成一个快速纠偏工具：当某个词听起来熟，但你不确定它到底是在讲 cell、阵列、协议、系统角色还是封装形态时，先来这里对一下位置。
+术语按介质、阵列、接口、控制、系统角色、封装和指标分组。比较前先确认对象所在层次。例如，SRAM 描述单元路线，cache 描述管理角色，HBM 描述接口和产品体系。
 
 ## 介质与 bitcell
 
@@ -35,15 +33,19 @@ Dynamic RAM。通常以 1T1C bitcell 实现，用更高密度换来破坏性读�
 
 数据保持能力。在 SRAM 里通常指低电压下还能否保持状态；在 DRAM 里通常指电容电荷在必须 refresh 前能维持多久。
 
+`ECC / SECDED`
+
+ECC 是错误检测与纠正编码；SECDED 指单比特纠正、双比特检测这一类能力，具体覆盖范围由码型和实现决定。初始化、部分写和错误上报须查目标设计。见 [SRAM 可靠性](../../02-sram/foundations/sram-reliability-ecc-mbist-repair.md)。
+
 ## 阵列与局部结构
 
 `wordline (WL)`
 
-字线。控制一行 bitcell 是否被选通。它负责“开门”，不直接承担远距离数据搬运。
+字线。控制一行 bitcell 是否被选通。它控制被选中的单元，不直接等同于外部数据通路。
 
 `bitline (BL/BLB)`
 
-位线。连接同一列多个单元的数据导线。在 SRAM 和 DRAM 里都重要，但角色不同：SRAM 中是差分读写通路，DRAM 中会和共享 sense amp 紧耦合。
+位线。连接同一列多个单元的数据导线。具体结构由实现决定：典型 6T SRAM 使用差分位线；DRAM 位线与感测放大器共同参与读出和恢复。
 
 `sense amplifier`
 
@@ -63,7 +65,7 @@ DRAM 中对多个 bank 的进一步组织层。它通常出现在更高速 I/O �
 
 `row buffer`
 
-DRAM 中当前已打开一行在 sense amp 一侧形成的工作副本。它像 cache，是因为命中后后续访问更便宜；它又不像独立 cache，因为它并不是 tag+replace 管理的单独层。可以把它想成餐厅的备菜台——当前这桌客人点的菜已经摆在台上，再点同类的很快；但换桌客人点了完全不同的菜，备菜台就得全部清掉重新摆。
+DRAM 中当前已打开一行在 sense amp 一侧形成的工作副本。它像 cache，是因为命中后后续访问更便宜；它又不像独立 cache，因为它并不是 tag+replace 管理的单独层。实际延迟还受命令时序、总线与排队影响。
 
 ## 接口、协议与时序
 
@@ -115,6 +117,10 @@ Read / Write。DRAM 在已打开行上执行列访问的读写命令。
 
 DRAM 常见时序参数。它们不是任意规格数字，而是开行、列访问、恢复和关行等物理等待窗口的接口化表达。
 
+`HBF / NAND`
+
+HBF 是基于 NAND 闪存的高带宽存储体系，具有不同于 DRAM 的写入与可靠性约束；不能把 NAND 数据保持管理等同于 DRAM refresh。见 [HBF 专题](../../05-hbf/README.md)。
+
 ## 访问行为与 controller 术语
 
 `row hit`
@@ -123,7 +129,7 @@ DRAM 常见时序参数。它们不是任意规格数字，而是开行、列访
 
 `row miss`
 
-目标 bank 当前没有打开任何行，因此通常需要先 `ACT` 再 `RD/WR`。
+本 Wiki 中指目标 bank 当前没有打开行，通常需要先 `ACT` 再 `RD/WR`。有些资料把 row conflict 也算作 miss，比较统计值时须先确认口径。
 
 `row conflict`
 
@@ -147,7 +153,7 @@ memory controller 在一次访问后是否保留当前 open row 的策略。它�
 
 `FR-FCFS`
 
-First-Ready First-Come-First-Serve。常见 DRAM 调度策略，优先服务 timing-legal 且通常更偏 row-hit 的请求，再在同类候选中考虑先来先服务。
+First-Ready First-Come-First-Serve。常见 DRAM 调度策略族。通常优先考虑当前可发的命令，再结合到达次序；row-hit 偏好、优先级和防饥饿规则依实现而异。
 
 `write drain`
 
@@ -173,7 +179,7 @@ Quality of Service。共享内存系统中，为吞吐、延迟、公平性或�
 
 `TCM`
 
-Tightly Coupled Memory。强调确定性和低抖动的本地存储，常见于 MCU 或实时系统。它更像 deterministic scratchpad，而不是简化版 cache。
+Tightly Coupled Memory。强调确定性和低抖动的本地存储，常见于 MCU 或实时系统。实际延迟是否确定还取决于端口、总线仲裁和实现约束。
 
 `weight buffer / activation buffer / accumulator buffer`
 
@@ -253,7 +259,7 @@ HBM stack 底部承接电源、信号和部分控制逻辑的 die。它不是“
 
 `pJ/bit`
 
-每传输 1 bit 数据的大致能量代价，常用于比较不同 I/O 或不同集成方式的能效。
+每处理或传输 1 bit 的能量指标。比较时要说明测量边界、读写方向和负载，避免把 I/O 与整系统能耗混用。
 
 `working set`
 
@@ -267,18 +273,4 @@ HBM stack 底部承接电源、信号和部分控制逻辑的 die。它不是“
 
 术语混层的最大风险，是把本来属于不同抽象层的对象塞进同一模型维度，最后得出没有意义的比较。例如，把 `HBM`、`cache`、`DIMM`、`SRAM` 当成四个同类选项，会让模型同时混进介质、系统角色和封装形态。
 
-更稳的做法，是在模型里先给术语归类：
-
-```text
-TermCategory = enum {
-  medium,
-  array_structure,
-  protocol_timing,
-  controller_policy,
-  system_role,
-  packaging_integration,
-  metric
-}
-```
-
-只要某个比较对象不在同一 `TermCategory`，就应该先追问“是不是少了一层中间抽象”，而不是直接比较它们谁更好。
+建模时可以分别记录介质、阵列、协议与时序、控制策略、系统角色、封装及指标。对象跨越多个类别时，明确各自属性，再比较同一问题下的系统方案。
