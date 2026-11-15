@@ -236,7 +236,7 @@
    [参考正文](../../06-system-integration/packaging/why-hbm-is-expensive.md)
 
 67. [T] CXL memory expansion、near-memory compute 和先进封装分别在改变哪一层内存边界，为什么它们不是互相替代的同类方案？
-   [参考正文](../../06-system-integration/packaging/future-packaging-cxl-near-memory.md)
+   [参考正文](../../06-system-integration/future-packaging-cxl-near-memory.md)
 
 ---
 

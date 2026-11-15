@@ -230,6 +230,11 @@
       },
       {
         "kind": "file",
+        "source": "series/storage/06-system-integration/future-packaging-cxl-near-memory.md",
+        "target": "RAM/wiki/08-packaging-integration/future-packaging-cxl-near-memory.md"
+      },
+      {
+        "kind": "file",
         "source": "series/storage/06-system-integration/hbm-vs-lpddr-for-npu.md",
         "target": "RAM/wiki/09-ai-chip-memory-architecture/hbm-vs-lpddr-for-npu.md"
       },
