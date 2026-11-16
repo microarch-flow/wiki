@@ -76,6 +76,7 @@ class NocNavigationTests(unittest.TestCase):
         locations = {unquote(entry["location"]) for entry in search}
         for slug in ("collective-communication-basics", "all-to-all-and-traffic-matrix"):
             self.assertIn(f"NOC/wiki/06-ai-noc-specifics/{slug}/", locations)
+        self.assertIn("NOC/wiki/07-workload-cases/coherent-access-and-noc/", locations)
         for path, anchors in legacy.items():
             with self.subTest(page=path):
                 html = (SITE / path / "index.html").read_text(encoding="utf-8")

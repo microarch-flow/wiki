@@ -80,13 +80,14 @@
 
 ## 07 工作负载与系统案例 {#workload-cases}
 
-从数据分块、放置和阶段依赖出发，分析具体负载产生的通信。
+从任务、数据放置和阶段依赖出发，分析计算与一致性访问产生的通信。
 
-- [AI 工作负载与 NoC](./06-ai-noc-specifics/why-ai-noc-is-different.md)
+- [工作负载与 NoC 流量](./06-ai-noc-specifics/why-ai-noc-is-different.md)
 - [GEMM 通信案例](./06-ai-noc-specifics/workload-gemm-on-noc.md)
 - [Attention Prefill 案例](./06-ai-noc-specifics/workload-attention-prefill.md)
 - [Attention Decode 与 KV Cache 案例](./06-ai-noc-specifics/workload-attention-decode-kv-cache.md)
 - [MoE 通信案例](./06-ai-noc-specifics/workload-moe-routing.md)
+- [缓存一致性通信案例](./07-workload-cases/coherent-access-and-noc.md)
 
 ## 08 性能评估与架构探索 {#07-evaluation-methodology}
 

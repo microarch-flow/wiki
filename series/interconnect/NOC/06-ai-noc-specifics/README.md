@@ -1,6 +1,6 @@
 # 06 AI NOC Specifics
 
-> 本页保留原章节导读，涵盖现行多个阅读分组。第六章现从[集体通信基础](./collective-communication-basics.md)开始；[查看现行第六章及阅读顺序](../SUMMARY.md#06-ai-noc-specifics)。
+> 本页保留原章节导读，涵盖现行多个阅读分组。第六章现从[集体通信基础](./collective-communication-basics.md)开始；[查看现行第六章及阅读顺序](../SUMMARY.md#06-ai-noc-specifics)。[第七章工作负载与系统案例](../SUMMARY.md#workload-cases)另有现行阅读顺序。
 
 上级：[NOC Wiki](../README.md)
 

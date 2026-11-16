@@ -1,87 +1,52 @@
-# Workload Attention Decode KV Cache
+# Attention Decode 与 KV Cache：数据怎样支持下一步生成？
 
-上级：[06 AI NOC Specifics](./README.md)
+<span id="workload-attention-decode-kv-cache"></span>
 
-相关：[Memory Centric NOC](./memory-centric-noc.md)、[QoS And Priority Classes](../04-routing-and-flow-control/qos-and-priority-classes.md)
+上级：[07 工作负载与系统案例](../SUMMARY.md#workload-cases)；原章节：[06 AI NOC Specifics](./README.md)
 
-## 这页在回答什么问题
+相关：[Attention Prefill 案例](./workload-attention-prefill.md)、[NoC 与存储系统](../05-system-integration/noc-meets-memory-system.md)、[端到端服务保证](../04-routing-and-flow-control/service-guarantees-and-latency-bounds.md)
 
-这页回答：为什么 decode with KV cache 是 AI NoC 里最典型的 memory-centric、response-sensitive 场景之一。
+<span id="这页在回答什么问题"></span><span id="decode-同时受流量和依赖链约束"></span>常见的自回归 decode 中，每条序列逐步生成输出。下一步需要使用前一步的结果；每步的计算还可能依赖历史 KV、权重和其他状态。批处理、投机解码及调度可以改变一次执行处理的 token 数。
 
-## decode 同时受流量和依赖链约束
+## 从请求到可用数据
 
-decode 的典型特点是：
+<span id="kv-cache-让它天然-memory-centric"></span>一种映射把历史 KV 放在存储端点，计算 tile 读取所需数据：
 
-- 常见逐 token decode 的每一步为每个序列生成一个 token；批处理和投机解码可改变调度
-- 同一序列的后续步骤依赖先前结果
-- KV cache 读取频繁
-- 小量 control / sync 很关键
+> 读取请求 → 存储服务 → 数据返回 → 接收端交付 → 依赖计算
 
-总 KV/权重字节数及实际服务带宽会决定搬运时间，逐 token 依赖也会使关键路径延迟影响下一步。context、batch、缓存命中和映射不同，主导因素可能不同。除测量服务带宽外，还需观察：
+真实系统可能把 KV 放在本地 SRAM、片上共享存储或外部内存；也可能分块读取、预取并和计算重叠。先确定请求和数据是否经过所研究的 NoC，再统计各段资源占用。新 token 的 K/V 还需要写入或追加到指定位置；写入何时对后续步骤可见由接口与调度契约决定。
 
-- 关键 response 晚一点点就层层放大
-- barrier / completion 被拖慢
-- ejection 或 local consume 形成额外等待链
+## KV 逻辑读取量
 
-## KV cache 让它天然 memory-centric
+<span id="kv-带宽和依赖延迟都可能主导"></span>假设每层有相同数量的 KV head、相同 head dimension 和 K/V 元素字节数。每条序列每层都需要其指定的全部历史 K/V，且每个所需 KV 元素恰好逻辑读取一次；暂不计新 token、跨请求共享、压缩、元数据或额外重读。令：
 
-KV cache 路径通常会带来：
+- L：层数；H<sub>KV</sub>：KV head 数；D：每个 head 的维度；P：每元素字节数。
+- S<sub>i</sub>：本步骤第 i 条序列需要读取的历史 token 数。
 
-- 高频 memory request
-- 更关键的 response return
-- 对 memory placement 的强依赖
+则所有活跃序列在一个步骤中的 KV 逻辑读取量为：
 
-因此 decode 更像在逼问：
+> V<sub>KV</sub> = 2 × L × H<sub>KV</sub> × D × P × Σ S<sub>i</sub>。
 
-- response 是否被隔离
-- memory port 离 compute 多远
-- local endpoint 能否及时接收返回
+前面的 2 对应 K 和 V。窗口或稀疏注意力只读取部分历史时，S<sub>i</sub> 应按实际需要定义；各层配置不同时，要分别逐层求和。
 
-## KV 带宽和依赖延迟都可能主导
+例：batch=1、L=32、S=4096、H<sub>KV</sub>=8、D=128、FP16 的 P=2 B，则：
 
-若每个 decode step 对每层读取完整历史 K/V，忽略新 token、自身缓存命中、压缩和额外元数据，读取字节约为：
+> V<sub>KV</sub> = 2 × 32 × 4096 × 8 × 128 × 2 = **536,870,912 B，即 512 MiB/step**。
 
-`2 × batch × layers × context × KV_heads × head_dim × dtype_bytes`。
+这是逻辑量，不是实测 HBM 或 NoC 字节。缓存命中、同一 KV 被多个计算分片重复取用、对齐、包头和物理位置都会改变相应边界的计数。GQA 中多个 query head 可以共享 KV head，因此公式按实际 KV head 数计；物理读取能否共享仍取决于实现。[GQA 原论文](https://arxiv.org/abs/2305.13245)
 
-例如 batch=1、layers=32、context=4096、KV_heads=8、head_dim=128、FP16=2 B，约 536,870,912 B = 512 MiB/step。GQA 使用 KV head 数而不是 query head 数；分片只改变各端口负载，不自动减少总字节。若大 context 或 batch 使 KV 流量占据关键路径，持续带宽很重要；小 batch/短 context 也可能被单次返回、同步和依赖延迟主导。应同时测 KV payload 服务率、关键 response 延迟和 token time，再判断 QoS 与带宽的价值。
+## 哪些等待会进入关键路径
 
-## placement 在这里特别值钱
+<span id="placement-在这里特别值钱"></span>数据位置影响路径和端口负载，但“更近”不自动等于更快：实际结果还取决于端口能力、共享流量、缓存命中和下游接收。权重和 KV 的持续服务率可能限制完成时间；短消息、同步或最后一块关键数据也可能在特定负载下成为关键路径。
 
-如果 KV cache、memory port、compute tile 的空间关系不合理，那么：
+比较两个 placement 时，固定序列长度、batch、请求窗口、端点能力及竞争流量。分别观察存储服务、NoC 注入与链路等待、接收端等待和依赖计算；QoS 或不同路径是否改善最终时间，应以同一工作负载和资源预算验证。
 
-- response 路径变长
-- 局部热点更集中
-- static schedule 的收益下降
+<span id="它和-prefill-的最关键区别"></span>Prefill 具有多个已知输入位置，decode 有逐步生成依赖；但 prefill 不必然算力受限，decode 也不必然只受单次响应延迟限制。[Prefill 案例](./workload-attention-prefill.md)展示分块和掩码如何改变通信。
 
-因此 decode 常常会把 memory placement 的重要性放大到和 routing 同级。
+## 时间与流量的边界
 
-## 它和 prefill 的最关键区别
+<span id="建模启示"></span>模型可记录每条序列需要的历史范围、KV 位置、读取和追加事件、数据到达、消费者接收及下一步依赖。完成时间要注明是某个 flow、一个计算步骤，还是整个服务请求。
 
-prefill 更像 bulk distribution；
-decode 有逐 token 依赖，KV 返回也可能是大数据流。
+<span id="一句话理解"></span>用户看到的首 token 时间、相邻输出间隔和吞吐不是同一指标，也未必等于一次 NoC 传输时间。vLLM 的 benchmark 文档分别定义了客户端 TTFT、ITL 和 TPOT；在不同系统中应重新检查起止事件。[vLLM 延迟指标](https://docs.vllm.ai/en/v0.33.0/benchmarking/cli/)
 
-这就是为什么同一个芯片上，适合 prefill 的设计不一定天然适合 decode。
-
-## 一句话理解
-
-decode 同时依赖 KV/权重数据供给与关键路径响应；两者的相对重要性由 context、batch、缓存和映射决定。
-
-## 建模启示
-
-decode 模型至少要显式区分：
-
-- request class
-- response class
-- control / barrier class
-- per-step dependency
-- KV placement
-
-评估时要把重点放在：
-
-- response latency
-- tail latency
-- KV payload bytes 和各瓶颈端口的有效服务率
-- completion-to-next-step gap
-- workload token time
-
-否则模型会错把 decode 当成普通低吞吐 workload，而忽略其真正的系统敏感点。
+PagedAttention 将 KV 组织成可映射的块，支持灵活分配和共享；这种管理方式影响位置和访问方式，但不会单独保证某个固定的 HBM 或 NoC 流量比例。[PagedAttention 原论文](https://arxiv.org/abs/2309.06180)
