@@ -1,156 +1,53 @@
-# Taxonomy
+# NoC 的设计维度与工作负载
 
-上级：[01 Overview](./README.md)
-相关：[Problem Statement](./problem-statement.md), [../04-routing-and-flow-control/routing-algorithm-classes.md](../04-routing-and-flow-control/routing-algorithm-classes.md)
+上级：[01 认识 NoC](./README.md)
 
-## 这页在回答什么问题
+相关：[NoC 在解决什么问题？](./problem-statement.md)、[路由算法分类](../04-routing-and-flow-control/routing-algorithm-classes.md)
 
-NoC 应该按哪些正交维度拆开理解，才能避免把拓扑、路由、交换方式、流控、QoS 和 workload 这些属于不同层级的东西混在一起。
+<span id="taxonomy"></span><span id="这页在回答什么问题"></span>描述一个 NoC，不能只说“它是 mesh”。还要知道端点产生什么流量，数据怎样选路，资源怎样分配，以及接收端如何消费。本文用一组问题区分这些对象；详细机制留给后续章节。
 
-这不是为了分类而分类，而是为了后面做判断时不偷换问题。比如“mesh 好不好”是 topology 问题，“XY routing 好不好”是 routing 问题，“credit 麻不麻烦”是 flow control 问题，它们不能互相代答。
+## 先区分需求、设计和结果
 
-## 为什么 NoC 特别容易学乱
+<span id="为什么-noc-特别容易学乱"></span><span id="第一维按系统目标分"></span><span id="第七维按-traffic-pattern-与-workload-分"></span>工作负载和映射给出通信需求，例如谁向谁发送、数据量和发送时机。拓扑、路由、缓冲和仲裁属于设计选择。延迟、吞吐、面积和功耗则是在给定条件下需要评价的结果。
 
-BUS 世界里，对象边界相对稳定：地址、数据、响应、仲裁、协议、bridge。NoC 世界里，很多词都在描述“通信”，于是初学者很容易把它们混成一层：
+这些问题可以分别描述，但不完全独立。例如，路由只能选择拓扑提供的路径；流控和缓冲组织也必须配合。把它们分开，是为了说明**哪个条件或选择造成了什么结果**，不是承诺所有组合都能实现。
 
-- topology 看起来在讲路
-- routing 也在讲路
-- switching 也像在讲怎么走
-- flow control 也会影响能不能走
+GEMM 是计算任务，不是一种固定流量。输出块在本地累加时，可以没有跨 tile 的部分和归约；把同一输出的不同 K 分片放在不同 tile 时，就需要传递并归约部分和。[GEMM 通信案例](../06-ai-noc-specifics/workload-gemm-on-noc.md)给出了一个具体分块。
 
-结果就是一句话里同时出现 mesh、wormhole、XY、credit、QoS，却不知道哪个词在回答哪个问题。这一页的目标就是把这些维度分开。
+## 描述设计时要问什么
 
-## 第一维：按系统目标分
+| 问题与对象 | 要记录什么，以及从哪里深入 |
+| --- | --- |
+| 接口与消息语义 | 端点发出事务还是 stream？是否要求响应、顺序或错误报告？网络接口如何转换？见[网络接口 NI](../05-system-integration/ni-network-interface-design.md)。 |
+| <span id="第二维按-topology-分"></span>连接与物理实现 | 谁与谁相连？链路宽度、方向、长度和流水怎样映射到布局？逻辑连接图与实际布线需要分别描述。见[拓扑与物理实现](../03-topology/topology-physical-realization.md)。 |
+| <span id="第三维按-routing-分"></span>路径选择 | 源端指定路径，还是每跳选择？选择是否依赖运行时状态？路径是否限定为最短路径？见[路由算法分类](../04-routing-and-flow-control/routing-algorithm-classes.md)。 |
+| <span id="第四维按-switching-分"></span>交换与转发 | 资源按连接预留，还是按包竞争？分包网络可以使用存储转发、virtual cut-through 或 wormhole 等方式。见[转发与交换方式](../02-router-microarchitecture/wormhole-vs-vct-vs-store-forward.md)。 |
+| <span id="第五维按-flow-control-分"></span>流控 | 发送方如何判断接收资源可用？反馈针对哪段路径、什么容量和什么单位？见[Credit 与反压](../02-router-microarchitecture/credit-based-flow-control.md)。 |
+| <span id="第六维按资源隔离与服务策略分"></span>资源与服务 | 队列和链路如何共享？是否使用虚通道、虚拟网络、优先级或预留时隙？见[仲裁策略](../04-routing-and-flow-control/arbitration-policies.md)和 [QoS](../04-routing-and-flow-control/qos-and-priority-classes.md)。 |
+| 正确性与评价 | 在什么条件下能前进？在哪个边界测量延迟、吞吐和完成？见[死锁、活锁与饥饿](../04-routing-and-flow-control/deadlock-livelock-starvation.md)及[性能指标](../07-evaluation-methodology/metrics-latency-throughput-saturation.md)。 |
 
-最先要分的不是结构，而是网络在服务谁。
+## 在一个例子中区分选择
 
-AI dataflow NoC 的主问题是高并发数据搬运、局部性利用、静态调度和吞吐稳定。CPU coherent NoC 的主问题是一致性事务、严格 ordering 约束、消息类别隔离和协议无死锁。memory-centric NoC 则更像围绕 request/response 与 memory service rate 组织的网络。
+<span id="一个更实用的记忆顺序"></span>假设四个节点构成 2×2 mesh，坐标向东为 X 正方向、向北为 Y 正方向。一个消息从 (0,0) 发往 (1,1)。如果采用先 X 后 Y 的维序路由，路径是先向东、再向北；如果允许另一条最短路径，也可以先向北、再向东。
 
-这个区分的重要性在于，它决定你后面应该优先关注什么。对 deterministic NPU，source routing、traffic shaping 和 worst-case latency 更值得优先建模；对 CPU coherent NoC，adaptive routing 是否收益更高、VN/VC 如何支撑一致性消息隔离，才是主战场。
+这里的 **mesh** 描述连接；**XY** 描述允许的选路规则。假设该实现再采用 wormhole 转发和逐跳 credit，才进一步确定缓冲与流控模型。相同拓扑可以使用不同路由；相同路由也可能搭配不同的缓冲和服务策略。路径选定后，等待时间仍取决于其他流量和目的端服务。
 
-常见误解：NoC 先是通用技术，再在 AI/CPU 上“做应用”。  
-实际上：系统目标会反过来决定 NoC 的主矛盾，很多设计并不存在“脱离场景的最佳形式”。
+<span id="常见误解"></span>source routing 描述由源端提供路径信息；deterministic 或 adaptive 描述路径如何选择。它们回答不同问题，可以组合。固定路径也不自动保证延迟上界。
 
-## 第二维：按 topology 分
+## 逐跳流控、隔离与服务保证
 
-topology 回答的是“谁和谁物理相连”，本质是图结构问题。它直接影响：
+Arm AXI 的 `VALID/READY` 描述接口上的发送方与接收方何时完成一次传输。某些 NoC 链路用 credit 表示接收侧可用容量；也有 NoC 实现提供其他握手或信用方案。它们不是“总线”和“NoC”的排他分界。[Arm AXI 规范，Issue J](https://documentation-service.arm.com/static/63ff0ebd56ea36189d4e7ee7)；[FlooNoC 实现示例](https://github.com/pulp-platform/FlooNoC/blob/292f676/hw/floo_pkg.sv)
 
-- 平均最短路径长度
-- 对分带宽
-- router radix
-- 线长与 floorplan 兼容性
-- 多路径冗余度
+本专题后续的 credit 例子以**相邻节点之间的缓冲槽位**为前提：该跳释放槽位后返回信用，阻塞可能逐跳向上游传播。credit 不等于整个事务完成。也存在端到端信用机制，需要按其自己的容量与反馈范围建模。[端到端 credit 论文](https://cecs.uci.edu/~papers/esweek06/codes/p130.pdf)
 
-mesh、torus、ring、tree、fat-tree、crossbar、concentrated mesh 都属于这一维。它们的比较核心，不是“谁更高级”，而是“在给定规模、给定物理约束、给定 workload 局部性下，哪种结构更匹配”。
+虚通道（VC）可以分开排队状态，减轻某些队头阻塞；多个 VC 仍可能争用同一条物理链路或目的端口。仅有 VC、优先级或固定路由，都不能单独证明无死锁或延迟有上界。服务保证还依赖流量约束、资源分配、端点服务及其证明条件。Æthereal 的保证服务就是一种有明确条件的设计实例。[Æthereal 论文](https://kgoossens.estue.nl/docs/research/2005-philipsbook-chap1.pdf)
 
-为什么必须把 topology 单独拿出来？因为同一个 mesh 可以跑 XY、source routing、adaptive routing；同一个 ring 也可以用不同 deadlock 避免手段。把 topology 和 routing 写在同一层，会让你误以为“选了 mesh 就等于选了某种路由哲学”。
+## 与事务和存储系统的边界
 
-## 第三维：按 routing 分
+<span id="和-bus-ram-体系的衔接"></span>NoC 可以运输带事务语义的请求和响应，也可以运输 stream 或控制消息。地址映射决定请求落到哪个目标；存储 bank、控制器和接收端的服务能力会影响网络中的等待。描述通信时，应同时记录网络路径和端点边界，而不是先按“控制面”或“数据面”断言它使用哪种结构。
 
-routing 回答的是“从源到目的地允许走哪些路径，以及具体怎么选路径”。它不改变物理连接图，只在既有图上定义路径策略。
+## 如何用于建模
 
-路由有多个正交维度：**决策位置**可以是 source routing 或逐 router 分布式决策；**选路策略**可以是固定确定路径、忽略实时拥塞的 oblivious 多路径，或依据拥塞的 adaptive 选择。dimension-order routing 是路径约束的一种，可由不同决策位置实现。source routing 既可以选择固定路径，也可以从多条路径中按策略选一条。
+<span id="建模启示"></span>比较方案时，先固定端点、输入流量和计量边界，再明确哪些设计参数改变。若同时改拓扑、路由和目的端服务，就不能仅把结果归因于拓扑。模型是否需要 flit、VC 或信用状态，取决于要回答的问题；这些字段不是所有分析模型的必选项。
 
-这里最重要的判断是：routing 的收益，永远受 topology 提供的路径空间约束。一个 path diversity 很低的网络，adaptive routing 的潜力就小；一个物理长线极贵的网络，source routing 即使可行，也可能在 header 编码和静态调度上引入额外代价。
-
-对你的目标而言，这一维尤其关键，因为 deterministic NPU 往往偏爱 `deterministic + source-routed + analyzable` 的组合，而不是 `adaptive + congestion-reactive` 的组合。
-
-## 第四维：按 switching 分
-
-switching 回答的是“一个 packet 在中间节点是整包存、部分存，还是按 flit 流水推进”。这一维描述的是转发方式，不是路径选择方式。
-
-主流分法：
-
-- store-and-forward
-- virtual cut-through
-- wormhole
-
-为什么单独列这一维？因为很多性能与面积 trade-off 实际上是从这里长出来的。wormhole 之所以成为片上 NoC 主流，不是因为它“名字酷”，而是因为它用更小 buffer 支撑更细粒度流水。代价则是路径资源占用时间拉长、HoL blocking 更尖锐，于是 VC 和 allocator 复杂度被抬上来。
-
-也就是说，switching 经常决定 router 微架构问题，而不是 topology 问题。
-
-## 第五维：按 flow control 分
-
-flow control 回答的是“发送方如何知道下游能不能继续接收”。它处理的是安全前进条件，而不是如何选路。
-
-常见做法包括：
-
-- on/off 或 stop-and-go
-- ready/valid 式短距握手
-- credit-based flow control
-
-这一维和 BUS 最容易被误类比。BUS 里你熟悉的是 `VALID/READY`；NoC 里你更常见的是 credit。两者都是 backpressure 机制，但不在同一层。BUS 上的 ready/valid 常常在一个通道、一个局部接口内闭合；NoC credit 通常只反馈相邻一跳的下游 buffer slot；该跳的发送、消费和 credit 返回可能跨多个周期。各跳分别计数，阻塞可逐跳向源端传播，并不是一个 credit 跨越整条多跳路径。
-
-## 第六维：按资源隔离与服务策略分
-
-这一维回答的是“不同流量是否共享完全相同的资源，以及共享时如何避免互相压死”。它包括：
-
-- 单队列 / 无 VC
-- VC 分离
-- virtual network / plane 分离
-- 多物理网络
-- 优先级与仲裁策略
-
-很多人会把 QoS 只理解成“高优先级先过”，这是 BUS 视角残留。NoC 上的 QoS 往往是复合机制：traffic class 决定语义层次，VC 决定逻辑隔离，仲裁策略决定局部资源分配，多物理网络决定是否进行硬隔离。只有把这些对象分开，你后面才说得清 “这个流为什么被 bulk DMA 淹没了”。
-
-## 第七维：按 traffic pattern 与 workload 分
-
-这一维回答的是“网络实际上在承受什么流量形状”。uniform random、hotspot、transpose、neighbor traffic，是 synthetic pattern；GEMM、prefill、decode、MoE 则是 workload-derived pattern。
-
-这一维看似最晚，实际很早就该进入心智模型，因为 NoC 设计的很多优劣只有放回流量分布里才成立。ring 对邻近通信可能很好，对 all-to-all 可能很差；adaptive routing 对 bursty hotspot 可能有收益，对静态规整数据流可能反而破坏可分析性。
-
-这也是为什么后面 `05-system-integration` 和 `06-ai-noc-specifics` 必须单独成章。没有 workload 维度，前面的结构和策略会变成静态图鉴。
-
-## 一个更实用的记忆顺序
-
-比起死背“七大维度”，更实用的顺序是：
-
-1. 先问系统目标：这张网在服务什么机器
-2. 再问 topology：物理上怎么连
-3. 再问 routing：允许怎么走
-4. 再问 switching 和 flow control：怎么前进、怎么停
-5. 最后问 isolation 和 workload：谁和谁会互相压
-
-这个顺序的好处是，前一层决定后一层的问题空间。你不会再问出“哪种 QoS 最适合 crossbar 还是 mesh”这类混层问题，而会先确定结构，再谈其上的策略。
-
-## 和 BUS / RAM 体系的衔接
-
-和 BUS 体系最重要的衔接点有两个。
-
-第一个是 backpressure。BUS 里你更多从 channel handshake 和 outstanding 语义理解 backpressure；NoC 里要把它升级成“资源耗尽如何跨 hop 传播”的问题。两者的相同点是都在协调发送方与接收方节奏；差异在于 NoC 需要显式建模网络中间状态。
-
-第二个是 QoS。BUS 里的 QoS 常围绕 master priority、channel arbitration 和 response fairness；NoC 里的 QoS 则会深入到 VC、traffic class、multi-plane 和 path contention。这不是 BUS 错了，而是 NoC 的共享资源层次更多。
-
-和 RAM 体系的关键衔接点则是：NoC 的 traffic class 和热点，经常是被 memory subsystem 反推出来的。比如 [RAM 分类框架](../../../storage/01-memory-hierarchy/01-system-basics/taxonomy.md) 里讨论的 bank 组织、以及 [把 register、cache、scratchpad、DRAM、HBM 看作一个系统](../../../storage/01-memory-hierarchy/01-system-basics/memory-hierarchy-as-system.md) 里强调的层次角色，会直接决定 request/response 的压力分布。bank parallelism 不够、controller return path 偏置、HBM port placement 不均，这些问题都会在 NoC 上表现为特定拓扑区域或 response path 的拥塞，而不会体现在 topology 名词本身。
-
-## 常见误解
-
-常见误解：topology 和 routing 不需要强拆，反正最后都一起决定延迟。  
-实际上：两者确实共同影响结果，但设计自由度不同；不拆开就无法说清“结构限制”与“策略限制”谁是主因。
-
-常见误解：wormhole、credit、VC 都属于 router 细节，不必放进 taxonomy。  
-实际上：它们虽然落在 router 内部，但分别属于 switching、flow control、resource isolation 三个不同维度，混在一起会直接污染建模边界。
-
-## 一句话理解
-
-NoC taxonomy 的目的不是列百科，而是把“谁在服务谁、怎么连、怎么走、怎么停、谁会互相压”拆成正交问题，从而让后续判断不混层。
-
-## 建模启示
-
-taxonomy 对建模最直接的价值，是把配置参数分组。一个最小配置草图可以写成：
-
-```text
-NoCConfig {
-  system_goal
-  topology
-  routing_policy
-  switching_policy
-  flow_control_policy
-  isolation_policy
-  traffic_model
-}
-```
-
-第一版 analytical 或 event-driven 模型，至少应让这几个字段是分开的，否则你后面做参数扫描时会出现“改了一项，实际上同时改了三项”的伪结论。
-
-更具体一点，如果只关心 topology 对平均 latency 的影响，可以暂时把 `switching_policy` 固定为 `wormhole`、把 `flow_control_policy` 固定为 `credit`。如果要验证 deadlock-free 性质，就必须把 `routing_policy` 与 `isolation_policy` 联合展开，显式记录 `vc_class`, `allowed_turns`, `dependency_edge(src_vc, dst_vc)` 这类状态；否则你根本无法判断是结构无解，还是策略无解。
+<span id="一句话理解"></span>先记录通信需求，再分别描述连接、选路、转发和资源服务，最后在共同条件下评价结果。

@@ -1,132 +1,48 @@
-# Bus Vs NoC Vs Crossbar
+# 共享总线、Crossbar 与 NoC：怎样比较？
 
-上级：[01 Overview](./README.md)
-相关：[Problem Statement](./problem-statement.md), [NoC Vs Bus Revisited](../05-system-integration/noc-vs-bus-revisited.md)
+上级：[01 认识 NoC](./README.md)
 
-## 这页在回答什么问题
+相关：[NoC 在解决什么问题？](./problem-statement.md)、[网络接口 NI](../05-system-integration/ni-network-interface-design.md)
 
-BUS、crossbar 和 NoC 都是片上互连，但它们优化的对象不同：BUS 优化共享事务语义，crossbar 优化小规模任意互连，NoC 优化大规模并发通信。
+<span id="bus-vs-noc-vs-crossbar"></span><span id="这页在回答什么问题"></span>共享总线、crossbar 和片上网络都可以连接多个端点，但它们不是三档依次升级的性能等级。比较之前，先确定讨论的是**事务协议、连接结构，还是资源分配方式**。
 
-如果不先把这三者分清，后面讨论 “为什么 NPU 多用 mesh 而不是 crossbar” 或 “为什么 AI 芯片里仍然保留控制 BUS” 就会一直打架。
+## 先分清三个问题
 
-## 先讲结论：它们不是同一条坐标轴上的三档性能
+<span id="先讲结论它们不是同一条坐标轴上的三档性能"></span><span id="bus交易语义优先"></span>事务协议回答请求怎样表达、何时被接受、响应怎样匹配，以及需要满足哪些顺序和错误规则。AXI 是一组接口和事务协议；具体规则取决于协议版本与事务类型，不能把所有请求都假定为全局严格有序。[Arm AMBA AXI 规范，Issue J](https://documentation-service.arm.com/static/63ff0ebd56ea36189d4e7ee7)
 
-很多介绍会把三者写成“BUS 最弱、crossbar 中等、NoC 最强”。这几乎一定会误导，因为它默认三者在解同一个问题。真实情况不是这样。
+连接结构回答数据可以经过哪些资源。**共享总线**在所讨论的共享通道处让多个传输争用容量；**crossbar（交叉开关）**提供输入到输出的选择连接；**多跳 NoC**通过交换节点和链路连接端点。仲裁、缓冲和流控再决定共享资源何时可用。
 
-BUS 解决的是共享事务系统如何正确工作。它关心的是地址 decode、response、ordering、software-visible side effect、错误路径和调试可见性。你可以把它理解成片上控制和通用事务的骨架。
+这些概念可以组合。AXI 事务可以通过 crossbar，也可以由网络接口封包后经过 NoC；crossbar 也可以是 NoC 交换节点的内部结构。AMD Versal NoC 是一个具体例子：其接口转换 AXI 请求，网络中的 NoC Packet Switch 使用 crossbar 结构。[AMD PG313：Read Transactions](https://docs.amd.com/r/en-US/pg313-network-on-chip/Read-Transactions?contentId=m1XdimEA6OVj8nzhHnt8qw)；[AMD UG909：Network on Chip](https://docs.amd.com/r/2024.1-English/ug909-vivado-partial-reconfiguration/Network-on-Chip)
 
-crossbar 解决的是在小到中等规模下，如何用硬件换单跳低延迟和高并发。它延续了很多 BUS 世界的直觉：请求仍像“直达目标”，仲裁仍相对集中，只是共享瓶颈从一根总线变成多个交叉点。
+## 用同一组流量比较
 
-NoC 解决的是规模继续上升后，通信如何在物理上和流量上都可持续。它接受“多跳、局部仲裁、分布式缓冲、路径冲突”这些现实，不再试图维持全局单跳幻觉。
+<span id="crossbar用面积换单跳和并发"></span><span id="noc承认通信是分布式资源问题"></span>下面是**构造示例**，用于比较共享资源，不代表实测芯片。
 
-## BUS：交易语义优先
+假设共享总线只有一个传输通道，容量为每拍一个传输单元；全连接的 4 输入 × 4 输出 crossbar 每个端口每拍传一个单元；2×2 mesh 的相关链路、注入端口和接收端口也各为每拍一个单元。mesh 中 A、B、X、Y 的坐标分别为 (0,0)、(1,0)、(0,1)、(1,1)，相邻节点之间有双向链路。三种候选使用相同的时钟周期，忽略协议和封包开销。
 
-BUS 的第一价值不是峰值带宽，而是语义清晰。CPU 配寄存器、DMA 取 descriptor、软件轮询 status、异常回报 fault，这些行为要求互连先把“事务是否完成、顺序是否满足、错误如何呈现”处理清楚。也正因为如此，BUS 在 AI 芯片里不会消失。即使数据面已经是 NoC，控制面仍常常是 BUS 或 BUS-like fabric。
+第一种流量是 A→X 和 B→Y，两个发送方各持续提出每拍一个单元。crossbar 的输出不同；mesh 中分别使用 A→X 和 B→Y 两条链路。假设仲裁与缓冲允许持续服务。第二种流量是 A→X 和 B→X；X 只有一个接收端口。
 
-它的代价也明确。因为控制语义强，BUS 的扩展方式天然保守：共享时隙、集中 decode、明确 response 路径，这些都让它不适合承载大量 tile 间长期并发的数据流。
-
-什么时候选 BUS？当你面对的是：
-
-- 软件可见的寄存器与状态路径
-- 启动、doorbell、completion、interrupt 这类控制闭环
-- 端点数量有限，且事务吞吐不是主矛盾
-
-什么时候不要强行用 BUS？当流量已经变成大块 tensor movement、many-to-many stream 或持续 memory response 汇聚时，BUS 的优先级就该退回控制面。
-
-## Crossbar：用面积换单跳和并发
-
-crossbar 的吸引力很直接：任意输入可在一跳到任意输出，延迟短，概念直观，适合 cluster 内小规模互连。很多 AI 芯片在 cluster 内、SRAM bank 组内、或者少量 DMA/compute 端口之间，仍然会用 crossbar，因为这时端口数还可控，物理跨度也没大到不可收敛。
-
-crossbar 的问题在于它几乎把所有困难都推给硬件规模。端口数增加时，你不是只多几根线，而是同时放大：
-
-- 交换矩阵规模
-- 仲裁复杂度
-- 全连接布线压力
-- 功耗和频率收敛难度
-
-这就是为什么 crossbar 在 chip-wide 级别不再划算。它不是“不能做”，而是继续做下去，你会越来越像在用二次方代价维持一次方的直觉。
-
-## NoC：承认通信是分布式资源问题
-
-NoC 的核心设计决定，是放弃“所有端点都像直连”的目标，改成“让每一跳只解决局部资源竞争”。这样做带来的好处是：
-
-- link 可以更短，时序更容易分段
-- 控制分散到每个 router，不需要全局大仲裁器
-- 拓扑、路由和 traffic class 可以按 workload 定制
-- 编译器和仿真器可以显式推导热点与延迟上界
-
-代价同样真实：
-
-- 需要 packetization 和 flow control
-- 会出现排队、HoL blocking、deadlock、starvation
-- 软件或编译器必须面对路径和资源占用问题
-
-所以 NoC 不是“免费扩展”，而是“把不可避免的复杂性搬到一个可分层处理的框架里”。
-
-## 三者的边界，放到 AI 芯片里最清楚
-
-把它们放进 AI 芯片系统里看，分工会非常清楚：
-
-| 场景 | 更适合 BUS | 更适合 Crossbar | 更适合 NoC |
+| 流量 | 共享通道 | Crossbar | 所述 mesh |
 | --- | --- | --- | --- |
-| 寄存器配置 / doorbell / completion | 定义地址、顺序、错误和响应语义 | 可作为访问路径 | 可用 packetized AXI-over-NoC 或控制 NoC 运输 |
-| cluster 内少量 tile 与本地 SRAM | 可提供事务接口 | 局部 crossbar 是候选 | concentrated mesh 等也可实现 |
-| 全芯片 tile-to-tile 数据流 | 可封装事务或流接口 | 需评估布线和端口成本 | 多跳网络是候选 |
-| HBM port 到大量 tile 的扇出 | 需明确端点事务语义 | 局部结构可用 | 多跳/多播可按负载评估 |
-| 广播 / 多播 / reduction overlay | 事务接口可描述任务 | 小范围实现可行 | NoC 或专用叠加网络均可 |
+| A→X、B→Y | 合计至多 1 单元/拍 | 可持续 2 单元/拍 | 可持续 2 单元/拍 |
+| A→X、B→X | 合计至多 1 单元/拍 | 受 X 限制，合计至多 1 单元/拍 | 受 X 限制，合计至多 1 单元/拍 |
 
-这和 [AI 芯片里的 BUS vs NoC](../../BUS/06-scenarios-case-studies/bus-vs-noc-in-ai-chip.md) 的判断一致：BUS 与 NoC 不是替代关系，而是系统分层；crossbar 则常是介于两者之间的局部互连工具。
+第一行说明，不共享关键资源的流可以并行。第二行说明，更换网络结构不能消除共同目的端的容量限制。如果请求持续超过服务能力，有限缓冲和无丢弃条件下，部分发送方最终必须等待。
 
-## 不要把 crossbar 和 NoC 看成“是否分层”的道德判断
+这个表没有给出单次事务延迟，也没有比较布线、面积和功耗。mesh 多跳引入的转发开销、crossbar 的实现时序以及端点等待，都需要在各自模型中计算。
 
-有一种常见误解是：用了 NoC 才现代，用 crossbar 就落后。这个判断很差，因为它把规模问题偷换成风格问题。
+## 连接规模和物理成本
 
-在 4 到 8 个本地端点、物理跨度也不大的 cluster 内，crossbar 往往是最干净的解。你如果硬上 mesh，可能只是为了追求形式统一，结果引入多跳、buffer 和额外仲裁，反而把简单问题做复杂了。
+一个全连接的 N 输入、M 输出逻辑交换矩阵需要表达 N×M 种输入到输出的连接可能。增加端口通常会增加选择、仲裁和布线压力；实际电路成本还取决于位宽、组织方式、流水和物理布局，不能仅凭 N×M 断言整片芯片的面积或延迟。
 
-反过来，在上百个 tile 的全局数据面继续坚持 crossbar，通常也不是勇敢，而是拒绝承认全局布线和时序已经变成一阶约束。
+<span id="三者的边界放到-ai-芯片里最清楚"></span><span id="不要把-crossbar-和-noc-看成是否分层的道德判断"></span>一个系统可以在局部使用 crossbar，在更大范围使用网络，并在两者边界保留相同的事务语义。反过来，小规模系统也可能只需要共享通道或专用连接。控制请求和数据请求可以走同一网络，也可以按隔离、启动和调试需求分开。
 
-真正应该问的是：这个规模下，哪种互连把主要矛盾暴露得最清楚、代价也最可控。
+## 比较时依次确定什么
 
-## 一个实用的选择顺序
+<span id="一个实用的选择顺序"></span>先确定端点、访问关系和需要保留的事务语义，再给出同时到达的流量。随后分别画出候选结构中的共享通道、输出端口、链路和目的端，比较它们的容量与等待。最后把线长、时钟、缓冲和验证成本放回同一比较条件。
 
-先问软件语义是否主导。如果主导，优先考虑 BUS-like 控制路径。
+<span id="常见误解"></span>“一个请求经过一个 crossbar”不等于它一定比多跳路径更快；物理距离、流水级、竞争和时钟频率都会影响结果。网络名称也不能证明延迟有上界。
 
-再问互连是否局部、小规模、低跨度。如果是，优先考虑 crossbar 或类似集中互连。
+<span id="建模启示"></span>早期模型可以分别记录协议语义、连接图、每个共享资源的容量和仲裁规则。只有研究队列、逐跳阻塞或信用时，才需要把候选方案细化到相应状态。两种模型的比较也要使用相同的输入流量和完成边界。
 
-最后问系统是否已经进入大量并发、多源多汇、长线和可调度通信的阶段。如果是，NoC 才是默认基线。
-
-这个顺序看起来朴素，但比“谁性能更强”更可靠。因为你实际上是在按主矛盾选互连，而不是按名词做信仰排序。
-
-## 常见误解
-
-常见误解：crossbar 一定比 NoC 延迟低，所以能用 crossbar 就应该一直用。  
-实际上：crossbar 的单跳优势只在规模和物理跨度受控时成立；规模失控后，频率和布线代价会吃掉这部分好处。
-
-常见误解：NoC 出现后 BUS 就只剩历史意义。  
-实际上：AI 芯片里的 boot、debug、status、fault 和 software-visible completion，仍然需要 BUS 或 BUS-like 控制骨架。
-
-常见误解：BUS、crossbar、NoC 只是带宽不同。  
-实际上：它们首先是三种不同的系统组织方式，带宽只是其中一个结果。
-
-## 一句话理解
-
-BUS 负责把事务语义讲清楚，crossbar 负责在小规模内维持单跳直觉，NoC 负责在大规模系统里把通信变成可扩展、可调度、可建模的分布式资源。
-
-## 建模启示
-
-在 architecture exploration 的早期，三者不需要用同一精度建模。一个很实用的抽象是把互连类型直接放进系统配置：
-
-```text
-InterconnectSpec {
-  protocol_semantics  // AXI, TileLink, custom stream 等
-  topology_kind       // shared, crossbar, mesh 等
-  num_endpoints
-  per_port_bw
-  arbitration_model
-  topology_id
-}
-```
-
-协议语义和运输拓扑可组合：AXI over mesh 同时需要 `response_order_constraint`、`topology_graph`、`route_policy` 与 `link_bandwidth`；crossbar 需记录端口冲突矩阵，shared 拓扑需记录共享资源和仲裁队列。
-
-事件层面可以统一成 `request_issue`、`grant`、`transfer_start`、`transfer_finish`，但只对 NoC 再细化出 `hop_advance`、`credit_return`、`route_blocked`。这样做的好处是：你能先在系统层比较“哪类互连更像瓶颈”，再决定是否进入 flit-level，而不是一开始就把所有方案都建成同一种复杂度。
+<span id="一句话理解"></span>先区分协议、结构与资源，再比较相同需求下的并发能力和实现代价。

@@ -1,21 +1,21 @@
-# 01 Overview
+# 01 认识 NoC
 
-> 本页保留原章节导读。[查看现行分类与阅读顺序](../SUMMARY.md)。
+> <span id="01-overview"></span>本页保留原章节导读。[查看现行分类与阅读顺序](../SUMMARY.md)。
 
-这一章先把 NoC 从“很多 router 连起来”的印象里拉出来，重建成一个系统问题。你在这里需要先回答四件事：
+本章从片上通信的问题出发，区分需求、协议、连接结构和资源分配。四篇文章分别回答：
 
-- 为什么 BUS 和小规模 crossbar 会在多 tile 系统里失效
-- BUS、crossbar、NoC 三种互连到底在解决什么不同的问题
-- topology、routing、flow control、QoS 为什么必须拆开看
-- 以 deterministic NPU 为目标时，后续章节应该按什么顺序建立语言体系
+- NoC 要管理哪些路径、竞争与端点服务？
+- 怎样在相同需求下比较共享总线、crossbar 和网络？
+- 怎样分别描述工作负载、接口、拓扑、路由和服务？
+- 按学习、系统分析或建模目标，后续应读什么？
 
 ## 本章入口
 
-- [Problem Statement](./problem-statement.md)
-- [Bus Vs NoC Vs Crossbar](./bus-vs-noc-vs-crossbar.md)
-- [Taxonomy](./taxonomy.md)
-- [Learning Roadmap](./learning-roadmap.md)
+- [NoC 在解决什么问题？](./problem-statement.md)
+- [共享总线、Crossbar 与 NoC](./bus-vs-noc-vs-crossbar.md)
+- [设计维度与工作负载](./taxonomy.md)
+- [学习与建模路线](./learning-roadmap.md)
 
 ## 一句话总纲
 
-NoC 的本质不是“片上连线变复杂了”，而是当系统进入 `多端点并发 + 长线 + 热点 + 可建模调度` 的阶段后，分布式网络是常见的设计选择；是否值得采用，要对目标负载、物理布局和成本进行验证。
+NoC 把片上通信的连接、转发和共享资源组织为网络；是否适合具体系统，要根据流量、端点服务、物理约束和实现成本判断。

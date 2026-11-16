@@ -6,10 +6,10 @@
 
 先明确网络要解决的问题，再区分协议、连接结构和网络组织。
 
-- [NoC 的问题与目标](./01-overview/problem-statement.md)
-- [BUS、Crossbar 与 NoC](./01-overview/bus-vs-noc-vs-crossbar.md)
-- [NoC 的分类维度](./01-overview/taxonomy.md)
-- [NoC 学习路线](./01-overview/learning-roadmap.md)
+- [NoC 在解决什么问题](./01-overview/problem-statement.md)
+- [共享总线、Crossbar 与 NoC](./01-overview/bus-vs-noc-vs-crossbar.md)
+- [设计维度与工作负载](./01-overview/taxonomy.md)
+- [学习与建模路线](./01-overview/learning-roadmap.md)
 
 ## 02 路由器与逐跳流控 {#02-router-microarchitecture}
 
