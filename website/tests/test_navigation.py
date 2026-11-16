@@ -41,7 +41,7 @@ class GeneratedNavigationTests(unittest.TestCase):
         self.assertEqual([next(iter(group)) for group in groups], list(GROUPS[INTERCONNECT]))
         self.assertEqual(len(groups), 9)
         self.assertEqual(groups[2], {"封装内芯粒互连": [
-            "D2D/wiki/README.md", "D2D/wiki/ucie-pcie-read.md",
+            "D2D/wiki/README.md", "D2D/wiki/ucie-pcie-read.md", "D2D/wiki/bow-phy.md",
         ]})
         self.assertEqual(groups[5], {"加速器互连": ["SCALEUP/wiki/README.md"]})
         self.assertEqual(groups[6], {"系统网络": ["NETWORK/wiki/README.md"]})
@@ -83,6 +83,7 @@ class GeneratedNavigationTests(unittest.TestCase):
         cases = {
             "D2D/wiki/": "封装内芯粒互连",
             "D2D/wiki/ucie-pcie-read/": "封装内芯粒互连",
+            "D2D/wiki/bow-phy/": "封装内芯粒互连",
             "COHERENCE/wiki/": "一致性与内存互连",
             "COHERENCE/wiki/cxl-host-memory/": "一致性与内存互连",
             "SCALEUP/wiki/": "加速器互连",
@@ -104,11 +105,24 @@ class GeneratedNavigationTests(unittest.TestCase):
         self.assertIn('title="UCIe 1.1 如何承载一次 PCIe 读取？"', ucie)
         self.assertRegex(ucie, r'<span class="md-ellipsis">\s*UCIe 1\.1 读取案例\s*</span>')
 
+        bow = (SITE / "D2D/wiki/bow-phy/index.html").read_text(encoding="utf-8")
+        self.assertIn('title="BoW PHY 2.0：数据怎样通过并行线路跨越芯粒？"', bow)
+        self.assertRegex(bow, r'<span class="md-ellipsis">\s*BoW PHY 2\.0\s*</span>')
+
         cxl = (SITE / "COHERENCE/wiki/cxl-host-memory/index.html").read_text(encoding="utf-8")
         self.assertIn('title="CXL：从设备发现到内存访问"', cxl)
         self.assertRegex(cxl, r'<span class="md-ellipsis">\s*CXL 内存访问\s*</span>')
 
         for location, anchor in (
+            ("D2D/wiki/", "不同接口解决不同问题"),
+            ("D2D/wiki/", "阅读顺序"),
+            ("D2D/wiki/ucie-pcie-read/", "ucie-11-如何承载一次-pcie-读取"),
+            ("D2D/wiki/ucie-pcie-read/", "先约定一次读取"),
+            ("D2D/wiki/ucie-pcie-read/", "请求经过哪些职责边界"),
+            ("D2D/wiki/ucie-pcie-read/", "链路就绪前要确定什么"),
+            ("D2D/wiki/ucie-pcie-read/", "一次请求怎样完成"),
+            ("D2D/wiki/ucie-pcie-read/", "链路确认不等于事务完成"),
+            ("D2D/wiki/ucie-pcie-read/", "接下来怎么读"),
             ("BUS/wiki/02-fundamentals/bus-vs-noc-vs-point-to-point/", "三者的分界不是线多线少"),
             ("NOC/wiki/06-ai-noc-specifics/chiplet-and-die-to-die-interconnect/", "跨-die-不再是多几-hop"),
             ("SERDES/wiki/08-system-applications/chiplet-and-d2d/", "宽接口与较高速接口的取舍"),

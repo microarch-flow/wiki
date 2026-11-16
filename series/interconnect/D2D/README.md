@@ -31,13 +31,14 @@ Die-to-die（D2D）描述 die 之间的连接，不指定唯一标准或电路�
 
 ## 不同接口解决不同问题
 
-UCIe 不是唯一的封装内 D2D 选择。例如，[OCP 的 BoW PHY 规范](https://www.opencompute.org/marketplace/it-infrastructure/bunch-of-wires-bow-phy-specification-2-0/)描述一种物理接口；OCP 还提供独立的[事务与链路层规范](https://www.opencompute.org/chiplets/25/transaction-and-link-layer-specification-for-bunch-of-wires-bow-interfaces)。比较方案时，应先确认各规范覆盖哪些层，不能只比较名称。
+UCIe 不是唯一的封装内 D2D 选择。例如，[BoW PHY 2.0](./bow-phy.md)描述一种物理接口；OCP 还提供独立的[事务与链路层规范](https://www.opencompute.org/chiplets/25/transaction-and-link-layer-specification-for-bunch-of-wires-bow-interfaces)。比较方案时，应先确认各规范覆盖哪些层，不能只比较名称。
 
 计算 die 访问封装内 HBM 时也要跨越 die 边界，但使用什么接口取决于具体系统；不能仅凭“跨 die”就假设它使用 UCIe。[HBM 的堆叠与封装内互连](../../storage/06-system-integration/packaging/hbm-2.5d-3d-tsv.md)区分了堆栈内部连接与计算侧接口。
 
 ## 阅读顺序
 
 1. [UCIe 1.1 读取案例](./ucie-pcie-read.md)：两端怎样准备链路，PCIe 请求怎样跨 die 并返回结果。
+2. [BoW PHY 2.0](./bow-phy.md)：数据、时钟和 slice 怎样组成封装内连接。
 
 ## 继续阅读
 
