@@ -1,5 +1,7 @@
 # NoC Wiki
 
+> 这是 NoC 重写前的历史备份，不是现行正文。历史内容可能缺少来源或适用条件；当前入口见 [NoC Wiki](../wiki/README.md)。
+
 本目录用于把 `/mnt/e/noc/raw/` 下的对话会话，整理成一套面向 `AI 推理芯片 / AI tile dataflow / workload-driven architecture exploration` 的可持续扩展知识库。
 
 > `NoC 不是“片上连线”的别名，而是连接 tile、SRAM、DMA、HBM 与数据流调度的分布式通信系统；真正要理解的是 NoC 如何服务 workload，以及它如何反过来限制系统吞吐。`
