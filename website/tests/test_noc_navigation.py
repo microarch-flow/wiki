@@ -50,6 +50,7 @@ class NocNavigationTests(unittest.TestCase):
             "NOC/wiki/06-ai-noc-specifics/broadcast-multicast-tree.md": "06 多端通信与调度",
             "NOC/wiki/06-ai-noc-specifics/workload-gemm-on-noc.md": "07 工作负载与系统案例",
             "NOC/wiki/05-system-integration/traffic-patterns-and-characterization.md": "08 性能评估与架构探索",
+            "NOC/wiki/08-simulator-construction/router-pipeline-pseudocode.md": "09 模拟器构建与验证",
         }
         for path, group in representative.items():
             with self.subTest(path=path):
@@ -79,6 +80,8 @@ class NocNavigationTests(unittest.TestCase):
         self.assertIn("NOC/wiki/07-workload-cases/coherent-access-and-noc/", locations)
         for slug in ("performance-bounds-and-bottlenecks", "trace-generation-worked-example"):
             self.assertIn(f"NOC/wiki/07-evaluation-methodology/{slug}/", locations)
+        for slug in ("workload-endpoint-execution", "minimal-cycle-simulator"):
+            self.assertIn(f"NOC/wiki/08-simulator-construction/{slug}/", locations)
         for path, anchors in legacy.items():
             with self.subTest(page=path):
                 html = (SITE / path / "index.html").read_text(encoding="utf-8")

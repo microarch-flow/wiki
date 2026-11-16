@@ -1,12 +1,14 @@
-# Verification And Calibration
+# 验证、校准与适用边界：怎样检查模型？
 
-上级：[08 Simulator Construction](./README.md)
+<span id="verification-and-calibration"></span>
 
-相关：[Core Data Structures](./core-data-structures.md)、[Router Pipeline Pseudocode](./router-pipeline-pseudocode.md)、[Stall Taxonomy And Attribution](../07-evaluation-methodology/stall-taxonomy-and-attribution.md)
+上级：[09 模拟器构建与验证](../SUMMARY.md#08-simulator-construction)；原章节：[08 Simulator Construction](./README.md)
+
+相关：[核心数据结构](./core-data-structures.md)、[路由器逐拍推进](./router-pipeline-pseudocode.md)、[最小逐拍仿真实作](./minimal-cycle-simulator.md)
 
 ## 验证范围与计时口径
 
-Verification 检查实现是否遵守已定义的模型；calibration 检查参数及输出与参考系统的差异。前者通过不代表模型已校准，也不证明硬件性能。以下是手算的回归预期，不是已经运行的仿真结果。
+Verification 检查实现是否遵守已定义的模型；calibration 可用参考数据选择或拟合模型参数；validation 则检查模型在预期用途下与参考系统的符合程度。前者通过不代表模型已校准，也不证明硬件性能。以下表格首先是手算的回归预期；[最小逐拍仿真实作](./minimal-cycle-simulator.md)在其单 packet 范围内检查场景 1 和场景 2，不覆盖全部场景。
 
 所有表使用 [快照契约](./router-pipeline-pseudocode.md#时间与快照契约)：读拍初 `S(t)`，在拍末提交；当拍到期的 flit、credit 和注入不可在本拍参与路由。每条 link 正反向延迟均为 1，即拍 `t` 发送，拍 `t+1` 末到达、拍 `t+2` 可使用。本模型 RC/VA/SA/ST 可在一个有效拍完成。consumer 每拍读取拍初 ejection FIFO，拍末提交。输出 VC 使用下游 tail free 信号的严格复用策略。
 
@@ -40,6 +42,8 @@ Verification 检查实现是否遵守已定义的模型；calibration 检查参�
 
 首次阻塞拍取决于现有 credit、在途 flit、buffer、link 延迟和仲裁；不得断言统一等于某个 buffer 深度。记录各级首次事件，用有限时间上限检测意外停滞。
 
+例如最小实作采用本场景的 30 flit、ejection 深度 2，并在拍 30 恢复 consumer；按其规则，拍 17 末四个 input FIFO 均满，源端尚有 12 flit 未注入。运行结束后需检查全部 flit 有序消费、credit 和 free 返回。这个时间是指定程序和条件下的预期，不是通用反压延迟。
+
 ## 场景 3：尾部释放与下一包
 
 使用场景 1 的拓扑和严格策略。在拍 0 排队 A 和 B，各 3 flit，单 VC。A 在拍 0、1、2 注入。A 的 T 在拍 3 离开 R0，本地 input 上下文可于拍末清除；源接口的尾部 free 在拍 4 末到达，因此 B 最早在拍 5 注入。A 的 T 在拍 5 离开 R1，R0→R1 的尾部 free 在拍 6 末到达。因此 B 的 H 在 R0 最早于拍 7 获得该输出 VC；拍 6 不能抢先分配。
@@ -61,15 +65,23 @@ Verification 检查实现是否遵守已定义的模型；calibration 检查参�
 
 两包分别持有不同的下游 VC，因此可以在物理输出上交错。若只有一个下游 VC，B 在 A 的许可尚未释放时应报 `VC_ALLOC_FAIL`，不是持续报 `SWITCH_CONFLICT`；严格策略下还需等待下游尾部 free 返回。若实现按包保持 switch，则又是另一套显式仲裁策略。
 
+预置 FIFO 时，必须同步初始化对应上游 credit、owner 和在途消息，使信用守恒及 VC 状态成立；也可以通过合法注入动作构造拍 `k` 的状态。
+
 ## 场景 5：LOCAL 失败不可产生提交副作用
 
 在目的 router 放一个 `HEAD_TAIL` 于 input 队首，使 ejection FIFO 满，并让 consumer 停止。连续执行两拍，检查每拍 `EJECTION_BLOCKED` 恰计一次。flit 仍在原 input FIFO，输入上下文不变，上游不收到新的 slot credit/free，hop 不增加。空 input VC 的 stall 计数保持 0。consumer 恢复后，在本模型中腾出的 slot 要到下一快照才可见；随后成功弹出，才释放输入 slot 并返回 credit/free。
 
 再测首 flit 因 injection credit 为 0 或 VC 许可不可用而等待：`injection_cycle` 必须保持未定义；首次实际注入成功时才设置。多 VC 测试还要断言同一包从头到尾使用同一注入 VC。
 
+预先填满 ejection 和 input FIFO 时，同样要建立一致的 packet、上游 credit 和许可状态，不能只修改一个队列而保留全部初始 credit。
+
+## 其他必要边界
+
+补测单 flit `HEAD_TAIL`、同源同目的的本地交付、credit 到期但本拍不可使用，以及同一物理输入的两个 VC 竞争不同输出。对 v1 workload 再测多目的、多 packet 的 all-consumer 完成、零时长事件和未来释放任务；网络暂时静止不等于任务已结束。每个场景应固定初始状态和观察边界。
+
 ## 校准和回归的边界
 
-先把每拍队列、credit、free 与动作事件保存为 trace，对照上述手算和 [核心不变量](./core-data-structures.md#断言与守恒)。之后用独立参考模型、实际计数器或更高保真模型校准。对比必须冻结拓扑、链路与 router 延迟、buffer、VC 释放、仲裁及测量边界；不同假设下无需强行匹配数字。
+先把每拍队列、credit、free 与动作事件保存为 trace，对照上述手算和 [核心不变量](./core-data-structures.md#断言与守恒)。之后可用独立参考模型、实际计数器或更高保真模型校准。对比必须冻结拓扑、链路与 router 延迟、buffer、VC 释放、仲裁及测量边界；不同假设下无需强行匹配数字。超时用于报告未完成状态，不单独证明死锁。
 
 平均延迟、饱和吞吐和网络直径可作为 sanity check，但负载增加时平均延迟并非对所有有限样本和流量模式都严格单调。校准容忍度应由目标和参考误差确定，不能把统一百分比当成正确性证明。
 
@@ -88,3 +100,5 @@ result: pass
 ```
 
 校准时先固定参考和模型的时钟、采样点、traffic、容量及完成定义，用一组样本拟合延迟或有效带宽。再用未参与调参的独立负载和参数组合检查数值与趋势；记录样本、误差及不适用范围。若参考和模型的 VC 释放或流水线时序不同，先对齐契约，再解释残差。通过少数回归只说明这些条件下的模型行为得到验证。
+
+[NIST 对模型验证与确认的说明](https://nvlpubs.nist.gov/nistpubs/ir/2020/NIST.IR.8298.pdf)区分实现对模型的符合性，以及模型对预期用途的适用程度；具体 NoC 参考仍需选择对应实现和观察边界。

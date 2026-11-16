@@ -1,26 +1,27 @@
-# Event Driven 与 Cycle Accurate
+# 事件推进与逐拍精度：怎样安全地跳过空拍？
 
-上级：[08 Simulator Construction](./README.md)
+<span id="event-driven-与-cycle-accurate"></span>
 
-相关：[Modeling Layers](../07-evaluation-methodology/modeling-layers-analytical-event-cycle.md)、[Verification And Calibration](./verification-and-calibration.md)、[Router Pipeline Pseudocode](./router-pipeline-pseudocode.md)
+上级：[09 模拟器构建与验证](../SUMMARY.md#08-simulator-construction)；原章节：[08 Simulator Construction](./README.md)
 
-## 这页在回答什么问题
+相关：[如何选择模型粒度](../07-evaluation-methodology/modeling-layers-analytical-event-cycle.md)、[路由器逐拍推进](./router-pipeline-pseudocode.md)、[验证与校准](./verification-and-calibration.md)
 
-仿真推进方式和模型保真度是两条独立轴。event-driven 指按事件时间跳转；tick-driven 指逐拍执行。cycle-accurate 则要求所选接口和内部状态的每拍行为符合目标时间契约，不能由引擎名称推断。
+<span id="这页在回答什么问题"></span>推进方式和模型精度是不同选择。tick-driven 逐拍检查；event-driven 根据计划事件推进。周期精确则是相对于**指定目标和观察边界**，要求相关事件与状态的每拍行为一致。
 
-| 执行引擎 | 粗 flow 状态 | flit/credit 与逐拍仲裁状态 |
-| --- | --- | --- |
-| tick-driven | 每拍检查 flow 的粗模型，可能做很多无效工作 | 可按每拍快照实现 cycle-accurate |
-| event-driven | 按 flow 到达和完成时间推进 | 也可在每个有变化的周期处理候选、grant、flit 和 credit，达到同一逐拍语义 |
+## 同一规则，两种执行
 
-例如事件按 `(cycle, phase, stable_id)` 确定次序；对同拍 router，仍要从统一 `S(t)` 快照计算候选，在拍末统一提交，不能因事件遍历顺序让 flit 同拍走多跳。模型应遵守 [时间与快照契约](./router-pipeline-pseudocode.md#时间与快照契约)。
+假设拍 0 发送一个 flit，正向延迟为 1。按本章契约，它在拍 1 末进入下游 FIFO，拍 2 才可参加仲裁。逐拍引擎可以依次执行拍 0、1、2；事件引擎可以在合适条件下跳到到期事件，但仍要按相同的拍末提交和下一拍可见规则处理。
+
+若拍 1 还有其他待仲裁 flit、consumer 行动或 credit 到期，则不能跳过这些动作。对同拍 router，所有候选仍从同一份 S(t) 形成；按 `(cycle, phase, stable_id)` 排序可以保证处理顺序稳定，但不能把稳定 ID 当作真实的资源仲裁规则。
 
 ## 何时可快进
 
-仅在下一事件之前没有会改变结果的外部输入、时钟边沿、计时器、仲裁指针、队列、credit 或消费状态时，才能跳过空闲时间。若一个等待候选每拍都可能获 grant，就不能只跳到下个 packet 到达而漏掉仲裁。事件队列节省的是无状态变化的空拍，不自动降低模型精度，也不保证更快。
+只有能证明跳过的区间不会改变所需观察结果，或能以等价方式补算变化时，才可以快进。例如，队列内容保持不变，但等待年龄和 occupancy 统计随时间累计；实现可以按间隔批量累加，而不是假装这些统计没有变化。到期输入、计时器、仲裁、consumer 和工作负载释放都必须纳入检查。
+
+快进不自动降低精度，也不保证更快；事件维护和等价性验证本身有成本。[gem5 事件队列接口](https://doxygen.gem5.org/develop/group__api__eventq.html)展示了一种按时间调度事件的机制，并不规定本章的拍内顺序。
 
 ## 选择与验证
 
-先决定需要观察 flow、packet、flit、credit 或信号级状态，再选 tick 或事件实现。粗 flow 模型适合快速筛选，但不能解释未建模的 VC 和逐拍回压；细粒度模型有更高状态和验证成本。
+同一模型可以用 tick 或事件引擎实现。要比较它们，固定输入、时间契约、资源规则和需要观察的统计，再逐拍比较发送、队列、credit/free、grant 与消费。覆盖同拍多个事件、空闲快进、阻塞和恢复。
 
-用同一 trace、seed 和快照规则运行 tick 与 event 两个内核，逐拍比较发送、credit/free、队列、grant、消费和统计。测试同拍多事件、空闲快进、下游阻塞及恢复；只有在目标场景对齐后，才可声称两实现等价。两者都不自动等同 RTL 签核。
+相同 seed 不保证两套实现消耗随机数的顺序相同。可以固定仲裁结果，或为资源使用可复现的独立随机流。通过有限场景只说明这些场景一致，不自动证明两种内核对所有输入等价，也不证明与 RTL 一致。

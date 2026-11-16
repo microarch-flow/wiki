@@ -1,6 +1,6 @@
 # 08 Simulator Construction
 
-> 本页保留原章节导读。[查看现行分类与阅读顺序](../SUMMARY.md)。
+> 本页保留原章节导读。[查看现行第九章及阅读顺序](../SUMMARY.md#08-simulator-construction)。
 
 上级：[NOC Wiki](../README.md)
 

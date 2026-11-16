@@ -106,16 +106,18 @@
 
 ## 09 模拟器构建与验证 {#08-simulator-construction}
 
-固定模型契约，再实现时间推进、注入、统计和验证。
+固定模型与时间契约，再连接端点、逐拍实作和分阶段验证。
 
 - [模拟器设计规格](./08-simulator-construction/simulator-design-spec.md)
 - [核心数据结构](./08-simulator-construction/core-data-structures.md)
 - [事件推进与逐拍精度](./08-simulator-construction/event-driven-vs-cycle-accurate.md)
-- [路由器流水线伪代码](./08-simulator-construction/router-pipeline-pseudocode.md)
-- [流量注入与 Trace](./08-simulator-construction/traffic-injection-and-tracing.md)
-- [验证与校准](./08-simulator-construction/verification-and-calibration.md)
-- [参数参考](./08-simulator-construction/parameter-reference.md)
-- [实现路线](./08-simulator-construction/implementation-roadmap.md)
+- [路由器逐拍推进](./08-simulator-construction/router-pipeline-pseudocode.md)
+- [流量注入、分包与完成](./08-simulator-construction/traffic-injection-and-tracing.md)
+- [工作负载与端点执行](./08-simulator-construction/workload-endpoint-execution.md)
+- [最小逐拍仿真实作](./08-simulator-construction/minimal-cycle-simulator.md)
+- [验证、校准与适用边界](./08-simulator-construction/verification-and-calibration.md)
+- [参数与配置参考](./08-simulator-construction/parameter-reference.md)
+- [实现路线与阶段验收](./08-simulator-construction/implementation-roadmap.md)
 
 ## 10 查阅与练习 {#09-reference}
 
