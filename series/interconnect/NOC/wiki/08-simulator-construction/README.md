@@ -1,5 +1,7 @@
 # 08 Simulator Construction
 
+> 本页保留原章节导读。[查看现行分类与阅读顺序](../SUMMARY.md)。
+
 上级：[NOC Wiki](../README.md)
 
 相关：[Evaluation Methodology](../07-evaluation-methodology/README.md)、[Router Pipeline Stages](../02-router-microarchitecture/router-pipeline-stages.md)

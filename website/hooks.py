@@ -18,6 +18,7 @@ from ownership import GROUPS, MICRO, STORAGE, INTERCONNECT, DEVELOPMENT, WORKLOA
 from storage_navigation import (INTEGRATION_AFTER, INTEGRATION_HOME, INTEGRATION_PACKAGING,
                                 INTEGRATION_TOPIC, MEMORY_HOME, MEMORY_SECTIONS, MEMORY_TOPIC,
                                 RESOURCE_HOME, RESOURCE_SECTIONS, STORAGE_RESOURCES, SYSTEM_SELECTION)  # noqa: E402
+from noc_navigation import NOC_SUMMARY, noc_topic_tree, read_noc_sections  # noqa: E402
 
 
 TOPICS = (
@@ -365,8 +366,12 @@ def grouped_original_topics(root, series):
         if (series, group) == owner("electrical-timing-foundations.md"):
             entries.append("electrical-timing-foundations.md")
         for name, label in TOPICS:
-            tree = (cpo_topic_tree(root, group) if series == INTERCONNECT and group == "共封装光学（CPO）" and name == "CPO"
-                    else owned_topic_tree(root, name, series, group))
+            if series == INTERCONNECT and group == "片上网络（NoC）" and name == "NOC":
+                tree = noc_topic_tree(root)
+            elif series == INTERCONNECT and group == "共封装光学（CPO）" and name == "CPO":
+                tree = cpo_topic_tree(root, group)
+            else:
+                tree = owned_topic_tree(root, name, series, group)
             if tree:
                 if series == STORAGE:
                     entries.extend(compact_storage_sections(tree))
@@ -454,6 +459,27 @@ def strip_duplicate_parent(markdown, page, root):
                 lines[number] = line.replace(match.group(1), target.path.rstrip("/") + "/README.md")
         if path in ancestors:
             del lines[number]
+        break
+    return "".join(lines)
+
+
+def label_noc_original_parent(markdown, page, root, legacy_pages):
+    """Keep old source links, while distinguishing them from the new group."""
+    if not page.file.src_uri.startswith("NOC/wiki/"):
+        return markdown
+    lines = markdown.splitlines(keepends=True)
+    for number, line in enumerate(lines[:8]):
+        match = re.match(r"^(\s*)上级[：:]\s*\[[^\]]+\]\(([^)]+)\)\s*$", line)
+        if not match:
+            continue
+        target = urlsplit(unescape(match.group(2)))
+        if target.scheme or target.netloc or not target.path:
+            break
+        path = posixpath.normpath(posixpath.join(str(PurePosixPath(page.file.src_uri).parent), unquote(target.path)))
+        if (root / path).is_dir():
+            path = posixpath.join(path, "README.md")
+        if path in legacy_pages:
+            lines[number] = re.sub(r"^(\s*)上级[：:]", r"\1原章节：", line, count=1)
         break
     return "".join(lines)
 
@@ -551,6 +577,14 @@ def on_config(config, **kwargs):
     for filename, short in reading_items(chapter):
         path = chapter / filename
         config.extra["storage_sidebar_labels"][path.relative_to(root).as_posix()] = (short, title(path))
+    if (root / NOC_SUMMARY).is_file():
+        sections, legacy = read_noc_sections(root)
+        config.extra["noc_legacy_pages"] = {path for _, path in legacy}
+        for _name, _anchor, pages in sections:
+            for short, path in pages:
+                config.extra["storage_sidebar_labels"][path] = (short, title(root / path))
+        for short, path in legacy:
+            config.extra["storage_sidebar_labels"][path] = (short, title(root / path))
     storage_topics = grouped_original_topics(root, STORAGE)
     storage_resources = storage_resources_tree(root)
     validate_storage_navigation(root, [*storage_topics, *storage_resources])
@@ -618,6 +652,8 @@ def on_page_markdown(markdown, page, **kwargs):
         page.meta["search"] = {**(search if isinstance(search, dict) else {}), "exclude": True}
     if has_breadcrumbs(page):
         markdown = strip_duplicate_parent(markdown, page, Path(kwargs["config"].docs_dir))
+        markdown = label_noc_original_parent(markdown, page, Path(kwargs["config"].docs_dir),
+                                             kwargs["config"].extra.get("noc_legacy_pages", set()))
     if page.file.src_uri == "README.md":
         config = kwargs["config"]
         markdown = markdown.replace("__SITE_NAME__", escape(config.site_name))

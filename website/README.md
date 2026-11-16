@@ -24,6 +24,8 @@ Wiki 与博客的共同写作和设计要求见 [Wiki 与博客设计规则](../
 
 芯片与系统互连的系列首页维护在 `website/interconnect.md`，仓库内的专题入口维护在 `series/interconnect/README.md`。九个专题的正文都位于 `series/interconnect/`，各专题以 `wiki/README.md` 为正文入口：既有的 `BUS/`、`NOC/`、`PCIE/`、`SERDES/`、`CPO/` 保留原发布路径；`D2D/`、`COHERENCE/`、`SCALEUP/`、`NETWORK/` 分别承载芯粒、一致性、加速器和系统网络专题。互连历史资料位于 `docs/archive/interconnect/`，不参与发布。专题目录及其发布路径由 `website/source-layout.json` 与 `website/prepare.py` 配置，主归属由 `website/ownership.py` 决定。CPO 的侧栏按 `website/hooks.py` 的技术、产业、研究和维护分组，章节文件和公开路径不移动；未列入分组的新章节仍会显示，维护时应为它选择合适分组。
 
+NoC 的十个阅读分组、文章短标题和顺序维护在 `series/interconnect/NOC/wiki/SUMMARY.md`，网站通过 `website/noc_navigation.py` 读取。文章暂时保留原源码和发布路径；九个原章节导读归入“查阅与练习 → 原章节入口”。新增文章时，须在知识地图中将它列入一个分组；构建会检查页面是否遗漏或重复。具体文章的原章节链接继续保留，网站将其标为“原章节”，面包屑显示当前阅读分组。
+
 电路与时序文章及其图片目录也在 `website/source-layout.json` 中配置。调整源码目录或添加存储系统文章时，应同步检查映射和文章的导航归属；暂存目录中的旧路径保持不变。存储层级与数据路径的文章映射按文件记录，因此新增文章时需明确选择公开路径，并更新 `website/storage_navigation.py`。构建会检查来源覆盖、路径边界、导航分组和发布路径冲突，避免遗漏或重复发布文件。
 
 跨专题的历史评审记录保存在 `docs/reviews/`，构建时暂存到 `reviews/`，保留原公开地址。评审页面不出现在网站导航和站内搜索结果中。目录中的 Markdown、第三轮盲测脚本和参考数据仍可通过原地址访问。评审结论对应当时的正文基线；打磨文章时，应结合当前正文和资料重新核对。

@@ -8,12 +8,13 @@
 
 ## 章节入口
 
-- [01 Overview](./01-overview/README.md)
-- [02 Router Microarchitecture](./02-router-microarchitecture/README.md)
-- [03 Topology](./03-topology/README.md)
-- [04 Routing And Flow Control](./04-routing-and-flow-control/README.md)
-- [05 System Integration](./05-system-integration/README.md)
-- [06 AI NoC Specifics](./06-ai-noc-specifics/README.md)
-- [07 Evaluation Methodology](./07-evaluation-methodology/README.md)
-- [08 Simulator Construction](./08-simulator-construction/README.md)
-- [09 Reference](./09-reference/README.md)
+- [01 认识 NoC](./SUMMARY.md#01-overview)
+- [02 路由器与逐跳流控](./SUMMARY.md#02-router-microarchitecture)
+- [03 拓扑与物理组织](./SUMMARY.md#03-topology)
+- [04 路由、仲裁与服务保证](./SUMMARY.md#04-routing-and-flow-control)
+- [05 端点与系统集成](./SUMMARY.md#05-system-integration)
+- [06 多目标通信与调度](./SUMMARY.md#06-ai-noc-specifics)
+- [07 工作负载与系统案例](./SUMMARY.md#workload-cases)
+- [08 性能评估与架构探索](./SUMMARY.md#07-evaluation-methodology)
+- [09 模拟器构建与验证](./SUMMARY.md#08-simulator-construction)
+- [10 查阅与练习](./SUMMARY.md#09-reference)

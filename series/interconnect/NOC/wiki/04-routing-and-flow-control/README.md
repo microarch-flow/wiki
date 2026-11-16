@@ -1,5 +1,7 @@
 # 04 Routing And Flow Control
 
+> 本页保留原章节导读。[查看现行分类与阅读顺序](../SUMMARY.md)。
+
 上级：[NOC Wiki](../README.md)
 
 相关：[Router Microarchitecture](../02-router-microarchitecture/README.md)、[Topology](../03-topology/README.md)、[System Integration](../05-system-integration/README.md)、[BUS: 仲裁、顺序性与 Backpressure](../../../BUS/wiki/02-fundamentals/arbitration-ordering-backpressure.md)

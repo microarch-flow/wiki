@@ -55,7 +55,7 @@ body { background: var(--paper); }
 
 /* Keep the current article distinct from its ancestor sections. */
 .md-sidebar--primary .md-nav__link > .md-ellipsis { display: block; flex: 1 1 auto; min-width: 0; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
-@media (hover: none) {
+@media (hover: none), screen and (max-width: 44.984375em) {
   .md-sidebar--primary .md-nav__link > .md-ellipsis { overflow: visible; white-space: normal; }
 }
 .md-sidebar--primary a.md-nav__link--active,

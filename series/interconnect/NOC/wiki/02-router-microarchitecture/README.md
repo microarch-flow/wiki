@@ -1,5 +1,7 @@
 # 02 Router Microarchitecture
 
+> 本页保留原章节导读。[查看现行分类与阅读顺序](../SUMMARY.md)。
+
 这一章只回答一个问题：一个 packet 进入 NoC 之后，到底是怎样在 router 里逐跳前进、等待、占资源、再释放资源的。
 
 你在这里会看到 NoC 的最小工作机制：

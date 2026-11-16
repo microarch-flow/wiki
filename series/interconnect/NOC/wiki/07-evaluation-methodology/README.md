@@ -1,5 +1,7 @@
 # 07 Evaluation Methodology
 
+> 本页保留原章节导读。[查看现行分类与阅读顺序](../SUMMARY.md)。
+
 上级：[NOC Wiki](../README.md)
 
 相关：[AI NOC Specifics](../06-ai-noc-specifics/README.md)、[Simulator Construction](../08-simulator-construction/README.md)

@@ -1,105 +1,133 @@
 # NoC Wiki Summary
 
-本文是现行正文的完整文件级索引。可以从 [学习入口](./README.md) 按目标选择阅读路线。
+本文按问题组织 NoC 的阅读顺序。每个分组列出现有文章；[专题首页](./README.md)提供学习和建模入口。
 
-## 01 Overview
+## 01 认识 NoC {#01-overview}
 
-- [README](./01-overview/README.md)
-- [problem-statement](./01-overview/problem-statement.md)
-- [bus-vs-noc-vs-crossbar](./01-overview/bus-vs-noc-vs-crossbar.md)
-- [learning-roadmap](./01-overview/learning-roadmap.md)
-- [taxonomy](./01-overview/taxonomy.md)
+先明确网络要解决的问题，再区分协议、连接结构和网络组织。
 
-## 02 Router Microarchitecture
+- [NoC 的问题与目标](./01-overview/problem-statement.md)
+- [BUS、Crossbar 与 NoC](./01-overview/bus-vs-noc-vs-crossbar.md)
+- [NoC 的分类维度](./01-overview/taxonomy.md)
+- [NoC 学习路线](./01-overview/learning-roadmap.md)
 
-- [README](./02-router-microarchitecture/README.md)
-- [packet-flit-phit-hierarchy](./02-router-microarchitecture/packet-flit-phit-hierarchy.md)
-- [router-pipeline-stages](./02-router-microarchitecture/router-pipeline-stages.md)
-- [input-buffer-organization](./02-router-microarchitecture/input-buffer-organization.md)
-- [virtual-channel-fundamentals](./02-router-microarchitecture/virtual-channel-fundamentals.md)
-- [allocator-design-vc-switch](./02-router-microarchitecture/allocator-design-vc-switch.md)
-- [credit-based-flow-control](./02-router-microarchitecture/credit-based-flow-control.md)
-- [wormhole-vs-vct-vs-store-forward](./02-router-microarchitecture/wormhole-vs-vct-vs-store-forward.md)
-- [router-power-area-tradeoff](./02-router-microarchitecture/router-power-area-tradeoff.md)
+## 02 路由器与逐跳流控 {#02-router-microarchitecture}
 
-## 03 Topology
+从传输单位和路由器资源出发，理解排队、分配和反压。
 
-- [README](./03-topology/README.md)
-- [topology-design-metrics](./03-topology/topology-design-metrics.md)
-- [mesh-and-torus](./03-topology/mesh-and-torus.md)
-- [ring-and-hierarchical-ring](./03-topology/ring-and-hierarchical-ring.md)
-- [tree-and-fat-tree](./03-topology/tree-and-fat-tree.md)
-- [crossbar-and-concentrated-mesh](./03-topology/crossbar-and-concentrated-mesh.md)
-- [flattened-butterfly-dragonfly](./03-topology/flattened-butterfly-dragonfly.md)
-- [topology-physical-realization](./03-topology/topology-physical-realization.md)
-- [topology-selection-framework](./03-topology/topology-selection-framework.md)
+- [Packet、Flit 与 Phit](./02-router-microarchitecture/packet-flit-phit-hierarchy.md)
+- [转发与交换方式](./02-router-microarchitecture/wormhole-vs-vct-vs-store-forward.md)
+- [路由器流水线](./02-router-microarchitecture/router-pipeline-stages.md)
+- [输入缓冲组织](./02-router-microarchitecture/input-buffer-organization.md)
+- [虚通道基础](./02-router-microarchitecture/virtual-channel-fundamentals.md)
+- [VC 与交换分配](./02-router-microarchitecture/allocator-design-vc-switch.md)
+- [Credit 与反压](./02-router-microarchitecture/credit-based-flow-control.md)
+- [路由器面积与功耗](./02-router-microarchitecture/router-power-area-tradeoff.md)
 
-## 04 Routing And Flow Control
+## 03 拓扑与物理组织 {#03-topology}
 
-- [README](./04-routing-and-flow-control/README.md)
-- [routing-algorithm-classes](./04-routing-and-flow-control/routing-algorithm-classes.md)
-- [dimension-order-routing](./04-routing-and-flow-control/dimension-order-routing.md)
-- [deadlock-avoidance-turn-model](./04-routing-and-flow-control/deadlock-avoidance-turn-model.md)
-- [adaptive-routing-tradeoffs](./04-routing-and-flow-control/adaptive-routing-tradeoffs.md)
-- [source-routing-for-deterministic-systems](./04-routing-and-flow-control/source-routing-for-deterministic-systems.md)
-- [arbitration-policies](./04-routing-and-flow-control/arbitration-policies.md)
-- [qos-and-priority-classes](./04-routing-and-flow-control/qos-and-priority-classes.md)
-- [deadlock-livelock-starvation](./04-routing-and-flow-control/deadlock-livelock-starvation.md)
+比较网络连接方式、结构指标及其物理实现代价。
 
-## 05 System Integration
+- [拓扑设计指标](./03-topology/topology-design-metrics.md)
+- [Mesh 与 Torus](./03-topology/mesh-and-torus.md)
+- [Ring 与分层 Ring](./03-topology/ring-and-hierarchical-ring.md)
+- [Tree 与 Fat-tree](./03-topology/tree-and-fat-tree.md)
+- [Crossbar 与 Concentrated Mesh](./03-topology/crossbar-and-concentrated-mesh.md)
+- [Flattened Butterfly 与 Dragonfly](./03-topology/flattened-butterfly-dragonfly.md)
+- [拓扑与物理实现](./03-topology/topology-physical-realization.md)
+- [拓扑选型](./03-topology/topology-selection-framework.md)
 
-- [README](./05-system-integration/README.md)
-- [ni-network-interface-design](./05-system-integration/ni-network-interface-design.md)
-- [address-map-and-routing-table](./05-system-integration/address-map-and-routing-table.md)
-- [dma-engine-noc-interaction](./05-system-integration/dma-engine-noc-interaction.md)
-- [traffic-patterns-and-characterization](./05-system-integration/traffic-patterns-and-characterization.md)
-- [multiple-physical-networks](./05-system-integration/multiple-physical-networks.md)
-- [noc-meets-memory-system](./05-system-integration/noc-meets-memory-system.md)
-- [noc-vs-bus-revisited](./05-system-integration/noc-vs-bus-revisited.md)
+## 04 路由、仲裁与服务保证 {#04-routing-and-flow-control}
 
-## 06 AI NoC Specifics
+区分路径选择、资源仲裁、前进条件和服务策略。
 
-- [README](./06-ai-noc-specifics/README.md)
-- [why-ai-noc-is-different](./06-ai-noc-specifics/why-ai-noc-is-different.md)
-- [broadcast-multicast-tree](./06-ai-noc-specifics/broadcast-multicast-tree.md)
-- [reduction-and-collective-networks](./06-ai-noc-specifics/reduction-and-collective-networks.md)
-- [deterministic-noc-and-static-scheduling](./06-ai-noc-specifics/deterministic-noc-and-static-scheduling.md)
-- [tile-architecture-and-noc](./06-ai-noc-specifics/tile-architecture-and-noc.md)
-- [memory-centric-noc](./06-ai-noc-specifics/memory-centric-noc.md)
-- [chiplet-and-die-to-die-interconnect](./06-ai-noc-specifics/chiplet-and-die-to-die-interconnect.md)
-- [compiler-noc-co-design](./06-ai-noc-specifics/compiler-noc-co-design.md)
-- [workload-gemm-on-noc](./06-ai-noc-specifics/workload-gemm-on-noc.md)
-- [workload-attention-prefill](./06-ai-noc-specifics/workload-attention-prefill.md)
-- [workload-attention-decode-kv-cache](./06-ai-noc-specifics/workload-attention-decode-kv-cache.md)
-- [workload-moe-routing](./06-ai-noc-specifics/workload-moe-routing.md)
+- [路由算法分类](./04-routing-and-flow-control/routing-algorithm-classes.md)
+- [维序路由](./04-routing-and-flow-control/dimension-order-routing.md)
+- [自适应路由](./04-routing-and-flow-control/adaptive-routing-tradeoffs.md)
+- [Source Routing](./04-routing-and-flow-control/source-routing-for-deterministic-systems.md)
+- [死锁、活锁与饥饿](./04-routing-and-flow-control/deadlock-livelock-starvation.md)
+- [Turn Model 与死锁避免](./04-routing-and-flow-control/deadlock-avoidance-turn-model.md)
+- [仲裁策略](./04-routing-and-flow-control/arbitration-policies.md)
+- [QoS 与优先级](./04-routing-and-flow-control/qos-and-priority-classes.md)
 
-## 07 Evaluation Methodology
+## 05 端点与系统集成 {#05-system-integration}
 
-- [README](./07-evaluation-methodology/README.md)
-- [metrics-latency-throughput-saturation](./07-evaluation-methodology/metrics-latency-throughput-saturation.md)
-- [from-workload-to-traffic-trace](./07-evaluation-methodology/from-workload-to-traffic-trace.md)
-- [modeling-layers-analytical-event-cycle](./07-evaluation-methodology/modeling-layers-analytical-event-cycle.md)
-- [power-area-modeling](./07-evaluation-methodology/power-area-modeling.md)
-- [stall-taxonomy-and-attribution](./07-evaluation-methodology/stall-taxonomy-and-attribution.md)
-- [architecture-exploration-loop](./07-evaluation-methodology/architecture-exploration-loop.md)
-- [case-card-template](./07-evaluation-methodology/case-card-template.md)
+沿请求和返回路径，理解网络与事务、DMA、存储及芯粒网关的边界。
 
-## 08 Simulator Construction
+- [网络接口 NI](./05-system-integration/ni-network-interface-design.md)
+- [地址映射与路由表](./05-system-integration/address-map-and-routing-table.md)
+- [BUS 与 NoC 的系统边界](./05-system-integration/noc-vs-bus-revisited.md)
+- [DMA 与 NoC](./05-system-integration/dma-engine-noc-interaction.md)
+- [NoC 与存储系统](./05-system-integration/noc-meets-memory-system.md)
+- [Memory-centric NoC](./06-ai-noc-specifics/memory-centric-noc.md)
+- [Tile 与 NoC 的接口](./06-ai-noc-specifics/tile-architecture-and-noc.md)
+- [多物理网络](./05-system-integration/multiple-physical-networks.md)
+- [芯粒与跨 Die 互连](./06-ai-noc-specifics/chiplet-and-die-to-die-interconnect.md)
 
-- [README](./08-simulator-construction/README.md)
-- [simulator-design-spec](./08-simulator-construction/simulator-design-spec.md)
-- [core-data-structures](./08-simulator-construction/core-data-structures.md)
-- [event-driven-vs-cycle-accurate](./08-simulator-construction/event-driven-vs-cycle-accurate.md)
-- [router-pipeline-pseudocode](./08-simulator-construction/router-pipeline-pseudocode.md)
-- [traffic-injection-and-tracing](./08-simulator-construction/traffic-injection-and-tracing.md)
-- [verification-and-calibration](./08-simulator-construction/verification-and-calibration.md)
-- [parameter-reference](./08-simulator-construction/parameter-reference.md)
-- [implementation-roadmap](./08-simulator-construction/implementation-roadmap.md)
+## 06 多目标通信与调度 {#06-ai-noc-specifics}
 
-## 09 Reference
+先看多目标数据传递，再看软件如何规划网络使用。
 
-- [README](./09-reference/README.md)
-- [glossary](./09-reference/glossary.md)
-- [checklists](./09-reference/checklists.md)
-- [high-frequency-questions](./09-reference/high-frequency-questions.md)
-- [noc-design-decision-tree](./09-reference/noc-design-decision-tree.md)
+- [广播、多播与复制](./06-ai-noc-specifics/broadcast-multicast-tree.md)
+- [归约与 Collective 网络](./06-ai-noc-specifics/reduction-and-collective-networks.md)
+- [确定性与静态调度](./06-ai-noc-specifics/deterministic-noc-and-static-scheduling.md)
+- [编译器与 NoC 协同](./06-ai-noc-specifics/compiler-noc-co-design.md)
+
+## 07 工作负载与系统案例 {#workload-cases}
+
+从数据分块、放置和阶段依赖出发，分析具体负载产生的通信。
+
+- [AI 工作负载与 NoC](./06-ai-noc-specifics/why-ai-noc-is-different.md)
+- [GEMM 通信案例](./06-ai-noc-specifics/workload-gemm-on-noc.md)
+- [Attention Prefill 案例](./06-ai-noc-specifics/workload-attention-prefill.md)
+- [Attention Decode 与 KV Cache 案例](./06-ai-noc-specifics/workload-attention-decode-kv-cache.md)
+- [MoE 通信案例](./06-ai-noc-specifics/workload-moe-routing.md)
+
+## 08 性能评估与架构探索 {#07-evaluation-methodology}
+
+定义流量、指标和模型边界，再比较候选设计并定位瓶颈。
+
+- [流量模式与表征](./05-system-integration/traffic-patterns-and-characterization.md)
+- [延迟、吞吐与饱和](./07-evaluation-methodology/metrics-latency-throughput-saturation.md)
+- [从 Workload 到 Traffic Trace](./07-evaluation-methodology/from-workload-to-traffic-trace.md)
+- [如何选择模型粒度](./07-evaluation-methodology/modeling-layers-analytical-event-cycle.md)
+- [功耗与面积建模](./07-evaluation-methodology/power-area-modeling.md)
+- [Stall 分类与归因](./07-evaluation-methodology/stall-taxonomy-and-attribution.md)
+- [架构探索闭环](./07-evaluation-methodology/architecture-exploration-loop.md)
+- [案例记录模板](./07-evaluation-methodology/case-card-template.md)
+
+## 09 模拟器构建与验证 {#08-simulator-construction}
+
+固定模型契约，再实现时间推进、注入、统计和验证。
+
+- [模拟器设计规格](./08-simulator-construction/simulator-design-spec.md)
+- [核心数据结构](./08-simulator-construction/core-data-structures.md)
+- [事件推进与逐拍精度](./08-simulator-construction/event-driven-vs-cycle-accurate.md)
+- [路由器流水线伪代码](./08-simulator-construction/router-pipeline-pseudocode.md)
+- [流量注入与 Trace](./08-simulator-construction/traffic-injection-and-tracing.md)
+- [验证与校准](./08-simulator-construction/verification-and-calibration.md)
+- [参数参考](./08-simulator-construction/parameter-reference.md)
+- [实现路线](./08-simulator-construction/implementation-roadmap.md)
+
+## 10 查阅与练习 {#09-reference}
+
+用术语、问答和检查清单定位问题，再回到相应正文。
+
+- [NoC 术语表](./09-reference/glossary.md)
+- [高频问题](./09-reference/high-frequency-questions.md)
+- [设计决策树](./09-reference/noc-design-decision-tree.md)
+- [检查清单](./09-reference/checklists.md)
+
+### 原章节入口
+
+这些导读保留原章节的说明和链接；当前阅读分组以上面的目录为准。
+
+- [原 01 概览](./01-overview/README.md)
+- [原 02 路由器微架构](./02-router-microarchitecture/README.md)
+- [原 03 拓扑](./03-topology/README.md)
+- [原 04 路由与流控](./04-routing-and-flow-control/README.md)
+- [原 05 系统集成](./05-system-integration/README.md)
+- [原 06 AI NoC](./06-ai-noc-specifics/README.md)
+- [原 07 评估方法](./07-evaluation-methodology/README.md)
+- [原 08 模拟器构建](./08-simulator-construction/README.md)
+- [原 09 参考资料](./09-reference/README.md)
