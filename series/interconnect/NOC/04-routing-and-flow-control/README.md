@@ -1,99 +1,27 @@
-# 04 Routing And Flow Control
+# 04 路由、仲裁与服务保证
 
-> 本页保留原章节导读。[查看现行分类与阅读顺序](../SUMMARY.md)。
+> 本页保留原章节入口。[查看现行分类与完整阅读顺序](../SUMMARY.md#04-routing-and-flow-control)。
 
-上级：[NOC Wiki](../README.md)
+<span id="04-routing-and-flow-control"></span><span id="这页在回答什么问题"></span>本章讨论包可以走哪里、共享资源先服务谁，以及在什么条件下能证明前进或服务。路由、逐跳流控、仲裁和 QoS 共同影响网络行为，但各自回答不同的问题。
 
-相关：[Router Microarchitecture](../02-router-microarchitecture/README.md)、[Topology](../03-topology/README.md)、[System Integration](../05-system-integration/README.md)、[BUS: 仲裁、顺序性与 Backpressure](../../BUS/02-fundamentals/arbitration-ordering-backpressure.md)
+<span id="这一章的主线"></span>路由定义合法路径或候选出口；Credit 等流控管理发送条件；仲裁选择共享资源的使用者；QoS 将需求映射到资源和服务。死锁安全、最终到达及有限延迟是不同性质，需要分别说明条件。
 
-## 这页在回答什么问题
+<span id="和前后章节的关系"></span><span id="为什么这一章对-ai-noc-很关键"></span>阅读前可回看[第二章的虚通道、Credit 和分配](../SUMMARY.md#02-router-microarchitecture)及[第三章拓扑](../SUMMARY.md#03-topology)。端点事务和地址映射属于第五章；编译器计划和调度属于第六章；性能测量与归因属于第八章。
 
-这一章回答三个经常被混在一起的问题：
+## 本章入口
 
-- packet 该走哪条路径
-- 多个竞争者同时要同一资源时谁先过
-- 系统怎样保证不会因为资源依赖环而永久卡死
+<span id="本章其余正文"></span>
 
-前一章的 `topology` 讨论的是“网络长什么样”，这一章讨论的是“同一张网络如何运行”。在 mesh 上跑 XY、West-First、source routing、fully adaptive，看起来都还是同一个 mesh，但延迟分布、热点位置、验证难度和死锁处理空间都完全不同。
+1. [路由算法分类](./routing-algorithm-classes.md)：区分决策位置、路径范围和选择依据。
+2. [维序路由](./dimension-order-routing.md)：用 XY/YX 建立固定路径和通道依赖的例子。
+3. [死锁、活锁与饥饿](./deadlock-livelock-starvation.md)：区分不前进现象、等待状态和证明条件。
+4. [Turn Model 与逃逸资源](./deadlock-avoidance-turn-model.md)：理解转向限制和逃逸资源的安全边界。
+5. [自适应路由](./adaptive-routing-tradeoffs.md)：分析候选路径、观测信息和动态选择。
+6. [Source Routing](./source-routing-for-deterministic-systems.md)：说明路径表达、执行和更新契约。
+7. [仲裁策略](./arbitration-policies.md)：比较共享资源上的服务次序和公平性。
+8. [QoS 与优先级](./qos-and-priority-classes.md)：从流量目标选择服务和隔离手段。
+9. [端到端服务保证](./service-guarantees-and-latency-bounds.md)：给出带宽和延迟界的输入与服务条件。
 
-## 这一章的主线
+<span id="读完这章后应该得到什么"></span><span id="建模启示"></span>分析一个网络时，分别记录合法路径、资源与等待、候选和实际授权、流量约束以及端点服务。路径确定、无路由死锁和有限完成时间不能相互替代。
 
-这里把几个概念拆开：
-
-- `routing`：决定下一跳候选集合
-- `flow control`：决定在下游没空位时能不能继续发送
-- `arbitration`：决定多个候选里谁拿到端口、VC 或注入口
-- `deadlock avoidance`：限制资源依赖，排除所证明范围内的依赖死锁；最终到达还需要公平仲裁、避免 livelock 和端点持续服务
-- `QoS`：按 traffic class 改变服务顺序或隔离方式
-
-这几个机制会同时作用在同一个 packet 身上，但它们不是同一件事。比如：
-
-- XY routing 解决的是路径选择，不自动解决 request/response 协议依赖
-- credit-based flow control 防止 buffer overflow，不自动防 deadlock
-- fixed-priority arbitration 可以让 control traffic 更快，不自动减少总拥塞
-
-## 为什么这一章对 AI NoC 很关键
-
-AI/NPU 设计通常不是在追求“任意流量下都很灵活”，而是在追求：
-
-- 主数据流可预测
-- 编译器可控
-- tail latency 有上界
-- 系统容易验证
-
-这会直接影响 routing 选择。很多 deterministic NPU 的主路径不会优先上 fully adaptive routing，而是更偏向：
-
-- dimension-order routing
-- source routing
-- 受限 turn model
-- traffic class 隔离
-- 多平面或多物理网络分离
-
-原因不是“老旧”，而是可验证性和性能稳定性比理论 path diversity 更重要。
-
-## 和前后章节的关系
-
-- 如果你还没统一 `VC`、`credit`、`allocator` 的概念，先回看 [virtual-channel-fundamentals](../02-router-microarchitecture/virtual-channel-fundamentals.md)、[allocator-design-vc-switch](../02-router-microarchitecture/allocator-design-vc-switch.md)、[credit-based-flow-control](../02-router-microarchitecture/credit-based-flow-control.md)。
-- 如果你还没统一 mesh、ring、fat-tree、concentrated mesh 的结构差异，先回看 [03 Topology](../03-topology/README.md)。
-- 如果你关心的是主机接口、DMA、memory system、multiple networks，那么这一章只是底层规则，系统级组织放在 [05 System Integration](../05-system-integration/README.md)。
-
-## 读完这章后应该得到什么
-
-读完后，你应该能独立回答这些问题：
-
-- 为什么 XY routing 能防某类 deadlock
-- 为什么共享 packet-switched source routing 仍可能需要 VC 和仲裁
-- 为什么 adaptive routing 的收益取决于 path diversity 和 traffic unpredictability
-- 为什么 fixed-priority 能解决一部分 latency 问题，但也可能制造 starvation
-- 为什么 request/response/control/bulk data 需要分 message class
-- 为什么 credit stall、switch stall、protocol wait 不是同一种 stall
-
-## 一句话理解
-
-`topology` 决定“路网长什么样”，`routing + flow control + arbitration + QoS` 决定“同一张路网里的车到底怎么跑、为什么会堵、怎样保证最终能到”。
-
-## 建模启示
-
-这一章对应的模型，至少要显式保留四层状态：
-
-- 路径层：每个 packet 当前可选的 next hop 集合
-- 资源层：每个 input VC、output port、credit、injection slot 的占用状态
-- 策略层：仲裁规则、QoS class、priority/aging 规则
-- 安全层：deadlock avoidance 约束、escape VC、message class 依赖约束
-
-如果模型里只有“hop 数”和“链路带宽”，你会看不到：
-
-- 为什么某些流量一直走同一热点链路
-- 为什么平均负载不高但 tail latency 很差
-- 为什么系统不是拥塞，而是不前进
-
-## 本章其余正文
-
-- [Adaptive Routing Tradeoffs](./adaptive-routing-tradeoffs.md)
-- [Arbitration Policies](./arbitration-policies.md)
-- [Deadlock Avoidance Turn Model](./deadlock-avoidance-turn-model.md)
-- [Deadlock Livelock Starvation](./deadlock-livelock-starvation.md)
-- [Dimension-Order Routing](./dimension-order-routing.md)
-- [QoS And Priority Classes](./qos-and-priority-classes.md)
-- [Routing Algorithm Classes](./routing-algorithm-classes.md)
-- [Source Routing For Deterministic Systems](./source-routing-for-deterministic-systems.md)
+<span id="一句话理解"></span>先定义路径和资源，再分析依赖、竞争与服务条件，才能判断网络如何前进。

@@ -44,12 +44,13 @@
 
 - [路由算法分类](./04-routing-and-flow-control/routing-algorithm-classes.md)
 - [维序路由](./04-routing-and-flow-control/dimension-order-routing.md)
+- [死锁、活锁与饥饿](./04-routing-and-flow-control/deadlock-livelock-starvation.md)
+- [Turn Model 与逃逸资源](./04-routing-and-flow-control/deadlock-avoidance-turn-model.md)
 - [自适应路由](./04-routing-and-flow-control/adaptive-routing-tradeoffs.md)
 - [Source Routing](./04-routing-and-flow-control/source-routing-for-deterministic-systems.md)
-- [死锁、活锁与饥饿](./04-routing-and-flow-control/deadlock-livelock-starvation.md)
-- [Turn Model 与死锁避免](./04-routing-and-flow-control/deadlock-avoidance-turn-model.md)
 - [仲裁策略](./04-routing-and-flow-control/arbitration-policies.md)
 - [QoS 与优先级](./04-routing-and-flow-control/qos-and-priority-classes.md)
+- [端到端服务保证](./04-routing-and-flow-control/service-guarantees-and-latency-bounds.md)
 
 ## 05 端点与系统集成 {#05-system-integration}
 

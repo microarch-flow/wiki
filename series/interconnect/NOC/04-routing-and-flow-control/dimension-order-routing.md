@@ -1,158 +1,42 @@
-# Dimension-Order Routing
+# 维序路由：固定维度顺序改变了什么？
 
-上级：[04 Routing And Flow Control](./README.md)
+上级：[04 路由、仲裁与服务保证](./README.md)
 
-相关：[Mesh And Torus](../03-topology/mesh-and-torus.md)、[Routing Algorithm Classes](./routing-algorithm-classes.md)、[Deadlock Avoidance Turn Model](./deadlock-avoidance-turn-model.md)
+相关：[Mesh 与 Torus](../03-topology/mesh-and-torus.md)、[死锁、活锁与饥饿](./deadlock-livelock-starvation.md)、[Turn Model 与逃逸资源](./deadlock-avoidance-turn-model.md)
 
-## 这页在回答什么问题
+<span id="dimension-order-routing"></span><span id="这页在回答什么问题"></span>维序路由按规定顺序处理各维位移。规则可以缩小路径选择空间，也会改变哪些链路被流量共享。它的最短性、路径数量和安全性需要结合具体网络说明。
 
-这页回答：为什么 `dimension-order routing` 会成为 mesh NoC 的默认基线，它到底牺牲了什么，又为什么这种牺牲经常是值得的。
+## XY 和 YX 怎样走
 
-## 定义
+<span id="定义"></span>以下构造使用无故障、非环绕二维 Mesh：X 增大为 East，Y 增大为 North；每维都朝目的坐标单调前进，不做 U-turn。XY 先完成 X 位移，再完成 Y；YX 顺序相反。
 
-`dimension-order routing` 的核心规则是：packet 必须按照固定维度顺序依次走完路径，不能在维度之间来回切换。
+<span id="一个最小例子"></span>从 (0,0) 到 (3,2)，XY 走 E→E→E→N→N；YX 走 N→N→E→E→E。二者各经过 5 条路由器间边，但经过的中间链路不同。在此 Mesh 及规则下，每个源目的对的路径唯一且为最短路径。Torus 的方向、环回和等距时的选择需要另外规定。
 
-在 2D mesh 里最常见的是：
+<span id="为什么它常被当作-baseline"></span>固定路径便于绘制流量经过的资源，也便于复现一个选路规则。是否容易达到目标性能，还取决于同时发送的流、仲裁、缓冲和端点；路径固定不等于延迟固定。
 
-- `XY routing`：先走 `X`，再走 `Y`
-- `YX routing`：先走 `Y`，再走 `X`
+## 固定路径怎样改变热点
 
-这两者的共同点是：
+<span id="它真正牺牲了什么"></span><span id="xy-和-yx-不是随便挑一个"></span>假设 3×2 Mesh 的每条有向链路容量为每拍 1 flit。流 F 从 (0,0) 到 (2,1)，流 G 从 (1,0) 到 (2,0)，各持续提出每拍 1 flit。注入和目的端容量足够，其他资源无瓶颈。
 
-- 都只走最短路径
-- 对同一 `src-dst` 对，路径唯一
-- 都通过限制资源获取顺序来避免某类 deadlock
+| 选择 | F 的路径 | 与 G 共享的链路 |
+| --- | --- | --- |
+| XY | E→E→N | (1,0)→(2,0) |
+| 另一条最短路径 | N→E→E | 无 |
 
-## 一个最小例子
+第一行中，两条流向共享链路提出的合计需求为每拍 2 flit，超过该链路每拍 1 flit 的容量。第二行消除了这个例子的链路重叠。它说明路由规则可以造成或缓解**具体流量的**集中，不证明任意工作负载都偏向某个顺序；混用路径前还要检查安全性。
 
-从 `(0,0)` 到 `(3,2)`：
+## 为什么 XY 能避免一类死锁
 
-```text
-XY: (0,0) -> (1,0) -> (2,0) -> (3,0) -> (3,1) -> (3,2)
-YX: (0,0) -> (0,1) -> (0,2) -> (1,2) -> (2,2) -> (3,2)
-```
+<span id="为什么它能避免一类-routing-deadlock"></span>在上述有限非环绕 Mesh 中，同一维度只朝目的地方向走，不允许反向；走完 X 后不再申请 X 方向通道。X 内各方向的依赖链不会因环回闭合，Y 也同样如此，且维度依赖只能从 X 转向 Y。相应的路由通道依赖图因此无环。[Dally 与 Seitz，通道依赖分析](https://authors.library.caltech.edu/records/fd0yr-br438)
 
-两条路径 hop 数相同，差异不在最短性，而在于中间占用的链路不同。这已经足够改变热点分布。
+这个结论只覆盖所建模的路由通道依赖。协议消息、端点缓冲和不公平服务仍需分析。Torus 的环回连接、故障绕行或其他允许转向可能改变依赖图。
 
-## 为什么它常被当作 baseline
+<span id="和-source-routing-的边界"></span>即使分别限制每条路径为 XY 或 YX，把两类路径放进同一资源池后也可能产生联合依赖环。一个可复核的四包状态见[死锁示例](./deadlock-livelock-starvation.md#混用路径为什么可能形成循环等待)。增加 VC 只有配合明确的映射和转换规则，才能作为一种可能的解决方案。
 
-原因不是它“理论最优”，而是它在几个目标上非常稳：
+## 什么时候比较其他策略
 
-- router 本地逻辑简单
-- 路径完全可预测
-- 容易做静态链路负载分析
-- 容易推导死锁自由性
-- 对验证、trace、性能归因都很友好
+<span id="为什么很多系统仍然接受这个代价"></span><span id="什么时候应该考虑跳出纯-dor"></span>若流量和布局适合固定路径，DOR 可作为易于检查的候选。若候选链路经常集中，而网络存在可用替代路径，可以比较其他合法路径、映射或[自适应路由](./adaptive-routing-tradeoffs.md)。比较时应固定流量与资源预算，并检验死锁和服务条件。
 
-对 deterministic NPU，主流量的 producer-consumer 关系通常已知。此时最常见的问题不是“完全不知道包会怎么跑”，而是“已知会跑哪里，能否保证它一直稳定地跑”。XY 这类规则正好提供这种稳定性。
+<span id="常见误区"></span><span id="建模启示"></span>分别记录合法路径、每条有向链路的负载和延迟。平均 hop 相同不意味着竞争相同；不同物理边的长度或活动量也可能不同。
 
-## 为什么它能避免一类 routing deadlock
-
-理解关键在“资源获取顺序”。
-
-以下证明限定有限、非环绕二维 mesh，且每维只朝目标单调前进，不允许 U-turn。在 XY routing 中，packet 只能先占用 `X` 方向相关资源，再占用 `Y` 方向相关资源，不能从 `Y` 再回到 `X`。这等价于给通道资源加了一种偏序关系：
-
-```text
-all X-channel dependencies < all Y-channel dependencies
-```
-
-在上述前提下，同一维沿坐标单调前进，有限 mesh 没有 wrap，因此无法在该维形成环；结合 X→Y 的维度顺序，可证明相应 channel dependency graph 无环。torus 单维自身是环，单靠维序不够。因此一大类 channel dependency cycle 被消掉了。
-
-这里要非常小心边界：
-
-- 它避免的是由路径方向顺序导致的 routing deadlock
-- 它不自动避免 request/response/control 之间的 protocol deadlock
-- 它也不自动避免注入口、弹出口、终端 buffer 带来的系统级卡死
-
-## 它真正牺牲了什么
-
-最大代价是 path diversity 被人为压缩。
-
-以 mesh 为例，从左上到右下通常有多条等长最短路径。XY 只选其中一条，结果是：
-
-- 某些链路长期偏热
-- 某些局部热点无法绕开
-- 同方向流量更容易在固定区域叠加
-
-如果 mapping 不好，这种固定性会把问题放大。换句话说，XY 不会制造热点，但会把已有的空间映射问题清楚地暴露出来。
-
-## 为什么很多系统仍然接受这个代价
-
-因为在很多 AI 芯片里，热点的根因不是“router 当场决策太死”，而是：
-
-- tensor placement 本身把大量流量压到同一条通路
-- memory bank / SRAM cluster / HBM port 的位置不均衡
-- reduce、broadcast、gather 的模式天然集中
-
-此时把 routing 从 XY 换成更灵活的算法，未必能根治问题。反过来，先靠更好的 placement、traffic class 分离、多网络隔离和 topology 选型，往往更有效。
-
-## XY 和 YX 不是随便挑一个
-
-两者都简单，但它们会把压力推到不同维度上。
-
-如果 floorplan 表现为：
-
-- 横向链路短、纵向链路长
-- 或横向更容易布线、纵向更容易成为时序瓶颈
-
-那么两条路径经过的具体链路不同，可能影响拥塞和能耗。如果每条对应链路长度、能耗和负载完全相同，两条同 hop 路径不会仅因 XY/YX 顺序就改变能耗；差异需来自非均匀物理链路、竞争或资源活动。
-
-因此 `XY 还是 YX` 应该结合 floorplan 和 traffic map 决定，而不是把 XY 当成唯一标准答案。
-
-## 和 source routing 的边界
-
-很多静态 NPU 会出现一个中间态：
-
-- 整体仍然遵守 dimension-order 或某种受限路径规则
-- 但具体某个 flow 是 XY、YX，或走哪条 segment，由编译器决定
-
-这是一种受约束的 source routing，但把 XY 与 YX 混在同一个 VC 池时，联合 channel dependency graph 可能形成环。需要分离 VC 并限制转换，或直接证明联合图无环；分别证明 XY、YX 各自无环并不足够。参见 [通道依赖分析](https://authors.library.caltech.edu/records/fd0yr-br438)。它可以保留：
-
-- 静态规划能力
-- 易验证的路径空间
-
-同时避免完全开放的 per-hop adaptive 复杂度。
-
-## 什么时候应该考虑跳出纯 DOR
-
-当下面几件事同时出现时，纯 XY 可能开始不够：
-
-- topology 提供了明显多路径
-- 流量模式动态且难以静态规划
-- 固定热点已经成为主要瓶颈
-- 系统能接受更复杂的验证和 QoS 处理
-
-这时才值得认真考虑 turn-model adaptive 或 escape-VC adaptive，而不是一上来就把复杂性堆到 router 上。
-
-## 常见误区
-
-- 认为 XY routing 等于“老旧保守”
-- 认为 hop 数相同就说明 XY 和 YX 没区别
-- 认为 DOR 保证了整个系统不会 deadlock
-
-更准确的说法是：
-
-- DOR 是用路径空间换验证和稳定性
-- XY 和 YX 会改变链路热分布
-- DOR 只解决路径依赖的一部分问题，message class 和 endpoint 依赖仍要单独设计
-
-## 一句话理解
-
-dimension-order routing 的价值不在“更聪明”，而在“把路径选择压缩成一个容易验证、容易分析、容易建模的固定空间”。
-
-## 建模启示
-
-建模 DOR 时，可以把每个 `src-dst` 对直接映射成唯一路径，然后重点统计：
-
-- 每条链路承载了多少流
-- 哪些 router 的输入/输出冲突最频繁
-- 哪些方向上的 credit stall 和 switch stall 聚集
-
-如果要比较 `XY` 和 `YX`，不要只比平均 hop 数，而要比：
-
-- per-link utilization
-- hotspot concentration
-- 99th percentile latency
-- 与 floorplan 的物理方向耦合
-
-这才是 DOR 在工程上真正决定的东西。
+<span id="一句话理解"></span>维序路由用固定顺序限制路径；这个顺序同时影响安全证明和流量分布。

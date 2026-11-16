@@ -1,187 +1,37 @@
-# Routing Algorithm Classes
+# NoC 路由算法怎样分类？
 
-上级：[04 Routing And Flow Control](./README.md)
+上级：[04 路由、仲裁与服务保证](./README.md)
 
-相关：[Topology Selection Framework](../03-topology/topology-selection-framework.md)、[Dimension-Order Routing](./dimension-order-routing.md)、[Adaptive Routing Tradeoffs](./adaptive-routing-tradeoffs.md)、[Source Routing For Deterministic Systems](./source-routing-for-deterministic-systems.md)
+相关：[维序路由](./dimension-order-routing.md)、[自适应路由](./adaptive-routing-tradeoffs.md)、[Source Routing](./source-routing-for-deterministic-systems.md)
 
-## 这页在回答什么问题
+<span id="routing-algorithm-classes"></span><span id="这页在回答什么问题"></span>路由决定包可以经过哪些网络资源。要比较两种算法，先问谁选择路径、允许哪些路径、选择是否依赖运行时状态。这些问题描述不同的设计维度。
 
-这页回答：NoC 里的 routing 到底有哪些大类，它们分别把“路径选择权”交给谁，又各自换来了什么代价。
+## 路由的输入和输出
 
-很多初学者会把 routing 只理解成“从 A 到 B 怎么走”。在架构层面，routing 更重要的意义是：
+<span id="先统一分类维度"></span>给定网络连接、目的地、包携带的路由信息，以及适用的资源约束，路由规则产生一个或多个合法候选。具体实现可以输出完整路径，也可以只输出当前路由器的候选出口。候选不等于本拍一定能发送：下游许可、credit 和仲裁还会影响是否前进。
 
-- 热点会不会集中在少数链路上
-- 同一个 flow 的延迟是否稳定
-- 编译器能不能提前规划通路
-- 死锁和验证成本会不会失控
-
-## 先统一分类维度
-
-一个 routing 算法最核心的差异，不是名字，而是下面三件事：
-
-- 候选路径集合有多大
-- 最终选择是在源端决定，还是在每一跳局部决定
-- 路径选择会不会依赖实时拥塞信息
-
-这些维度正交，不能把 source、adaptive 和 non-minimal 当作互斥类别：
-
-| 维度 | 选择 | 例子 |
+| 维度 | 主要选择 | 需要回答的问题 |
 | --- | --- | --- |
-| 决策位置 | source 或每跳分布式 | route-id 预选路径；router 本地选下一跳 |
-| 候选路径 | 仅最短或允许非最短 | mesh 最短路径；Valiant 经中间节点绕行 |
-| 选择依据 | 固定、oblivious 或依拥塞 adaptive | 固定 XY；ECMP 风格散列；依据 credit 选择 |
+| 决策位置 | 源端、逐跳，或两者配合 | 谁决定完整路径，谁决定下一跳？ |
+| 路径范围 | 最短路径，或允许非最短路径 | 相对于哪张图、哪个代价定义“最短”？ |
+| 选择依据 | 固定规则、无拥塞感知选择、自适应选择 | 是否读取运行时拥塞或故障状态？ |
 
-同一个 source 可以在多条静态路径中选，也可以依据状态选择；fully adaptive 可以只允许全部最短路径，不必 non-minimal。
+<span id="1-deterministic-routing"></span>在给定拓扑、配置、源、目的及其他相关包字段时，如果规则总是得到同一路径，便是此处所说的确定性路径。固定 XY 是例子。固定规则也属于不依据拥塞状态选择路径的一种方式；散列或随机选路也可以不读取拥塞，但未必为同一源目的对固定一条路径。
 
-## 1. Deterministic Routing
+<span id="2-source-routing"></span>源路由表示源端或软件选择路径，并通过包头或能确定所选路径的标识交给网络执行。它既可以是固定路径，也可以在注入前依据状态选择路径。仅有“路由表”不一定是源路由：逐跳路由器也可以根据目的地址查表选出口。
 
-`deterministic routing` 的定义是：给定 `src` 和 `dst`，算法总会产生同一类固定路径。
+<span id="3-minimal-adaptive-routing"></span>最短路径自适应路由在允许的最短路径间，根据状态选择出口。例如在二维 Mesh 中，向目的地靠近的 East 和 North 都合法时，可根据指定的状态和规则选择。它不必允许绕远路；反过来，允许非最短路径的算法也不一定读取拥塞信息。
 
-典型例子：
+<span id="4-non-minimal-routing"></span>非最短路由允许路径的代价高于所选最短路径指标。例如，以路由器间 hop 为指标时，经中间节点绕行可能走更多跳。它可能分散负载，也可能增加资源占用；效果取决于流量、路径和实现。[Flattened Butterfly 原始研究](https://people.eecs.berkeley.edu/~kubitron/courses/cs258-S08/handouts/papers/ISCA_FBFLY.pdf)分别评估了多种最短、非最短和自适应选择。
 
-- XY / YX 这类 dimension-order routing
-- ring 上固定顺时针或逆时针策略
-- tree 上固定上行再下行
+## 一个包可能同时属于哪些类别
 
-它的优势很直接：
+<span id="一个更实用的分类视角"></span>假设一个源端根据观测到的拥塞选择一条最短路径，把完整方向序列写入包头。它同时是**源端选择、最短路径和拥塞自适应**。另一设计可能让每个路由器按目的坐标固定选择下一跳；它是逐跳决策，也可能产生确定路径。
 
-- 路径唯一，易验证
-- 路径固定；延迟仍受争用和端点服务影响
-- 路由器局部控制逻辑简单
-- 更容易和性能模型、编译器静态分析对齐
+“完全自适应”还应说明范围：在所有最短路径中都可选择，与允许任意非最短路径并不是同一承诺。无论候选有多少，都需要单独检查死锁、活锁、顺序性与服务条件。
 
-它的代价也很明确：
+<span id="和-bus-的类比边界"></span>路径选择与仲裁也不同。路由给出可用候选；当多个请求争用共享资源时，仲裁决定本次服务谁。路径可能固定，等待时间仍会随竞争和端点服务而变化。
 
-- 遇到热点链路时没有绕行能力
-- 某些 `src-dst` 对会永久绑定到同一批链路
-- path diversity 无法转化成实际收益
+<span id="常见误区"></span><span id="建模启示"></span>记录候选集合、选择位置、状态来源和更新时机，再记录 VC、仲裁与流控约束。不要只用一个 hop 数或“adaptive”标签代替这些信息。
 
-对 deterministic NPU，这是最常见的基线，因为它把系统行为收敛到一个可解释的空间。
-
-## 2. Source Routing
-
-`source routing` 的关键不是“路径固定”，而是“路径由源端或软件预先指定”。
-
-区别在于：
-
-- deterministic routing 往往由每跳 router 根据地址和本地规则决定下一跳
-- source routing 由编译器、runtime 或源端 NIC 提前把路径写进 header 或 route table id
-
-它常见于：
-
-- 流量模式高度规整的 AI dataflow
-- placement 已知、通信图相对稳定的 tile array
-- 想把复杂性上推给编译器而不是放在 router 里的系统
-
-source routing 的真正价值不是“省几个门电路”，而是让软件能把路径规划和 placement、DMA 调度、collective 组织一起看。
-
-它的风险是：
-
-- 静态路径集同样可能形成资源依赖环
-- traffic 变化时鲁棒性较弱
-- 编译器接口定义不清时，系统复杂度只是转移了位置
-
-## 3. Minimal Adaptive Routing
-
-`minimal adaptive routing` 仍然只允许最短路径，但在多条最短路径之间根据局部状态选择。
-
-典型例子是在 2D mesh 上，从 `(0,0)` 到 `(3,2)`，约定 `+X` 向东、`+Y` 向北时，不再强制先走 `X` 再走 `Y`，而是允许在保持最短 hop 的前提下动态挑选 `E` 或 `N`。
-
-它的收益通常来自：
-
-- 多条最短路径分担热点
-- 对不规则 burst 更有弹性
-- 不增加 hop 数，因此平均延迟成本相对可控
-
-它的限制是：
-
-- 如果 topology 本身 path diversity 很低，收益有限
-- 如果 traffic 主要是静态规则流，热点往往来自全局映射而不是局部拥塞
-- 仍然要处理 deadlock、乱序和公平性问题
-
-所以它不是“比 XY 更高级”，而是“在存在多条短路径且 traffic 足够动态时，值得付更高控制复杂度”。
-
-## 4. Non-Minimal Routing
-
-non-minimal 允许 packet 为绕开拥塞或均衡负载走非最短路径；它可以是 oblivious，也可以是 adaptive。fully adaptive 描述允许的选择自由度，不必包含非最短路径。
-
-理论优势：
-
-- 最大化 path diversity 利用率
-- 对热点和故障绕行最灵活
-- 在大规模高基数网络里潜在吞吐更高
-
-现实代价：
-
-- router 状态和决策逻辑更复杂
-- 延迟可预测性更差
-- 更容易引入 livelock、乱序和验证困难
-- 如果物理布线已经很长，额外 hop 的能耗和尾延迟成本会很显著
-
-对于片上 deterministic NPU，这类策略通常不会成为主干数据网络的默认选择，更常见于：
-
-- 研究型仿真
-- 极大规模或更通用的 manycore
-- 容错/故障绕行需求强的系统
-
-## 一个更实用的分类视角
-
-工程上，与其问“我要不要 adaptive”，不如先问：
-
-1. 我的 topology 是否真的提供了可用的多路径？
-2. 我的流量模式是静态编排还是动态爆发？
-3. 我的目标是平均吞吐，还是 tail latency 上界？
-4. 我的验证预算能不能承受更复杂的局部决策？
-
-如果这四个问题的答案分别是：
-
-- 路径选择很少
-- 流量高度规则
-- tail latency 更重要
-- 验证预算有限
-
-那么 deterministic 或 source routing 往往更对路。
-
-## 和 BUS 的类比边界
-
-BUS 世界里常见的是“共享资源仲裁”，而不是“路径选择”。NoC 新增的核心维度就在这里：
-
-- 共享式 BUS 在其共享通路上决定谁先用；BUS 协议也可运行在多路径 fabric 上
-- NoC 既要决定谁先用资源，也要决定 packet 究竟经过哪组资源
-
-因此 NoC 的 routing 类比不了 BUS 的仲裁策略。仲裁是每个冲突点的局部决策，routing 是整个路径空间的全局约束。
-
-## 常见误区
-
-- 认为 source routing 天然比 deterministic routing 更灵活
-- 认为 adaptive routing 一定吞吐更高
-- 认为最短路径一定最优
-- 认为 routing 只影响性能，不影响验证和系统接口
-
-更准确的说法是：
-
-- source routing 只是把路径控制权移到源端或软件侧
-- adaptive 只有在 path diversity 和 traffic unpredictability 足够大时才有明显收益
-- 非最短路径可能减少热点，但会增加 hop、能耗和尾延迟
-- routing 直接影响 deadlock 处理、message class 隔离和编译器接口
-
-## 一句话理解
-
-routing algorithm 的本质差异，不是名字，而是“谁决定路径、可选路径有多少、是否依赖实时状态”。
-
-## 建模启示
-
-建模 routing 时，不要只给每个 `src-dst` 对一个固定 hop 数。模型至少要保留：
-
-- 合法候选路径集合
-- 路径选择的决策位置：source、per-hop、本地表驱动
-- 选择依据：固定规则、route id、局部拥塞、全局状态
-- 是否允许非最短路径
-
-对 deterministic/source routing，第一版模型可以把路径直接编译成静态 route table。对 adaptive routing，至少要再引入：
-
-- 每个输出方向的拥塞观测
-- 选择 tie-break 规则
-- escape VC 或死锁规避约束
-
-否则模型会高估 adaptive 的收益、低估它的实现成本。
+<span id="一句话理解"></span>路由分类应分别说明谁选、能选什么，以及选择依据什么。

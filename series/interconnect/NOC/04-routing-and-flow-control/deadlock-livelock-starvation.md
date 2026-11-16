@@ -1,182 +1,48 @@
-# Deadlock Livelock Starvation
+# 死锁、活锁与饥饿：为什么包不能完成？
 
-上级：[04 Routing And Flow Control](./README.md)
+上级：[04 路由、仲裁与服务保证](./README.md)
 
-相关：[Deadlock Avoidance Turn Model](./deadlock-avoidance-turn-model.md)、[Arbitration Policies](./arbitration-policies.md)、[Credit Based Flow Control](../02-router-microarchitecture/credit-based-flow-control.md)
+相关：[Turn Model 与逃逸资源](./deadlock-avoidance-turn-model.md)、[仲裁策略](./arbitration-policies.md)、[Credit 与反压](../02-router-microarchitecture/credit-based-flow-control.md)
 
-## 这页在回答什么问题
+<span id="deadlock-livelock-starvation"></span><span id="这页在回答什么问题"></span>包长时间没有完成，可能是资源循环等待、不断活动但没有完成，或长期得不到服务。这些现象可能重叠；有限时间内的超时本身不能证明是哪一种。
 
-这页回答：NoC 里最容易混淆的三个“不前进”问题到底有什么区别，为什么它们不能用同一套手段处理。
+## 三类不前进
 
-## 1. Deadlock
+<span id="1-deadlock"></span>**死锁**是某组参与者持有或占用资源，同时等待只有该组内其他参与者才能释放的资源，且在模型允许的后续行为中没有事件能解除这组等待。其他无关流量仍可能前进，因此不要求整个芯片静止。
 
-`deadlock` 是最严格的“不前进”状态。
+<span id="2-livelock"></span>**活锁**中，相关组件持续执行转发、重试或状态变换，但目标操作始终没有完成。路径可以一度靠近目的地，又被绕回；不能只凭某一步距离没有减小判断活锁。
 
-定义是：
+<span id="3-starvation"></span>**饥饿**是某个持续等待服务的请求长期得不到所需机会，而其他请求可能继续获得服务。固定优先级下，如果高优请求始终有效且可服务，低优请求可能饥饿；反之不能仅凭优先级推断饥饿一定发生。
 
-- 一组 packet 或消息各自占有部分资源
-- 同时等待别人释放下一部分资源
-- 依赖关系形成闭环
-- 没有任何一方能先前进一步
+<span id="为什么这三者常被混淆"></span><span id="观测和归因上的差异"></span>短时拥塞也可能造成很长的排队。排查时分别观察资源持有与等待、路径和重试，以及请求有效性与成功授权；还要检查端点是否消费。观测值帮助定位原因，不自动证明未来永远没有进展。
 
-关键点在于：它不是“很慢”，而是“如果没有外部干预，系统理论上可以永远停在那里”。
+## 混用路径为什么可能形成循环等待
 
-在 NoC 里，deadlock 常见来源包括：
+下面是一个构造状态。2×2 非环绕 Mesh 中 A=(0,0)、B=(1,0)、C=(1,1)、D=(0,1)，X 向东、Y 向北。每条有向连接的下游输入缓冲只有一个槽；每个包占一个槽，必须取得下一缓冲的可用授权才可前进，不允许同时置换或旁路。
 
-- routing-level channel dependency cycle
-- request/response/control 间的 message dependency cycle
-- endpoint buffer / ejection path 与上游请求链交织成环
+| 包与完整路径 | 当前占用的缓冲 | 下一步等待 |
+| --- | --- | --- |
+| P0，XY：A→B→C | A→B 的 B 输入 | B→C 的 C 输入 |
+| P1，YX：B→C→D | B→C 的 C 输入 | C→D 的 D 输入 |
+| P2，XY：C→D→A | C→D 的 D 输入 | D→A 的 A 输入 |
+| P3，YX：D→A→B | D→A 的 A 输入 | A→B 的 B 输入 |
 
-## 2. Livelock
+四个包已经到达各自第一跳的下游缓冲；下一槽都被表中的另一个包占用。若没有其他可用路径、超时或外部释放，任何一个包都不能先前进一步。这是混用路径**可能**死锁的具体构造，不代表每种混合方案都会死锁。将路径映射到受约束的独立资源后，仍需证明联合依赖与端点行为。
 
-`livelock` 指的是系统一直在活动，但某个 packet 长期无法真正接近目的地。
+## 协议和端点也可能形成等待环
 
-典型特征：
+构造另一种情况：A 和 B 的接收缓冲各只有一个槽，分别装着对方发来的请求。两端都规定：只有响应被对方接收后，才释放手中的请求；响应也必须进入对方同一个接收槽。两端没有其他接收空间或释放机制。
 
-- packet 在移动
-- 资源在变化
-- 系统看起来“没死”
-- 但目标 packet 一直被绕开、重试或不断改道，长期无法完成
+此时 A 等 B 的接收槽，B 也等 A 的接收槽。即使中间网络路径没有路由死锁，这个端点契约仍可能卡住。允许独立的响应接收资源、改变请求释放条件等，可以成为候选修复；具体方案仍需检查完整依赖和容量。
 
-它更容易出现在：
+## 静态依赖与运行时等待
 
-- 过度灵活的 adaptive routing
-- 缺少收敛规则的重试机制
-- 某些只追求“别堵住当前”而不保证最终到达的局部策略
+<span id="对应的典型处理手段"></span><span id="对-deadlock"></span>静态 channel dependency graph 描述规则**可能**让包依次申请哪些资源；运行时 wait-for graph 描述某个状态中**实际**占有和等待什么。前者的无环性可以作为特定模型下的安全证明；出现环需要进一步分析，不能一律断言运行时已经死锁。自适应算法还可能通过满足条件的逃逸资源获得安全性。[Duato，1993](https://web.csl.cornell.edu/courses/ece5750/duato.tpds93.pdf)
 
-所以 livelock 是“忙着动但没结果”，deadlock 是“谁都动不了”。
+<span id="对-livelock"></span><span id="对-starvation"></span>对活锁，需要规定有界绕行、重试或其他收敛规则；对饥饿，需要检查持续请求是否得到公平、可服务的机会。无死锁不自动保证这些性质，也不自动给出有限完成时间。
 
-## 3. Starvation
+<span id="credit-为什么不能解决这三者"></span>Credit 在所定义的逐跳契约下管理下游缓冲授权，避免发送超过授权；它不自动排除资源循环。credit 为零也不等于下游物理缓冲此刻必然满，返还信用可能仍在途。
 
-`starvation` 指的是：某个 packet 或某类流量理论上有路可走，也不一定存在闭环，但因为调度长期偏向别人，自己一直得不到服务。
+<span id="对-deterministic-npu-的实际优先级"></span><span id="常见误区"></span><span id="建模启示"></span>诊断时保留路由和 VC 的合法依赖、当前持有与等待关系、请求及成功服务事件，并记录端点和超时行为。有限跟踪中的等待环或长时间未完成，应报告为证据和待验证条件，而不是直接当作永久死锁证明。
 
-最典型来源是：
-
-- fixed-priority arbitration
-- 某类流量持续低优
-- 没有 aging 或份额保底
-
-starvation 关注的是服务公平性，而不是通道依赖闭环。
-
-它可能只影响一类低优流量，但系统级后果并不一定小，因为被饿死的那类流量可能恰好是 completion、descriptor 或 sync。
-
-## 为什么这三者常被混淆
-
-因为用户看到的现象都可能是：
-
-- timeout
-- 延迟非常长
-- 某条链路上一直没完成
-
-但它们的结构不同：
-
-- deadlock：依赖闭环
-- livelock：持续活动但不收敛
-- starvation：调度一直不轮到你
-
-如果把 starvation 误判成 deadlock，你会去改 routing 规则，结果没用。
-如果把 deadlock 误判成拥塞，你会去加 buffer，结果只是把死锁位置推远。
-
-## Credit 为什么不能解决这三者
-
-credit-based flow control 解决的是：
-
-- 不要把下游 buffer 发爆
-
-它不自动解决：
-
-- deadlock 的循环等待
-- livelock 的路径不收敛
-- starvation 的调度不公平
-
-这点必须非常清楚。`credit == 0` 只是一个症状，不是根因分类。
-
-## 对应的典型处理手段
-
-### 对 deadlock
-
-常见手段：
-
-- dimension-order routing
-- turn restriction
-- escape VC
-- request/response/control 分 VC 或分网络
-
-核心思想是打断资源依赖环。
-
-### 对 livelock
-
-常见手段：
-
-- 限制重路由次数
-- 保证每次选择都朝着某种收敛目标推进
-- 保留 deterministic escape path
-
-核心思想是保证 packet 最终会朝目的地逼近，而不是无限兜圈。
-
-### 对 starvation
-
-常见手段：
-
-- round-robin
-- aging
-- 最长等待优先
-- 保底带宽或保底服务窗口
-
-核心思想是给每个候选某种服务上界保证。
-
-## 对 deterministic NPU 的实际优先级
-
-对于很多 deterministic NPU，真正第一优先级通常是：
-
-1. 先确保不会 deadlock
-2. 再确保关键 class 不会 starvation
-3. 最后才讨论 adaptive 下的 livelock 风险
-
-原因是：
-
-- 主路径多半不做极强 adaptive
-- 静态映射和 message dependency 更可能是真实风险源
-- control/response 被饿死的系统代价很高
-
-## 观测和归因上的差异
-
-如果要区分这三者，观测点应关注不同信号：
-
-- `deadlock`：一组资源长期互相等待，拓扑上能画出环
-- `livelock`：packet 持续移动或重选路径，但 progress metric 不增长
-- `starvation`：某候选长期请求，但 grant count 极低或为零
-
-这就是为什么调试时不能只看“某包很久没到”，而要看它到底是在等、在绕，还是根本抢不到。
-
-## 常见误区
-
-- 认为所有“超时”都是死锁
-- 认为加深 buffer 一定能改善 forward progress
-- 认为 fixed-priority 只会让平均性能变差一点
-
-更准确的说法是：
-
-- 超时可能来自 deadlock、starvation、长尾拥塞或软件等待链
-- buffer 可以吸收瞬时抖动，但不消除闭环依赖
-- 低优流量被长期压制时，可能拖垮整个软件/硬件依赖链
-
-## 一句话理解
-
-deadlock 是“互相卡死”，livelock 是“忙着兜圈”，starvation 是“你一直抢不到机会”；三者都表现为不前进，但根因完全不同。
-
-## 建模启示
-
-如果仿真器要正确区分这三者，不能只统计 packet latency。至少还要额外统计：
-
-- 静态 channel dependency graph（合法路由可能依赖）和运行时 wait-for graph（当前持有与等待）
-- packet progress metric：是否更接近目的地、route 是否反复变化
-- request-to-grant wait time 与 grant fairness
-
-一个实用做法是：
-
-- 对 deadlock：先报告观察窗口内的 wait-for 环及无释放为疑似；只有资源独占、所有等待都由环内资源满足、无外部释放/超时/仲裁可解除，且状态持续不变等条件成立时，才能证明当前集合死锁。静态依赖图中的环只是潜在风险。
-- 对 livelock：记录长期转发而未到达及路径阶段变化；非最短合法绕路可暂时增加距离，因此距离下降只是诊断启发式，不是逐步正确性条件
-- 对 starvation：检测持续请求但 grant 长时间缺失，且系统其他流量仍在前进
-
-这样模型才能把“没完成”细分成真正有操作价值的类别。
+<span id="一句话理解"></span>先判断谁持有什么、等待什么以及是否仍有解除条件，再区分循环等待、反复活动和长期无服务。

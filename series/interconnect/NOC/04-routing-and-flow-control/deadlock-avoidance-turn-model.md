@@ -1,153 +1,41 @@
-# Deadlock Avoidance Turn Model
+# Turn Model 与逃逸资源：怎样限制路由依赖？
 
-上级：[04 Routing And Flow Control](./README.md)
+上级：[04 路由、仲裁与服务保证](./README.md)
 
-相关：[Dimension-Order Routing](./dimension-order-routing.md)、[Virtual Channel Fundamentals](../02-router-microarchitecture/virtual-channel-fundamentals.md)、[Deadlock Livelock Starvation](./deadlock-livelock-starvation.md)
+相关：[维序路由](./dimension-order-routing.md)、[死锁、活锁与饥饿](./deadlock-livelock-starvation.md)、[虚通道基础](../02-router-microarchitecture/virtual-channel-fundamentals.md)
 
-## 这页在回答什么问题
+<span id="deadlock-avoidance-turn-model"></span><span id="这页在回答什么问题"></span>Turn Model 通过限制可用转向，改变通道之间可能出现的依赖。另一类设计保留满足特定安全条件的逃逸资源。两种方法都需要说明网络、允许路径和资源契约。
 
-这页回答：如果纯 `XY` 太死板，如何在保留无死锁保证的同时给 routing 一点绕行自由度。
+## 转向怎样影响依赖
 
-## 背景
+<span id="背景"></span><span id="为什么转弯是关键"></span>在二维 Mesh 中，一个包从某方向进入路由器，再沿另一个方向离开，会形成相应的通道获取关系。若可用转向组合允许资源依赖闭合成环，就需要进一步分析。限制转向可以去掉部分依赖，同时保留一些路径选择。
 
-纯 dimension-order routing 的方法很硬：直接规定维度顺序，结果是路径空间最容易分析，但也最受限。
+<span id="常见例子"></span>以下限定有限、无故障、非环绕二维 Mesh；包只走最短路径，不做 U-turn。方向表示**包的行进方向**：X 增大为 East，Y 增大为 North。表中的禁止转向只适用于这组约定。
 
-`turn model` 的思路更细：不是完全固定整条路径，而是只禁止一小部分“危险转弯”，让 packet 还能在剩余空间里选择路径。
+| 模型 | 路径规则 | 禁止的直角转向 |
+| --- | --- | --- |
+| West-First | 需要向西时，先走完向西的位移 | N→W、S→W |
+| North-Last | 需要向北时，向北位移放在最后 | N→E、N→W |
+| Negative-First | 先走完负方向 W、S，再走正方向 E、N | N→W、E→S |
 
-这是一种折中：
+<span id="west-first"></span>例如从 (1,0) 到 (0,1)，West-First 允许 W→N，不允许 N→W。<span id="north-last"></span>从 (0,0) 到 (1,1)，North-Last 允许 E→N，不允许 N→E。<span id="negative-first"></span>从 (0,1) 到 (1,0)，Negative-First 允许 S→E，不允许 E→S。
 
-- 比 XY 更灵活
-- 比 fully adaptive 更容易做 deadlock 证明
+这些规则在指定模型中限制了通道依赖；实际实现还必须检查可达性、VC 映射和路由规则是否与证明一致。[Glass 与 Ni，The Turn Model for Adaptive Routing](https://researchportal.hkust.edu.hk/en/publications/the-turn-model-for-adaptive-routing-2/)
 
-## 为什么“转弯”是关键
+## 路径选择和安全范围
 
-在 2D mesh 里，形成 channel dependency cycle 通常需要 packet 围着某个环不断做方向转换。也就是说，危险不在“向东走”本身，而在“从某方向转到另一方向”的组合。
+<span id="它和-dor-的关系"></span><span id="它的收益边界"></span>在上述普通 Mesh 中，XY 为一个源目的对选定一条最短路径；某些 Turn Model 则保留多条合法最短路径。并不是每个源目的对都有多个选择，也不是任意被禁止的转向组合都能保持连通和无死锁。
 
-如果我们禁止一部分转弯，某些闭环就无法闭合。
+<span id="它不能自动解决什么"></span>转向规则只处理它所证明的路由资源依赖。请求与响应的协议依赖、端点缓冲、饥饿和有限完成时间需要另行分析。原始 Turn Model 也研究了其他网络与路径范围；上表不能直接套到 Torus、故障 Mesh 或任意非最短规则。
 
-这就是 turn model 的核心：通过删除一小组转向规则，打断可能的资源依赖环。
+## 逃逸 VC 是什么
 
-## 常见例子
+<span id="和-escape-vc-的配合"></span>一种教学构造给自适应包保留一个 escape VC 类别，让它遵守已证明无环且可到达目的地的规则；其他 VC 可以使用更灵活的候选。还需保证包在所需状态下能够申请合适的逃逸资源，并检查自适应与逃逸资源之间的依赖。
 
-以下限定二维、非环绕 mesh 的最短路径，包不做 U-turn。方向约定 X 增为东、Y 增为北。规则只覆盖相应 channel 依赖，不自动覆盖协议和端点依赖。
+例如，可以设计只允许从自适应类别进入 escape 类别、进入后继续按安全规则前进的转换，并证明该设计覆盖所有允许路径。这只是可选构造，不是所有正确算法都必须采用的唯一转换规则。不同 VC 仍可共享物理链路，是否得到服务需要相应仲裁；最终到达还依赖公平服务、端点可接收及活锁控制。
 
-### West-First
+<span id="为什么很多-ai-npu-不把它当默认主线"></span><span id="一个工程判断标准"></span>不能只凭“增加一个 escape VC”证明安全，也不应一概要求所有 Turn Model 都配置 escape VC。设计者应先列出允许的路由和资源转换，再针对选定模型完成证明。[Duato，A New Theory of Deadlock-Free Adaptive Routing](https://web.csl.cornell.edu/courses/ece5750/duato.tpds93.pdf)讨论了允许完整通道依赖图有环的自适应路由条件。
 
-规则：如果路径需要向西，必须先把所有向西的移动走完，之后才能再做别的方向选择。
+<span id="建模启示"></span>模型应记录方向约定、合法转向、候选 VC 和类别转换。无环检查可用于所选模型的充分性分析；若使用其他逃逸证明，需检查该证明要求的完整条件。
 
-例如从 `(1,0)` 到 `(0,1)`，`W→N` 合法，`N→W` 违反 West-First。不能在已经向北或向南之后再转去西边。
-
-效果：
-
-- 保留了一部分最短路径选择
-- 但消掉了某些依赖环
-
-### North-Last
-
-规则：如果最终需要向北，那么向北动作必须放到最后阶段。
-
-效果和 West-First 类似，也是通过限制某类转弯来保持无死锁。
-
-### Negative-First
-
-规则：先完成所有负方向位移，再走正方向。
-
-它看起来像 dimension-order 的变体，但思想仍然是：用方向阶段化限制危险转弯。
-
-## 它和 DOR 的关系
-
-`turn model` 不是完全不同的世界，更像是介于 DOR 和 adaptive 之间的中间层。
-
-可以把它理解为：
-
-- DOR：每个 `(src,dst)` 唯一路径
-- turn model：每个 `(src,dst)` 有有限条合法路径
-- fully adaptive：合法路径集合最大，但需要更强的安全机制
-
-因此 turn model 常被用来回答这样的问题：
-
-- 我不想被 XY 完全绑死
-- 但我也不想把 deadlock 证明变得太难
-
-## 它的收益边界
-
-turn model 只有在 topology 真有多条可用短路径时才有价值。
-
-如果是在：
-
-- ring
-- 几乎没有 path diversity 的小规模网络
-- 已经由 floorplan 限定了主要走向的网络
-
-那 turn model 给你的自由度其实很有限。
-
-mesh、concentrated mesh、某些高基数局部网络里，它才更容易体现价值。
-
-## 它不能自动解决什么
-
-turn model 解决的是 routing-level channel dependency cycle，不自动解决：
-
-- request/response 的 message dependency
-- endpoint ejection buffer 被堵住
-- control 和 bulk data 争用同一高优先级出口
-- starvation 或 tail latency 波动
-
-所以 turn model 不是完整系统安全方案，只是 routing 子问题的约束工具。
-
-## 为什么很多 AI NPU 不把它当默认主线
-
-因为很多 AI 芯片最关心的是：
-
-- 编译器能否静态预测路径
-- 延迟分布能否稳定复现
-- debug 时能否快速定位热点
-
-turn model 虽然没 fully adaptive 那么复杂，但已经引入了：
-
-- 多条合法候选路径
-- 局部状态驱动的选择
-- 更复杂的 trace 解释空间
-
-如果主流量本来就高度规则，这部分额外自由度不一定值回票价。
-
-## 和 escape VC 的配合
-
-在更灵活的 adaptive 设计里，一个常见套路是：
-
-- 普通 VC 允许用更自由的 turn-constrained adaptive routing
-- 保留一个 escape VC，只允许走确定无死锁的规则路径
-
-escape 子网必须可从适当状态进入且可到达目的地；还要限制 escape 与 adaptive 的转换以避免新依赖环，并证明资源独立、仲裁公平和端点最终服务。仅保留一条 escape VC 不足以保证最终进展。
-
-这说明一个很重要的工程事实：routing 的自由度越大，通常越需要额外的 VC 结构来兜底。
-
-## 一个工程判断标准
-
-如果你在设计阶段想知道要不要上 turn model，可以先问：
-
-1. 热点是否来自固定映射，而不是局部瞬时拥塞？
-2. 多路径是否真实存在且能显著分流？
-3. 系统是否愿意承担更高的验证和观测复杂度？
-4. 是否已经把 placement、VC 隔离、多网络分离做到了合理水平？
-
-如果前两个答案都偏否，turn model 很可能不是优先级最高的改进项。
-
-## 一句话理解
-
-turn model 是一种“只删掉危险转弯，而不是锁死整条路径”的无死锁折中方案。
-
-## 建模启示
-
-建模 turn model 时，不要只记录 hop 数；要显式记录：
-
-- 每个 router 允许的输入方向到输出方向转移集合
-- 哪些 `src-dst` 对有多条合法最短路径
-- 在这些路径之间如何 tie-break：随机、轮询、局部拥塞优先
-
-如果模型还要评估死锁安全性，就必须把“允许的 turn graph”转成 channel dependency graph，检查是否存在可闭合环。对系统级模型，还要再叠加：
-
-- VC class
-- message class
-- escape VC 是否存在
-
-否则你只是在模拟“更灵活”，没有模拟“为什么还能安全地灵活”。
+<span id="一句话理解"></span>先定义允许的资源获取关系，再证明路由安全；仅有策略名称或 VC 数量不构成证明。

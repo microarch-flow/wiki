@@ -1,169 +1,37 @@
-# Arbitration Policies
+# NoC 仲裁策略：共享资源先服务谁？
 
-上级：[04 Routing And Flow Control](./README.md)
+上级：[04 路由、仲裁与服务保证](./README.md)
 
-相关：[Allocator Design VC Switch](../02-router-microarchitecture/allocator-design-vc-switch.md)、[QoS And Priority Classes](./qos-and-priority-classes.md)、[BUS: 争用、QoS 与可观测性](../../BUS/05-performance-debug/contention-qos-observability.md)
+相关：[VC 与交换分配](../02-router-microarchitecture/allocator-design-vc-switch.md)、[QoS 与优先级](./qos-and-priority-classes.md)、[端到端服务保证](./service-guarantees-and-latency-bounds.md)
 
-## 这页在回答什么问题
+<span id="arbitration-policies"></span><span id="这页在回答什么问题"></span>多个请求同时需要一个共享资源时，仲裁规则决定谁先获得服务。公平性、等待时间和吞吐需要明确请求单位、候选条件以及一次成功服务的含义。
 
-这页回答：即使路径已经确定，为什么 packet 还是会卡住，以及不同仲裁策略到底在交换什么。
+## 先确定仲裁点和可服务条件
 
-## 仲裁发生在哪里
+<span id="仲裁发生在哪里"></span><span id="仲裁解决的不是路径问题"></span>候选可能争夺下游 VC、路由器交换连接、注入端口或目的端资源。路由决定合法出口；仲裁在具备所需条件的竞争者之间作选择。没有 credit、下游许可不可用或链路忙，与已经可服务但输掉仲裁是不同原因。
 
-在 NoC 里，仲裁不是只发生在一个“总线入口”，而是分散在多个资源点：
+第二章的[VC 与交换分配](../02-router-microarchitecture/allocator-design-vc-switch.md)解释分配什么资源；这里比较选择谁的策略。实际分配器也可能联合处理多个输入和输出，单个输出仲裁器的结果不能直接代表全局匹配数。
 
-- input VC 争抢 output VC
-- 多个 input 争抢同一 output port
-- 多个源端争抢 injection slot
-- 多个 packet 争抢 ejection 或 endpoint receive buffer
+## 轮询的次数界与时间界
 
-所以仲裁是 NoC 每一跳都可能发生的局部调度问题，而不是一次性全局决定。
+<span id="常见策略"></span><span id="round-robin"></span>构造一个单输出例子：A、B、C 始终有请求，输出每次可成功服务一个 flit；指针初始指向 A，成功后移到胜者下一位。三者持续可服务时，成功顺序为 A→B→C→A。任一候选持续可服务后，最多等待其他两个成功授权。
 
-## 仲裁解决的不是路径问题
+这个结论计数的是**成功授权次数**。若下游连续若干拍没有可用 credit，就可能连续没有成功授权；若阻塞时间没有上界，不能由“两次成功授权”推出有限周期等待界。具体实现还要规定无效或不可服务候选是否跳过，以及何时更新指针。
 
-要先把两件事分开：
+## 固定优先级、年龄和权重
 
-- routing：决定有哪些合法出口候选
-- arbitration：在多个候选者同时看上同一个出口时，谁这拍先拿到
+<span id="fixed-priority"></span>固定优先级先服务较高优先级的可服务请求。若高优候选持续有效且持续可服务，低优候选可能长期得不到授权；如果高优不满足服务条件，低优能否被选中取决于实现。
 
-很多 stall 并不是“路选错了”，而只是“大家都要同一个口，你这次没赢”。
+<span id="age-based"></span>Age-based 根据等待年龄选择，例如优先服务更早到达的请求。它可能改善某些请求的等待，但需要定义年龄起点、比较范围、同龄处理和计数器溢出；下游永久阻塞时，增加年龄也不能完成传输。
 
-## 常见策略
+<span id="weighted-qos-aware"></span>加权轮询可以分配不同服务机会。假设 A、B 都持续有可服务 flit，输出按 A→A→B 重复服务，且每次恰好发送一个同尺寸 flit，那么长期成功服务份额分别为 2/3 和 1/3。候选不持续有数据、服务单位不同或输出受阻时，实际份额需要按规则重新计算；权重标签本身不证明任意时间窗口都有同样比例。
 
-### Round-Robin
+## 策略之外的竞争
 
-轮询是常见默认值。例：3 个候选 A/B/C 均持续有效且每次均可服务，按 flit RR，指针先指 A，成功 grant 顺序为 A、B、C；每次成功后指向胜者下一位，某候选最多等待另外 `N−1=2` 次成功 grant。若一个候选因无 credit 不可服务，可按实现跳过并记录；该候选恢复可服务后再参与。只有每次服务时间有界、下游持续可服务且指针在成功后推进，成功 grant 次数界才可转换为时间界；永久阻塞时 RR 不能保证到达。
+<span id="它和-hol-blocking-的关系"></span>队头阻塞是某队首阻止队后请求参与；仲裁是对符合条件的候选进行选择。多个可独立选择的队列可能缓解前者，但它们仍可竞争同一个输出。请求路径、端点服务与共享链路会共同影响等待。
 
-优点：
+<span id="为什么仲裁策略在-ai-芯片里很敏感"></span><span id="仲裁策略和-topology-会耦合"></span><span id="一个实用的混合原则"></span>可以组合类间优先级和类内轮询，但还要检查低优业务是否有机会获得服务。某一实际设计可能使用更复杂的可服务条件，例如信用、事务锁定和令牌；[AMD Versal NoC 的仲裁说明](https://docs.amd.com/r/en-US/pg313-network-on-chip/Virtual-Channel-Arbitration)是一个具体产品例子，不是所有 NoC 的通用规则。
 
-- 简单
-- 公平性较好
-- 不容易长期饿死某一路
+<span id="常见误区"></span><span id="建模启示"></span>记录仲裁位置、有效和可服务条件、服务单位、指针或年龄更新，以及请求和成功服务时间。分别统计等待次数与实际时间，再按 class 和资源定位竞争。
 
-缺点：
-
-- 对 latency-sensitive control traffic 不够激进
-- 在高负载下 tail latency 不一定最优
-
-### Fixed Priority
-
-固定优先级适合把 control、sync、response 这类小而关键的流量放在前面。
-
-优点：
-
-- 关键流量延迟低
-- 行为直观
-
-缺点：
-
-- 低优先级可能被长期压制
-- 若更高优先级候选持续有效且可服务，低优可能饥饿；bulk 是否造成该问题取决于它的优先级和实际服务状态
-
-### Age-Based
-
-谁等得久，谁优先。
-
-优点：
-
-- 可以显著改善 tail latency
-- 对避免饥饿有效
-
-缺点：
-
-- 需要额外 age 状态
-- 实现与验证成本更高
-
-### Weighted / QoS-Aware
-
-不同 class 拿不同份额或不同优先级。
-
-优点：
-
-- 能表达服务等级
-- 更适合多类混合流量系统
-
-缺点：
-
-- 参数配置复杂
-- 不容易直观看出最终等待分布
-
-## 为什么仲裁策略在 AI 芯片里很敏感
-
-因为 AI NoC 往往同时存在两类完全不同的流量：
-
-- 大量、连续、占带宽的 bulk data
-- 很小、但延迟极敏感的 control/sync/response
-
-如果全都用一种完全公平的策略，control 可能被大流淹没。
-如果全都用高优先级压制，bulk data 又可能失去吞吐稳定性。
-
-所以这里真正要设计的不是“公平不公平”，而是“哪些 class 需要更低延迟，哪些 class 只要不饿死就行”。
-
-## 仲裁策略和 topology 会耦合
-
-在 ring、tree、mesh 这类网络里，热点位置不同，仲裁策略的可见效果也不同。
-
-例如：
-
-- 在中心热点明显的 mesh 中，局部 output arbiter 的策略会强烈影响 tail latency
-- 在树形汇聚点上，reduce 流量更容易形成上行集中争用
-- 在多 memory port 结构里，某些靠近 memory 的 router 会天然承担更重的仲裁压力
-
-因此仲裁策略不能脱离 traffic map 讨论。
-
-## 它和 HOL blocking 的关系
-
-仲裁不当会放大 HOL blocking，但两者不是一回事。
-
-- HOL blocking 说的是：前面的 packet 卡住，后面的 packet 即使目标不同也跟着卡
-- 仲裁说的是：当多个候选都可前进时，谁先拿资源
-
-VC 能缓解前者，合适的 arbitration policy 影响后者。很多系统问题是这两者叠加出来的。
-
-## 一个实用的混合原则
-
-对 deterministic NPU，常见的保守做法是：
-
-- class 间：用 priority 或 reserved share
-- class 内：用 round-robin 或 age-based
-
-这样可以同时得到：
-
-- 关键流量的低延迟
-- 同类流之间较稳定的公平性
-
-比“全局固定优先级压到底”更可控。
-
-## 常见误区
-
-- 认为轮询就一定最好，因为最公平
-- 认为 fixed priority 只影响性能，不影响正确性
-- 认为 routing 选好了，仲裁就只是实现细节
-
-更准确的看法是：
-
-- 公平不等于满足系统目标
-- 低优先级长期拿不到服务，可能让软件等待 completion，进而形成系统级 hang
-- routing 决定你会在哪些点争用，arbitration 决定争用结果的时间分布
-
-## 一句话理解
-
-仲裁策略决定的不是“路怎么走”，而是“多个包都想走同一条路时，谁先动、谁等多久、谁有没有可能一直等下去”。
-
-## 建模启示
-
-建模 NoC arbitration 时，至少要显式表示：
-
-- arbitration point 的位置：VC allocation、switch allocation、injection、ejection
-- 候选队列的组织方式
-- class / priority / age 等调度属性
-- starvation bound 或 aging 机制
-
-对性能分析，单看平均 grant rate 不够，还要看：
-
-- per-class wait time
-- 99th percentile wait
-- starvation event
-- 与 credit stall、route restriction 的叠加关系
-
-否则你会把“没抢到资源”和“根本无路可走”混成同一种 stall。
+<span id="一句话理解"></span>仲裁策略规定竞争者怎样轮到服务；时间和公平性结论还依赖服务条件。
