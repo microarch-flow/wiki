@@ -121,12 +121,14 @@
 
 ## 10 查阅与练习 {#09-reference}
 
-用术语、问答和检查清单定位问题，再回到相应正文。
+用术语、问答和决策路径定位问题，再通过清单、练习和资料核对结论。
 
 - [NoC 术语表](./09-reference/glossary.md)
 - [高频问题](./09-reference/high-frequency-questions.md)
-- [设计决策树](./09-reference/noc-design-decision-tree.md)
+- [设计决策路径](./09-reference/noc-design-decision-tree.md)
 - [检查清单](./09-reference/checklists.md)
+- [练习与参考解答](./09-reference/exercises-and-worked-solutions.md)
+- [参考资料与工具](./09-reference/references-and-tools.md)
 
 ### 原章节入口
 

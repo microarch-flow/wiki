@@ -1,6 +1,6 @@
 # 09 Reference
 
-> 本页保留原章节导读。[查看现行分类与阅读顺序](../SUMMARY.md)。
+> 本页保留原章节导读。[查看现行查阅与练习入口](../SUMMARY.md#09-reference)。
 
 上级：[NOC Wiki](../README.md)
 

@@ -51,6 +51,7 @@ class NocNavigationTests(unittest.TestCase):
             "NOC/wiki/06-ai-noc-specifics/workload-gemm-on-noc.md": "07 工作负载与系统案例",
             "NOC/wiki/05-system-integration/traffic-patterns-and-characterization.md": "08 性能评估与架构探索",
             "NOC/wiki/08-simulator-construction/router-pipeline-pseudocode.md": "09 模拟器构建与验证",
+            "NOC/wiki/09-reference/glossary.md": "10 查阅与练习",
         }
         for path, group in representative.items():
             with self.subTest(path=path):
@@ -82,6 +83,8 @@ class NocNavigationTests(unittest.TestCase):
             self.assertIn(f"NOC/wiki/07-evaluation-methodology/{slug}/", locations)
         for slug in ("workload-endpoint-execution", "minimal-cycle-simulator"):
             self.assertIn(f"NOC/wiki/08-simulator-construction/{slug}/", locations)
+        for slug in ("exercises-and-worked-solutions", "references-and-tools"):
+            self.assertIn(f"NOC/wiki/09-reference/{slug}/", locations)
         for path, anchors in legacy.items():
             with self.subTest(page=path):
                 html = (SITE / path / "index.html").read_text(encoding="utf-8")
@@ -95,6 +98,32 @@ class NocNavigationTests(unittest.TestCase):
                 self.assertIsNotNone(active)
                 current = "https://example.test/" + path + "/"
                 self.assertEqual(urljoin(current, unescape(active.group(1))), current)
+
+    def test_reference_entries_and_exercise_links(self):
+        sections, _ = read_noc_sections(SITE.parent / "docs")
+        entries = next(entries for name, _, entries in sections if name == "10 查阅与练习")
+        self.assertEqual([Path(path).name for _, path in entries], [
+            "glossary.md", "high-frequency-questions.md", "noc-design-decision-tree.md",
+            "checklists.md", "exercises-and-worked-solutions.md", "references-and-tools.md",
+        ])
+        for slug in ("exercises-and-worked-solutions", "references-and-tools"):
+            path = f"NOC/wiki/09-reference/{slug}"
+            html = (SITE / path / "index.html").read_text(encoding="utf-8")
+            breadcrumb = re.search(r'<nav class="site-breadcrumbs"[^>]*>(.*?)</nav>', html, re.DOTALL)
+            self.assertIsNotNone(breadcrumb)
+            self.assertIn("10 查阅与练习", breadcrumb.group(1))
+            active = re.search(r'<a\s+href="([^"]+)"\s+class="[^"]*\bmd-nav__link--active\b[^"]*"[^>]*>', html)
+            self.assertIsNotNone(active)
+            current = "https://example.test/" + path + "/"
+            self.assertEqual(urljoin(current, unescape(active.group(1))), current)
+        exercise_html = (SITE / "NOC/wiki/09-reference/exercises-and-worked-solutions/index.html").read_text(
+            encoding="utf-8")
+        for number in range(1, 8):
+            with self.subTest(exercise=number):
+                self.assertEqual(exercise_html.count(f'id="exercise-{number}"'), 1)
+                self.assertEqual(exercise_html.count(f'id="answer-{number}"'), 1)
+                self.assertIn(f'href="#answer-{number}"', exercise_html)
+                self.assertIn(f'href="#exercise-{number}"', exercise_html)
 
     def test_unassigned_or_duplicate_page_fails(self):
         with tempfile.TemporaryDirectory() as tmp:
