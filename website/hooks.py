@@ -576,11 +576,12 @@ def on_config(config, **kwargs):
         path = f"{name}/wiki/README.md"
         if owner(path)[0] == INTERCONNECT and (root / path).is_file():
             config.extra["storage_sidebar_labels"][path] = (owner(path)[1], title(root / path))
-    # Reuse the sidebar label registry for the coherence reading list.
-    chapter = root / "COHERENCE" / "wiki"
-    for filename, short in reading_items(chapter):
-        path = chapter / filename
-        config.extra["storage_sidebar_labels"][path.relative_to(root).as_posix()] = (short, title(path))
+    # Reuse reading-list labels for the D2D and coherence topic articles.
+    for topic in ("D2D", "COHERENCE"):
+        chapter = root / topic / "wiki"
+        for filename, short in reading_items(chapter):
+            path = chapter / filename
+            config.extra["storage_sidebar_labels"][path.relative_to(root).as_posix()] = (short, title(path))
     if (root / NOC_SUMMARY).is_file():
         sections, legacy = read_noc_sections(root)
         config.extra["noc_legacy_pages"] = {path for _, path in legacy}

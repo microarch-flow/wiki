@@ -40,7 +40,9 @@ class GeneratedNavigationTests(unittest.TestCase):
         groups = grouped_original_topics(docs, INTERCONNECT)
         self.assertEqual([next(iter(group)) for group in groups], list(GROUPS[INTERCONNECT]))
         self.assertEqual(len(groups), 9)
-        self.assertEqual(groups[2], {"封装内芯粒互连": ["D2D/wiki/README.md"]})
+        self.assertEqual(groups[2], {"封装内芯粒互连": [
+            "D2D/wiki/README.md", "D2D/wiki/ucie-pcie-read.md",
+        ]})
         self.assertEqual(groups[5], {"加速器互连": ["SCALEUP/wiki/README.md"]})
         self.assertEqual(groups[6], {"系统网络": ["NETWORK/wiki/README.md"]})
         self.assertEqual(groups[4], {"一致性与内存互连": [
@@ -80,6 +82,7 @@ class GeneratedNavigationTests(unittest.TestCase):
         locations = {item["location"] for item in search}
         cases = {
             "D2D/wiki/": "封装内芯粒互连",
+            "D2D/wiki/ucie-pcie-read/": "封装内芯粒互连",
             "COHERENCE/wiki/": "一致性与内存互连",
             "COHERENCE/wiki/cxl-host-memory/": "一致性与内存互连",
             "SCALEUP/wiki/": "加速器互连",
@@ -96,6 +99,10 @@ class GeneratedNavigationTests(unittest.TestCase):
                 self.assertIn(location, locations)
                 self.assertIn(group, BREADCRUMB.search(html).group(1))
                 self.assertIsNotNone(ACTIVE_LINK.search(html))
+
+        ucie = (SITE / "D2D/wiki/ucie-pcie-read/index.html").read_text(encoding="utf-8")
+        self.assertIn('title="UCIe 1.1 如何承载一次 PCIe 读取？"', ucie)
+        self.assertRegex(ucie, r'<span class="md-ellipsis">\s*UCIe 1\.1 读取案例\s*</span>')
 
         cxl = (SITE / "COHERENCE/wiki/cxl-host-memory/index.html").read_text(encoding="utf-8")
         self.assertIn('title="CXL：从设备发现到内存访问"', cxl)
