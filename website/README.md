@@ -22,7 +22,7 @@ Wiki 与博客的共同写作和设计要求见 [Wiki 与博客设计规则](../
 
 原有专题的源码位置由 `website/source-layout.json` 指定，暂存时映射回原发布路径。存储系统的六个源码目录依次为 `01-memory-hierarchy/`、`02-sram/`、`03-dram/`、`04-dram-controller/`、`05-hbf/`、`06-system-integration/`；共享图片位于 `assets/`。系列首页由 `series/storage/README.md` 维护。历史维护资料保存在 `docs/archive/storage/`，不参与发布。
 
-芯片与系统互连的系列首页维护在 `website/interconnect.md`，仓库内的专题入口维护在 `series/interconnect/README.md`。九个专题的正文都位于 `series/interconnect/`：既有的 `BUS/`、`NOC/`、`PCIE/`、`SERDES/`、`CPO/` 保留原发布路径；`D2D/`、`COHERENCE/`、`SCALEUP/`、`NETWORK/` 分别承载芯粒、一致性、加速器和系统网络专题。专题目录及其发布路径由 `website/source-layout.json` 与 `website/prepare.py` 配置，主归属由 `website/ownership.py` 决定。CPO 的侧栏按 `website/hooks.py` 的技术、产业、研究和维护分组，章节文件和公开路径不移动；未列入分组的新章节仍会显示，维护时应为它选择合适分组。
+芯片与系统互连的系列首页维护在 `website/interconnect.md`，仓库内的专题入口维护在 `series/interconnect/README.md`。九个专题的正文都位于 `series/interconnect/`，各专题以 `wiki/README.md` 为正文入口：既有的 `BUS/`、`NOC/`、`PCIE/`、`SERDES/`、`CPO/` 保留原发布路径；`D2D/`、`COHERENCE/`、`SCALEUP/`、`NETWORK/` 分别承载芯粒、一致性、加速器和系统网络专题。互连历史资料位于 `docs/archive/interconnect/`，不参与发布。专题目录及其发布路径由 `website/source-layout.json` 与 `website/prepare.py` 配置，主归属由 `website/ownership.py` 决定。CPO 的侧栏按 `website/hooks.py` 的技术、产业、研究和维护分组，章节文件和公开路径不移动；未列入分组的新章节仍会显示，维护时应为它选择合适分组。
 
 电路与时序文章及其图片目录也在 `website/source-layout.json` 中配置。调整源码目录或添加存储系统文章时，应同步检查映射和文章的导航归属；暂存目录中的旧路径保持不变。存储层级与数据路径的文章映射按文件记录，因此新增文章时需明确选择公开路径，并更新 `website/storage_navigation.py`。构建会检查来源覆盖、路径边界、导航分组和发布路径冲突，避免遗漏或重复发布文件。
 
@@ -119,7 +119,7 @@ mkdocs build
 
 ## 内容和图解
 
-- 正文来源位于 `series/`；`wiki.old/`、`task.md`、`seed/` 和 `docs/archive/storage/` 不在网站构建范围内。
+- 正文来源位于 `series/`；`wiki.old/`、`task.md`、`seed/` 和 `docs/archive/` 不在网站构建范围内。
 - 总首页维护在 `website/home.md`，系列目录维护在 `website/series.md`，微架构系列首页维护在 `website/microarchitecture.md`，存储系统系列首页维护在 `series/storage/README.md`，系列列表维护在 `website/series.json`。精选文章列表维护在 `website/articles.md`，互动图解维护在 `website/visuals.md`，图形与脚本位于 `website/assets/`。精选文章直接引用现有正文，后续可逐篇修改原文。
 - 其余六个系列首页的封面图位于 `website/assets/images/series-covers/`，由 `website/hooks.py` 结合页面原有标题与导语生成。图片的替代文字和图注也在该文件维护；首页正文和原有链接仍由各系列的 Markdown 维护。
 - DRAM 图解只表示一次显式 PRE 读流程的逻辑阶段，不给出周期数或替代器件规格。

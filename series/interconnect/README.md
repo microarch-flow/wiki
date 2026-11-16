@@ -22,8 +22,4 @@
 - 已有的专题根目录 `README.md` 可以作为历史兼容入口；新专题不再建立第二份正文入口。
 - 专题根目录中的任务和规划文件是维护资料，不是正文。历史资料单独标明状态，不作为现行正文维护。
 
-### 现有维护资料
-
-- [NoC 旧版 Wiki](NOC/wiki.old/README.md)：重写前的历史备份；现行正文见 [NoC Wiki](NOC/wiki/README.md)。
-- [NoC 重写任务](NOC/task.md)：旧版重写的任务说明。
-- [SerDes Wiki 规划与实施记录](SERDES/wiki-plan.md)：专题的规划、资料起点和实施记录。
+已归档的互连历史资料见 [历史资料索引](../../docs/archive/interconnect/README.md)。

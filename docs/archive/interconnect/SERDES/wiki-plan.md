@@ -2,7 +2,7 @@
 
 状态：**规划与实施记录**。三个阶段的规划正文和图解已编写。实际检查范围和结果以本地构建与自检记录为准；专题内容不代替具体协议规范或产品验证。
 
-输入包括[现有 Wiki 总览](../../../README.md)、[Wiki 与博客设计规则](../../../docs/wiki-blog-design-rules.md)，以及仅保存在本地的 Claude 对话记录。对话提供了读者问题和待核验观点，不作为技术结论的依据。本文列出的技术资料是起点；正文仍需逐条核实来源、适用对象和条件。
+输入包括[现有 Wiki 总览](../../../../README.md)、[Wiki 与博客设计规则](../../../wiki-blog-design-rules.md)，以及仅保存在本地的 Claude 对话记录。对话提供了读者问题和待核验观点，不作为技术结论的依据。本文列出的技术资料是起点；正文仍需逐条核实来源、适用对象和条件。
 
 ## 1. 定位与读者
 
@@ -160,7 +160,7 @@ SERDES/
 | `phy-serdes-protocol.md` | SerDes 的窄义串并转换与收发器广义用法；PHY、PCS/PMA、协议和实现边界。用具体协议作例，不把划分当成所有标准的共同定义。 | 把一个给定收发器的数据路径与 PCIe 分层对应；解释同一 SerDes IP 支持某协议不等于完整产品已支持该协议。[S1](#s1)、[S3](#s3) |
 | `rates-clocks-and-ui.md` | 比特率、符号率、并行字时钟、UI；NRZ 和 PAM4 的最小区别；发送与接收时钟可能不同。 | 核算 `32 × 312.5 MHz = 10 Gb/s` 的条件；反例：`32 × 156 MHz` 并不等于 `10 Gb/s`。[S4](#s4) |
 
-入口需要先链接[共用电路与时序基础](../../microarchitecture/foundations/electrical-timing-foundations.md)，并指出高速电路可以使用分时、半速率或多相结构；不能把线速率直接等同于每一级数字逻辑的时钟。
+入口需要先链接[共用电路与时序基础](../../../../series/microarchitecture/foundations/electrical-timing-foundations.md)，并指出高速电路可以使用分时、半速率或多相结构；不能把线速率直接等同于每一级数字逻辑的时钟。
 
 ### 4.2 电信号与通道：02
 
@@ -259,11 +259,11 @@ r[k] = 0.7 × a[k] + 0.2 × a[k−1]
 
 | 现有内容 | SerDes 专题如何使用 | 分工边界 |
 | --- | --- | --- |
-| [从电荷到芯片时序](../../microarchitecture/foundations/electrical-timing-foundations.md) | 作为电容、电压、边沿、setup / hold 的先修入口。 | 共用基础解释同步数字路径；SerDes 专题继续解释跨通道波形、时钟恢复和判决。 |
-| [PCIe 分层架构](../PCIE/wiki/02-link-transaction-basics/layered-architecture-transaction-data-link-physical.md) | 从协议物理层链接到 SerDes 机制，再从训练案例返回 PCIe。 | PCIe 专题保留协议、事务、链路层及系统语义；本专题不复制整套 PCIe 规范。 |
-| [封装信号完整性](../../chip-development/FAB/wiki/06-cross-cutting-engineering/signal-integrity-in-package.md) | 复用反射算例及封装、回流和 SI/PI 联系。 | FAB 关注制造与封装约束；本专题聚焦 TX—通道—RX 的链路行为。 |
-| [CPO 光链路基础](../CPO/wiki/04-optical-engine/optical-link-basics.md) | 从电 SerDes 边界连接驱动、调制器、光通道和接收侧。 | 光功率预算与光器件留在 CPO；不能把光损耗预算直接套成电通道预算。 |
-| [DDR：双倍数据率](../../storage/03-dram/protocols/why-double-data-rate.md) | 对比并行、随路选通与嵌入时钟串行链路，说明采样与训练共性。 | 不把 DDR / HBM 的 PHY 简化为“没有串并转换”，也不把其整个接口称为常见长距 SerDes。 |
+| [从电荷到芯片时序](../../../../series/microarchitecture/foundations/electrical-timing-foundations.md) | 作为电容、电压、边沿、setup / hold 的先修入口。 | 共用基础解释同步数字路径；SerDes 专题继续解释跨通道波形、时钟恢复和判决。 |
+| [PCIe 分层架构](../../../../series/interconnect/PCIE/wiki/02-link-transaction-basics/layered-architecture-transaction-data-link-physical.md) | 从协议物理层链接到 SerDes 机制，再从训练案例返回 PCIe。 | PCIe 专题保留协议、事务、链路层及系统语义；本专题不复制整套 PCIe 规范。 |
+| [封装信号完整性](../../../../series/chip-development/FAB/wiki/06-cross-cutting-engineering/signal-integrity-in-package.md) | 复用反射算例及封装、回流和 SI/PI 联系。 | FAB 关注制造与封装约束；本专题聚焦 TX—通道—RX 的链路行为。 |
+| [CPO 光链路基础](../../../../series/interconnect/CPO/wiki/04-optical-engine/optical-link-basics.md) | 从电 SerDes 边界连接驱动、调制器、光通道和接收侧。 | 光功率预算与光器件留在 CPO；不能把光损耗预算直接套成电通道预算。 |
+| [DDR：双倍数据率](../../../../series/storage/03-dram/protocols/why-double-data-rate.md) | 对比并行、随路选通与嵌入时钟串行链路，说明采样与训练共性。 | 不把 DDR / HBM 的 PHY 简化为“没有串并转换”，也不把其整个接口称为常见长距 SerDes。 |
 
 专题已按现有配置接入网站；每阶段继续检查正文链接、导航、面包屑和搜索。`wiki-plan.md` 和原始聊天记录留在正文目录之外；公开发布按仓库既有流程另行处理。
 
