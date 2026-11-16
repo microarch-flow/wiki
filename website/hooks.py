@@ -25,8 +25,12 @@ TOPICS = (
     ("COMPUTE", "COMPUTE · 计算"),
     ("BUS", "BUS · 片上总线"),
     ("NOC", "NoC · 片上网络"),
+    ("D2D", "芯粒间连接"),
     ("DMA", "DMA · 数据搬运"),
     ("PCIE", "PCIe · 主机互连"),
+    ("COHERENCE", "一致性与内存语义"),
+    ("SCALEUP", "加速器间通信"),
+    ("NETWORK", "服务器与集群网络"),
     ("CIM", "CIM · 存内计算"),
     ("CPO", "CPO · 光互连"),
     ("FAB", "FAB · 制造与封装"),
@@ -313,6 +317,37 @@ def storage_resources_tree(root):
     return [{STORAGE_RESOURCES: entries + sections}] if entries or sections else []
 
 
+CPO_SECTIONS = (
+    ("技术与工程", ("01-overview", "03-architecture-platform", "04-optical-engine",
+                    "05-electrical-thermal-reliability", "06-manufacturing", "07-applications-economics")),
+    ("产业与公司", ("02-industry", "09-supply-chain-geography", "10-company-ecosystem",
+                    "11-deep-company-cards", "12-conclusions-competition", "15-china-opportunities")),
+    ("研究与索引", ("08-research", "13-one-page-summary", "14-indexes", "16-learning-navigation")),
+    ("维护与模板", ("17-report-template", "18-sources-and-updates", "19-versioning-and-usage",
+                    "20-editorial-style")),
+)
+
+
+def cpo_topic_tree(root, group):
+    """Group CPO chapters without moving or excluding any existing pages."""
+    tree = owned_topic_tree(root, "CPO", INTERCONNECT, group)
+    section_for_title = {}
+    for label, directories in CPO_SECTIONS:
+        for directory in directories:
+            index = root / "CPO" / "wiki" / directory / "README.md"
+            if index.is_file():
+                section_for_title[title(index)] = label
+    grouped = {label: [] for label, _ in CPO_SECTIONS}
+    ungrouped = []
+    for item in tree:
+        label = next(iter(item)) if isinstance(item, dict) and len(item) == 1 else None
+        if label in section_for_title and isinstance(item[label], list):
+            grouped[section_for_title[label]].append(item)
+        else:
+            ungrouped.append(item)
+    return ungrouped + [{label: grouped[label]} for label, _ in CPO_SECTIONS if grouped[label]]
+
+
 def grouped_original_topics(root, series):
     result = []
     for group in GROUPS[series]:
@@ -330,10 +365,13 @@ def grouped_original_topics(root, series):
         if (series, group) == owner("electrical-timing-foundations.md"):
             entries.append("electrical-timing-foundations.md")
         for name, label in TOPICS:
-            tree = owned_topic_tree(root, name, series, group)
+            tree = (cpo_topic_tree(root, group) if series == INTERCONNECT and group == "共封装光学（CPO）" and name == "CPO"
+                    else owned_topic_tree(root, name, series, group))
             if tree:
                 if series == STORAGE:
                     entries.extend(compact_storage_sections(tree))
+                elif series == INTERCONNECT and name in {"D2D", "COHERENCE", "SCALEUP", "NETWORK"}:
+                    entries.extend(tree)
                 else:
                     entries.append({label: tree})
         # A sole directory around a whole storage topic repeats the topic's
@@ -508,6 +546,11 @@ def on_config(config, **kwargs):
             config.extra["storage_sidebar_labels"][path] = (short, title(root / path))
     if (root / INTEGRATION_HOME).is_file():
         config.extra["storage_sidebar_labels"][INTEGRATION_HOME] = (INTEGRATION_TOPIC, title(root / INTEGRATION_HOME))
+    # Reuse the sidebar label registry for the coherence reading list.
+    chapter = root / "COHERENCE" / "wiki"
+    for filename, short in reading_items(chapter):
+        path = chapter / filename
+        config.extra["storage_sidebar_labels"][path.relative_to(root).as_posix()] = (short, title(path))
     storage_topics = grouped_original_topics(root, STORAGE)
     storage_resources = storage_resources_tree(root)
     validate_storage_navigation(root, [*storage_topics, *storage_resources])
@@ -651,7 +694,7 @@ def on_page_content(html, page, **kwargs):
 
 
 def on_post_page(output, page, **kwargs):
-    """Shorten storage sidebar labels and expose the current page accessibly."""
+    """Shorten configured sidebar labels and expose the current page accessibly."""
     labels = kwargs["config"].extra.get("storage_sidebar_urls", {})
     start = output.find('<div class="md-sidebar md-sidebar--primary"')
     end = output.find('<div class="md-sidebar md-sidebar--secondary"', start)

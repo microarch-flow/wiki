@@ -19,6 +19,14 @@
     const link = heading.querySelector(':scope > a.md-nav__link');
     const control = heading.matches('label') ? heading : heading.querySelector(':scope > label.md-nav__link');
     const text = heading.querySelector('.md-ellipsis');
+    const list = panel.querySelector(':scope > ul.md-nav__list');
+    // Material opens the current index as a drawer even when it has no child
+    // pages. Keep the active topic link visible in its parent instead.
+    if (link?.getAttribute('aria-current') === 'page' && list && !list.children.length) {
+      toggle.checked = false;
+      panel.setAttribute('aria-expanded', 'false');
+      return;
+    }
     if (!control || control.htmlFor !== toggle.id || !text) return;
 
     const name = text.textContent.replace(/\s+/g, ' ').trim();

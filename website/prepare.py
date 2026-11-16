@@ -16,7 +16,8 @@ from storage_navigation import INTEGRATION_PAGE_SECTION, MEMORY_HOME, MEMORY_PAG
 
 
 ROOT = Path(__file__).resolve().parent.parent
-TOPICS = ("RAM", "COMPUTE", "BUS", "NOC", "DMA", "PCIE", "CIM", "CPO", "FAB", "SERDES", "HBF")
+TOPICS = ("RAM", "COMPUTE", "BUS", "NOC", "D2D", "DMA", "PCIE", "COHERENCE",
+          "SCALEUP", "NETWORK", "CIM", "CPO", "FAB", "SERDES", "HBF")
 SOURCE_TOPICS = tuple(name for name in TOPICS if name not in {"RAM", "HBF"})
 STORAGE_TOPICS = dict(zip((
     "01-memory-hierarchy", "02-sram", "03-dram", "04-dram-controller", "05-hbf", "06-system-integration",

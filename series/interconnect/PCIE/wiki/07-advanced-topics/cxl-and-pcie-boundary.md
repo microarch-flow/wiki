@@ -2,7 +2,7 @@
 
 上级：[07 高级主题](./README.md)
 
-相关：[PCIE 在解决什么问题](../01-overview/problem-statement.md)
+相关：[PCIE 在解决什么问题](../01-overview/problem-statement.md)、[CXL：从设备发现到内存访问](../../../COHERENCE/wiki/cxl-host-memory.md)
 
 ## 这页在回答什么问题
 

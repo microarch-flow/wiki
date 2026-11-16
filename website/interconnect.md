@@ -1,11 +1,29 @@
 # 芯片与系统互连
 
-从通信请求出发，区分事务语义、网络转发和物理链路。一个系统可以同时使用这些层次。
+一次通信可能同时涉及事务语义、网络转发和物理链路。本系列从片上延伸到封装、设备与系统网络，分别解释各个边界上的问题。
 
-- [片上事务与总线（BUS）](BUS/wiki/README.md)：事务、握手、仲裁和桥接。
-- [片上网络（NoC）](NOC/wiki/README.md)：路由、缓冲、流控与拓扑。
-- [系统 I/O 互连（PCIe）](PCIE/wiki/README.md)：设备枚举、地址和事务。
-- [高速电链路（SerDes）](SERDES/wiki/README.md)：发送、接收、训练和验证。
-- [共封装光学（CPO）](CPO/wiki/README.md)：光引擎、封装和系统集成。
+## 从问题选择专题
 
-跨芯粒应用可先读 [SerDes 的芯粒与 D2D 文章](SERDES/wiki/08-system-applications/chiplet-and-d2d.md)。CXL 的现有材料见 [CXL 与 PCIe 的边界](PCIE/wiki/07-advanced-topics/cxl-and-pcie-boundary.md)。这些链接属于相关专题的延伸阅读。
+1. [片上事务与总线（BUS）](BUS/wiki/README.md)：IP 怎样发出事务、接收响应，并处理顺序与背压？
+2. [片上网络（NoC）](NOC/wiki/README.md)：数据怎样经过路由器、缓冲和链路？竞争发生在哪里？
+3. [封装内芯粒互连](D2D/wiki/README.md)：不同 die 怎样建立连接，并交付上层协议的数据？
+4. [系统 I/O 互连（PCIe）](PCIE/wiki/README.md)：主机怎样发现设备，并通过配置、地址与事务访问设备？
+5. [一致性与内存互连](COHERENCE/wiki/README.md)：多个参与者怎样维护缓存副本，或访问设备连接的内存？
+6. [加速器互连](SCALEUP/wiki/README.md)：多个加速器怎样访问对端资源，并通过交换结构通信？
+7. [系统网络](NETWORK/wiki/README.md)：服务器和节点怎样使用以太网、RDMA 或 InfiniBand 交换数据？
+8. [高速电链路（SerDes）](SERDES/wiki/README.md)：电信号怎样经过通道，并在接收端恢复？
+9. [共封装光学（CPO）](CPO/wiki/README.md)：光引擎怎样与电子芯片集成，封装和维护带来什么约束？
+
+前七项按通信场景和系统问题组织，后两项关注链路实现与集成。这个顺序供入门参考，不表示它们互斥，也不规定一种固定协议栈。
+
+## 一次访问会经过哪些边界
+
+假设主机通过 PCIe 读取加速器的寄存器。请求先经过 PCIe 链路到达设备；设备内部可以用桥转换为 AXI 读，再由 NoC 送到目标。目标返回数据后，设备形成 PCIe Completion，主机才能得到读结果。这里的 AXI 和 NoC 是一种可能的组合，不是每台设备的固定结构。
+
+如果目标位于另一颗芯粒，芯粒间链路和网关也会进入路径。想看构造案例，可从[封装内芯粒互连](D2D/wiki/README.md)开始；想分析通道和收发电路，可再读 [SerDes](SERDES/wiki/README.md)。
+
+## 相关系列
+
+- [DMA 与异步数据搬运](DMA/wiki/README.md)：任务如何发起搬运，以及软件如何观察完成。
+- [存储系统](storage.md)：数据放在哪里，存储层次和控制器怎样服务访问。
+- [推理运行时](series/inference-runtime/README.md)：并行任务产生哪些通信需求。

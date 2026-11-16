@@ -32,6 +32,8 @@ plugins:
       lang:
         - zh
         - en
+      # Exact protocol names must remain searchable with Material's prefix queries.
+      pipeline: []
 markdown_extensions:
   - tables
   - attr_list

@@ -15,8 +15,8 @@ from urllib.parse import unquote, urljoin, urlsplit
 
 SITE = Path(__file__).resolve().parents[2] / ".site-build" / "site"
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
-from hooks import grouped_original_topics, make_tree, storage_resources_tree  # noqa: E402
-from ownership import STORAGE, owner  # noqa: E402
+from hooks import CPO_SECTIONS, grouped_original_topics, make_tree, storage_resources_tree  # noqa: E402
+from ownership import GROUPS, INTERCONNECT, STORAGE, owner  # noqa: E402
 from storage_navigation import (INTEGRATION_AFTER, INTEGRATION_HOME, INTEGRATION_PACKAGING,
                                 MEMORY_HOME, MEMORY_SECTIONS, RESOURCE_HOME, RESOURCE_SECTIONS,
                                 SYSTEM_SELECTION)  # noqa: E402
@@ -35,6 +35,77 @@ def page_url(relative):
 
 
 class GeneratedNavigationTests(unittest.TestCase):
+    def test_interconnect_topics_navigation_search_and_cpo_coverage(self):
+        docs = SITE.parent / "docs"
+        groups = grouped_original_topics(docs, INTERCONNECT)
+        self.assertEqual([next(iter(group)) for group in groups], list(GROUPS[INTERCONNECT]))
+        self.assertEqual(len(groups), 9)
+        self.assertEqual(groups[2], {"封装内芯粒互连": ["D2D/wiki/README.md"]})
+        self.assertEqual(groups[5], {"加速器互连": ["SCALEUP/wiki/README.md"]})
+        self.assertEqual(groups[6], {"系统网络": ["NETWORK/wiki/README.md"]})
+        self.assertEqual(groups[4], {"一致性与内存互连": [
+            "COHERENCE/wiki/README.md", "COHERENCE/wiki/cxl-host-memory.md",
+        ]})
+
+        def pages(item):
+            if isinstance(item, str):
+                return [item] if item.endswith(".md") else []
+            if isinstance(item, list):
+                return [page for child in item for page in pages(child)]
+            if isinstance(item, dict):
+                return [page for child in item.values() for page in pages(child)]
+            return []
+
+        nav_pages = pages(groups)
+        cpo_pages = [page for page in nav_pages if page.startswith("CPO/wiki/")]
+        expected_cpo = {path.relative_to(docs).as_posix() for path in (docs / "CPO/wiki").rglob("*.md")}
+        self.assertEqual(set(cpo_pages), expected_cpo)
+        self.assertEqual(len(cpo_pages), len(expected_cpo))
+        cpo = groups[-1]["共封装光学（CPO）"][0]["CPO · 光互连"]
+        group_labels = [next(iter(item)) for item in cpo if isinstance(item, dict)]
+        self.assertEqual(group_labels[-4:], [label for label, _ in CPO_SECTIONS])
+        for label, directories in CPO_SECTIONS:
+            section = next(item[label] for item in cpo if isinstance(item, dict) and label in item)
+            expected = {path.relative_to(docs).as_posix()
+                        for directory in directories
+                        for path in (docs / "CPO/wiki" / directory).rglob("*.md")}
+            self.assertEqual(set(pages(section)), expected, label)
+
+        search_index = json.loads((SITE / "search/search_index.json").read_text(encoding="utf-8"))
+        self.assertEqual(search_index["config"]["pipeline"], [])
+        search = search_index["docs"]
+        locations = {item["location"] for item in search}
+        cases = {
+            "D2D/wiki/": "封装内芯粒互连",
+            "COHERENCE/wiki/": "一致性与内存互连",
+            "COHERENCE/wiki/cxl-host-memory/": "一致性与内存互连",
+            "SCALEUP/wiki/": "加速器互连",
+            "NETWORK/wiki/": "系统网络",
+            "BUS/wiki/02-fundamentals/bus-vs-noc-vs-point-to-point/": "片上事务与总线（BUS）",
+            "NOC/wiki/06-ai-noc-specifics/chiplet-and-die-to-die-interconnect/": "片上网络（NoC）",
+            "PCIE/wiki/07-advanced-topics/cxl-and-pcie-boundary/": "系统 I/O 互连（PCIe）",
+            "SERDES/wiki/08-system-applications/chiplet-and-d2d/": "高速电链路（SerDes）",
+            "CPO/wiki/01-overview/taxonomy/": "共封装光学（CPO）",
+        }
+        for location, group in cases.items():
+            with self.subTest(location=location):
+                html = (SITE / location / "index.html").read_text(encoding="utf-8")
+                self.assertIn(location, locations)
+                self.assertIn(group, BREADCRUMB.search(html).group(1))
+                self.assertIsNotNone(ACTIVE_LINK.search(html))
+
+        cxl = (SITE / "COHERENCE/wiki/cxl-host-memory/index.html").read_text(encoding="utf-8")
+        self.assertIn('title="CXL：从设备发现到内存访问"', cxl)
+        self.assertRegex(cxl, r'<span class="md-ellipsis">\s*CXL 内存访问\s*</span>')
+
+        for location, anchor in (
+            ("BUS/wiki/02-fundamentals/bus-vs-noc-vs-point-to-point/", "三者的分界不是线多线少"),
+            ("NOC/wiki/06-ai-noc-specifics/chiplet-and-die-to-die-interconnect/", "跨-die-不再是多几-hop"),
+            ("SERDES/wiki/08-system-applications/chiplet-and-d2d/", "宽接口与较高速接口的取舍"),
+        ):
+            html = (SITE / location / "index.html").read_text(encoding="utf-8")
+            self.assertIn(f'id="{anchor}"', html)
+
     def test_self_test_question_numbers_continue_across_sections(self):
         html = (SITE / "RAM/self-test-questions/index.html").read_text(encoding="utf-8")
         article = re.search(r'<article\b[^>]*>(.*?)</article>', html, re.DOTALL).group(1)
@@ -534,7 +605,7 @@ class GeneratedNavigationTests(unittest.TestCase):
                 "6T SRAM cell：它如何保存、读取和写入 1 bit",
             ],
             "CPO/wiki/08-research/detailed-cards/cpo-status-challenges-solutions/index.html": [
-                "首页", "芯片与系统互连", "共封装光学（CPO）", "CPO · 光互连", "08 研究模板与术语",
+                "首页", "芯片与系统互连", "共封装光学（CPO）", "CPO · 光互连", "研究与索引", "08 研究模板与术语",
                 "完整论文卡", "完整卡：CPO status, challenges, and solutions",
             ],
             "electrical-timing-foundations/index.html": [

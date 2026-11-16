@@ -22,6 +22,8 @@ Wiki 与博客的共同写作和设计要求见 [Wiki 与博客设计规则](../
 
 原有专题的源码位置由 `website/source-layout.json` 指定，暂存时映射回原发布路径。存储系统的六个源码目录依次为 `01-memory-hierarchy/`、`02-sram/`、`03-dram/`、`04-dram-controller/`、`05-hbf/`、`06-system-integration/`；共享图片位于 `assets/`。系列首页由 `series/storage/README.md` 维护。历史维护资料保存在 `docs/archive/storage/`，不参与发布。
 
+芯片与系统互连的系列首页维护在 `website/interconnect.md`，仓库内的专题入口维护在 `series/interconnect/README.md`。九个专题的正文都位于 `series/interconnect/`：既有的 `BUS/`、`NOC/`、`PCIE/`、`SERDES/`、`CPO/` 保留原发布路径；`D2D/`、`COHERENCE/`、`SCALEUP/`、`NETWORK/` 分别承载芯粒、一致性、加速器和系统网络专题。专题目录及其发布路径由 `website/source-layout.json` 与 `website/prepare.py` 配置，主归属由 `website/ownership.py` 决定。CPO 的侧栏按 `website/hooks.py` 的技术、产业、研究和维护分组，章节文件和公开路径不移动；未列入分组的新章节仍会显示，维护时应为它选择合适分组。
+
 电路与时序文章及其图片目录也在 `website/source-layout.json` 中配置。调整源码目录或添加存储系统文章时，应同步检查映射和文章的导航归属；暂存目录中的旧路径保持不变。存储层级与数据路径的文章映射按文件记录，因此新增文章时需明确选择公开路径，并更新 `website/storage_navigation.py`。构建会检查来源覆盖、路径边界、导航分组和发布路径冲突，避免遗漏或重复发布文件。
 
 跨专题的历史评审记录保存在 `docs/reviews/`，构建时暂存到 `reviews/`，保留原公开地址。评审页面不出现在网站导航和站内搜索结果中。目录中的 Markdown、第三轮盲测脚本和参考数据仍可通过原地址访问。评审结论对应当时的正文基线；打磨文章时，应结合当前正文和资料重新核对。
@@ -98,6 +100,8 @@ mkdocs build
 ```
 
 输出目录为 `.site-build/site/`。中文搜索使用 `jieba`；Mermaid 代码块由主题处理。没有联网的读者也可以使用已加载的网页和本地资源，实际离线能力仍取决于浏览器缓存与访问方式。
+
+搜索保留中文分词，并关闭英文词干化。Material 对普通查询会追加前缀通配符；若索引先把 `UCIe` 词干化为 `uci`，搜索完整名称反而可能漏掉该词。关闭词干化后，协议名按原词和前缀匹配；英文单复数等词形不会自动归并，必要时分别搜索。
 
 构建时，`website/hooks.py` 会根据自定义 CSS 和 JavaScript 的内容生成版本参数，避免新页面继续使用浏览器缓存的旧资源。
 
