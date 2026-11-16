@@ -20,8 +20,8 @@
 - [路由器流水线](./02-router-microarchitecture/router-pipeline-stages.md)
 - [输入缓冲组织](./02-router-microarchitecture/input-buffer-organization.md)
 - [虚通道基础](./02-router-microarchitecture/virtual-channel-fundamentals.md)
-- [VC 与交换分配](./02-router-microarchitecture/allocator-design-vc-switch.md)
 - [Credit 与反压](./02-router-microarchitecture/credit-based-flow-control.md)
+- [VC 与交换分配](./02-router-microarchitecture/allocator-design-vc-switch.md)
 - [路由器面积与功耗](./02-router-microarchitecture/router-power-area-tradeoff.md)
 
 ## 03 拓扑与物理组织 {#03-topology}

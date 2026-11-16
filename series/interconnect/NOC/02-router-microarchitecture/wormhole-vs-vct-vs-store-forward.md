@@ -1,156 +1,49 @@
-# Wormhole Vs VCT Vs Store Forward
+# 存储转发、虚直通与虫洞交换有什么区别？
 
-上级：[02 Router Microarchitecture](./README.md)
-相关：[Packet Flit Phit Hierarchy](./packet-flit-phit-hierarchy.md), [Virtual Channel Fundamentals](./virtual-channel-fundamentals.md)
+上级：[02 路由器与逐跳流控](./README.md)
 
-## 这页在回答什么问题
+相关：[Packet、Flit 与 Phit](./packet-flit-phit-hierarchy.md)、[虚通道基础](./virtual-channel-fundamentals.md)
 
-为什么 NoC 的 switching 方式会从 store-and-forward 演化到 virtual cut-through，再演化到 wormhole；每一步到底在拿什么换什么。
+<span id="wormhole-vs-vct-vs-store-forward"></span><span id="这页在回答什么问题"></span>一个 packet 到达中间节点后，什么时候可以向下一跳发送？如果输出被占用，已经接收的数据放在哪里？不同交换方式对这两个问题给出不同答案。
 
-这不是技术年表，而是一条非常实用的 trade-off 链：你想省多少 buffer，就得接受多少路径占用和 HoL blocking 风险。
+## 三种转发方式
 
-## Store-and-forward：最直观，也最昂贵
+| 方式 | 何时开始向下一跳发送 | 缓冲与阻塞 |
+| --- | --- | --- |
+| <span id="store-and-forward最直观也最昂贵"></span>存储转发（store-and-forward） | 本节点收齐整个 packet 后。 | 本节点需要能保存完整 packet；下一跳等待与本地收包较容易分开。 |
+| <span id="virtual-cut-through先减延迟但仍要保整包缓冲"></span>虚直通（virtual cut-through，VCT） | 头部确定输出且满足实现的发送条件后，可以在收齐前开始。 | 遇阻时保留整包所需的缓冲能力；一种实现会在接收前为整包预留空间。 |
+| <span id="wormhole按-flit-把路径拉成管道"></span>虫洞交换（wormhole） | 头 flit 取得所需资源后先行，其余 flit 逐步跟随。 | 中间节点不必为每个包预留整包空间；受阻的包可能分布在多个节点。 |
 
-store-and-forward 的规则是：一个 router 必须先收下整个 packet，才能开始往下一跳转发。
+VCT 的原始思路是在输出可用时提前转发，遇阻时缓存；不同实现的预留时点和条件可能不同。[Kermani 与 Kleinrock，1979](https://www.lk.cs.ucla.edu/data/files/Kermani/Virtual%20Cut-through%20A%20New%20Computer%20Communication%20Switching.pdf)
 
-好处很容易理解：
+wormhole 中，一个包可能持有沿途的 VC 上下文和若干缓冲槽。物理 crossbar 和链路可以按 flit 仲裁；如果实现允许，其他 VC 的 flit 可在空隙中通过。**持有 VC 不等于一直独占物理链路。**[Dally，1992](https://groups.csail.mit.edu/cag/PSRG/papers/dally-ieee92.pdf)
 
-- 控制最简单
-- packet 在本地完整可见
-- 下游路径争用和本地接收相对解耦
+## 用同一条三跳路径比较
 
-代价同样直接：
+<span id="一个三跳例子"></span>下面是构造例子，不是硬件测量。路径为 R0 → R1 → R2 → R3；一个包包含头 H、两个 body 和尾 T，共 4 个 flit。拍 0 开始前，整个包已在 R0 可发送。各链路每拍传一个 flit，下一拍开始时到达相邻节点；无竞争、无空拍。节点可在到达拍转发。VCT 的例子假设各跳均可为该包预留足够空间。
 
-- 每个 router 都要为整包准备缓冲
-- 每一跳都要额外支付“等整包收齐”的时间
+| 方式 | R0 → R1 的发送拍 | R1 → R2 的发送拍 | R2 → R3 的发送拍 | T 到达 R3 |
+| --- | --- | --- | --- | --- |
+| 存储转发 | 0–3 | 4–7 | 8–11 | 拍 12 开始 |
+| 所述 VCT | 0–3 | 1–4 | 2–5 | 拍 6 开始 |
+| 所述 wormhole | 0–3 | 1–4 | 2–5 | 拍 6 开始 |
 
-举例，64B packet，128b 链路：
+VCT 与 wormhole 在这个无阻塞例子中有相同时间线，但它们对缓冲的要求不同。存储转发每跳都先收齐包；另外两种可以让多个 hop 同时传输同一个包的不同 flit。
 
-```text
-64B = 512b = 4 flit
+本例把路由和节点内部转发简化到到达拍即可开始。实际流水级、链路延迟、接收条件和竞争都会改变时间；它也不同于[模拟器拍末快照契约](../08-simulator-construction/router-pipeline-pseudocode.md#时间与快照契约)，不能混用拍号。
 
-每跳至少要先花 4 cycles 收满，再开始发下一跳
-```
+## 遇到阻塞会发生什么
 
-对于多跳路径，这个延迟会按 hop 叠加。你不是在流水前进，而是在每一跳都重新等一遍整包。
+<span id="packet-大小在-wormhole-下为什么尤其敏感"></span>在所述 wormhole 模型中，如果头部因下游资源不可用而停住，后续 flit 会在沿途有限的队列中等待。已有的 VC 绑定和缓冲槽可能持续被占用；阻塞能否继续传播，取决于在途流量、空槽和流控。
 
-## Virtual cut-through：先减延迟，但仍要保整包缓冲
+较长的包可能更久地持有包级上下文，也需要更多链路传输机会。其他 VC 是否可以交错前进，取决于队列和仲裁规则；不能仅凭包长推断另一个包一定等待多久。
 
-VCT 的关键改动是：header 一旦看见下游有足够空间容纳整个 packet，就可以不等全包收齐，尽早开始转发。
+<span id="为什么-wormhole-特别适合-npu"></span>较小的逐跳缓冲可能有利于面积受限的设计，但也要考虑资源耦合、控制和验证成本。NPU 或其他系统是否选择 wormhole，需要结合包长、流量、布局和服务要求比较。
 
-这减少了每 hop 的等待时间，因为 packet 可以像管道一样更早向前流。但它保留了一个重约束：下游必须能接下“整包”。
+## 用于建模时保留哪些条件
 
-于是你得到的 trade-off 是：
+<span id="常见误解"></span>无争用例子说明了提前转发可以减少等待，不证明某种交换方式在所有负载和实现下延迟最低。VCT 的整包可容纳条件，也不能直接替代所选实现的流控规则。
 
-- 延迟比 store-and-forward 低
-- 但 buffer 预算仍然接近按 packet 维度做
+<span id="建模启示"></span>记录每种方式的转发条件、缓冲容量、资源持有和释放时机。若关心逐 flit 阻塞，还需要队列、仲裁和流控状态；若只研究粗粒度容量，可以选择更简单的近似，但不能据此声称已算出逐跳等待。
 
-所以 VCT 是一个过渡方案。它已经意识到“整包等满再走”过于保守，但还没彻底摆脱整包缓冲这个成本中心。
-
-## Wormhole：按 flit 把路径拉成管道
-
-wormhole 再往前一步：header flit 先建路，后续 body/tail flit 只要前面的路径资源还占着，就可以持续跟进。router 不再需要容纳整包，只需容纳少量 flit。
-
-名字很形象，但真正值得记住的是它的资源行为：packet 可横跨多个 router，占用沿途的 input VC 上下文和 flit buffer slot。物理 crossbar/link 通常逐 flit 竞争，不必被整包锁住；若实现允许，来自其他 VC 的 flit 可以在间隙交织。
-
-好处：
-
-- buffer 需求大幅下降
-- 多 hop 能形成真正的流水
-- 非常适合片上面积敏感场景
-
-代价：
-
-- packet 占用路径资源的时间跨度变长
-- 一个长 packet 可以把后面的短 packet 压很久
-- HoL blocking 和 deadlock 风险被放大
-
-也就是说，wormhole 不是“更聪明的转发”，而是“用更小的 buffer 接受更紧的资源耦合”。
-
-## 一个三跳例子
-
-仍假设 64B 是含头尾的线上总包长、128b 链路、4 flit。以下 wormhole 时间线采用无争用、每跳每周期可传一 flit、每个 router 的头部转发为一拍的教学模型；它使用不同于第 08 章拍末快照的采样口径，实际 RC/VA/SA 和链路流水会增加延迟。
-
-store-and-forward：
-
-```text
-hop0: receive 4 cycles, then send
-hop1: receive 4 cycles, then send
-hop2: receive 4 cycles, then send
-```
-
-wormhole：
-
-```text
-cycle 0: header at R0
-cycle 1: header at R1, body0 at R0
-cycle 2: header at R2, body0 at R1, body1 at R0
-cycle 3: header at R3, body0 at R2, body1 at R1, tail at R0
-```
-
-这就是 wormhole 对 latency 和 buffer 的真正吸引力。你不再每跳支付整包等待，而是让 packet 跨多个 hop 同时占着路径。
-
-## 为什么 wormhole 特别适合 NPU
-
-NPU 常见特点是：
-
-- 端点数多
-- router 数量多
-- buffer 面积非常敏感
-- 许多流量是可预测、规整的大流
-
-在这种场景下，store-and-forward 太浪费 buffer，VCT 仍偏重，而 wormhole 给出一个更平衡的点：接受更复杂的资源管理，换取可承受的面积和更高的流水化能力。
-
-这也是为什么后面 VC、credit 和 allocator 变得如此重要。它们不是独立新机制，而是 wormhole 代价的后续补丁：
-
-- 因为 wormhole 会放大 HoL blocking，所以需要 VC
-- 因为只存少量 flit，所以需要精细 credit
-- 因为更多 flit 在途并行，所以 allocator 更重要
-
-## Packet 大小在 wormhole 下为什么尤其敏感
-
-同一条路径上，一个长 packet 会占着更多周期的 crossbar 与 link 机会，即便每一拍只是一个 flit。
-
-所以 packet 大小不只是 header overhead 问题，还会影响：
-
-- 路径占用时长
-- 后续流量等待时间
-- response 小包的尾延迟
-
-这点对 AI NoC 特别重要。把大块 activation 或 DMA response 做得过大，可能提升平均吞吐，却伤害 control/response 小流的 P99 延迟。
-
-## 常见误解
-
-常见误解：wormhole 一定比 VCT 或 store-and-forward 更好。  
-实际上：它只是更适合面积受限、多 hop 的片上网络；如果你极端重视隔离、整包可见性或调试简单性，别的点可能更合理。
-
-常见误解：wormhole 低 buffer 就等于低延迟。  
-实际上：它降低的是每 hop 的整包等待，但会通过更长的路径占用时间，把竞争和阻塞传播问题带回来。
-
-## 一句话理解
-
-store-and-forward 用整包缓冲换简单控制，VCT 用整包可容纳换更早转发，wormhole 用 flit 级流水换小 buffer；越往后，buffer 越省，资源耦合越强。
-
-## 建模启示
-
-如果采用 wormhole，模型至少要有：
-
-- `header_establishes_route`
-- `tail_releases_route`
-- `flit_level_buffer_occupancy`
-
-如果采用 store-and-forward，反而可以把一个 router 简化成“收到整包后延迟一拍再发”的 packet-level 队列；这就是为什么 switching policy 会直接决定模型粒度。
-
-一个通用数据结构可以写成：
-
-```text
-SwitchingPolicy = STORE_FORWARD | VCT | WORMHOLE
-```
-
-并据此改变 forwarding 条件：
-
-- `STORE_FORWARD`: `packet_fully_buffered == true`
-- `VCT`: `downstream_can_accept_full_packet == true`
-- `WORMHOLE`: 队首有 flit；header 已完成路由/VC 分配且下游 credit 足够；本拍还须赢得 SA，链路及本地输出可用
-
-若只关心结构趋势，`VCT` 常可忽略不单建；但如果你想解释“为什么 buffer 从 packet 级缩到 flit 级之后，VC 和 credit 立刻变关键”，那 VCT 这个中间态非常有助于把演化链讲清楚。
+<span id="一句话理解"></span>三种方式的关键区别是何时转发，以及遇阻时数据和资源留在哪里。

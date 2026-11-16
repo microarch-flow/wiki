@@ -1,149 +1,47 @@
-# Virtual Channel Fundamentals
+# 虚通道如何分离队列与共享链路？
 
-上级：[02 Router Microarchitecture](./README.md)
-相关：[Input Buffer Organization](./input-buffer-organization.md), [../04-routing-and-flow-control/deadlock-avoidance-turn-model.md](../04-routing-and-flow-control/deadlock-avoidance-turn-model.md)
+上级：[02 路由器与逐跳流控](./README.md)
 
-## 这页在回答什么问题
+相关：[输入缓冲组织](./input-buffer-organization.md)、[Credit 与反压](./credit-based-flow-control.md)
 
-VC 看起来像“把一条物理通道多开几路逻辑队列”，但它为什么会成为 NoC 设计的枢纽机制：既缓解 HoL blocking，又参与 deadlock avoidance 和 traffic isolation。
+<span id="virtual-channel-fundamentals"></span><span id="这页在回答什么问题"></span>虚通道（Virtual Channel，VC）让多个逻辑队列及其控制状态共享一条物理链路。它把缓冲和包的上下文分开管理，再由仲裁决定谁使用链路。
 
-如果只把 VC 理解成“多几个 queue”，你会严重低估它对 allocator 复杂度、QoS 策略和可分析性的影响。
+## 多个队列能改变什么
 
-## 没有 VC 时，错误耦合来得非常快
+<span id="没有-vc-时错误耦合来得非常快"></span>假设同一输入端口的包 A 要去 East，但 East 堵住；包 B 要去空闲的 North。若 A 和 B 在同一个 FIFO 中，且 A 在队首，B 不能越过 A。
 
-设想一个 input port 只有一个 FIFO。队首 packet 因 East 方向堵住了，后面本来要去 North 的 packet 也一起停。这就是 HoL blocking。
+如果 B 位于另一个可独立选择的 VC，并且 North 的下游资源可用，B 就可以参与仲裁。这个条件很重要：若 A、B 仍被放入同一队列，或 B 也受共享输出与目的端阻塞，增加 VC 不会让 B 自动前进。
 
-VC 的第一个动机，就是把这种错误耦合拆开。多个逻辑队列共享同一物理链路，但排队状态独立，于是“某个方向堵住”不会立刻把所有流量都拖死。
+<span id="vc-不会增加物理带宽"></span>多个 VC 共享物理链路，不增加链路的峰值传输能力。它们可以让一个队列阻塞时，另一个队列利用原本空闲的传输机会，因此实际利用率可能提高。[Dally，Virtual-Channel Flow Control](https://groups.csail.mit.edu/cag/PSRG/papers/dally-ieee92.pdf)
 
-这个动机非常重要，但还不是 VC 最深的价值。因为如果只是为了缓解 HoL，你可能会以为“多开几个队列，越多越好”。真实系统里，VC 的第二个动机更强，也更约束数量选择。
+## 一个包在 VC 上持有哪些状态
 
-## VC 的第二个动机：给资源依赖分层
+<span id="一个简单状态图"></span>以下以本专题的单播 wormhole 教学模型为例。header 在本地 input VC 的队首选择输出并申请下游 VC；body 和 tail 沿用这个绑定，同时仍逐 flit 竞争交换资源。各阶段可以合并，不要求每种实现都有相同状态机。
 
-wormhole packet 会沿路径持有一串资源：当前 input VC、下游 VC 绑定、buffer slot。死锁的根因，就是这些资源依赖形成环。
+<span id="常见误解"></span>有三个相关但不同的状态：
 
-VC 提供的关键工具是：你可以把不同阶段、不同消息类型、或不同路由规则映射到不同 VC 层次上，从而打断“所有 packet 都在竞争同一圈资源”的局面。
+| 状态 | 管理什么 | 何时释放或返还 |
+| --- | --- | --- |
+| 本地 input VC 上下文 | 本包在当前路由器的输出方向和下游 VC 绑定。 | 本例在 tail 成功离开当前 input VC 后清除。 |
+| 下游 slot credit | 发送端已获得、尚未使用的下游缓冲槽授权。 | 在本文的逐跳协议中，下游移出一个 flit 后返还一个 credit。 |
+| 下游 VC 分配许可 | 后续新包能否取得该下游 VC。 | 本例采用严格策略：下游 tail 离开并返回 free 后，才可重新分配。 |
 
-Dateline 方法将跨环边前后的通道依赖分层，并限制回退，以消除所选路由的环形依赖。Escape VC 方法则提供一个可达目标、依赖无环的受限子网；仅有该子网还不够，必须证明允许进入 escape 的转移不会重新形成依赖环、所需 escape 资源可取得，且仲裁公平、端点最终服务。允许从 escape 任意回到 adaptive 网络可能重建环。两种方法的证明条件不能混为一句“有 VC 就无死锁”。
+因此，本地 tail 离开不等于下游 VC 已可分给新包；credit 大于零也不等于该 VC 许可空闲。其他实现可以采用不同复用策略，但必须保证 FIFO 顺序、包边界和上下文切换正确。[核心状态与两种许可策略](../08-simulator-construction/core-data-structures.md#三种独立状态)
 
-所以 VC 的真正价值，不是“有更多 lane”，而是“能把资源依赖拆层”。
+## VC、消息类别与死锁
 
-## VC 不会增加物理带宽
+<span id="vc-的第二个动机给资源依赖分层"></span>VC 也可用于区分不同的资源依赖。例如，一种设计将特定路由阶段或消息类别映射到不同 VC，再检查这些资源之间的依赖。具体映射必须结合路由规则、端点、协议和服务条件。
 
-这是最常见误解，必须单独说清。
+虚拟网络（virtual network）常用于表达协议消息之间的逻辑分组；一个虚拟网络可以映射到一个或多个 VC。具体术语和映射取决于实现。不同 VC 仍可能共享链路、仲裁和目的端，因此队列分开不等于带宽或延迟已有保证。
 
-一条物理链路每拍能传多少 flit，仍然只由 link width 和时钟决定。VC 数量增加之后：
+<span id="ai-noc-和-cpu-coherent-noc-的典型差别"></span>request、response、控制消息或一致性消息的依赖关系可能不同。给它们贴上类别标签，或者简单分到不同 VC，并不足以证明系统无协议死锁。VC 数量也不能单凭 CPU、NPU 等设备名称确定。
 
-- 逻辑队列更多
-- credit 计数更多
-- allocator 候选更多
+依赖图中的环表示需要进一步分析的潜在风险；在自适应路由中，有环并不总意味着实际死锁。escape 子网是否可达、转换规则、资源和端点服务都要纳入所选证明。[Duato，1993](https://web.csl.cornell.edu/courses/ece5750/duato.tpds93.pdf)；进一步区分死锁、活锁和饥饿见[第四章](../04-routing-and-flow-control/deadlock-livelock-starvation.md)。
 
-但每拍能过的物理 flit 数没有变。VC 让共享更精细，不让链路变宽。
+## 数量与容量的取舍
 
-这点和 BUS 世界里“多 channel = 真正更多通路”很像但不相同。AXI 五通道分开后，地址和数据确实各有独立语义通道；VC 则是在同一条物理通路上做逻辑复用。
+<span id="vc-数量为什么不是越多越好"></span><span id="一个定量直觉"></span>固定每个 VC 的深度与 flit 宽度时，增加 VC 会增加逻辑缓冲容量，也可能增加仲裁与状态管理。若总 slot 数固定，增加 VC 则可能使每个队列变浅。分配方式和流量决定哪种组织更合适，见[固定容量比较](./input-buffer-organization.md#固定容量如何分配)。
 
-## VC 数量为什么不是越多越好
+<span id="建模启示"></span>要研究队头阻塞，需要保存每个队列的顺序和可选输出。要验证 VC 生命周期，需要分别记录本地绑定、下游 slot credit 和 VC 许可。只统计活跃 VC 数，不能证明资源依赖或包边界正确。
 
-VC 多的好处：
-
-- HoL blocking 更少
-- traffic class 更容易隔离
-- deadlock avoidance 手段更多
-
-VC 多的代价：
-
-- 若每 VC 深度和 flit 宽度固定，buffer bit 数随 VC 数增长；总容量固定时则每 VC 可能更浅
-- VC allocator 规模变大
-- switch allocator 候选增加
-- credit state、binding state、调试复杂度都上升
-
-更关键的是，对 deterministic NPU，这些额外自由度未必总是收益。静态调度系统本来就想减少动态不确定性；所需 VC 数由路由依赖、traffic class、隔离目标和负载决定。必须先证明死锁规避，再用目标流量评估吞吐与面积；不能仅由 NPU 类型推定数量。
-
-## 一个简单状态图
-
-每个 input VC 至少要维护：
-
-```text
-IDLE
-  -> RC
-  -> VA
-  -> ACTIVE
-  -> IDLE  // tail 成功离开本 input VC；仅释放本地上下文
-```
-
-并附带这些状态：
-
-- `buffer occupancy`
-- `downstream output port`
-- `downstream vc binding`
-- `credit count of bound downstream vc`
-
-此图只描述本 input VC 的本地上下文。下游 slot credit 和 output VC 的再次分配许可是独立状态。采用严格策略时，即使本地 tail 已离开，上游也要等下游 tail 离开并返回 free 信号，才可把该 output VC 分给后包。具体事件和另一种 FIFO 复用策略见 [核心数据结构](../08-simulator-construction/core-data-structures.md#三种独立状态)。
-
-## 一个定量直觉
-
-假设每端口 4 个 VC，每 VC 深度 6，5-port router：
-
-```text
-total_slots = 5 * 4 * 6 = 120
-```
-
-如果改成 8 个 VC、每 VC 深度不变：
-
-```text
-total_slots = 5 * 8 * 6 = 240
-```
-
-buffer 容量直接翻倍。你也许缓解了更多 HoL blocking，但 allocator 候选数也接近翻倍。也就是说，VC 数量不是一个“只对性能负责”的参数，而是面积与控制复杂度的乘法器。
-
-## AI NoC 和 CPU coherent NoC 的典型差别
-
-AI NoC 常见的 traffic class 分法是：
-
-- request
-- response
-- control
-- bulk / stream
-
-很多 deterministic NPU 会把 VC 主要用于：
-
-- request/response 分离，避免 protocol-style blockage
-- control 和 bulk 分离，保护低延迟小消息
-- 适度切断资源依赖，便于死锁分析
-
-CPU coherent NoC 往往需要更多 VC / VN，因为它有更多消息家族：request、response、snoop、ack、writeback 等，而且 ordering 和 protocol deadlock 约束更硬。这个对比很重要，因为它解释了为什么“别家 CPU NoC 用 8 个以上 VC”并不自动说明 AI NPU 也该如此。
-
-## 常见误解
-
-常见误解：VC 是物理 channel。  
-实际上：VC 共享同一物理链路的带宽，只是逻辑队列和状态分离。
-
-常见误解：VC 的唯一作用是缓解 HoL blocking。  
-实际上：更关键的作用是做资源依赖分层和 traffic isolation，为 deadlock avoidance 和 QoS 提供抓手。
-
-## 一句话理解
-
-VC 不是给链路加带宽，而是给共享链路加秩序：把不同流量、不同依赖阶段和不同阻塞风险拆进独立逻辑队列。
-
-## 建模启示
-
-cycle-level 模型里，VC 必须是一等状态对象：
-
-```text
-VC {
-  state
-  flit_queue
-  route_port
-  downstream_vc
-}
-```
-
-必须显式记录的事件：
-
-- `vc_state_enter_rc`
-- `vc_alloc_request`
-- `vc_alloc_grant`
-- `local_context_release_on_tail`
-- `downstream_vc_permission_return`（严格策略下由 tail free 消息触发）
-
-如果只关心 saturation throughput，不关心 worst-case latency 或 deadlock，可以把 `downstream_vc` 简化成静态映射，甚至只统计每个端口的活跃 VC 数。  
-如果关心 deadlock-free 分析，`vc_class`、`dependency_edge` 和 `packet_holds_vc` 这些状态必须保留，因为你要追踪的是资源依赖图，而不只是流量计数。
+<span id="一句话理解"></span>VC 将部分排队与上下文分开，物理带宽仍由各 VC 共享；它的收益和安全性取决于映射、分配与服务规则。

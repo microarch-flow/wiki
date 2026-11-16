@@ -1,170 +1,72 @@
-# Router Pipeline Stages
+# NoC 路由器怎样逐步转发一个 Flit？
 
-上级：[02 Router Microarchitecture](./README.md)
-相关：[Allocator Design VC Switch](./allocator-design-vc-switch.md), [Credit Based Flow Control](./credit-based-flow-control.md)
+上级：[02 路由器与逐跳流控](./README.md)
 
-## 这页在回答什么问题
+相关：[输入缓冲组织](./input-buffer-organization.md)、[VC 与交换分配](./allocator-design-vc-switch.md)
 
-经典 router 为什么常被拆成 `BW/RC/VA/SA/ST` 或 `RC/VA/SA/ST/LT` 这样的阶段，以及 header、body、tail 在流水线上为什么不是同一种对象。
+<span id="router-pipeline-stages"></span><span id="这页在回答什么问题"></span>路由器接收传输单元，为它选择输出，并在共享资源可用时转发。具体实现可以把这些工作合并，也可以拆成多个流水阶段。
 
-如果这一页没立住，后面你很难分清 credit stall、VC unavailable 和 switch conflict 到底属于哪一层问题。
+## 路由器里有哪些资源
 
-## 先讲结论：pipeline 不是为了教科书整齐，而是为了把冲突分层
+<span id="先讲结论pipeline-不是为了教科书整齐而是为了把冲突分层"></span>下面以输入缓冲、分包和逐跳流控的路由器为例：
 
-一个 wormhole router 至少要处理四类事情：
-
-- 把到来的 flit 放进某个输入缓冲
-- 为 header 决定下一跳和下游 VC
-- 让满足条件的队首 flit 竞争 crossbar
-- 把获胜 flit 发上物理链路
-
-这些事情如果全部堆在同一个周期里做，逻辑会过深、共享资源冲突也难以解释。分阶段的价值不是“更学术”，而是把不同资源竞争拆开：路由计算是局部逻辑，VC 分配是长期资源申请，switch 分配是短期资源争用，link traversal 则是物理传输。
-
-## 一个常见的五级划分
-
-最常见的心智模型是：
-
-| 阶段 | 全称 | 核心动作 | 谁会经过 |
-| --- | --- | --- | --- |
-| `BW` | Buffer Write | flit 写入 input buffer | 所有 flit |
-| `RC` | Route Computation | header 计算输出方向 | 仅 header |
-| `VA` | VC Allocation | header 竞争下游 VC | 仅 header |
-| `SA` | Switch Allocation | 队首 flit 竞争 crossbar | 所有可前进 flit |
-| `ST/LT` | Switch/Link Traversal | 穿过 crossbar 并上链路 | 获胜 flit |
-
-有些文献把 `ST` 和 `LT` 拆成两级，有些合在一起。对第一版建模，重要的不是记住名字，而是记住：`VA` 和 `SA` 在竞争不同资源。
-
-## Header 和 body 为什么不是同一路径
-
-header 要干最重的控制工作。它必须知道目的地、决定输出端口、再在下游申请一个逻辑通道。body 和 tail 不需要重做这些计算，它们沿着 header 已建立的绑定往前走。
-
-所以一个 packet 的生命周期更像：
-
-```text
-header: BW -> RC -> VA -> SA -> ST/LT
-body:   BW ---------> SA -> ST/LT
-tail:   BW ---------> SA -> ST/LT -> release VC
+```mermaid
+flowchart TB
+  In["输入链路"] --> Q["输入缓冲 / VC"]
+  Q --> X["crossbar"]
+  X --> Out["输出链路"]
+  Q -. "队首" .-> A["路由与分配"]
+  C["下游许可 / credit"] -.-> A
+  A -. "选择" .-> X
 ```
 
-这里的 release 指 tail 成功离开后释放本 router 的输入上下文。下游 VC 的分配许可何时释放取决于协议；严格策略要等下游 tail 离开并返回 free 信号。详细规则见 [VC 状态](../08-simulator-construction/core-data-structures.md#三种独立状态)。
+实线表示示意的数据路径，虚线表示所需状态与控制。图中的下游许可和 credit 记录在当前路由器；它们如何更新取决于所选协议。
 
-## 一个 cycle-by-cycle 例子
+输入缓冲暂存 flit。路由逻辑选择候选输出；VC 分配记录下游逻辑通道的许可；交换分配决定哪些输入本拍能连接哪些输出。发送前还要检查所选流控条件。不同路由器可以使用其他缓冲位置、分配方式或旁路。
 
-假设：
+## 把工作划分为阶段
 
-- 每级 1 cycle，示意图合并表示 ST/LT
-- 示例是教学流水线，不采用第 08 章的单拍 RC/VA/SA/ST 快照口径
-- credit 足够，下游 VC 可分配
+<span id="一个常见的五级划分"></span>一种教学划分如下。阶段表示**工作**，不保证每一项都各占一个时钟周期。
 
-则一个 4-flit packet 过一个 router 的时间线可写成：
+| 工作 | 职责 | 本例中的对象 |
+| --- | --- | --- |
+| BW：Buffer Write | 将到达的 flit 写入输入缓冲。 | 每个 flit |
+| RC：Route Computation | 根据路由规则选择输出。 | header |
+| VA：VC Allocation | 为包申请一个可用的下游 VC。 | header |
+| SA：Switch Allocation | 为可前进的队首选择本拍的交换通路。 | 每个候选 flit |
+| ST、LT：Switch / Link Traversal | 穿过 crossbar，随后经过输出链路。 | 获胜 flit |
 
-```text
-cycle:   0    1    2    3    4    5    6    7    8
-header:  BW   RC   VA   SA   LT
-body0:   -    BW   wait wait SA   LT
-body1:   -    -    BW   wait wait SA   LT
-tail:    -    -    -    BW   wait wait SA   LT(release)
-```
+<span id="为什么-va-和-sa-的资源语义必须区分"></span>在本例中，VA 申请包可以复用的下游 VC 许可；SA 分配一次交换机会。两种资源的持有期不同，但它们可以由同一硬件逻辑联合或投机分配，不一定对应独立流水级。细节见 [VC 与交换分配](./allocator-design-vc-switch.md)。
 
-两个关键信息：
+<span id="和-bus-readyvalid-的关键区别"></span>接口握手表示一次接口传输是否发生。进入路由器后，还要看路由、缓冲、输出及仲裁是否允许继续前进。其他互连也可能有内部队列和资源竞争；不能仅凭接口名称推断内部流水。
 
-- body flit 可以在 header 还没走完 VA/SA 时就先进入 buffer
-- 但它们不会前进，因为 input VC 还没进入 `ACTIVE` 状态
+## 一个构造的流水时间线
 
-这也是很多新手容易误判的地方：body 卡住，并不一定是 credit 不够；也可能只是 header 还没建立好路径。
+<span id="header-和-body-为什么不是同一路径"></span>假设一个包按 H、B0、B1、T 的顺序进入同一个 input VC。H 为 header，T 为 tail。H 计算路由并取得下游 VC；后续 flit 复用该绑定，但仍须排到队首并获得交换机会。
 
-## Router 中真正并行的是“不同 VC 处在不同阶段”
+<span id="一个-cycle-by-cycle-例子"></span>表中各工作占一拍，SA 与 ST 在同一拍完成，LT 在下一拍进行。假设输入 FIFO 可同拍读写、容量足够，输出、credit 和仲裁均不阻塞。这里的数字是教学假设。
 
-router 每个周期不是只干一件事，而是多个阶段在不同 VC 上并行进行。比如同一个周期里：
+| Flit | BW | RC | VA | SA / ST | LT |
+| --- | --- | --- | --- | --- | --- |
+| H | 0 | 1 | 2 | 3 | 4 |
+| B0 | 1 | — | — | 4 | 5 |
+| B1 | 2 | — | — | 5 | 6 |
+| T | 3 | — | — | 6 | 7 |
 
-- 一个 VC 的 header 在做 RC
-- 另一个 VC 的 header 在做 VA
-- 第三个 VC 的 body 在争 SA
-- 上一周期 SA 获胜的 flit 正在走 LT
+B0 可以在 H 做 RC 时进入 FIFO，但必须等 H 先离开队首。即使 VC 已建立绑定，B0 也可能继续等待 credit 或 SA。在本例中，flit 于成功的 SA / ST 拍离开输入 FIFO；其他实现应明确实际出队和返回 credit 的时刻。
 
-所以 pipeline 的收益不是把单个 flit 变快，而是让不同 flit 的不同动作重叠。
+<span id="router-中真正并行的是不同-vc-处在不同阶段"></span>不同 flit 的工作可以重叠：拍 4 中，H 在 LT，B0 可以进行 SA / ST。流水化可以提高持续吞吐；单个 flit 的时间还取决于级数、时钟和等待。
 
-一个 snapshot 例子：
+## 阶段与实际时钟
 
-```text
-cycle T:
-  VC0: header in VA
-  VC1: body0 eligible for SA
-  VC2: flit on link return path
-  VC3: idle
-```
+<span id="为什么许多实现还会插入更深流水"></span>更多流水级可能减少每级组合路径，也可能增加经过节点的周期数。墙钟时间要按实际周期数和频率一起计算：例如 3 拍、500 MHz 是 6 ns；4 拍、1 GHz 是 4 ns。这只是算术示例，频率需要通过实现验证。
 
-没有 pipeline，这些动作就必须串行执行；有了 pipeline，你得到的是吞吐，不是单个 flit 的魔法零延迟。
+<span id="常见误解"></span>gem5 Garnet 2.0 的默认**模拟模型**在一个周期内处理 BW、RC、SA、VC 选择和 ST，下一周期进行 LT。它说明阶段可以组合，并不证明真实硬件都能达到这一时序。[gem5 Garnet 2.0](https://www.gem5.org/documentation/general_docs/ruby/garnet-2/)
 
-## 为什么 VA 和 SA 的资源语义必须区分
+## 与模拟器的时间边界
 
-这是 router pipeline 最值得强调的地方。两者可以在硬件中联合或投机分配，不一定分成独立流水级，但模型必须区分长期 VC 许可与逐 flit switch grant。
+<span id="建模启示"></span>模型至少应能区分队列、包的路由与 VC 绑定、交换授权和链路状态。记录“到达、出队、发送、credit 可用”各发生在哪个采样点，再计算等待。
 
-`VA` 分配的是下游 router 的一个 VC，它是 packet 生命周期级别的长期资源。header 一旦申请成功，该 packet 通常会一直占着这条逻辑通道直到 tail 离开。
+上表是分阶段教学例子。[模拟器时序契约](../08-simulator-construction/router-pipeline-pseudocode.md#时间与快照契约)采用另一套拍初读取、拍末提交规则，且允许 RC / VA / SA / ST 在一个有效拍内完成；两张表不能直接混用。
 
-`SA` 分配的是当前周期的 crossbar 通路，它是 flit 级别的短期资源。这个周期 body0 赢了，下一周期可以换成别的 flit 赢。
-
-如果把两者混为一谈，就会得出很多错误判断，例如把“队首 flit 这拍没过”误判成“packet 没有拿到路径”。一个常见的性能现象是：header 已经完成 VA，但 body 连续几拍都输 SA，于是系统表现为 switch conflict，而不是 route blocked。
-
-## 为什么许多实现还会插入更深流水
-
-经典五级不是自然法则。真实芯片里，常见会继续插 deeper pipeline，原因通常有三个：
-
-- router radix 大，allocator 逻辑太深
-- crossbar 宽，ST 路径时序太差
-- link 长，需要单独 pipeline LT
-
-代价可能是单 hop 所需 cycle 增加；更深流水也可能提高可实现频率。墙钟延迟要比较 `cycles/frequency`，不能仅凭级数判断。
-
-所以“几级 pipeline”不是纯微架构审美问题，而是频率、线长和吞吐的硬 trade-off。很多 NPU 宁愿接受多 1 到 2 cycle 的 hop latency，也要把全局链路频率保住，因为一旦时钟掉下来，全网所有 path 都会受影响。
-
-## 和 BUS ready/valid 的关键区别
-
-BUS 里你熟悉的是 channel handshake。那套机制更像局部接口的交付语言：这一拍收没收到。NoC router pipeline 则多了一层：这拍即使收到了，也不等于能继续前进。因为前进还要看：
-
-- header 是否完成 RC/VA
-- 目标 VC 是否存在 credit
-- 当前 crossbar 是否抢到
-
-所以 NoC 的局部握手只是入口；真正的前进条件是若干内部状态同时成立。这也是为什么 NoC 的 stall 分类会比 BUS 更细。
-
-## 常见误解
-
-常见误解：经典 5 级 router 每个 flit 都必须完整走 5 级。  
-实际上：只有 header 需要完整经历控制阶段，body/tail 通常复用 header 已建立的绑定。
-
-常见误解：pipeline 深一点一定更慢。  
-实际上：增加级数可增加 cycle 数，但频率也可能提高；例如 3 cycle/500 MHz 为 6 ns，4 cycle/1 GHz 为 4 ns。实际频率和吞吐需要实现与测量。
-
-## 一句话理解
-
-router pipeline 的本质是把“收、算路、占逻辑通道、抢物理通道、上链路”拆成不同资源阶段；header 负责建路，body 负责跟随，tail 负责释放。
-
-## 建模启示
-
-cycle-level 模型至少要显式保留每个 VC 的状态机：
-
-```text
-VCState = IDLE | RC | VA | ACTIVE
-```
-
-并维护：
-
-```text
-InputVC {
-  state
-  route_port
-  downstream_vc
-  buffer_queue
-}
-```
-
-事件层面建议至少有：
-
-- `buffer_write(flit, input_vc)`
-- `route_compute_done(input_vc, output_port)`
-- `vc_alloc_grant(input_vc, downstream_vc)`
-- `switch_alloc_grant(input_vc, output_port)`
-- `link_traverse(flit, output_link)`
-
-如果你只关心平均吞吐，可以把 `RC` 折叠成零延迟组合逻辑，把 `ST` 和 `LT` 合并；如果你关心 stall attribution 或 worst-case latency，上述阶段最好分开，因为 `VC_UNAVAILABLE`、`SWITCH_CONFLICT` 和 `LINK_BUSY` 是不同病因。
+<span id="一句话理解"></span>路由器需要协调路径、缓冲和共享输出；流水线是组织这些工作的实现选择。

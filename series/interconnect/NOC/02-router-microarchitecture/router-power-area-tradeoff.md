@@ -1,149 +1,45 @@
-# Router Power Area Tradeoff
+# 路由器的面积、功耗和性能如何权衡？
 
-上级：[02 Router Microarchitecture](./README.md)
-相关：[Input Buffer Organization](./input-buffer-organization.md), [../07-evaluation-methodology/power-area-modeling.md](../07-evaluation-methodology/power-area-modeling.md)
+上级：[02 路由器与逐跳流控](./README.md)
 
-## 这页在回答什么问题
+相关：[输入缓冲组织](./input-buffer-organization.md)、[全网功耗与面积建模](../07-evaluation-methodology/power-area-modeling.md)
 
-router 的性能、面积和功耗之间到底是谁在主导，以及为什么“加一点 buffer / 多几个 VC / 做宽一点链路”经常会同时牵动三四个代价项。
+<span id="router-power-area-tradeoff"></span><span id="这页在回答什么问题"></span>增加缓冲、虚通道或位宽可能改变吞吐和等待，也会改变存储、交换与控制的实现成本。先明确哪些参数同时变化，再评价这些取舍。
 
-这页要打破一个常见直觉：NoC router 的成本中心通常不是路由计算，而是 buffer、crossbar 和与之相连的控制逻辑。
+## 成本由哪些部分组成
 
-## Router 成本为什么主要不是算路
+<span id="router-成本为什么主要不是算路"></span>路由器可能包含输入缓冲、路由计算、VC 与交换分配、crossbar、时钟和控制逻辑。相邻链路还需要布线、驱动和可能的流水寄存器。不同设计的主要面积、功耗和时序瓶颈可能不同，不能只凭结构名称确定谁占比最大。
 
-很多概念图会把 attention 放在 `RC/VA/SA` 这些控制方块上，于是容易误以为“router 很复杂，主要复杂在算法”。真实硬件里，功耗和面积常常更集中在：
+<span id="allocator不一定最大但经常最卡频率"></span>例如，增加端口或 VC 可能增加仲裁候选和布线；增加位宽可能增加数据通路与存储的实现成本。是否需要增加流水级、哪个路径限制时钟，要通过具体实现或校准后的模型判断。
 
-- input buffer SRAM / register file
-- crossbar 多路选择网络
-- allocator 广播与仲裁逻辑
-- 长链路收发器和驱动
+## 先计算逻辑缓冲容量
 
-`RC` 这类纯组合比较逻辑通常占比反而不大。它当然重要，但更像“决定能否工作”；真正决定是否贵的，常是为工作付出的存储和布线代价。
+<span id="buffer容量与实际面积"></span>假设每个输入端口都有 V 个独立 VC，每个 VC 深度为 D 个 slot，flit 宽度为 W bit，且所有 P 个端口使用相同配置：
 
-## Buffer：容量与实际面积
+> **逻辑 buffer 容量 = P × V × D × W bit**
 
-buffer 会吃面积，原因不是抽象的“SRAM 也要硅面积”，而是它同时乘上了多个维度：
+<span id="一个定量例子"></span>例如 P = 5、V = 4、D = 6、W = 128，得到 15,360 bit，即 1,920 B。64 个完全相同的路由器合计为 122,880 B，即 120 KiB。
 
-```text
-buffer bits
-  = ports * vcs_per_port * depth_per_vc * flit_width
-```
+这些是数据 slot 的逻辑容量，不包括指针、校验、控制、读写端口和外围电路。实际实现可以使用寄存器、SRAM 宏或其他组织；物理面积不能仅由上述 bit 数确定。
 
-在其他项固定时任一项翻倍，逻辑 buffer bit 数翻倍。例如 5-port router 从 4 VC 增至 8 VC 且深度不变，容量翻倍。实际宏面积还取决于 SRAM/寄存器实现、端口、外围电路和工艺，不能由 bit 数直接断言翻倍或它一定是最大面积项。
+若每 VC 深度和位宽不变，VC 数翻倍会使数据 slot 数翻倍；若总容量固定，增加 VC 可以改为缩小每个队列的深度。两种比较回答的问题不同。
 
-功耗上，buffer 既有动态访问能耗，也有 leakage。对长时间活跃的大流量 NoC，动态部分会很明显；对先进制程和大规模全网 router，leakage 也不再能忽略。
+## 端口、位宽和链路
 
-## Crossbar：随 radix 和位宽膨胀
+<span id="crossbar随-radix-和位宽膨胀"></span>更多输入和输出通常需要更多选择与连接；更宽的内部 flit 也会改变 crossbar 数据通路。实际成本取决于矩阵是否全连接、实现组织、端口限制和布局，不能把一个逻辑连接数直接当作硅面积。
 
-crossbar 的直觉很好理解：它越像“任意输入到任意输出”的全连接交换矩阵，逻辑和布线就越重。
+<span id="链路宽度不是白给吞吐"></span>物理 link 宽度与内部 flit 宽度可以分别选择。内部 flit 保持 128 bit 时，将链路从 64 bit 加宽到 128 bit，可在无空拍例子中把每个 flit 的传输次数从 2 降为 1，而 buffer bit 数不变。继续加宽链路是否允许同拍传多个 flit，取决于接口和交换资源；不能直接假定吞吐翻倍。
 
-尤其当这两个参数增加时，代价会非常显著：
+若内部 flit 也从 128 bit 加宽到 256 bit，且 P、V、D 均不变，上例的逻辑 buffer 容量从 15,360 bit 增至 30,720 bit。packet 切分、crossbar 和链路也可能随之改变，必须一同说明。
 
-- router radix 增大
-- flit / link width 增大
+## 面积、能量与频率的边界
 
-你可以把 crossbar 看成一个会被“端口数”和“每端口位宽”双重放大的结构。cluster 内小 crossbar 看起来很爽，到了高 radix 全局 router 就会突然变得昂贵，这也是很多系统选择 lower-radix mesh 而不是高扇出单级交换的原因之一。
+<span id="对-deterministic-npu-的特殊含义"></span>不同系统可以选择更深缓冲、更多独立队列或更严格的调度。确定性目标需要额外说明流量约束、仲裁、端点服务和证明方法；不能由设备类别直接推出 VC 数、深度或最坏延迟。
 
-## Allocator：不一定最大，但经常最卡频率
+<span id="常见误解"></span>减少等待不一定使系统总成本降低：例如更复杂的分配器可能改善某组流量的匹配，也可能影响频率和面积。更深的 buffer 能吸收部分突发，但不能单独消除持续过载或保证延迟。
 
-allocator 的面积未必像 buffer 那样压倒性，但它经常是时序敏感路径，尤其在：
+<span id="建模启示"></span>早期估算可以先记录缓冲读写、crossbar 穿越、链路传输和仲裁等操作次数，再结合每次操作的能量估算动态能量；还要计入时钟和随时间产生的泄漏能量。总能量除以观察时间可得到平均功率。
 
-- VC 数量较多
-- output port 候选者多
-- 做复杂优先级、aging 或 speculative allocation
+单次能量、泄漏、面积和频率需要具体工艺、电压、存储宏、布局或参考实现校准。没有这些数据时，只能报告假设下的相对估计，而不是芯片实测值。[ORION 2.0：Power-Area Simulator](https://projects.csail.mit.edu/wiki/pub/LSPgroup/PublicationList/orion2.0_tvlsi_pub_final.pdf)
 
-这会带来一个典型 trade-off：
-
-- 更聪明的 allocator 可能改善吞吐和尾延迟
-- 但也可能拖低频率，或迫使你加 pipeline
-
-对 chip-wide NoC，这种频率损失的系统代价常常比单个 router 的局部优化更重。
-
-## 链路宽度不是白给吞吐
-
-把物理 link 做宽会改变驱动和布线成本。只有同时把内部 flit 宽度按一比一方式加宽时，buffer 和 crossbar 位宽才随之增加；若内部 flit 宽度固定，改变 link 宽度主要改变每 flit 的 phit 数和 serialization，buffer bit 数可不变。
-
-所以 link 从 128b 增至 256b 并不保证端到端吞吐翻倍；要同时记录内部 flit 宽、序列化、频率和物理实现成本。
-
-这就是为什么很多 NPU 不会无限加宽单条链路，而会在 `多条较窄链路 / 更规则 topology / 更强局部复用` 之间重新平衡。
-
-## 一个定量例子
-
-假设 router 参数：
-
-- 5 ports
-- 4 VC / port
-- 6 flit depth / VC
-- 128b flit
-
-input buffer bits:
-
-```text
-5 * 4 * 6 * 128 = 15360 bits
-```
-
-若改成 256b flit：
-
-```text
-5 * 4 * 6 * 256 = 30720 bits
-```
-
-仅 input buffer bits 就翻倍，还没算 crossbar 和链路驱动。这个简单计算足以说明：位宽优化从来不是单点局部改动。
-
-## 对 deterministic NPU 的特殊含义
-
-deterministic NPU 通常不愿意把大量性能押在“更深 buffer、更复杂 allocator、更动态策略”上，因为那会让最坏情况分析更松、更难证。
-
-所以更常见的取向是：
-
-- VC 数适中
-- buffer 深度覆盖 credit round-trip 再留少量裕量
-- allocator 策略简单可分析
-- topology 和调度优先帮助消除热点
-
-换句话说，deterministic NPU 更偏爱“在系统层减少冲突”，而不是“在 router 内部吞掉所有冲突”。
-
-## 常见误解
-
-常见误解：router 性能不够，就优先优化 route compute。  
-实际上：很多时候真正吃面积和功耗、也更容易拖慢频率的是 buffer、crossbar 和 allocator。
-
-常见误解：更深 buffer 是最安全的保守选择。  
-实际上：它会显著增加面积和在途积压，对 worst-case latency 与功耗都未必友好。
-
-## 一句话理解
-
-router 的三角关系是：buffer 决定你能吞多少抖动，crossbar 和 link width 决定你每拍能过多少位，allocator 决定这些资源如何被分；三者共同定义性能、面积和频率边界。
-
-## 建模启示
-
-这一页最适合抽成参数模型：
-
-```text
-RouterSpec {
-  num_ports
-  num_vcs
-  vc_depth
-  flit_width
-}
-```
-
-并导出一阶成本量：
-
-```text
-buffer_bits = num_ports * num_vcs * vc_depth * flit_width
-```
-
-如果只做 early-stage architecture exploration，可以把 router 动态能耗近似成：
-
-- `buffer_read_write_energy * flit_moves`
-- `crossbar_energy * crossbar_traversals`
-- `link_energy * phit_transfers`
-
-如果关心时序与频率，则至少要增加：
-
-- `allocator_fan_in`
-- `crossbar_radix`
-- `link_pipeline_stages`
-
-因为这些参数通常比 `route_compute_logic_size` 更接近真实频率瓶颈。
+<span id="一句话理解"></span>比较路由器方案时，要把资源组织与流量、时序和物理实现放在同一条件下。

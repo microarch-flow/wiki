@@ -1,179 +1,51 @@
-# Input Buffer Organization
+# 输入缓冲如何组织和分配空间？
 
-上级：[02 Router Microarchitecture](./README.md)
-相关：[Virtual Channel Fundamentals](./virtual-channel-fundamentals.md), [Credit Based Flow Control](./credit-based-flow-control.md)
+上级：[02 路由器与逐跳流控](./README.md)
 
-## 这页在回答什么问题
+相关：[虚通道基础](./virtual-channel-fundamentals.md)、[Credit 与反压](./credit-based-flow-control.md)
 
-输入缓冲到底是“每端口一个 FIFO”还是“每端口下面再拆多个 VC 队列”，以及这些组织方式分别在吞吐、面积、HoL blocking 和可分析性上代表什么。
+<span id="input-buffer-organization"></span><span id="这页在回答什么问题"></span>多个 flit 到达路由器时，输入缓冲保存尚不能前进的数据。缓冲空间怎样分给队列，会影响谁能继续竞争输出、能够吸收多少突发，以及控制成本。
 
-buffer 不是 NoC 的边角料。对现代 router，buffer 往往既是最大面积头，又是 backpressure 是否会快速扩散的第一现场。
+## 为什么在输入端排队
 
-## 为什么 NoC 常把 buffer 放在输入侧
+<span id="为什么-noc-常把-buffer-放在输入侧"></span>输入缓冲让每个输入先保存到达的 flit，再由交换分配器选择输出。若使用输出缓冲，也要明确多个输入同时到达一个输出时，交换网络和缓冲写口能接收多少数据；若写带宽不足，就仍需在前面仲裁。
 
-经典 wormhole router 更常用 input-buffered 架构，而不是 output-buffered。原因很直接：如果把缓冲放输出侧，你必须先让多个输入同时冲向同一个输出，再在输出端承受写入冲突和更高带宽要求；这会把 crossbar 和写口成本迅速拉高。
+两种组织都有实现成本。输入队列较简单，但队首无法前进时，队列后面的数据可能被挡住。
 
-把缓冲放输入侧，相当于把“先排队，再竞争”前移。这样每个输入端口都能局部吸收抖动，crossbar 每拍只需要放行已排好队的候选者。代价则是：队头一旦卡住，会更容易产生 HoL blocking。
+## 单 FIFO 的队头阻塞
 
-所以 input buffering 不是完美方案，而是“在面积和控制复杂度可接受的前提下，把冲突收敛到输入队列”的折中。
+<span id="方案一每端口单-fifo"></span>假设一个输入端口只有一个先进先出队列。A 在队首，要去 East；B 在 A 后面，要去 North。若 East 忙、North 空闲，B 仍不能越过 A。只要队列必须按先进先出顺序出队，这就是**队头阻塞**。
 
-## 方案一：每端口单 FIFO
+<span id="方案二每端口多个-vc-队列"></span>如果 A 和 B 分别位于两个可独立选择的队列，并且 B 的下游资源可用，B 就可以参与 North 输出的竞争。仅增加队列数量不够：流量还要被分到不同队列，且不能同时受同一个下游瓶颈阻塞。虚通道的上下文与链路共享见[虚通道基础](./virtual-channel-fundamentals.md)。
 
-这是最简单的组织：
+## 固定容量如何分配
 
-```text
-input port
-  -> FIFO
-  -> RC/SA
-```
+假设一个输入端口总共有 8 个 flit slot。下面先把空间固定分给各队列：
 
-优点：
+| 组织 | 每队列深度 | 主要取舍 |
+| --- | --- | --- |
+| 1 个队列 | 8 | 单队列可容纳更多连续数据；容易发生队头阻塞。 |
+| 2 个队列 | 各 4 | 可以分开两组排队状态；一个队列空闲时，其预留空间可能闲置。 |
+| 4 个队列 | 各 2 | 有更多独立队列；每个队列的窗口更浅，状态和仲裁候选也更多。 |
 
-- 实现最简单
-- buffer 控制最少
-- 容易做第一版原型
+总存储容量在这个例子中相同。增加队列不自动增加总 slot，也不自动保证吞吐提高。
 
-缺点同样致命：所有 packet 共用一个队列，队首 flit 只要因某个方向拥塞而停住，后面本来能走其他方向的 flit 也跟着停。HoL blocking 在这里最纯粹。
+<span id="一种实用组织每-vc-小深度而不是每端口大共享池"></span>另一种实现使用共享缓冲池：多个逻辑队列动态占用同一批物理 slot。它可能提高空间利用率，但要管理 slot 归属、授权和队列顺序；如果缺少限额或服务策略，一个活跃队列也可能压缩其他队列的可用空间。
 
-一个例子：
+对于共享池，已授权但未使用的 slot、正向在途预留、实际占用和待返还授权都要计入容量，并避免重复授权。隔离要求不同，固定分配、共享池和混合方案都可能合适。
 
-```text
-FIFO head: packet A -> wants East, but East busy
-FIFO next: packet B -> wants North, North free
+## 深度应怎样选择
 
-结果：B 也不能过，因为 A 还在队首
-```
+<span id="buffer-深度为什么不能拍脑袋定"></span>深度需要结合目标发送速率、信用返回时间、突发、仲裁和下游服务选择。在指定的单 VC、固定往返时间和每拍发送模型中，较浅的缓冲可能耗尽 credit，造成链路空拍；两个 VC 交替使用链路时，单个 VC 的窗口需求又会不同。具体时序和条件见 [Credit 与反压](./credit-based-flow-control.md)。
 
-这就是为什么“单 FIFO 能工作”不等于“单 FIFO 足够用”。一旦你进入高并发 AI traffic，这种错误耦合会迅速放大。
+<span id="深-buffer-也不是免费午餐"></span>更深的缓冲可以吸收更多短时积压，也会增加逻辑存储容量；实际面积和功耗还取决于存储组织及活动。它可能推迟反压，也可能让更多数据排队。收益和尾延迟应在给定流量下测量或模拟，不能从深度单独推断。
 
-## 方案二：每端口多个 VC 队列
+## 如何描述与验证
 
-更常见的组织是：
+<span id="一个定量例子"></span>例如，一个输入端口有 4 个 VC，每个 VC 有 2 个 slot，flit 宽 128 bit，则数据容量是 4 × 2 × 128 = 1,024 bit。这个数不包括 VC 上下文、指针、校验、读写端口和外围电路，也不是物理面积。多个端口的总容量计算见[路由器面积与功耗](./router-power-area-tradeoff.md)。
 
-```text
-input port
-  -> VC0 FIFO
-  -> VC1 FIFO
-  -> VC2 FIFO
-```
+<span id="常见误解"></span>VC 是逻辑资源，不要求所有设计都使用物理上分开的存储宏；共享池也需要维持正确的队列次序和容量授权。
 
-多个 VC 共享同一物理链路，但逻辑上是多个独立队列。这样一个 VC 队首卡住时，另一个 VC 仍可能前进。它至少解决了两件事：
+<span id="建模启示"></span>若要研究队头阻塞，应保留队列中可影响输出选择的顺序与目的信息。仅有总 occupancy 无法区分“队首去 East，后继去 North”和两者顺序相反的情形。若研究共享池，还要记录 slot 分配与回收。
 
-- 缓解 HoL blocking
-- 给 message class / deadlock avoidance 提供分层工具
-
-但它不会增加物理带宽。多个 VC 只是更精细地复用同一条链路，所以如果根本瓶颈是链路容量不够，多开 VC 不会创造新带宽。
-
-## Buffer 深度为什么不能拍脑袋定
-
-buffer 窗口需求由目标负载发送速率和 credit 往返时间共同决定，突发与仲裁还会改变实际需求。
-
-令 `R` 为从发送预留下游 slot 到返还 credit 可用于再次发送的周期数，`r` 为该 VC 目标平均发送速率（flit/cycle）。稳定流的窗口需求约为 `ceil(r×R)` slot。只有该 VC 独占链路并以 1 flit/cycle 持续发送时才需要约 R；若 V 个 VC 均匀轮流，各自速率为 1/V，分别约需 `ceil(R/V)`。这只是容量条件，仲裁、端点服务和 credit 采样边界仍会影响结果。共享池中，各 VC 已授权未使用、正向在途预留、已占用和 credit 待归还的 slot 必须合计不超过池总容量，每个 slot 只计一次。池中还可以有未分配给任何 VC 的空槽；若有其他预留状态，也须计入容量检查。
-
-一个简单例子：
-
-```text
-单 VC 独占，每拍可发 1 flit；采用第 08 章拍末提交契约
-flit0 在 cycle 0 发送，forward latency=1，cycle 1 拍末入队
-cycle 2 下游出队并生成 credit，return latency=1
-credit 在 cycle 3 拍末提交，cycle 4 才可用，因此 R=4
-```
-
-若 VC 深度只有 2：
-
-```text
-cycle 0: send flit0, credit 2->1
-cycle 1: send flit1, credit 1->0
-cycle 2–3: cannot send, waiting for credit
-cycle 4: first credit is available
-```
-
-在这个构造时序中，发送端因此空了两拍。也就是说，buffer 过浅不仅是“容量小”，还是“稳态吞吐上不去”。
-
-## 深 buffer 也不是免费午餐
-
-看到上面的公式，容易得出“那就把 buffer 做很深”。这同样不对。
-
-深 buffer 的收益是：
-
-- 更能吸收短时 burst
-- backpressure 传播更慢
-- 长链路更容易保持满载
-
-深 buffer 的代价是：
-
-- 固定宽度时逻辑存储容量随深度线性增长；实际 SRAM 宏面积还取决于端口数、外围电路和实现
-- 动态功耗和 leakage 上升
-- 拥塞恢复更慢，因为网络里积压的 flit 变多
-- 延迟尾部可能更差，因为大量排队被隐藏在 buffer 中
-
-这也是 NoC 和 BUS 的一个明显差异。BUS 上 deeper FIFO 常被看作“缓冲抖动的好事”；NoC 上 deeper buffer 同时会改变阻塞传播速度和网络中的在途积压量，所以它既能救吞吐，也可能恶化最坏延迟分析。
-
-## 一种实用组织：每 VC 小深度，而不是每端口大共享池
-
-理论上，你可以给一个端口做共享 buffer pool，让忙的 VC 暂时多占一些空间。这会提高 buffer 利用率，但控制复杂度、归属管理和 starvation 风险都会上升。
-
-很多 deterministic NPU 更常用的做法是：
-
-- 每个 VC 小而固定深度
-- 总 VC 数不多，常见 2 到 4
-- 主要靠 traffic separation 和静态调度，而不是靠超深 buffer 吞拥塞
-
-原因很现实。静态可分析系统不希望网络里藏太多不可见排队；过深 buffer 会让“最坏要排多少拍”变得更松、更难证明。
-
-## 一个定量例子
-
-假设：
-
-- 5-port router
-- 每端口 4 个 VC
-- 每 VC 深度 6
-- flit width = 128b = 16B
-
-则 input buffer 总量：
-
-```text
-5 * 4 * 6 = 120 flit slots
-120 * 16B = 1920B
-```
-
-一个 router 为 1,920 B input buffer。若扩到 64 个 router，总计 `122,880 B = 120 KiB`，还没算控制状态和其他 SRAM。这个数量级足以说明：buffer 组织不是参数小事，而是面积预算的中心问题之一。
-
-## 常见误解
-
-常见误解：buffer 越深，性能一定越好。  
-实际上：超过给定速率和 credit 往返对应的容量后，收益仍取决于突发、争用和服务抖动，反而可能增加面积、功耗和最坏排队时间。
-
-常见误解：VC 只是逻辑概念，和 buffer 无关。  
-实际上：VC 的存在必须落在独立队列或至少独立 credit/状态上，否则它就无法承担 HoL 缓解和隔离职责。
-
-## 一句话理解
-
-input buffer 的核心 trade-off 是：用多少局部排队空间，换多少吞吐稳定性和隔离能力，同时愿意付出多少面积、功耗和最坏排队时间。
-
-## 建模启示
-
-最小 cycle-level 抽象建议直接保留：
-
-```text
-InputPort {
-  vcs: InputVC[]
-}
-
-InputVC {
-  queue_depth
-  occupancy
-  flit_queue
-}
-```
-
-事件和统计至少要有：
-
-- `buffer_enqueue`
-- `buffer_dequeue`
-- `buffer_full_block`
-- `high_watermark_update`
-
-如果只做 first-order 性能比较，可以把每个 VC queue 简化成 `occupancy` 计数，而不存完整 flit 对象；但如果要区分 header/body/tail、或验证 tail 释放时机，就必须保留队列顺序。
-
-若要研究 credit 深度对吞吐的影响，`queue_depth` 不能抽掉；若要研究 deadlock-free 性质，`queue_owner_packet_id` 和 `downstream_binding` 也必须显式记录，否则你看不到资源依赖链。
+<span id="一句话理解"></span>输入缓冲不仅决定能存多少数据，也决定哪些等待可以彼此分开。
