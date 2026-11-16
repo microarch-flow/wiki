@@ -3,7 +3,7 @@
 <span id="cxl近存计算与未来封装方向"></span>
 
 上级：[存储系统集成与选型](./README.md)
-相关：[存储层次与系统角色](../01-memory-hierarchy/01-system-basics/memory-hierarchy-as-system.md) · [CXL 与 PCIe 的边界](../../interconnect/PCIE/wiki/07-advanced-topics/cxl-and-pcie-boundary.md) · [HBM-PIM 案例](../../microarchitecture/CIM/wiki/09-research-frontier/case-study-samsung-hbm-pim-research-angle.md)
+相关：[存储层次与系统角色](../01-memory-hierarchy/01-system-basics/memory-hierarchy-as-system.md) · [CXL 与 PCIe 的边界](../../interconnect/PCIE/07-advanced-topics/cxl-and-pcie-boundary.md) · [HBM-PIM 案例](../../microarchitecture/CIM/wiki/09-research-frontier/case-study-samsung-hbm-pim-research-angle.md)
 
 ## 这页在回答什么问题
 
@@ -25,7 +25,7 @@
 
 [CXL 联盟对 2.0 池化的说明](https://computeexpresslink.org/blog/cxl-2-0-specification-memory-pooling-questions-from-the-webinar-part-2-2391/)指出该版本的相应池化模式不提供多个主机对同一设备物理位置的共享。[CXL 3.0 白皮书](https://computeexpresslink.org/wp-content/uploads/2023/12/CXL_3.0_white-paper_FINAL-1.pdf)进一步介绍了共享能力；具体系统仍须具备相应设备、拓扑、协议和配置。
 
-扩展内存的价值可能是容量配置或资源利用率，而非降低每次访问延迟。评估时要测量具体路径的服务时间、带宽、竞争和负载分布，并确认操作系统或运行时的数据放置与迁移策略。协议方向和设备类型见 [CXL 与 PCIe 的边界](../../interconnect/PCIE/wiki/07-advanced-topics/cxl-and-pcie-boundary.md)。
+扩展内存的价值可能是容量配置或资源利用率，而非降低每次访问延迟。评估时要测量具体路径的服务时间、带宽、竞争和负载分布，并确认操作系统或运行时的数据放置与迁移策略。协议方向和设备类型见 [CXL 与 PCIe 的边界](../../interconnect/PCIE/07-advanced-topics/cxl-and-pcie-boundary.md)。
 
 ### 计算移近数据：先描述执行位置
 

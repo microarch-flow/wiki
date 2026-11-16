@@ -55,7 +55,7 @@ SRAM-CIM 要连接 RAM wiki 的 [6T SRAM cell](../../../../storage/02-sram/found
 
 DRAM/HBM-PIM 要连接 RAM wiki 的 [bank organization](../../../../storage/03-dram/foundations/bank-organization-parallelism.md)、[HBM stacked wide I/O](../../../../storage/03-dram/protocols/hbm-stacked-wide-io.md) 和 [DRAM command timing](../../../../storage/03-dram/protocols/commands-act-rd-wr-pre.md)，因为 PIM 的难点在 command、bank/channel 粒度和 host 协同。
 
-系统互连和 reduction 要连接 NoC wiki 的 [memory-centric NoC](../../../../interconnect/NOC/wiki/06-ai-noc-specifics/memory-centric-noc.md) 与 [reduction and collective networks](../../../../interconnect/NOC/wiki/06-ai-noc-specifics/reduction-and-collective-networks.md)，因为 CIM macro 一旦组成 tile/chip，瓶颈会从 array 移到数据流、归约和互连。
+系统互连和 reduction 要连接 NoC wiki 的 [memory-centric NoC](../../../../interconnect/NOC/06-ai-noc-specifics/memory-centric-noc.md) 与 [reduction and collective networks](../../../../interconnect/NOC/06-ai-noc-specifics/reduction-and-collective-networks.md)，因为 CIM macro 一旦组成 tile/chip，瓶颈会从 array 移到数据流、归约和互连。
 
 ## 一句话理解
 

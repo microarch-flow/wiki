@@ -64,4 +64,4 @@
 ## 接下来怎么读？
 
 - [峰值、实际与有效带宽](../03-performance/effective-bandwidth-vs-peak.md)：统一接口流量和任务逻辑字节的统计口径。
-- [NoC 的广播与多播](../../../interconnect/NOC/wiki/06-ai-noc-specifics/broadcast-multicast-tree.md)：继续分析网络中的复制和共享路径。
+- [NoC 的广播与多播](../../../interconnect/NOC/06-ai-noc-specifics/broadcast-multicast-tree.md)：继续分析网络中的复制和共享路径。
