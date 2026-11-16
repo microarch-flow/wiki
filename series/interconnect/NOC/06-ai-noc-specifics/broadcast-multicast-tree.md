@@ -2,7 +2,7 @@
 
 <span id="broadcast-multicast-tree"></span>
 
-上级：[06 AI NOC Specifics](./README.md)
+上级：[06 多端通信与调度](../SUMMARY.md#06-ai-noc-specifics)；原章节：[06 AI NOC Specifics](./README.md)
 
 相关：[集体通信基础](./collective-communication-basics.md)、[归约与 AllReduce](./reduction-and-collective-networks.md)、[多网络与资源隔离](../05-system-integration/multiple-physical-networks.md)
 

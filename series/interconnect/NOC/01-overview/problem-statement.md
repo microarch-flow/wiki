@@ -1,6 +1,6 @@
 # NoC 在解决什么问题？
 
-上级：[01 认识 NoC](./README.md)
+上级：[01 认识 NoC](../SUMMARY.md#01-overview)；原章节：[01 认识 NoC](./README.md)
 
 相关：[共享总线、Crossbar 与 NoC：怎样比较？](./bus-vs-noc-vs-crossbar.md)、[NoC 的设计维度与工作负载](./taxonomy.md)
 

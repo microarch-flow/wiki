@@ -1,6 +1,6 @@
 # NoC 与存储系统：数据为什么会在端点等待？
 
-上级：[05 端点与系统集成](./README.md)
+上级：[05 端点与系统集成](../SUMMARY.md#05-system-integration)；原章节：[05 端点与系统集成](./README.md)
 
 相关：[Tile 与 NoC 的接口](../06-ai-noc-specifics/tile-architecture-and-noc.md)、[DMA 与 NoC](./dma-engine-noc-interaction.md)、[Memory-centric NoC](../06-ai-noc-specifics/memory-centric-noc.md)
 

@@ -1,6 +1,6 @@
 # Tree 与 Fat-tree：怎样组织汇聚和分发？
 
-上级：[03 拓扑与物理组织](./README.md)
+上级：[03 拓扑与物理组织](../SUMMARY.md#03-topology)；原章节：[03 拓扑与物理组织](./README.md)
 
 相关：[广播、多播与复制](../06-ai-noc-specifics/broadcast-multicast-tree.md)、[归约与 Collective 网络](../06-ai-noc-specifics/reduction-and-collective-networks.md)、[层次化与混合互连](./hierarchical-and-hybrid-topology.md)
 

@@ -1,6 +1,6 @@
 # 层次化与混合互连：局部网络怎样接入全局网络？
 
-上级：[03 拓扑与物理组织](./README.md)
+上级：[03 拓扑与物理组织](../SUMMARY.md#03-topology)；原章节：[03 拓扑与物理组织](./README.md)
 
 相关：[Ring 与分层 Ring](./ring-and-hierarchical-ring.md)、[Crossbar 与 Concentrated Mesh](./crossbar-and-concentrated-mesh.md)、[拓扑选型](./topology-selection-framework.md)
 

@@ -1,8 +1,8 @@
 # 网络接口 NI：事务怎样进入和离开 NoC？
 
-上级：[05 端点与系统集成](./README.md)
+上级：[05 端点与系统集成](../SUMMARY.md#05-system-integration)；原章节：[05 端点与系统集成](./README.md)
 
-相关：[Packet、Flit 与 Phit](../02-router-microarchitecture/packet-flit-phit-hierarchy.md)、[Credit 与反压](../02-router-microarchitecture/credit-based-flow-control.md)、[事务拆分、顺序与完成](./transaction-ordering-and-completion.md)
+相关：[Packet、Flit 与 Phit](../02-router-microarchitecture/packet-flit-phit-hierarchy.md)、[Credit 与反压](../02-router-microarchitecture/credit-based-flow-control.md)、[跨时钟域、复位与流控](./clock-domains-and-reset.md)、[事务拆分、顺序与完成](./transaction-ordering-and-completion.md)
 
 <span id="ni-network-interface-design"></span><span id="这页在回答什么问题"></span>网络接口（Network Interface，NI）连接端点接口和网络传输资源。它需要把输入转换为网络可发送的消息，也需要接住网络返回，并按端点契约交付。具体功能可以分布在 NI、桥、DMA 或其他相邻模块中。
 

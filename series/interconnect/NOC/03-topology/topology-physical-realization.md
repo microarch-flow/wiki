@@ -1,6 +1,6 @@
 # 拓扑与物理实现：连接图怎样落到芯片上？
 
-上级：[03 拓扑与物理组织](./README.md)
+上级：[03 拓扑与物理组织](../SUMMARY.md#03-topology)；原章节：[03 拓扑与物理组织](./README.md)
 
 相关：[Mesh 与 Torus](./mesh-and-torus.md)、[路由器面积与功耗](../02-router-microarchitecture/router-power-area-tradeoff.md)、[功耗与面积建模](../07-evaluation-methodology/power-area-modeling.md)
 

@@ -1,6 +1,6 @@
 # Turn Model 与逃逸资源：怎样限制路由依赖？
 
-上级：[04 路由、仲裁与服务保证](./README.md)
+上级：[04 路由、仲裁与服务保证](../SUMMARY.md#04-routing-and-flow-control)；原章节：[04 路由、仲裁与服务保证](./README.md)
 
 相关：[维序路由](./dimension-order-routing.md)、[死锁、活锁与饥饿](./deadlock-livelock-starvation.md)、[虚通道基础](../02-router-microarchitecture/virtual-channel-fundamentals.md)
 

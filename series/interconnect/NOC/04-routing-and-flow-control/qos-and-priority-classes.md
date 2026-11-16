@@ -1,8 +1,8 @@
 # NoC 的 QoS：怎样为不同流量分配服务？
 
-上级：[04 路由、仲裁与服务保证](./README.md)
+上级：[04 路由、仲裁与服务保证](../SUMMARY.md#04-routing-and-flow-control)；原章节：[04 路由、仲裁与服务保证](./README.md)
 
-相关：[仲裁策略](./arbitration-policies.md)、[虚通道基础](../02-router-microarchitecture/virtual-channel-fundamentals.md)、[端到端服务保证](./service-guarantees-and-latency-bounds.md)
+相关：[仲裁策略](./arbitration-policies.md)、[虚通道基础](../02-router-microarchitecture/virtual-channel-fundamentals.md)、[端到端服务保证](./service-guarantees-and-latency-bounds.md)、[多网络与资源隔离](../05-system-integration/multiple-physical-networks.md)
 
 <span id="qos-and-priority-classes"></span><span id="这页在回答什么问题"></span>服务质量（QoS）描述不同流量需要怎样的服务，以及网络如何分配或隔离资源。优先级只是实现手段之一；是否有带宽或延迟保证，还要定义流量和服务条件。
 
@@ -21,7 +21,7 @@
 
 <span id="1-priority-class"></span>优先级可以让符合条件的关键流量先被选择，但不能突破目的端容量。<span id="2-vc-separation"></span>VC 能给不同流量独立的队列或资源类别，却不增加共享物理链路的峰值容量；消息依赖和安全性仍需单独证明。
 
-<span id="3-multiple-physical-networks-planes"></span><span id="4-reserved-share-weighted-arbitration"></span>物理分离可以减少某些共享点，也会引入额外资源与可能闲置的容量。共享链路上的预留或加权机制是另一类选择；实际隔离和等待需要依照服务规则与流量共同评估。
+<span id="3-multiple-physical-networks-planes"></span><span id="4-reserved-share-weighted-arbitration"></span>物理分离可以减少某些共享点，也会引入额外资源与可能闲置的容量。共享链路上的预留或加权机制是另一类选择；实际隔离和等待需要依照服务规则与流量共同评估。[多网络与资源隔离](../05-system-integration/multiple-physical-networks.md)比较共享和分离在相同容量下的一种取舍。
 
 ## 一条路径上怎样形成服务
 

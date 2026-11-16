@@ -1,6 +1,6 @@
 # NoC 网关与跨 Die 互连：请求怎样跨越边界？
 
-上级：[06 AI NOC Specifics](./README.md)
+上级：[05 端点与系统集成](../SUMMARY.md#05-system-integration)；原章节：[06 AI NOC Specifics](./README.md)
 
 相关：[层次化与混合互连](../03-topology/hierarchical-and-hybrid-topology.md)、[事务拆分、顺序与完成](../05-system-integration/transaction-ordering-and-completion.md)、[封装内芯粒互连](../../D2D/README.md)
 

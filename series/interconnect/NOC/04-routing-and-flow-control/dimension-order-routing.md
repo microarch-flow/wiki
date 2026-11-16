@@ -1,6 +1,6 @@
 # 维序路由：固定维度顺序改变了什么？
 
-上级：[04 路由、仲裁与服务保证](./README.md)
+上级：[04 路由、仲裁与服务保证](../SUMMARY.md#04-routing-and-flow-control)；原章节：[04 路由、仲裁与服务保证](./README.md)
 
 相关：[Mesh 与 Torus](../03-topology/mesh-and-torus.md)、[死锁、活锁与饥饿](./deadlock-livelock-starvation.md)、[Turn Model 与逃逸资源](./deadlock-avoidance-turn-model.md)
 

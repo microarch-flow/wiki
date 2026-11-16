@@ -1,6 +1,6 @@
 # 共享总线、Crossbar 与 NoC：怎样比较？
 
-上级：[01 认识 NoC](./README.md)
+上级：[01 认识 NoC](../SUMMARY.md#01-overview)；原章节：[01 认识 NoC](./README.md)
 
 相关：[NoC 在解决什么问题？](./problem-statement.md)、[网络接口 NI](../05-system-integration/ni-network-interface-design.md)
 

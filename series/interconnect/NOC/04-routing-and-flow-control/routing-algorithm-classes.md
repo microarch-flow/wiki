@@ -1,6 +1,6 @@
 # NoC 路由算法怎样分类？
 
-上级：[04 路由、仲裁与服务保证](./README.md)
+上级：[04 路由、仲裁与服务保证](../SUMMARY.md#04-routing-and-flow-control)；原章节：[04 路由、仲裁与服务保证](./README.md)
 
 相关：[维序路由](./dimension-order-routing.md)、[自适应路由](./adaptive-routing-tradeoffs.md)、[Source Routing](./source-routing-for-deterministic-systems.md)
 

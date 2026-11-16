@@ -2,7 +2,7 @@
 
 <span id="compiler-noc-co-design"></span>
 
-上级：[06 AI NOC Specifics](./README.md)
+上级：[06 多端通信与调度](../SUMMARY.md#06-ai-noc-specifics)；原章节：[06 AI NOC Specifics](./README.md)
 
 相关：[确定性与静态调度](./deterministic-noc-and-static-scheduling.md)、[地址映射与路由表](../05-system-integration/address-map-and-routing-table.md)、[从工作负载到流量 Trace](../07-evaluation-methodology/from-workload-to-traffic-trace.md)
 
@@ -31,6 +31,8 @@
 
 这些职责是设计分工示例，不表示每个系统都具有独立运行时或提供逐流预留。若计划要求多个流在指定周期同时使用某条链路，它们当周期的需求不能超过链路容量，这是按计划执行的必要条件之一；有限缓冲、资源依赖、端点接收和实际仲裁也会影响执行。允许排队等待的计划则应将等待纳入时序，而不是把瞬时超额直接判为无法完成。
 
+例如，硬件描述给出共享链路 X→Y 每拍最多发送 1 flit；计划中的 F0、F1 各有 3 flit，均需要经过这条链路。若两者都要求拍 0–2 每拍各发送 1 flit，同一链路每拍需求为 2，超过容量。假设数据和下游许可始终就绪，且硬件支持对应时隙，一份候选计划可让 F0 使用拍 0–2、F1 使用拍 3–5。它消除了这条链路上的指定时隙冲突，仍需检查其他链路、缓冲、端点和依赖；不据此承诺端到端完成时间。
+
 ## 从一个生产者到两个消费者 {#compiler-真正能换来什么}
 
 构造例：生产者 S 有一个 3 flit 数据块，任务 A 和 B 都需要它；路径在节点 X 后分叉。A、B 的计算各自依赖本端所需数据。假设两种方案的数据都恰好为 3 flit，且没有本地目的端。
@@ -50,4 +52,4 @@
 
 <span id="一句话理解"></span>例如，一个 flow 可以描述“源 S、目的集合 A/B、3 flit、A 和 B 各自等待所需数据交付”。还需要规定它是两份单播，还是由支持分叉的网络实现；不能只写目的集合，就假定所有模拟器和硬件都能执行共享树。
 
-[从工作负载到流量 Trace](../07-evaluation-methodology/from-workload-to-traffic-trace.md)给出更完整的事件和依赖例子；其中的基线模拟器只支持单播。把计划变成模型输入时，应注明是否展开为单播、如何统计链路负载，以及完成事件由哪个组件产生。
+[从工作负载到流量 Trace](../07-evaluation-methodology/from-workload-to-traffic-trace.md)给出更完整的事件和依赖例子；第九章的目标设计以单播网络为基线，现有[最小程序](../08-simulator-construction/minimal-cycle-simulator.md)还不读取 Trace 或执行任务依赖。把计划变成模型输入时，应注明是否展开为单播、如何统计链路负载，以及完成事件由哪个组件产生。

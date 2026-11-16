@@ -30,7 +30,7 @@
 
 多目的 flow 的 all-consumer 完成是**这个 schema 的规则**。若每个消费者拿到自己的数据后就能独立计算，需要表示逐目的完成事件；不能只把现有整组完成事件当作逐目的事件。改变 schema 及其模拟器接口需要同时更新消费者，不能悄悄改变 v1 含义。
 
-第九章的基线网络内核只支持单播。多目的 flow 若展开为多份单播，应按各份路径重新统计注入和 byte-hop；共享树需要额外实现复制和完成状态。[注入与分包](../08-simulator-construction/traffic-injection-and-tracing.md)说明接口边界。
+第九章的[目标设计契约](../08-simulator-construction/simulator-design-spec.md)以单播网络为基线。多目的 flow 若展开为多份单播，应按各份路径重新统计注入和 byte-hop；共享树需要额外实现复制和完成状态。当前[最小程序](../08-simulator-construction/minimal-cycle-simulator.md)只处理一个固定路径 packet，不读取 v1 Trace。要运行这些事件，还需实现读取、端点执行和依赖调度；[注入与分包](../08-simulator-construction/traffic-injection-and-tracing.md)说明接口边界。
 
 ## 固定时间与依赖驱动
 

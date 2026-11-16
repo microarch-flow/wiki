@@ -2,7 +2,7 @@
 
 <span id="deterministic-noc-and-static-scheduling"></span>
 
-上级：[06 AI NOC Specifics](./README.md)
+上级：[06 多端通信与调度](../SUMMARY.md#06-ai-noc-specifics)；原章节：[06 AI NOC Specifics](./README.md)
 
 相关：[源路由与确定性系统](../04-routing-and-flow-control/source-routing-for-deterministic-systems.md)、[端到端服务保证](../04-routing-and-flow-control/service-guarantees-and-latency-bounds.md)、[编译器与 NoC 协同](./compiler-noc-co-design.md)
 

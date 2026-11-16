@@ -1,6 +1,6 @@
 # NoC 路由器怎样逐步转发一个 Flit？
 
-上级：[02 路由器与逐跳流控](./README.md)
+上级：[02 路由器与逐跳流控](../SUMMARY.md#02-router-microarchitecture)；原章节：[02 路由器与逐跳流控](./README.md)
 
 相关：[输入缓冲组织](./input-buffer-organization.md)、[VC 与交换分配](./allocator-design-vc-switch.md)
 

@@ -17,6 +17,11 @@
 - [Arm，AMBA AXI 入门，Version 3.0](https://documentation-service.arm.com/static/66fd59a21669c0388dca99b7)：查 AXI 通道、事务与 QoS 信号。它介绍接口协议，不规定所有 NoC 的内部实现。配套：[事务拆分、顺序与完成](../05-system-integration/transaction-ordering-and-completion.md)。
 - [MPI 4.1 集体通信](https://www.mpi-forum.org/docs/mpi-4.1/mpi41-report/node114.htm)及[非阻塞集体操作的完成](https://www.mpi-forum.org/docs/mpi-4.1/mpi41-report/node145.htm)：查参与组、结果和局部完成语义。这里借用通信形状，不假定 NoC 接口实现 MPI。配套：[集体通信基础](../06-ai-noc-specifics/collective-communication-basics.md)。
 
+## 系统集成与公开实现
+
+- [AMD PG327：独立时钟 FIFO](https://docs.amd.com/r/en-US/pg327-emb-fifo-gen/Independent-Clocks-Block-RAM-and-Distributed-RAM)：查读写域及状态标志的可见条件。配套：[跨时钟域、复位与流控](../05-system-integration/clock-domains-and-reset.md)。
+- [AMD PG313：Versal NoC 读事务](https://docs.amd.com/r/en-US/pg313-network-on-chip/Read-Transactions)及[性能监控](https://docs.amd.com/r/en-US/pg313-network-on-chip/NoC-Performance-Monitoring)：查一个产品族的端点、网络路径与观测位置。配套：[公开 NoC 案例](../07-workload-cases/published-noc-case.md)；具体配置和文档版本需另行记录。
+
 ## Trace 与模拟工具
 
 - [Netrace：Dependency-Driven Trace-Based Network-on-Chip Simulation](https://www.research.ed.ac.uk/en/publications/netrace-dependency-driven-trace-based-network-on-chip-simulation/)：了解保留消息依赖的一种 Trace 方法。本专题 `noc-workload-v1` 是独立教学契约，不等同 Netrace 格式。配套：[从工作负载到流量 Trace](../07-evaluation-methodology/from-workload-to-traffic-trace.md)。

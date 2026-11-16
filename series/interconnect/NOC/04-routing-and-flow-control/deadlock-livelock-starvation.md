@@ -1,6 +1,6 @@
 # 死锁、活锁与饥饿：为什么包不能完成？
 
-上级：[04 路由、仲裁与服务保证](./README.md)
+上级：[04 路由、仲裁与服务保证](../SUMMARY.md#04-routing-and-flow-control)；原章节：[04 路由、仲裁与服务保证](./README.md)
 
 相关：[Turn Model 与逃逸资源](./deadlock-avoidance-turn-model.md)、[仲裁策略](./arbitration-policies.md)、[Credit 与反压](../02-router-microarchitecture/credit-based-flow-control.md)
 

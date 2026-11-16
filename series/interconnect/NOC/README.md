@@ -1,10 +1,10 @@
 # NoC Wiki
 
-本 wiki 从互连问题、router 资源与流控出发，延伸到拓扑、系统集成、AI 流量、评估和仿真器构建。[完整目录](./SUMMARY.md) 列出所有章节和正文。
+本 wiki 从互连问题、router 资源与流控出发，延伸到拓扑、系统集成、工作负载与系统案例、性能评估和仿真器构建。[完整目录](./SUMMARY.md)列出所有章节和正文。
 
 首次学习可从[认识 NoC](./SUMMARY.md#01-overview)开始，再阅读 [Packet、Flit 与 Phit](./02-router-microarchitecture/packet-flit-phit-hierarchy.md)、[Credit 与反压](./02-router-microarchitecture/credit-based-flow-control.md)和 [Mesh 与 Torus](./03-topology/mesh-and-torus.md)。按系统分析或建模目标选读，可查看[学习与建模路线](./01-overview/learning-roadmap.md)。
 
-要实现或检查模型，可从 [核心数据结构](./08-simulator-construction/core-data-structures.md)、[Router 逐拍伪代码](./08-simulator-construction/router-pipeline-pseudocode.md) 和 [验证场景](./08-simulator-construction/verification-and-calibration.md) 入手。时序表属于文中指定的模型，不是硬件实测结果。
+要实现或检查模型，可从[核心数据结构](./08-simulator-construction/core-data-structures.md)、[Router 逐拍伪代码](./08-simulator-construction/router-pipeline-pseudocode.md)、[最小逐拍实作](./08-simulator-construction/minimal-cycle-simulator.md)和[验证场景](./08-simulator-construction/verification-and-calibration.md)入手。再用[练习与参考解答](./09-reference/exercises-and-worked-solutions.md)检查理解。时序表属于文中指定的模型，不是硬件实测结果。
 
 ## 章节入口
 

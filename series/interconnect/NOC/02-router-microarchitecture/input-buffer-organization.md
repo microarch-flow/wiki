@@ -1,6 +1,6 @@
 # 输入缓冲如何组织和分配空间？
 
-上级：[02 路由器与逐跳流控](./README.md)
+上级：[02 路由器与逐跳流控](../SUMMARY.md#02-router-microarchitecture)；原章节：[02 路由器与逐跳流控](./README.md)
 
 相关：[虚通道基础](./virtual-channel-fundamentals.md)、[Credit 与反压](./credit-based-flow-control.md)
 

@@ -1,6 +1,6 @@
 # Flattened Butterfly 与 Dragonfly：高端口数网络怎样连接？
 
-上级：[03 拓扑与物理组织](./README.md)
+上级：[03 拓扑与物理组织](../SUMMARY.md#03-topology)；原章节：[03 拓扑与物理组织](./README.md)
 
 相关：[拓扑设计指标](./topology-design-metrics.md)、[层次化与混合互连](./hierarchical-and-hybrid-topology.md)、[拓扑与物理实现](./topology-physical-realization.md)
 

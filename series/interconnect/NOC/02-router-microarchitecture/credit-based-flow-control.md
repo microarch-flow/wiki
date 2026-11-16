@@ -1,6 +1,6 @@
 # Credit 如何控制逐跳发送与反压？
 
-上级：[02 路由器与逐跳流控](./README.md)
+上级：[02 路由器与逐跳流控](../SUMMARY.md#02-router-microarchitecture)；原章节：[02 路由器与逐跳流控](./README.md)
 
 相关：[输入缓冲组织](./input-buffer-organization.md)、[虚通道基础](./virtual-channel-fundamentals.md)
 

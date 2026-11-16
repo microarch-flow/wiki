@@ -1,6 +1,6 @@
 # 地址怎样映射到端点和路径？
 
-上级：[05 端点与系统集成](./README.md)
+上级：[05 端点与系统集成](../SUMMARY.md#05-system-integration)；原章节：[05 端点与系统集成](./README.md)
 
 相关：[网络接口 NI](./ni-network-interface-design.md)、[事务拆分、顺序与完成](./transaction-ordering-and-completion.md)、[Source Routing](../04-routing-and-flow-control/source-routing-for-deterministic-systems.md)
 

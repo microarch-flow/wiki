@@ -1,6 +1,6 @@
 # 系统事务如何跨越 BUS 与 NoC？
 
-上级：[05 端点与系统集成](./README.md)
+上级：[05 端点与系统集成](../SUMMARY.md#05-system-integration)；原章节：[05 端点与系统集成](./README.md)
 
 相关：[共享总线、Crossbar 与 NoC](../01-overview/bus-vs-noc-vs-crossbar.md)、[网络接口 NI](./ni-network-interface-design.md)、[事务拆分、顺序与完成](./transaction-ordering-and-completion.md)
 

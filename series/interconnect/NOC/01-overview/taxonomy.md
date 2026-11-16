@@ -1,6 +1,6 @@
 # NoC 的设计维度与工作负载
 
-上级：[01 认识 NoC](./README.md)
+上级：[01 认识 NoC](../SUMMARY.md#01-overview)；原章节：[01 认识 NoC](./README.md)
 
 相关：[NoC 在解决什么问题？](./problem-statement.md)、[路由算法分类](../04-routing-and-flow-control/routing-algorithm-classes.md)
 

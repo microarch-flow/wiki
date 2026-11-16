@@ -1,6 +1,6 @@
 # VC 分配和交换分配分别决定什么？
 
-上级：[02 路由器与逐跳流控](./README.md)
+上级：[02 路由器与逐跳流控](../SUMMARY.md#02-router-microarchitecture)；原章节：[02 路由器与逐跳流控](./README.md)
 
 相关：[路由器流水线](./router-pipeline-stages.md)、[仲裁策略](../04-routing-and-flow-control/arbitration-policies.md)
 

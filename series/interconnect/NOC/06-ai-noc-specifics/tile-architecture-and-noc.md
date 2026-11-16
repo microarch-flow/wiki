@@ -1,6 +1,6 @@
 # Tile 怎样与 NoC 交换数据？
 
-上级：[06 AI NOC Specifics](./README.md)
+上级：[05 端点与系统集成](../SUMMARY.md#05-system-integration)；原章节：[06 AI NOC Specifics](./README.md)
 
 相关：[网络接口 NI](../05-system-integration/ni-network-interface-design.md)、[NoC 与存储系统](../05-system-integration/noc-meets-memory-system.md)、[DMA 与 NoC](../05-system-integration/dma-engine-noc-interaction.md)
 

@@ -44,6 +44,13 @@ class NocNavigationTests(unittest.TestCase):
         self.assertEqual(sum(len(entries) for _, _, entries in sections), len(expected) - len(legacy) - 2)
         self.assertEqual(set(actual), expected)
         self.assertEqual(len(actual), len(expected))
+        for group, anchor, entries in sections:
+            for _, path in entries:
+                with self.subTest(page=path):
+                    source = (docs / path).read_text(encoding="utf-8")
+                    parent = re.search(r"^上级：([^\n]+)$", source, re.MULTILINE)
+                    self.assertIsNotNone(parent)
+                    self.assertIn(f"[{group}](../SUMMARY.md#{anchor})", parent.group(1))
 
         representative = {
             "NOC/wiki/06-ai-noc-specifics/chiplet-and-die-to-die-interconnect.md": "05 端点与系统集成",
@@ -85,6 +92,22 @@ class NocNavigationTests(unittest.TestCase):
             self.assertIn(f"NOC/wiki/08-simulator-construction/{slug}/", locations)
         for slug in ("exercises-and-worked-solutions", "references-and-tools"):
             self.assertIn(f"NOC/wiki/09-reference/{slug}/", locations)
+        added = {
+            "NOC/wiki/05-system-integration/clock-domains-and-reset": "05 端点与系统集成",
+            "NOC/wiki/07-workload-cases/published-noc-case": "07 工作负载与系统案例",
+            "NOC/wiki/08-simulator-construction/workload-to-completion-worked-example": "09 模拟器构建与验证",
+        }
+        for path, group in added.items():
+            with self.subTest(added=path):
+                self.assertIn(path + "/", locations)
+                html = (SITE / path / "index.html").read_text(encoding="utf-8")
+                breadcrumb = re.search(r'<nav class="site-breadcrumbs"[^>]*>(.*?)</nav>', html, re.DOTALL)
+                self.assertIsNotNone(breadcrumb)
+                self.assertIn(group, breadcrumb.group(1))
+                active = re.search(r'<a\s+href="([^"]+)"\s+class="[^"]*\bmd-nav__link--active\b[^"]*"[^>]*>', html)
+                self.assertIsNotNone(active)
+                current = "https://example.test/" + path + "/"
+                self.assertEqual(urljoin(current, unescape(active.group(1))), current)
         for path, anchors in legacy.items():
             with self.subTest(page=path):
                 html = (SITE / path / "index.html").read_text(encoding="utf-8")
@@ -118,7 +141,7 @@ class NocNavigationTests(unittest.TestCase):
             self.assertEqual(urljoin(current, unescape(active.group(1))), current)
         exercise_html = (SITE / "NOC/wiki/09-reference/exercises-and-worked-solutions/index.html").read_text(
             encoding="utf-8")
-        for number in range(1, 8):
+        for number in range(1, 9):
             with self.subTest(exercise=number):
                 self.assertEqual(exercise_html.count(f'id="exercise-{number}"'), 1)
                 self.assertEqual(exercise_html.count(f'id="answer-{number}"'), 1)

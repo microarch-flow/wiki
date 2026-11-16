@@ -1,6 +1,6 @@
 # Source Routing：源端怎样指定网络路径？
 
-上级：[04 路由、仲裁与服务保证](./README.md)
+上级：[04 路由、仲裁与服务保证](../SUMMARY.md#04-routing-and-flow-control)；原章节：[04 路由、仲裁与服务保证](./README.md)
 
 相关：[路由算法分类](./routing-algorithm-classes.md)、[地址映射与路由表](../05-system-integration/address-map-and-routing-table.md)、[编译器与 NoC 协同](../06-ai-noc-specifics/compiler-noc-co-design.md)
 

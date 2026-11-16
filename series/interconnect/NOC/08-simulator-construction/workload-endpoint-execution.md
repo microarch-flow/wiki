@@ -2,7 +2,7 @@
 
 上级：[09 模拟器构建与验证](../SUMMARY.md#08-simulator-construction)
 
-相关：[从工作负载到流量 Trace](../07-evaluation-methodology/from-workload-to-traffic-trace.md)、[流量注入、分包与完成](./traffic-injection-and-tracing.md)、[网络接口 NI](../05-system-integration/ni-network-interface-design.md)
+相关：[从工作负载到流量 Trace](../07-evaluation-methodology/from-workload-to-traffic-trace.md)、[流量注入、分包与完成](./traffic-injection-and-tracing.md)、[从 Flow 到完成](./workload-to-completion-worked-example.md)、[网络接口 NI](../05-system-integration/ni-network-interface-design.md)
 
 Trace 的事件需要由某个资源执行。一个 consumer 是否能接收、一个 compute 是否能占用计算资源，都会改变后继事件的释放时间。本页定义一种可实现的教学调度规则，不规定真实硬件必须如此执行。
 

@@ -1,6 +1,6 @@
 # DMA 与 NoC：请求窗口怎样影响流量？
 
-上级：[05 端点与系统集成](./README.md)
+上级：[05 端点与系统集成](../SUMMARY.md#05-system-integration)；原章节：[05 端点与系统集成](./README.md)
 
 相关：[网络接口 NI](./ni-network-interface-design.md)、[NoC 与存储系统](./noc-meets-memory-system.md)、[DMA：调度、Outstanding 与回包](../../../microarchitecture/DMA/wiki/03-dma-microarchitecture/scheduling-outstanding.md)
 

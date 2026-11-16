@@ -1,6 +1,6 @@
 # NoC 仲裁策略：共享资源先服务谁？
 
-上级：[04 路由、仲裁与服务保证](./README.md)
+上级：[04 路由、仲裁与服务保证](../SUMMARY.md#04-routing-and-flow-control)；原章节：[04 路由、仲裁与服务保证](./README.md)
 
 相关：[VC 与交换分配](../02-router-microarchitecture/allocator-design-vc-switch.md)、[QoS 与优先级](./qos-and-priority-classes.md)、[端到端服务保证](./service-guarantees-and-latency-bounds.md)
 

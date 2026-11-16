@@ -1,6 +1,7 @@
 """Execute the published NoC teaching model against independent scenarios."""
 
 from pathlib import Path
+import json
 import random
 import re
 import unittest
@@ -146,6 +147,29 @@ class NocCycleExampleTests(unittest.TestCase):
         compute["duration_cycles"] = -1
         with self.assertRaises(ValueError):
             trace_module["validate_trace"](trace)
+
+    def test_flow_to_completion_documented_example(self):
+        worked = ARTICLE.parent / "workload-to-completion-worked-example.md"
+        match = re.search(r"```json\n(.*?)\n```", worked.read_text(encoding="utf-8"), re.DOTALL)
+        self.assertIsNotNone(match)
+        trace = json.loads(match.group(1))
+        trace_article = ARTICLE.parent.parent / "07-evaluation-methodology/trace-generation-worked-example.md"
+        trace_code = re.search(r"```python\n(.*?)\n```", trace_article.read_text(encoding="utf-8"), re.DOTALL)
+        self.assertIsNotNone(trace_code)
+        trace_module = {"__name__": "noc_trace_example"}
+        exec(compile(trace_code.group(1), str(trace_article), "exec"), trace_module)
+        trace_module["validate_trace"](trace)
+        flow, compute = trace["events"]
+        self.assertEqual((flow["src_node"], flow["dst_set"], compute["depends_on"]), (0, [3], [flow["id"]]))
+        num_flits = (flow["payload_bytes"] + 16 + 15) // 16  # The article's 16 B header and flit.
+        self.assertEqual(num_flits, 3)
+        sim = self.module["LineNoC"](num_flits=num_flits)
+        sim.run()
+        self.assertEqual((sim.injection_cycle, sim.network_arrival_cycle,
+                          sim.consumer_complete_cycle, sim.quiescent_cycle), (0, 9, 10, 10))
+        compute_start = sim.consumer_complete_cycle + 1  # Manual dependency visibility contract.
+        compute_end_cycle = compute_start + compute["duration_cycles"] - 1
+        self.assertEqual((compute_start, compute_end_cycle), (11, 12))
 
 
 if __name__ == "__main__":

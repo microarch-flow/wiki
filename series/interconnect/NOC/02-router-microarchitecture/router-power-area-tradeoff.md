@@ -1,6 +1,6 @@
 # 路由器的面积、功耗和性能如何权衡？
 
-上级：[02 路由器与逐跳流控](./README.md)
+上级：[02 路由器与逐跳流控](../SUMMARY.md#02-router-microarchitecture)；原章节：[02 路由器与逐跳流控](./README.md)
 
 相关：[输入缓冲组织](./input-buffer-organization.md)、[全网功耗与面积建模](../07-evaluation-methodology/power-area-modeling.md)
 

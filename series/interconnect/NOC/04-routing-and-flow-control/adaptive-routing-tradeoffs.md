@@ -1,6 +1,6 @@
 # 自适应路由：怎样利用可选路径？
 
-上级：[04 路由、仲裁与服务保证](./README.md)
+上级：[04 路由、仲裁与服务保证](../SUMMARY.md#04-routing-and-flow-control)；原章节：[04 路由、仲裁与服务保证](./README.md)
 
 相关：[路由算法分类](./routing-algorithm-classes.md)、[Turn Model 与逃逸资源](./deadlock-avoidance-turn-model.md)、[端到端服务保证](./service-guarantees-and-latency-bounds.md)
 

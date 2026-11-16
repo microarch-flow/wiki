@@ -58,6 +58,7 @@
 
 - [BUS 与 NoC 的系统边界](./05-system-integration/noc-vs-bus-revisited.md)
 - [网络接口 NI](./05-system-integration/ni-network-interface-design.md)
+- [跨时钟域、复位与流控](./05-system-integration/clock-domains-and-reset.md)
 - [地址映射与路由表](./05-system-integration/address-map-and-routing-table.md)
 - [事务拆分、顺序与完成](./05-system-integration/transaction-ordering-and-completion.md)
 - [Tile 与 NoC 的接口](./06-ai-noc-specifics/tile-architecture-and-noc.md)
@@ -88,6 +89,7 @@
 - [Attention Decode 与 KV Cache 案例](./06-ai-noc-specifics/workload-attention-decode-kv-cache.md)
 - [MoE 通信案例](./06-ai-noc-specifics/workload-moe-routing.md)
 - [缓存一致性通信案例](./07-workload-cases/coherent-access-and-noc.md)
+- [公开 NoC 案例：AMD Versal](./07-workload-cases/published-noc-case.md)
 
 ## 08 性能评估与架构探索 {#07-evaluation-methodology}
 
@@ -115,6 +117,7 @@
 - [流量注入、分包与完成](./08-simulator-construction/traffic-injection-and-tracing.md)
 - [工作负载与端点执行](./08-simulator-construction/workload-endpoint-execution.md)
 - [最小逐拍仿真实作](./08-simulator-construction/minimal-cycle-simulator.md)
+- [从 Flow 到完成：贯通例](./08-simulator-construction/workload-to-completion-worked-example.md)
 - [验证、校准与适用边界](./08-simulator-construction/verification-and-calibration.md)
 - [参数与配置参考](./08-simulator-construction/parameter-reference.md)
 - [实现路线与阶段验收](./08-simulator-construction/implementation-roadmap.md)

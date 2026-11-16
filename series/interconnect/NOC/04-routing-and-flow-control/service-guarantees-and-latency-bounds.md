@@ -1,6 +1,6 @@
 # 端到端服务保证：带宽与延迟怎样证明？
 
-上级：[04 路由、仲裁与服务保证](./README.md)
+上级：[04 路由、仲裁与服务保证](../SUMMARY.md#04-routing-and-flow-control)；原章节：[04 路由、仲裁与服务保证](./README.md)
 
 相关：[QoS 与优先级](./qos-and-priority-classes.md)、[仲裁策略](./arbitration-policies.md)、[确定性与静态调度](../06-ai-noc-specifics/deterministic-noc-and-static-scheduling.md)
 

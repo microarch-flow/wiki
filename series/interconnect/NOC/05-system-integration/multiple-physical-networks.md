@@ -1,6 +1,6 @@
 # 多网络与共享资源：怎样隔离不同流量？
 
-上级：[05 端点与系统集成](./README.md)
+上级：[05 端点与系统集成](../SUMMARY.md#05-system-integration)；原章节：[05 端点与系统集成](./README.md)
 
 相关：[QoS 与优先级](../04-routing-and-flow-control/qos-and-priority-classes.md)、[端到端服务保证](../04-routing-and-flow-control/service-guarantees-and-latency-bounds.md)、[Memory-centric NoC](../06-ai-noc-specifics/memory-centric-noc.md)
 
@@ -33,6 +33,8 @@ VNet 描述一组逻辑网络资源；具体实现可能为每个 VNet 配置多
 <span id="为什么-ai-芯片比通用-soc-更常见多网络"></span><span id="它和-qos-的关系"></span>不同应用可能在 control、bulk、response 或 collective 之间选择共享或分离。不能仅凭芯片类型推断必须有几张网络；先量化流量、共享点和关键依赖，再比较布线、面积、功耗及闲置容量。
 
 <span id="什么时候-vc-隔离还不够"></span>即使两张物理网络的链路完全分开，两个协议仍可能在目的端共享有限缓冲并互相等待。[第四章的端点等待例](../04-routing-and-flow-control/deadlock-livelock-starvation.md#协议和端点也可能形成等待环)说明了跨资源分析的必要性。增加 VC、提高优先级或增加物理网络，都需要结合完整依赖与服务规则验证。
+
+这里的隔离讨论队列、容量和服务机会，不自动建立访问权限。系统还需确定身份和安全属性由哪些接口传递，以及在哪里检查；例如 DMA 的地址转换和访问权限可参见 [IOMMU／SMMU 与 DMA 寻址](../../BUS/04-microarchitecture-integration/iommu-smmu-dma-addressing.md)。是否存在侧信道及其影响，还要依据具体共享资源和威胁模型分析。
 
 <span id="它不是永远越多越好"></span>物理分离可能提供清晰的容量边界，也会增加端口和布线，并减少闲置容量复用。共享资源可以更灵活，但需要验证仲裁、缓冲和干扰。
 

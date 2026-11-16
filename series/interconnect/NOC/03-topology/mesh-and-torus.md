@@ -1,6 +1,6 @@
 # Mesh 与 Torus：怎样比较网格和环回连接？
 
-上级：[03 拓扑与物理组织](./README.md)
+上级：[03 拓扑与物理组织](../SUMMARY.md#03-topology)；原章节：[03 拓扑与物理组织](./README.md)
 
 相关：[拓扑设计指标](./topology-design-metrics.md)、[维序路由](../04-routing-and-flow-control/dimension-order-routing.md)、[拓扑与物理实现](./topology-physical-realization.md)
 

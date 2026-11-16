@@ -66,6 +66,14 @@
 
 [查看解答](#answer-7) · [验证场景](../08-simulator-construction/verification-and-calibration.md)
 
+### 练习 8：共享树减少了多少传输？ {#exercise-8}
+
+一个 2×2 Mesh 的源 S 位于 `(0,0)`，三个 consumer 位于 S、A=`(1,0)`、B=`(1,1)`。三个 consumer 需要相同数据；S 的本地交付不进入网络。发往远端的每份完整 packet 为 16 B wire，已包含全部线上开销。没有其他流量，路由按先 X 后 Y。
+
+比较两种构造：分别向 A、B 单播一份；或者源只注入一份，在 A 所在节点交付并向 B 转发。后者假设网络支持所需复制和本地交付。分别求网络注入 wire 字节和有向链路上的 wire byte-hop；能否据此断定哪种方案完成得更快？
+
+[查看解答](#answer-8) · [Mesh 与 Torus](../03-topology/mesh-and-torus.md) · [广播、多播与复制](../06-ai-noc-specifics/broadcast-multicast-tree.md)
+
 ## 参考解答
 
 ### 解答 1：传输粒度 {#answer-1}
@@ -148,3 +156,13 @@
 这个程序只实现单 packet 固定路径。通过该例不能证明多包仲裁正确、任意网络无死锁或模型已与硬件校准。
 
 [返回题目](#exercise-7)
+
+### 解答 8：网络流量与完成时间 {#answer-8}
+
+单播到 A 经过 1 跳，到 B 经过 2 跳；源各注入一份，所以网络注入为 **32 B wire**，链路工作量为 `16×(1+2) = 48 B·hop`。
+
+共享树在 S→A 发送一份，并在 A 交付及向 B 转发一份。源注入 **16 B wire**，两条有向边各承载 16 B，共 **32 B·hop**。S 的本地交付不计入上述网络注入或链路流量。
+
+共享树在本例中减少了注入和链路字节，但仍需检查复制、缓冲、仲裁及目的端服务。仅凭这两个流量数字不能确定完成时间。若 packet 大小、路径或复制位置变化，应重新计算。
+
+[返回题目](#exercise-8) · [流量与性能界](../07-evaluation-methodology/performance-bounds-and-bottlenecks.md)

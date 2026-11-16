@@ -1,6 +1,6 @@
 # Packet、Flit 与 Phit：网络传输分成哪些单位？
 
-上级：[02 路由器与逐跳流控](./README.md)
+上级：[02 路由器与逐跳流控](../SUMMARY.md#02-router-microarchitecture)；原章节：[02 路由器与逐跳流控](./README.md)
 
 相关：[转发与交换方式](./wormhole-vs-vct-vs-store-forward.md)、[路由器流水线](./router-pipeline-stages.md)
 

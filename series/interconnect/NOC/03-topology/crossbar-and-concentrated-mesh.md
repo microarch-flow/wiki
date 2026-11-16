@@ -1,6 +1,6 @@
 # Crossbar 与 Concentrated Mesh：怎样连接多个端点？
 
-上级：[03 拓扑与物理组织](./README.md)
+上级：[03 拓扑与物理组织](../SUMMARY.md#03-topology)；原章节：[03 拓扑与物理组织](./README.md)
 
 相关：[共享总线、Crossbar 与 NoC](../01-overview/bus-vs-noc-vs-crossbar.md)、[层次化与混合互连](./hierarchical-and-hybrid-topology.md)
 

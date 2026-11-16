@@ -1,6 +1,6 @@
 # 存储转发、虚直通与虫洞交换有什么区别？
 
-上级：[02 路由器与逐跳流控](./README.md)
+上级：[02 路由器与逐跳流控](../SUMMARY.md#02-router-microarchitecture)；原章节：[02 路由器与逐跳流控](./README.md)
 
 相关：[Packet、Flit 与 Phit](./packet-flit-phit-hierarchy.md)、[虚通道基础](./virtual-channel-fundamentals.md)
 

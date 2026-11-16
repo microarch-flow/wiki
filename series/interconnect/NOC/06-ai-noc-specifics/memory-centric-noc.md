@@ -1,6 +1,6 @@
 # Memory-centric NoC：存储端口怎样塑造网络？
 
-上级：[06 AI NOC Specifics](./README.md)
+上级：[05 端点与系统集成](../SUMMARY.md#05-system-integration)；原章节：[06 AI NOC Specifics](./README.md)
 
 相关：[NoC 与存储系统](../05-system-integration/noc-meets-memory-system.md)、[地址映射与路由表](../05-system-integration/address-map-and-routing-table.md)、[Decode 与 KV Cache](./workload-attention-decode-kv-cache.md)
 

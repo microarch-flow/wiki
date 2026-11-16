@@ -1,6 +1,6 @@
 # 怎样定义和比较 NoC 拓扑指标？
 
-上级：[03 拓扑与物理组织](./README.md)
+上级：[03 拓扑与物理组织](../SUMMARY.md#03-topology)；原章节：[03 拓扑与物理组织](./README.md)
 
 相关：[Mesh 与 Torus](./mesh-and-torus.md)、[拓扑选型](./topology-selection-framework.md)
 

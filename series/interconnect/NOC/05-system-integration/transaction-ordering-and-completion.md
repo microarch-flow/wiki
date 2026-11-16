@@ -1,6 +1,6 @@
 # 事务拆分、顺序与完成：网络怎样保持接口语义？
 
-上级：[05 端点与系统集成](./README.md)
+上级：[05 端点与系统集成](../SUMMARY.md#05-system-integration)；原章节：[05 端点与系统集成](./README.md)
 
 相关：[网络接口 NI](./ni-network-interface-design.md)、[地址映射与路由表](./address-map-and-routing-table.md)、[死锁、活锁与饥饿](../04-routing-and-flow-control/deadlock-livelock-starvation.md)
 
