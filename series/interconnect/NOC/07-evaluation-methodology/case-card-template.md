@@ -1,100 +1,43 @@
-# Case Card Template
+# 实验与案例记录：怎样保存可复查的结论？
 
-上级：[07 Evaluation Methodology](./README.md)
+<span id="case-card-template"></span>
 
-相关：[Architecture Exploration Loop](./architecture-exploration-loop.md)、[From Workload To Traffic Trace](./from-workload-to-traffic-trace.md)
+上级：[08 性能评估与架构探索](../SUMMARY.md#07-evaluation-methodology)；原章节：[07 Evaluation Methodology](./README.md)
 
-## 这页在回答什么问题
+相关：[架构探索与实验设计](./architecture-exploration-loop.md)、[如何选择模型粒度](./modeling-layers-analytical-event-cycle.md)
 
-这页回答：如何把一次 NoC case study 或实验结果沉淀成可复用资产，而不是只留下一次性图表和印象。
-
-## 为什么需要 case card
-
-NoC 探索里最容易丢的是上下文。几周之后再回看，很常见的情况是：
-
-- 还记得“某方案更好”
-- 但不记得对什么 workload、更好在哪、为什么更好
-
-case card 的作用，就是把一次实验压缩成最小但完整的决策记录。
+<span id="这页在回答什么问题"></span><span id="为什么需要-case-card"></span>一张案例卡应让后来者知道：比较了什么、依据是什么，以及结论在哪些条件下成立。它是实验记录的索引，不替代原始配置和结果。
 
 ## 推荐模板
 
 ```md
-# Case Card
+# 实验名称
 
-## Question
-这次实验想回答什么问题？
-
-## Workload
-逻辑 workload 是什么？
-
-## Placement / Memory Placement
-放在哪里？有哪些关键映射假设？
-
-## Traffic Abstraction
-用了什么 trace / flow 抽象？保留了哪些 class？
-
-## Model Layer
-analytical / event / flit / cycle 哪一层？
-
-## Baseline
-对照方案是什么？
-
-## Variables
-扫了哪些参数？
-
-## Metrics
-看了哪些网络、端点、workload 指标？
-
-## Findings
-最重要的观察是什么？
-
-## Root Cause
-现象背后的主因是什么？
-
-## Tradeoff
-收益换来了什么代价？
-
-## Limits
-这次实验没覆盖什么？哪些结论不能外推？
-
-## Next Step
-下一轮最值得做什么？
+- 问题与目标：
+- baseline、候选及改变的变量：
+- 工作负载、placement、依赖和初始状态：
+- 模型对象与资源状态：
+- 时间精度、推进方式及参考版本：
+- 指标、起止事件、单位和统计窗口：
+- 输入、代码、配置和原始结果位置：
+- 重复次数、seed、未完成与超时：
+- 观察结果及不确定性：
+- 原因假设和支持或反驳证据：
+- 面积、能量、时序及验证代价：
+- 已验证范围、未覆盖项和下一步：
 ```
 
-## 为什么这个模板有用
+<span id="为什么这个模板有用"></span><span id="特别要避免漏掉的字段"></span>按需填写，不支持的字段写“未建模”或“未测量”，不要填成 0。模型对象、时间推进和精度分别记录；`event-driven`、`flit-level` 和 `cycle-accurate` 不是同一分类轴。
 
-它强迫你把一次实验说清楚四件事：
+## 一张已填写的下界案例
 
-- 问题是什么
-- 假设是什么
-- 结果是什么
-- 结果边界是什么
+| 字段 | 内容 |
+| --- | --- |
+| 问题 | 加宽共享链路后，容量下界是否变化？ |
+| 工作负载 | 两个源各发送 64 B，路径和目的端见[共享链路例子](./performance-bounds-and-bottlenecks.md#一个共享链路例子)。 |
+| 候选 | A：共享链路 16 B/cycle；B：32 B/cycle。目的端均为 16 B/cycle。 |
+| 方法与观察 | 对必须服务的字节分别计算容量下界；A、B 都得到至少 8 cycle。 |
+| 结论状态 | 这是构造模型的下界，不是仿真或硬件测量。 |
+| 未覆盖与下一步 | 未计流水、仲裁、包头或其他流量；可在同一输入下比较实际完成时间。 |
 
-这会显著减少“图很多，但资产很少”的情况。
-
-## 特别要避免漏掉的字段
-
-最常被遗漏、但最关键的字段通常是：
-
-- model layer
-- placement / memory placement
-- traffic abstraction
-- limits
-
-因为很多 NoC 结论恰恰最依赖这些上下文。
-
-## 一句话理解
-
-case card 的任务不是复述所有图，而是把一次实验最关键的问题、假设、结论和边界锁定下来。
-
-## 建模启示
-
-如果后续要批量管理 case study，建议让 case card 字段结构化，便于做：
-
-- workload 维度索引
-- topology 维度索引
-- model-layer 维度索引
-- finding / trade-off 回查
-
-这样 case card 就不仅是笔记，而是探索知识库的最小单元。
+<span id="一句话理解"></span><span id="建模启示"></span>若后续进行参数扫描，再补模型和输入版本、各候选结果、未完成任务与重复运行数据。不要把“下界相同”写成“实际性能相同”，也不要把尚未检验的解释写成已证实根因。

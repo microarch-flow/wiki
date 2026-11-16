@@ -1,146 +1,46 @@
-# Traffic Patterns And Characterization
+# 流量模式与表征：网络实际收到什么？
 
-上级：[05 System Integration](./README.md)
+<span id="traffic-patterns-and-characterization"></span>
 
-相关：[Topology Design Metrics](../03-topology/topology-design-metrics.md)、[DMA Engine NOC Interaction](./dma-engine-noc-interaction.md)、[From Workload To Traffic Trace](../07-evaluation-methodology/from-workload-to-traffic-trace.md)
+上级：[08 性能评估与架构探索](../SUMMARY.md#07-evaluation-methodology)；原章节：[05 System Integration](./README.md)
 
-## 这页在回答什么问题
+相关：[工作负载与 NoC 流量](../06-ai-noc-specifics/why-ai-noc-is-different.md)、[All-to-All 与通信矩阵](../06-ai-noc-specifics/all-to-all-and-traffic-matrix.md)、[从工作负载到流量 Trace](../07-evaluation-methodology/from-workload-to-traffic-trace.md)
 
-这页回答：系统层面应该怎样描述 NoC traffic，为什么“平均注入率”远远不够，以及 workload、mapping、DMA、memory behavior 怎样一起定义真正的流量形状。
+<span id="这页在回答什么问题"></span><span id="traffic-不是一个数字"></span>流量表征要回答：谁在什么时候向谁发送多少数据，以及发送和接收受什么条件约束。同样的平均速率，可以对应不同的目的分布、突发和等待。
 
-## traffic 不是一个数字
+## 描述空间、时间和完成条件
 
-说“这个 workload 的 NoC traffic 很大”几乎没有分析价值。至少要分开看四个维度：
+<span id="characterization-至少要记录什么"></span>先选择观察边界：统计源端生成、成功注入，还是目的端消费。然后记录：
 
-- `who talks to whom`
-- `when they talk`
-- `how large each transfer is`
-- `which endpoint / memory system behavior shapes the transfer`
+| 维度 | 需要说明的内容 |
+| --- | --- |
+| 空间 | 源、目的集合和各端点位置；本地交付是否入网。 |
+| 时间 | 释放时刻、到达间隔、观察窗口、阶段及突发。 |
+| 大小与语义 | payload、分包、单播或多目的交付，是否有请求和响应。 |
+| 依赖与服务 | 何时允许发送、接收端能否消费，以及前驱的完成事件。 |
+| 类别 | 流量类别及其如何映射到实际队列和仲裁资源。 |
 
-同样的总字节数，在不同的时间结构和空间结构下，NoC 体验会完全不同。
+<span id="一个更有用的分类法"></span>单播流、相同数据的多目的分发、归约，以及请求／响应有不同语义。同一条流也可以同时属于某个通信形状和某个服务类别；不要把二者当作互斥分类。多目的操作的定义见[集体通信基础](../06-ai-noc-specifics/collective-communication-basics.md)。
 
-## synthetic traffic 仍然必要
+## 平均速率相同时，突发也会改变等待
 
-synthetic traffic 的价值不是代表真实 workload，而是提供可控基线。
+<span id="为什么-burstiness-比平均值更重要"></span>构造例：一个队列有足够空间，服务端每 cycle 恰好处理一个 packet。四个 packet 都在前 4 个 cycle 内释放，无其他流量；服务完成后才能处理下一个 packet。
 
-常见几类包括：
+| 释放方式 | 拍 0、1、2、3 释放量 | 四个 packet 的队列等待 |
+| --- | --- | --- |
+| 均匀释放 | 1、1、1、1 | 均为 0 cycle。 |
+| 集中释放 | 4、0、0、0 | 分别为 0、1、2、3 cycle。 |
 
-- uniform random
-- hotspot
-- nearest-neighbor / local traffic
-- transpose / permutation
+两组在这 4 个 cycle 的平均释放率都是 1 packet/cycle；集中释放的平均队列等待为 1.5 cycle。这是指定队列和服务规则下的例子。更长窗口的平均值、队列容量或服务规则变化时，要重新计算。
 
-它们适合回答：
+## 合成流量与实际负载
 
-- 某个 topology 的一般性容量特征是什么
-- routing 政策在经典压力下如何表现
-- 模型是否基本可信
+<span id="synthetic-traffic-仍然必要"></span>合成流量适合控制单个因素并测试模型，例如均匀随机、热点、邻近通信和置换流量。应说明目的分布、是否允许自身目的、packet 大小、生成规则和随机种子。它可以包含突发或依赖，但不能仅凭名称代表某个真实工作负载。
 
-但它们不能替代 AI workload characterization。
+<span id="ai-like-traffic-的本质差异"></span>从工作负载推导的流量可以保留映射、阶段和任务依赖，但质量取决于这些输入是否准确；“AI”“CPU”或“prefill”本身不规定固定的热点或带宽需求。[Garnet 合成流量文档](https://www.gem5.org/documentation/general_docs/debugging_and_testing/directed_testers/garnet_synthetic_traffic/)给出了生成规则和以 packet/node/cycle 表示注入率的具体例子；其他工具的注入边界和 packet 大小可能不同。
 
-## AI-like traffic 的本质差异
+## 系统也会改变流量
 
-AI 流量通常和 synthetic 最大的不同在于：
+<span id="和系统集成的关系"></span>地址映射影响目的存储端口，DMA 和 outstanding 限制影响释放节奏，NI 决定如何分包；接收端服务和反压也可能影响后续注入。固定时间重放的 Trace 可以控制网络输入，但未必再现这些反馈。[从工作负载到流量 Trace](../07-evaluation-methodology/from-workload-to-traffic-trace.md)讨论两种边界。
 
-- 更强阶段性
-- 更强 burstiness
-- 更强 endpoint / memory-system 耦合
-- 更明显的空间非均匀性
-
-典型例子：
-
-- prefill：大块并发搬运，memory 与 on-chip fabric 同时高压
-- decode：总流量可能没那么大，但 dependency 很长，memory response 更关键
-- GEMM / systolic：高度规则，很多流可以静态预测
-- MoE：通信更不规则，更接近动态热点
-
-## characterization 至少要记录什么
-
-对一个 traffic 场景，最少应记录：
-
-- source / destination 分布
-- transfer size 分布
-- 注入时间分布
-- traffic class
-- 是否与 memory request / response 或 local refill 强耦合
-
-这比只记录“平均带宽多少 GB/s”有用得多。
-
-## 为什么 burstiness 比平均值更重要
-
-很多 AI 系统慢，不是因为长时间平均负载超了，而是因为：
-
-- 某些阶段边界瞬时冲高
-- 多个 stream 同步发起
-- response 在延迟后成批返回
-
-这会让：
-
-- queue 瞬时冲满
-- control path 被淹
-- 某些 memory port 出现短时尖峰
-
-因此 characterization 必须显式记录 burst 结构，而不只是平均速率。
-
-## 和系统集成的关系
-
-traffic 不只是 workload 语义产生的，还会被系统边界二次塑形：
-
-- address map 决定流量落向哪些 port
-- DMA 决定注入节奏和 outstanding 深度
-- NI 决定 packetization 粒度
-- local memory 决定 ejection 端能否及时消费
-
-所以 traffic characterization 本质上是 workload 与系统集成共同生成的结果。
-
-## 一个更有用的分类法
-
-系统分析里，比“这是 attention traffic”更有用的分类是：
-
-- point-to-point stream
-- fan-out / broadcast-like
-- fan-in / reduce-like
-- memory request / response
-- control / descriptor / completion
-
-因为这些类别更直接对应：
-
-- topology 压力点
-- QoS 需求
-- 是否该多网络隔离
-- 是否需要 collective 支持
-
-## 常见误区
-
-- 认为 synthetic 流量足够代表真实工作负载
-- 认为总字节量相同，网络压力就差不多
-- 认为 traffic 是 workload 给定的，和地址映射或 DMA 无关
-
-更准确的说法是：
-
-- synthetic 只能做基线，不替代 workload trace
-- 同样字节量，不同 burst 和空间结构会产生完全不同的瓶颈
-- traffic 是 workload、mapping、DMA、address map、memory behavior 共同塑造的
-
-## 一句话理解
-
-traffic characterization 的任务不是给出“流量大不大”，而是描述流量在时间、空间、粒度和系统边界上的真实形状。
-
-## 建模启示
-
-模型中最好把 traffic source 抽象成可配置生成器，至少暴露：
-
-- source-destination pattern
-- packet / transfer size
-- inter-arrival distribution
-- traffic class
-- memory-coupling mode
-
-真正面向 workload 的阶段，应进一步从 trace 中恢复：
-
-- phase boundary
-- burst cluster
-- request/response pairing
-- per-class overlap
-
-否则模型很容易在平均值上看着合理，在真实 workload 下完全失真。
+<span id="常见误区"></span><span id="一句话理解"></span><span id="建模启示"></span>比较流量时，保留源、目的、大小、时间与依赖，再检查它们对应哪些网络和端点资源。总字节数和平均注入率是起点，不足以单独确定拥塞或完成时间。

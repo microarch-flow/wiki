@@ -1,152 +1,45 @@
-# Metrics Latency Throughput Saturation
+# 延迟、吞吐与饱和：数字从哪里开始，到哪里结束？
 
-上级：[07 Evaluation Methodology](./README.md)
+<span id="metrics-latency-throughput-saturation"></span>
 
-相关：[Stall Taxonomy And Attribution](./stall-taxonomy-and-attribution.md)、[Modeling Layers Analytical Event Cycle](./modeling-layers-analytical-event-cycle.md)
+上级：[08 性能评估与架构探索](../SUMMARY.md#07-evaluation-methodology)；原章节：[07 Evaluation Methodology](./README.md)
 
-## 这页在回答什么问题
+相关：[流量模式与表征](../05-system-integration/traffic-patterns-and-characterization.md)、[性能界与瓶颈分析](./performance-bounds-and-bottlenecks.md)、[Stall 分类与归因](./stall-taxonomy-and-attribution.md)
 
-这页回答：NoC 评估里最基础的指标应该怎样分层理解，为什么 `latency / throughput / saturation` 不能只用一个平均数字来讲完。
+<span id="这页在回答什么问题"></span><span id="指标不是越多越好"></span>评估首先要固定对象和观察边界。相同网络可以同时有较高的链路吞吐、较长的尾延迟，以及较慢的工作负载完成时间；这些数字回答不同问题。
 
-## 指标不是越多越好
+## 先定义事件和时间窗口
 
-NoC 评估真正需要的是一组能形成因果链的指标，而不是一堆孤立数字。
+<span id="固定计量边界"></span>对一个 packet，可记录以下事件：
 
-最核心的链条通常是：
+> 释放 → 首 flit 注入 → tail 网络到达 → 最后数据被 consumer 接收
 
-```text
-injection / offered load
--> contention / occupancy / stall
--> latency distribution
--> throughput / completion
--> workload-level outcome
-```
+释放前等待依赖、释放后等待注入、网络内传输、目的端等待消费是不同区间。这里把网络延迟定义为首 flit 注入到 tail 到达，端点等待定义为 tail 到达到最后数据被接收；其他定义也可以使用，但比较时必须给出各自起止事件。事务协议完成可能还需要其他响应，不能自动等同于 consumer 接收。
 
-如果这个链条断了，指标就会变成“看起来很多，但解释不了问题”。
+在窗口 [t₀, t₁) 内，可以分别统计释放速率（offered load）、成功注入速率和 consumer 交付速率。工具对 offered、accepted 等名称的定义可能不同，应先核对其边界。按**首 flit 注入事件**给整个 packet 的 payload 记账，是一种 packet 口径；它不等于该窗口在链路上实际传输的字节。链路计数还可能包含 header、padding 和重传；跨多条链路的字节分别累加得到 byte-hop。比较时注明 B/s、packet/cycle 或 flit/cycle，以及时钟、packet 和 flit 大小。
 
-## 固定计量边界
+## 延迟和吞吐都要分对象
 
-在统一 measurement 窗口 `[t0,t1)` 内：offered load 是生成并满足释放条件的 payload bytes / wall time；accepted 是端点成功接纳或首 flit 注入的 bytes / wall time（须声明所选边界）；delivered 是 consumer 成功消费的 payload bytes / wall time。wire bytes 另计 header、padding 和重传，link byte-hop 是各链路传输字节之和。单位可为 B/s 或 flit/cycle，但需给时钟和 flit 大小。
+<span id="latency-要看分布不只看平均"></span>平均延迟会掩盖少数长等待。按目标分别记录平均值、分位数、最大已完成值和各类别的样本数。P99 是指定样本中的统计量，不是最坏情况保证。
 
-记录 `release→injection` 的源等待、`injection→network arrival` 的网络延迟，以及 `network arrival→consumer completion` 的端点等待。实验须声明 warmup、measurement、drain、随机 seed；窗口末还在途、超时或未消费的数量和年龄要与已完成样本的 P99 一起报告，否则只取完成样本会把最慢请求删掉。
+如果只统计窗口内已经完成的请求，缓慢或仍在途的请求会被排除。可以选取窗口内释放的一批请求，跟踪其最终完成；同时报告窗口末未完成数量、等待年龄和超时。若后续 drain 阶段停止了背景注入，排队环境也随之改变，需要在结果中说明。
 
-## latency 要看分布，不只看平均
+<span id="throughput-也分层"></span>吞吐也必须带边界：网络可以按目的端到达的 byte/cycle 统计，端点可以按实际消费速率统计，工作负载可以按完成任务数或 token/s 统计。链路繁忙不自动代表任务完成得快。对多播尤其要分开源注入、目的端交付和各链路传输量。
 
-平均 latency 的问题在于，它会掩盖：
+<span id="ai-noc-里特别重要的系统级指标"></span>按问题补充 tile 工作时间、DMA 等待、同步等待或任务完成时间。它们需要相应的计算和端点模型，不能由链路利用率直接推出。
 
-- 少量极慢 packet
-- 某一类关键流量被严重拖慢
-- 某些 router / endpoint 上的局部长尾
+## 怎样观察饱和
 
-对 AI NoC，至少要区分：
+<span id="saturation-point-是结构性拐点"></span>在指定流量和资源条件下，逐步增加 offered load，观察成功注入、交付、排队和未完成请求。延迟曲线变陡是线索；若系统持续接纳的服务量不再随需求增长，而相关积压持续增长，更能支持达到服务极限的判断。
 
-- average latency
-- median latency
-- tail latency，例如 P95 / P99
-- per-class latency
+要说明积压统计在哪里。对同一对象和同一队列，无丢弃或取消时，期末积压等于期初积压加期间进入量、再减期间离开量；若存在丢弃或取消，也要单独扣除。有限队列可以向上游反压；丢弃、限流和闭环工作负载也可能限制进入系统的流量。此时网络内队列没有持续增长，并不证明全部外部需求得到服务。有限实验只能支持其观察范围内的判断。
 
-因为很多系统真正怕的是：
+<span id="utilization-只是症状不是结论"></span>链路利用率指出资源何时忙，却不能单独解释竞争来源或证明它限制了任务。应联合观察链路方向、队列、端点服务和完成事件。
 
-- response tail 太长
-- control / barrier 偶尔被淹没
+## 让统计与模型一致
 
-而不是所有流量平均都慢一点。
+<span id="metric-必须和模型层级绑定"></span>只计算每条边流量的模型可以报告链路负载或容量界，但不能凭空报告逐拍 credit stall。记录模型保留的状态、统计对象、时间窗口和不支持的现象，再比较结果。
 
-## throughput 也分层
+稳态实验可设置预热、测量和排空阶段，并报告随机种子及未完成样本；有限工作负载则应保留启动和结束阶段，不能默认把它们丢掉。[BookSim 手册](https://github.com/booksim/booksim2/blob/master/doc/manual.tex)展示了一种预热、采样和排空流程；各工具的具体统计口径仍需核对。
 
-`throughput` 这个词很容易被混用。至少应区分：
-
-- network throughput：单位时间送达多少 flit / packet / byte
-- endpoint throughput：tile / DMA / HBM 实际吃下多少数据
-- workload throughput：tokens/s、samples/s、job completion rate
-
-如果只看 network throughput，很容易高估系统价值，因为网络忙并不等于 workload 前进得快。
-
-## saturation point 是结构性拐点
-
-`saturation` 是由给定流量和资源条件观测到的服务极限；单凭一条延迟曲线突然变陡不能证明。需要看：
-
-- offered load 再增加，系统不再线性响应
-- latency 开始急剧上升
-- 若持续 offered 大于 delivered 且 pending 数随测量窗口增长，系统不稳定；短时 burst 只说明局部积压
-
-因此 saturation 应和下面这些一起看：
-
-- 哪类流量先饱和
-- 哪些链路 / 端点先成为热区
-- 饱和后 workload 指标如何变化
-
-## utilization 只是症状，不是结论
-
-per-link / per-router utilization 很重要，但它只能告诉你：
-
-- 哪些地方忙
-
-不能单独告诉你：
-
-- 为什么忙
-- 忙是不是合理
-- 忙是否真的伤害了 workload
-
-所以 utilization 必须和：
-
-- latency
-- stall breakdown
-- endpoint consumption
-
-一起读。
-
-## AI NoC 里特别重要的系统级指标
-
-除了网络原生指标，还要关注：
-
-- tile utilization
-- producer stall ratio
-- completion time
-- token latency
-- DMA overlap success
-- barrier / sync amplification
-
-这些指标的意义在于：它们直接回答“NoC 问题有没有真的伤到计算和工作负载”。
-
-## metric 必须和模型层级绑定
-
-不是每层模型都能产出同一套指标。
-
-例如：
-
-- analytical model 适合给粗粒度 throughput / hop / bisection proxy
-- flow 粒度模型适合给 flow-level latency 与 phase overlap
-- 显式保留 flit、credit、逐周期仲裁和队列状态的模型可给对应 stall 与 occupancy；event-driven 引擎也可以逐周期准确
-
-如果把这些不加区分地并排比较，结论会很危险。
-
-## 常见误区
-
-- 只看 average latency
-- 把 network throughput 当成 workload throughput
-- 看到高 utilization 就认为设计高效
-- 不区分 per-class 指标
-
-更准确的做法是：
-
-- 延迟看分布
-- 吞吐看层级
-- 饱和看拐点
-- 指标看 class 与 workload 关联
-
-## 一句话理解
-
-latency、throughput、saturation 不是三个独立数字，而是同一条系统因果链上的三个观察面。
-
-## 建模启示
-
-评估表格至少应固定几列：
-
-- modeling layer
-- metric name
-- metric scope：network / endpoint / workload
-- aggregation：avg / median / P99 / per-class
-- interpretation
-
-这样后面的实验结果才不会因为指标口径漂移而无法横向对比。
+<span id="常见误区"></span><span id="一句话理解"></span><span id="建模启示"></span>先问“统计谁、从哪里到哪里”，再解释平均、尾部和吞吐。更多实验安排见[架构探索与实验设计](./architecture-exploration-loop.md)。

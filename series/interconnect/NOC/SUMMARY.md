@@ -91,16 +91,18 @@
 
 ## 08 性能评估与架构探索 {#07-evaluation-methodology}
 
-定义流量、指标和模型边界，再比较候选设计并定位瓶颈。
+从流量和指标出发，建立性能界、模型与实验，再结合成本比较候选。
 
 - [流量模式与表征](./05-system-integration/traffic-patterns-and-characterization.md)
 - [延迟、吞吐与饱和](./07-evaluation-methodology/metrics-latency-throughput-saturation.md)
-- [从 Workload 到 Traffic Trace](./07-evaluation-methodology/from-workload-to-traffic-trace.md)
+- [性能界与瓶颈分析](./07-evaluation-methodology/performance-bounds-and-bottlenecks.md)
 - [如何选择模型粒度](./07-evaluation-methodology/modeling-layers-analytical-event-cycle.md)
-- [功耗与面积建模](./07-evaluation-methodology/power-area-modeling.md)
+- [从工作负载到流量 Trace](./07-evaluation-methodology/from-workload-to-traffic-trace.md)
+- [Trace 生成与核算实作](./07-evaluation-methodology/trace-generation-worked-example.md)
 - [Stall 分类与归因](./07-evaluation-methodology/stall-taxonomy-and-attribution.md)
-- [架构探索闭环](./07-evaluation-methodology/architecture-exploration-loop.md)
-- [案例记录模板](./07-evaluation-methodology/case-card-template.md)
+- [功耗、能量与面积建模](./07-evaluation-methodology/power-area-modeling.md)
+- [架构探索与实验设计](./07-evaluation-methodology/architecture-exploration-loop.md)
+- [实验与案例记录](./07-evaluation-methodology/case-card-template.md)
 
 ## 09 模拟器构建与验证 {#08-simulator-construction}
 

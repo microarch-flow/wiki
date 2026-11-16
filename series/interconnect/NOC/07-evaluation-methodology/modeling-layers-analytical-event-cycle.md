@@ -1,150 +1,40 @@
-# Modeling Layers Analytical Event Cycle
+# 如何选择模型粒度：需要保留哪些状态？
 
-上级：[07 Evaluation Methodology](./README.md)
+<span id="modeling-layers-analytical-event-cycle"></span>
 
-相关：[Metrics Latency Throughput Saturation](./metrics-latency-throughput-saturation.md)、[Simulator Construction](../08-simulator-construction/README.md)
+上级：[08 性能评估与架构探索](../SUMMARY.md#07-evaluation-methodology)；原章节：[07 Evaluation Methodology](./README.md)
 
-## 这页在回答什么问题
+相关：[性能界与瓶颈分析](./performance-bounds-and-bottlenecks.md)、[模拟器设计规格](../08-simulator-construction/simulator-design-spec.md)
 
-这页回答：NoC 模型何时采用解析估算，何时在仿真中引入 flow 或 flit 状态粒度，以及何时需要逐周期精度。仿真的时间推进可以使用离散事件或逐拍 tick；时间推进、状态粒度和时间保真度是分别选择的维度。
+<span id="这页在回答什么问题"></span><span id="不要从最复杂模型开始"></span>模型应保留回答问题所需的状态和规则。例如，只想排除容量明显不足的方案，不一定需要模拟每个 flit；要区分 credit 等待与仲裁失败，就需要描述对应资源。
 
-## 不要从最复杂模型开始
+## 状态、时间和推进方式分开选择
 
-最有效的方法不是一上来就追求“工业级精确”，而是从能回答当前问题的最小模型开始。
+| 选择 | 要回答的问题 | 例子 |
+| --- | --- | --- |
+| 对象与状态 | 把什么视为独立对象，保留哪些资源？ | flow 和链路服务量；或 packet、flit、VC、credit 和队列。 |
+| 时间精度 | 哪些事件的先后和时间需要准确？ | 阶段级完成时间；或指定模型边界的逐拍状态。 |
+| 推进方式 | 怎样执行时间？ | 每拍推进，或跳到下一离散事件。 |
+| 参考与验证 | 结果与什么契约或系统比较？ | 手算、独立模型、RTL 或实际计数器。 |
 
-核心不是精度崇拜，而是问题-模型匹配：
+这几个选择可以组合。离散事件引擎如果按约定处理每拍相关事件，也可以复现指定模型的逐拍状态；逐拍循环如果没有表示 credit 和仲裁，也不能自动回答 credit 问题。[事件推进与逐拍精度](../08-simulator-construction/event-driven-vs-cycle-accurate.md)讨论实现。
 
-- 当前问题是什么
-- 这个层级能不能回答
-- 升级会多解释哪些现象
+## 同一个共享资源，不同问题
 
-## Layer 0: Analytical Estimate / Bound
+<span id="layer-0-analytical-estimate-bound"></span>对于[两源共享链路](./performance-bounds-and-bottlenecks.md#一个共享链路例子)，知道必要字节和资源容量，就可以得到完成时间下界。这个下界不需要规定仲裁顺序，但也不会给出每个 packet 的等待分布。
 
-这一层可用解析估算或界，通常忽略部分微观冲突。只有说明哪些约束被放松、为何所得值必然不低于真实可达吞吐时，才能称吞吐上界；未经证明的近似应称 estimate/proxy。常见输入包括：
+<span id="layer-1-bandwidth-aware-topology-aware"></span>加入端点位置、路由和每条链路容量后，可以估算不同映射的资源需求。若再定义服务和排队规则，解析或流级模型也可以分析某些 QoS 问题；结论仍受这些规则和假设限制。未经证明的估算称为 estimate 或 proxy，不能仅因为简化了模型就称为严格界。
 
-- hop / distance
-- bandwidth upper bound
-- rough bisection reasoning
+<span id="layer-2-flow-状态粒度"></span>用 flow 表示释放、源目的、依赖和完成，可以研究阶段何时重叠。但如果模型没有表示逐拍仲裁或 credit，就不能从结果中报告真实的 `NO_CREDIT` 周期。flow 是否排队、如何共享带宽，仍需由模型定义。
 
-它适合回答：
+<span id="layer-3-flit-level-credit-level"></span>显式加入 flit、VC、buffer、credit 和仲裁后，可以观察该模型中的细粒度等待。只有端点、路由及相关协议也被正确表示时，这些观察才能支持对应范围内的解释；更细的网络状态不自动修复错误的 workload 或端点假设。
 
-- compute / memory / network 谁更可能是一阶瓶颈
-- 某个 topology 是否明显不对路
+## 周期精确相对于什么
 
-不适合回答：
+<span id="cycle-accurate-是时间保真度不是引擎类别"></span>所谓周期精确，应说明与哪个目标相比，以及要求哪些边界的状态和事件逐拍一致。相对于教学模型一致，不等于已经与 RTL 或芯片一致。验证检查实现是否遵守模型；校准比较模型与参考系统。两者都需要记录输入、观测点和未覆盖的条件。
 
-- QoS 是否有效
-- stall 类型是什么
-- endpoint backpressure 如何传播
+## 何时调整模型
 
-## Layer 1: Bandwidth-Aware / Topology-Aware
+<span id="什么时候该升级"></span>先列出目标指标、可用输入和不需要回答的问题。若结果对未表示的仲裁、端点反压或依赖敏感，就需要增加相应状态或使用更合适的参考；如果主要不确定性来自 workload，则只细化 router 并不能解决问题。
 
-这一层开始引入：
-
-- 具体拓扑
-- 端点位置
-- per-link / per-port bandwidth
-- 粗粒度 contention
-
-它适合回答：
-
-- hotspot 大概在哪
-- placement 与 topology 哪个更有影响
-- cluster / hierarchy 值不值得
-
-依然不擅长回答：
-
-- flit-level stall
-- VC / credit 细节
-- per-cycle arbitration 行为
-
-## Layer 2: Flow 状态粒度
-
-这一层开始显式引入：
-
-- flow release
-- dependency
-- traffic class
-- request-response pairing
-- phase timing
-
-它特别适合 AI workload，因为很多关键问题首先是：
-
-- 哪个 phase 和哪个 phase 重叠
-- response 回来时有没有挡住下一步
-- control / bulk 是否冲突
-
-这类问题在进入 flit 之前，其实已经能分析出很大一部分。
-
-## Layer 3: Flit-Level / Credit-Level
-
-这一层开始引入：
-
-- packet / flit
-- wormhole / VC
-- credit
-- input buffering
-- arbitration
-- ejection blocking
-
-它适合回答：
-
-- NO_CREDIT 和 SWITCH_CONFLICT 谁主导
-- tail latency 为什么变差
-- QoS / VC policy 是否真的起作用
-
-这通常是“解释现象”的关键层。
-
-## Cycle-Accurate 是时间保真度，不是引擎类别
-
-周期精确要求指定观察边界上每拍状态和规则与目标模型一致；它可用逐拍 tick，也可用按 `(time, phase, stable_id)` 排序的离散事件引擎实现。反过来，tick 推进若只用固定 flow 延迟，也不自动具有 flit/credit 精度。这是与上面状态粒度正交的一条轴。
-
-这种精度要求更严格的事件顺序和内部状态一致性。
-
-它更适合：
-
-- 实现级验证
-- 更精细的 pipeline / event ordering
-- 对 simulator 自身正确性的更强约束
-
-但不一定意味着所有架构问题都必须做到这里。
-
-## 什么时候该升级
-
-一个实用判断标准是：
-
-- 如果当前层已经能稳定解释现象，就先别急着升级
-- 如果关键现象只能被“猜测”，说明该加真实度
-
-典型升级触发：
-
-- average throughput 解释不了 workload completion
-- topology-aware 解释不了 tail latency
-- flow-level 解释不了 credit / ejection 问题
-
-## 常见误区
-
-- 认为越细的模型一定更有价值
-- 认为 analytical 层只是玩具
-- 认为 flit-level 一上来就必须做完所有细节
-
-更准确的看法是：
-
-- 价值来自回答问题，不来自状态变量数量
-- 解析或粗 flow 粒度模型对快速筛选方案有价值
-- flit-level 应该在真正需要解释细粒度现象时再引入
-
-## 一句话理解
-
-好的建模层次不是从简到繁的仪式，而是“每加一层真实度，都明确多回答了什么问题”。
-
-## 建模启示
-
-每一层模型都建议显式记录：
-
-- supported questions
-- supported metrics
-- unsupported phenomena
-- simplification assumptions
-
-这样后续比较不同结果时，才不会把不同层级模型的结论混成一个口径。
+<span id="常见误区"></span><span id="一句话理解"></span><span id="建模启示"></span>每次增加复杂度，都要写清楚它新增了什么能力、成本和验证要求。模型记录模板见[实验与案例记录](./case-card-template.md)。

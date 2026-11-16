@@ -1,133 +1,46 @@
-# Power Area Modeling
+# 功耗、能量与面积建模：性能收益需要付出什么？
 
-上级：[07 Evaluation Methodology](./README.md)
+<span id="power-area-modeling"></span>
 
-相关：[Router Power Area Tradeoff](../02-router-microarchitecture/router-power-area-tradeoff.md)、[Chiplet And Die To Die Interconnect](../06-ai-noc-specifics/chiplet-and-die-to-die-interconnect.md)
+上级：[08 性能评估与架构探索](../SUMMARY.md#07-evaluation-methodology)；原章节：[07 Evaluation Methodology](./README.md)
 
-## 这页在回答什么问题
+相关：[路由器面积与功耗](../02-router-microarchitecture/router-power-area-tradeoff.md)、[拓扑与物理实现](../03-topology/topology-physical-realization.md)、[架构探索与实验设计](./architecture-exploration-loop.md)
 
-这页回答：为什么 NoC 评估不能只谈 latency / throughput，也必须把面积和功耗作为一等约束一起带上。
+<span id="这页在回答什么问题"></span><span id="性能最优不等于可实现"></span>比较网络时，除了完成时间和吞吐，还要检查实现需要多少面积、能量、功率及布线资源。本篇关注**全网计数和工作负载**；单个 router 的结构关系见第二章。
 
-## 性能最优不等于可实现
+## 先确定成本边界
 
-在架构探索里，很多看起来很美的方案最后会输在：
+<span id="noc-的面积和功耗大头通常在哪里"></span>按实际实现列出 router 的 buffer、crossbar、allocator 和控制，链路及驱动、可能的流水寄存器，以及 NI。不同设计的主要成本可能不同。时钟、空闲活动和泄漏也应按所选边界计入；跨 die PHY 若属于比较范围，要单独列明。
 
-- buffer 太深
-- VC 太多
-- crossbar radix 太高
-- 物理线太长
+逻辑 bit 数、网络连边数和线长是有用的输入，但不是直接测得的硅面积。存储宏、端口、布局、工艺、电压和目标频率都会影响实现。成本表应保证各项不重不漏：若 buffer 成本已经包含各 VC 的存储，就不能再次把相同存储作为独立 VC 面积加进去。
 
-也就是说，面积和功耗不是最后再补的一列，而是决定某些方向是否值得继续探索的硬边界。
+## 从操作次数估算能量
 
-## NoC 的面积和功耗大头通常在哪里
+<span id="为什么这一页要和-workload-一起看"></span>对每种操作 i，令 N<sub>i</sub> 是观察窗口内的次数，E<sub>i</sub> 是对应假设下每次操作的动态能量：
 
-最典型的构成是：
+> E<sub>dynamic</sub> = Σ(N<sub>i</sub> × E<sub>i</sub>)；P<sub>average</sub> = (E<sub>dynamic</sub> + E<sub>leakage</sub>) / 窗口时长。
 
-- buffer / SRAM
-- crossbar
-- allocator / control
-- link / repeater / PHY
-- NI
+例如只为演示单位，假设 200 次 buffer 读写各 2 pJ、100 次 crossbar 穿越各 1 pJ、100 次链路传输各 3 pJ、100 次控制操作各 0.5 pJ。动态能量为 **850 pJ**。若另假设窗口 10 ns、泄漏功率恒为 10 mW，则泄漏能量为 100 pJ，总能量为 950 pJ，平均功率为 **95 mW**。本例省略其他时钟和空闲动态能量；数值只是构造假设，不是器件参数。
 
-其中最常见的大头通常是：
+统计多播时，要根据实际复制点分别计算源注入、各边传输及各次 buffer/crossbar 操作。数据值和翻转率也可能改变单次动态能量；一次 flow 的逻辑 payload 不能直接当作全网操作次数。
 
-- buffer 面积和动态能耗
-- 高 radix crossbar 的面积与能耗
-- 长链路或跨 die 互连的线能耗
+## 改变参数时，哪些条件一起变化
 
-这和性能参数是强耦合的。
+<span id="常见的一阶-trade-off"></span>
 
-## 常见的一阶 trade-off
+| 变化 | 可能的收益 | 需要同时检查 |
+| --- | --- | --- |
+| <span id="加深-buffer"></span>加深 buffer | 吸收部分突发或信用往返等待 | 存储组织、读写活动和下游服务；不能消除持续过载。 |
+| <span id="增加-vc"></span>增加 VC | 允许独立排队，可能缓解 HOL | 总容量固定还是每 VC 深度固定，以及仲裁和隔离规则。 |
+| <span id="提高-radix"></span>增加端口 | 为某些拓扑提供更多直接连接 | crossbar、仲裁、线长和频率；端口更多本身不保证 hop 变少。 |
+| <span id="加宽-link"></span>加宽链路 | 在接口和频率允许时提高原始传输能力 | 内部 flit 是否变化、每拍能发多少、编码开销和目的端速率。 |
 
-### 加深 buffer
+固定每拍一次传输且频率不变时，W bit 物理链路的原始位速率为 W×f；有效 payload 速率还取决于包格式和空拍。若链路加宽导致频率或接口规则变化，不能直接按位宽比例推断吞吐。
 
-收益：
+## 从粗估到可比较的结果
 
-- 吸收 credit round-trip
-- 缓解部分流控停顿
+<span id="什么时候需要粗模型就够"></span>早期可以使用明确标注的相对成本或范围筛选候选。比较时固定活动统计方式及功耗边界，分别展示性能、面积和能量，再检查受预算约束的非支配方案。不同成本模型可能改变排序。
 
-代价：
+[ORION 2.0 原论文](https://dspace.mit.edu/entities/publication/3b64a184-2f8c-4a20-8e5f-74e6a80f478f)介绍了互连的功耗和面积模型；[CACTI](https://github.com/HewlettPackard/cacti)提供存储和互连等估算能力。它们的输出依赖模型版本和输入，不能直接当作具体芯片的实测结果。
 
-- 固定宽度和实现组织时逻辑 bit 数线性上升；宏面积还受外围和端口影响
-- 动态与 leakage 需按访问次数和工艺模型估计
-
-### 增加 VC
-
-收益：
-
-- 减少 HOL blocking
-- 更好做 class 隔离
-
-代价：
-
-- 每 VC 深度、宽度固定时 buffer bit 数随 VC 数增加；总 bit 数固定时增加 VC 会使每 VC 变浅，不必增加总容量
-- allocator 复杂度上升
-
-### 提高 radix
-
-收益：
-
-- hop 数减少
-- 某些 topology 更扁平
-
-代价：
-
-- crossbar 面积与功耗增速很快
-- 时序与布线难度上升
-
-### 加宽 link
-
-收益：
-
-- 单跳带宽线性提升
-
-代价：
-
-- 线资源、驱动与能耗上升
-- 局部 endpoint 不一定真能吃满
-
-## 为什么这一页要和 workload 一起看
-
-面积功耗不是抽象常数，它们的价值要看 workload。
-
-例如：
-
-- 如果某个 workload 根本不需要更多 VC，那增加 VC 只是在烧面积和功耗
-- 如果某个热点只出现在少量 dynamic case，做全网高 radix 可能不划算
-
-所以 power/area 评估必须和 workload 结果一起读，而不是单独做排行榜。
-
-## 什么时候需要粗模型就够
-
-在 architecture exploration 早期，粗粒度相对模型通常就足够有用，例如：
-
-- buffer cost roughly linear
-- crossbar cost grows faster with radix
-- long link / cross-die cost noticeably higher
-
-你不一定一开始就需要工艺级绝对数字，但至少要能比较相对代价。
-
-## 一句话理解
-
-NoC 的性能改进只有在面积、功耗和实现复杂度成本可接受时才有意义；否则只是“仿真里更快”。
-
-## 建模启示
-
-同样 bit 数的不同 SRAM 宏组织、端口和外围电路面积也可能不同。动态能量可按 `E_dynamic=Σ(操作次数_i × 单次能量_i)` 估算，包括 buffer 读写、crossbar、link 与仲裁；`P_average=(E_dynamic+E_leakage)/measurement_time`，其中 leakage 能量随状态与时间变化。单次能量、泄漏及面积需要工艺、电压、频率、宏库和活动率校准；没有这些数据只能给明确假设下的相对 proxy。
-
-第一版 power/area 模型至少要有相对成本项：
-
-- buffer cost
-- VC cost
-- radix cost
-- link length cost
-- extra-network cost
-
-然后把这些和性能结果并排呈现成简单 Pareto 视图：
-
-- performance gain
-- area delta
-- power delta
-- complexity / verification delta
-
-这样 architecture exploration 才能真正做取舍，而不是只追一个方向上的最优。
+<span id="一句话理解"></span><span id="建模启示"></span>记录工作负载产生了多少次操作，再用适用的实现数据估算成本；性能改善是否值得，应与实际预算和模型不确定性一起判断。

@@ -77,6 +77,8 @@ class NocNavigationTests(unittest.TestCase):
         for slug in ("collective-communication-basics", "all-to-all-and-traffic-matrix"):
             self.assertIn(f"NOC/wiki/06-ai-noc-specifics/{slug}/", locations)
         self.assertIn("NOC/wiki/07-workload-cases/coherent-access-and-noc/", locations)
+        for slug in ("performance-bounds-and-bottlenecks", "trace-generation-worked-example"):
+            self.assertIn(f"NOC/wiki/07-evaluation-methodology/{slug}/", locations)
         for path, anchors in legacy.items():
             with self.subTest(page=path):
                 html = (SITE / path / "index.html").read_text(encoding="utf-8")

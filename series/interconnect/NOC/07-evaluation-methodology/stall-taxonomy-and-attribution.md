@@ -1,158 +1,50 @@
-# Stall Taxonomy And Attribution
+# Stall 分类与归因：等待发生在哪里？
 
-上级：[07 Evaluation Methodology](./README.md)
+<span id="stall-taxonomy-and-attribution"></span>
 
-相关：[Arbitration Policies](../04-routing-and-flow-control/arbitration-policies.md)、[NOC Meets Memory System](../05-system-integration/noc-meets-memory-system.md)
+上级：[08 性能评估与架构探索](../SUMMARY.md#07-evaluation-methodology)；原章节：[07 Evaluation Methodology](./README.md)
 
-## 这页在回答什么问题
+相关：[Credit 与反压](../02-router-microarchitecture/credit-based-flow-control.md)、[网络接口 NI](../05-system-integration/ni-network-interface-design.md)、[验证与校准](../08-simulator-construction/verification-and-calibration.md)
 
-这页回答：性能下降时，到底应该怎样把“系统变慢”拆成可行动的 stall 原因，而不是只说一句“拥塞了”。
+<span id="这页在回答什么问题"></span><span id="为什么-taxonomy-比平均-latency-更重要"></span>延迟告诉我们等待了多久；stall 分类记录某个对象当时不能前进的条件。分类有助于定位，但**一个局部标签不自动证明系统根因**。
 
-## 为什么 taxonomy 比平均 latency 更重要
+## 先固定统计对象
 
-平均 latency 只能告诉你结果，不告诉你根因。
+<span id="attribution-的核心规则"></span>例如，router 统计每个非空 input VC 的队首 flit：每个队首在每个 cycle 成功前进，或记录至多一个主阻塞原因。空 VC 不计 stall。这个分母是 `flit-router-cycle`，不是 packet 数或全网 cycle 数。
 
-真正有用的归因必须回答：
+多个可观察的阻塞条件可能同时存在。可以按固定顺序选择一个主标签供汇总，另记其他已观察到的条件；但没有 credit 的候选若未进入 switch 仲裁，不能把它假定为实际输掉了仲裁。端点注入和工作负载依赖使用各自对象与分母，不与 router 队首周期直接相加。统计规则与[第九章快照契约](../08-simulator-construction/router-pipeline-pseudocode.md#时间与快照契约)保持一致。
 
-- 谁在等
-- 在等什么资源
-- 这个等待属于网络、端点还是系统依赖
+## 一组可观察的等待
 
-如果没有 taxonomy，调参就会变成盲试：
+<span id="一套实用的主-stall-类别"></span>
 
-- 遇到慢就加 buffer
-- 遇到 tail 就加宽链路
-- 遇到热点就怪 topology
+| 标签 | 本例统计对象 | 直接观察到的条件 |
+| --- | --- | --- |
+| <span id="route_blocked"></span>`ROUTE_BLOCKED` | router 队首 | 当前规则下没有可选择的合法路由；永久非法路径应作为配置或正确性问题处理。 |
+| `VC_ALLOC_FAIL` | router 队首 | 路由已确定，但尚未获得所需下游 VC 许可。 |
+| <span id="no_credit"></span>`NO_CREDIT` | router 队首 | 发送端记录的目标 VC 可用 credit 为 0。 |
+| <span id="link_blocked"></span>`LINK_BLOCKED` | router 队首 | 已满足其他发送条件，但链路或 serializer 本拍不能接收。 |
+| <span id="switch_conflict"></span>`SWITCH_CONFLICT` | 已参与仲裁的队首 | 该候选具备参与条件，但没有获得 switch 服务。 |
+| <span id="ejection_blocked"></span>`EJECTION_BLOCKED` | 目的 router 队首 | 本地输出无法将队首交给目的端接收队列。 |
+| <span id="injection_blocked"></span>`INJECTION_BLOCKED` | 已就绪、尝试注入的端点对象 | 注入许可、credit 或其他明确的注入资源不可用。 |
+| <span id="waiting_for_dependency"></span>`WAITING_FOR_DEPENDENCY` | 工作负载事件 | 前驱或本地数据条件尚未满足，事件还没有就绪。 |
 
-这经常会南辕北辙。
+端点可以按 endpoint-cycle、队列头 packet-cycle 或其他方式计数，但要明确对象和分母。同一周期有多个待注入 packet 时，这些口径并不相等。
 
-## 一套实用的主 stall 类别
+## Credit 为零不等于下游此刻满
 
-### NO_CREDIT
+单 VC 深度为 B，每次发送预留一个下游槽，每次出队返回一个 credit，且无丢失或重复时，可以检查：
 
-队首 flit 所需的下游 VC 在发送端记录的可用 credit 为 0，因而本拍不能按该 credit 契约发送。这不等于此刻下游物理 buffer 必然已满：下游可能已出队并腾出槽，但返回的 credit 仍在途；也可能有已发送 flit 正在前向链路上，占用了槽的预留额度。
+> 发送端可用 credit + 前向在途 flit + 下游已占槽 + 返回在途 credit = B。
 
-例如单 VC 深度为 `B`，每个发送的 flit 恰好预留一个槽，且每次出队恰好返回一个 credit。在无丢失或重复的前提下，可核对 `发送端可用 credit + 前向在途 flit + 下游已占槽 + 返回在途 credit = B`。不同实现若有额外预留或批量返回，还须将相应状态计入守恒式。排查时应同时观察 buffer occupancy、前向在途和返回 credit 延迟。
+例如下游已消费一个 flit，腾出的槽对应 credit 还在返回路径上；发送端仍可能观察到 `NO_CREDIT`。批量返回或额外预留需要把相应状态加入守恒式。[窗口深度与发送速率](../02-router-microarchitecture/credit-based-flow-control.md#窗口深度与发送速率)说明时间边界。
 
-它更接近：
+## 从现象走向可检验的解释
 
-- flow control 问题
-- endpoint / ejection 消费问题
-- buffer / round-trip sizing 问题
+<span id="一个实用的归因顺序"></span>假设目的 consumer 停止，ejection 队列逐渐填满。目的 router 先观察到 `EJECTION_BLOCKED`；下游输入槽随后不再释放，上游耗尽已有 credit 后可能观察到 `NO_CREDIT`。继续供数且资源有限时，阻塞还可能向更远处传播。
 
-### SWITCH_CONFLICT
+要判断这个路径是否主导任务延迟，应同时查看 consumer 服务、ejection 和 input 队列、credit 往返及任务依赖。可以在相同工作负载和其他配置下改变目的端服务能力，比较等待和任务完成时间；这验证的是所选模型中的干预，不自动证明真实硬件只有同一原因。
 
-多个候选同时争同一个输出或分配资源，仲裁没赢。
+<span id="qos-和-fairness-为什么要一起看"></span>按 class、端点和时间窗口查看等待，检查是否有持续未获服务的对象。固定优先级、权重和共享路径会影响不同流量的结果；P99 或一次有限运行中的最长等待不构成公平性或最坏延迟证明。服务保证的前提见[端到端服务保证](../04-routing-and-flow-control/service-guarantees-and-latency-bounds.md)。
 
-它更接近：
-
-- 局部资源竞争
-- arbitration / class policy
-- path 汇聚过强
-
-### LINK_BLOCKED
-
-队首已具备其他条件，但所需链路本拍不能接收，例如正在发送其他 flit 的 phit 或 serializer 尚未释放。该原因与仲裁失败分开计数。
-
-它更接近：
-
-- 带宽瓶颈
-- 路径过度集中
-- traffic pattern 本身的问题
-
-### EJECTION_BLOCKED
-
-packet 到了目的 router，但目的端 NI、FIFO、SRAM 或 local consumer 接不住。
-
-这是最容易被误判成“网络堵了”的类别之一。
-
-### INJECTION_BLOCKED
-
-packet 还没真正进入网络，就在源端被卡住。
-
-这往往提示：
-
-- source queue 满
-- 本地数据没准备好
-- 本地端口速率不足
-
-### ROUTE_BLOCKED
-
-当前上下文没有合法或可选择的路由。合法输出已经确定但下游 VC 许可不可用时，使用独立的 `VC_ALLOC_FAIL`，不记为 route blocked。
-
-它更接近 routing / class / path restriction 问题。
-
-### WAITING_FOR_DEPENDENCY
-
-这类 stall 很关键，因为它提醒你：
-
-- 不是所有“算力没打满”都是 NoC 自己的问题
-- 很多等待来自上层依赖链或跨 stream 同步
-
-## attribution 的核心规则
-
-一个可用的 simulator 最好满足：
-
-- 统计对象定义为每个非空 input VC 队首的 `flit-router-cycle`，每对象每拍最多一个主因；无活动时不计 stall
-- endpoint 的注入等待以 `endpoint-cycle` 单独计数，workload 依赖未满足记 `WAITING_FOR_DEPENDENCY`，不混进 router 分母
-- 同一队首同时无 credit 且竞争输出时，按固定优先级例如 `ROUTE_BLOCKED → VC_ALLOC_FAIL → EJECTION_BLOCKED/NO_CREDIT → LINK_BLOCKED → SWITCH_CONFLICT` 只计一个主因；其他条件可存在次因 bitset
-- 链路占用或 serialization 与输掉 SA 的竞争分别记录，避免对同一对象同一周期重复累加；分母与聚合方式随结果一起报告
-
-这样你才能回答：
-
-- 哪类消息最容易被压
-- 最先出问题的是哪层
-- 优化动作应该打在哪个层级
-
-## QoS 和 fairness 为什么要一起看
-
-如果只做 stall 分类，不看 per-class 与公平性，仍然不够。
-
-例如：
-
-- 控制流 latency 很好
-- 但 bulk class 一直抢不到资源
-
-这不一定是好设计。因为低优流量也可能在更长依赖链里反过来拖垮系统。
-
-因此 stall attribution 应至少支持：
-
-- per-class stall
-- starvation indicator
-- long-tail wait indicator
-
-## 一个实用的归因顺序
-
-看见系统变慢时，可以按这个顺序追：
-
-1. 是 workload-level 等待还是网络-level 等待
-2. 如果是网络级，先看 credit / ejection 还是 switch / link
-3. 再看是 topology / arbitration / endpoint / memory 哪一侧在主导
-4. 最后再决定优化动作
-
-## 常见误区
-
-- 把所有 stall 都叫 congestion
-- 看到 NO_CREDIT 就只想加 buffer
-- 看到 WAITING_FOR_DEPENDENCY 还只盯着 router
-
-更准确的看法是：
-
-- congestion 只是现象，不是完整分类
-- buffer 只能解决部分 flow-control 问题
-- 有些 stall 的根因在 workload 编排、memory path 或 endpoint
-
-## 一句话理解
-
-stall taxonomy 的价值，在于把“系统变慢”拆成能直接对应优化动作的等待结构。
-
-## 建模启示
-
-仿真器设计时，stall reason 应作为一等统计对象，而不是附加日志。至少应支持：
-
-- per-cycle dominant reason
-- per-class aggregation
-- per-node / per-link attribution
-- workload-level dependency wait
-
-没有这套归因，后面的 architecture exploration 很难稳定地产出高置信度结论。
+<span id="常见误区"></span><span id="一句话理解"></span><span id="建模启示"></span>先记录谁在什么资源前等待，再沿依赖和反压追踪；用明确的对照验证解释，避免把“拥塞”或某个标签直接当成最终结论。
