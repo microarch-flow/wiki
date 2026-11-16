@@ -1,146 +1,43 @@
-# Mesh And Torus
+# Mesh 与 Torus：怎样比较网格和环回连接？
 
-上级：[03 Topology](./README.md)
-相关：[Topology Design Metrics](./topology-design-metrics.md), [../04-routing-and-flow-control/dimension-order-routing.md](../04-routing-and-flow-control/dimension-order-routing.md)
+上级：[03 拓扑与物理组织](./README.md)
 
-## 这页在回答什么问题
+相关：[拓扑设计指标](./topology-design-metrics.md)、[维序路由](../04-routing-and-flow-control/dimension-order-routing.md)、[拓扑与物理实现](./topology-physical-realization.md)
 
-为什么 mesh 可作为本教程的 baseline，torus 又为什么常常在图论上更漂亮、在芯片上却没那么常见。
+<span id="mesh-and-torus"></span><span id="这页在回答什么问题"></span>Mesh 按维度连接相邻路由器；Torus 还连接每个维度的两端。环回边能改变距离和可用路径，但其物理长度、路由限制与实际收益需要另行确定。
 
-这两者的关系很典型：torus 看起来像“给 mesh 打补丁”，但补丁补掉的是边界效应，换来的是更长的物理线和更麻烦的资源依赖处理。
+## 从连接关系开始
 
-## Mesh：规则性比“理论最优”更值钱
+<span id="mesh规则性比理论最优更值钱"></span>在二维 Mesh 中，内部节点通常有东、西、南、北四个网络邻居；边界和角落节点的实际邻居更少。规则的二维节点放置有利于把多数相邻边映射为局部连接，但实际链路长度还取决于端点和路由器的布局。
 
-mesh 的核心吸引力不是某个单一指标最强，而是它在很多维度上都不极端：
+<span id="torus把边界接起来"></span>二维 Torus 再把每行两端、每列两端接起来。对于每维长度至少为 3 的常见构造，这些环回边让边界节点也具有两个该维度的邻居。维度长度为 2 或 1 时，是否存在平行边或自环必须单独定义。
 
-- 链路长度规则
-- router radix 低而稳定
-- 与二维 tile array 和 floorplan 自然对齐
-- deterministic routing 很自然
-- hotspot 位置可预测
+在[指标页的 4×4 构造例](./topology-design-metrics.md#44-mesh-与-torus-的构造例)中，Mesh 的最短路径直径为 6，Torus 为 4；均匀统计有向非自身端点对时，平均最短距离分别约为 2.667 和 2.133 跳。这里减少约 20% 的是**图上距离**，不是实测延迟。
 
-这几个特点组合在一起，解释了为什么 mesh 特别适合作为第一版 simulator 的 baseline，也特别适合 deterministic NPU。你需要的是一个能被编译器、架构师和版图工程同时接受的结构；mesh 正好在这几个群体之间形成一个稳的交点。
+## 路径和流量共同决定负载
 
-## Mesh 的代价：中心区域会先累
+<span id="mesh-的代价中心区域会先累"></span>一个具体 Mesh 的某条链路承受多少流量，取决于源目的分布和选路。下面是静态计数例：4×4 Mesh 的 240 个有向非自身节点对各出现一次；路由先走 X 再走 Y，且每对只选一条路径。
 
-mesh 的问题同样明确：
+| 同一行内的向东链路 | 第 0→1 列 | 第 1→2 列 | 第 2→3 列 |
+| --- | --- | --- | --- |
+| 经过的端点对数 | 12 | 16 | 12 |
 
-- 平均 hop 随规模上升
-- 中心主干更容易形成热点
-- 边缘 memory port 往往导致路径不均匀
+四行的结果相同。这个例子说明中间列间链路可能更忙，不代表真实系统必然在几何中心拥塞。若大量流量发往边缘 memory port，瓶颈可能出现在另一组链路或接收端。路径计数也不是链路实际利用率：后者还需要到达速率、时间分布和服务能力。
 
-以 4x4 mesh 为例，uniform random + 简单维序路由下，中心区域会承受更多穿越流量。这不是 routing 算法犯错，而是几何结构本身就让更多最短路径穿过中间。
+## 环回边怎样落到版图
 
-所以 mesh 的核心 trade-off 可以概括成一句话：它用规整性和可落地性，换掉了更低的最短路径和更强的对分带宽。
+<span id="torus-的真实代价在物理层"></span><span id="一个对比表"></span>假设 4×4 节点按未折叠方阵放置，水平相邻节点相距一个 pitch。普通水平边两端相距 1 pitch；从第 0 列回连第 3 列的边两端相距 3 pitch。实际走线可能更长。
 
-## Torus：把边界接起来
+折叠放置可以缩短某些环回边，却也会改变其他边的跨度。是否需要流水、线宽多大以及布线是否拥塞，都要按具体实现评估。一条有流水的边仍然是图上的一跳，但可能消耗多个周期；见[拓扑与物理实现](./topology-physical-realization.md)。
 
-torus 的直觉很简单：把 mesh 边界首尾相连，减少边角节点的天然吃亏，缩短最坏和平均路径。
+环回还可能改变通道依赖关系。为特定 Torus 路由构造无环依赖，可能需要限制路径或使用额外虚通道；需求取决于路由与资源分配，不能仅由维度数直接确定。相关证明见[死锁、活锁与饥饿](../04-routing-and-flow-control/deadlock-livelock-starvation.md)。
 
-图论上它通常带来：
+## 什么时候比较哪种结构
 
-- 更小的 diameter
-- 更低的 average hop
-- 更高的 bisection bandwidth
+<span id="mesh-什么时候特别合适"></span><span id="为什么本教程选-mesh-做-baseline"></span>如果端点呈二维分布，且主要通信集中在邻近节点，Mesh 可以作为清晰的比较基线。它的边界、路径和资源容易明确列出；这不证明它是任何产品的最优选择。
 
-这些指标都是真优势，不是幻觉。但物理代价取决于 placement：未折叠布局的 wrap 可能很长，折叠布局可缩短 wrap，同时可能改变其他边的跨度。
+<span id="torus-什么时候值得认真考虑"></span>如果跨区流量显著，且额外环回边可以满足布局与时序约束，Torus 值得作为候选。应同时比较增加的连线、路由与缓冲成本，避免只比较平均最短距离。
 
-## Torus 的真实代价在物理层
+<span id="常见误解"></span><span id="一句话理解"></span>环回增加的是可用连接，不保证实际路由一定使用它，也不保证端到端延迟一定降低。
 
-对片上系统，wrap-around link 很少只是“多几根线”。它经常意味着：
-
-- 更长的 wire span
-- 可能需要多级 pipeline
-- credit round-trip 变长
-- dateline 或额外 VC 的死锁处理
-
-较长的 wrap 边可能需要额外 pipeline；具体路径并非每一跳都变重，需分别建模实际边。
-
-以下限定未折叠方阵，router 间距为一个 pitch：
-
-```text
-4x4 mesh:
-  normal hop = 1 tile pitch
-
-4x4 torus:
-  wrap-around hop = 3 tile pitches
-```
-
-如果全网时钟频率高、长线需要插 pipeline，那么 torus 的“少一两跳”并不自动等于端到端时间更短。
-
-## 一个对比表
-
-| 维度 | Mesh | Torus |
-| --- | --- | --- |
-| Average hop | 较高 | 更低 |
-| Bisection BW | 较低 | 更高 |
-| Router radix | 相近 | 相近 |
-| Long wire cost | 低 | 高 |
-| Deadlock handling | 简单 | 更麻烦 |
-| Floorplan friendliness | 高 | 中到低 |
-
-这个表恰好说明为什么 torus 在 HPC 和大系统文献里很吸引人，但在片上 NPU 上常常不是默认选项。它的优势更多体现在纯网络指标，mesh 的优势更多体现在“图指标和物理实现之间更一致”。
-
-## Mesh 什么时候特别合适
-
-mesh 常见的适用条件：
-
-- workload 规整或局部性明显
-- 编译器能把强依赖 tile 摆得较近
-- memory port 数量适中，且可较均衡分布
-- 更重视可建模和物理实现稳定性
-
-这基本就是很多 AI accelerator 的现实画像。
-
-## Torus 什么时候值得认真考虑
-
-torus 值得认真考虑的场景通常更苛刻：
-
-- 规模不算太大，wrap link 还没长到不可收敛
-- 跨区高并发流量很强，bisection BW 很重要
-- 你愿意为长线 pipeline 和额外 VC 付成本
-
-也就是说，torus 更像“有明确指标压力时的针对性增强”，而不是 NPU 的自然起点。
-
-## 为什么本教程选 mesh 做 baseline
-
-不是因为 mesh 在所有指标上都最强，而是因为它最少把问题隐藏起来。它的长处和短处都很直观：
-
-- 编译器容易理解路径结构
-- 架构探索容易看热点
-- 版图团队不会突然收到高风险 wrap link
-- cycle-level 模型更容易和物理直觉对齐
-
-对 deterministic NPU，这种“行为稳定、边界清晰”的价值，往往比图论上的少量 hop 改善更重要。
-
-## 常见误解
-
-常见误解：torus 一定是 mesh 的严格升级。  
-实际上：它在图指标上通常更强，但在物理可实现性和死锁处理上更贵，所以不是严格支配关系。
-
-常见误解：mesh 只是因为简单才被用。  
-实际上：mesh 被大量采用，是因为它在规则性、可建模性、可收敛性和性能之间给出了极难替代的平衡点。
-
-## 一句话理解
-
-mesh 用规则几何换可落地和可分析，torus 用更短逻辑路径换更重的长线与依赖处理；NPU 通常更偏好前者的稳定边界。
-
-## 建模启示
-
-对 mesh，最小 analytical 模型通常只需要：
-
-```text
-per_hop_latency
-average_hops
-center_link_hotspot_factor
-```
-
-对 torus，除了这些，还应显式增加：
-
-```text
-wrap_link_extra_cycles
-extra_vc_for_deadlock_avoidance
-```
-
-如果不把 wrap-around 的物理代价独立建模，torus 在模型里通常会被系统性高估。  
-初期可以假设链路等价作敏感性对照，但物理结论必须按 placement 和具体链路重新校准。无 wrap 的有限 mesh 也要依赖合法路由证明无死锁；torus 的维序路由还须处理环形通道依赖，例如采用经证明的 dateline/VC 分层。
+<span id="建模启示"></span>对每条边分别记录容量、方向和延迟；对 Torus 标出环回边及其布局。给定流量和路由后再统计链路负载，不能用固定“中心热点系数”代替。

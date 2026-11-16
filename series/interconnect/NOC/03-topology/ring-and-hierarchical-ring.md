@@ -1,132 +1,40 @@
-# Ring And Hierarchical Ring
+# Ring 与分层 Ring：共享路径的容量在哪里？
 
-上级：[03 Topology](./README.md)
-相关：[Crossbar And Concentrated Mesh](./crossbar-and-concentrated-mesh.md), [Topology Selection Framework](./topology-selection-framework.md)
+上级：[03 拓扑与物理组织](./README.md)
 
-## 这页在回答什么问题
+相关：[拓扑设计指标](./topology-design-metrics.md)、[层次化与混合互连](./hierarchical-and-hybrid-topology.md)
 
-ring 为什么在大规模全局数据面里常常掉队，却又会在控制面、小 cluster 和分层系统里反复出现；hierarchical ring 又是在救什么问题。
+<span id="ring-and-hierarchical-ring"></span><span id="这页在回答什么问题"></span>Ring 将节点首尾相连。它的每个节点只需连接少量邻居，但多个流可能共享同一段路径。分层 Ring 再用局部环与上层环组织连接，改变共享的位置。
 
-这类拓扑最大的特点不是“省”，而是“低 radix 和低结构复杂度非常诱人，但共享路径强得可怕”。
+## 单环的方向和距离
 
-## Ring：最朴素的低-radix 闭环
+<span id="ring最朴素的低-radix-闭环"></span>假设 8 个路由器依次编号 0 到 7，组成一个双向环；每个路由器另接一个端点。每条相邻节点间的连接都可以同时向两个方向传输。按路由器间边数计算，0 到 3 的最短距离是 3 跳；0 到 4 沿两个方向各为 4 跳。具体路由必须规定如何选择等长方向。
 
-一个双向 ring 的好处很干净：
+若 8 个路由器的有向非自身节点对等权，最短路径直径是 4，平均最短距离为 16/7 ≈ 2.286 跳。如果连同自身对一起统计，平均值为 2 跳。实际路径若被路由策略限制，可能不是图上的最短路径。
 
-- 每个节点只连左右两个邻居
-- router radix 很低
-- 控制简单
-- 物理组织直观
+## 切面容量为什么要区分方向
 
-在小规模系统里，这些优点非常有吸引力。尤其当流量本身更像链式传播、控制消息、或者低带宽同步时，ring 给出的“够用且便宜”的解很难忽视。
+<span id="ring-的根本问题横截面带宽不随规模长"></span>将这个环连续分成各 4 个节点的两半，有两条物理连接跨越切面。假设每条连接每方向容量均为 W，跨切面的容量是：
 
-## Ring 的根本问题：横截面带宽不随规模长
+- 左到右：2W；右到左：2W。
+- 两个方向合计：4W，前提是两个方向都可同时使用。
 
-ring 最大的结构短板是：bisection bandwidth 极弱，而且基本不随节点数增长。节点越多，更多端点在共享同一圈路径。
+对于同样划分的单向环，两条跨界的有向边分别朝不同方向，左到右和右到左各为 W。节点数增加不会自动增加这个**指定切面**的链路数；但扩大链路宽度、增加并行环或改变连接，都可能改变容量。
 
-这带来的后果非常直接：
+<span id="为什么它在很多-ai-芯片里又没有消失"></span>局部顺序传输和跨区并发传输对这些资源的需求不同。低注入率的短距离流量可能不会耗尽切面；许多流同时跨越同一方向时，则应计算该方向的总需求。实际瓶颈也可能是目的端，而非环本身。
 
-- average hop 很快变大
-- 任何热点都容易沿整圈传播
-- many-to-one 或 all-to-all 会迅速吃满主路径
+## 分层 Ring 改变了什么
 
-所以 ring 不是不能扩，而是你每扩一次，都在让“共享一条大回路”这个本质变得更痛。
+<span id="hierarchical-ring-想解决什么"></span>构造一个两层例子：每组端点连接本地环，各本地环通过具备跨层转发能力的节点接入上层环。组内流量可以只经过本地环；跨组流量经过源本地环、上层环，再进入目的本地环。实际经过哪些边和队列由路由及实现决定。
 
-## 为什么它在很多 AI 芯片里又没有消失
+<span id="它的代价也很明确"></span><span id="hierarchical-ring-什么时候有现实吸引力"></span>如果很多流量留在组内，上层环承载的流量可能减少。代价是跨层端口及其队列需要服务跨组流量。一个组可以有多个跨层连接；带宽和路由是否均衡，不能只从“分层”推断。[层次化与混合互连](./hierarchical-and-hybrid-topology.md)进一步讨论边界选择。
 
-因为很多实际系统并不要求它做全局数据面。ring 在下面几类场景里仍然很合理：
+## 与其他候选怎样比较
 
-- 控制网络
-- debug / telemetry 网络
-- 小 cluster 内顺序流
-- 分层互连中的局部子环
+<span id="ring-和-crossbar-在小系统里的真实比较"></span>Ring 与 Crossbar 都可以连接少量端点。比较时要给出同时请求的源和目的：Ring 上的不相交流量可能并行；Crossbar 上多个输入竞争同一输出也需要仲裁。两者的面积、频率和延迟要结合具体实现，不能只按端点数量划线。
 
-这些场景的共同点是：你更在乎实现成本和简单性，而不是全网高对分吞吐。
+<span id="为什么它仍不是-npu-全局主流"></span><span id="常见误解"></span>对高跨区流量，单环可能因切面容量受限；对主要沿环局部传递的流量，它也可能满足需求。是否用于某种系统的数据面，取决于带宽、时延和实现约束，而不是网络名称。
 
-## Hierarchical ring 想解决什么
+<span id="建模启示"></span>记录每个方向的链路、容量、选路规则和可能的并行环。分层结构还要记录跨层连接、队列和共享资源，再按流量计算负载。
 
-hierarchical ring 的出发点是承认单一大 ring 太脆弱，于是把它拆成几层：
-
-- 局部 ring 处理局部通信
-- 上层 ring 处理跨局部区域通信
-
-这样做的好处是：
-
-- 大部分局部流量不再占用全局一圈
-- 全局路径长度被压住
-- router 仍然可以保持较低复杂度
-
-它的思想和 hierarchical NoC 很像，只是局部与全局都选用了 ring family。
-
-## 它的代价也很明确
-
-hierarchical ring 并不是“ring 的免费升级”。它会引入新的瓶颈位置：
-
-- 局部 ring 与全局 ring 的 gateway
-- 局部/全局切换时的流量汇聚
-- 跨层流量的仲裁耦合
-
-换句话说，你用分层减少了“大圈共享”的问题，但把压力重新集中到边界节点。
-
-## Ring 和 crossbar 在小系统里的真实比较
-
-4 个左右端点时，ring 和 crossbar 经常被放在同一候选池里。两者的关键差别不是“谁更现代”，而是流量形状：
-
-- 若流量更像顺序传播、链式同步，ring 很自然
-- 若流量更像任意端点随机访问共享 SRAM，crossbar 往往更好
-
-所以 ring 常常不是被 mesh 打败，而是先在 cluster 内输给了 crossbar。
-
-## Hierarchical ring 什么时候有现实吸引力
-
-它常见的适用条件是：
-
-- 端点很多，但局部通信明显更强
-- 希望避免高-radix router
-- 更重视规则和简单性，而不是最高 bisection BW
-
-这使它在某些 control-heavy fabric、管理网络或带明显 locality 的分层系统里仍然有位置。
-
-## 为什么它仍不是 NPU 全局主流
-
-对于大规模 AI data plane，hierarchical ring 还是经常会输给 mesh / concentrated mesh，原因不是它不够巧，而是：
-
-- 全局跨区带宽仍较弱
-- gateway 热点难完全避免
-- 对 bursty 或 all-to-all 流量不稳
-
-这说明 ring family 更像“低复杂度工具箱”，不是大多数 NPU 通用数据面的默认骨架。
-
-## 常见误解
-
-常见误解：ring 不适合作为任何 AI 互连。  
-实际上：它不适合作为大规模全局高吞吐数据面，但在控制面、同步面、小 cluster 内仍然很有价值。
-
-常见误解：hierarchical ring 就是更简单的 mesh。  
-实际上：它解决的是不同问题。mesh 更强调二维规则分布，hierarchical ring 更强调低复杂度分层闭环。
-
-## 一句话理解
-
-ring family 的价值在于低 radix 和简单性，代价是强共享路径；hierarchical ring 通过分层缓解共享，但会把压力重新集中到边界节点。
-
-## 建模启示
-
-对 ring，最小模型至少要保留：
-
-```text
-ring_size
-average_hops
-bisection_links = 2
-```
-
-对 hierarchical ring，还要额外保留：
-
-```text
-local_ring_size
-num_rings
-gateway_bandwidth
-gateway_queue
-```
-
-如果忽略 gateway，hierarchical ring 会被高估，因为它最核心的风险正是跨层汇聚点。  
-如果 workload 主要是控制和同步，可以把流量建模成低注入率小包；如果要放进数据面比较，就必须把 burst 和 hotspot 明确带进去，否则 ring 的短板不会在模型里显现。
+<span id="一句话理解"></span>Ring 的关键不是节点是否排成一圈，而是具体流量会共享哪些有向链路和跨层资源。

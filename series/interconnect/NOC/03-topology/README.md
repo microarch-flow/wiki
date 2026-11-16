@@ -1,28 +1,19 @@
-# 03 Topology
+# 03 拓扑与物理组织
 
-> 本页保留原章节导读。[查看现行分类与阅读顺序](../SUMMARY.md)。
+> 本页保留原章节入口。[查看现行分类与完整阅读顺序](../SUMMARY.md#03-topology)。
 
-这一章只讨论一件事：router 之外，整个网络在几何上到底怎么连。
-
-这里不讨论 packet 已经进网后下一跳怎么选，那是 `04-routing-and-flow-control` 的问题。这里先把结构层说清楚：
-
-- topology 影响哪些一阶指标
-- 为什么 mesh 在 NPU 上几乎总是 baseline
-- ring、tree、fat-tree、crossbar、concentrated mesh 各自的真实边界
-- 为什么很多“理论上更优”的拓扑一落到 floorplan 就开始变味
-- 应该怎样从 workload 和物理约束反推选型
+<span id="03-topology"></span>本章先定义拓扑指标，再比较连接方式、层次化组织和物理实现。连接图回答“哪里可以连接”；路由回答“具体选择哪条路径”。路径上的竞争、延迟与成本还取决于流量和实现。
 
 ## 本章入口
 
-- [Topology Design Metrics](./topology-design-metrics.md)
-- [Mesh And Torus](./mesh-and-torus.md)
-- [Ring And Hierarchical Ring](./ring-and-hierarchical-ring.md)
-- [Tree And Fat Tree](./tree-and-fat-tree.md)
-- [Crossbar And Concentrated Mesh](./crossbar-and-concentrated-mesh.md)
-- [Flattened Butterfly Dragonfly](./flattened-butterfly-dragonfly.md)
-- [Topology Physical Realization](./topology-physical-realization.md)
-- [Topology Selection Framework](./topology-selection-framework.md)
+1. [拓扑设计指标](./topology-design-metrics.md)：统一距离、端口数和切面容量的统计口径。
+2. [Mesh 与 Torus](./mesh-and-torus.md)：比较二维相邻连接与环回连接。
+3. [Ring 与分层 Ring](./ring-and-hierarchical-ring.md)：分析单环路径及跨层资源。
+4. [Tree 与 Fat-tree](./tree-and-fat-tree.md)：区分树形路径、复制、归约和上层容量。
+5. [Crossbar 与 Concentrated Mesh](./crossbar-and-concentrated-mesh.md)：区分交换连接与多个端点的集中接入。
+6. [Flattened Butterfly 与 Dragonfly](./flattened-butterfly-dragonfly.md)：阅读高端口数和分组连接的具体构造。
+7. [层次化与混合互连](./hierarchical-and-hybrid-topology.md)：分析局部、全局和跨区边界。
+8. [拓扑与物理实现](./topology-physical-realization.md)：把连接图映射到布局、链路和时序。
+9. [拓扑选型](./topology-selection-framework.md)：在相同需求和明确约束下比较候选方案。
 
-## 一句话总纲
-
-topology 决定的是网络的几何上限：路径长度、横截面带宽、router radix、长线代价和热点形状；routing 只能在这个上限之内做策略优化。
+<span id="一句话总纲"></span>拓扑提供可能的连接；需要结合路由、流量和物理实现，才能判断系统行为。

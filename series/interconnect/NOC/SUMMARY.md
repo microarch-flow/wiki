@@ -34,6 +34,7 @@
 - [Tree 与 Fat-tree](./03-topology/tree-and-fat-tree.md)
 - [Crossbar 与 Concentrated Mesh](./03-topology/crossbar-and-concentrated-mesh.md)
 - [Flattened Butterfly 与 Dragonfly](./03-topology/flattened-butterfly-dragonfly.md)
+- [层次化与混合互连](./03-topology/hierarchical-and-hybrid-topology.md)
 - [拓扑与物理实现](./03-topology/topology-physical-realization.md)
 - [拓扑选型](./03-topology/topology-selection-framework.md)
 

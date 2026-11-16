@@ -1,141 +1,54 @@
-# Topology Selection Framework
+# 拓扑选型：怎样比较满足同一需求的候选？
 
-上级：[03 Topology](./README.md)
-相关：[Topology Design Metrics](./topology-design-metrics.md), [../06-ai-noc-specifics/why-ai-noc-is-different.md](../06-ai-noc-specifics/why-ai-noc-is-different.md)
+上级：[03 拓扑与物理组织](./README.md)
 
-## 这页在回答什么问题
+相关：[拓扑设计指标](./topology-design-metrics.md)、[层次化与混合互连](./hierarchical-and-hybrid-topology.md)、[如何选择模型粒度](../07-evaluation-methodology/modeling-layers-analytical-event-cycle.md)
 
-面对多种 topology，不应该按“谁更高级”选，而应该怎样从 workload、floorplan、memory placement 和 deterministic 需求反推。
+<span id="topology-selection-framework"></span><span id="这页在回答什么问题"></span>先确定系统要传什么、连接哪些端点，以及受哪些物理约束，再比较候选连接图。拓扑名称只能帮助提出候选，不能代替对具体流量和资源的计算。
 
-这页的目标是把前面几页的知识压缩成一套决策顺序，而不是再做一轮家族总结。
+## 1. 定义流量和目标
 
-## 第一步：先问流量长什么样
+<span id="第一步先问流量长什么样"></span>列出源与目的、消息大小、到达速率及时间分布。区分单播、多播和归约，并说明数据是否在中间节点复制或计算。明确要优化平均或尾延迟、完成时间、吞吐、面积还是能量，也要给出需要满足的约束。
 
-topology 从来不是脱离 workload 独立存在的。你至少要先分清：
+逻辑通信模式与物理网络不是同一个概念。例如，Ring AllReduce 可以映射到非 Ring 的物理网络；逻辑相邻参与者之间可能经过多条物理边。分析时应将每一步操作映射为实际路径和资源需求。
 
-- 主要是局部相邻流量，还是大量跨区流量
-- 主要是 point-to-point，还是有明显 broadcast/reduce/all-to-all
-- memory port 是否是全网主热点
+## 2. 固定比较口径
 
-如果这一步不做，后面的所有“好坏”都容易变成静态印象。
+<span id="第二步再问物理对象怎么摆"></span><span id="第三步确定你在优化哪一类确定性"></span>给出端点数量和位置、时钟、链路方向及位宽、路由器端口、缓冲与选路规则。若关注确定性，还需定义约束的流量、仲裁和服务条件；规则拓扑本身不能保证有限等待时间。
 
-## 第二步：再问物理对象怎么摆
+不同问题需要不同的公平条件：可以固定端点注入带宽，也可以固定总布线或面积预算。它们未必能同时固定。记录哪些参数相同、哪些由实现决定，以及面积和时序是否已经校准。
 
-拓扑不是抽象图，它要服务真实对象的位置：
+## 3. 找出可能的共享瓶颈
 
-- tile array 是规则二维，还是有明显 cluster
-- SRAM/HBM port 是均匀分布，还是集中在边缘
-- 是否已有 chiplet / die 边界
+<span id="一套实用决策树"></span>对每个候选，画出允许的路径，并把需求累加到各条有向链路和共享端口。如果某资源的长期需求超过其长期服务能力，有限缓冲、无丢弃系统无法无限期维持该输入速率。需求不超过容量是必要条件；突发、仲裁、依赖和其他资源仍可能造成等待或无法达到目标。
 
-这一层经常直接过滤掉一批“图上很强”的候选。因为一旦它和 floorplan 语义严重不对齐，后面只会一直为长线和不规则布局付补偿成本。
+以下使用[集中式 Mesh 的 16 端点构造例](./crossbar-and-concentrated-mesh.md#一个-16-端点的结构例)：普通 4×4 Mesh 与四端点接入一个路由器的 2×2 Mesh，每条路由器间链路每方向容量均为 W。假设左半区 8 个端点各以 λ 持续向右半区发送单播数据：
 
-## 第三步：确定你在优化哪一类确定性
-
-对 deterministic NPU，topology 选择通常不只是平均吞吐问题，还要问：
-
-- 路径是否易于分析
-- 热点是否可预测
-- 静态调度是否容易约束
-
-这会天然偏向：
-
-- 规则结构
-- 局部性清晰的分层结构
-- 不太依赖复杂自适应路径选择的网络
-
-所以 topology 选型会和 CPU coherent NoC 有明显不同。后者可能更愿意为 path diversity 和动态绕路买单；前者常更愿意为可分析性放弃部分自由度。
-
-## 一套实用决策树
-
-### 场景一：小规模、端点少、物理跨度小
-
-优先问：crossbar 能不能在面积和频率上仍可接受。
-
-如果可以，通常不必为了“网络感”强行上 mesh。  
-如果不可以，再看是否需要 small ring 或 tiny mesh。
-
-### 场景二：大规模二维 tile array，局部性明显
-
-默认从 mesh 开始。  
-如果 cluster 局部通信占比高，再看 concentrated mesh 或 cluster-local crossbar + global mesh。
-
-这是大多数 NPU 最常见的分支。
-
-### 场景三：全局跨区带宽压力很大
-
-先问问题是不是：
-
-- memory port placement 过于集中
-- collective 子流量没有专用 overlay
-- cluster 划分不合理
-
-如果这些都排除了，再考虑是否需要更强的上层带宽结构，例如更分层的 topology，或者以 fat-tree / stronger gateway 为参照的增强设计。
-
-也就是说，不要一看到 bisection 不够就立刻跳到 exotic topology，先检查是不是系统组织本身造成了假热点。
-
-### 场景四：强 collective 子问题突出
-
-优先考虑 mesh + overlay，而不是直接用 tree/fat-tree 替代主网络。
-
-因为这通常更符合 AI 芯片的现实：通用流量和 collective 流量的最优结构不一样。
-
-### 场景五：已有 chiplet / die 边界
-
-优先考虑局部规则网络 + 明确 gateway / bridge，而不是试图维持一张全局统一 topology 的幻觉。
-
-这时 topology 选型已经和 D2D 边界耦合，不应再只按单 die 的纯图指标决策。
-
-## 一个简化的候选表
-
-| 条件 | 更先考虑 | 谨慎考虑 |
+| 候选 | 左到右指定切面容量 | 稳定服务的必要条件 |
 | --- | --- | --- |
-| 4-8 个局部端点 | Crossbar | Mesh |
-| 规则二维大阵列 | Mesh | High-radix exotic topology |
-| 强局部 cluster | Concentrated mesh | Flat everything |
-| 强 reduce/broadcast | Mesh + tree overlay | Tree 直接做主网络 |
-| 极强跨区 all-to-all | 上层带宽增强 / torus as reference | Ring |
-| 控制/同步子网 | Ring | Full data mesh |
+| 4×4 Mesh | 4W | 8λ ≤ 4W，即 λ ≤ W/2 |
+| 2×2 集中式 Mesh | 2W | 8λ ≤ 2W，即 λ ≤ W/4 |
 
-## 什么时候“理论更优”不该动你
+此例说明两张图在给定切面和等链路容量下的约束不同，不证明任何实际方案的最终吞吐排序。本地端口、其他链路、目的端、流量映射和实现频率都需要另行检查；若流量不跨这个切面，它也不受此项约束。
 
-如果某 topology 的优势主要来自：
+## 4. 按需求生成候选
 
-- 更低 average hop
-- 更高理论 bisection
+<span id="场景一小规模端点少物理跨度小"></span>小规模、物理跨度较小时，可以比较 Crossbar、Ring 或小型 Mesh。先检查同一输出的竞争，再评估各自的时序和面积。
 
-但同时要求：
+<span id="场景二大规模二维-tile-array局部性明显"></span>端点呈二维阵列时，可以把 Mesh 作为结构基线，并比较是否需要集中接入、额外连接或层次划分。局部性需要从映射后的流量确认。
 
-- 明显更长链路
-- 更高 radix
-- 更复杂布线
+<span id="场景三全局跨区带宽压力很大"></span>跨区需求较高时，先识别受限切面、memory port 或端点；再比较增加链路容量、改变位置和选择其他拓扑的代价。
 
-那么你应该先把它当参照上界，而不是默认候选。片上 NoC 很多时候输赢不在图指标，而在“能不能把图指标兑现出来”。
+<span id="场景四强-collective-子问题突出"></span>存在大量广播或归约时，可比较共用网络上的逻辑树、具备复制或归约能力的节点，以及独立网络。需要计入共享资源和额外硬件，不能假设专用 overlay 一定更好。
 
-## 常见误解
+<span id="场景五已有-chiplet-die-边界"></span>跨 Die 候选还需检查实际网关、链路协议、时钟和封装约束。边界可以影响选择，但不预设只能使用某一种全局结构。
 
-常见误解：先挑一个最先进 topology，再让编译器去适配。  
-实际上：对 deterministic NPU，通常是 workload、映射和物理对象先决定了 topology 的可行边界。
+## 5. 验证并回到设计目标
 
-常见误解：mesh 是保守选项，应该尽量超越。  
-实际上：mesh 之所以常是 baseline，不是因为保守，而是因为它在很多 NPU 的真实约束下本来就非常接近最优平衡点。
+<span id="一个简化的候选表"></span>先用结构和容量分析排除明显无法满足必要条件的候选，再根据问题选择解析模型或仿真。记录注入、接收和交付的口径；比较延迟分布、吞吐、饱和点以及关键链路和端点的利用率。物理面积、频率和能量需要来自相应实现或经过说明的模型。
 
-## 一句话理解
+<span id="什么时候理论更优不该动你"></span>较小的平均最短距离或较大的某个切面容量，只是指定图和口径下的指标。除非明确构造并证明数学界，不能把它们直接称为实际性能的上界。不同候选应使用相同负载和完成边界；模型结果的可信范围见[如何选择模型粒度](../07-evaluation-methodology/modeling-layers-analytical-event-cycle.md)。
 
-topology 选型的正确顺序是：先看流量，再看 floorplan，再看确定性需求，最后才比较家族名词。
+<span id="常见误解"></span><span id="建模启示"></span>一张评分表可以帮助记录假设，但分数不能替代容量、时序或正确性证据。保留候选、输入、约束、模型版本和结果，才能复查设计取舍。
 
-## 建模启示
-
-选型框架最适合落成一个候选评分器：
-
-```text
-TopologyCandidateScore {
-  locality_fit
-  floorplan_fit
-  determinism_fit
-  global_bandwidth_fit
-  implementation_risk
-}
-```
-
-在 architecture exploration 早期，不必精确到分值模型，但至少要让每个候选 topology 在这五个维度都被打标签。  
-如果模型只记录 average hop 和 area proxy，你会系统性高估 exotic topology，低估 mesh / concentrated mesh 这类“图论没那么惊艳但非常贴实际”的方案。
+<span id="一句话理解"></span>选型的输出应是“在这些需求和约束下，哪些候选经过什么验证”，而不是一个脱离条件的拓扑排名。
