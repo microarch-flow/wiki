@@ -375,7 +375,7 @@ def grouped_original_topics(root, series):
             if tree:
                 if series == STORAGE:
                     entries.extend(compact_storage_sections(tree))
-                elif series == INTERCONNECT and name in {"D2D", "COHERENCE", "SCALEUP", "NETWORK"}:
+                elif series == INTERCONNECT:
                     entries.extend(tree)
                 else:
                     entries.append({label: tree})
@@ -572,6 +572,10 @@ def on_config(config, **kwargs):
             config.extra["storage_sidebar_labels"][path] = (short, title(root / path))
     if (root / INTEGRATION_HOME).is_file():
         config.extra["storage_sidebar_labels"][INTEGRATION_HOME] = (INTEGRATION_TOPIC, title(root / INTEGRATION_HOME))
+    for name, _label in TOPICS:
+        path = f"{name}/wiki/README.md"
+        if owner(path)[0] == INTERCONNECT and (root / path).is_file():
+            config.extra["storage_sidebar_labels"][path] = (owner(path)[1], title(root / path))
     # Reuse the sidebar label registry for the coherence reading list.
     chapter = root / "COHERENCE" / "wiki"
     for filename, short in reading_items(chapter):

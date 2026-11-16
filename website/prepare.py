@@ -19,6 +19,9 @@ ROOT = Path(__file__).resolve().parent.parent
 TOPICS = ("RAM", "COMPUTE", "BUS", "NOC", "D2D", "DMA", "PCIE", "COHERENCE",
           "SCALEUP", "NETWORK", "CIM", "CPO", "FAB", "SERDES", "HBF")
 SOURCE_TOPICS = tuple(name for name in TOPICS if name not in {"RAM", "HBF"})
+INTERCONNECT_TOPICS = frozenset({"BUS", "NOC", "D2D", "PCIE", "COHERENCE",
+                                "SCALEUP", "NETWORK", "SERDES", "CPO"})
+BUS_LEGACY_INDEX = "docs/archive/interconnect/BUS/README.md"
 STORAGE_TOPICS = dict(zip((
     "01-memory-hierarchy", "02-sram", "03-dram", "04-dram-controller", "05-hbf", "06-system-integration",
 ), GROUPS[STORAGE]))
@@ -232,6 +235,9 @@ def stage_site(root=ROOT, build_root=None, registry=None, source_root=None, layo
     entries = load_series(registry)
     layout_data = load_layout(layout)
     topics = {name: _path_inside(root, layout_data["topics"][name], True) for name in SOURCE_TOPICS}
+    if len(set(topics.values())) != len(topics):
+        raise ValueError("A topic source is staged to multiple paths")
+    bus_legacy_index = _path_inside(root, BUS_LEGACY_INDEX, False)
     storage_home, storage_roots, storage_mappings = _storage_layout(root, layout_data["storage"])
     article = _path_inside(root, layout_data["foundations"]["article"], False)
     images = _path_inside(root, layout_data["foundations"]["images"], True)
@@ -258,6 +264,23 @@ def stage_site(root=ROOT, build_root=None, registry=None, source_root=None, layo
         for name in SOURCE_TOPICS:
             source = topics[name]
             target = docs / name
+            if name in INTERCONNECT_TOPICS:
+                # Source topics are flat; retain the historical /TOPIC/wiki/
+                # paths in the staged site. Register old source paths as link
+                # aliases so published historical reviews still resolve.
+                if (source / "wiki").exists():
+                    raise ValueError(f"Interconnect topic contains a wiki directory: {source}")
+                _assert_no_symlinks(source)
+                shutil.copytree(source, target / "wiki", ignore=_ignore_topic_maintenance)
+                published.add_tree(source, target / "wiki")
+                published.add(source / "wiki", target / "wiki", rewrite_page=False)
+                for staged in (target / "wiki").rglob("*"):
+                    published.add(source / "wiki" / staged.relative_to(target / "wiki"), staged,
+                                  rewrite_page=False)
+                if name == "BUS":
+                    shutil.copy2(bus_legacy_index, target / "README.md")
+                    published.add(bus_legacy_index, target / "README.md")
+                continue
             _assert_no_symlinks(source / "wiki")
             shutil.copytree(source / "wiki", target / "wiki", ignore=_ignore_topic_maintenance)
             published.add(source, target)

@@ -46,6 +46,9 @@ class GeneratedNavigationTests(unittest.TestCase):
         self.assertEqual(groups[4], {"一致性与内存互连": [
             "COHERENCE/wiki/README.md", "COHERENCE/wiki/cxl-host-memory.md",
         ]})
+        for group, name in zip(GROUPS[INTERCONNECT],
+                               ("BUS", "NOC", "D2D", "PCIE", "COHERENCE", "SCALEUP", "NETWORK", "SERDES", "CPO")):
+            self.assertEqual(next(item[group] for item in groups if group in item)[0], f"{name}/wiki/README.md")
 
         def pages(item):
             if isinstance(item, str):
@@ -61,7 +64,7 @@ class GeneratedNavigationTests(unittest.TestCase):
         expected_cpo = {path.relative_to(docs).as_posix() for path in (docs / "CPO/wiki").rglob("*.md")}
         self.assertEqual(set(cpo_pages), expected_cpo)
         self.assertEqual(len(cpo_pages), len(expected_cpo))
-        cpo = groups[-1]["共封装光学（CPO）"][0]["CPO · 光互连"]
+        cpo = groups[-1]["共封装光学（CPO）"]
         group_labels = [next(iter(item)) for item in cpo if isinstance(item, dict)]
         self.assertEqual(group_labels[-4:], [label for label, _ in CPO_SECTIONS])
         for label, directories in CPO_SECTIONS:
@@ -105,6 +108,19 @@ class GeneratedNavigationTests(unittest.TestCase):
         ):
             html = (SITE / location / "index.html").read_text(encoding="utf-8")
             self.assertIn(f'id="{anchor}"', html)
+
+    def test_interconnect_legacy_pages_and_anchors_survive_source_migration(self):
+        legacy = json.loads((Path(__file__).parent / "fixtures/interconnect-legacy-anchors.json").read_text(encoding="utf-8"))
+        search = json.loads((SITE / "search/search_index.json").read_text(encoding="utf-8"))["docs"]
+        locations = {unquote(entry["location"]) for entry in search}
+        for path, anchors in legacy.items():
+            with self.subTest(page=path):
+                html = (SITE / path / "index.html").read_text(encoding="utf-8")
+                article = re.search(r'<article\b[^>]*>(.*?)</article>', html, re.DOTALL)
+                self.assertIsNotNone(article)
+                ids = set(re.findall(r'\bid="([^"]+)"', article.group(1)))
+                self.assertFalse(set(anchors) - ids, (path, set(anchors) - ids))
+                self.assertIn(path + "/", locations)
 
     def test_self_test_question_numbers_continue_across_sections(self):
         html = (SITE / "RAM/self-test-questions/index.html").read_text(encoding="utf-8")
@@ -605,18 +621,18 @@ class GeneratedNavigationTests(unittest.TestCase):
                 "6T SRAM cell：它如何保存、读取和写入 1 bit",
             ],
             "CPO/wiki/08-research/detailed-cards/cpo-status-challenges-solutions/index.html": [
-                "首页", "芯片与系统互连", "共封装光学（CPO）", "CPO · 光互连", "研究与索引", "08 研究模板与术语",
+                "首页", "芯片与系统互连", "共封装光学（CPO）", "研究与索引", "08 研究模板与术语",
                 "完整论文卡", "完整卡：CPO status, challenges, and solutions",
             ],
             "electrical-timing-foundations/index.html": [
                 "首页", "微架构", "时钟、流水线与吞吐", "从电荷到芯片时序：一条可手算的路径",
             ],
             "SERDES/wiki/05-signaling-and-metrics/ber-confidence-and-fec/index.html": [
-                "首页", "芯片与系统互连", "高速电链路（SerDes）", "SerDes · 高速串行链路", "05 信号与指标：怎样读懂链路数据？",
+                "首页", "芯片与系统互连", "高速电链路（SerDes）", "05 信号与指标：怎样读懂链路数据？",
                 "BER、置信度与 FEC 怎样关联？",
             ],
             "SERDES/wiki/06-link-operation/pcie-training-case/index.html": [
-                "首页", "芯片与系统互连", "高速电链路（SerDes）", "SerDes · 高速串行链路", "06 初始化与链路训练：链路怎样建立和维持？",
+                "首页", "芯片与系统互连", "高速电链路（SerDes）", "06 初始化与链路训练：链路怎样建立和维持？",
                 "PCIe 链路训练案例：从现象到证据",
             ],
         }

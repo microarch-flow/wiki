@@ -19,7 +19,7 @@ from mkdocs.config import load_config
 
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / "website"))
-from prepare import SOURCE_TOPICS, _check_storage_topic, stage_site  # noqa: E402
+from prepare import INTERCONNECT_TOPICS, SOURCE_TOPICS, _check_storage_topic, stage_site  # noqa: E402
 
 
 def write(path, content):
@@ -30,7 +30,9 @@ def write(path, content):
 def fixture_wiki(root):
     write(root / "README.md", "# Repository overview\n")
     for name in SOURCE_TOPICS:
-        write(root / name / "wiki" / "README.md", f"# {name}\n")
+        directory = root / name if name in INTERCONNECT_TOPICS else root / name / "wiki"
+        write(directory / "README.md", f"# {name}\n")
+    write(root / "docs/archive/interconnect/BUS/README.md", "# BUS legacy repository overview\n")
     storage = root / "series/storage"
     storage_roots = ("01-memory-hierarchy", "02-sram", "03-dram", "04-dram-controller",
                      "05-hbf", "06-system-integration", "reading-and-reference", "assets")
@@ -102,6 +104,25 @@ def fixture_repo(path, files):
 
 
 class MultiRepositoryTests(unittest.TestCase):
+    def test_flat_interconnect_sources_keep_published_paths_and_old_review_links(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp) / "wiki"
+            fixture_wiki(root)
+            write(root / "BUS/sample.md", "# BUS sample\n\n## Anchor\n")
+            write(root / "BUS/AGENTS.md", "# Maintenance only\n")
+            write(root / "NOC/README.md", "# NOC\n\n[BUS](../BUS/sample.md#anchor)\n")
+            write(root / "docs/reviews/2026-11-09-topic-review.md",
+                  "# Review\n\n[old source](../../BUS/wiki/sample.md?view=1#anchor)\n")
+            write(root / "website/series.json", '{"series": [{"title": "存储", "description": "storage", "page": "storage.md"}]}\n')
+            stage_site(root=root)
+            docs = root / ".site-build/docs"
+            self.assertIn("[BUS](../../BUS/wiki/sample.md#anchor)",
+                          (docs / "NOC/wiki/README.md").read_text(encoding="utf-8"))
+            self.assertIn("[old source](../BUS/wiki/sample.md?view=1#anchor)",
+                          (docs / "reviews/2026-11-09-topic-review.md").read_text(encoding="utf-8"))
+            self.assertTrue((docs / "BUS/README.md").is_file())
+            self.assertFalse((docs / "BUS/wiki/AGENTS.md").exists())
+
     def test_reference_source_and_navigation_section_match(self):
         root, docs = Path("/repo"), Path("/stage")
         base = root / "series/storage/reading-and-reference"

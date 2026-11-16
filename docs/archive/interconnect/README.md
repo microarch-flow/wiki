@@ -1,8 +1,9 @@
 # 芯片与系统互连历史资料
 
-本目录保存不参与网站发布的历史资料。旧文档是当时的规划和参考素材，不自动代表现行正文或已核实的技术结论。
+本目录保存历史资料。旧文档是当时的规划和参考素材，不自动代表现行正文或已核实的技术结论。BUS 原专题说明仍保留其博客网址。
 
-- [NoC 旧版 Wiki](NOC/wiki.old/README.md)：重写前的备份。现行正文见 [NoC Wiki](../../../series/interconnect/NOC/wiki/README.md)。
+- [BUS 原专题说明](BUS/README.md)：保留原专题仓库说明。
+- [NoC 旧版 Wiki](NOC/wiki.old/README.md)：重写前的备份。现行正文见 [NoC 专题](../../../series/interconnect/NOC/README.md)。
 - [NoC 重写任务](NOC/task.md)：旧版重写的任务说明。
 - [SerDes Wiki 规划与实施记录](SERDES/wiki-plan.md)：专题规划、资料起点和实施记录。
 

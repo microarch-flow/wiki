@@ -36,7 +36,7 @@ class NocNavigationTests(unittest.TestCase):
         self.assertEqual(len(legacy), 9)
 
         interconnect = grouped_original_topics(docs, INTERCONNECT)
-        topic = interconnect[1]["片上网络（NoC）"][0]["NoC · 片上网络"]
+        topic = interconnect[1]["片上网络（NoC）"]
         groups = topic[2:]
         self.assertEqual([next(iter(group)) for group in groups], [name for name, _ in NOC_SECTIONS])
         actual = pages(topic)
