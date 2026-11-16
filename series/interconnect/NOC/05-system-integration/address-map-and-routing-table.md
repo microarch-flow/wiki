@@ -1,141 +1,44 @@
-# Address Map And Routing Table
+# 地址怎样映射到端点和路径？
 
-上级：[05 System Integration](./README.md)
+上级：[05 端点与系统集成](./README.md)
 
-相关：[Source Routing For Deterministic Systems](../04-routing-and-flow-control/source-routing-for-deterministic-systems.md)、[Topology Physical Realization](../03-topology/topology-physical-realization.md)、[RAM: address mapping channel rank bank row col](../../../storage/04-dram-controller/address-mapping-channel-rank-bank-row-col.md)
+相关：[网络接口 NI](./ni-network-interface-design.md)、[事务拆分、顺序与完成](./transaction-ordering-and-completion.md)、[Source Routing](../04-routing-and-flow-control/source-routing-for-deterministic-systems.md)
 
-## 这页在回答什么问题
+<span id="address-map-and-routing-table"></span><span id="这页在回答什么问题"></span>一次内存访问需要先确定**访问哪个资源**，再确定消息怎样经过网络。数据放置、地址映射和选路相互影响，但它们不是同一张表。
 
-这页回答：地址映射为什么不只是“软件视角的可访问性问题”，而是直接定义 NoC 流量落点、memory port 压力和热点分布的系统规则。
+## 从地址到目的端
 
-## 地址空间最终要落到物理 node
+<span id="地址空间最终要落到物理-node"></span>请求可能先使用设备地址，再由可选的 IOMMU 或其他映射转换；系统随后按地址和访问属性选择目标资源。设备地址不一定等于 CPU 物理地址，也不是每个系统都具有 IOMMU。[Linux DMA 地址说明](https://docs.kernel.org/core-api/dma-api-howto.html)
 
-NoC 并不理解“这个 tensor 很重要”这类高层语义。对网络来说，更直接的问题是：
+<span id="ni-decode-和-router-decode"></span><span id="routing-table-不是孤立存在的"></span>在一种设计中，源 NI 将地址解析为目的节点，再由路由规则选择输出；另一种设计可以在网络或后续桥中继续解码。网络或类别也可能由请求类型、权限或配置选择，不一定只由地址决定。
 
-- 这个地址最终对应哪个 tile、哪个 SRAM、哪个 HBM channel、哪个 control hub
-- 走哪张网络
-- 在源端被解析成什么目的 node 或 route id
+## 交错映射能怎样改变流量
 
-因此 address map 的后果至少有三层：
+<span id="address-map-为什么会决定热点"></span><span id="interleaving-是典型的系统级调压手段"></span>构造一个四端口区域。区域起始地址为 0，按 64 B stripe 轮转；只对区域内有效地址使用：
 
-- 软件层：地址是否可用、是否符合编程模型
-- 系统层：请求被送到哪个资源岛
-- 网络层：哪几段链路和哪几个 memory port 会被压热
+> 端口 = ⌊地址 ÷ 64 B⌋ mod 4。
 
-## NI decode 和 router decode
+| 访问地址 | 目的端口 |
+| --- | --- |
+| 0 B | 0 |
+| 64 B | 1 |
+| 128 B | 2 |
+| 192 B | 3 |
 
-常见有两种方式：
+若访问地址依次为 0、256、512 B，则都落到端口 0。均匀交错没有保证任意步长的流量均匀；实际并行度还取决于地址范围、服务速率和连接路径。改变粒度可能改善某些并发，也可能改变局部性和重组开销。
 
-- `NI-side decode`：源端先把地址解析成 node id / network / route id
-- `router-side decode`：部分网络节点在中间继续根据地址判断转发
+## 跨目标请求怎样处理
 
-对 deterministic AI 芯片，更常见的是前者，因为：
+假设实现允许将一次读取拆到不同端口：从地址 32 B 读取 96 B，可以分为端口 0 上的地址 32–63 B 和端口 1 上的地址 64–127 B。分片、响应匹配和交付仍须满足上层接口与属性；也有系统在后续控制器内部完成交错，不一定由源 NI 拆分。
 
-- 编译器和 runtime 更容易静态推断路径
-- router 保持更轻
-- address map 可以直接服务 placement 和 DMA 计划
+不能把该例推广为任意 MMIO、原子或独占操作都可拆分。错误、访问权限、未对齐和协议边界也需按具体接口检查。AMD 文档描述了其 NMU 按控制器交错粒度处理事务的实现。[AMD NMU](https://docs.amd.com/r/en-US/pg313-network-on-chip/NoC-Master-Unit)
 
-这也意味着：编译器、NI、memory map 三者必须共享同一套边界认知。
+## 映射更新与在途事务
 
-## address map 为什么会决定热点
+<span id="deterministic-npu-为什么更依赖它"></span><span id="它和多网络的关系"></span>修改地址映射或 route table 前，要明确哪些包携带已解析目的、哪些会在途中继续查表。一种方案是停止相关新请求并排空旧事务；另一种方案使用版本标识，并在所有旧版本引用完成之前保留相应映射。错误或超时后的迟到响应也要纳入释放规则。
 
-假设一个大 tensor 被连续放进某一段地址区间，而这段区间最终集中映射到一个 HBM channel 或少数 SRAM cluster，那么：
+<span id="常见误区"></span>交错不自动用满所有链路；固定 route 也不自动保证目标地址映射稳定。修改任一规则后，要重新检查允许路径、端点和事务顺序。
 
-- 连续 DMA 看起来像“顺序访问”
-- 但从 NoC 视角看，所有流都在打同一组目的端口
+<span id="建模启示"></span>记录地址域、区域规则、目标端点、类别、路由选择及映射版本。按实际请求地址展开访问，再统计各端口和共享链路的负载；DRAM 内部映射见[存储控制器地址映射](../../../storage/04-dram-controller/address-mapping-channel-rank-bank-row-col.md)。
 
-这时热点根因不是 routing 不够聪明，而是 address placement 本身把需求集中到了同一个物理出口。
-
-## interleaving 是典型的系统级调压手段
-
-常见做法是把连续地址按固定粒度散到多个 channel 或 bank：
-
-- page 级 interleaving
-- bank 级 striping
-- channel round-robin
-
-它的价值在于把“逻辑上连续”的大对象拆散到多个物理服务点，从而：
-
-- 降低单 port 热点
-- 提高整体并发
-- 让 bisection 带宽真正被用上
-
-但代价也真实存在：
-
-- 编译器和 runtime 需要理解这种映射
-- locality 和 row-buffer friendliness 可能下降
-- 某些 workload 的 memory behavior 会更难预测
-
-例：4 个端口以 64 B stripe 映射，`port=floor(addr/64) mod 4`。地址 0、64、128、192 分别到 port 0、1、2、3；stride 256 B 的访问 0、256、512 全部落在 port 0，仍会产生热点。跨 stripe 的逻辑 burst 应按各 stripe 边界拆成目标子请求；NI 保存事务 ID、子请求序号和 offset，返回后按原接口规则重组及响应，不能把跨端口访问当成一个目标。
-
-更新地址映射或 route table 时，先停止相关注入并 drain 旧包，或为包和表使用 epoch 并保留旧版本至在途包完成；否则旧 route-id 可能按新表误送。interleaving 的收益还取决于 locality、bank 和服务速率。
-
-## routing table 不是孤立存在的
-
-无论是目的 node 路由还是 source-routed route table，最终都和 address map 紧耦合。
-
-典型链条是：
-
-```text
-logical object
--> placed at address range
--> decoded to target node / channel / network
--> mapped to route or route id
--> injected into specific NoC resources
-```
-
-这说明一个很重要的系统事实：address map、routing table 和 placement 实际上是同一个问题的不同视角。
-
-## deterministic NPU 为什么更依赖它
-
-在 deterministic 系统里，很多优势都建立在“提前知道通信会去哪”之上。因此地址映射不是后处理细节，而是前期架构约束。
-
-如果 address map 设计得模糊或多义，后果会包括：
-
-- 编译器无法稳定做 traffic 规划
-- 同一 workload 在不同运行下热点不可复现
-- source routing 的静态价值被削弱
-
-## 它和多网络的关系
-
-地址解析结果不仅可以决定目标 node，也可以顺带决定：
-
-- control traffic 走 control network
-- tile SRAM traffic 走 data network
-- HBM traffic 走 memory fabric
-
-因此“哪段地址走哪张网”本身就是系统设计的一部分，而不是纯软件 convention。
-
-## 常见误区
-
-- 认为地址映射只是软件 ABI
-- 认为热点是 router 算法问题，不是地址布局问题
-- 认为 route table 一旦写好，地址空间怎么切都无所谓
-
-更准确的说法是：
-
-- 地址映射直接塑造了网络服务点分布
-- 很多热点首先是 resource placement 问题
-- route table 的价值要建立在稳定、清晰的地址映射之上
-
-## 一句话理解
-
-address map 决定“请求到底打到哪里”，routing table 决定“去那里走哪条路”；两者一起定义了 NoC 的真实流量地理。
-
-## 建模启示
-
-模型里至少要显式保留：
-
-- `addr -> node`
-- `addr -> memory channel / bank / cluster`
-- `addr -> network / traffic class`
-- `node / class -> route or route_id`
-
-如果要做系统级探索，还应把下面几项参数化：
-
-- interleaving granularity
-- address region placement
-- HBM / SRAM port count
-- memory-side parallelism
-
-否则你只能看到“链路上有流量”，看不到“为什么这些流总在同一处会师”。
+<span id="一句话理解"></span>地址映射决定访问落点；路由决定怎样到达落点。二者共同影响流量，但需要分别定义和验证。

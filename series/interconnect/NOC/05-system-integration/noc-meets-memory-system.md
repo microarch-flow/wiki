@@ -1,54 +1,37 @@
-# NOC Meets Memory System
+# NoC 与存储系统：数据为什么会在端点等待？
 
-上级：[05 System Integration](./README.md)
+上级：[05 端点与系统集成](./README.md)
 
-相关：[RAM: NPU memory hierarchy](../../../storage/01-memory-hierarchy/04-npu-case/npu-memory-hierarchy.md)、[RAM: memory controller](../../../storage/04-dram-controller/why-mc-is-the-real-bottleneck.md)
+相关：[Tile 与 NoC 的接口](../06-ai-noc-specifics/tile-architecture-and-noc.md)、[DMA 与 NoC](./dma-engine-noc-interaction.md)、[Memory-centric NoC](../06-ai-noc-specifics/memory-centric-noc.md)
 
-## 这页在回答什么问题
+<span id="noc-meets-memory-system"></span><span id="这页在回答什么问题"></span>NoC 可以把请求或数据送到存储端点，但 SRAM bank、memory controller 和 consumer 仍需要接纳和服务。某处持续供给或服务不足时，有限队列可能填满，并沿支持反压的路径影响上游。
 
-NoC 把请求和数据送到 NI，SRAM bank、memory controller 和 consumer 决定何时能接收和服务。任何一处服务不足都可能形成队列，并通过 ejection、逐跳 credit 反压到源端。
+## 同一口径比较实际路径
 
-## 同一单位比较容量
+<span id="同一单位比较容量"></span>对一条确定的单向数据流，先列出它**实际经过**的资源，再用同一时间窗口和有效数据字节比较各段能力。长期稳定时，流的吞吐不超过其中任一必经资源分配给该流的有效服务能力。
 
-对一个确定方向、路径和采样窗口，用有效字节/秒比较：
+例如，本地 SRAM 到 tile 的路径不一定经过外部 memory controller；经过 controller 的返回路径也不一定使用另一个 tile 的本地 SRAM。不能把所有可能资源都机械地放进同一个取最小值公式。即使上限是 32 GB/s，也还要检查源端供给、依赖、共享竞争和排队，不能把上限当成实测吞吐。
 
-```text
-payload_throughput ≤ min(path_payload_capacity, NI_payload_capacity,
-                         bank_service_bytes_per_s, MC_service_bytes_per_s)
-```
+## Bank 冲突与接收
 
-各项需在同一流量和计量边界测量。链路物理位宽为 `w_bits`，时钟为 `f_Hz` 时，单端口原始容量为 `w_bits × f_Hz / 8` B/s；header、空拍和重试使 payload 容量更低。多路径共享链路、读写共享总线、多个请求相互依赖时，简单取 min 仅是必要上限，不能证明可达。
+<span id="sram-bank-冲突和-ejection"></span>假设有 B 个独立单端口 bank，本拍有 Q 个请求；每个请求独立、均匀地选择一个 bank，每个被命中的 bank 本拍最多服务一个请求，且没有历史排队。每个 bank 未被命中的概率为（1 − 1/B）^Q，因此：
 
-## SRAM bank 冲突和 ejection
+> 本拍可服务请求数的期望 = B × [1 − (1 − 1/B)^Q]。
 
-假设 B 个相同单端口 bank，每拍 Q 个请求独立、均匀映射，且每个非空 bank 当拍可服务一个请求，不考虑历史排队：
+当 B = 4、Q = 3，期望为 37/16 = 2.3125 次。如果每次恰好服务 32 B，频率为 1 GHz，则按该独立分布重复采样得到的平均服务量为 74 GB/s。这不是最坏情况，也不适用于任意历史队列、步长或热点。更多映射和冲突例见 [SRAM bank 地址映射](../../../storage/02-sram/foundations/sram-bank-address-mapping-conflicts.md)。
 
-```text
-E[可服务请求数] = B × (1 − (1 − 1/B)^Q)
-```
+## Payload 与 flit 使用同一单位
 
-例如 B=4、Q=3，期望为 `4×(1−(3/4)^3)=37/16=2.3125` 请求/拍。其余请求需要按队列与仲裁规则重试；这不是 `Q²/B` 的冲突因子。若每次服务 32 B、频率 1 GHz，期望服务量为 74 GB/s；还必须确认每请求恰为 32 B、无其他竞争且样本满足上述独立分布。顺序 stripe、热点及 compute/DMA 共享 bank 时需用实际映射和队列测量，不能套用固定百分比。
+假设有效数据率为 64 GB/s，一个数据 flit 可携带 32 B；每包有 4 个满载数据 flit 和 1 个不载数据的 header flit，没有其他开销。数据本身相当于每秒 20 亿个 flit，连同 header 则需要每秒 25 亿个网络 flit。
 
-把测得或假设的有效服务速率 `S` B/s 转为 flit/cycle：`S / flit_bytes / router_frequency_Hz`。例如 `64 GB/s / 32 B / 1 GHz = 2 flit/cycle`。若局部时钟不同，需另建 CDC 和时钟换算；GB/s 除以 B/flit 先得到 flit/s。
+在 1 GHz 网络时钟下，后者是合计 **2.5 flit/cycle** 的服务需求。若单个端口每拍只能传一个 flit，它不能独自承载该需求；可能需要多端口、更宽的传输或降低速率。这个例子不把 payload 字节误当成所有 wire 字节，也不代表特定芯片的包格式。[AMD 封包开销示例](https://docs.amd.com/r/en-US/pg313-network-on-chip/Packetization-Overhead)
 
-## HBM 与 controller 的服务窗口
+## Controller 服务窗口与返回突发
 
-每 pin 的数据率乘总数据位宽，再除以 8，才是该接口的理论 B/s；burst 组织决定一次请求传多少数据，不应再把数据率乘以 burst 长度。有效吞吐受通道映射、读写方向、时序、调度与流量约束。
+<span id="hbm-与-controller-的服务窗口"></span>某种存储接口的原始带宽可由每数据线速率乘数据线数，再统一换算单位；burst 表示一次操作的传输量，不能在已按秒计的接口数据率上再次相乘。实际服务还受调度、读写切换、映射和其他请求影响。
 
-例如假设某系统实际测得可用数据服务能力 600 GB/s，平均响应 256 B，单窗口完整 RTT 为 100 ns，可用请求槽 64：
+构造例：假设 controller 可服务 600 GB/s，每笔响应 256 B，请求从占槽到释放平均 100 ns，窗口上限为 64 笔。窗口容量上限为 640 million request/s，即 163.84 GB/s；它低于假设的 controller 容量。平均时延随负载变化，其他路径也可能更早成为瓶颈。
 
-```text
-服务容量 = 600e9 / 256 = 2.344e9 request/s
-窗口容量 = 64 / 100e-9 = 640e6 request/s
-由此得必要上限 min(...) = 640e6 request/s = 163.84 GB/s
-```
+<span id="返回突发与有限缓冲"></span>一个响应可能跨多个 beat 或 packet 返回。要评估接收缓冲，必须记录到达节奏、可消费节奏、初始占用和反馈时间。缓冲可以吸收或反压突发；没有一条适用于所有网络的固定深度公式。
 
-这是构造假设，不是 HBM 型号规格。RTT 会随负载变化；请求供给、返回链路及 controller 也可能限制性能。若比较 NoC 的 bytes/s，先将 request/s 乘以同口径的平均有效响应字节。
-
-## 返回突发与有限缓冲
-
-一个响应可由多个 beat 或 packet 返回。抵达节奏由 controller、桥、链路宽度、时钟和仲裁共同决定，不能假设 256 B 总在 1–2 cycle 到达。要评估 ejection 深度，记录每拍入队/出队、credit 反馈和消费 stall；在已知突发到达曲线、最小服务曲线与初始占用时求最大积压。缓冲可以反压并平滑流量，不存在通用的 `max(R,burst+2)` 深度公式。
-
-## 建模启示
-
-保留地址到 channel/bank 的映射、NI injection/ejection 队列、bank 端口和仲裁、MC 请求槽及服务分布、response 分片与 consumer ready。统计每一方向的 payload 和 wire 字节、queue occupancy、实际服务率与未完成请求；用同窗口测量区分网络、bank、MC 和端点供给造成的等待。固定 latency 可用于粗略筛选，但不能解释 burst、局部热点或信用反压。
+<span id="建模启示"></span>保留实际路径、端口能力、地址到 bank/channel 的映射、请求槽与返回队列，并分别统计 payload、网络传输量和端点阻塞。请求/秒与字节/秒只有在明确每笔有效字节后才能换算。

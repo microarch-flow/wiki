@@ -1,82 +1,34 @@
-# Memory Centric NOC
+# Memory-centric NoC：存储端口怎样塑造网络？
 
 上级：[06 AI NOC Specifics](./README.md)
 
-相关：[NOC Meets Memory System](../05-system-integration/noc-meets-memory-system.md)、[Workload Attention Decode KV Cache](./workload-attention-decode-kv-cache.md)
+相关：[NoC 与存储系统](../05-system-integration/noc-meets-memory-system.md)、[地址映射与路由表](../05-system-integration/address-map-and-routing-table.md)、[Decode 与 KV Cache](./workload-attention-decode-kv-cache.md)
 
-## 这页在回答什么问题
+<span id="memory-centric-noc"></span><span id="这页在回答什么问题"></span>当一组流量主要访问共享存储端点时，端口放置、地址映射和请求/返回资源会共同影响网络。这里比较系统组织；bank、controller 和反压的单路径机制见[NoC 与存储系统](../05-system-integration/noc-meets-memory-system.md)。
 
-这页回答：当系统主要瓶颈不再是 tile-to-tile forwarding，而是 memory request / response 路径时，NoC 的优先级应该怎样重排。
+## 从一次访问到一组流
 
-## 什么叫 memory-centric
+<span id="什么叫-memory-centric"></span><span id="request-和-response-的地位不对等"></span>读取包含从发起端到存储的请求，以及从存储到 consumer 的返回数据。哪一段位于关键路径，取决于请求窗口、服务时间、返回容量与后续计算依赖。不能一律认定 response 比 request 更重要。
 
-`memory-centric` 不是说网络只连 memory，而是说系统表现更受这些路径支配：
+<span id="哪些-workload-容易进入这种状态"></span>多个 tile 同时 refill、共享权重或读取 KV 数据，都可能集中访问少数端口；具体分布由数据放置和实际请求决定。Decode 的数据量和逐步依赖见[工作负载案例](./workload-attention-decode-kv-cache.md)。
 
-- tile -> memory request
-- memory -> tile response
-- refill / spill / writeback
-- memory-side endpoint 和 return path 的局部热点
+## 两种放置的容量对照
 
-在这种状态下，网络最重要的任务不是再提高一点理论注入率，而是保护关键返回路径和终点消费能力。
+<span id="为什么这不是单靠-hbm-带宽能解释完的"></span>构造两个不同对象 A、B 和两条持续读取流。每流提出每拍 1 个等大的数据单元；两个 memory port 各能每拍服务 1 个单元。假设请求路径和返回路径的总容量足够，两个 consumer 也都能每拍接收 1 个单元，没有其他竞争或固定启动延迟。
 
-## request 和 response 的地位不对等
+| 数据放置 | 每拍需求与端口容量 | 两流的服务上限 |
+| --- | --- | --- |
+| A、B 都在端口 0 | 端口 0 需求为 2，容量为 1；端口 1 空闲。 | 合计 1 单元/拍。 |
+| A 在端口 0，B 在端口 1 | 两个端口各有 1 个需求，容量各为 1。 | 合计 2 单元/拍。 |
 
-很多 memory-centric 场景里，真正处于关键路径上的往往是 response：
+第二种放置在上述理想条件下能同时服务两流，但这不是实际系统必然加速两倍。若两条返回流共享容量为 1 的链路，或某个 consumer 每两拍只能接收一次，两端口也不能提供上述合计服务。
 
-- request 发出去只是开始
-- response 回来才决定 compute 是否能继续
+## 怎样比较候选组织
 
-因此如果 response 被 bulk DMA、background traffic 或不合理 QoS 拖慢，系统会表现得像“总带宽也许还行，但 token latency 很糟”。
+<span id="常见系统策略"></span>先固定逻辑访问和数据量，再改变地址映射、port 位置、请求/响应队列或仲裁。分别观察端口服务率、请求与返回路径负载、未完成请求、目的端等待和任务完成时间。
 
-## 哪些 workload 容易进入这种状态
+请求和响应分 class、提高部分流优先级、增加路径或端口，都只是候选方案。它们可能改善一种竞争，也可能增加资源或影响其他流；需要在相同约束和流量下比较。[多物理网络](../05-system-integration/multiple-physical-networks.md)进一步比较隔离方式。
 
-典型场景包括：
+<span id="建模启示"></span>模型需保留对象到端口的映射、每个方向的共享路径、服务能力和端点接收条件。平均总带宽不能替代各端口和关键依赖的观察。
 
-- decode
-- KV cache 主导路径
-- 高并发 memory refill
-- 某些 heavily memory-bound inference
-
-这些场景下，NoC 的关注重点会从 `point-to-point throughput` 转向：
-
-- response isolation
-- memory port placement
-- ejection / local SRAM write 能力
-- request-response class 分离
-
-## 为什么这不是单靠 HBM 带宽能解释完的
-
-HBM 或 controller 当然常是主瓶颈，但 NoC 仍然重要，因为它决定：
-
-- memory port 附近热点如何扩散
-- response 是否会被不关键流量淹没
-- 关键返回在最后几 hop 上会不会被拖慢
-
-因此 memory-centric NoC 不是“网络不重要”，而是“网络要围绕 memory 路径重新组织优先级”。
-
-## 常见系统策略
-
-更有效的策略通常包括：
-
-- request / response 分 class 或分网络
-- response 提高优先级
-- memory port 做更合理的空间分散
-- decode / control / completion 与 bulk stream 隔离
-
-这比单纯把 data router 继续做大，往往更符合收益。
-
-## 一句话理解
-
-memory-centric NoC 的关键不是让所有流量都更快，而是别让真正卡住 compute 的 memory response 在最后一段路上被拖死。
-
-## 建模启示
-
-模型至少要显式区分：
-
-- request class
-- response class
-- memory port service point
-- ejection blocked
-- response-sensitive completion metric
-
-如果模型把 memory traffic 只当成“更大一点的 point-to-point 流”，会严重低估 decode 类场景对 QoS 和 return-path 组织的敏感性。
+<span id="一句话理解"></span>Memory-centric 分析关注多条访问如何汇聚并返回；先找到实际共享的端口和路径，再选择优化对象。

@@ -56,14 +56,15 @@
 
 沿请求和返回路径，理解网络与事务、DMA、存储及芯粒网关的边界。
 
+- [BUS 与 NoC 的系统边界](./05-system-integration/noc-vs-bus-revisited.md)
 - [网络接口 NI](./05-system-integration/ni-network-interface-design.md)
 - [地址映射与路由表](./05-system-integration/address-map-and-routing-table.md)
-- [BUS 与 NoC 的系统边界](./05-system-integration/noc-vs-bus-revisited.md)
+- [事务拆分、顺序与完成](./05-system-integration/transaction-ordering-and-completion.md)
+- [Tile 与 NoC 的接口](./06-ai-noc-specifics/tile-architecture-and-noc.md)
 - [DMA 与 NoC](./05-system-integration/dma-engine-noc-interaction.md)
 - [NoC 与存储系统](./05-system-integration/noc-meets-memory-system.md)
 - [Memory-centric NoC](./06-ai-noc-specifics/memory-centric-noc.md)
-- [Tile 与 NoC 的接口](./06-ai-noc-specifics/tile-architecture-and-noc.md)
-- [多物理网络](./05-system-integration/multiple-physical-networks.md)
+- [多网络与资源隔离](./05-system-integration/multiple-physical-networks.md)
 - [芯粒与跨 Die 互连](./06-ai-noc-specifics/chiplet-and-die-to-die-interconnect.md)
 
 ## 06 多目标通信与调度 {#06-ai-noc-specifics}

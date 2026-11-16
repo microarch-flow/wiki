@@ -1,123 +1,41 @@
-# Multiple Physical Networks
+# 多网络与共享资源：怎样隔离不同流量？
 
-上级：[05 System Integration](./README.md)
+上级：[05 端点与系统集成](./README.md)
 
-相关：[QoS And Priority Classes](../04-routing-and-flow-control/qos-and-priority-classes.md)、[NoC Vs Bus Revisited](./noc-vs-bus-revisited.md)、[Reduction And Collective Networks](../06-ai-noc-specifics/reduction-and-collective-networks.md)
+相关：[QoS 与优先级](../04-routing-and-flow-control/qos-and-priority-classes.md)、[端到端服务保证](../04-routing-and-flow-control/service-guarantees-and-latency-bounds.md)、[Memory-centric NoC](../06-ai-noc-specifics/memory-centric-noc.md)
 
-## 这页在回答什么问题
+<span id="multiple-physical-networks"></span><span id="这页在回答什么问题"></span>控制、数据和响应可能有不同的延迟、带宽与前进要求。设计者可以共享资源，也可以分开队列、服务机会或物理网络；每种隔离都有覆盖范围和成本。
 
-这页回答：为什么很多真实 AI 芯片不是“一张大 NoC 搞定所有流量”，而是会拆成多张物理网络或多平面。
+## 四种资源组织
 
-## 根因不是“设计者喜欢复杂”
+<span id="根因不是设计者喜欢复杂"></span><span id="物理隔离和-vc-隔离不是一回事"></span>同一组流量可以比较以下候选：
 
-多网络的根因是不同 traffic class 的需求差异太大。
+| 方案 | 分开的资源 | 仍需检查 |
+| --- | --- | --- |
+| 共享队列 | 无专门隔离。 | 队头阻塞、仲裁和端点。 |
+| 多 VC / VNet | 按实现分配部分队列或协议资源。 | 物理链路、仲裁及端点可能仍共享。 |
+| 共享链路加预留服务 | 按规则分配部分服务机会。 | 输入约束、每段服务和下游就绪。 |
+| 多物理网络 | 按设计分开链路和交换资源。 | 网络之间是否仍共享端点、存储或协议状态。 |
 
-典型差异包括：
+VNet 描述一组逻辑网络资源；具体实现可能为每个 VNet 配置多个 VC。名称不决定资源是否完全隔离。[gem5 Garnet 2.0 文档](https://www.gem5.org/documentation/general_docs/ruby/garnet-2/)给出了这种建模方式的一个例子。
 
-- bulk tensor stream：高带宽、中等延迟敏感
-- control / descriptor：低带宽、极高延迟敏感
-- completion / sync：包很小，但经常在依赖链关键位置
-- reduce / collective：空间模式与普通 point-to-point 很不一样
+## 相同总容量下的构造例
 
-如果所有这些都共享同一张物理网络，那么你必须在一套 router / link 资源里同时满足完全不同的目标，通常会变得又贵又难验证。
+<span id="常见的拆法"></span>比较一条每拍可传 2 flit 的共享链路，与两条各每拍传 1 flit 的独立链路；两者总原始单向容量均为每拍 2 flit。假设链路和接收端持续可用、没有其他流量：
 
-## 物理隔离和 VC 隔离不是一回事
+- 共享方案以整个 packet 为非抢占单位。一个 8-flit bulk packet 从拍 0 开始，每拍占用两个传输位置，在拍 0–3 发完。一个 control flit 在拍 1 初到达，只能从拍 4 开始服务，等待 3 拍。
+- 分离方案将 bulk 和 control 分别放在自己的链路上。control 链路空闲时，该 flit 可在拍 1 开始服务；但空闲的 control 容量不能借给 bulk，bulk 单独只能每拍发 1 flit。
 
-逻辑隔离常见做法是：
+这说明了等待与带宽复用的一种取舍，不证明物理分离总是更快。若共享方案允许更细粒度的仲裁、预留时隙或其他规则，结果也会改变。预留要提供可证明的时间界，还需约束输入和下游服务。
 
-- 同一物理网络里分多个 VC
-- 再叠加 priority / weighted arbitration
+## 隔离到哪里才够
 
-物理隔离则更激进：
+<span id="为什么-ai-芯片比通用-soc-更常见多网络"></span><span id="它和-qos-的关系"></span>不同应用可能在 control、bulk、response 或 collective 之间选择共享或分离。不能仅凭芯片类型推断必须有几张网络；先量化流量、共享点和关键依赖，再比较布线、面积、功耗及闲置容量。
 
-- 不同 traffic class 直接走不同链路、不同 router、甚至不同 topology
+<span id="什么时候-vc-隔离还不够"></span>即使两张物理网络的链路完全分开，两个协议仍可能在目的端共享有限缓冲并互相等待。[第四章的端点等待例](../04-routing-and-flow-control/deadlock-livelock-starvation.md#协议和端点也可能形成等待环)说明了跨资源分析的必要性。增加 VC、提高优先级或增加物理网络，都需要结合完整依赖与服务规则验证。
 
-物理隔离的好处：
+<span id="它不是永远越多越好"></span>物理分离可能提供清晰的容量边界，也会增加端口和布线，并减少闲置容量复用。共享资源可以更灵活，但需要验证仲裁、缓冲和干扰。
 
-- 干扰边界最清楚
-- 可隔离各自网络链路的通道依赖；共享端点、缓冲和协议资源仍需联合证明
-- 每张网可以按自身目标独立优化
+<span id="建模启示"></span>记录每类消息到队列、VC、链路、交换机和端点资源的映射。比较时固定预算与流量，并分别统计吞吐、等待、未完成事务和端点阻塞。
 
-代价：
-
-- 面积和布线成本更高
-- 某些低利用率时间段会资源浪费
-
-## 常见的拆法
-
-工程上最常见的分法通常不是“每类流量一张网”，而是按系统价值分层：
-
-- `control network`
-- `data network`
-- 可选的 `memory / DMA fabric`
-- 可选的 `collective / reduction fabric`
-
-其中最常见、也最值得优先分离的是 `control` 和 `bulk data`。
-
-原因很直接：
-
-- control 很小，但一旦被拖慢，代价可能是整条 pipeline stall
-- bulk data 很大，天然会吞噬共享资源窗口
-
-## 为什么 AI 芯片比通用 SoC 更常见多网络
-
-因为 AI 芯片的数据面和控制面差距更极端：
-
-- 数据面要吃非常高的持续带宽
-- 控制面本身流量不大，但对时序和可观测性更敏感
-
-通用 SoC 里很多时候 BUS + NoC 分层已经足够；AI 芯片里即便进入 NoC 体系后，NoC 内部往往还要继续分层。
-
-## 它和 QoS 的关系
-
-多网络是一种粗粒度隔离方案，不是所有场景最强或唯一的 QoS 方案。
-
-相比“在同一张网上继续堆规则”，物理分离的优势在于：
-
-- 行为更稳定
-- debug 更直接
-- latency bound 更容易解释
-
-共享链路也可通过经流量整形的 TDMA/预留服务提供有界保证，前提是到达曲线、每跳与端点服务均有界。物理分离的成本和闲置带宽须与共享方案比较。
-
-## 什么时候 VC 隔离还不够
-
-下面这些信号通常说明该认真考虑物理分离了：
-
-- control latency 对系统 forward progress 极敏感
-- bulk data 持续时间长，VC 只能排队，无法真正隔离带宽
-- 不同流量模式差异很大，需要不同 topology
-- debug / verification 需要很清楚的因果边界
-
-例如两个物理网络在同一 endpoint 共享有限 buffer：请求网的消息占住 buffer 等待响应，而响应网又必须取得同一 buffer，仍可能形成跨网 protocol deadlock。必须分析端点资源与消息依赖，不能只检查各网的 router。
-
-## 它不是永远越多越好
-
-多网络同样有边际成本：
-
-- 更多链路与 router 面积
-- 更高布线压力
-- NI 端口与协议更复杂
-- traffic 在多张网之间切分时更难做容量平衡
-
-所以常见最优点不是“越多越好”，而是“先把最危险的语义冲突隔离开”。应按实际关键路径和服务保证选择是否分离 control/data。
-
-## 一句话理解
-
-多物理网络的价值在于：当不同流量的目标函数差得太大时，与其在同一张网上互相妥协，不如直接把它们拆开。
-
-## 建模启示
-
-仿真器第一版至少应支持：
-
-- 多张独立网络
-- 每张网独立的 topology / width / latency 参数
-- traffic class 到网络的映射
-- per-network utilization / latency / stall 统计
-
-如果模型只支持单网络，你至少也要显式估计：
-
-- control/data 是否应物理分离
-- 当前结果里哪些 QoS 问题其实是“缺一张独立网”带来的
-
-否则会系统性低估物理隔离的收益。
+<span id="一句话理解"></span>隔离要说明隔离了哪些资源；可用带宽、前进条件和端点依赖仍要共同验证。

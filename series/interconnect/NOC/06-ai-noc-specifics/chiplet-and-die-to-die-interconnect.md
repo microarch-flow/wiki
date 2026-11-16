@@ -1,93 +1,36 @@
-# Chiplet And Die To Die Interconnect
+# NoC 网关与跨 Die 互连：请求怎样跨越边界？
 
 上级：[06 AI NOC Specifics](./README.md)
 
-相关：[Topology Physical Realization](../03-topology/topology-physical-realization.md)、[RAM: hbm 2.5d 3d tsv](../../../storage/06-system-integration/packaging/hbm-2.5d-3d-tsv.md)、[封装内芯粒互连](../../D2D/README.md)
+相关：[层次化与混合互连](../03-topology/hierarchical-and-hybrid-topology.md)、[事务拆分、顺序与完成](../05-system-integration/transaction-ordering-and-completion.md)、[封装内芯粒互连](../../D2D/README.md)
 
-## 这页在回答什么问题
+<span id="chiplet-and-die-to-die-interconnect"></span><span id="这页在回答什么问题"></span>跨 die 通信需要两端接口、协议和封装连接共同工作。对 NoC 分析来说，关键是找出片上网络与跨 die 接口之间有哪些队列、转换和服务边界。
 
-这页回答：当 AI 芯片从单 die 扩展到 chiplet 或 HBM 邻接系统后，NoC 问题为什么会变成层次化互连问题。
+## 网关怎样接住片上请求
 
-## 跨 die 不再是“多几 hop”
+<span id="跨-die-不再是多几-hop"></span>构造一个双 compute die 系统：A 和 B 各有片上网络，两者通过兼容的 D2D 接口通信。一次从 A 到 B 的读取可以经过：
 
-die-to-die 互连和片上 hop 的差别，不只是更长，而是一个不同层级的通路：
+1. A 的 NI 将请求送至本地 NoC，路由到 A 的网关。
+2. 网关按所选接口接纳请求；根据实现，可能进行格式、位宽或时钟转换。
+3. D2D 接口传输请求，B 侧接收并将其交给目的资源；数据和状态再按系统规定返回 A。
+4. A 侧匹配返回并交付发起端。网关队列或远端资源受阻时，有限缓冲及相应流控可能使本地网络等待。
 
-- 可能需要不同的串行化、时钟和封装接口
-- gateway 队列、重组与可选的可靠性机制增加状态
-- 延迟、带宽密度和能耗取决于技术、距离与实现；不能对所有跨 die 和片上路径作绝对排序
+这只是可行构造。两侧不一定都有 NoC，也不一定使用同样的格式。CRC、replay、跨时钟和序列化是否存在，以及它们的粒度，都由所选协议和实现决定。D2D 接口也可以使用多条并行数据线；例如 [OCP BoW PHY 规范](https://www.opencompute.org/documents/bunch-of-wires-phy-specification-pdf)描述了其线和 slice 组织。
 
-例如 die A 的 NI 发读请求 packet：本地 NoC 将其送至 gateway；gateway 入队、跨时钟、按 D2D 链路格式分包并串行发送。若链路协议实现 replay，则保存待确认数据、在错误时按该协议重发。die B gateway 接收并重组，再通过本地 NoC 到 memory；返回数据沿反向路径切包、传输、重组并交付请求者。若 A gateway 的待发送队列满，本地 NoC 会经有限缓冲和 credit 逐跳回压。不同 D2D 协议可无 replay 或使用其他粒度，需按实际接口建模。
+## HBM 路径与芯粒网关
 
-## 为什么 AI 系统很容易碰到它
+<span id="为什么-ai-系统很容易碰到它"></span>另一种路径是 compute die 上的 NoC 接到 HBM controller 和 PHY，再访问封装中的 HBM。它同样跨越 die 和封装边界，但不能因此假设使用 UCIe，或假设 HBM 侧还有一个通用片上 NoC。
 
-AI 芯片越来越常见：
+[封装内芯粒互连](../../D2D/README.md)说明协议与物理连接的区别；[HBM 封装](../../../storage/06-system-integration/packaging/hbm-2.5d-3d-tsv.md)讨论存储封装。不同技术的延迟、带宽和能量需要按具体实现和测量边界比较。
 
-- compute die + HBM
-- 多 compute chiplet
-- 分层 package fabric
+## 放置和调度要知道哪些资源
 
-原因很现实：
+<span id="编译器和-placement-必须感知层次"></span><span id="为什么-deterministic-npu-更要谨慎"></span>跨 die 流可能集中经过少数网关或封装连接。改变计算和数据放置，可以改变这些资源的需求；但把通信留在本地也可能增加复制、容量或其他链路开销。
 
-- reticle 限制
-- HBM 封装形态
-- 工艺和成本分拆
+若静态调度依赖固定的完成时间，还需约束网关队列、各段服务、时钟关系、端点响应及异常处理。固定路径不自动消除排队或重传带来的波动。
 
-这意味着很多“片上通信问题”会自然升级为：
+<span id="工程上的直接结论"></span>比较候选方案时，分别列出片上路径、网关、跨 die 连接和目的端。只增加若干抽象 hop 可能足以做粗筛，但无法解释格式转换、共享网关、反馈或错误恢复。
 
-- die 内通信
-- die 间通信
-- HBM 邻接通信
+<span id="建模启示"></span>按问题保留网关容量、队列、两侧流控、映射、时钟、可选可靠性机制和完成边界。逐项确认哪些延迟可以重叠；只有非重叠区间才能直接相加。
 
-三层并存。
-
-## 编译器和 placement 必须感知层次
-
-如果系统有明显的跨 die 代价，那么 placement 就不能只看 tile 坐标，还要看：
-
-- 哪些流量必须留在 die 内
-- 哪些 collective 可以先局部聚合再跨 die
-- 哪些 memory access 要尽量打向本地或邻近 port
-
-否则跨 die 代价会迅速吞掉原本在单 die 上成立的优化。
-
-## 为什么 deterministic NPU 更要谨慎
-
-对 deterministic 系统而言，若目标实现的跨 die 服务时间或波动更大，问题还包括：
-
-- 时序等级突然断层
-- static schedule 更容易失配
-- buffering / double-buffering 需求更强
-
-也就是说，chiplet 会把“路径长度差异”放大成“调度层次差异”。
-
-## 工程上的直接结论
-
-一旦进入 chiplet 设计，NoC 不应再被看成单一平面，而应看成分层 fabric：
-
-- local intra-cluster
-- on-die NoC
-- die-to-die bridge
-- HBM / package edge interface
-
-这对 DSL 和仿真都意味着必须引入分层距离模型。
-
-## 一句话理解
-
-chiplet 让 NoC 从“片上路由问题”变成“层次化互连问题”；跨 die 不只是更远，而是另一种级别的通信。
-
-## 建模启示
-
-模型至少要区分：
-
-- same-cluster
-- same-die
-- cross-die
-- memory-edge
-
-并分别赋予不同的：
-
-- latency
-- bandwidth
-- buffer / bridge cost
-
-如果模型把 cross-die 只当成多几个 hop，会系统性低估 chiplet 设计里的调度和 placement 难度。
+<span id="一句话理解"></span>跨 die 不只是改变距离；接口和网关引入的资源与语义，也会影响片上事务的前进。

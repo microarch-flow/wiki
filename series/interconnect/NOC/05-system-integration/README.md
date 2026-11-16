@@ -1,99 +1,30 @@
-# 05 System Integration
+# 05 端点与系统集成
 
-> 本页保留原章节导读。[查看现行分类与阅读顺序](../SUMMARY.md)。
+上级：[NoC Wiki](../README.md)
 
-上级：[NOC Wiki](../README.md)
+相关：[04 路由、仲裁与服务保证](../04-routing-and-flow-control/README.md)、[DMA 与 NoC](../../../microarchitecture/DMA/wiki/05-system-integration/dma-and-noc.md)、[存储系统](../../../storage/README.md)
 
-相关：[Routing And Flow Control](../04-routing-and-flow-control/README.md)、[AI 芯片里的 BUS vs NoC](../../BUS/06-scenarios-case-studies/bus-vs-noc-in-ai-chip.md)、[RAM: memory hierarchy as system](../../../storage/01-memory-hierarchy/01-system-basics/memory-hierarchy-as-system.md)
+<span id="05-system-integration"></span><span id="这页在回答什么问题"></span>路由器和链路提供消息通路；端点还要产生请求、接收结果并遵守事务语义。本章沿任务、请求和返回路径，观察接口与系统资源怎样共同决定前进和性能。
 
-## 这页在回答什么问题
+## 本章入口
 
-这一章回答：NoC 不再被当成“router 和 link 的组合”之后，它和真实系统里的哪些对象发生耦合，这些耦合又如何反过来改变 NoC 的瓶颈形状。
+<span id="这一章的主线"></span><span id="本章其余正文"></span>
 
-真正的芯片里，NoC 从来不是孤立存在的。它至少要和下面这些东西一起看：
+1. [BUS 与 NoC 的系统边界](./noc-vs-bus-revisited.md)：一次任务经过哪些控制、网络和完成边界。
+2. [网络接口 NI](./ni-network-interface-design.md)：端点接口与网络消息怎样转换。
+3. [地址映射与路由表](./address-map-and-routing-table.md)：地址怎样选择端点和路径。
+4. [事务拆分、顺序与完成](./transaction-ordering-and-completion.md)：分片、匹配和响应怎样保持接口语义。
+5. [Tile 与 NoC 的接口](../06-ai-noc-specifics/tile-architecture-and-noc.md)：计算与本地存储怎样影响注入和接收。
+6. [DMA 与 NoC](./dma-engine-noc-interaction.md)：窗口、burst 和发起节奏怎样塑造流量。
+7. [NoC 与存储系统](./noc-meets-memory-system.md)：bank、controller 与接收资源怎样限制一条路径。
+8. [Memory-centric NoC](../06-ai-noc-specifics/memory-centric-noc.md)：多条流如何共享存储端口和返回路径。
+9. [多网络与资源隔离](./multiple-physical-networks.md)：共享、预留与物理隔离怎样比较。
+10. [芯粒与跨 Die 互连](../06-ai-noc-specifics/chiplet-and-die-to-die-interconnect.md)：片上网络如何衔接跨 die 接口。
 
-- endpoint 的 `NI`
-- DMA 的 request / response 组织方式
-- 地址空间到 node / memory port 的映射
-- tile 本地 SRAM 与 cluster memory 的消费能力
-- control path 与 data path 的分离方式
-- 多物理网络或多平面的组织
+<span id="为什么这章对-deterministic-npu-特别关键"></span><span id="读完这章后应该得到什么"></span>静态计划可以提前确定部分数据放置、目标和注入顺序；是否能按计划完成，还取决于缓冲、仲裁、端点服务和异常处理。阅读时分别标记数据到达、端点接纳、事务响应和软件可见的时刻。
 
-如果这些边界没建进去，NoC 分析通常会出现一个假象：网络看起来并不忙，但系统还是慢。
+<span id="和前后章节的关系"></span>第四章讨论选路、仲裁与前进条件；本章解释网络两端及跨接口的契约。多目标通信和具体工作负载见[知识地图](../SUMMARY.md)。流量如何表征和生成 trace 属于[性能评估与架构探索](../SUMMARY.md#07-evaluation-methodology)，可从[流量模式与表征](./traffic-patterns-and-characterization.md)继续阅读。
 
-## 这一章的主线
+<span id="建模启示"></span>先按研究问题选定边界，再记录目标映射、注入/接收资源、请求及响应状态、目的端服务和完成事件。需要比较时序时，再加入共享资源、反馈延迟和输入约束。
 
-这章不再讨论“packet 在路上怎么跑”，而讨论“谁把 packet 发上路、谁在终点接住它、为什么端点和 memory system 会反向定义网络行为”。
-
-要点可以概括成五句：
-
-- `NI` 决定语义层事务如何变成 packet 流
-- `DMA` 决定 memory traffic 是平滑还是脉冲式爆发
-- `address map` 决定流量最终落到哪些物理 node 和 port
-- `local memory` 与 `memory controller` 决定目的端能不能真正吃下流量
-- `multiple networks` 决定不同 traffic class 是共享冲突，还是物理隔离
-
-## 为什么这章对 deterministic NPU 特别关键
-
-deterministic NPU 的主流量往往不是“随机出现”的，而是由：
-
-- 编译器 placement
-- DMA 计划
-- local SRAM 容量与 bank 组织
-- HBM channel 分配
-- control / data / collective 的系统分工
-
-共同塑造的。
-
-这意味着 NoC 的很多关键现象其实来自系统集成边界，而不是 router 局部策略本身。工程上经常发生的情况是：
-
-- 你以为是 topology 问题，其实是 address interleaving 不好
-- 你以为是 routing 问题，其实是 DMA outstanding 太激进
-- 你以为是网络堵了，其实是 ejection 端 bank conflict
-
-## 和前后章节的关系
-
-- 前一章讲的是路径、仲裁、QoS 和 deadlock 机制；这一章讲的是这些机制承载的真实系统对象。
-- 后一章 `06-ai-noc-specifics` 会继续深入 AI 工作负载、collective、chiplet、memory-centric 路径和 compiler co-design。
-- 如果只想先建立最小系统直觉，这一章比 AI case study 更优先。
-
-## 读完这章后应该得到什么
-
-读完后，你应该能回答：
-
-- 为什么 `NI`、DMA 和 memory port 常常比 router 更先成为系统瓶颈
-- 为什么地址映射会决定热点，不只是决定“能不能访问到”
-- 为什么 `NoC vs BUS` 在 AI 芯片里不是替代关系，而是分层关系
-- 为什么 control/data 分离常常比继续加 QoS 规则更有效
-- 为什么本地 SRAM bank conflict 会伪装成 NoC backpressure
-
-## 一句话理解
-
-NoC 只有放回 `NI + DMA + address map + memory system + multi-network` 这个系统边界里，性能和瓶颈才有真实含义。
-
-## 建模启示
-
-这一章对应的模型，至少要增加五类端点与系统状态：
-
-- `NI`：packetization、reassembly、injection/ejection FIFO
-- `DMA`：burst size、outstanding window、request/response queue
-- `address map`：`addr -> node / port / network` 的解析规则
-- `memory system`：local SRAM bank/port、HBM port、controller service rate
-- `network partitioning`：traffic class 到 VC 或物理网络的映射
-
-如果模型只有 router/link，而没有这些对象，常见误差会包括：
-
-- 高估有效带宽
-- 低估 tail latency
-- 错把 endpoint stall 当成网络拥塞
-- 错把地址布局问题当成 routing 问题
-
-## 本章其余正文
-
-- [Address Map And Routing Table](./address-map-and-routing-table.md)
-- [DMA Engine NOC Interaction](./dma-engine-noc-interaction.md)
-- [Multiple Physical Networks](./multiple-physical-networks.md)
-- [NI Network Interface Design](./ni-network-interface-design.md)
-- [NOC Meets Memory System](./noc-meets-memory-system.md)
-- [NOC Vs Bus Revisited](./noc-vs-bus-revisited.md)
-- [Traffic Patterns And Characterization](./traffic-patterns-and-characterization.md)
+<span id="一句话理解"></span>一次网络传输是系统事务的一部分；端点和跨接口的契约决定数据能否被正确使用。

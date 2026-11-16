@@ -1,148 +1,40 @@
-# DMA Engine NOC Interaction
+# DMA 与 NoC：请求窗口怎样影响流量？
 
-上级：[05 System Integration](./README.md)
+上级：[05 端点与系统集成](./README.md)
 
-相关：[NI Network Interface Design](./ni-network-interface-design.md)、[Traffic Patterns And Characterization](./traffic-patterns-and-characterization.md)、[QoS And Priority Classes](../04-routing-and-flow-control/qos-and-priority-classes.md)
+相关：[网络接口 NI](./ni-network-interface-design.md)、[NoC 与存储系统](./noc-meets-memory-system.md)、[DMA：调度、Outstanding 与回包](../../../microarchitecture/DMA/wiki/03-dma-microarchitecture/scheduling-outstanding.md)
 
-## 这页在回答什么问题
+<span id="dma-engine-noc-interaction"></span><span id="这页在回答什么问题"></span>DMA 将搬运需求组织成请求、数据和响应。它的窗口、粒度和发起节奏会影响网络流量；网络和目的端的反压也会反过来限制 DMA。
 
-这页回答：为什么 DMA 不该被看成“只会搬数据的机械手”，而应该被看成塑造 NoC traffic 形状的主动调度器。
+## 一次搬运包含什么
 
-## DMA 真正在决定什么
+<span id="dma-真正在决定什么"></span>一种读回填流程是：DMA 接收命令、发起存储读请求，等待返回数据，再交付给目的缓冲。写出流程可能有不同的数据和响应路径。描述符读取、地址翻译、完成上报和错误处理是否存在，取决于设备接口。
 
-对 NoC 来说，DMA 至少决定五件事：
+<span id="request-和-response-必须一起看"></span>请求已发出不表示返回资源可用；数据到达 NI 也不自动表示本地 SRAM 已接纳。分析时分别记录请求被接纳、返回数据交付、窗口槽释放和设备 completion 的事件。
 
-- request 何时发
-- 一次发多大 burst
-- 允许多少 outstanding request 同时在飞
-- response 回来后如何重组和回写
-- control、descriptor、bulk data 的交错方式
+## Outstanding 窗口与吞吐上限
 
-这些因素会直接决定网络看到的是：
+<span id="outstanding-window-不是越大越好"></span>构造一个稳定读流：每笔完成请求返回 256 B 有效数据；从占用槽到释放槽的平均时间为 200 ns；最多有 W 笔请求同时占槽。令其他资源的有效容量为 C，则长期平均吞吐满足：
 
-- 平滑、持续的流
-- 还是成团、周期性爆发的流
+> 有效吞吐 ≤ min(C，W × 256 B ÷ 200 ns)。
 
-## outstanding window 不是越大越好
+| 在途槽 W | 窗口给出的上限 |
+| --- | --- |
+| 4 | 5.12 GB/s |
+| 25 | 32 GB/s |
 
-如果 outstanding 太小：
+因此，在这些假设下，要达到 32 GB/s 至少需要 25 个槽。它不是达到目标的充分条件：请求生成、重排缓冲、memory、返回链路和接收端仍要提供足够服务。平均在途时间可能随负载变化；本例不是某款 DMA 或 HBM 的实测值。[AMD：吞吐、延迟与在途事务](https://docs.amd.com/r/en-US/pg313-network-on-chip/Throughput-Latency-and-Outstanding-Transactions)
 
-- memory latency 隐藏不住
-- NI 常常等 response，注入口空转
+<span id="burst-size-也不是越大越好"></span>更大的 burst 可能摊薄固定开销，也可能增加非抢占占用或返回突发。burst、网络 packet 和 flit 是不同层的单位；拆分规则取决于地址边界和接口限制。改变大小后应同时比较吞吐、关键事务等待和缓冲压力。
 
-如果 outstanding 太大：
+## 同样的总量，不同的峰值
 
-- memory port 更容易被瞬时打满
-- response 返回峰值更高
-- ejection / local memory 压力被集中放大
-- 其他 class 更容易被 bulk data 拖慢
+<span id="dma-为什么会制造假网络问题"></span>假设两个 DMA stream 都要发送 8 个 flit，目标路径共用一条每拍可服务 1 flit 的链路。若两者同时在最初 8 拍各提出 1 flit，而链路持续可用，合计提出 16 flit、最多服务 8 flit，至少 8 flit 需要在后续等待或被反压。若将两个 stream 分别安排在拍 0–7 和 8–15，且没有其他流量，则此链路不因两者同拍到达而积压。
 
-所以 outstanding window 的本质不是“能力上限”，而是把吞吐和可控性做平衡的系统参数。
+这是指定流量和理想链路下的比较；错峰可能延迟其中一个 stream，也不能消除其他路径或端点的竞争。
 
-## burst size 也不是越大越好
+<span id="它和-qos-的关系"></span><span id="它和-local-memory-的关系"></span>优先级、限速、独立队列或网络都是候选机制。是否值得采用，取决于描述符、响应和 bulk 流的依赖，以及 SRAM bank、接收队列与共享链路的实际服务条件；高优先级本身不构成完成时间保证。
 
-大 burst 的好处：
+<span id="一个工程上更实用的判断方式"></span><span id="建模启示"></span>比较方案时固定数据量和观察边界，记录每条流的发起与接纳节奏、在途槽占用、响应延迟、目的端阻塞和任务完成时间。链路不满可能是供给不足，也可能是返回或端点阻塞；需结合队列与事件区分。
 
-- header 开销低
-- 链路利用率高
-- 对 HBM 或大块 SRAM 搬运更高效
-
-代价：
-
-- 占用链路和端口的时间更长
-- 更容易压住 control / response 小消息
-- return path 上的峰值更尖锐
-
-小 burst 的好处是更灵活、更利于混流，但效率会下降。
-
-因此 DMA 调度的核心不是把 burst 拉到最大，而是把 burst 组织成符合系统目标的形状。
-
-## request 和 response 必须一起看
-
-很多人只看 DMA 发请求的能力，却忽略：
-
-- response 会不会挤回同一路径
-- response 到达后目的端能不能及时接住
-- writeback 是否和 compute / refill 冲突
-
-对 memory-centric 场景尤其如此。真正限制 forward progress 的，经常不是 request 发不出去，而是 response 回不来。
-
-## DMA 为什么会制造“假网络问题”
-
-一个典型现象是：网络热点呈周期性波峰，而不是持续饱和。
-
-这常见于：
-
-- DMA 在阶段边界集中发 burst
-- 多个 stream 同步推进，形成同相请求风暴
-- descriptor / data / completion 没做足够隔离
-
-这时如果只盯着 topology 或 routing，很容易误诊。真实根因是 DMA 的节奏把网络打成了脉冲流。
-
-## 它和 QoS 的关系
-
-bulk DMA 如果和以下流量完全同权混跑，风险很高：
-
-- descriptor
-- completion / response
-- control / sync
-
-因为这些小消息虽然流量小，却处在依赖链前端。被拖慢后，系统级损失可能远大于 bulk data 少一点吞吐。
-
-因此 deterministic NPU 的常见思路是：
-
-- DMA bulk traffic 用中等优先级或独立 data fabric
-- descriptor / response / completion 放高优或独立 class
-
-## 它和 local memory 的关系
-
-DMA 并不是只和 NoC 打交道，它还会直接冲击终点本地存储系统。
-
-典型冲突包括：
-
-- refill 写 local SRAM 与 compute 读冲突
-- writeback 与 reduce 结果回写争同一 bank / port
-- response 到达时 ejection FIFO 已经被本地消费节奏拖慢
-
-这就是为什么 DMA 调度既是 NoC 问题，也是 local memory arbitration 问题。
-
-## 一个工程上更实用的判断方式
-
-看到系统慢时，先分清是下面哪一类：
-
-- request 发不满：outstanding 不足或 descriptor 路径太慢
-- request 发太猛：memory port / return path / ejection 顶不住
-- burst 粒度不对：bulk 效率和 tail latency 之间失衡
-- class 隔离不足：小消息被大搬运淹没
-
-这比先争论 mesh 还是 tree 更接近根因。
-
-## 一句话理解
-
-DMA 决定的不是“有没有数据在动”，而是数据以什么节奏、什么粒度、什么并发度冲进 NoC 和 memory system。
-
-## 建模启示
-
-建模 DMA 时，第一版至少要有：
-
-- request queue
-- response queue
-- outstanding limit
-- burst size
-- descriptor / command accept 延迟
-
-如果要做更真实的系统分析，还应加入：
-
-- per-stream DMA channel
-- throttle / pacing 机制
-- response reassembly
-- completion visible 到 runtime 的边界
-
-实验上最少应扫描：
-
-- outstanding window
-- burst size
-- QoS / class mapping
-- 与 local memory service rate 的耦合
-
-否则你会高估理论链路价值，低估 DMA 自身塑造流量的能力。
+<span id="一句话理解"></span>DMA 窗口影响可隐藏的延迟，发起节奏影响峰值；两者都要与网络和端点资源一起分析。
