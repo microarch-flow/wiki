@@ -67,12 +67,14 @@
 - [多网络与资源隔离](./05-system-integration/multiple-physical-networks.md)
 - [芯粒与跨 Die 互连](./06-ai-noc-specifics/chiplet-and-die-to-die-interconnect.md)
 
-## 06 多目标通信与调度 {#06-ai-noc-specifics}
+## 06 多端通信与调度 {#06-ai-noc-specifics}
 
-先看多目标数据传递，再看软件如何规划网络使用。
+先区分集体通信的语义，再理解复制、归约、交换和通信计划。
 
+- [集体通信基础](./06-ai-noc-specifics/collective-communication-basics.md)
 - [广播、多播与复制](./06-ai-noc-specifics/broadcast-multicast-tree.md)
-- [归约与 Collective 网络](./06-ai-noc-specifics/reduction-and-collective-networks.md)
+- [归约与 AllReduce](./06-ai-noc-specifics/reduction-and-collective-networks.md)
+- [All-to-All 与通信矩阵](./06-ai-noc-specifics/all-to-all-and-traffic-matrix.md)
 - [确定性与静态调度](./06-ai-noc-specifics/deterministic-noc-and-static-scheduling.md)
 - [编译器与 NoC 协同](./06-ai-noc-specifics/compiler-noc-co-design.md)
 

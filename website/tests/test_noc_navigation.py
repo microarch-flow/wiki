@@ -47,7 +47,7 @@ class NocNavigationTests(unittest.TestCase):
 
         representative = {
             "NOC/wiki/06-ai-noc-specifics/chiplet-and-die-to-die-interconnect.md": "05 端点与系统集成",
-            "NOC/wiki/06-ai-noc-specifics/broadcast-multicast-tree.md": "06 多目标通信与调度",
+            "NOC/wiki/06-ai-noc-specifics/broadcast-multicast-tree.md": "06 多端通信与调度",
             "NOC/wiki/06-ai-noc-specifics/workload-gemm-on-noc.md": "07 工作负载与系统案例",
             "NOC/wiki/05-system-integration/traffic-patterns-and-characterization.md": "08 性能评估与架构探索",
         }
@@ -61,10 +61,21 @@ class NocNavigationTests(unittest.TestCase):
                 self.assertIn(group, breadcrumb.group(1))
                 self.assertIn("原章节：", html)
 
+        intro = SITE / "NOC/wiki/06-ai-noc-specifics/collective-communication-basics/index.html"
+        intro_html = intro.read_text(encoding="utf-8")
+        for slug in ("broadcast-multicast-tree", "reduction-and-collective-networks",
+                     "deterministic-noc-and-static-scheduling", "compiler-noc-co-design"):
+            with self.subTest(navigation_title=slug):
+                links = re.findall(r'<a\b(?=[^>]*\bmd-nav__link\b)(?=[^>]*href="\.\./' + re.escape(slug) + r'/")[^>]*>', intro_html)
+                self.assertEqual(len(links), 1)
+                self.assertNotIn("{#", links[0])
+
     def test_all_old_urls_anchors_search_and_active_navigation(self):
         legacy = json.loads((Path(__file__).parent / "fixtures/noc-legacy-anchors.json").read_text(encoding="utf-8"))
         search = json.loads((SITE / "search/search_index.json").read_text(encoding="utf-8"))["docs"]
         locations = {unquote(entry["location"]) for entry in search}
+        for slug in ("collective-communication-basics", "all-to-all-and-traffic-matrix"):
+            self.assertIn(f"NOC/wiki/06-ai-noc-specifics/{slug}/", locations)
         for path, anchors in legacy.items():
             with self.subTest(page=path):
                 html = (SITE / path / "index.html").read_text(encoding="utf-8")

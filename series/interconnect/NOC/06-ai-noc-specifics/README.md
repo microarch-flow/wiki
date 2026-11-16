@@ -1,6 +1,6 @@
 # 06 AI NOC Specifics
 
-> 本页保留原章节导读。[查看现行分类与阅读顺序](../SUMMARY.md)。
+> 本页保留原章节导读，涵盖现行多个阅读分组。第六章现从[集体通信基础](./collective-communication-basics.md)开始；[查看现行第六章及阅读顺序](../SUMMARY.md#06-ai-noc-specifics)。
 
 上级：[NOC Wiki](../README.md)
 

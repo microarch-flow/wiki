@@ -1,100 +1,54 @@
-# Deterministic NOC And Static Scheduling
+# 确定性与静态调度：提前规划能保证什么？
+
+<span id="deterministic-noc-and-static-scheduling"></span>
 
 上级：[06 AI NOC Specifics](./README.md)
 
-相关：[Source Routing For Deterministic Systems](../04-routing-and-flow-control/source-routing-for-deterministic-systems.md)、[Compiler NOC Co-Design](./compiler-noc-co-design.md)
+相关：[源路由与确定性系统](../04-routing-and-flow-control/source-routing-for-deterministic-systems.md)、[端到端服务保证](../04-routing-and-flow-control/service-guarantees-and-latency-bounds.md)、[编译器与 NoC 协同](./compiler-noc-co-design.md)
 
-## 这页在回答什么问题
+<span id="这页在回答什么问题"></span>静态调度把部分通信决策提前，例如规定依赖顺序、路径或允许使用资源的窗口。它能减少哪些运行时选择，取决于硬件和负载；**一份计划本身不是资源预留，也不是端到端完成时间保证。**
 
-这页回答：为什么很多 NPU 设计会主动追求 deterministic NoC 与 static scheduling 的组合，以及这套组合究竟在换什么。
+## 先区分几种确定性 {#为什么它有吸引力}
 
-## 为什么它有吸引力
+| 性质 | 需要回答的问题 |
+| --- | --- |
+| 路径固定 | 同一通信实例是否总沿约定路径经过资源？ |
+| 相对顺序固定 | 哪个操作必须先于另一个操作？ |
+| 结果可复现 | 不同运行的计算和通信结果是否满足规定的相等或误差要求？ |
+| 延迟有界 | 从指定开始事件到结束事件，是否有可证明的有限上界？ |
+| 完成时刻精确 | 在规定输入和服务条件下，事件是否在指定时刻发生？ |
 
-如果工作负载具有：
+这些性质不能互相替代。固定路径仍可能遇到仲裁和回压；浮点归约顺序或端点行为也会影响结果。确定性路由和源路由的关系与限制见[源路由与确定性系统](../04-routing-and-flow-control/source-routing-for-deterministic-systems.md)。
 
-- 较稳定的 producer-consumer 图
-- 可控 placement
-- 明显阶段边界
+## 静态计划可以约束什么 {#static-scheduling-真正依赖什么}
 
-那么系统就有机会把很多通信决策前移：
+一种计划只规定操作的**相对顺序与依赖**：例如接收到所需数据后才发送下一块。实际时刻可以由数据到达和握手决定，不必要求全系统共享一个绝对时钟。同步数据流的静态调度是提前确定执行顺序的一个计算模型；其具体实现仍需自己的缓冲和前进条件。[Lee 与 Messerschmitt，Static Scheduling of Synchronous Data Flow Programs](https://ptolemy.berkeley.edu/publications/papers/87/staticscheduling/)
 
-- 哪些流什么时候发
-- 走哪条路
-- 走哪个 class / VC / network
-- 哪些 flow 需要双缓冲或预留窗口
+另一种计划规定**绝对时隙**，例如某条链路第 2、3 拍只允许 F1 使用。它需要明确哪些资源实际执行该限制、时隙周期和传输粒度。跨时钟域或分布式时间基准时，还要计入相位误差、同步及必要的保护间隔。
 
-这样换来的好处通常是：
+无论采用哪种形式，都要说明输入、依赖完成事件、允许的路径和竞争流，以及计划偏离时如何处理。若要证明有限端到端时间，还需要限定到达、每段服务、缓冲和端点响应；局部时隙未必能在下游永久停顿时兑现服务。详细推导见[端到端服务保证](../04-routing-and-flow-control/service-guarantees-and-latency-bounds.md)。
 
-- 更容易预测延迟
-- 更容易推导不会互相踩爆
-- 更容易 debug 和复现
+## 两条流错峰：计划与预留 {#一句话理解}
 
-## 它换走了什么
+构造一条每周期可传 1 flit 的链路。F0、F1 各有 2 flit，计划让 F0 使用周期 0–1、F1 使用周期 2–3。二者没有数据依赖；F1 在周期 2 已准备好，接收端始终可接收。
 
-代价也同样真实：
+| 执行规则 | F0 到周期 1 才准备好时 |
+| --- | --- |
+| 仅有错峰计划 | 如果允许 F0 在周期 1、2 连续发送，它会在周期 2 与 F1 竞争；谁等待取决于实际仲裁。 |
+| 链路按 flit 严格预留时隙 | F0 可在周期 1 发送一个 flit，但不能占用 F1 的周期 2–3；F1 仍可按预留发送。F0 的剩余 flit 需要后续可用时隙。 |
 
-- 对 workload 变化更敏感
-- 对 compiler 和 runtime 要求更高
-- 对意外热点、稀疏动态行为和故障绕行更不灵活
+第二行还假设硬件能在 flit 边界切换，并且计划提供后续服务。若 packet 或其他资源不可在该边界抢占，就要限制启动、预留足够窗口或采用其他已验证规则。仅有一次窗口而没有补救规则，可能使迟到的 F0 无法完成。
 
-因此 static scheduling 不是通用答案，而是对“稳定性优先于最大灵活性”的一种偏好。
+## 收益和代价 {#它换走了什么}
 
-## 为什么这和 AI 很匹配
+<span id="为什么这和-ai-很匹配"></span>当通信图、数据分块和放置较稳定时，提前识别冲突、安排相对顺序或预留资源，可能减少运行时竞争并改善可预测性。收益仍需在选定负载、硬件和面积功耗预算下验证。
 
-很多 AI 计算天生就有：
+<span id="但不是所有-ai-workload-都适合"></span>数据相关的专家选择、稀疏流量、可变端点服务或故障，会使固定计划更难充分利用资源。可选择静态主计划并保留动态处理，但需要定义偏离计划后的等待、重排、重试或失败报告。
 
-- 可重复的阶段结构
-- 大块、规则的数据搬运
-- 相对稳定的邻接依赖
+escape VC 常用于某些死锁避免方案；故障绕行路径处理特定失效；带宽或延迟保证需要服务契约。三者解决不同问题，不能仅靠增加“保底网络”就同时得到。
 
-这使 static scheduling 往往比在每跳 router 做很多临时决策更划算。
+## 如何验证计划 {#建模启示}
 
-## 但不是所有 AI workload 都适合
+对每条通信记录参与者、数据量、依赖、计划路由或资源集合、允许窗口，以及实际完成事件。分别检查链路和端点容量、缓冲占用、路由依赖、时钟与服务条件，再对计划外延迟和故障进行测试。
 
-更偏动态的场景，例如：
-
-- MoE
-- 不规则 sparse routing
-- 某些运行时才显现的 imbalance
-
-会显著削弱完全静态方案的收益。
-
-因此更现实的工程姿态通常是：
-
-- 主流量静态
-- 边缘流量保留一定动态性
-- 必要时准备 escape path 或保底网络
-
-## static scheduling 真正依赖什么
-
-这套方法要成立，前提不只是“编译器很强”，还包括：
-
-- 地址映射清晰
-- tile / memory hierarchy 已知
-- route plan 可表达
-- completion / dependency 边界可观察
-
-还需共同时间基准或时钟同步误差界、每段服务/端点响应上界、slot 占用和 guard，以及偏离计划时的 stall、重试或降级规则。路径确定不等于完成时刻精确；只有输入和服务波动被约束时，才可能证明时序有界或在固定条件下复现。
-
-例：两个 flow 共用一条每周期 1 flit 的链路，各发 2 flit。假设同步误差为零、链路无其他流、服务固定且端点可接收，安排 F0 在 cycle 0–1，F1 在 cycle 2–3，二者无链路冲突。若端点可无限停顿或 F0 晚到，固定路径本身不能保证 F1 如期完成；需 guard、回压与偏离处理。
-
-## 一句话理解
-
-deterministic NoC + static scheduling 的本质，是用更强的前期规划换取更稳的运行时行为。
-
-## 建模启示
-
-模型里应显式支持：
-
-- time-phased injection
-- fixed route or route_id
-- class / network assignment
-- preplanned overlap
-
-然后拿它和更动态方案比较：
-
-- latency variance
-- hotspot repeatability
-- workload completion stability
-
-这比只比平均吞吐更能看出 deterministic 方案的价值。
+平均吞吐、延迟分布和一次运行的最大值有助于比较实现，但不能单独证明全部允许输入的最坏情况界。编译器怎样产生和交接计划见[编译器与 NoC 协同](./compiler-noc-co-design.md)。

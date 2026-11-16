@@ -13,7 +13,7 @@
 - [03 拓扑与物理组织](./SUMMARY.md#03-topology)
 - [04 路由、仲裁与服务保证](./SUMMARY.md#04-routing-and-flow-control)
 - [05 端点与系统集成](./SUMMARY.md#05-system-integration)
-- [06 多目标通信与调度](./SUMMARY.md#06-ai-noc-specifics)
+- [06 多端通信与调度](./SUMMARY.md#06-ai-noc-specifics)
 - [07 工作负载与系统案例](./SUMMARY.md#workload-cases)
 - [08 性能评估与架构探索](./SUMMARY.md#07-evaluation-methodology)
 - [09 模拟器构建与验证](./SUMMARY.md#08-simulator-construction)

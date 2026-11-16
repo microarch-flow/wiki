@@ -1,89 +1,53 @@
-# Compiler NOC Co Design
+# 编译器与 NoC 协同：怎样产生可执行的通信计划？
+
+<span id="compiler-noc-co-design"></span>
 
 上级：[06 AI NOC Specifics](./README.md)
 
-相关：[Deterministic NOC And Static Scheduling](./deterministic-noc-and-static-scheduling.md)、[Address Map And Routing Table](../05-system-integration/address-map-and-routing-table.md)
+相关：[确定性与静态调度](./deterministic-noc-and-static-scheduling.md)、[地址映射与路由表](../05-system-integration/address-map-and-routing-table.md)、[从工作负载到流量 Trace](../07-evaluation-methodology/from-workload-to-traffic-trace.md)
 
-## 这页在回答什么问题
+<span id="这页在回答什么问题"></span>编译器可以利用数据分块和任务依赖，提前规划通信。NoC 与端点仍负责执行各自的接口和流控规则。两者协同的关键，是把**计划的输入、可控制的资源、完成事件和偏离处理**说清楚。
 
-这页回答：如果 NoC 的价值越来越依赖 placement、route plan、DMA 计划和 traffic class 选择，那么 compiler/runtime 到底需要参与到什么程度。
+## 输入：工作与硬件能力 {#compiler-参与的不只是把算子放到-tile-上}
 
-## compiler 参与的不只是“把算子放到 tile 上”
+一份可检查的计划通常需要：
 
-真正有价值的 compiler-NoC 协同通常至少包括：
+- 任务及依赖：生产者、消费者、需要的数据范围，以及何时允许启动。
+- 映射与数据：计算和存储位置、分块大小、通信组、数据类型与归约语义。
+- 硬件资源：拓扑、链路和端点容量、缓冲、合法路径与流控限制。
+- 控制能力：硬件是否允许软件选择路由、通信类别、注入窗口或预留资源。
 
-- placement
-- memory placement
-- DMA 计划
-- route 选择或 route id 选择
-- collective 组织方式
-- phase overlap / double-buffering
+<span id="为什么-ai-noc-特别需要它"></span>例如，一个规则分块算子的生产者和消费者可以在编译时已知；数据相关的专家选择或输入长度则可能到运行时才确定。计划需要写明假设对哪一次执行有效，不能把所有负载都当成固定流量。
 
-这说明 NoC 已经不是下层透明细节，而是编译器决策空间的一部分。
+## 输出：从意图到执行 {#一个可检查的计划契约}
 
-## 为什么 AI NoC 特别需要它
+计划可描述每个 flow 的源、目的或目的集合、数据范围、依赖和完成事件。在硬件支持时，还可选择路由或路由族、通信类别、注入窗口、缓冲与重叠策略。硬件不暴露某项控制时，编译器不能靠写入一个意图字段就控制它。
 
-因为很多 AI 通信图并不随机，而是：
+| 部分 | 职责 |
+| --- | --- |
+| 编译器 | 根据已知图和硬件契约选择放置、分块与通信计划；检查可静态检查的资源和依赖约束。 |
+| 硬件与端点 | 按实际接口、仲裁、流控和资源规则接纳与执行请求；报告其契约规定的状态。 |
+| 运行时 | 根据系统设计选择执行计划、处理动态参数，并响应 stall、失败或需要重排的事件。 |
 
-- 可以由算子分块推导
-- 可以由数据布局推导
-- 可以由阶段边界推导
+这些职责是设计分工示例，不表示每个系统都具有独立运行时或提供逐流预留。若计划要求多个流在指定周期同时使用某条链路，它们当周期的需求不能超过链路容量，这是按计划执行的必要条件之一；有限缓冲、资源依赖、端点接收和实际仲裁也会影响执行。允许排队等待的计划则应将等待纳入时序，而不是把瞬时超额直接判为无法完成。
 
-一旦这些信息已知，不利用它们去帮助 NoC，就是把本可提前解决的问题留给运行时局部仲裁去硬扛。
+## 从一个生产者到两个消费者 {#compiler-真正能换来什么}
 
-## compiler 真正能换来什么
+构造例：生产者 S 有一个 3 flit 数据块，任务 A 和 B 都需要它；路径在节点 X 后分叉。A、B 的计算各自依赖本端所需数据。假设两种方案的数据都恰好为 3 flit，且没有本地目的端。
 
-最常见的收益有：
+| 可选计划 | 数据传递 | 需要检查 |
+| --- | --- | --- |
+| 两份单播 | S 分别向 A、B 发送，S 注入 6 flit。 | 两条路径的共享边、两个接收端的空间及其依赖。 |
+| 共享树 | S 注入 3 flit，在 X 复制到 A、B。 | X 是否支持对应分叉和缓冲，两个分支如何流控及完成。 |
 
-- 把高冲突流错开时间窗口
-- 让热点路径提前被识别
-- 选择更合理的 tile / memory placement
-- 决定哪些流该用 source routing、哪些流该独立 class
+这只是通信意图的比较，不代表共享树必然更快。编译器还要考虑其他同时使用 S→X 的流、A/B 的接收能力和硬件实际提供的路由；如果这些条件不满足，可以错开、改映射或由运行时处理。
 
-换句话说，compiler 不是替代 NoC，而是减少 NoC 运行时需要“即兴应对”的次数。
+<span id="它也有边界"></span>下游任务不能仅因源已发出或接收端 `ready` 就启动。在采用 `valid/ready` 的接口上，一个传输单元在双方握手时才被接收；如果任务需要完整数据块，必须等所需单元全部交付到约定边界。若任务支持流式处理，也可以在所需部分到达后按契约启动。接口握手和上层消费者完成仍可能是不同事件。[Arm AXI 规范](https://developer.arm.com/-/media/Arm%20Developer%20Community/PDF/IHI0022H_amba_axi_protocol_spec.pdf)
 
-## 它也有边界
+## 计划如何表达 {#为什么这会影响-dsl}
 
-compiler 并不能自动解决：
+<span id="建模启示"></span>可以在编译器、运行时或描述语言的接口中表达这些信息，但具体放在哪一层取决于架构。最少需要让相关组件共同理解参与者、数据和依赖；路径、类别与时间窗口只有在相应硬件支持并定义语义时才可作为可执行约束。
 
-- 未知的动态热点
-- 运行时才显现的负载不均
-- endpoint 实时消费波动
-- cross-die 瞬时竞争
+<span id="一句话理解"></span>例如，一个 flow 可以描述“源 S、目的集合 A/B、3 flit、A 和 B 各自等待所需数据交付”。还需要规定它是两份单播，还是由支持分叉的网络实现；不能只写目的集合，就假定所有模拟器和硬件都能执行共享树。
 
-因此更现实的协同方式通常是：
-
-- compiler 决定主要结构
-- hardware 负责局部安全、隔离和保底前进
-
-## 一个可检查的计划契约
-
-输入为通信 DAG、tile/memory placement、消息长度、依赖、链路/端点容量和时钟；输出为每个 flow 的源、目的、字节数、route、class、允许注入窗口与依赖完成事件。例：A 的 2 flit 和 B 的 2 flit 都要经过每拍 1 flit 的 L，再分别触发 C 和 D。若 A/B 同时计划占 L 的 cycle 0–1，则容量约束被违反；编译器可将 A 放 0–1、B 放 2–3，或为 B 选择已验证的另一条路径。C/D 必须等待各自 consumer-ready，而不是仅等待发出。
-
-硬件仍要验证 route 合法、有限 buffer/credit 和端点服务；实际服务不及计划时反馈 stall、missed slot 或 fault，由 runtime 按契约重排或停止。编译器的 intent 不是硬件资源预留或完成保证。
-
-## 为什么这会影响 DSL
-
-如果 DSL 只会描述物理连线，不会描述：
-
-- route intent
-- traffic class
-- phase schedule
-- memory placement intent
-
-那它就不能承载真正的 compiler-NoC 协同。
-
-## 一句话理解
-
-compiler-NoC 协同的价值，在于把 AI workload 中可提前知道的通信结构，提前变成更可控的网络行为。
-
-## 建模启示
-
-模型和 DSL 最少要让 compiler 能表达：
-
-- who talks to whom
-- when
-- via which class / network / route family
-- with what buffering or overlap intent
-
-只有这样，系统才能比较“靠编译器预先整形流量”和“完全让网络运行时自己消化流量”之间的真实差别。
+[从工作负载到流量 Trace](../07-evaluation-methodology/from-workload-to-traffic-trace.md)给出更完整的事件和依赖例子；其中的基线模拟器只支持单播。把计划变成模型输入时，应注明是否展开为单播、如何统计链路负载，以及完成事件由哪个组件产生。
