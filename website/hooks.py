@@ -9,6 +9,7 @@ import sys
 from urllib.parse import quote, unquote, urljoin, urlsplit
 
 from mkdocs.utils import get_relative_url
+from mkdocs.structure.pages import Page
 
 _WEBSITE = str(Path(__file__).resolve().parent)
 if _WEBSITE not in sys.path:
@@ -30,7 +31,7 @@ TOPICS = (
     ("D2D", "芯粒间连接"),
     ("DMA", "DMA · 数据搬运"),
     ("PCIE", "PCIe · 主机互连"),
-    ("COHERENCE", "一致性与内存语义"),
+    ("COHERENCE", "一致性与内存互连"),
     ("SCALEUP", "加速器间通信"),
     ("NETWORK", "服务器与集群网络"),
     ("CIM", "CIM · 存内计算"),
@@ -155,9 +156,10 @@ def title(path):
     return match.group(1).strip() if match else path.stem.replace("-", " ")
 
 
-def reading_items(directory, index_name="README.md"):
+def reading_items(directory, index_name="README.md", article_directory=None):
     """Read labels and targets from an index's numbered sibling reading list."""
     index = directory / index_name
+    article_directory = article_directory or directory
     if not index.is_file():
         return []
     items = []
@@ -192,7 +194,7 @@ def reading_items(directory, index_name="README.md"):
         if target.scheme or target.netloc or not target.path:
             continue
         path = (directory / unquote(target.path)).resolve()
-        if path.parent == directory.resolve() and path.is_file() and path.suffix.lower() == ".md" and path.name not in {index_name, "README.md", "SUMMARY.md"} and all(name != path.name for name, _ in items):
+        if path.parent == article_directory.resolve() and path.is_file() and path.suffix.lower() == ".md" and path.name not in {index_name, "README.md", "SUMMARY.md"} and all(name != path.name for name, _ in items):
             items.append((path.name, unescape(item.group(1)).strip()))
     return items
 
@@ -258,6 +260,52 @@ def topic_tree(root, name):
         if path.is_file():
             items.append({label: path.relative_to(root).as_posix()})
     return items
+
+
+COHERENCE_CHAPTERS = (
+    ("01-foundations", "01-foundations/README.md"),
+    ("02-protocols", "02-protocols/README.md"),
+    ("03-chi", "03-chi/README.md"),
+    ("04-cxl", "cxl-host-memory.md"),
+    ("05-performance-reliability", "05-performance-reliability/README.md"),
+    ("06-reference", "06-reference/README.md"),
+)
+
+
+def coherence_sections(root):
+    """Chapter reading lists own order; the CXL guide keeps its public path."""
+    wiki = root / "COHERENCE/wiki"
+    if not wiki.is_dir():
+        return []
+    # Minimal staging fixtures may contain only the topic landing page.
+    if {path.relative_to(wiki).as_posix() for path in wiki.rglob("*.md")} == {"README.md"}:
+        return []
+    sections = []
+    assigned = {"COHERENCE/wiki/README.md"}
+    for directory, guide in COHERENCE_CHAPTERS:
+        index = wiki / guide
+        text = index.read_text(encoding="utf-8")
+        metadata = re.search(r"^<!--\s*nav-title:\s*(.+?)\s*-->\s*$", text, re.MULTILINE)
+        label = metadata.group(1) if metadata else title(index)
+        pages = [(label, index.relative_to(root).as_posix())]
+        pages.extend((short, (wiki / directory / name).relative_to(root).as_posix())
+                     for name, short in reading_items(index.parent, index.name, wiki / directory))
+        for _short, path in pages:
+            if path in assigned:
+                raise ValueError(f"Duplicate coherence navigation page: {path}")
+            assigned.add(path)
+        sections.append((label, pages))
+    expected = {path.relative_to(root).as_posix() for path in wiki.rglob("*.md")}
+    if assigned != expected:
+        raise ValueError(f"Coherence navigation coverage: missing={sorted(expected - assigned)}, extra={sorted(assigned - expected)}")
+    return sections
+
+
+def coherence_topic_tree(root):
+    sections = coherence_sections(root)
+    if not sections:
+        return ["COHERENCE/wiki/README.md"] if (root / "COHERENCE/wiki/README.md").is_file() else []
+    return ["COHERENCE/wiki/README.md", *({label: [path for _, path in pages]} for label, pages in sections)]
 
 
 def owned_topic_tree(root, name, series, group, exclude=()):
@@ -371,6 +419,8 @@ def grouped_original_topics(root, series):
                 tree = noc_topic_tree(root)
             elif series == INTERCONNECT and group == "封装内芯粒互连" and name == "D2D":
                 tree = d2d_topic_tree(root)
+            elif series == INTERCONNECT and group == "一致性与内存互连" and name == "COHERENCE":
+                tree = coherence_topic_tree(root)
             elif series == INTERCONNECT and group == "共封装光学（CPO）" and name == "CPO":
                 tree = cpo_topic_tree(root, group)
             else:
@@ -579,12 +629,9 @@ def on_config(config, **kwargs):
         path = f"{name}/wiki/README.md"
         if owner(path)[0] == INTERCONNECT and (root / path).is_file():
             config.extra["storage_sidebar_labels"][path] = (owner(path)[1], title(root / path))
-    # Reuse reading-list labels for coherence topic articles.
-    for topic in ("COHERENCE",):
-        chapter = root / topic / "wiki"
-        for filename, short in reading_items(chapter):
-            path = chapter / filename
-            config.extra["storage_sidebar_labels"][path.relative_to(root).as_posix()] = (short, title(path))
+    for _label, pages in coherence_sections(root):
+        for short, path in pages:
+            config.extra["storage_sidebar_labels"][path] = (short, title(root / path))
     # PCIe keeps source-aligned chapters; reading lists own article short labels.
     for chapter in sorted((root / "PCIE" / "wiki").glob("*/")):
         for filename, short in reading_items(chapter):
@@ -648,6 +695,23 @@ def on_config(config, **kwargs):
             config.nav.append({entry["title"]: tree})
     validate_unique_navigation(config.nav)
     return config
+
+
+class CoherenceChapterPage(Page):
+    """Use the preserved CXL article as a section index without changing its URL."""
+
+    @property
+    def is_index(self):
+        return True
+
+
+def on_files(files, config, **kwargs):
+    # MkDocs navigation reuses pre-created Page instances. Keep the File's name,
+    # destination and canonical URL unchanged; only its navigation role differs.
+    file = files.get_file_from_path("COHERENCE/wiki/cxl-host-memory.md")
+    if file is not None:
+        CoherenceChapterPage(None, file, config)
+    return files
 
 
 def on_nav(nav, config, files, **kwargs):

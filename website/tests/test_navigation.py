@@ -77,9 +77,13 @@ class GeneratedNavigationTests(unittest.TestCase):
         ]})
         self.assertEqual(groups[5], {"加速器互连": ["SCALEUP/wiki/README.md"]})
         self.assertEqual(groups[6], {"系统网络": ["NETWORK/wiki/README.md"]})
-        self.assertEqual(groups[4], {"一致性与内存互连": [
-            "COHERENCE/wiki/README.md", "COHERENCE/wiki/cxl-host-memory.md",
-        ]})
+        coherence = groups[4]["一致性与内存互连"]
+        self.assertEqual(coherence[0], "COHERENCE/wiki/README.md")
+        self.assertEqual([next(iter(section)) for section in coherence[1:]], [
+            "01 基础概念", "02 协议与控制器", "03 CHI", "04 CXL 内存访问",
+            "05 性能与可靠性", "06 查阅与验证",
+        ])
+        self.assertEqual(coherence[4]["04 CXL 内存访问"][0], "COHERENCE/wiki/cxl-host-memory.md")
         for group, name in zip(GROUPS[INTERCONNECT],
                                ("BUS", "NOC", "D2D", "PCIE", "COHERENCE", "SCALEUP", "NETWORK", "SERDES", "CPO")):
             self.assertEqual(next(item[group] for item in groups if group in item)[0], f"{name}/wiki/README.md")
@@ -173,7 +177,7 @@ class GeneratedNavigationTests(unittest.TestCase):
 
         cxl = (SITE / "COHERENCE/wiki/cxl-host-memory/index.html").read_text(encoding="utf-8")
         self.assertIn('title="CXL：从设备发现到内存访问"', cxl)
-        self.assertRegex(cxl, r'<span class="md-ellipsis">\s*CXL 内存访问\s*</span>')
+        self.assertRegex(cxl, r'<span class="md-ellipsis">\s*04 CXL 内存访问\s*</span>')
 
         for location, anchor in (
             ("D2D/wiki/", "封装内芯粒互连数据怎样跨越-die-边界"),
