@@ -9,7 +9,7 @@
 文本经 tokenizer 变成 token ID，embedding 查表得到向量。位置机制与因果注意力共同规定信息如何交互。多个 Transformer block 逐层变换表示，最后通过输出投影得到词表 logits。
 
 ```mermaid
-flowchart LR
+flowchart TD
   A[文本] --> B[token ID]
   B --> C[Embedding 与位置机制]
   C --> D[多个 Transformer Block]
