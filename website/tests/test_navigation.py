@@ -42,6 +42,7 @@ class GeneratedNavigationTests(unittest.TestCase):
         self.assertEqual(len(groups), 9)
         self.assertEqual(groups[2], {"封装内芯粒互连": [
             "D2D/wiki/README.md", "D2D/wiki/ucie-pcie-read.md", "D2D/wiki/bow-phy.md",
+            "D2D/wiki/bow-flexi.md",
         ]})
         self.assertEqual(groups[5], {"加速器互连": ["SCALEUP/wiki/README.md"]})
         self.assertEqual(groups[6], {"系统网络": ["NETWORK/wiki/README.md"]})
@@ -84,6 +85,7 @@ class GeneratedNavigationTests(unittest.TestCase):
             "D2D/wiki/": "封装内芯粒互连",
             "D2D/wiki/ucie-pcie-read/": "封装内芯粒互连",
             "D2D/wiki/bow-phy/": "封装内芯粒互连",
+            "D2D/wiki/bow-flexi/": "封装内芯粒互连",
             "COHERENCE/wiki/": "一致性与内存互连",
             "COHERENCE/wiki/cxl-host-memory/": "一致性与内存互连",
             "SCALEUP/wiki/": "加速器互连",
@@ -109,6 +111,10 @@ class GeneratedNavigationTests(unittest.TestCase):
         self.assertIn('title="BoW PHY 2.0：数据怎样通过并行线路跨越芯粒？"', bow)
         self.assertRegex(bow, r'<span class="md-ellipsis">\s*BoW PHY 2\.0\s*</span>')
 
+        flexi = (SITE / "D2D/wiki/bow-flexi/index.html").read_text(encoding="utf-8")
+        self.assertIn('title="BoW.Flexi：AHB 读取怎样封装成跨芯粒数据包？"', flexi)
+        self.assertRegex(flexi, r'<span class="md-ellipsis">\s*BoW\.Flexi 读取案例\s*</span>')
+
         cxl = (SITE / "COHERENCE/wiki/cxl-host-memory/index.html").read_text(encoding="utf-8")
         self.assertIn('title="CXL：从设备发现到内存访问"', cxl)
         self.assertRegex(cxl, r'<span class="md-ellipsis">\s*CXL 内存访问\s*</span>')
@@ -123,6 +129,14 @@ class GeneratedNavigationTests(unittest.TestCase):
             ("D2D/wiki/ucie-pcie-read/", "一次请求怎样完成"),
             ("D2D/wiki/ucie-pcie-read/", "链路确认不等于事务完成"),
             ("D2D/wiki/ucie-pcie-read/", "接下来怎么读"),
+            ("D2D/wiki/bow-phy/", "bow-phy-20数据怎样通过并行线路跨越芯粒"),
+            ("D2D/wiki/bow-phy/", "一个-slice-有哪些信号"),
+            ("D2D/wiki/bow-phy/", "怎样同时向两个方向传输"),
+            ("D2D/wiki/bow-phy/", "一个数据字要占用多久"),
+            ("D2D/wiki/bow-phy/", "采样之后还需要什么"),
+            ("D2D/wiki/bow-phy/", "phy-怎样接入上层协议"),
+            ("D2D/wiki/bow-phy/", "bowflexi-的边界"),
+            ("D2D/wiki/bow-phy/", "接下来怎么读"),
             ("BUS/wiki/02-fundamentals/bus-vs-noc-vs-point-to-point/", "三者的分界不是线多线少"),
             ("NOC/wiki/06-ai-noc-specifics/chiplet-and-die-to-die-interconnect/", "跨-die-不再是多几-hop"),
             ("SERDES/wiki/08-system-applications/chiplet-and-d2d/", "宽接口与较高速接口的取舍"),

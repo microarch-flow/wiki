@@ -67,7 +67,7 @@ BoW PHY 2.0 不规定一次 AXI 或 PCIe 读取何时完成。OCP 另有[事务�
 
 [BoW.Flexi 1.0.0](https://www.opencompute.org/wp-content/uploads/2026/10/bow-flexi_1p0_final.pdf) 是另一套有独立范围的规范，包含事务、链路和物理层。它的物理接口采用单数据率（SDR），使用时钟、Frame 和可配置数据线；该版本没有定义 PHY training，但仍有复位和配置要求。
 
-因此，本文对 BoW PHY 2.0 普通主带 slice 的 16 条数据线和 DDR 示例，不能直接套用到 BoW.Flexi。需要研究 Flexi 的事务路径时，可进一步阅读其规范中的 AHB 或 APB 桥接示例。
+因此，本文对 BoW PHY 2.0 普通主带 slice 的 16 条数据线和 DDR 示例，不能直接套用到 BoW.Flexi。[BoW.Flexi 读取案例](./bow-flexi.md)使用 AHB 桥示例，解释请求怎样封包并返回。
 
 ## 接下来怎么读
 

@@ -39,6 +39,7 @@ UCIe 不是唯一的封装内 D2D 选择。例如，[BoW PHY 2.0](./bow-phy.md)�
 
 1. [UCIe 1.1 读取案例](./ucie-pcie-read.md)：两端怎样准备链路，PCIe 请求怎样跨 die 并返回结果。
 2. [BoW PHY 2.0](./bow-phy.md)：数据、时钟和 slice 怎样组成封装内连接。
+3. [BoW.Flexi 读取案例](./bow-flexi.md)：AHB 读取怎样封包、跨芯粒并返回。
 
 ## 继续阅读
 
