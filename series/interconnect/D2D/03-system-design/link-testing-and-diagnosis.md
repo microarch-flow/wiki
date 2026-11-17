@@ -60,4 +60,5 @@ OCP 的 [SiP 测试资料](https://www.opencompute.org/documents/d2d-submission-
 - [跨芯粒链路错误检测与重放](./link-reliability.md)：区分检测到错误和恢复链路交付。
 - [BoW PHY 2.0 坏线重映射](../02-interfaces/bow-phy-redundancy.md)：看支持冗余的接口怎样绕过物理坏线。
 - [跨芯粒读取的有效性能](./effective-bandwidth-and-latency.md)：按一致的边界观察吞吐和延迟。
+- [UCIe 2.0 测试访问与管理](./ucie-dfx-test-access.md)：区分到达测试模块的管理路径与实际被测路径。
 - [FAB：Final Test](../../../chip-development/FAB/wiki/05-final-test-and-reliability/final-test-methodology.md)：看封装后产品测试的更大范围。

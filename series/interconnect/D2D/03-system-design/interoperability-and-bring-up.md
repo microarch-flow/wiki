@@ -51,9 +51,11 @@
 
 - [一次跨芯粒通信](../01-foundations/cross-die-communication.md)：先看一笔读取经过哪些职责边界。
 - [UCIe 1.1 读取案例](../ucie-pcie-read.md)：区分 UCIe 承载、PCIe Completion 和访问结果。
+- [UCIe 1.1 链路启动与训练](../02-interfaces/ucie-1-1-link-bring-up.md)：看指定版本中边带、主带和 Adapter 的启动阶段。
 - [AIB 2.0](../02-interfaces/aib-2.md)：看并行数据、随路时钟和封装连接怎样配合。
 - [AMBA CHI C2C](../02-interfaces/chi-c2c.md)：看一致性消息及其承载方式的分工。
 - [跨芯粒流控与前进条件](./flow-control-and-forward-progress.md)：看已有事务的消息怎样取得接收授权。
 - [跨芯粒读取的有效性能](./effective-bandwidth-and-latency.md)：比较线路、事务窗口和目标服务的上界。
 - [链路测试与故障定位](./link-testing-and-diagnosis.md)：根据测试路径和结果缩小候选原因。
+- [UCIe 2.0 测试访问与管理](./ucie-dfx-test-access.md)：看管理端怎样到达封装内芯粒的测试逻辑。
 - [SerDes：初始化与校准](../../SERDES/06-link-operation/initialization-calibration.md)：深入理解物理链路的初始化和校准。

@@ -48,6 +48,8 @@ A 要从地址 `0x8000_1000` 读取一个 4 字节对齐的 32 位寄存器。�
 
 ## 接下来怎么读
 
+- [UCIe 1.1 链路启动与训练](./02-interfaces/ucie-1-1-link-bring-up.md)：看本例开始前，边带、主带和 Adapter 怎样就绪。
+- [UCIe.mem 存储访问](./02-interfaces/ucie-memory.md)：比较 UCIe 4.0 的另一种内存访问路径。
 - [一次跨芯粒通信](./01-foundations/cross-die-communication.md)：先区分接口、封装通道和读取完成。
 - [UCIe-3D 垂直连接](./02-interfaces/ucie-3d.md)：比较堆叠芯粒的另一种接口路径。
 - [BoW PHY 2.0](./bow-phy.md)：从数据线、随路时钟和 slice 看另一种封装内物理接口。

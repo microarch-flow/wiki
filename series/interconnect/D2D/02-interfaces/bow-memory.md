@@ -51,12 +51,13 @@ Addendum 在存储芯粒的参考时钟方案中，把较复杂的时序控制�
 
 Addendum 还给出标准封装 HBM（SPHBM）芯粒的参考用例；它不能证明所有 HBM 都使用 BoW。HBM 堆栈内部连接、计算侧接口和该参考用例是不同观察边界。[HBM 的堆叠与封装内互连](../../../storage/06-system-integration/packaging/hbm-2.5d-3d-tsv.md)
 
-UCIe 4.0 发布说明另行介绍了 SoC 与 memory logic chiplet 之间的 **UCIe.mem**。它不是本文的 BoW 参考路径；具体协议和器件组合需要分别核对。[UCIe 4.0 发布说明](https://www.uciexpress.org/_files/ugd/0c1418_970201e6ba294a0fa690ae864082fc46.pdf)
+[UCIe.mem 存储访问](./ucie-memory.md)说明 UCIe 4.0 中 SoC 与 memory logic die 之间的参考路径。它不是本文的 BoW 参考路径；具体协议和器件组合需要分别核对。[UCIe 4.0 发布说明](https://www.uciexpress.org/_files/ugd/0c1418_970201e6ba294a0fa690ae864082fc46.pdf)
 
 ## 接下来怎么读
 
 - [BoW PHY 2.0](../bow-phy.md)：先认识数据线、随路时钟和 slice。
 - [BoW PHY 2.0 坏线重映射](./bow-phy-redundancy.md)：看支持冗余时备用线的映射及资源边界。
 - [BoW.Flexi 读取案例](../bow-flexi.md)：比较另一套独立规范如何组织一次读取。
+- [UCIe.mem 存储访问](./ucie-memory.md)：比较计算侧与内存逻辑 die 之间的另一种职责划分。
 - [跨芯粒读取的有效性能](../03-system-design/effective-bandwidth-and-latency.md)：从线路速率继续分析事务窗口和目标服务。
 - [HBM：堆叠、宽接口与伪通道](../../../storage/03-dram/protocols/hbm-stacked-wide-io.md)：了解 HBM 的内存组织。

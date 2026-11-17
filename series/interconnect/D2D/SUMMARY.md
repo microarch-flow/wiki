@@ -13,7 +13,9 @@
 ## 02 接口与案例 {#interfaces}
 
 - [UCIe 1.1 读取案例](./ucie-pcie-read.md)
+- [UCIe 1.1 链路启动与训练](./02-interfaces/ucie-1-1-link-bring-up.md)
 - [UCIe-3D 垂直连接](./02-interfaces/ucie-3d.md)
+- [UCIe.mem 存储访问](./02-interfaces/ucie-memory.md)
 - [BoW PHY 2.0](./bow-phy.md)
 - [BoW PHY 2.0 坏线重映射](./02-interfaces/bow-phy-redundancy.md)
 - [BoW 存储接口](./02-interfaces/bow-memory.md)
@@ -30,6 +32,7 @@
 - [跨芯粒读取的有效性能](./03-system-design/effective-bandwidth-and-latency.md)
 - [多芯粒拓扑与数据放置](./03-system-design/multi-chiplet-topology.md)
 - [链路测试与故障定位](./03-system-design/link-testing-and-diagnosis.md)
+- [UCIe 2.0 测试访问与管理](./03-system-design/ucie-dfx-test-access.md)
 
 ## 04 产品与系统案例 {#product-cases}
 
