@@ -81,7 +81,12 @@ class GeneratedNavigationTests(unittest.TestCase):
             "01 访问语义", "02 交换结构", "03 协议与系统案例", "04 软件与集体通信",
             "05 负载与性能", "06 建模、诊断与查阅",
         ])
-        self.assertEqual(groups[6], {"系统网络": ["NETWORK/wiki/README.md"]})
+        network = groups[6]["系统网络"]
+        self.assertEqual(network[0], "NETWORK/wiki/README.md")
+        self.assertEqual([next(iter(section)) for section in network[1:]], [
+            "01 基础概念", "02 Ethernet 与 IP 网络", "03 RDMA 端点", "04 RoCE",
+            "05 InfiniBand", "06 系统集成与新协议", "07 性能、诊断与查阅",
+        ])
         coherence = groups[4]["一致性与内存互连"]
         self.assertEqual(coherence[0], "COHERENCE/wiki/README.md")
         self.assertEqual([next(iter(section)) for section in coherence[1:]], [

@@ -633,7 +633,7 @@ def on_config(config, **kwargs):
         for short, path in pages:
             config.extra["storage_sidebar_labels"][path] = (short, title(root / path))
     # Source-aligned topics use their reading lists for article short labels.
-    for topic in ("PCIE", "SCALEUP"):
+    for topic in ("PCIE", "SCALEUP", "NETWORK"):
         for chapter in sorted((root / topic / "wiki").glob("*/")):
             for filename, short in reading_items(chapter):
                 path = chapter / filename
