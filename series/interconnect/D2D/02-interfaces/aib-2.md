@@ -46,4 +46,5 @@ AIB 接口在两端产生和接收信号；封装提供这两端之间的连接�
 - [芯粒互操作与启动](../03-system-design/interoperability-and-bring-up.md)：检查两端怎样从设计匹配走到系统可用。
 - [BoW PHY 2.0](../bow-phy.md)：比较另一种并行物理接口的数据线和时钟。
 - [AMBA CHI C2C](./chi-c2c.md)：看一致性消息如何组织后交给跨芯粒承载层。
+- [Stratix 10 TX 产品案例](../04-product-cases/stratix-10-tx.md)：看 FPGA 与收发器 tile 的封装内连接及对外链路。
 - [芯粒怎样在封装内连接](../01-foundations/in-package-connections.md)：回看 PHY 与硅桥、中介层的边界。

@@ -24,3 +24,5 @@ Die-to-die（D2D）描述芯粒之间的连接位置，不规定唯一协议或�
 ## 接下来怎么读
 
 读[封装内芯粒互连](../../D2D/README.md)，了解 D2D 协议和一次跨 die 访问；再读 [HBM 与 3D 堆叠：数据经过哪些连接？](./hbm-and-3d.md)，区分堆栈内部连接和对外接口。
+
+要看具体接口，可读 [OIF 112G XSR+](../../D2D/02-interfaces/oif-cei-112g-xsr-plus.md)。[Stratix 10 TX 产品案例](../../D2D/04-product-cases/stratix-10-tx.md)则区分产品的封装内连接与收发器对外链路。

@@ -35,7 +35,7 @@ UCIe 继续演进。[联盟的 4.0 发布说明](https://www.uciexpress.org/_fil
 
 UCIe 不是唯一的封装内 D2D 选择。例如，[BoW PHY 2.0](./bow-phy.md)描述一种物理接口；OCP 还提供独立的[事务与链路层规范](https://www.opencompute.org/chiplets/25/transaction-and-link-layer-specification-for-bunch-of-wires-bow-interfaces)。[BoW.Flexi](./bow-flexi.md)则有自己的事务层、链路层和物理层。比较方案时，应先确认各规范覆盖哪些层，不能只比较名称。
 
-[AIB 2.0](./02-interfaces/aib-2.md)提供另一种并行物理接口；[AMBA CHI C2C](./02-interfaces/chi-c2c.md)则关注 CHI 消息的跨芯片组织，可以与相容的承载接口配合。无论选用哪种方案，都需要检查[芯粒互操作与启动](./03-system-design/interoperability-and-bring-up.md)涉及的共同条件。
+[AIB 2.0](./02-interfaces/aib-2.md)提供另一种并行物理接口；[OIF 112G XSR+](./02-interfaces/oif-cei-112g-xsr-plus.md)提供一种高速串行电接口。[AMBA CHI C2C](./02-interfaces/chi-c2c.md)则关注 CHI 消息的跨芯片组织，可以与相容的承载接口配合。无论选用哪种方案，都需要检查[芯粒互操作与启动](./03-system-design/interoperability-and-bring-up.md)涉及的共同条件。
 
 计算 die 访问封装内 HBM 时也要跨越 die 边界，但使用什么接口取决于具体系统；不能仅凭“跨 die”就假设它使用 UCIe。[HBM 的堆叠与封装内互连](../../storage/06-system-integration/packaging/hbm-2.5d-3d-tsv.md)区分了堆栈内部连接与计算侧接口。
 
@@ -48,11 +48,14 @@ UCIe 不是唯一的封装内 D2D 选择。例如，[BoW PHY 2.0](./bow-phy.md)�
 5. [BoW PHY 2.0](./bow-phy.md)：数据、时钟和 slice 怎样组成封装内连接。
 6. [BoW.Flexi 读取案例](./bow-flexi.md)：AHB 读取怎样封包、跨芯粒并返回。
 7. [AIB 2.0](./02-interfaces/aib-2.md)：另一种并行物理接口怎样传递数据。
-8. [AMBA CHI C2C](./02-interfaces/chi-c2c.md)：一致性消息怎样组织并跨芯粒传输。
-9. [芯粒互操作与启动](./03-system-design/interoperability-and-bring-up.md)：从设计匹配到链路和系统就绪。
-10. [跨芯粒流控与前进条件](./03-system-design/flow-control-and-forward-progress.md)：请求、snoop 和数据怎样取得发送授权。
-11. [跨芯粒读取的有效性能](./03-system-design/effective-bandwidth-and-latency.md)：线路速率、在途窗口和目标服务怎样限制吞吐。
-12. [链路测试与故障定位](./03-system-design/link-testing-and-diagnosis.md)：按测试路径判断覆盖范围和故障线索。
+8. [OIF 112G XSR+](./02-interfaces/oif-cei-112g-xsr-plus.md)：高速串行电接口怎样经过封装内通道。
+9. [AMBA CHI C2C](./02-interfaces/chi-c2c.md)：一致性消息怎样组织并跨芯粒传输。
+10. [芯粒互操作与启动](./03-system-design/interoperability-and-bring-up.md)：从设计匹配到链路和系统就绪。
+11. [跨芯粒流控与前进条件](./03-system-design/flow-control-and-forward-progress.md)：请求、snoop 和数据怎样取得发送授权。
+12. [跨芯粒读取的有效性能](./03-system-design/effective-bandwidth-and-latency.md)：线路速率、在途窗口和目标服务怎样限制吞吐。
+13. [链路测试与故障定位](./03-system-design/link-testing-and-diagnosis.md)：按测试路径判断覆盖范围和故障线索。
+14. [Stratix 10 TX 产品案例](./04-product-cases/stratix-10-tx.md)：FPGA 核心怎样与收发器 tile 配合。
+15. [AMD EPYC 9004 产品案例](./04-product-cases/amd-epyc-9004-gmi.md)：计算芯粒怎样经 I/O die 访问系统。
 
 也可以按问题查看[知识地图](./SUMMARY.md)。
 

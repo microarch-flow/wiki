@@ -34,6 +34,7 @@ class D2dNavigationTests(unittest.TestCase):
         self.assertEqual([(name, anchor) for name, anchor, _ in sections], [
             ("01 芯粒与连接基础", "foundations"), ("02 接口与案例", "interfaces"),
             ("03 系统集成与验证", "system-integration"),
+            ("04 产品与系统案例", "product-cases"),
         ])
         topic = d2d_topic_tree(docs)
         expected = {path.relative_to(docs).as_posix() for path in (docs / "D2D/wiki").rglob("*.md")}

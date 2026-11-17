@@ -16,6 +16,7 @@
 - [BoW PHY 2.0](./bow-phy.md)
 - [BoW.Flexi 读取案例](./bow-flexi.md)
 - [AIB 2.0](./02-interfaces/aib-2.md)
+- [OIF 112G XSR+](./02-interfaces/oif-cei-112g-xsr-plus.md)
 - [AMBA CHI C2C](./02-interfaces/chi-c2c.md)
 
 ## 03 系统集成与验证 {#system-integration}
@@ -24,3 +25,8 @@
 - [跨芯粒流控与前进条件](./03-system-design/flow-control-and-forward-progress.md)
 - [跨芯粒读取的有效性能](./03-system-design/effective-bandwidth-and-latency.md)
 - [链路测试与故障定位](./03-system-design/link-testing-and-diagnosis.md)
+
+## 04 产品与系统案例 {#product-cases}
+
+- [Stratix 10 TX 产品案例](./04-product-cases/stratix-10-tx.md)
+- [AMD EPYC 9004 产品案例](./04-product-cases/amd-epyc-9004-gmi.md)
