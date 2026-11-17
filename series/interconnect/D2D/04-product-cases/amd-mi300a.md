@@ -43,5 +43,6 @@ AMD 数据手册列出的 **5.3 TB/s** 是 MI300A HBM 的最大理论内存带�
 
 - [AMD EPYC 9004 产品案例](./amd-epyc-9004-gmi.md)：比较 CPU 芯粒经 I/O die 访问封装外 DDR5 的路径。
 - [跨芯粒读取的有效性能](../03-system-design/effective-bandwidth-and-latency.md)：区分理论连接能力和应用实际获得的吞吐。
+- [多芯粒拓扑与数据放置](../03-system-design/multi-chiplet-topology.md)：用构造案例分析中转与数据位置；它不是 MI300A 的内部拓扑。
 - [HBM 的堆叠与封装内互连](../../../storage/06-system-integration/packaging/hbm-2.5d-3d-tsv.md)：区分 HBM 堆栈内部与计算侧连接。
 - [NoC：跨 die 网关与排队](../../NOC/06-ai-noc-specifics/chiplet-and-die-to-die-interconnect.md)：从通用模型理解网关与排队；该模型不代表 MI300A 的内部实现。

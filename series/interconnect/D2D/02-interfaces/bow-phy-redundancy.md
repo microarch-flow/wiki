@@ -48,6 +48,7 @@
 ## 接下来怎么读
 
 - [BoW PHY 2.0](../bow-phy.md)：认识 slice、数据线和时钟。
+- [BoW 存储接口](./bow-memory.md)：看 ECC 数据与备用线路怎样共享资源。
 - [跨芯粒链路错误检测与重放](../03-system-design/link-reliability.md)：比较坏线重映射与重新发送数据。
 - [链路测试与故障定位](../03-system-design/link-testing-and-diagnosis.md)：查看检测路径和定位边界。
 - [芯粒互操作与启动](../03-system-design/interoperability-and-bring-up.md)：了解两端配置及链路就绪的其他条件。

@@ -73,6 +73,7 @@ BoW PHY 2.0 不规定一次 AXI 或 PCIe 读取何时完成。OCP 另有[事务�
 
 - [芯粒怎样在封装内连接](./01-foundations/in-package-connections.md)：先区分两端 PHY 和封装布线路径。
 - [BoW PHY 2.0 坏线重映射](./02-interfaces/bow-phy-redundancy.md)：看支持冗余的 slice 怎样使用备用线。
+- [BoW 存储接口](./02-interfaces/bow-memory.md)：看控制器或存储芯粒怎样使用 BoW 参考连接。
 - [UCIe 1.1 读取案例](./ucie-pcie-read.md)：从一次 PCIe 读取理解事务与跨 die 承载。
 - [AIB 2.0](./02-interfaces/aib-2.md)：比较另一种并行接口的数据线、时钟和封装连接。
 - [OIF 112G XSR+](./02-interfaces/oif-cei-112g-xsr-plus.md)：以相同的原始线路速率口径比较一种高速串行接口。

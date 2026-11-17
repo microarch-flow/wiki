@@ -57,6 +57,7 @@ UCIe 1.1 对 CRC 检查和 Retry 规则的定义可见[规范第 3.7–3.8 节](
 
 - [跨芯粒流控与前进条件](./flow-control-and-forward-progress.md)：看 credit、缓冲和发送授权。
 - [UCIe 1.1 读取案例](../ucie-pcie-read.md)：看链路交付之后，PCIe 读取还需要什么完成结果。
+- [UCIe-3D 垂直连接](../02-interfaces/ucie-3d.md)：比较不采用本文适配器重放路径的垂直接口示例。
 - [BoW PHY 2.0 坏线重映射](../02-interfaces/bow-phy-redundancy.md)：看备用物理线怎样绕过坏线。
 - [链路测试与故障定位](./link-testing-and-diagnosis.md)：结合测试路径、计数器和故障现象缩小范围。
 - [SerDes：BER 与 FEC](../../SERDES/05-signaling-and-metrics/ber-confidence-and-fec.md)：进一步区分误码观察点和纠错前后的指标。

@@ -13,8 +13,10 @@
 ## 02 接口与案例 {#interfaces}
 
 - [UCIe 1.1 读取案例](./ucie-pcie-read.md)
+- [UCIe-3D 垂直连接](./02-interfaces/ucie-3d.md)
 - [BoW PHY 2.0](./bow-phy.md)
 - [BoW PHY 2.0 坏线重映射](./02-interfaces/bow-phy-redundancy.md)
+- [BoW 存储接口](./02-interfaces/bow-memory.md)
 - [BoW.Flexi 读取案例](./bow-flexi.md)
 - [AIB 2.0](./02-interfaces/aib-2.md)
 - [OIF 112G XSR+](./02-interfaces/oif-cei-112g-xsr-plus.md)
@@ -26,6 +28,7 @@
 - [跨芯粒流控与前进条件](./03-system-design/flow-control-and-forward-progress.md)
 - [跨芯粒链路错误检测与重放](./03-system-design/link-reliability.md)
 - [跨芯粒读取的有效性能](./03-system-design/effective-bandwidth-and-latency.md)
+- [多芯粒拓扑与数据放置](./03-system-design/multi-chiplet-topology.md)
 - [链路测试与故障定位](./03-system-design/link-testing-and-diagnosis.md)
 
 ## 04 产品与系统案例 {#product-cases}

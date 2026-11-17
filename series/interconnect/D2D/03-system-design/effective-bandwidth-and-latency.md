@@ -59,6 +59,7 @@
 ## 接下来怎么读
 
 - [跨芯粒流控与前进条件](./flow-control-and-forward-progress.md)：看不同消息怎样取得接收授权。
+- [多芯粒拓扑与数据放置](./multi-chiplet-topology.md)：从单条路径扩展到多段链路和中转流量。
 - [链路测试与故障定位](./link-testing-and-diagnosis.md)：区分吞吐不足和链路测试失败的证据。
 - [SerDes：带宽和每比特能耗](../../SERDES/05-signaling-and-metrics/bandwidth-power-efficiency.md)：检查线路、有效数据和功耗口径。
 - [存储系统：带宽与延迟](../../../storage/01-memory-hierarchy/03-performance/bandwidth-vs-latency-fundamental.md)：继续理解并发与排队。
