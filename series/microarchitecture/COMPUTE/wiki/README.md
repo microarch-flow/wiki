@@ -18,14 +18,14 @@
 
 | 章节 | 主题 | 主线位置 |
 |---|---|---|
-| [01 · 总览](./01-overview/) | 问题 + 纲领 + 路线 | 定义比值 |
-| [02 · datapath 基础](./02-datapath-foundations/) | 门→MAC、压缩树、位宽、数字格式、mux | 位宽、选择网络与实现成本 |
-| [03 · systolic array](./03-systolic-array/) | 阵列、dataflow、trickle-feed、sizing | 利用权重或数据复用，收益取决于映射 |
-| [04 · 时钟与流水](./04-clocking-and-pipeline/) | 全局时钟、流水寄存器、反馈环、频率≠吞吐 | 各时钟域的路径、II 与代价 |
-| [05 · FPGA vs ASIC](./05-fpga-vs-asic/) | LUT/mux 的可配置开销 | 固定逻辑与可配置实现的权衡 |
+| [01 · 总览](./01-overview/README.md) | 问题 + 纲领 + 路线 | 定义比值 |
+| [02 · datapath 基础](./02-datapath-foundations/README.md) | 门→MAC、压缩树、位宽、数字格式、mux | 位宽、选择网络与实现成本 |
+| [03 · systolic array](./03-systolic-array/README.md) | 阵列、dataflow、trickle-feed、sizing | 利用权重或数据复用，收益取决于映射 |
+| [04 · 时钟与流水](./04-clocking-and-pipeline/README.md) | 全局时钟、流水寄存器、反馈环、频率≠吞吐 | 各时钟域的路径、II 与代价 |
+| [05 · FPGA vs ASIC](./05-fpga-vs-asic/README.md) | LUT/mux 的可配置开销 | 固定逻辑与可配置实现的权衡 |
 | [06 · 存储 discipline](../../../storage/reading-and-reference/01-reading/cache-scratchpad-introduction.md) | cache vs scratchpad | 数据放置与服务时间 |
-| [07 · 芯片顶层组织](./07-chip-organization/) | CPU/GPU 核、脑vs芯片、GPU 与 TPU 局部矩阵结构 | 通用性与局部资源的权衡 |
-| [08 · 面向 archax 的建模](./08-modeling-for-archax/) | 7 条建模启示升格 | 提出带边界的模型与指标 |
+| [07 · 芯片顶层组织](./07-chip-organization/README.md) | CPU/GPU 核、脑vs芯片、GPU 与 TPU 局部矩阵结构 | 通用性与局部资源的权衡 |
+| [08 · 面向 archax 的建模](./08-modeling-for-archax/README.md) | 7 条建模启示升格 | 提出带边界的模型与指标 |
 
 ---
 
