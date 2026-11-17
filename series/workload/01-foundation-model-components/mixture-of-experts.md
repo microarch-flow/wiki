@@ -1,0 +1,40 @@
+# MoE：如何为每个 token 选择一部分专家
+
+上级：[专题导读](README.md)
+
+Mixture of Experts（MoE）用路由器选择部分子网络处理输入。讨论稀疏 MoE 时，应区分总参数量、每个 token 激活的参数量，以及本次实际形成的专家批次。
+
+## 一个稀疏专家层怎样执行
+
+设 token 表示为 $x$，有 $E$ 个专家，路由器产生分数 $r(x)$。一种 top-k 形式为：
+
+$$
+S(x)=\operatorname{TopK}(r(x),k),\qquad
+y=\sum_{e\in S(x)} g_e(x)f_e(x)
+$$
+
+路由器计算分数，选择专家，把 token 按专家分组，执行各专家网络，最后按权重合并输出。$g_e$ 的归一化、专家容量和溢出处理依实现而定；并非所有 MoE 都是同一种 top-k 算法。
+
+构造例：4 个 token、3 个专家、top-1，分配为 $[0,0,2,0]$。专家负载是 $[3,0,1]$。总工作量不大，但负责专家 0 的设备可能等待最长。平均每专家 4/3 个 token 会掩盖这个不均衡。
+
+## 稀疏计算省了什么
+
+若每个 token 只运行少数专家，就可以增加总参数容量，而不让每个 token 执行所有专家。路由器、共享层和被选专家仍然需要计算，全部专家权重也需要存放或按需加载。
+
+这不是“参数量增加而成本不变”的通用定律。$k$、专家尺寸、token 数和设备分布都会改变成本。token 条件计算也不等于网络必须采用自适应路由；软件选择的专家与物理网络路由是不同层次。
+
+## 训练与容量约束
+
+路由容易集中到少数专家。Switch Transformer 使用 top-1 路由和辅助负载均衡目标，并设置专家容量。其他方案可能采用不同损失、无丢弃执行或可变容量。比较时应记录超出容量的 token 是丢弃、重路由还是排队执行。
+
+负载均衡损失引导长期分配，不保证每个 batch 精确均匀。推理分布变化也可能改变热点。评估除任务质量外，还要记录专家利用率、溢出率以及实际负载直方图。
+
+## 与其他模型机制的关系
+
+MoE 常替换 Transformer 中的部分 FFN；Attention 负责 token 间信息交互，专家 FFN 通常分别变换各 token。MoE 可以与 dense attention、GQA 或其他组件组合，不能把它当成与 Transformer 平行且互斥的模型类别。
+
+成本计算见[MoE 工作负载](../06-chip-workload-analysis/moe-workload.md)。专家放到不同端点以后，才进入 [NoC 的专家通信案例](../../interconnect/NOC/06-ai-noc-specifics/workload-moe-routing.md)。
+
+## 来源与延伸
+
+- [Switch Transformer 原论文](https://jmlr.org/papers/v23/21-0998.html)

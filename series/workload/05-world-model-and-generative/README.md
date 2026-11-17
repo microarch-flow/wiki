@@ -1,41 +1,33 @@
-# World Model and Generative Intelligence
+# 世界模型与环境预测导读
 
-上级：[Workload Wiki](../README.md)
-相关：[World Model Workload](../06-chip-workload-analysis/world-model-workload.md), [Diffusion Models](../01-foundation-model-components/diffusion-models.md)
+上级：[算法与模型](../README.md)
 
-## 这章在回答什么问题
+<span id="world-model-and-generative-intelligence" class="workload-legacy-anchor"></span>
+<span id="这章在回答什么问题" class="workload-legacy-anchor"></span>
+<span id="主线" class="workload-legacy-anchor"></span>
+<span id="页面列表" class="workload-legacy-anchor"></span>
+<span id="到-06-的映射" class="workload-legacy-anchor"></span>
 
-这一章回答 World Model 与生成式智能的关系。这里的 World Model 不是“能生成视频的模型”的同义词，而是能预测环境状态、评估 action 后果、支撑 planning 或 simulation 的模型族。
+<!-- nav-title: 世界模型与环境预测 -->
 
-## 主线
 
-```text
-world state representation
-  -> latent dynamics / video dynamics / spatial BEV or occupancy dynamics
-  -> action-conditioned rollout
-  -> planning, simulation, data generation, policy training
-  -> edge-cloud collaboration
-```
+表示、预测机制、条件与用途是四条分类轴。视频、BEV、occupancy 和 latent 文章按输出接口建立阅读入口，不宣称它们互斥。
 
-05 章比 03/04 更抽象：它把自动驾驶和机器人中的 World Model 放进统一框架。重点是 representation 选择如何改变 workload：video token 重渲染压力大，latent dynamics 更适合 planning，BEV/occupancy 更适合自动驾驶几何验证，edge-cloud 协同决定哪些生成式计算能放在端侧。
+## 阅读顺序
 
-## 页面列表
+1. [世界模型基础](world-model-fundamentals.md)
+2. [Latent 世界模型](latent-world-model.md)
+3. [视频世界模型](video-world-model.md)
+4. [BEV 世界模型](bev-world-model.md)
+5. [占用世界模型](occupancy-world-model.md)
+6. [扩散世界模型](diffusion-for-world-model.md)
 
-- [World Model Fundamentals](world-model-fundamentals.md)
-- [World Model Is Not Video Generation](world-model-is-not-video-generation.md)
-- [Video World Model](video-world-model.md)
-- [Latent World Model](latent-world-model.md)
-- [BEV World Model](bev-world-model.md)
-- [Occupancy World Model](occupancy-world-model.md)
-- [Diffusion for World Model](diffusion-for-world-model.md)
-- [Edge-cloud Collaborative World Model](edge-cloud-collaborative-world-model.md)
+## 原入口
 
-## 到 06 的映射
+这些页面保留旧引用，完整内容已合并到对应主文。
 
-| 页面 | 主要 workload | 06 对应入口 |
-| --- | --- | --- |
-| Fundamentals / Not Video Generation | state representation、action-conditioned rollout | [World Model Workload](../06-chip-workload-analysis/world-model-workload.md) |
-| Video World Model | video tokens、diffusion/transformer generation、long horizon | [World Model Workload](../06-chip-workload-analysis/world-model-workload.md) |
-| Latent World Model | latent dynamics、policy rollout、belief state | [World Model Workload](../06-chip-workload-analysis/world-model-workload.md) |
-| BEV / Occupancy World Model | spatial grid、future occupancy、planning cost | [BEV Workload](../06-chip-workload-analysis/bev-workload.md), [Occupancy Workload](../06-chip-workload-analysis/occupancy-workload.md) |
-| Edge-cloud Collaborative | cloud generation、edge inference、data loop | [Cloud Inference and Simulation Chip](../06-chip-workload-analysis/cloud-inference-and-simulation-chip.md) |
+1. [世界模型与视频关系速查](world-model-is-not-video-generation.md)
+
+## 阅读边界
+
+生成机制基础见[自回归与扩散](../generative-models/README.md)；部署位置和成本见[世界模型工作负载](../06-chip-workload-analysis/world-model-workload.md)。

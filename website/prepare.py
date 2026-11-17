@@ -13,6 +13,7 @@ from ownership import GROUPS, MICRO, STORAGE, owner
 from microarchitecture_navigation import MICRO_TOPICS
 from sources import copy_source, fetch_checkout, load_series, source_directory, validate_output_paths
 from stage_links import PublishedPaths
+from workload import stage_workload
 from storage_navigation import INTEGRATION_PAGE_SECTION, MEMORY_HOME, MEMORY_PAGE_SECTION, RESOURCE_HOME, RESOURCE_PAGE_SECTION, STORAGE_RESOURCES
 
 
@@ -395,8 +396,11 @@ def stage_site(root=ROOT, build_root=None, registry=None, source_root=None, layo
             if "local" in item:
                 local = item["local"]
                 selected = source_directory(root, local["directory"])
-                copy_source(selected, docs / local["publish"], public_only=True)
-                published.add_tree(selected, docs / local["publish"])
+                if local["publish"] == "external/workload-wiki":
+                    stage_workload(selected, docs / local["publish"], published)
+                else:
+                    copy_source(selected, docs / local["publish"], public_only=True)
+                    published.add_tree(selected, docs / local["publish"])
                 print(f"Staged series {item['title']} from local {local['directory']}")
                 continue
             if "source" not in item:

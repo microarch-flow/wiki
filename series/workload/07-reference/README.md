@@ -1,24 +1,30 @@
-# Reference
+# 查阅资料导读
 
-上级：[Workload Wiki](../README.md)
-相关：[Chip Workload Analysis](../06-chip-workload-analysis/README.md), [Source Tracking](source-tracking.md)
+上级：[算法与模型](../README.md)
 
-## 这章在回答什么问题
+<span id="reference" class="workload-legacy-anchor"></span>
+<span id="这章在回答什么问题" class="workload-legacy-anchor"></span>
+<span id="页面列表" class="workload-legacy-anchor"></span>
+<span id="使用方式" class="workload-legacy-anchor"></span>
+<span id="workload-characterization" class="workload-legacy-anchor"></span>
 
-这一章把前面 00-06 的内容整理成索引层，方便按目标、按算法、按 workload 特征、按代表论文快速回查。它不是新增算法章节，而是给架构探索和后续维护提供导航。
+<!-- nav-title: 查阅资料 -->
 
-## 页面列表
 
-- [Multi-dimensional Index](multi-dimensional-index.md)
-- [Representative Papers](representative-papers.md)
-- [Workload Comparison Table](workload-comparison-table.md)
-- [Reading Roadmap by Goal](reading-roadmap-by-goal.md)
-- [Source Tracking](source-tracking.md)
+这里提供交叉检索、代表论文和证据版本。概念解释回到所属专题，避免把索引维护成第二套重复正文。
 
-## 使用方式
+## 阅读顺序
 
-如果目标是学习算法背景，先从 01-05 进入；如果目标是做芯片架构探索，直接从 [Workload Analysis Methodology](../06-chip-workload-analysis/workload-analysis-methodology.md) 和 [Workload Comparison Table](workload-comparison-table.md) 进入；如果目标是更新前沿方向，先看 [Source Tracking](source-tracking.md) 和 [Representative Papers](representative-papers.md)。
+1. [按问题查阅](multi-dimensional-index.md)
+2. [代表论文与阅读目的](representative-papers.md)
+3. [来源、版本与核查边界](source-tracking.md)
 
-## Workload Characterization
+## 原入口
 
-本章是 reference 层，不代表单一 workload。它的作用是把 workload 维度、代表论文、章节入口和阅读路径统一起来，避免后续维护时出现同一工作在不同页面口径不一致的问题。
+这些页面保留旧引用，完整内容已合并到对应主文。
+
+1. [按目标阅读原入口](reading-roadmap-by-goal.md)
+
+## 阅读边界
+
+论文结果只在其数据、版本和实验条件内成立。本文索引不是模型排名，也不把开源或论文发表等同于生产部署证明。

@@ -15,7 +15,8 @@ _WEBSITE = str(Path(__file__).resolve().parent)
 if _WEBSITE not in sys.path:
     sys.path.insert(0, _WEBSITE)
 from sources import load_series, series_landing  # noqa: E402
-from ownership import GROUPS, MICRO, STORAGE, INTERCONNECT, DEVELOPMENT, WORKLOAD_GROUPS, INFERENCE_GROUPS, owner, workload_owner, development_owner, inference_owner  # noqa: E402
+from ownership import GROUPS, MICRO, STORAGE, INTERCONNECT, DEVELOPMENT, INFERENCE_GROUPS, owner, development_owner, inference_owner  # noqa: E402
+from workload import navigation as workload_navigation  # noqa: E402
 from storage_navigation import (INTEGRATION_AFTER, INTEGRATION_HOME, INTEGRATION_PACKAGING,
                                 INTEGRATION_TOPIC, MEMORY_HOME, MEMORY_SECTIONS, MEMORY_TOPIC,
                                 RESOURCE_HOME, RESOURCE_SECTIONS, STORAGE_RESOURCES, SYSTEM_SELECTION)  # noqa: E402
@@ -469,14 +470,20 @@ def grouped_original_topics(root, series):
     return result
 
 
-def workload_tree(root, directory):
-    landing = series_landing(directory)
-    result = [landing.relative_to(root).as_posix()]
-    for group in WORKLOAD_GROUPS:
-        include = lambda path, g=group: path != landing and workload_owner(path.relative_to(directory).as_posix()) == g
-        entries = make_tree(directory, root, ("README.md", "index.md"), include)
-        if entries:
-            result.append({group: entries})
+def workload_tree(root, directory, labels=None):
+    tree = workload_navigation(root)
+    result = [tree[0]]
+    for group in tree[1:]:
+        label, entries = next(iter(group.items()))
+        pages = [entries[0]]
+        if labels is not None:
+            labels[entries[0]] = (label, title(root / entries[0]))
+        for entry in entries[1:]:
+            short, path = next(iter(entry.items()))
+            if labels is not None:
+                labels[path] = (short, title(root / path))
+            pages.append(path)
+        result.append({label: pages})
     return result
 
 
@@ -733,7 +740,7 @@ def on_config(config, **kwargs):
         elif entry["local"]:
             directory = root / entry["local"]["publish"]
             if entry["local"]["publish"] == "external/workload-wiki":
-                tree = workload_tree(root, directory)
+                tree = workload_tree(root, directory, config.extra["storage_sidebar_labels"])
             elif entry["local"]["publish"] == "series/chip-development":
                 tree = development_tree(root, directory)
             elif entry["local"]["publish"] == "series/inference-runtime":
@@ -852,9 +859,9 @@ def on_page_content(html, page, **kwargs):
         html = f'<div class="ram-problem-article">\n{html}\n</div>'
     elif page.file.src_uri.startswith("RAM/wiki/03-sram-applications/"):
         html = f'<div class="sram-application-article">\n{html}\n</div>'
-    # CPO breadcrumbs are inserted after indexing so search results start with
+    # CPO and Workload breadcrumbs are inserted after indexing so results start with
     # article content, rather than an ordered list of navigation ancestors.
-    if has_breadcrumbs(page) and not page.file.src_uri.startswith("CPO/wiki/"):
+    if has_breadcrumbs(page) and not page.file.src_uri.startswith(("CPO/wiki/", "external/workload-wiki/")):
         config = kwargs["config"]
         html = render_breadcrumbs(page, Path(config.docs_dir), config.extra.get("storage_sidebar_labels")) + "\n" + html
     return html
@@ -862,13 +869,13 @@ def on_page_content(html, page, **kwargs):
 
 def on_post_page(output, page, **kwargs):
     """Shorten configured sidebar labels and expose the current page accessibly."""
-    if page.file.src_uri.startswith("CPO/wiki/") and has_breadcrumbs(page):
+    if page.file.src_uri.startswith(("CPO/wiki/", "external/workload-wiki/")) and has_breadcrumbs(page):
         config = kwargs["config"]
         crumb = render_breadcrumbs(page, Path(config.docs_dir), config.extra.get("storage_sidebar_labels"))
         output, count = re.subn(r'(<article class="md-content__inner md-typeset">)',
                                 lambda match: match.group(1) + "\n" + crumb, output, count=1)
         if count != 1:
-            raise ValueError(f"CPO article container not found: {page.file.src_uri}")
+            raise ValueError(f"Article container not found: {page.file.src_uri}")
     labels = kwargs["config"].extra.get("storage_sidebar_urls", {})
     start = output.find('<div class="md-sidebar md-sidebar--primary"')
     end = output.find('<div class="md-sidebar md-sidebar--secondary"', start)

@@ -1,45 +1,29 @@
-# Robotics and VLA
+# 机器人策略与视觉语言动作模型导读
 
-上级：[Workload Wiki](../README.md)
-相关：[VLA Workload](../06-chip-workload-analysis/vla-workload.md), [World Model Workload](../06-chip-workload-analysis/world-model-workload.md)
+上级：[算法与模型](../README.md)
 
-## 这章在回答什么问题
+<span id="robotics-and-vla" class="workload-legacy-anchor"></span>
+<span id="这章在回答什么问题" class="workload-legacy-anchor"></span>
+<span id="主线" class="workload-legacy-anchor"></span>
+<span id="页面列表" class="workload-legacy-anchor"></span>
+<span id="到-06-的映射" class="workload-legacy-anchor"></span>
 
-这一章回答机器人为什么从 task-specific pipeline 走向 Vision-Language-Action model，以及这种路线对 workload 的影响。机器人 VLA 的关键不是“加了语言输入”，而是把视觉观察、任务语义、历史状态和动作输出放进统一模型接口。
+<!-- nav-title: 机器人策略与视觉语言动作模型 -->
 
-## 主线
 
-```text
-classic robotics pipeline
-  -> imitation learning / behavior cloning
-  -> RT series and multi-robot datasets
-  -> OpenVLA / GR00T / pi0-style generalist policy
-  -> action tokenizer / flow or diffusion action head
-  -> robot world model
-```
+从动作接口开始，再比较离散与连续生成。RT、OpenVLA、GR00T 是固定论文版本的案例；控制频率与模型调用次数分别记录。
 
-机器人和自动驾驶都在走向多模态、时序、端侧闭环推理。但机器人动作空间更高维、更连续、更依赖接触反馈；因此它对 action representation、低延迟控制和跨 embodiment 泛化更敏感。
+<span id="阅读方式" class="workload-legacy-anchor"></span>
 
-## 页面列表
+## 阅读顺序
 
-- [VLA Fundamentals](vla-fundamentals.md)
-- [Action Tokenizer](action-tokenizer.md)
-- [RT Series](rt-series.md)
-- [OpenVLA](openvla.md)
-- [GR00T](groot.md)
-- [Robot World Model](robot-world-model.md)
-- [Robotics vs Autonomous Driving](robotics-vs-autonomous-driving.md)
+1. [VLA 基础](vla-fundamentals.md)
+2. [动作表示与生成](action-tokenizer.md)
+3. [RT-1 与 RT-2](rt-series.md)
+4. [OpenVLA 原模型](openvla.md)
+5. [GR00T N1](groot.md)
+6. [机器人世界模型](robot-world-model.md)
 
-## 到 06 的映射
+## 阅读边界
 
-| 页面 | 主要 workload | 06 对应入口 |
-| --- | --- | --- |
-| VLA Fundamentals | visual token、language token、robot state、action head | [VLA Workload](../06-chip-workload-analysis/vla-workload.md) |
-| Action Tokenizer | action discretization、autoregressive decode、continuous control recovery | [VLA Workload](../06-chip-workload-analysis/vla-workload.md) |
-| RT / OpenVLA / GR00T | VLM backbone、robot action decoder、multi-embodiment policy | [VLA Workload](../06-chip-workload-analysis/vla-workload.md) |
-| Robot World Model | future state rollout、video/latent dynamics、policy evaluation | [World Model Workload](../06-chip-workload-analysis/world-model-workload.md) |
-| Robotics vs AD | shared embodied workload vs embodiment-specific workload | [AD Robotics Summary](../06-chip-workload-analysis/ad-robotics-chip-architecture-summary.md) |
-
-## 阅读方式
-
-先读 VLA 基础和 Action Tokenizer，建立“动作如何进入大模型”的概念；再读 RT、OpenVLA、GR00T，理解代表系统的架构演进；最后读 Robot World Model 和机器人/自动驾驶对比，把机器人 workload 放回统一芯片需求视角。
+语言和图文编码见[多模态模型](../language-and-multimodal/README.md)，环境转移模型见[世界模型](../05-world-model-and-generative/README.md)。动作生成本身不等于环境预测。

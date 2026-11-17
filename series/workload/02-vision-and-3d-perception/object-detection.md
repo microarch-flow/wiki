@@ -1,63 +1,53 @@
-# Object Detection
+# 目标检测：从图像到目标集合
 
-上级：[Vision and 3D Perception](README.md)
-相关：[CNN Backbone](../01-foundation-model-components/cnn-backbone.md), [BEV Perception](bev-perception.md), [CNN Workload](../06-chip-workload-analysis/cnn-workload.md)
+上级：[专题导读](README.md)
 
-## 这页在回答什么问题
+<span id="object-detection" class="workload-legacy-anchor"></span>
+<span id="这页在回答什么问题" class="workload-legacy-anchor"></span>
+<span id="为什么它有效直觉与类比" class="workload-legacy-anchor"></span>
+<span id="计算结构与真实量级" class="workload-legacy-anchor"></span>
+<span id="一句话理解" class="workload-legacy-anchor"></span>
 
-目标检测回答图像或场景中有哪些对象、在哪里。这页重点不是 mAP，而是 dense head、proposal、query、postprocess 如何共同构成端侧感知 workload——尤其是为什么检测的瓶颈常常不在 backbone，而在高分辨率 head 的带宽和 NMS 这类动态后处理的 CPU/NPU 同步。
 
-## 为什么它有效：直觉与类比
+目标检测输出目标类别、位置和置信度。二维框通常表示图像平面上的范围；三维框还涉及坐标系、尺寸与朝向。检测不是分割，也不自动提供跨帧身份或未来运动。
 
-检测要同时回答两个问题——"有什么"和"在哪"。难点在于物体数量事先不知道、位置任意，没法像分类那样输出一个固定答案。历史上有两类破解思路，理解它们就理解了整条演进线。
+## 两类输出组织
 
-第一类是 **dense prediction**，直觉是**在图像的每个网格点都放一个哨兵，让它就地汇报"我脚下有没有物体、是什么、框该多大"**。一张 feature map 有几千个位置，就有几千个哨兵同时押注，最后把押中的留下。这为什么可行：卷积在每个位置共享同一套权重（见 [CNN Backbone](../01-foundation-model-components/cnn-backbone.md) 的"印章"直觉），所以"训练一个会认物体的哨兵"等于一次性训好了所有位置的哨兵。anchor 则是给每个哨兵预设几种典型框形状当模板（高瘦的人、扁宽的车），让回归从模板微调而非凭空生成。代价是哨兵之间不通气，同一个物体会被相邻好几个哨兵重复押中，于是需要 NMS 事后把重复框去掉——这个去重是个排序+贪心的动态操作，是检测 workload 里最别扭的一块。
+密集检测器在多个特征位置或候选框上产生预测，再筛选结果。两阶段方法先产生候选区域，再分类和回归；单阶段方法直接在特征上输出结果。anchor-based 与 anchor-free 描述候选参数化方式，不等于是否需要后处理。
 
-第二类是 **query-based**（DETR），直觉是**不再全网格布哨兵，而是派一组固定数量的侦探（比如 100 个 query），每个侦探用 attention 在全图里搜证据、认领一个物体，最后用匈牙利匹配硬性规定"一个物体只能被一个侦探认领"**。为什么这优雅：匹配从机制上保证了不重复，于是 NMS 被彻底删掉——把那块别扭的动态后处理从 pipeline 里拿走了。代价是引入 Transformer decoder 和 cross-attention（见 [Attention and Transformer](../01-foundation-model-components/attention-and-transformer.md)）。这条线之所以重要，是因为它让检测从"dense head + 手工后处理"变成"一组 query + set prediction"，天然接得进 BEV 和 E2E 的统一 query 框架。
+DETR 把检测写成集合预测：固定数量的 object query 并行输出类别与框。训练时，通过二分匹配把预测和标注一一对应；未匹配预测学习“无目标”。**Hungarian 匹配是训练损失分配步骤，不是原始 DETR 推理必须执行的算子。**
 
-## 计算结构与真实量级
+## 为什么密集输出需要去重
 
-```text
-image -> backbone -> neck -> detection head -> boxes/classes/scores -> postprocess
-```
+多个位置可能对同一目标产生重叠框。NMS 按分数选择框，再抑制与已选框高度重叠的候选。框的交并比为：
 
-Two-stage（Faster R-CNN）先出 proposal 再对 ROI 分类回归，精度强但链路长；one-stage（YOLO/RetinaNet）直接在多尺度 feature map 上 dense prediction，实时性好；anchor-free（FCOS/CenterNet）去掉 anchor 组合但仍是 dense per-location；query-based（DETR）把 dense candidate 收成固定数量 query。
+$$
+\operatorname{IoU}(A,B)=\frac{|A\cap B|}{|A\cup B|}
+$$
 
-量级要落到具体数字。YOLO/RetinaNet 在 FPN 的 P3/P4/P5 上做 dense head：输入 640×640、stride 8 时 P3 约 80×80=6400 个位置，每个位置都要预测类别和 box，head 的输出元素数随 feature area × (类别数 + 框参数) 增长——这是检测 head 带宽压力的来源，远处小目标还逼着系统保留高分辨率 feature，放大 activation memory。DETR 类把候选收成 100-300 个 object query，head 算力骤降，但 decoder 的 cross-attention 和推理时的 bipartite matching 取而代之。NMS 本身是 box 列表上的 `O(n²)` 量级两两 IoU 比较，FLOPs 不高但访问动态 box list、控制流不规则，常落到 CPU 或专用单元，形成 NPU 等 CPU 的同步点。
+构造例：两个面积均为 100 的框，交集为 80，则 IoU 为 $80/120\approx0.667$。若采用同类框 NMS、阈值 0.5，低分框会被抑制。拥挤场景中，两个人也可能高度重叠，因此阈值选择有召回率代价。
 
-常见误解：E2E 系统不显式输出 2D box，所以 detection 不重要。实际上检测提供的对象级监督和 query 表达仍影响 scene representation 的稳定性，只是从"输出"退到"中间监督"。
+原始 DETR 利用集合训练减少重复预测，不依赖 NMS。其他 Transformer 检测器可能采用不同训练和后处理，不能把某个版本推广到整个家族。NMS 也可在 CPU、GPU 或其他加速实现上运行，并非天生属于 CPU。
 
-## 一句话理解
+## 检测质量怎样评价
 
-目标检测把图像变成对象级稀疏表示；它的 workload 由 backbone/neck 的 dense feature（compute + 高分辨率带宽）和 head/postprocess 的实时路径（NMS 的动态控制流与 CPU/NPU 同步）共同决定，而非单看 backbone 算力。
+先用 IoU 等规则定义预测是否匹配，再计算 precision、recall 和 AP。AP 的类别平均、IoU 阈值范围和数据集协议必须一致。高置信度不是经校准的正确概率；漏检率和误检率也会随阈值变化。
 
-## 演进与未来方向（判断）
+单帧检测无法保证轨迹连续。遮挡、相机运动和尺寸误差还会影响下游速度估计与规划。需要身份时应增加跟踪；需要轮廓时阅读[实例分割](instance-segmentation.md)。
 
-以下为判断，锚定真实趋势。
+<span id="workload-characterization" class="workload-legacy-anchor"></span>
 
-主线是**检测正从"独立任务 + 手工后处理"溶解为统一 scene transformer 里的一组 query**。DETR 删掉 NMS，DINO/DETR 系把 query 检测做到 SOTA，BEV/E2E（UniAD 类）进一步把 object query、map query、planning query 挂到同一套 scene token 上。我的判断是独立的 2D 检测 head 会越来越少，set-prediction（无 NMS）成为默认。这对架构师是个好消息：**NMS 这类动态、不规则、常需 CPU 介入的后处理被从推理路径里移除**，pipeline 的 CPU/NPU 同步点减少，确定性提升——对追求 deterministic 的 NPU 尤其友好。代价是要支持 query decoder 的 cross-attention 和推理时的匹配，但后者计算量很小。
+## 工作负载拆分
 
-对 archax 的含义：检测的两种范式落在不同工作点——dense head 是 compute + 高分辨率带宽，且拖着一个 CPU 侧的 NMS 同步尾巴；query head 是 attention（见 [Attention Variants](../01-foundation-model-components/attention-variants-and-efficiency.md) 的 cross-attention 不对称分析）且无后处理尾巴。评估端侧检测时，"有没有 NMS 同步点"应作为 Interaction/Topology 轴上的显式开关，因为它直接决定 p99 latency 的确定性，这一点 06 的端侧芯片需求篇会接着展开。
+分别计骨干、neck、检测头和后处理。候选数影响排序与去重；query 数影响 decoder，但不等于场景真实目标数。训练时的匹配和损失不能塞入部署延迟。
 
-## Workload Characterization
+小目标通常需要更密的输入或特征，这会增加骨干和头的工作量。三维检测还应注明深度来源和坐标变换，见 [BEV 感知](bev-perception.md)。
 
-计算密度：backbone 和 1×1/3×3 dense head 在 channel 足够时 compute-bound；NMS、top-k、box decode 等 postprocess FLOPs 低但 latency 敏感、控制流不规则。
+<span id="演进与未来方向判断" class="workload-legacy-anchor"></span>
+<span id="参考来源" class="workload-legacy-anchor"></span>
 
-访存模式：多尺度 feature map 读写频繁且规则，高分辨率 P3 是带宽大头；NMS/top-k 访问动态长度的 box list，访问不规则，常触发 CPU/NPU 同步；query decoder 是 cross-attention 的不对称访问（少 query 读大 KV）。
+## 来源与延伸
 
-并行性：image batch、feature level、spatial tile、anchor/query 可并行；NMS 和 bipartite matching 有顺序/动态控制，是并行性的断点。
-
-数据复用：backbone/neck feature 被多任务 head 复用（检测/分割/BEV 共享前端）；dense head weight 在空间维复用。
-
-量化敏感度：conv/head 适合 INT8；box decode、score threshold、NMS 通常在更高精度或 CPU/专用后处理执行。
-
-瓶颈类型：端侧常见瓶颈是高分辨率 feature 带宽、head latency、postprocess 同步——dense 检测的 p99 常被 NMS 同步拖累，query 检测则去掉了这条尾巴。
-
-对硬件的核心需求：高效 CNN/Transformer 前端、多尺度 feature buffer、低开销 top-k/NMS（或干脆用 NMS-free query 路线规避）、query decoder 支持、CPU/NPU 同步最小化——详见 [CNN Workload](../06-chip-workload-analysis/cnn-workload.md)。
-
-## 参考来源
-
-- Ren et al., `Faster R-CNN: Towards Real-Time Object Detection with Region Proposal Networks`, NeurIPS 2015, arXiv:1506.01497。成熟度：已落地，two-stage 代表。
-- Redmon et al., `You Only Look Once: Unified, Real-Time Object Detection (YOLO)`, CVPR 2016, arXiv:1506.02640。成熟度：已落地，one-stage 实时检测。
-- Tian et al., `FCOS: Fully Convolutional One-Stage Object Detection`, ICCV 2019, arXiv:1904.01355。成熟度：已落地，anchor-free 代表。
-- Carion et al., `End-to-End Object Detection with Transformers (DETR)`, ECCV 2020, arXiv:2005.12872。成熟度：已落地，query/set-prediction、NMS-free 出处。
+- [Faster R-CNN](https://arxiv.org/abs/1506.01497)
+- [RetinaNet 与 Focal Loss](https://arxiv.org/abs/1708.02002)
+- [DETR](https://arxiv.org/abs/2005.12872)

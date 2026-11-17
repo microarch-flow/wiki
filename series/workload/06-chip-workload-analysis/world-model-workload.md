@@ -1,56 +1,52 @@
-# World Model Workload
+# 世界模型工作负载：调用图比模型类别更重要
 
-上级：[Chip Workload Analysis](README.md)
-相关：[World Model and Generative Intelligence](../05-world-model-and-generative/README.md), [Diffusion for World Model](../05-world-model-and-generative/diffusion-for-world-model.md), [World Model Fundamentals](../05-world-model-and-generative/world-model-fundamentals.md)
+上级：[专题导读](README.md)
 
-## 这页在回答什么问题
+<span id="world-model-workload" class="workload-legacy-anchor"></span>
+<span id="这页在回答什么问题" class="workload-legacy-anchor"></span>
+<span id="成本的乘法结构world-model-与一次性推理的根本不同" class="workload-legacy-anchor"></span>
+<span id="三类-world-model-的-workload-谱系" class="workload-legacy-anchor"></span>
+<span id="可建模参数" class="workload-legacy-anchor"></span>
+<span id="硬件连接" class="workload-legacy-anchor"></span>
+<span id="archax-建模" class="workload-legacy-anchor"></span>
+<span id="一句话理解" class="workload-legacy-anchor"></span>
+<span id="workload-characterization" class="workload-legacy-anchor"></span>
 
-这页分析 World Model 的芯片压力。它和前面所有 workload 的本质区别在于：成本不是一次 forward，而是一个**乘法**——`candidate count × horizon × per-step cost`，如果用 diffusion 或自回归视频生成，per-step 里还要再乘上去噪步数或 token 数。所以同样一个 World Model，用在端侧实时规划和用在云端数据生成，是两个相差几个数量级的 workload。
 
-## 成本的乘法结构：World Model 与一次性推理的根本不同
+世界模型可能用于训练、在线搜索或离线生成。只有执行图相同，候选数、预测长度和采样次数才能按同一公式比较。表示名称不能直接推出算力或延迟排序。
 
-感知模型一帧就是一次 forward。World Model 要"想象未来"：给定当前状态和一个候选动作序列，预测未来若干步的状态，并且通常要并行评估多个候选动作（planning 时挑最优、安全评估时覆盖多种情况）。于是总计算量是候选数乘以预测步长乘以单步模型成本。当模型是 latent 递推时单步很轻，这个乘法还能承受；当模型是 diffusion 视频生成时，单步本身就是几十次去噪迭代的大模型前向，乘法结果直接爆炸到只能放云端。
+## 三种调用图分别计数
 
-这个乘法结构决定了优化的着力点：**复用 condition encoding**。历史观测的编码、共享的条件，应该在所有 candidate 和 sample 之间只算一次，然后多个 rollout 复用——这是 World Model workload 最重要的省算手段，archax 里对应 Interaction 轴上的 `encode once → rollout many`。如果每个 candidate 都重新编码历史，乘法的底数会被无谓放大。
+| 路径 | 工作量模型 | 必须说明 |
+| --- | --- | --- |
+| 逐时刻候选 rollout | 编码 + 各候选各时刻 transition 求和 + 评分 | 状态复用、候选 batch、递推依赖 |
+| 整段序列 diffusion/flow | 编码 + NFE × 序列网络 + 解码/评分 | 单次求值已含哪些时间和候选轴 |
+| 想象中训练策略，部署 actor | 训练与部署分开统计 | 真实执行是否调用预测或搜索 |
 
-## 三类 World Model 的 workload 谱系
+DreamerV3 的真实交互属于第三种；BEVWorld 的未来 latent 生成采用序列 diffusion；V-JEPA 2-AC 的在线规划包含候选搜索。不能给三者统一乘上 candidate×horizon。
 
-按表示形式，World Model 在轻重两端之间排成一个谱，对硬件的落点完全不同。
+## 两个可复算的例子
 
-Latent World Model（如 Dreamer 系的 latent 递推）最轻：状态是低维 latent，单步递推是小型网络，适合端侧 candidate planning 的高频 rollout，瓶颈在 state cache 和候选并行度。Video World Model（如 GAIA-1 的离散 token 自回归、GAIA-2 的 latent diffusion、NVIDIA Cosmos）最重：要生成高分辨率多帧视频，单步是大生成模型，整体是 compute + capacity + IO 三重压力，基本只在云端做仿真和数据生成。BEV/Occupancy World Model（如 OccWorld 预测 4D 占用）介于两者之间，且更贴近自动驾驶的安全评估——它不追求像素逼真，而追求可控的结构化状态预测，这也呼应了"World Model ≠ 视频生成"的核心区分（见 [World Model Fundamentals](../05-world-model-and-generative/world-model-fundamentals.md)）。
+构造例 A：32 个候选、8 步递推，每次 transition 为 1 MFLOP，则主体为 256 MFLOP。候选可合批，8 步之间仍有依赖；不能据此说延迟为单步时延的 256 倍。
 
-需要点明成熟度：决策级、闭环可用的端侧 World Model 仍多处于研究阶段；已经落地的主要是云端的视频/场景生成与仿真（GAIA-2、Cosmos 这类作为数据引擎和仿真器）。把论文里的端侧实时 rollout 当成已量产能力，是这一方向最常见的误判。
+构造例 B：一个序列网络一次处理这 32 个候选的完整 8 步，单次为 40 MFLOP，NFE=10，则为 400 MFLOP。再乘 8 会重复计数。编码和解码按实际调用次数另计。
 
-## 可建模参数
+## 状态与输出的峰值容量
 
-`candidate count` 决定并发 rollout 数；`horizon` 决定 state cache 容量与循环次数；`latent/video/grid size` 决定容量与单步 decoder 算力；`denoise steps` 决定 diffusion 单步成本；`sample count` 决定多样未来的生成成本；`action dimension` 决定 dynamics 输入与候选 buffer；`closed-loop frequency` 决定端侧延迟预算。注意前四个参数是相乘关系，任何一个增大都按乘法放大总成本。
+候选共享历史可以避免重复编码，但分叉后的状态通常不同。若每候选状态为 2 MiB，32 个候选同时驻留需要约 64 MiB，另加共享状态和工作区。分批可减少容量，却可能增加时延。
 
-## 硬件连接
+生成器若最终输出视频或 occupancy，解码成本不能删去；若下游直接消费 latent，则可能省掉在线解码。训练存在 decoder 与部署调用 decoder 是两个问题。
 
-RAM：rollout state、future cache、video/occupancy latent 是容量压力的核心；云端视频生成对 HBM 容量和带宽要求极高（见 RAM wiki）。DMA：candidate state 与 condition cache 必须设计成可复用，避免每个 sample 重新搬运（见 DMA wiki）。NOC：多候选 rollout 并行时需要 state 分发和 cost 汇聚的路径（见 NOC wiki）。CIM：dense 去噪 block、GEMM/Conv 可用 CIM；rollout 循环、candidate selection、sparse query 不是 CIM 收益点。PCIE/host：云端仿真有大量生成数据回传（storage/NIC 压力），端侧实时 World Model 必须避免 host 参与每一步 rollout。
+<span id="参考来源" class="workload-legacy-anchor"></span>
 
-## archax 建模
+## 质量和系统边界
 
-Resource：rollout compute、state SRAM、DRAM/HBM bandwidth、DMA channel、candidate buffer。Topology：encoder/state cache 到 rollout/evaluator 的连接，以及云端训练/仿真集群的边界。Interaction：`encode once → rollout many → evaluate → select` 是核心交互，diffusion 还要加去噪循环——这两个循环是 archax 必须显式建模的成本乘子。Capability：stateful rollout、multi-candidate batching、diffusion 加速、early exit（对明显劣质候选提前终止）、结构化输出 query。archax 探索 World Model 时，最有价值的不是扫 TOPS，而是扫 candidate 并发度、condition cache 复用率和 horizon——它们决定那个乘法的量级。
+减少候选、时间长度或 NFE 会降低成本，也会改变搜索覆盖和预测质量。应在固定任务结果约束下比较，而非只给“每帧成本”。
 
-## 一句话理解
+在线链路应测编码、预测、评分、选择、通信与执行等待。离线链路则更关注有效样本吞吐、复现和存储。模型边界见[世界模型基础](../05-world-model-and-generative/world-model-fundamentals.md)。
 
-World Model 的 workload 是一个 `候选 × 时域 × 单步（× 去噪步）` 的乘法：latent 递推轻到可上端侧、视频生成重到只能上云，而复用 condition encoding 是控制这个乘法的关键。
+## 来源与延伸
 
-## Workload Characterization
-
-- 计算密度：latent dynamics 中等；video/diffusion 高；occupancy decoder 容量压力大。
-- 访存模式：history/state/candidate/future cache 持续读写；video/3D latent 容量大；结构化 query 不连续。
-- 并行性：candidate、sample、scene 可高度并行；单条 rollout 的 horizon 和 denoise step 串行。
-- 数据复用：history encoding 与 condition cache 在多 candidate/sample 间复用，是首要优化点。
-- 量化敏感度：dense backbone 可低比特；长程一致性、collision/contact、occupancy 边界对误差累积敏感。
-- 瓶颈类型：云端是 compute + capacity + IO；端侧是 latency + state capacity + candidate 数。
-- 对硬件的核心需求：多候选并发、长时序 state cache、生成模型加速、condition cache 复用、清晰的端云分工。
-
-## 参考来源
-
-- Hafner et al., `Mastering Diverse Domains through World Models (DreamerV3)`, arXiv:2301.04104。成熟度：已落地研究，latent world model 代表。
-- Hu et al., `GAIA-1: A Generative World Model for Autonomous Driving`, arXiv:2309.17080。成熟度：研究阶段，离散 token 自回归视频世界模型。
-- Russell et al., `GAIA-2: A Controllable Multi-View Generative World Model for Autonomous Driving (Wayve)`, arXiv:2503.20523。成熟度：2025 产业研究，latent diffusion 多视角世界模型。
-- Gao et al., `Vista: A Generalizable Driving World Model with High Fidelity and Versatile Controllability`, NeurIPS 2024 / arXiv:2405.17398。成熟度：研究阶段。
-- NVIDIA, `Cosmos World Foundation Model Platform for Physical AI`, arXiv:2501.03575。成熟度：2025 产业平台，云端仿真/数据生成。
+- [DreamerV3 原论文 v2](https://arxiv.org/html/2301.04104v2)
+- [BEVWorld 原论文 v3](https://arxiv.org/html/2407.05679v3)
+- [V-JEPA 2 / 2-AC 原论文 v1](https://arxiv.org/html/2506.09985v1)

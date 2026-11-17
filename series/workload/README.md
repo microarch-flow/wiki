@@ -1,33 +1,47 @@
-# Workload Wiki
+# 算法与模型：从任务机制到工作负载
 
-这份 wiki 以 **AI 算法和模型**为主线，介绍它们要解决的问题、主要机制和应用方式。现有内容聚焦模型基础组件、视觉与 3D 感知、自动驾驶、机器人与 VLA，以及 World Model。
+<span id="workload-wiki" class="workload-legacy-anchor"></span>
+<span id="写作原则" class="workload-legacy-anchor"></span>
+<span id="阅读路径" class="workload-legacy-anchor"></span>
+<span id="目录" class="workload-legacy-anchor"></span>
 
-读者可以先从算法入手，理解输入、输出、数据表示和计算过程。对芯片架构感兴趣的读者，可以继续分析特定算法在给定条件下形成的工作负载。算法阅读不要求先完成硬件分析。
+本系列连接三件事：模型解决什么问题，内部怎样计算，以及在给定配置下需要什么资源。学习路径以概念职责为主，驾驶、机器人和世界模型提供系统案例。
 
-目录和文件名使用英文，正文以中文为主，专有名词按需要保留英文。
+## 先建立四个区别
 
-## 写作原则
+任务规定输入输出与成功标准；网络结构规定如何表示和交换信息；训练目标规定从数据中学什么；执行路径规定部署时调用哪些模块。它们可以自由组合，不应压成同一棵“算法类别树”。
 
-1. 先说明算法解决的问题、输入和输出，再解释主要机制、适用条件和局限。
-2. 根据主题介绍模型结构、训练与评估方法，并区分论文方案、实验结果和实际应用。
-3. 用代表工作和交叉链接说明不同方法的联系。涉及演进或性能比较时，保留来源和适用条件。
-4. 将芯片工作负载作为延伸：先明确输入规模和软件实现，再讨论数据流、硬件映射与可能的瓶颈。
-5. 保留原有目录和链接。部分既有专题仍采用以 workload 为中心的写法，可在后续整理时逐步调整。
+例如，VLA 可以使用 Transformer 骨干、模仿学习目标和 flow matching 动作头。BEVWorld 可以同时是 BEV 表示、latent 预测、diffusion 生成与视频/点云输出。分类应让这些组合能被准确表达。
 
-## 阅读路径
+## 系列地图
 
-- **了解全貌**：从 [Overview](00-overview/README.md) 和 [Wiki Roadmap](00-overview/wiki-roadmap.md) 开始。
-- **学习算法**：按需要阅读 01 的基础组件，再选择 02 的感知、03 的自动驾驶、04 的机器人，或 05 的 World Model。各路径不要求线性通读。
-- **延伸到芯片**：先选定一个算法及其输入条件，再进入 [Chip Workload Analysis](06-chip-workload-analysis/README.md)。
-- **查阅资料**：在 [Reference](07-reference/README.md) 查找论文、索引和来源记录。
+| 专题 | 核心问题 |
+| --- | --- |
+| [导读与共同基础](00-overview/README.md) | 怎样区分任务、阶段、形状与计数口径 |
+| [骨干网络与序列建模](01-foundation-model-components/README.md) | 特征和位置之间怎样交换信息 |
+| [表示学习与训练目标](learning-objectives/README.md) | 监督信号来自哪里，表示学到了什么 |
+| [自回归与扩散生成](generative-models/README.md) | 输出按什么依赖产生，需要几次求值 |
+| [语言与多模态模型](language-and-multimodal/README.md) | token、视觉特征与语言怎样连接 |
+| [视觉感知与三维场景表示](02-vision-and-3d-perception/README.md) | 从观测恢复哪些语义和空间信息 |
+| [决策与策略学习](decision-and-policy/README.md) | 怎样预测、选择并执行动作 |
+| [自动驾驶感知、预测与规划](03-autonomous-driving-algorithms/README.md) | 驾驶任务怎样连接感知与自车决策 |
+| [机器人策略与视觉语言动作模型](04-robotics-and-vla/README.md) | 视觉语言条件怎样变成机器人动作 |
+| [世界模型与环境预测](05-world-model-and-generative/README.md) | 预测哪种未来，服务训练还是规划 |
+| [算法工作负载分析](06-chip-workload-analysis/README.md) | 怎样从执行图推导资源并验证瓶颈 |
+| [查阅资料](07-reference/README.md) | 怎样找到概念入口、原始论文和版本 |
 
-## 目录
+## 按目标选择路线
 
-- [00-overview](00-overview/README.md)：定位、阅读路径、关系图和术语。
-- [01-foundation-model-components](01-foundation-model-components/README.md)：模型与算法的基础组件。
-- [02-vision-and-3d-perception](02-vision-and-3d-perception/README.md)：视觉、3D 感知及场景表示。
-- [03-autonomous-driving-algorithms](03-autonomous-driving-algorithms/README.md)：自动驾驶算法与系统。
-- [04-robotics-and-vla](04-robotics-and-vla/README.md)：机器人算法与 VLA。
-- [05-world-model-and-generative](05-world-model-and-generative/README.md)：World Model 与生成式方法。
-- [06-chip-workload-analysis](06-chip-workload-analysis/README.md)：算法到芯片工作负载的延伸分析。
-- [07-reference](07-reference/README.md)：论文、索引、对比表与来源记录。
+初次建立概念：先读[任务、训练与推理](00-overview/tasks-training-inference.md)，再读[张量形状](00-overview/tensor-shapes-and-cost.md)和[概念关系图](00-overview/unified-relationship-map.md)，随后按专题导读进入机制文章。
+
+分析加速器负载：读[分析方法](06-chip-workload-analysis/workload-analysis-methodology.md)，选择一个[CNN/Transformer/SSM/MoE 或系统案例](06-chip-workload-analysis/workload-comparison-table.md)，固定形状和质量后再比较资源。
+
+理解驾驶系统：先读[感知](02-vision-and-3d-perception/README.md)与[预测、规划、控制](decision-and-policy/prediction-planning-control.md)，再读[驾驶专题](03-autonomous-driving-algorithms/README.md)与其评估边界。
+
+理解机器人与世界模型：先读[VLM](language-and-multimodal/vision-language-models.md)和[动作表示](04-robotics-and-vla/action-tokenizer.md)，再比较[VLA](04-robotics-and-vla/vla-fundamentals.md)与[环境预测](05-world-model-and-generative/world-model-fundamentals.md)的不同职责。
+
+## 与整个 Wiki 的边界
+
+硬件执行结构归于[微架构](../microarchitecture/README.md)，容量与存储路径归于[存储系统](../storage/README.md)，通信机制归于[芯片与系统互连](../interconnect/README.md)，缓存与服务调度归于[推理与运行时](../inference-runtime/README.md)。本系列通过工作负载连接这些主题，不重复编写硬件百科。
+
+正文中的论文测量附带版本与条件；构造例标明假设；性能推论需要测量支持。新增内容以补足理解链条为准，不预设空的音频、推荐或图学习栏目。历史公开路径继续保留，当前职责以本文地图与侧栏为准。

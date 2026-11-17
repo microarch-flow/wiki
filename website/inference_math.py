@@ -1,4 +1,4 @@
-"""Enable Arithmatex only for the inference drafts during Markdown parsing."""
+"""Enable Arithmatex for inference and workload pages during Markdown parsing."""
 
 from html import escape, unescape
 import re
@@ -25,8 +25,8 @@ def on_config(config, **kwargs):
 
 
 def on_page_markdown(markdown, page, **kwargs):
-    """Mark inference pages; leave every other source untouched."""
-    if page.file.src_uri.startswith("series/inference-runtime/"):
+    """Mark inference and workload pages; leave other sources untouched."""
+    if page.file.src_uri.startswith(("series/inference-runtime/", "external/workload-wiki/")):
         return MARKER + "\n" + markdown
     return markdown
 
@@ -53,7 +53,7 @@ def toc_title_with_math(title):
 
 def on_page_content(html, page, **kwargs):
     """Replace raw TeX in the inference TOC, preserving links and headings."""
-    if not page.file.src_uri.startswith("series/inference-runtime/"):
+    if not page.file.src_uri.startswith(("series/inference-runtime/", "external/workload-wiki/")):
         return html
 
     def update(items):

@@ -1,0 +1,965 @@
+{
+  "commit": "27d62ca",
+  "pages": {
+    "00-overview/README.md": {
+      "path": "external/workload-wiki/00-overview",
+      "ids": [
+        "overview",
+        "本章定位",
+        "页面列表",
+        "阅读顺序"
+      ]
+    },
+    "00-overview/glossary.md": {
+      "path": "external/workload-wiki/00-overview/glossary",
+      "ids": [
+        "glossary",
+        "这页在回答什么问题",
+        "算法与系统范式",
+        "workload-刻画维度",
+        "硬件与-archax-术语",
+        "一句话理解"
+      ]
+    },
+    "00-overview/representative-works-index.md": {
+      "path": "external/workload-wiki/00-overview/representative-works-index",
+      "ids": [
+        "representative-works-index",
+        "这页在回答什么问题",
+        "基础组件定义了基本-workload-形态",
+        "基础组件与模型",
+        "感知与-bevoccupancy定义了不规则访存与容量压力",
+        "感知与场景表示",
+        "自动驾驶-e2e定义了系统级延迟与同步-workload",
+        "自动驾驶",
+        "机器人-vla定义了大模型实时控制叠加的-workload",
+        "机器人与-vla",
+        "world-model定义了-rollout-乘法成本",
+        "world-model",
+        "维护说明",
+        "一句话理解"
+      ]
+    },
+    "00-overview/research-questions.md": {
+      "path": "external/workload-wiki/00-overview/research-questions",
+      "ids": [
+        "research-questions",
+        "这页在回答什么问题",
+        "这份-wiki-的根问题",
+        "拆成可回答的子问题",
+        "成功标准",
+        "一句话理解"
+      ]
+    },
+    "00-overview/unified-relationship-map.md": {
+      "path": "external/workload-wiki/00-overview/unified-relationship-map",
+      "ids": [
+        "unified-relationship-map",
+        "这页在回答什么问题",
+        "共享的底座",
+        "四条线如何分化又如何交汇",
+        "自动驾驶与机器人-vla-的同与异",
+        "world-model-的横向角色",
+        "横切四条线的三条主线",
+        "一句话理解"
+      ]
+    },
+    "00-overview/wiki-roadmap.md": {
+      "path": "external/workload-wiki/00-overview/wiki-roadmap",
+      "ids": [
+        "wiki-roadmap",
+        "这页在回答什么问题",
+        "章节定位与依赖",
+        "推荐路径按背景",
+        "重心提示",
+        "一句话理解"
+      ]
+    },
+    "00-overview/workload-lens.md": {
+      "path": "external/workload-wiki/00-overview/workload-lens",
+      "ids": [
+        "workload-lens",
+        "这页在回答什么问题",
+        "为什么需要一个固定的视角",
+        "这副眼镜的五个反射动作",
+        "这副眼镜最容易纠正的四个直觉错误",
+        "这副眼镜怎么连到硬件和-archax",
+        "一句话理解",
+        "怎么用这页"
+      ]
+    },
+    "01-foundation-model-components/README.md": {
+      "path": "external/workload-wiki/01-foundation-model-components",
+      "ids": [
+        "foundation-model-components",
+        "这章在回答什么问题",
+        "本章定位",
+        "阅读顺序",
+        "页面列表",
+        "本章到-06-的映射"
+      ]
+    },
+    "01-foundation-model-components/attention-and-transformer.md": {
+      "path": "external/workload-wiki/01-foundation-model-components/attention-and-transformer",
+      "ids": [
+        "attention-and-transformer",
+        "这页在回答什么问题",
+        "为什么它有效直觉与类比",
+        "attention-的计算结构与真实形状",
+        "为什么-softmax-前要除-sqrtd_k",
+        "多头为什么不改-flops-却要拆",
+        "transformer-block逐算子的代价分布",
+        "为什么-pre-norm为什么-rmsnorm",
+        "它为什么成为自动驾驶机器人world-model-的通用底座",
+        "一句话理解",
+        "演进与未来方向判断",
+        "workload-characterization",
+        "参考来源"
+      ]
+    },
+    "01-foundation-model-components/attention-variants-and-efficiency.md": {
+      "path": "external/workload-wiki/01-foundation-model-components/attention-variants-and-efficiency",
+      "ids": [
+        "attention-variants-and-efficiency",
+        "这页在回答什么问题",
+        "为什么它有效直觉与类比",
+        "flashattention把-attention-重新定性为-io-问题",
+        "window-local-attention用局部性换平方",
+        "sparse-block-sparse-与-gqamqa两种不同的稀疏",
+        "cross-deformable-temporal不对称与动态访存",
+        "一句话理解",
+        "演进与未来方向判断",
+        "workload-characterization",
+        "参考来源"
+      ]
+    },
+    "01-foundation-model-components/cnn-backbone.md": {
+      "path": "external/workload-wiki/01-foundation-model-components/cnn-backbone",
+      "ids": [
+        "cnn-backbone",
+        "这页在回答什么问题",
+        "为什么它有效直觉与类比",
+        "计算结构与真实的-flops-账",
+        "cnn-在自动驾驶与机器人中的位置",
+        "一句话理解",
+        "演进与未来方向判断",
+        "workload-characterization",
+        "参考来源"
+      ]
+    },
+    "01-foundation-model-components/contrastive-learning.md": {
+      "path": "external/workload-wiki/01-foundation-model-components/contrastive-learning",
+      "ids": [
+        "contrastive-learning",
+        "这页在回答什么问题",
+        "为什么它有效直觉与类比",
+        "从-simclr-moco-到自蒸馏负样本问题的两种解法",
+        "对自动驾驶和机器人的实际作用",
+        "一句话理解",
+        "演进与未来方向判断",
+        "workload-characterization",
+        "参考来源"
+      ]
+    },
+    "01-foundation-model-components/diffusion-models.md": {
+      "path": "external/workload-wiki/01-foundation-model-components/diffusion-models",
+      "ids": [
+        "diffusion-models",
+        "这页在回答什么问题",
+        "为什么它有效直觉与类比",
+        "计算结构与那个决定性的乘积",
+        "三个部署变体把成本压在不同地方",
+        "与-autoregressive-生成的硬件性格对比",
+        "一句话理解",
+        "演进与未来方向判断",
+        "workload-characterization",
+        "参考来源"
+      ]
+    },
+    "01-foundation-model-components/jepa-and-self-supervised.md": {
+      "path": "external/workload-wiki/01-foundation-model-components/jepa-and-self-supervised",
+      "ids": [
+        "jepa-and-self-supervised-representation",
+        "这页在回答什么问题",
+        "为什么它有效直觉与类比",
+        "i-jepav-jepa-与-v-jepa-2从图像到可规划的视频表征",
+        "对-world-model-的意义为什么是分水岭",
+        "一句话理解",
+        "演进与未来方向判断",
+        "workload-characterization",
+        "参考来源"
+      ]
+    },
+    "01-foundation-model-components/mamba-and-ssm.md": {
+      "path": "external/workload-wiki/01-foundation-model-components/mamba-and-ssm",
+      "ids": [
+        "mamba-and-ssm",
+        "这页在回答什么问题",
+        "为什么它有效直觉与类比",
+        "selective-scan机制与硬件的双重面孔",
+        "与-transformer-的互补不是替代",
+        "一句话理解",
+        "演进与未来方向判断",
+        "workload-characterization",
+        "参考来源"
+      ]
+    },
+    "01-foundation-model-components/neck-feature-fusion.md": {
+      "path": "external/workload-wiki/01-foundation-model-components/neck-feature-fusion",
+      "ids": [
+        "neck-feature-fusion",
+        "这页在回答什么问题",
+        "为什么它有效直觉与类比",
+        "计算结构与代价分布",
+        "在自动驾驶与机器人中的位置",
+        "一句话理解",
+        "演进与未来方向判断",
+        "workload-characterization",
+        "参考来源"
+      ]
+    },
+    "01-foundation-model-components/vision-transformer-backbone.md": {
+      "path": "external/workload-wiki/01-foundation-model-components/vision-transformer-backbone",
+      "ids": [
+        "vision-transformer-backbone",
+        "这页在回答什么问题",
+        "为什么它有效直觉与类比",
+        "从图像到-token被平方放大的代价",
+        "vit-和-cnn-的本质差异",
+        "分层-vit-与-swin把层次结构装回来",
+        "在-ad-vla-world-model-中的意义",
+        "一句话理解",
+        "演进与未来方向判断",
+        "workload-characterization",
+        "参考来源"
+      ]
+    },
+    "02-vision-and-3d-perception/README.md": {
+      "path": "external/workload-wiki/02-vision-and-3d-perception",
+      "ids": [
+        "vision-and-3d-perception",
+        "这章在回答什么问题",
+        "本章定位",
+        "页面列表",
+        "到-06-的映射"
+      ]
+    },
+    "02-vision-and-3d-perception/bev-perception.md": {
+      "path": "external/workload-wiki/02-vision-and-3d-perception/bev-perception",
+      "ids": [
+        "bev-perception",
+        "这页在回答什么问题",
+        "为什么它有效直觉与类比",
+        "计算结构与那个大中间体",
+        "为什么-bev-是-0203-的转折点",
+        "一句话理解",
+        "演进与未来方向判断",
+        "workload-characterization",
+        "参考来源"
+      ]
+    },
+    "02-vision-and-3d-perception/instance-segmentation.md": {
+      "path": "external/workload-wiki/02-vision-and-3d-perception/instance-segmentation",
+      "ids": [
+        "instance-segmentation",
+        "这页在回答什么问题",
+        "为什么它有效直觉与类比",
+        "计算结构与硬件瓶颈的分叉",
+        "在-ad-和机器人中的意义",
+        "一句话理解",
+        "演进与未来方向判断",
+        "workload-characterization",
+        "参考来源"
+      ]
+    },
+    "02-vision-and-3d-perception/lidar-point-cloud-processing.md": {
+      "path": "external/workload-wiki/02-vision-and-3d-perception/lidar-point-cloud-processing",
+      "ids": [
+        "lidar-point-cloud-processing",
+        "这页在回答什么问题",
+        "为什么它有效直觉与类比",
+        "计算结构与稀疏的真实账",
+        "一句话理解",
+        "演进与未来方向判断",
+        "workload-characterization",
+        "参考来源"
+      ]
+    },
+    "02-vision-and-3d-perception/multi-sensor-fusion.md": {
+      "path": "external/workload-wiki/02-vision-and-3d-perception/multi-sensor-fusion",
+      "ids": [
+        "multi-sensor-fusion",
+        "这页在回答什么问题",
+        "为什么它有效直觉与类比",
+        "计算结构与那个同步瓶颈",
+        "一句话理解",
+        "演进与未来方向判断",
+        "workload-characterization",
+        "参考来源"
+      ]
+    },
+    "02-vision-and-3d-perception/object-detection.md": {
+      "path": "external/workload-wiki/02-vision-and-3d-perception/object-detection",
+      "ids": [
+        "object-detection",
+        "这页在回答什么问题",
+        "为什么它有效直觉与类比",
+        "计算结构与真实量级",
+        "一句话理解",
+        "演进与未来方向判断",
+        "workload-characterization",
+        "参考来源"
+      ]
+    },
+    "02-vision-and-3d-perception/occupancy-prediction.md": {
+      "path": "external/workload-wiki/02-vision-and-3d-perception/occupancy-prediction",
+      "ids": [
+        "occupancy-prediction",
+        "这页在回答什么问题",
+        "为什么它有效直觉与类比",
+        "计算结构与容量爆炸的真实账",
+        "为什么它是通向-world-model-的桥",
+        "一句话理解",
+        "演进与未来方向判断",
+        "workload-characterization",
+        "参考来源"
+      ]
+    },
+    "02-vision-and-3d-perception/semantic-segmentation.md": {
+      "path": "external/workload-wiki/02-vision-and-3d-perception/semantic-segmentation",
+      "ids": [
+        "semantic-segmentation",
+        "这页在回答什么问题",
+        "为什么它有效直觉与类比",
+        "计算结构与那个写回带宽",
+        "演进与系统意义",
+        "一句话理解",
+        "演进与未来方向判断",
+        "workload-characterization",
+        "参考来源"
+      ]
+    },
+    "02-vision-and-3d-perception/video-understanding.md": {
+      "path": "external/workload-wiki/02-vision-and-3d-perception/video-understanding",
+      "ids": [
+        "video-understanding",
+        "这页在回答什么问题",
+        "为什么它有效直觉与类比",
+        "计算结构与决定性的乘积",
+        "从视频理解到-world-model",
+        "一句话理解",
+        "演进与未来方向判断",
+        "workload-characterization",
+        "参考来源"
+      ]
+    },
+    "03-autonomous-driving-algorithms/README.md": {
+      "path": "external/workload-wiki/03-autonomous-driving-algorithms",
+      "ids": [
+        "autonomous-driving-algorithms",
+        "这章在回答什么问题",
+        "主线",
+        "页面列表",
+        "到-06-的映射"
+      ]
+    },
+    "03-autonomous-driving-algorithms/behavior-cloning-e2e.md": {
+      "path": "external/workload-wiki/03-autonomous-driving-algorithms/behavior-cloning-e2e",
+      "ids": [
+        "behavior-cloning-e2e",
+        "这页在回答什么问题",
+        "为什么它有效又为什么会崩直觉与类比",
+        "基本形式与输出接口",
+        "与-planning-oriented-e2e-的差别",
+        "一句话理解",
+        "演进与未来方向判断",
+        "workload-characterization",
+        "参考来源"
+      ]
+    },
+    "03-autonomous-driving-algorithms/data-closed-loop-and-simulation.md": {
+      "path": "external/workload-wiki/03-autonomous-driving-algorithms/data-closed-loop-and-simulation",
+      "ids": [
+        "data-closed-loop-and-simulation",
+        "这页在回答什么问题",
+        "为什么它有效直觉与类比",
+        "为什么仿真必须是闭环一个反直觉的陷阱",
+        "一句话理解",
+        "演进与未来方向判断",
+        "workload-characterization",
+        "参考来源"
+      ]
+    },
+    "03-autonomous-driving-algorithms/modular-to-bev-evolution.md": {
+      "path": "external/workload-wiki/03-autonomous-driving-algorithms/modular-to-bev-evolution",
+      "ids": [
+        "modular-to-bev-evolution",
+        "这页在回答什么问题",
+        "为什么模块化会被取代直觉与类比",
+        "从-bev-到-occupancy接口继续变宽",
+        "一句话理解",
+        "演进与未来方向判断",
+        "workload-characterization",
+        "参考来源"
+      ]
+    },
+    "03-autonomous-driving-algorithms/planning-oriented-e2e.md": {
+      "path": "external/workload-wiki/03-autonomous-driving-algorithms/planning-oriented-e2e",
+      "ids": [
+        "planning-oriented-e2e",
+        "这页在回答什么问题",
+        "为什么它有效直觉与类比",
+        "关键设计维度与工程边界",
+        "一句话理解",
+        "演进与未来方向判断",
+        "workload-characterization",
+        "参考来源"
+      ]
+    },
+    "03-autonomous-driving-algorithms/vlm-vla-for-ad.md": {
+      "path": "external/workload-wiki/03-autonomous-driving-algorithms/vlm-vla-for-ad",
+      "ids": [
+        "vlm-and-vla-for-autonomous-driving",
+        "这页在回答什么问题",
+        "为什么要把大模型塞进车里直觉与类比",
+        "部署的现实形态慢-快双系统",
+        "一句话理解",
+        "演进与未来方向判断",
+        "workload-characterization",
+        "参考来源"
+      ]
+    },
+    "03-autonomous-driving-algorithms/world-model-for-ad.md": {
+      "path": "external/workload-wiki/03-autonomous-driving-algorithms/world-model-for-ad",
+      "ids": [
+        "world-model-for-autonomous-driving",
+        "这页在回答什么问题",
+        "为什么它有效直觉与类比",
+        "三类-world-model-与两种用法",
+        "一句话理解",
+        "演进与未来方向判断",
+        "workload-characterization",
+        "参考来源"
+      ]
+    },
+    "04-robotics-and-vla/README.md": {
+      "path": "external/workload-wiki/04-robotics-and-vla",
+      "ids": [
+        "robotics-and-vla",
+        "这章在回答什么问题",
+        "主线",
+        "页面列表",
+        "到-06-的映射",
+        "阅读方式"
+      ]
+    },
+    "04-robotics-and-vla/action-tokenizer.md": {
+      "path": "external/workload-wiki/04-robotics-and-vla/action-tokenizer",
+      "ids": [
+        "action-tokenizer",
+        "这页在回答什么问题",
+        "为什么它有效直觉与类比",
+        "三种表示的计算图各卡在哪",
+        "一句话理解",
+        "演进与未来方向判断",
+        "workload-characterization",
+        "参考来源"
+      ]
+    },
+    "04-robotics-and-vla/groot.md": {
+      "path": "external/workload-wiki/04-robotics-and-vla/groot",
+      "ids": [
+        "gr00t",
+        "这页在回答什么问题",
+        "为什么它有效直觉与类比",
+        "真实结构与数字锚点",
+        "一句话理解",
+        "演进与未来方向判断",
+        "workload-characterization",
+        "参考来源"
+      ]
+    },
+    "04-robotics-and-vla/openvla.md": {
+      "path": "external/workload-wiki/04-robotics-and-vla/openvla",
+      "ids": [
+        "openvla",
+        "这页在回答什么问题",
+        "为什么它有效直觉与类比",
+        "真实结构与数字锚点",
+        "它暴露的三处部署压力",
+        "一句话理解",
+        "演进与未来方向判断",
+        "workload-characterization",
+        "参考来源"
+      ]
+    },
+    "04-robotics-and-vla/robot-world-model.md": {
+      "path": "external/workload-wiki/04-robotics-and-vla/robot-world-model",
+      "ids": [
+        "robot-world-model",
+        "这页在回答什么问题",
+        "为什么它有效直觉与类比",
+        "world-model-怎么接进机器人系统",
+        "一句话理解",
+        "演进与未来方向判断",
+        "workload-characterization",
+        "参考来源"
+      ]
+    },
+    "04-robotics-and-vla/robotics-vs-autonomous-driving.md": {
+      "path": "external/workload-wiki/04-robotics-and-vla/robotics-vs-autonomous-driving",
+      "ids": [
+        "robotics-vs-autonomous-driving",
+        "这页在回答什么问题",
+        "为什么能放一起比直觉与类比",
+        "共性可共享的那一半",
+        "差异决定芯片需求分叉的那一半",
+        "一句话理解",
+        "演进与未来方向判断",
+        "workload-characterization",
+        "参考来源"
+      ]
+    },
+    "04-robotics-and-vla/rt-series.md": {
+      "path": "external/workload-wiki/04-robotics-and-vla/rt-series",
+      "ids": [
+        "rt-series",
+        "这页在回答什么问题",
+        "为什么它有效直觉与类比",
+        "rt-1小脑子能实时的起点",
+        "rt-2动作即-text-token泛化与延迟的换价",
+        "rt-x-与-open-x-embodiment跨本体的数据统一",
+        "rt-h动作层次不必一步到位",
+        "一句话理解",
+        "演进与未来方向判断",
+        "workload-characterization",
+        "参考来源"
+      ]
+    },
+    "04-robotics-and-vla/vla-fundamentals.md": {
+      "path": "external/workload-wiki/04-robotics-and-vla/vla-fundamentals",
+      "ids": [
+        "vla-fundamentals",
+        "这页在回答什么问题",
+        "为什么它有效直觉与类比",
+        "动作进入输出空间的三种位置",
+        "一句话理解",
+        "演进与未来方向判断",
+        "workload-characterization",
+        "参考来源"
+      ]
+    },
+    "05-world-model-and-generative/README.md": {
+      "path": "external/workload-wiki/05-world-model-and-generative",
+      "ids": [
+        "world-model-and-generative-intelligence",
+        "这章在回答什么问题",
+        "主线",
+        "页面列表",
+        "到-06-的映射"
+      ]
+    },
+    "05-world-model-and-generative/bev-world-model.md": {
+      "path": "external/workload-wiki/05-world-model-and-generative/bev-world-model",
+      "ids": [
+        "bev-world-model",
+        "这页在回答什么问题",
+        "为什么它有效直觉与类比",
+        "基本结构与-workload-的三个决定因素",
+        "一句话理解",
+        "演进与未来方向判断",
+        "workload-characterization",
+        "参考来源"
+      ]
+    },
+    "05-world-model-and-generative/diffusion-for-world-model.md": {
+      "path": "external/workload-wiki/05-world-model-and-generative/diffusion-for-world-model",
+      "ids": [
+        "diffusion-for-world-model",
+        "这页在回答什么问题",
+        "为什么它有效直觉与类比",
+        "三重乘法world-model-的乘法又被乘上步数",
+        "在不同输出上的差异同一矛盾不同代价",
+        "一句话理解",
+        "演进与未来方向判断",
+        "workload-characterization",
+        "参考来源"
+      ]
+    },
+    "05-world-model-and-generative/edge-cloud-collaborative-world-model.md": {
+      "path": "external/workload-wiki/05-world-model-and-generative/edge-cloud-collaborative-world-model",
+      "ids": [
+        "edge-cloud-collaborative-world-model",
+        "这页在回答什么问题",
+        "为什么它有效直觉与类比",
+        "职责拆分与背后的-workload-性格",
+        "连接的瓶颈协同不是免费的",
+        "一句话理解",
+        "演进与未来方向判断",
+        "workload-characterization",
+        "参考来源"
+      ]
+    },
+    "05-world-model-and-generative/latent-world-model.md": {
+      "path": "external/workload-wiki/05-world-model-and-generative/latent-world-model",
+      "ids": [
+        "latent-world-model",
+        "这页在回答什么问题",
+        "为什么它有效直觉与类比",
+        "基本结构与-rollout-的状态递推",
+        "与-jepa-的关系从表征学习走到可行动",
+        "一句话理解",
+        "演进与未来方向判断",
+        "workload-characterization",
+        "参考来源"
+      ]
+    },
+    "05-world-model-and-generative/occupancy-world-model.md": {
+      "path": "external/workload-wiki/05-world-model-and-generative/occupancy-world-model",
+      "ids": [
+        "occupancy-world-model",
+        "这页在回答什么问题",
+        "为什么它有效直觉与类比",
+        "容量的乘法为什么访存先撑爆",
+        "主流做法离散-occupancy-token-的自回归-rollout",
+        "一句话理解",
+        "演进与未来方向判断",
+        "workload-characterization",
+        "参考来源"
+      ]
+    },
+    "05-world-model-and-generative/video-world-model.md": {
+      "path": "external/workload-wiki/05-world-model-and-generative/video-world-model",
+      "ids": [
+        "video-world-model",
+        "这页在回答什么问题",
+        "为什么它有效直觉与类比",
+        "计算结构与那个四维乘积",
+        "价值与边界信息完整-可直接规划",
+        "一句话理解",
+        "演进与未来方向判断",
+        "workload-characterization",
+        "参考来源"
+      ]
+    },
+    "05-world-model-and-generative/world-model-fundamentals.md": {
+      "path": "external/workload-wiki/05-world-model-and-generative/world-model-fundamentals",
+      "ids": [
+        "world-model-fundamentals",
+        "这页在回答什么问题",
+        "为什么它有效直觉与类比",
+        "基本形式dynamics-是核心rollout-是计算骨架",
+        "三类-world-model同一思想三种-workload-落点",
+        "一句话理解",
+        "演进与未来方向判断",
+        "workload-characterization",
+        "参考来源"
+      ]
+    },
+    "05-world-model-and-generative/world-model-is-not-video-generation.md": {
+      "path": "external/workload-wiki/05-world-model-and-generative/world-model-is-not-video-generation",
+      "ids": [
+        "world-model-is-not-video-generation",
+        "这页在回答什么问题",
+        "为什么这个区分成立直觉与类比",
+        "常见误解-实际上",
+        "为什么这个区分直接改变-workload",
+        "一句话理解",
+        "演进与未来方向判断",
+        "workload-characterization",
+        "参考来源"
+      ]
+    },
+    "06-chip-workload-analysis/README.md": {
+      "path": "external/workload-wiki/06-chip-workload-analysis",
+      "ids": [
+        "chip-workload-analysis",
+        "这章在回答什么问题",
+        "本章方法",
+        "页面列表",
+        "workload-对硬件-wiki-的连接",
+        "archax-建模入口"
+      ]
+    },
+    "06-chip-workload-analysis/ad-robotics-chip-architecture-summary.md": {
+      "path": "external/workload-wiki/06-chip-workload-analysis/ad-robotics-chip-architecture-summary",
+      "ids": [
+        "ad-and-robotics-chip-architecture-summary",
+        "这页在回答什么问题",
+        "核心结论真实系统是-workload-的组合不是单一-workload",
+        "workload-到架构的映射表",
+        "对七份硬件-wiki-的要求",
+        "archax-总结探索空间不该只扫-tops",
+        "一句话理解",
+        "workload-characterization",
+        "参考来源"
+      ]
+    },
+    "06-chip-workload-analysis/bev-workload.md": {
+      "path": "external/workload-wiki/06-chip-workload-analysis/bev-workload",
+      "ids": [
+        "bev-workload",
+        "这页在回答什么问题",
+        "view-transform-为什么是-bev-的真正瓶颈",
+        "共享-bev-特征收益与陷阱并存",
+        "可建模参数",
+        "硬件连接",
+        "archax-建模",
+        "一句话理解",
+        "workload-characterization",
+        "参考来源"
+      ]
+    },
+    "06-chip-workload-analysis/cloud-inference-and-simulation-chip.md": {
+      "path": "external/workload-wiki/06-chip-workload-analysis/cloud-inference-and-simulation-chip",
+      "ids": [
+        "cloud-inference-and-simulation-chip",
+        "这页在回答什么问题",
+        "大-batch-如何反转端侧的瓶颈",
+        "云端-workload-的几种形态",
+        "与端侧的分工端云协同的-workload-边界",
+        "可建模参数",
+        "硬件连接",
+        "archax-建模",
+        "一句话理解",
+        "workload-characterization",
+        "参考来源"
+      ]
+    },
+    "06-chip-workload-analysis/cnn-workload.md": {
+      "path": "external/workload-wiki/06-chip-workload-analysis/cnn-workload",
+      "ids": [
+        "cnn-workload",
+        "这页在回答什么问题",
+        "standard-conv-为什么是-npu-最友好的-workload",
+        "depthwise-group-conv-为什么相反",
+        "早层和后处理另两类容易被忽略的成本",
+        "可建模参数",
+        "硬件连接",
+        "archax-建模",
+        "一句话理解",
+        "workload-characterization",
+        "参考来源"
+      ]
+    },
+    "06-chip-workload-analysis/e2e-workload.md": {
+      "path": "external/workload-wiki/06-chip-workload-analysis/e2e-workload",
+      "ids": [
+        "e2e-workload",
+        "这页在回答什么问题",
+        "为什么-e2e-必须按-latency-critical-path-拆而不是按模型拆",
+        "系统瓶颈是同步不是算力",
+        "演进对-workload-的影响",
+        "可建模参数",
+        "硬件连接",
+        "archax-建模",
+        "一句话理解",
+        "workload-characterization",
+        "参考来源"
+      ]
+    },
+    "06-chip-workload-analysis/edge-inference-chip-requirements.md": {
+      "path": "external/workload-wiki/06-chip-workload-analysis/edge-inference-chip-requirements",
+      "ids": [
+        "edge-inference-chip-requirements",
+        "这页在回答什么问题",
+        "为什么端侧不能只看-tops",
+        "端侧需求的六个层次",
+        "流式与确定性端侧最难的两件事",
+        "硬件连接",
+        "archax-建模",
+        "一句话理解",
+        "workload-characterization",
+        "参考来源"
+      ]
+    },
+    "06-chip-workload-analysis/occupancy-workload.md": {
+      "path": "external/workload-wiki/06-chip-workload-analysis/occupancy-workload",
+      "ids": [
+        "occupancy-workload",
+        "这页在回答什么问题",
+        "容量为什么是-occupancy-的第一约束",
+        "dense-与-sparse-的取舍一个-determinism-难题",
+        "时序与查询horizon-和-collision-check",
+        "可建模参数",
+        "硬件连接",
+        "archax-建模",
+        "一句话理解",
+        "workload-characterization",
+        "参考来源"
+      ]
+    },
+    "06-chip-workload-analysis/transformer-workload.md": {
+      "path": "external/workload-wiki/06-chip-workload-analysis/transformer-workload",
+      "ids": [
+        "transformer-workload",
+        "这页在回答什么问题",
+        "为什么必须先把-transformer-拆成两个阶段",
+        "kv-cache同时压垮容量和带宽的状态",
+        "分阶段的逐算子画像",
+        "可建模参数",
+        "硬件连接",
+        "archax-建模",
+        "一句话理解",
+        "workload-characterization",
+        "参考来源"
+      ]
+    },
+    "06-chip-workload-analysis/vla-workload.md": {
+      "path": "external/workload-wiki/06-chip-workload-analysis/vla-workload",
+      "ids": [
+        "vla-workload",
+        "这页在回答什么问题",
+        "visual-token-爆炸vla-比纯-llm-更难的第一个原因",
+        "action-输出的两条路线自回归-vs-连续对-workload-影响相反",
+        "action-chunk-与控制频率摊薄昂贵的大模型前向",
+        "端侧-vs-训练侧两个完全不同的-workload",
+        "可建模参数",
+        "硬件连接",
+        "archax-建模",
+        "一句话理解",
+        "workload-characterization",
+        "参考来源"
+      ]
+    },
+    "06-chip-workload-analysis/workload-analysis-methodology.md": {
+      "path": "external/workload-wiki/06-chip-workload-analysis/workload-analysis-methodology",
+      "ids": [
+        "workload-analysis-methodology",
+        "这页在回答什么问题",
+        "方法论的边界",
+        "从算法到-workload-的五步流程",
+        "1-抽象输入输出和状态",
+        "2-拆成-stage而不是只看-end-to-end-graph",
+        "3-定义主导成本而不是罗列所有算子",
+        "4-用统一维度填写-workload-characterization",
+        "5-映射到硬件-wiki-和-archax",
+        "典型-workload-的分析入口",
+        "端侧云端和仿真的口径",
+        "常见误区",
+        "一句话理解",
+        "workload-characterization",
+        "参考来源"
+      ]
+    },
+    "06-chip-workload-analysis/workload-characterization-axes.md": {
+      "path": "external/workload-wiki/06-chip-workload-analysis/workload-characterization-axes",
+      "ids": [
+        "workload-characterization-axes",
+        "这页在回答什么问题",
+        "统一模板",
+        "计算密度",
+        "访存模式",
+        "并行性",
+        "数据复用",
+        "量化敏感度",
+        "瓶颈类型",
+        "硬件核心需求",
+        "archax-建模口径",
+        "算法文档的简版填写格式",
+        "一句话理解",
+        "workload-characterization",
+        "参考来源"
+      ]
+    },
+    "06-chip-workload-analysis/world-model-workload.md": {
+      "path": "external/workload-wiki/06-chip-workload-analysis/world-model-workload",
+      "ids": [
+        "world-model-workload",
+        "这页在回答什么问题",
+        "成本的乘法结构world-model-与一次性推理的根本不同",
+        "三类-world-model-的-workload-谱系",
+        "可建模参数",
+        "硬件连接",
+        "archax-建模",
+        "一句话理解",
+        "workload-characterization",
+        "参考来源"
+      ]
+    },
+    "07-reference/README.md": {
+      "path": "external/workload-wiki/07-reference",
+      "ids": [
+        "reference",
+        "这章在回答什么问题",
+        "页面列表",
+        "使用方式",
+        "workload-characterization"
+      ]
+    },
+    "07-reference/multi-dimensional-index.md": {
+      "path": "external/workload-wiki/07-reference/multi-dimensional-index",
+      "ids": [
+        "multi-dimensional-index",
+        "这页在回答什么问题",
+        "按算法类别",
+        "按算法概念",
+        "按应用场景",
+        "按第一瓶颈",
+        "按硬件资源",
+        "按-archax-建模对象",
+        "workload-characterization"
+      ]
+    },
+    "07-reference/reading-roadmap-by-goal.md": {
+      "path": "external/workload-wiki/07-reference/reading-roadmap-by-goal",
+      "ids": [
+        "reading-roadmap-by-goal",
+        "这页在回答什么问题",
+        "目标建立-workload-分析方法",
+        "目标为-deterministic-npu-做架构探索",
+        "目标补齐自动驾驶算法路线",
+        "目标补齐机器人-vla",
+        "目标理解-world-model",
+        "目标维护前沿来源",
+        "workload-characterization"
+      ]
+    },
+    "07-reference/representative-papers.md": {
+      "path": "external/workload-wiki/07-reference/representative-papers",
+      "ids": [
+        "representative-papers",
+        "这页在回答什么问题",
+        "foundation-components",
+        "vision-and-3d-perception",
+        "autonomous-driving",
+        "robotics-and-vla",
+        "world-model-and-generative",
+        "workload-characterization"
+      ]
+    },
+    "07-reference/source-tracking.md": {
+      "path": "external/workload-wiki/07-reference/source-tracking",
+      "ids": [
+        "source-tracking",
+        "这页在回答什么问题",
+        "查证口径",
+        "本轮重点查证项",
+        "逐项来源记录",
+        "后续维护规则",
+        "workload-characterization"
+      ]
+    },
+    "07-reference/workload-comparison-table.md": {
+      "path": "external/workload-wiki/07-reference/workload-comparison-table",
+      "ids": [
+        "workload-comparison-table",
+        "这页在回答什么问题",
+        "总表",
+        "端侧优先级",
+        "云端优先级",
+        "workload-characterization"
+      ]
+    },
+    "README.md": {
+      "path": "external/workload-wiki",
+      "ids": [
+        "workload-wiki",
+        "series-home-content",
+        "写作原则",
+        "阅读路径",
+        "目录"
+      ]
+    }
+  }
+}

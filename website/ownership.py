@@ -156,27 +156,14 @@ def inference_owner(path):
     return "术语与约定"
 
 
-WORKLOAD_GROUPS = ("系列导读与参考", "骨干网络与序列建模", "表示学习与训练目标", "自回归与扩散生成",
-                   "视觉感知与三维场景表示", "自动驾驶感知、预测与规划", "机器人策略与视觉语言动作模型",
-                   "世界模型与环境预测", "算法工作负载分析")
+from workload import CHAPTERS as WORKLOAD_CHAPTERS, MOVES as WORKLOAD_MOVES
+
+WORKLOAD_GROUPS = tuple(label for label, _ in WORKLOAD_CHAPTERS)
 
 
 def workload_owner(path):
-    """Return the primary topic for a path relative to the workload root."""
+    """Resolve current source paths and historical publication paths alike."""
     path = str(path)
-    if path in {"00-overview/workload-lens.md", "07-reference/workload-comparison-table.md"} or path.startswith("06-chip-workload-analysis/"):
-        return "算法工作负载分析"
-    if path in {"01-foundation-model-components/contrastive-learning.md", "01-foundation-model-components/jepa-and-self-supervised.md"}:
-        return "表示学习与训练目标"
-    if path == "01-foundation-model-components/diffusion-models.md":
-        return "自回归与扩散生成"
-    for prefix, group in (
-        ("01-foundation-model-components/", "骨干网络与序列建模"),
-        ("02-vision-and-3d-perception/", "视觉感知与三维场景表示"),
-        ("03-autonomous-driving-algorithms/", "自动驾驶感知、预测与规划"),
-        ("04-robotics-and-vla/", "机器人策略与视觉语言动作模型"),
-        ("05-world-model-and-generative/", "世界模型与环境预测"),
-    ):
-        if path.startswith(prefix) and path != "01-foundation-model-components/README.md":
-            return group
-    return "系列导读与参考"
+    path = {old: new for new, old in WORKLOAD_MOVES.items()}.get(path, path)
+    return next((label for label, directory in WORKLOAD_CHAPTERS
+                 if path.startswith(directory + "/")), "导读与共同基础")
