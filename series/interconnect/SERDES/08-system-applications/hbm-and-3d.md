@@ -12,14 +12,16 @@ HBM 是堆叠式 DRAM 与宽接口的系统。分析它时，应区分 **HBM 堆
 
 ## 一个带宽手算
 
-[AMD Versal HBM 接口文档](https://docs.amd.com/r/en-US/am011-versal-acap-trm/HBM-Interface)给出其指定器件中每堆栈 16 组、每组 `64` 条双向数据信号的实例，共 `1024` 条。假设这个教学例子里全部数据线都在同一方向持续以 `2 Gb/s` 传输，则仅按数据位计算的峰值为：
+[AMD Versal HBM 接口文档](https://docs.amd.com/r/en-US/am011-versal-acap-trm/HBM-Interface)给出其指定器件中每堆栈 16 组、每组 64 条双向数据信号的实例，共 1024 条。假设这个教学例子里全部数据线都在同一方向持续以 2 Gb/s 传输，则仅按数据位计算的峰值为：
 
-`1024 × 2 Gb/s ÷ 8 = 256 GB/s`。
+1024 × 2 Gb/s ÷ 8 = **256 GB/s**。
 
-`2 Gb/s` 是本例自设条件，不是对该器件全部工作模式的声明；`GB` 按十进制计算。命令、读写切换、刷新、bank 冲突与控制器调度都可能使实际有效带宽更低。不能把单方向峰值同时计作读和写各自达到峰值。
+2 Gb/s 是本例自设条件，不是对该器件全部工作模式的声明；GB 按十进制计算。命令、读写切换、刷新、bank 冲突与控制器调度都可能使实际有效带宽更低。不能把单方向峰值同时计作读和写各自达到峰值。
+
+这个计算与 SerDes 单 lane 的速率公式使用相同的计数原则，却不表示 HBM 每根数据线都采用本文前面讨论的嵌入时钟串行接收器。接口时序与数据组织要按对应 HBM 代际检查。
 
 TSV 的数量、微凸点或混合键合方式，也不能单独推出协议、带宽或良率。堆栈结构可继续读 [HBM 封装架构](../../../chip-development/FAB/wiki/04-back-end-packaging/hbm-as-case-study/ai-gpu-hbm-package-architecture.md)和 [HBM 存储协议](../../../storage/03-dram/protocols/hbm-stacked-wide-io.md)。
 
 ## 接下来怎么读
 
-读[CPO：电链路怎样接入光链路？](./cpo-electrical-optical.md)，看另一种封装级路径。
+读 [CPO 的电光路径](./cpo-electrical-optical.md)，看另一种封装级路径。

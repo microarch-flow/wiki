@@ -14,9 +14,11 @@
 
 这些定义依赖参考点和测量条件。jitter 可以有不同来源；CDR 对不同频率的变化也可能有不同响应。[Analog Devices 的时钟与数据抖动说明](https://www.analog.com/cn/resources/technical-articles/a-proposed-framework-for-measuring-identifying-and-eliminating-clock-and-data-jitter.html)介绍了测量视角。
 
+比较差分对内的两条边沿时，应说明测量位置、阈值和比较的是哪一对边沿；比较 lane 间偏差时，应说明对应的标记或数据位置。脱离这些条件，两个时间差可能不是同一指标。
+
 ## 用 UI 表达偏差
 
-假设各 lane 的符号间隔都是 `100 ps`，对应位置到达时间相差 `240 ps`。则该差值是 `2.4 UI`。这只描述测量点之间的相对时间；具体要多少缓冲，还取决于对齐标记、字宽、时钟域、允许范围和实现。
+假设各 lane 的符号间隔都是 100 ps，对应位置到达时间相差 240 ps。则该差值是 2.4 UI。这只描述测量点之间的相对时间；具体要多少缓冲，还取决于对齐标记、字宽、时钟域、允许范围和实现。
 
 例如，最晚的 lane 到达后，较早 lane 的相应数据需要仍然可用。对齐逻辑可能借助协议标记与缓冲处理该差值。但标记本身也要能被识别；如果实际偏差超过设计可吸收的范围，单纯增加一个固定延迟并不能证明链路满足协议。
 
@@ -26,4 +28,4 @@
 
 ## 接下来怎么读
 
-看[特性阻抗、终端与反射](./impedance-and-reflection.md)。
+看[阻抗、终端与反射](./impedance-and-reflection.md)。

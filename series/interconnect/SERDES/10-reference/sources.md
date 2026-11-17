@@ -1,10 +1,12 @@
-# 第一阶段资料入口
+# 链路与电气资料
+
+<span id="第一阶段资料入口"></span>
 
 上级：[SerDes 术语、资料与自测](./README.md)
 
 本专题优先采用规范组织、器件厂商和测量设备厂商的原始资料。厂商手册描述指定产品；其数字和框图不能不加条件地推广到所有 SerDes。
 
-| 资料 | 本阶段使用范围 |
+| 资料 | 使用范围 |
 | --- | --- |
 | [TI：SerDes 软件与接口说明](https://software-dl.ti.com/jacinto7/esd/processor-sdk-linux-am67/latest/exports/docs/linux/Foundational_Components/Kernel/Kernel_Drivers/SERDES/SERDES.html) | TI 指定 SoC 的串并转换与协议能力边界。 |
 | [AMD：Versal GTY Receiver](https://docs.amd.com/r/en-US/am002-versal-gty-transceivers/Receiver) | 指定器件的 RX 前端、均衡、CDR 和对齐模块。 |

@@ -16,8 +16,10 @@ PCIe 和以太网都可能使用高速串行电链路，但它们解决的系统
 
 速率相同也不代表两者可以直接相连。双方还要满足同一协议的编码、时序、电气、状态与软件要求；是否支持 FEC、训练和具体通道，必须按协议版本与配置检查。
 
+例如，两个器件都能收发 10 Gb/s 左右的串行信号，仍可能采用不同的码组、控制序列和建链规则。只有模拟波形可以被接收，并不足以让两端理解彼此的业务数据。
+
 可继续读现有 [PCIe 分层架构](../../PCIE/02-link-transaction-basics/layered-architecture-transaction-data-link-physical.md)、[系统网络中的 Ethernet 与 RDMA](../../NETWORK/README.md)，或回看本专题的 [PCIe 链路训练案例](../06-link-operation/pcie-training-case.md)。
 
 ## 接下来怎么读
 
-读[增加 lane 还是提高单 lane 速率？](./lane-count-vs-rate.md)，比较两种达到目标线路容量的方法。
+读 [lane 数与单 lane 速率](./lane-count-vs-rate.md)，比较两种达到目标线路容量的方法。

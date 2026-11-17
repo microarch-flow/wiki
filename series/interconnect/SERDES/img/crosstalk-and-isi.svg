@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1120 320" role="img" aria-labelledby="title desc">
+<title id="title">本通道 ISI 与邻近通道串扰</title>
+<desc id="desc">受扰线的当前符号和历史符号共同影响接收采样；邻近攻击线的信号通过耦合路径也可能影响同一采样。箭头不表示实际耦合的幅度。</desc>
+<rect width="1120" height="320" rx="18" fill="#edf4f8"/>
+<g font-family="-apple-system, BlinkMacSystemFont, sans-serif" fill="#17334d">
+<text x="560" y="33" font-size="22" font-weight="600" text-anchor="middle">接收样本可能受到两种不同来源的影响</text>
+<rect x="40" y="65" width="1040" height="92" rx="12" fill="#dcecf1" stroke="#6595a7" stroke-width="2"/>
+<text x="65" y="100" font-size="19" font-weight="600">受扰线</text>
+<text x="65" y="128" font-size="16">本通道</text>
+<path d="M205 112 H824" stroke="#267295" stroke-width="4"/>
+<path d="M824 112 l-13 -8 v16 z" fill="#267295"/>
+<rect x="350" y="79" width="250" height="66" rx="8" fill="#f5fafb" stroke="#6595a7"/>
+<text x="475" y="107" text-anchor="middle" font-size="18">当前符号 + 历史响应</text>
+<text x="475" y="130" text-anchor="middle" font-size="15">响应重叠形成 ISI</text>
+<rect x="840" y="79" width="190" height="66" rx="8" fill="#f5fafb" stroke="#6595a7"/>
+<text x="935" y="107" text-anchor="middle" font-size="18">接收采样</text>
+<text x="935" y="130" text-anchor="middle" font-size="15">与门限比较</text>
+<rect x="40" y="195" width="760" height="72" rx="12" fill="#f3e6d9" stroke="#ba875c" stroke-width="2"/>
+<text x="65" y="224" font-size="19" font-weight="600">攻击线</text>
+<text x="65" y="248" font-size="16">邻近信号</text>
+<path d="M205 232 H720" stroke="#b56a3e" stroke-width="4"/>
+<path d="M720 232 l-13 -8 v16 z" fill="#b56a3e"/>
+<path d="M680 208 C760 177 805 174 849 145" fill="none" stroke="#b56a3e" stroke-width="3" stroke-dasharray="8 6"/>
+<path d="M849 145 l-15 1 9 13 z" fill="#b56a3e"/>
+<text x="785" y="202" font-size="17" fill="#8e502e">耦合 / 串扰</text>
+<text x="560" y="300" font-size="15" text-anchor="middle">功能示意：具体波形取决于通道、终端、码型和相对时序</text>
+</g></svg>

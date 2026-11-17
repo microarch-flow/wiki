@@ -1,13 +1,15 @@
-# 第二阶段资料入口
+# 信号、指标与训练资料
+
+<span id="第二阶段资料入口"></span>
 
 上级：[SerDes 术语、资料与自测](./README.md)
 
-下表记录本阶段的主要一手资料。设备文档与应用说明只适用于各自描述的产品、版本和条件；协议要求仍应查对应规范正文。数值教学例子是本专题的推导，不是资料中的产品测试结果。
+下表记录信号、指标与训练的主要一手资料。设备文档与应用说明只适用于各自描述的产品、版本和条件；协议要求仍应查对应规范正文。数值教学例子是本专题的推导，不是资料中的产品测试结果。
 
 | 主题 | 资料与使用范围 |
 | --- | --- |
 | 比特、符号与 UI | [Keysight：Understanding Signal Parameters](https://helpfiles.keysight.com/scopes/FlexDCA-UG/Content/Topics/Quick-Start/FlexDCA-fact-6.htm)，用于区分 bit、symbol、baud、UI；数值换算按正文的单位自行计算。 |
-| PAM4 | [TI：Understanding clocking needs for high-speed 56G PAM-4 serial links](https://www.ti.com/lit/an/snaa325a/snaa325a.pdf)，用于理解四电平及相关接收余量；不把理想电平间距比当作通用系统 BER 罚损。 |
+| PAM4 | [TI：Understanding clocking needs for high-speed 56G PAM-4 serial links](https://www.ti.com/lit/an/snaa325a/snaa325a.pdf)；[PCI-SIG：为什么采用 PAM4](https://pcisig.com/blog/why-did-pcie%C2%AE-60-specification-adopt-pam4-there-are-many-reasons)。前者用于理解四电平及接收余量，后者用于 PCIe 6.0 的速率与参考频点实例；不把理想电平间距比当作通用系统 BER 罚损。 |
 | 64b/66b 格式 | [Altera：64B/66B Encoder and Transmitter State Machine](https://docs.altera.com/r/docs/683621/current/l-and-h-tile-transceiver-phy-user-guide/b/66b-encoder-and-transmitter-state-machine-tx-sm)，限定为该 10GBASE-R 实现的同步头和加扰处理。 |
 | 眼图与时钟恢复 | [Tektronix：Clock Recovery Primer](https://download.tek.com/document/65W_26023_0_Letter.pdf) 与 [PAM4 信号测试、分析与调试](https://download.tek.com/document/PAM4-Signaling-in-High-Speed-Serial-Technology_55W-60273.pdf)，用于理解测量设置、时钟参考与眼图。 |
 | 误码与 FEC | [Keysight：BER 的含义](https://www.keysight.com/blogs/en/tech/2019/03/10/ber-is-it-bit-error-rate-or-bit-error-ratio)；[IEEE 802.3：FEC 与误码指标讨论](https://www.ieee802.org/3/B400G/public/21_03/wang_b400g_01a_210315.pdf)。置信上界的公式在正文列出假设并推导。 |

@@ -244,6 +244,12 @@ def make_tree(directory, root, index_names=("README.md",), include=None):
                 continue
             section_index = next((path / name for name in index_names if (path / name).is_file()), None)
             label = title(section_index) if section_index else path.name
+            # Material also uses the section label as the mobile drawer title;
+            # changing only the chapter link leaves that title unshortened.
+            if section_index and section_index.relative_to(root).parts[:2] == ("SERDES", "wiki"):
+                metadata = re.search(r"^<!--\s*nav-title:\s*(.+?)\s*-->\s*$", section_index.read_text(encoding="utf-8"), re.MULTILINE)
+                if metadata:
+                    label = metadata.group(1)
             children = make_tree(path, root, index_names, include)
             if children:
                 items.append({label: children})
@@ -633,8 +639,14 @@ def on_config(config, **kwargs):
         for short, path in pages:
             config.extra["storage_sidebar_labels"][path] = (short, title(root / path))
     # Source-aligned topics use their reading lists for article short labels.
-    for topic in ("PCIE", "SCALEUP", "NETWORK"):
+    for topic in ("PCIE", "SCALEUP", "NETWORK", "SERDES"):
         for chapter in sorted((root / topic / "wiki").glob("*/")):
+            if topic == "SERDES":
+                index = chapter / "README.md"
+                if index.is_file():
+                    metadata = re.search(r"^<!--\s*nav-title:\s*(.+?)\s*-->\s*$", index.read_text(encoding="utf-8"), re.MULTILINE)
+                    if metadata:
+                        config.extra["storage_sidebar_labels"][index.relative_to(root).as_posix()] = (metadata.group(1), title(index))
             for filename, short in reading_items(chapter):
                 path = chapter / filename
                 config.extra["storage_sidebar_labels"][path.relative_to(root).as_posix()] = (short, title(path))

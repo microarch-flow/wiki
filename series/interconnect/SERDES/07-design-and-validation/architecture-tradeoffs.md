@@ -21,6 +21,8 @@
 
 例如，增加 TX FFE 强度可能改善某些 ISI，但也受驱动摆幅、输出功率和噪声余量约束；RX CTLE 提升高频成分时也可能提升噪声。DFE 的历史判决出错时会影响反馈。设计时应联合检查，不能逐一把系数调到最大。参见 [TX FFE](../03-transmitter/tx-equalization-ffe.md)和 [RX DFE](../04-receiver/dfe-and-error-propagation.md)。
 
+比较方案时，还应写清何时允许调整：出厂固定、启动时训练，或运行中持续调整。更大的可调范围可能扩大适用条件，也会增加参数搜索、收敛、验证及状态观察的工作。
+
 ## 接下来怎么读
 
-读[通道模型和仿真能回答什么？](./system-and-channel-models.md)，了解如何比较候选架构。
+读[通道模型与仿真](./system-and-channel-models.md)，了解如何比较候选架构。

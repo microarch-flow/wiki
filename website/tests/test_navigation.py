@@ -595,13 +595,14 @@ class GeneratedNavigationTests(unittest.TestCase):
 
         landing = (SITE / "microarchitecture" / "index.html").read_text(encoding="utf-8")
         self.assertIn('../SERDES/wiki/', landing)
-        for figure in ("link-overview.svg", "differential.svg", "reflection.svg", "tx-timing.svg", "rx-feedback.svg", "nrz-pam4.svg", "eye-metrics.svg", "training-feedback.svg", "event-model.svg"):
+        for figure in ("link-overview.svg", "differential.svg", "reflection.svg", "crosstalk-and-isi.svg", "tx-timing.svg", "rx-feedback.svg", "nrz-pam4.svg", "eye-metrics.svg", "training-feedback.svg", "event-model.svg"):
             self.assertTrue((SITE / "SERDES" / "wiki" / "img" / figure).is_file())
 
         figure_pages = {
             "01-overview/link-end-to-end": "link-overview.svg",
             "02-signal-channel/differential-and-return": "differential.svg",
             "02-signal-channel/impedance-and-reflection": "reflection.svg",
+            "02-signal-channel/isi-noise-and-eye": "crosstalk-and-isi.svg",
             "03-transmitter/parallel-to-serial": "tx-timing.svg",
             "04-receiver/receiver-signal-chain": "rx-feedback.svg",
             "05-signaling-and-metrics/nrz-and-pam4": "nrz-pam4.svg",
@@ -744,11 +745,11 @@ class GeneratedNavigationTests(unittest.TestCase):
                 "首页", "微架构", "时钟、流水线与吞吐", "从电荷到芯片时序：一条可手算的路径",
             ],
             "SERDES/wiki/05-signaling-and-metrics/ber-confidence-and-fec/index.html": [
-                "首页", "芯片与系统互连", "高速电链路（SerDes）", "05 信号与指标：怎样读懂链路数据？",
+                "首页", "芯片与系统互连", "高速电链路（SerDes）", "05 信号与指标",
                 "BER、置信度与 FEC 怎样关联？",
             ],
             "SERDES/wiki/06-link-operation/pcie-training-case/index.html": [
-                "首页", "芯片与系统互连", "高速电链路（SerDes）", "06 初始化与链路训练：链路怎样建立和维持？",
+                "首页", "芯片与系统互连", "高速电链路（SerDes）", "06 初始化与训练",
                 "PCIe 链路训练案例：从现象到证据",
             ],
         }
