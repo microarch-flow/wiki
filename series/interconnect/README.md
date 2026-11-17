@@ -7,7 +7,7 @@
 3. [封装内芯粒互连](D2D/README.md)：跨 die 的接口、链路和协议承载。
 4. [系统 I/O 互连（PCIe）](PCIE/README.md)：设备枚举、地址与事务。
 5. [一致性与内存互连](COHERENCE/README.md)：缓存副本、一致性协议与设备内存访问。
-6. [加速器互连](SCALEUP/README.md)：加速器间的访问与交换结构。
+6. [加速器互连](SCALEUP/README.md)：加速器间的访问语义、交换结构、软件通信与任务性能。
 7. [系统网络](NETWORK/README.md)：以太网、RDMA、RoCE 和 InfiniBand。
 8. [高速电链路（SerDes）](SERDES/README.md)：发送、接收、训练与验证。
 9. [共封装光学（CPO）](CPO/README.md)：光引擎、封装和系统集成。

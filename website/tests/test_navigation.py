@@ -75,7 +75,12 @@ class GeneratedNavigationTests(unittest.TestCase):
                 "D2D/wiki/04-product-cases/amd-mi300a.md",
             ]},
         ]})
-        self.assertEqual(groups[5], {"加速器互连": ["SCALEUP/wiki/README.md"]})
+        scaleup = groups[5]["加速器互连"]
+        self.assertEqual(scaleup[0], "SCALEUP/wiki/README.md")
+        self.assertEqual([next(iter(section)) for section in scaleup[1:]], [
+            "01 访问语义", "02 交换结构", "03 协议与系统案例", "04 软件与集体通信",
+            "05 负载与性能", "06 建模、诊断与查阅",
+        ])
         self.assertEqual(groups[6], {"系统网络": ["NETWORK/wiki/README.md"]})
         coherence = groups[4]["一致性与内存互连"]
         self.assertEqual(coherence[0], "COHERENCE/wiki/README.md")

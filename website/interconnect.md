@@ -9,7 +9,7 @@
 3. [封装内芯粒互连](D2D/wiki/README.md)：不同 die 怎样建立连接，并交付上层协议的数据？
 4. [系统 I/O 互连（PCIe）](PCIE/wiki/README.md)：主机怎样发现设备，并通过配置、地址与事务访问设备？
 5. [一致性与内存互连](COHERENCE/wiki/README.md)：多个参与者怎样维护缓存副本，或访问设备连接的内存？
-6. [加速器互连](SCALEUP/wiki/README.md)：多个加速器怎样访问对端资源，并通过交换结构通信？
+6. [加速器互连](SCALEUP/wiki/README.md)：多个加速器怎样访问资源、组织通信，并满足任务性能目标？
 7. [系统网络](NETWORK/wiki/README.md)：服务器和节点怎样使用以太网、RDMA 或 InfiniBand 交换数据？
 8. [高速电链路（SerDes）](SERDES/wiki/README.md)：电信号怎样经过通道，并在接收端恢复？
 9. [共封装光学（CPO）](CPO/wiki/README.md)：光引擎怎样与电子芯片集成，封装和维护带来什么约束？

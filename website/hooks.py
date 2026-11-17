@@ -632,11 +632,12 @@ def on_config(config, **kwargs):
     for _label, pages in coherence_sections(root):
         for short, path in pages:
             config.extra["storage_sidebar_labels"][path] = (short, title(root / path))
-    # PCIe keeps source-aligned chapters; reading lists own article short labels.
-    for chapter in sorted((root / "PCIE" / "wiki").glob("*/")):
-        for filename, short in reading_items(chapter):
-            path = chapter / filename
-            config.extra["storage_sidebar_labels"][path.relative_to(root).as_posix()] = (short, title(path))
+    # Source-aligned topics use their reading lists for article short labels.
+    for topic in ("PCIE", "SCALEUP"):
+        for chapter in sorted((root / topic / "wiki").glob("*/")):
+            for filename, short in reading_items(chapter):
+                path = chapter / filename
+                config.extra["storage_sidebar_labels"][path.relative_to(root).as_posix()] = (short, title(path))
     if (root / D2D_SUMMARY).is_file():
         for _name, _anchor, pages in read_d2d_sections(root):
             for short, path in pages:
