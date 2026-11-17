@@ -93,6 +93,7 @@ class WorkloadRefinementTests(unittest.TestCase):
                 if relative != "README.md":
                     self.assertIn(workload_owner(relative), unescape(crumb))
                 article = content(path)
+                self.assertNotIn("上级：", article)
                 ids = re.findall(r'\bid="([^"]+)"', article)
                 self.assertEqual(len(ids), len(set(ids)), loc)
                 self.assertNotIn("</invoke>", article)
