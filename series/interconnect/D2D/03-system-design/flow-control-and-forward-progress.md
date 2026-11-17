@@ -54,6 +54,7 @@ CHI C2C 的消息 credit 与底层是否提供 CRC、链路确认或重放是不
 ## 接下来怎么读
 
 - [AMBA CHI C2C](../02-interfaces/chi-c2c.md)：看一致性消息怎样组织并跨芯粒传输。
+- [跨芯粒链路错误检测与重放](./link-reliability.md)：区分发送授权和链路错误恢复。
 - [跨芯粒读取的有效性能](./effective-bandwidth-and-latency.md)：区分消息 credit、事务窗口和有效吞吐。
 - [NoC：跨 die 网关与排队](../../NOC/06-ai-noc-specifics/chiplet-and-die-to-die-interconnect.md)：分析网关缓冲及回压。
 - [UCIe 1.1 读取案例](../ucie-pcie-read.md)：比较链路交付与 PCIe Completion。

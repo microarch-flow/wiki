@@ -57,5 +57,7 @@ OCP 的 [SiP 测试资料](https://www.opencompute.org/documents/d2d-submission-
 
 - [芯粒互操作与启动](./interoperability-and-bring-up.md)：区分设计匹配、链路就绪和系统功能就绪。
 - [跨芯粒流控与前进条件](./flow-control-and-forward-progress.md)：理解消息等待与接收授权。
+- [跨芯粒链路错误检测与重放](./link-reliability.md)：区分检测到错误和恢复链路交付。
+- [BoW PHY 2.0 坏线重映射](../02-interfaces/bow-phy-redundancy.md)：看支持冗余的接口怎样绕过物理坏线。
 - [跨芯粒读取的有效性能](./effective-bandwidth-and-latency.md)：按一致的边界观察吞吐和延迟。
 - [FAB：Final Test](../../../chip-development/FAB/wiki/05-final-test-and-reliability/final-test-methodology.md)：看封装后产品测试的更大范围。

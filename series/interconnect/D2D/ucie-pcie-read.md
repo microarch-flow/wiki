@@ -53,6 +53,7 @@ A 要从地址 `0x8000_1000` 读取一个 4 字节对齐的 32 位寄存器。�
 - [BoW.Flexi 读取案例](./bow-flexi.md)：从 AHB 桥和数据包看另一种跨芯粒读取路径。
 - [AMBA CHI C2C](./02-interfaces/chi-c2c.md)：看一致性消息怎样组织并使用相容的承载接口。
 - [芯粒互操作与启动](./03-system-design/interoperability-and-bring-up.md)：区分接口匹配、链路就绪和目标功能就绪。
+- [跨芯粒链路错误检测与重放](./03-system-design/link-reliability.md)：看启用重放的链路怎样检测错误并尝试恢复。
 - [跨芯粒读取的有效性能](./03-system-design/effective-bandwidth-and-latency.md)：看事务窗口和目标服务怎样约束吞吐。
 - [NoC：跨 die 网关与排队](../NOC/06-ai-noc-specifics/chiplet-and-die-to-die-interconnect.md)：继续分析网关、有限缓冲和回压。
 - [PCIe：事务与 Completion](../PCIE/02-link-transaction-basics/tlp-dllp-completion-basics.md)：区分链路控制、事务 Completion 和软件命令完成。

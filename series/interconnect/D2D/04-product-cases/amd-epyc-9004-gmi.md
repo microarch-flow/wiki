@@ -48,4 +48,5 @@ AMD 还描述了部分 **GMI-Wide** 型号。例如，EPYC 9334 的每颗 CCD �
 - [一次跨芯粒通信](../01-foundations/cross-die-communication.md)：理解请求和返回需要经过的共同边界。
 - [跨芯粒读取的有效性能](../03-system-design/effective-bandwidth-and-latency.md)：区分连接带宽与实际吞吐。
 - [Stratix 10 TX 产品案例](./stratix-10-tx.md)：比较 FPGA 核心与收发器 tile 的划分。
+- [AMD MI300A 产品案例](./amd-mi300a.md)：比较 CPU、GPU 和 HBM 在同一封装中的组合。
 - [NoC：跨 die 网关与排队](../../NOC/06-ai-noc-specifics/chiplet-and-die-to-die-interconnect.md)：按需要继续研究网关和排队；本文不假设 EPYC 内部采用该页的构造实现。
