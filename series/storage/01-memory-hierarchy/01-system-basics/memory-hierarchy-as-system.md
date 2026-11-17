@@ -45,7 +45,7 @@ HBM 涉及堆叠 DRAM、接口和集成方式；它在系统中承担什么角�
 3. DMA 完成读取前，CPU 不应违反该系统的 buffer 使用权约定，例如提前修改或复用设备仍在读取的数据。
 4. 如果设备也写入 buffer，CPU 再次访问前还要按传输方向和平台规则完成相应的同步或映射结束操作。
 
-这里需要区分三个问题：**数据是否可见、操作是否按要求排序、buffer 何时可以由下一方使用**。硬件一致性可以改变所需的 cache 维护方式，但不会自动替代所有同步和使用权安排。[Linux DMA 映射指南](https://docs.kernel.org/core-api/dma-api-howto.html)说明了 DMA 映射和重复使用 buffer 时的同步要求；具体示例见 [Coherent / Non-Coherent DMA](../../../microarchitecture/DMA/wiki/02-fundamentals/noncoherent-vs-coherent-dma.md)。
+这里需要区分三个问题：**数据是否可见、操作是否按要求排序、buffer 何时可以由下一方使用**。硬件一致性可以改变所需的 cache 维护方式，但不会自动替代所有同步和使用权安排。[Linux DMA 映射指南](https://docs.kernel.org/core-api/dma-api-howto.html)说明了 DMA 映射和重复使用 buffer 时的同步要求；具体示例见 [Coherent / Non-Coherent DMA](../../../microarchitecture/05-dma/02-fundamentals/noncoherent-vs-coherent-dma.md)。
 
 ## 一句话理解
 

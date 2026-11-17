@@ -79,4 +79,4 @@
 ## 接下来怎么读？
 
 - [片上带宽预算](./on-chip-bandwidth-budget.md)：分析输入、输出和其他流量同时使用资源时的限制。
-- [DMA 的 tiling 与双缓冲](../../../microarchitecture/DMA/wiki/04-programming-model/tiling-double-buffering.md)：查看另一个有限批次时序例子。
+- [DMA 的 tiling 与双缓冲](../../../microarchitecture/05-dma/04-programming-model/tiling-double-buffering.md)：查看另一个有限批次时序例子。

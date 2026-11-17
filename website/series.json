@@ -17,8 +17,8 @@
       }
     },
     {
-      "title": "芯片微架构笔记",
-      "description": "从电路、存储和互连出发，理解芯片架构与系统建模。",
+      "title": "微架构",
+      "description": "从运算与流水线到指令控制、并行执行和异步资源协作。",
       "page": "microarchitecture.md"
     },
     {

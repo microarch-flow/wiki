@@ -19,6 +19,7 @@ from ownership import GROUPS, MICRO, STORAGE, INTERCONNECT, DEVELOPMENT, WORKLOA
 from storage_navigation import (INTEGRATION_AFTER, INTEGRATION_HOME, INTEGRATION_PACKAGING,
                                 INTEGRATION_TOPIC, MEMORY_HOME, MEMORY_SECTIONS, MEMORY_TOPIC,
                                 RESOURCE_HOME, RESOURCE_SECTIONS, STORAGE_RESOURCES, SYSTEM_SELECTION)  # noqa: E402
+from microarchitecture_navigation import micro_navigation  # noqa: E402
 from noc_navigation import NOC_SUMMARY, noc_topic_tree, read_noc_sections  # noqa: E402
 from d2d_navigation import D2D_SUMMARY, d2d_topic_tree, read_d2d_sections  # noqa: E402
 
@@ -44,6 +45,10 @@ TOPICS = (
 # Illustrations belong to series landing pages; article sources remain usable
 # outside the site and retain their original headings and links.
 SERIES_COVERS = {
+    "microarchitecture.md": (
+        "microarchitecture.svg", "微架构 / 系列首页", "执行、搬运、同步与资源",
+        "计算、存储、互连与外部存储构成芯片的数据路径。", "",
+    ),
     "storage.md": (
         "storage.svg", "存储系统 / 系列首页", "计算、缓存、控制器与 DRAM",
         "计算请求经过 cache 和控制器访问 DRAM，数据沿路径返回。", "",
@@ -330,6 +335,8 @@ def owned_topic_tree(root, name, series, group, exclude=()):
     """Keep each original page in its one designated main topic."""
     include = lambda path: (path.relative_to(root).as_posix() not in exclude
                             and owner(path.relative_to(root).as_posix()) == (series, group))
+    if not (root / name / "wiki").is_dir():
+        return []
     items = make_tree(root / name / "wiki", root, include=include)
     for filename, label in (("self-test-questions.md", "自测问题"), ("README.md", "专题仓库说明")):
         path = root / name / filename
@@ -688,6 +695,8 @@ def on_config(config, **kwargs):
                 config.extra["storage_sidebar_labels"][path] = (short, title(root / path))
         for short, path in legacy:
             config.extra["storage_sidebar_labels"][path] = (short, title(root / path))
+    micro_topics, micro_labels = micro_navigation(root)
+    config.extra["storage_sidebar_labels"].update(micro_labels)
     storage_topics = grouped_original_topics(root, STORAGE)
     storage_resources = storage_resources_tree(root)
     validate_storage_navigation(root, [*storage_topics, *storage_resources])
@@ -712,7 +721,7 @@ def on_config(config, **kwargs):
             {"微架构首页": "microarchitecture.md"},
             {"精选文章": "articles.md"},
             {"互动图解": "visuals.md"},
-            *grouped_original_topics(root, MICRO),
+            *micro_topics,
         ]},
         {STORAGE: [{"系列首页": "storage.md"}, *storage_topics, *storage_resources]},
         {INTERCONNECT: [{"系列首页": "interconnect.md"}, *grouped_original_topics(root, INTERCONNECT)]},

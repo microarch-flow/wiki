@@ -1,0 +1,46 @@
+# 案例：Samsung HBM-PIM 的研究视角
+
+上级：[研究进展与论文案例](README.md)
+相关：[08 Samsung HBM-PIM 产业卡片](../08-industry-and-products/company-cards/pim-companies-samsung-hbm-pim.md), [DRAM-PIM 深入](../02-memory-technologies/dram-pim-deep-dive.md), [LLM decode 与 CIM](../07-workloads/llm-decode-and-cim.md)
+
+## 这页在回答什么问题
+
+这页回答：Samsung HBM-PIM 如果作为研究案例，应该分析哪些架构问题，而不是重复 08 章的产品化叙事。
+
+基本信息：
+
+| 字段 | 内容 |
+| --- | --- |
+| 对象 | Samsung HBM-PIM / Aquabolt-XL |
+| 论文/会议 | ISSCC 2021: `A 20nm 6GB function-in-memory DRAM based on HBM2 with a 1.2TFLOPS programmable computing unit using bank-level parallelism for machine learning applications`；Hot Chips 33 / 2021: `Aquabolt-XL: Samsung HBM2-PIM with in-memory processing for ML accelerators and beyond` |
+| 作者/机构 | Samsung Electronics / Samsung Memory 相关团队；Hot Chips 记录列出 J. H. Kim、S. H. Kang、S. Lee 等作者 |
+| 技术路线 | PIM-DRAM die 的一对 even/odd bank 共用独立 PCU；stack 还包含普通 DRAM die 和 buffer die |
+| 本 wiki 分类 | PIM，不是 CIM |
+| 层级 | memory-die/bank-level PIM architecture + accelerator evaluation |
+| 来源 | [Samsung Global Newsroom, 2021-02-17](https://news.samsung.com/global/samsung-develops-industrys-first-high-bandwidth-memory-with-ai-processing-power), [Samsung Semiconductor HBM-PIM tech blog](https://semiconductor.samsung.com/news-events/tech-blog/hbm-pim-cutting-edge-memory-technology-to-accelerate-next-generation-ai/), [Hot Chips 33 record](https://experts.illinois.edu/en/publications/aquabolt-xl-samsung-hbm2-pim-with-in-memory-processing-for-ml-acc/) |
+
+研究视角下，HBM-PIM 的核心问题不是“DRAM cell 能不能做 MAC”，而是“把可编程/专用计算单元放进 HBM bank 后，memory-bound workload 的系统效率如何变化”。[Samsung Hot Chips 2021 原始演示](https://www.hc33.hotchips.org/assets/program/conference/day1/20210813_HC33_Aquabolt-XL_PIM_Jin_Kim_slide.pdf)的微架构图给 PCU 配置 even/odd bank 接口；一对 bank 共享一个 PCU，不能按每 bank 独立复制计算和带宽。stack 图区分普通 DRAM die、PIM-DRAM die 与 buffer die，只有 PIM-DRAM 层含该执行单元。研究阅读时要把这些数字看作 workload- and system-dependent result，而不是 macro-level CIM 指标；也要区分 ISSCC 的 device/architecture paper、Hot Chips 的 system-oriented presentation、后续 IEEE Micro/系统论文中的软件栈和 benchmark 口径。
+
+原演示报告用未修改的 HBM controller 验证；U280 FPGA 示例调整 controller 配置，保证 PIM 命令顺序并禁用 auto-precharge。其操作机制分模式：普通模式下 RD/WR 执行存储访问；进入 AB-PIM 模式后，外部 RD/WR 这类 CAS 命令触发预先装入 command register file（CRF）的指令，CRF 程序计数与控制流随之推进。PCU 使用通用/标量寄存器和所选 bank 的 row buffer 作为操作数，以 16-lane FP16 SIMD 执行支持的乘、加等操作。模式转换使用兼容标准的 DRAM 命令序列；因此既有 controller 硬件可发出承载这些动作的命令，但软件与配置仍须正确组织顺序。调度须记录模式、同一 even/odd bank 对共享的 PCU、CRF 状态及命令 guard；不能假设每个 bank 都能独立发射。
+
+这个案例特别适合训练 CIM/PIM 边界判断。它把 compute 放进 high-performance memory，因此比传统 NMC 更近；但 compute 与 DRAM cell 分离，不是 cell/bitline/sense path 直接计算，所以不属于 CIM。它研究的是 memory command、bank-level offload、host stall、data movement、controller/runtime 和 kernel mapping。
+
+08 章问 HBM-PIM 是否能进入 HBM 产品线、客户如何验证、controller 和 runtime 如何支持；09 章问论文如何建模 offload granularity、哪些 kernel memory-bound、energy/byte 怎么下降、system speedup 是否包含 host 和 accelerator 的等待时间。两个视角都需要，但不能互相替代。
+
+读 HBM-PIM 论文或技术报告时要记录：
+
+| 字段 | 为什么必须记录 |
+| --- | --- |
+| 被 offload 的 kernel | PIM 只对特定 memory-bound kernel 有优势 |
+| bank/channel/pseudo-channel 粒度 | 决定并行度、冲突和调度复杂度 |
+| host/controller command model | 决定软件是否能真正使用 PIM |
+| energy/byte 与 energy/op | PIM 的收益常来自少搬数据，不是单 op 更便宜 |
+| system baseline | 和 GPU、CPU、HBM-only baseline 的比较口径必须一致 |
+
+## 一句话理解
+
+Samsung HBM-PIM 的研究价值是把 PIM 从概念拉到 HBM bank/system 评估层，但它仍不是 cell-level CIM。
+
+## 研究启示
+
+PIM 研究的关键不是追求 CIM macro TOPS/W，而是建立 memory-bound workload 的系统模型：哪些数据值得留在 memory side、哪些计算值得 offload、host 如何同步、controller 如何调度、能效收益到底来自减少字节移动还是增加并行计算。

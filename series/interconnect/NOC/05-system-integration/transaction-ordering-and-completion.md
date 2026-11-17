@@ -46,4 +46,4 @@
 
 错误、超时和复位同样需要契约：哪些片段已执行，如何向上回报，何时释放 tag，以及迟到响应是否还可能出现。超时本身不证明请求已被取消；在途状态未处理完时复用标识可能错配新旧事务。
 
-<span id="建模启示"></span>按事务保留源、接口 ID、内部匹配状态、片段范围、响应状态和上层交付事件。需要研究软件交接时，再记录缓存可见性和所有权；具体规则见 [DMA 的一致性与同步](../../../microarchitecture/DMA/wiki/02-fundamentals/noncoherent-vs-coherent-dma.md)。
+<span id="建模启示"></span>按事务保留源、接口 ID、内部匹配状态、片段范围、响应状态和上层交付事件。需要研究软件交接时，再记录缓存可见性和所有权；具体规则见 [DMA 的一致性与同步](../../../microarchitecture/05-dma/02-fundamentals/noncoherent-vs-coherent-dma.md)。

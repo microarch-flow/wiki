@@ -44,4 +44,4 @@ PCI Express（PCIe）把主机与设备连接成可枚举、可寻址的事务�
 
 主线是拓扑、事务、配置、DMA、中断和系统性能。基础链路机制以传统 Non-Flit 模式为起点；涉及 Flit Mode 时单独说明，不能只看 Gen 编号选择模型。例子中的地址、延迟和容量均按所在文章的假设解释。
 
-片内事务见 [BUS](../BUS/README.md)，路由与拥塞见 [NoC](../NOC/README.md)，DMA 引擎组织见 [DMA](../../microarchitecture/DMA/wiki/README.md)，电气与均衡见 [SerDes](../SERDES/README.md)，CXL 内存访问见[一致性与内存互连](../COHERENCE/README.md)。本专题保留这些接口交界处的必要条件。
+片内事务见 [BUS](../BUS/README.md)，路由与拥塞见 [NoC](../NOC/README.md)，DMA 引擎组织见 [DMA](../../microarchitecture/05-dma/README.md)，电气与均衡见 [SerDes](../SERDES/README.md)，CXL 内存访问见[一致性与内存互连](../COHERENCE/README.md)。本专题保留这些接口交界处的必要条件。

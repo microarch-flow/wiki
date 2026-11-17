@@ -10,7 +10,7 @@ title: "NIC 数据路径：RX、TX 分别占用哪个 PCIe 方向？"
 
 上级：[工作负载与案例](README.md)
 
-本例采用主机内存中的 RX/TX 描述符与完成状态，NIC 作为 Endpoint。重点是把网络方向转换成 PCIe 事务方向；ring 调度和 DMA 引擎组织由 [DMA 专题 NIC 案例](../../../microarchitecture/DMA/wiki/07-workloads-case-studies/pcie-nic-dma-case-card.md)负责。
+本例采用主机内存中的 RX/TX 描述符与完成状态，NIC 作为 Endpoint。重点是把网络方向转换成 PCIe 事务方向；ring 调度和 DMA 引擎组织由 [DMA 专题 NIC 案例](../../../microarchitecture/05-dma/07-workloads-case-studies/pcie-nic-dma-case-card.md)负责。
 
 <div id="最关键的三条主线" class="pcie-legacy-anchor"></div>
 

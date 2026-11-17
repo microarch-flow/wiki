@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 680 330" role="img" aria-labelledby="title desc">
+  <title id="title">2×2 output-stationary 阵列</title>
+  <desc id="desc">A 从左向右传递，B 从上向下传递。四个 PE 分别保存 C00、C01、C10、C11 的部分和。入口按行列编号错位，邻近传递各需一拍。</desc>
+  <defs><marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10Z" fill="#427971"/></marker></defs>
+  <rect width="680" height="330" rx="16" fill="#edf2ed"/>
+  <g fill="none" stroke="#427971" stroke-width="2.5" marker-end="url(#arrow)">
+    <path d="M75 135H235M365 135H445M75 260H235M365 260H445"/>
+    <path d="M300 55V100M510 55V100M300 170V225M510 170V225"/>
+  </g>
+  <g fill="#e0eae2" stroke="#718e85" stroke-width="1.5">
+    <rect x="240" y="100" width="125" height="70" rx="10"/><rect x="450" y="100" width="125" height="70" rx="10"/>
+    <rect x="240" y="225" width="125" height="70" rx="10"/><rect x="450" y="225" width="125" height="70" rx="10"/>
+  </g>
+  <g fill="#243a34" font-family="system-ui,sans-serif" font-size="18" text-anchor="middle">
+    <text x="302" y="128">PE00</text><text x="302" y="153">保存 C00</text><text x="512" y="128">PE01</text><text x="512" y="153">保存 C01</text>
+    <text x="302" y="253">PE10</text><text x="302" y="278">保存 C10</text><text x="512" y="253">PE11</text><text x="512" y="278">保存 C11</text>
+    <text x="300" y="37">B 第 0 列</text><text x="510" y="37">B 第 1 列</text>
+    <text x="133" y="117">A 第 0 行</text><text x="133" y="242">A 第 1 行</text>
+    <text x="405" y="124" font-size="15">1 拍</text><text x="328" y="205" font-size="15">1 拍</text>
+  </g>
+</svg>

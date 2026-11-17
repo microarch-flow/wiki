@@ -2,7 +2,7 @@
 
 上级：[05 端点与系统集成](../SUMMARY.md#05-system-integration)；原章节：[05 端点与系统集成](./README.md)
 
-相关：[网络接口 NI](./ni-network-interface-design.md)、[NoC 与存储系统](./noc-meets-memory-system.md)、[DMA：调度、Outstanding 与回包](../../../microarchitecture/DMA/wiki/03-dma-microarchitecture/scheduling-outstanding.md)
+相关：[网络接口 NI](./ni-network-interface-design.md)、[NoC 与存储系统](./noc-meets-memory-system.md)、[DMA：调度、Outstanding 与回包](../../../microarchitecture/05-dma/03-dma-microarchitecture/scheduling-outstanding.md)
 
 <span id="dma-engine-noc-interaction"></span><span id="这页在回答什么问题"></span>DMA 将搬运需求组织成请求、数据和响应。它的窗口、粒度和发起节奏会影响网络流量；网络和目的端的反压也会反过来限制 DMA。
 

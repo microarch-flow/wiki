@@ -31,6 +31,6 @@
 
 <span id="什么时候必须切到-noc-思维"></span>若请求或响应长期等待，再检查注入、路径共享、credit 和接收端。不同层的计数应使用同一时间窗口；链路利用率低本身不能定位根因。
 
-<span id="建模启示"></span>模型可记录 `doorbell_accept`、`command_accept`、`packet_inject`、`response_deliver` 和 `completion_visible`。这些是观察点示例，不规定所有设备的实现顺序。具体缓存交接和中断闭环见 [BUS：Doorbell、Completion 与 Interrupt](../../BUS/04-microarchitecture-integration/doorbell-completion-interrupt-flow.md) 和 [DMA 一致性](../../../microarchitecture/DMA/wiki/02-fundamentals/noncoherent-vs-coherent-dma.md)。
+<span id="建模启示"></span>模型可记录 `doorbell_accept`、`command_accept`、`packet_inject`、`response_deliver` 和 `completion_visible`。这些是观察点示例，不规定所有设备的实现顺序。具体缓存交接和中断闭环见 [BUS：Doorbell、Completion 与 Interrupt](../../BUS/04-microarchitecture-integration/doorbell-completion-interrupt-flow.md) 和 [DMA 一致性](../../../microarchitecture/05-dma/02-fundamentals/noncoherent-vs-coherent-dma.md)。
 
 <span id="一句话理解"></span>系统任务跨越多个接口；每个接口的接纳和完成只说明其契约规定的事件。

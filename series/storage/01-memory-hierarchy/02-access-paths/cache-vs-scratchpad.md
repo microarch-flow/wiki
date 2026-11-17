@@ -74,7 +74,7 @@ Cache 也不是本质随机。若初始状态、地址序列、替换与仲裁�
 
 Cache 写入可以采用不同策略。例如，write-through 会按实现策略将写入传播到下一级；write-back cache 可以先更新本地副本，并在需要时写回脏数据。写入何时对其他参与方可见，还取决于系统的一致性与同步约定。[MIT 的计算机结构课程](https://ocw.mit.edu/courses/6-004/computation-structures-spring-2017/pages/c14/c14s1/)介绍了 cache 命中、替换及 write-back 的基本过程。
 
-Scratchpad 的本地写入不会自动等同于更新外部副本。若后续消费者在本地之外，使用方需要按系统接口安排结果写出，并确认对方何时可以看到它。若多个参与方共享同一块数据，还要明确使用权和同步顺序；具体例子见 [DMA 同步与一致性](../../../microarchitecture/DMA/wiki/04-programming-model/synchronization-errors.md)。
+Scratchpad 的本地写入不会自动等同于更新外部副本。若后续消费者在本地之外，使用方需要按系统接口安排结果写出，并确认对方何时可以看到它。若多个参与方共享同一块数据，还要明确使用权和同步顺序；具体例子见 [DMA 同步与一致性](../../../microarchitecture/05-dma/04-programming-model/synchronization-errors.md)。
 
 ## 硬件、软件与性能代价
 

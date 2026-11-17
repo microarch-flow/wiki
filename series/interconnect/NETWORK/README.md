@@ -45,7 +45,7 @@ A 的提交成功、A 的成功工作完成、B 的相应通知以及 B 的应�
 
 | 专题 | 保留的主要职责 | 本专题补充什么 |
 | --- | --- | --- |
-| [PCIe](../PCIE/README.md)与 [DMA](../../microarchitecture/DMA/wiki/README.md) | 主机设备事务、地址、ring 与缓冲交接 | NIC 两侧如何连接端到端通信 |
+| [PCIe](../PCIE/README.md)与 [DMA](../../microarchitecture/05-dma/README.md) | 主机设备事务、地址、ring 与缓冲交接 | NIC 两侧如何连接端到端通信 |
 | [NoC](../NOC/README.md) | 通用路由、信用、拓扑与前进性基础 | Ethernet／IB 的转发与管理机制 |
 | [一致性与内存互连](../COHERENCE/README.md) | 缓存副本、顺序与设备一致性域 | 数据到达后消费者如何建立正确依赖 |
 | [加速器互连](../SCALEUP/README.md) | 多卡访问、集体通信与并行流量 | NIC 放置、网络承载及跨节点拥塞 |

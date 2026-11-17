@@ -1,15 +1,12 @@
 {
   "topics": {
-    "COMPUTE": "series/microarchitecture/COMPUTE",
     "BUS": "series/interconnect/BUS",
     "NOC": "series/interconnect/NOC",
     "D2D": "series/interconnect/D2D",
     "COHERENCE": "series/interconnect/COHERENCE",
     "SCALEUP": "series/interconnect/SCALEUP",
     "NETWORK": "series/interconnect/NETWORK",
-    "DMA": "series/microarchitecture/DMA",
     "PCIE": "series/interconnect/PCIE",
-    "CIM": "series/microarchitecture/CIM",
     "CPO": "series/interconnect/CPO",
     "FAB": "series/chip-development/FAB",
     "SERDES": "series/interconnect/SERDES"
@@ -282,7 +279,1566 @@
     ]
   },
   "foundations": {
-    "article": "series/microarchitecture/foundations/electrical-timing-foundations.md",
-    "images": "series/microarchitecture/foundations/img"
+    "article": "series/microarchitecture/02-pipeline/electrical-timing-foundations.md",
+    "images": "series/microarchitecture/02-pipeline/img"
+  },
+  "microarchitecture": {
+    "homepage": "series/microarchitecture/README.md",
+    "mappings": [
+      {
+        "source": "series/microarchitecture/01-datapath/README.md",
+        "target": "COMPUTE/wiki/02-datapath-foundations/README.md"
+      },
+      {
+        "source": "series/microarchitecture/01-datapath/dadda-and-adder-trees.md",
+        "target": "COMPUTE/wiki/02-datapath-foundations/dadda-and-adder-trees.md"
+      },
+      {
+        "source": "series/microarchitecture/01-datapath/multiply-accumulate-from-gates.md",
+        "target": "COMPUTE/wiki/02-datapath-foundations/multiply-accumulate-from-gates.md"
+      },
+      {
+        "source": "series/microarchitecture/01-datapath/mux-and-data-movement-cost.md",
+        "target": "COMPUTE/wiki/02-datapath-foundations/mux-and-data-movement-cost.md"
+      },
+      {
+        "source": "series/microarchitecture/01-datapath/number-formats-for-ai.md",
+        "target": "COMPUTE/wiki/02-datapath-foundations/number-formats-for-ai.md"
+      },
+      {
+        "source": "series/microarchitecture/01-datapath/quadratic-bitwidth-scaling.md",
+        "target": "COMPUTE/wiki/02-datapath-foundations/quadratic-bitwidth-scaling.md"
+      },
+      {
+        "source": "series/microarchitecture/02-pipeline/README.md",
+        "target": "COMPUTE/wiki/04-clocking-and-pipeline/README.md"
+      },
+      {
+        "source": "series/microarchitecture/02-pipeline/feedback-loop-clock-constraint.md",
+        "target": "COMPUTE/wiki/04-clocking-and-pipeline/feedback-loop-clock-constraint.md"
+      },
+      {
+        "source": "series/microarchitecture/02-pipeline/frequency-is-not-throughput.md",
+        "target": "COMPUTE/wiki/04-clocking-and-pipeline/frequency-is-not-throughput.md"
+      },
+      {
+        "source": "series/microarchitecture/02-pipeline/global-clock-synchronization.md",
+        "target": "COMPUTE/wiki/04-clocking-and-pipeline/global-clock-synchronization.md"
+      },
+      {
+        "source": "series/microarchitecture/02-pipeline/pipeline-register-insertion.md",
+        "target": "COMPUTE/wiki/04-clocking-and-pipeline/pipeline-register-insertion.md"
+      },
+      {
+        "source": "series/microarchitecture/04-parallel-execution/README.md",
+        "target": "COMPUTE/wiki/03-systolic-array/README.md"
+      },
+      {
+        "source": "series/microarchitecture/04-parallel-execution/array-sizing-tradeoff.md",
+        "target": "COMPUTE/wiki/03-systolic-array/array-sizing-tradeoff.md"
+      },
+      {
+        "source": "series/microarchitecture/04-parallel-execution/dataflow-taxonomy.md",
+        "target": "COMPUTE/wiki/03-systolic-array/dataflow-taxonomy.md"
+      },
+      {
+        "source": "series/microarchitecture/04-parallel-execution/weight-loading-and-trickle-feed.md",
+        "target": "COMPUTE/wiki/03-systolic-array/weight-loading-and-trickle-feed.md"
+      },
+      {
+        "source": "series/microarchitecture/04-parallel-execution/why-systolic-array.md",
+        "target": "COMPUTE/wiki/03-systolic-array/why-systolic-array.md"
+      },
+      {
+        "source": "series/microarchitecture/05-dma/01-overview/README.md",
+        "target": "DMA/wiki/01-overview/README.md"
+      },
+      {
+        "source": "series/microarchitecture/05-dma/01-overview/goal-oriented-navigation.md",
+        "target": "DMA/wiki/01-overview/goal-oriented-navigation.md"
+      },
+      {
+        "source": "series/microarchitecture/05-dma/01-overview/learning-roadmap.md",
+        "target": "DMA/wiki/01-overview/learning-roadmap.md"
+      },
+      {
+        "source": "series/microarchitecture/05-dma/01-overview/problem-statement.md",
+        "target": "DMA/wiki/01-overview/problem-statement.md"
+      },
+      {
+        "source": "series/microarchitecture/05-dma/01-overview/taxonomy.md",
+        "target": "DMA/wiki/01-overview/taxonomy.md"
+      },
+      {
+        "source": "series/microarchitecture/05-dma/02-fundamentals/README.md",
+        "target": "DMA/wiki/02-fundamentals/README.md"
+      },
+      {
+        "source": "series/microarchitecture/05-dma/02-fundamentals/address-descriptor-burst.md",
+        "target": "DMA/wiki/02-fundamentals/address-descriptor-burst.md"
+      },
+      {
+        "source": "series/microarchitecture/05-dma/02-fundamentals/consistency-cache-coherency.md",
+        "target": "DMA/wiki/02-fundamentals/consistency-cache-coherency.md"
+      },
+      {
+        "source": "series/microarchitecture/05-dma/02-fundamentals/noncoherent-vs-coherent-dma.md",
+        "target": "DMA/wiki/02-fundamentals/noncoherent-vs-coherent-dma.md"
+      },
+      {
+        "source": "series/microarchitecture/05-dma/02-fundamentals/transfer-basics.md",
+        "target": "DMA/wiki/02-fundamentals/transfer-basics.md"
+      },
+      {
+        "source": "series/microarchitecture/05-dma/03-dma-microarchitecture/README.md",
+        "target": "DMA/wiki/03-dma-microarchitecture/README.md"
+      },
+      {
+        "source": "series/microarchitecture/05-dma/03-dma-microarchitecture/channels-virtualization.md",
+        "target": "DMA/wiki/03-dma-microarchitecture/channels-virtualization.md"
+      },
+      {
+        "source": "series/microarchitecture/05-dma/03-dma-microarchitecture/engine-components.md",
+        "target": "DMA/wiki/03-dma-microarchitecture/engine-components.md"
+      },
+      {
+        "source": "series/microarchitecture/05-dma/03-dma-microarchitecture/multidimensional-stride-dma.md",
+        "target": "DMA/wiki/03-dma-microarchitecture/multidimensional-stride-dma.md"
+      },
+      {
+        "source": "series/microarchitecture/05-dma/03-dma-microarchitecture/scheduling-outstanding.md",
+        "target": "DMA/wiki/03-dma-microarchitecture/scheduling-outstanding.md"
+      },
+      {
+        "source": "series/microarchitecture/05-dma/04-programming-model/README.md",
+        "target": "DMA/wiki/04-programming-model/README.md"
+      },
+      {
+        "source": "series/microarchitecture/05-dma/04-programming-model/queues-doorbells-completions.md",
+        "target": "DMA/wiki/04-programming-model/queues-doorbells-completions.md"
+      },
+      {
+        "source": "series/microarchitecture/05-dma/04-programming-model/software-stack.md",
+        "target": "DMA/wiki/04-programming-model/software-stack.md"
+      },
+      {
+        "source": "series/microarchitecture/05-dma/04-programming-model/synchronization-errors.md",
+        "target": "DMA/wiki/04-programming-model/synchronization-errors.md"
+      },
+      {
+        "source": "series/microarchitecture/05-dma/04-programming-model/tiling-double-buffering.md",
+        "target": "DMA/wiki/04-programming-model/tiling-double-buffering.md"
+      },
+      {
+        "source": "series/microarchitecture/05-dma/05-system-integration/README.md",
+        "target": "DMA/wiki/05-system-integration/README.md"
+      },
+      {
+        "source": "series/microarchitecture/05-dma/05-system-integration/axi-pcie-view.md",
+        "target": "DMA/wiki/05-system-integration/axi-pcie-view.md"
+      },
+      {
+        "source": "series/microarchitecture/05-dma/05-system-integration/dma-and-memory-system.md",
+        "target": "DMA/wiki/05-system-integration/dma-and-memory-system.md"
+      },
+      {
+        "source": "series/microarchitecture/05-dma/05-system-integration/dma-and-noc.md",
+        "target": "DMA/wiki/05-system-integration/dma-and-noc.md"
+      },
+      {
+        "source": "series/microarchitecture/05-dma/05-system-integration/soc-peripheral-io.md",
+        "target": "DMA/wiki/05-system-integration/soc-peripheral-io.md"
+      },
+      {
+        "source": "series/microarchitecture/05-dma/06-performance-modeling/README.md",
+        "target": "DMA/wiki/06-performance-modeling/README.md"
+      },
+      {
+        "source": "series/microarchitecture/05-dma/06-performance-modeling/calibration-validation.md",
+        "target": "DMA/wiki/06-performance-modeling/calibration-validation.md"
+      },
+      {
+        "source": "series/microarchitecture/05-dma/06-performance-modeling/debug-observability.md",
+        "target": "DMA/wiki/06-performance-modeling/debug-observability.md"
+      },
+      {
+        "source": "series/microarchitecture/05-dma/06-performance-modeling/metrics-bottlenecks.md",
+        "target": "DMA/wiki/06-performance-modeling/metrics-bottlenecks.md"
+      },
+      {
+        "source": "series/microarchitecture/05-dma/06-performance-modeling/model-schema.md",
+        "target": "DMA/wiki/06-performance-modeling/model-schema.md"
+      },
+      {
+        "source": "series/microarchitecture/05-dma/06-performance-modeling/modeling-method.md",
+        "target": "DMA/wiki/06-performance-modeling/modeling-method.md"
+      },
+      {
+        "source": "series/microarchitecture/05-dma/06-performance-modeling/optimization-playbook.md",
+        "target": "DMA/wiki/06-performance-modeling/optimization-playbook.md"
+      },
+      {
+        "source": "series/microarchitecture/05-dma/06-performance-modeling/parameter-reference.md",
+        "target": "DMA/wiki/06-performance-modeling/parameter-reference.md"
+      },
+      {
+        "source": "series/microarchitecture/05-dma/06-performance-modeling/sensitivity-coupling.md",
+        "target": "DMA/wiki/06-performance-modeling/sensitivity-coupling.md"
+      },
+      {
+        "source": "series/microarchitecture/05-dma/07-workloads-case-studies/README.md",
+        "target": "DMA/wiki/07-workloads-case-studies/README.md"
+      },
+      {
+        "source": "series/microarchitecture/05-dma/07-workloads-case-studies/ai-accelerator-dma.md",
+        "target": "DMA/wiki/07-workloads-case-studies/ai-accelerator-dma.md"
+      },
+      {
+        "source": "series/microarchitecture/05-dma/07-workloads-case-studies/ai-local-dma-case-card.md",
+        "target": "DMA/wiki/07-workloads-case-studies/ai-local-dma-case-card.md"
+      },
+      {
+        "source": "series/microarchitecture/05-dma/07-workloads-case-studies/axi-dma-case-card.md",
+        "target": "DMA/wiki/07-workloads-case-studies/axi-dma-case-card.md"
+      },
+      {
+        "source": "series/microarchitecture/05-dma/07-workloads-case-studies/cpu-gpu-npu-comparison.md",
+        "target": "DMA/wiki/07-workloads-case-studies/cpu-gpu-npu-comparison.md"
+      },
+      {
+        "source": "series/microarchitecture/05-dma/07-workloads-case-studies/embedded-storage-network.md",
+        "target": "DMA/wiki/07-workloads-case-studies/embedded-storage-network.md"
+      },
+      {
+        "source": "series/microarchitecture/05-dma/07-workloads-case-studies/gpu-copy-engine-case-card.md",
+        "target": "DMA/wiki/07-workloads-case-studies/gpu-copy-engine-case-card.md"
+      },
+      {
+        "source": "series/microarchitecture/05-dma/07-workloads-case-studies/hbm-to-tile-data-supply-chain.md",
+        "target": "DMA/wiki/07-workloads-case-studies/hbm-to-tile-data-supply-chain.md"
+      },
+      {
+        "source": "series/microarchitecture/05-dma/07-workloads-case-studies/nvme-storage-dma-case-card.md",
+        "target": "DMA/wiki/07-workloads-case-studies/nvme-storage-dma-case-card.md"
+      },
+      {
+        "source": "series/microarchitecture/05-dma/07-workloads-case-studies/pcie-nic-dma-case-card.md",
+        "target": "DMA/wiki/07-workloads-case-studies/pcie-nic-dma-case-card.md"
+      },
+      {
+        "source": "series/microarchitecture/05-dma/08-industry-ip/README.md",
+        "target": "DMA/wiki/08-industry-ip/README.md"
+      },
+      {
+        "source": "series/microarchitecture/05-dma/08-industry-ip/dma-comparison-matrix.md",
+        "target": "DMA/wiki/08-industry-ip/dma-comparison-matrix.md"
+      },
+      {
+        "source": "series/microarchitecture/05-dma/08-industry-ip/dma-ip-checklist.md",
+        "target": "DMA/wiki/08-industry-ip/dma-ip-checklist.md"
+      },
+      {
+        "source": "series/microarchitecture/05-dma/08-industry-ip/vendor-landscape.md",
+        "target": "DMA/wiki/08-industry-ip/vendor-landscape.md"
+      },
+      {
+        "source": "series/microarchitecture/05-dma/09-reference-research/README.md",
+        "target": "DMA/wiki/09-reference-research/README.md"
+      },
+      {
+        "source": "series/microarchitecture/05-dma/09-reference-research/case-index.md",
+        "target": "DMA/wiki/09-reference-research/case-index.md"
+      },
+      {
+        "source": "series/microarchitecture/05-dma/09-reference-research/glossary.md",
+        "target": "DMA/wiki/09-reference-research/glossary.md"
+      },
+      {
+        "source": "series/microarchitecture/05-dma/09-reference-research/ip-analysis-template.md",
+        "target": "DMA/wiki/09-reference-research/ip-analysis-template.md"
+      },
+      {
+        "source": "series/microarchitecture/05-dma/09-reference-research/paper-card-template.md",
+        "target": "DMA/wiki/09-reference-research/paper-card-template.md"
+      },
+      {
+        "source": "series/microarchitecture/05-dma/09-reference-research/reading-questions.md",
+        "target": "DMA/wiki/09-reference-research/reading-questions.md"
+      },
+      {
+        "source": "series/microarchitecture/05-dma/09-reference-research/repository-notes.md",
+        "target": "DMA/README.md"
+      },
+      {
+        "source": "series/microarchitecture/05-dma/09-reference-research/study-template.md",
+        "target": "DMA/wiki/09-reference-research/study-template.md"
+      },
+      {
+        "source": "series/microarchitecture/05-dma/README.md",
+        "target": "DMA/wiki/README.md"
+      },
+      {
+        "source": "series/microarchitecture/05-dma/SUMMARY.md",
+        "target": "DMA/wiki/SUMMARY.md"
+      },
+      {
+        "source": "series/microarchitecture/07-chip-organization/README.md",
+        "target": "COMPUTE/wiki/07-chip-organization/README.md"
+      },
+      {
+        "source": "series/microarchitecture/07-chip-organization/cpu-vs-gpu-core-area.md",
+        "target": "COMPUTE/wiki/07-chip-organization/cpu-vs-gpu-core-area.md"
+      },
+      {
+        "source": "series/microarchitecture/07-chip-organization/gpu-as-tiled-tpu.md",
+        "target": "COMPUTE/wiki/07-chip-organization/gpu-as-tiled-tpu.md"
+      },
+      {
+        "source": "series/microarchitecture/08-in-memory-computing/01-overview/README.md",
+        "target": "CIM/wiki/01-overview/README.md"
+      },
+      {
+        "source": "series/microarchitecture/08-in-memory-computing/01-overview/cim-pim-nmc-taxonomy.md",
+        "target": "CIM/wiki/01-overview/cim-pim-nmc-taxonomy.md"
+      },
+      {
+        "source": "series/microarchitecture/08-in-memory-computing/01-overview/learning-roadmap.md",
+        "target": "CIM/wiki/01-overview/learning-roadmap.md"
+      },
+      {
+        "source": "series/microarchitecture/08-in-memory-computing/01-overview/problem-statement.md",
+        "target": "CIM/wiki/01-overview/problem-statement.md"
+      },
+      {
+        "source": "series/microarchitecture/08-in-memory-computing/01-overview/taxonomy.md",
+        "target": "CIM/wiki/01-overview/taxonomy.md"
+      },
+      {
+        "source": "series/microarchitecture/08-in-memory-computing/01-overview/two-axes-memory-and-paradigm.md",
+        "target": "CIM/wiki/01-overview/two-axes-memory-and-paradigm.md"
+      },
+      {
+        "source": "series/microarchitecture/08-in-memory-computing/01-overview/why-cim-now-and-why-not-before.md",
+        "target": "CIM/wiki/01-overview/why-cim-now-and-why-not-before.md"
+      },
+      {
+        "source": "series/microarchitecture/08-in-memory-computing/02-memory-technologies/README.md",
+        "target": "CIM/wiki/02-memory-technologies/README.md"
+      },
+      {
+        "source": "series/microarchitecture/08-in-memory-computing/02-memory-technologies/dram-pim-deep-dive.md",
+        "target": "CIM/wiki/02-memory-technologies/dram-pim-deep-dive.md"
+      },
+      {
+        "source": "series/microarchitecture/08-in-memory-computing/02-memory-technologies/dram-pim-foundation.md",
+        "target": "CIM/wiki/02-memory-technologies/dram-pim-foundation.md"
+      },
+      {
+        "source": "series/microarchitecture/08-in-memory-computing/02-memory-technologies/flash-cim-niche.md",
+        "target": "CIM/wiki/02-memory-technologies/flash-cim-niche.md"
+      },
+      {
+        "source": "series/microarchitecture/08-in-memory-computing/02-memory-technologies/memory-tech-comparison-matrix.md",
+        "target": "CIM/wiki/02-memory-technologies/memory-tech-comparison-matrix.md"
+      },
+      {
+        "source": "series/microarchitecture/08-in-memory-computing/02-memory-technologies/pcm-mram-for-cim.md",
+        "target": "CIM/wiki/02-memory-technologies/pcm-mram-for-cim.md"
+      },
+      {
+        "source": "series/microarchitecture/08-in-memory-computing/02-memory-technologies/reram-as-compute-element.md",
+        "target": "CIM/wiki/02-memory-technologies/reram-as-compute-element.md"
+      },
+      {
+        "source": "series/microarchitecture/08-in-memory-computing/02-memory-technologies/reram-cim-deep-dive.md",
+        "target": "CIM/wiki/02-memory-technologies/reram-cim-deep-dive.md"
+      },
+      {
+        "source": "series/microarchitecture/08-in-memory-computing/02-memory-technologies/sram-cim-deep-dive.md",
+        "target": "CIM/wiki/02-memory-technologies/sram-cim-deep-dive.md"
+      },
+      {
+        "source": "series/microarchitecture/08-in-memory-computing/02-memory-technologies/sram-cim-foundation.md",
+        "target": "CIM/wiki/02-memory-technologies/sram-cim-foundation.md"
+      },
+      {
+        "source": "series/microarchitecture/08-in-memory-computing/03-compute-paradigms/README.md",
+        "target": "CIM/wiki/03-compute-paradigms/README.md"
+      },
+      {
+        "source": "series/microarchitecture/08-in-memory-computing/03-compute-paradigms/analog-cim-deep-dive.md",
+        "target": "CIM/wiki/03-compute-paradigms/analog-cim-deep-dive.md"
+      },
+      {
+        "source": "series/microarchitecture/08-in-memory-computing/03-compute-paradigms/analog-cim-fundamentals.md",
+        "target": "CIM/wiki/03-compute-paradigms/analog-cim-fundamentals.md"
+      },
+      {
+        "source": "series/microarchitecture/08-in-memory-computing/03-compute-paradigms/analog-vs-digital-tradeoff-map.md",
+        "target": "CIM/wiki/03-compute-paradigms/analog-vs-digital-tradeoff-map.md"
+      },
+      {
+        "source": "series/microarchitecture/08-in-memory-computing/03-compute-paradigms/digital-cim-deep-dive.md",
+        "target": "CIM/wiki/03-compute-paradigms/digital-cim-deep-dive.md"
+      },
+      {
+        "source": "series/microarchitecture/08-in-memory-computing/03-compute-paradigms/digital-cim-fundamentals.md",
+        "target": "CIM/wiki/03-compute-paradigms/digital-cim-fundamentals.md"
+      },
+      {
+        "source": "series/microarchitecture/08-in-memory-computing/03-compute-paradigms/mixed-signal-cim.md",
+        "target": "CIM/wiki/03-compute-paradigms/mixed-signal-cim.md"
+      },
+      {
+        "source": "series/microarchitecture/08-in-memory-computing/03-compute-paradigms/paradigm-memory-crossmap.md",
+        "target": "CIM/wiki/03-compute-paradigms/paradigm-memory-crossmap.md"
+      },
+      {
+        "source": "series/microarchitecture/08-in-memory-computing/04-circuit-and-macro/README.md",
+        "target": "CIM/wiki/04-circuit-and-macro/README.md"
+      },
+      {
+        "source": "series/microarchitecture/08-in-memory-computing/04-circuit-and-macro/adc-dac-sa-in-cim.md",
+        "target": "CIM/wiki/04-circuit-and-macro/adc-dac-sa-in-cim.md"
+      },
+      {
+        "source": "series/microarchitecture/08-in-memory-computing/04-circuit-and-macro/cim-macro-primitives.md",
+        "target": "CIM/wiki/04-circuit-and-macro/cim-macro-primitives.md"
+      },
+      {
+        "source": "series/microarchitecture/08-in-memory-computing/04-circuit-and-macro/data-encoding-strategies.md",
+        "target": "CIM/wiki/04-circuit-and-macro/data-encoding-strategies.md"
+      },
+      {
+        "source": "series/microarchitecture/08-in-memory-computing/04-circuit-and-macro/macro-design-tradeoff-framework.md",
+        "target": "CIM/wiki/04-circuit-and-macro/macro-design-tradeoff-framework.md"
+      },
+      {
+        "source": "series/microarchitecture/08-in-memory-computing/04-circuit-and-macro/non-idealities-and-error-sources.md",
+        "target": "CIM/wiki/04-circuit-and-macro/non-idealities-and-error-sources.md"
+      },
+      {
+        "source": "series/microarchitecture/08-in-memory-computing/04-circuit-and-macro/peripheral-overhead.md",
+        "target": "CIM/wiki/04-circuit-and-macro/peripheral-overhead.md"
+      },
+      {
+        "source": "series/microarchitecture/08-in-memory-computing/04-circuit-and-macro/precision-and-quantization-at-circuit.md",
+        "target": "CIM/wiki/04-circuit-and-macro/precision-and-quantization-at-circuit.md"
+      },
+      {
+        "source": "series/microarchitecture/08-in-memory-computing/05-architecture-and-system/README.md",
+        "target": "CIM/wiki/05-architecture-and-system/README.md"
+      },
+      {
+        "source": "series/microarchitecture/08-in-memory-computing/05-architecture-and-system/cim-modeling-parameter-schema.md",
+        "target": "CIM/wiki/05-architecture-and-system/cim-modeling-parameter-schema.md"
+      },
+      {
+        "source": "series/microarchitecture/08-in-memory-computing/05-architecture-and-system/cim-system-integration-with-host.md",
+        "target": "CIM/wiki/05-architecture-and-system/cim-system-integration-with-host.md"
+      },
+      {
+        "source": "series/microarchitecture/08-in-memory-computing/05-architecture-and-system/dataflow-mapping-on-cim.md",
+        "target": "CIM/wiki/05-architecture-and-system/dataflow-mapping-on-cim.md"
+      },
+      {
+        "source": "series/microarchitecture/08-in-memory-computing/05-architecture-and-system/from-macro-to-system.md",
+        "target": "CIM/wiki/05-architecture-and-system/from-macro-to-system.md"
+      },
+      {
+        "source": "series/microarchitecture/08-in-memory-computing/05-architecture-and-system/interconnect-and-reduction.md",
+        "target": "CIM/wiki/05-architecture-and-system/interconnect-and-reduction.md"
+      },
+      {
+        "source": "series/microarchitecture/08-in-memory-computing/05-architecture-and-system/memory-hierarchy-with-cim.md",
+        "target": "CIM/wiki/05-architecture-and-system/memory-hierarchy-with-cim.md"
+      },
+      {
+        "source": "series/microarchitecture/08-in-memory-computing/05-architecture-and-system/performance-energy-modeling.md",
+        "target": "CIM/wiki/05-architecture-and-system/performance-energy-modeling.md"
+      },
+      {
+        "source": "series/microarchitecture/08-in-memory-computing/05-architecture-and-system/reliability-and-error-tolerance.md",
+        "target": "CIM/wiki/05-architecture-and-system/reliability-and-error-tolerance.md"
+      },
+      {
+        "source": "series/microarchitecture/08-in-memory-computing/06-software-stack/README.md",
+        "target": "CIM/wiki/06-software-stack/README.md"
+      },
+      {
+        "source": "series/microarchitecture/08-in-memory-computing/06-software-stack/compilation-flow-overview.md",
+        "target": "CIM/wiki/06-software-stack/compilation-flow-overview.md"
+      },
+      {
+        "source": "series/microarchitecture/08-in-memory-computing/06-software-stack/model-adaptation-strategies.md",
+        "target": "CIM/wiki/06-software-stack/model-adaptation-strategies.md"
+      },
+      {
+        "source": "series/microarchitecture/08-in-memory-computing/06-software-stack/quantization-for-cim.md",
+        "target": "CIM/wiki/06-software-stack/quantization-for-cim.md"
+      },
+      {
+        "source": "series/microarchitecture/08-in-memory-computing/06-software-stack/runtime-and-scheduling.md",
+        "target": "CIM/wiki/06-software-stack/runtime-and-scheduling.md"
+      },
+      {
+        "source": "series/microarchitecture/08-in-memory-computing/06-software-stack/software-stack-comparison.md",
+        "target": "CIM/wiki/06-software-stack/software-stack-comparison.md"
+      },
+      {
+        "source": "series/microarchitecture/08-in-memory-computing/06-software-stack/weight-mapping-to-arrays.md",
+        "target": "CIM/wiki/06-software-stack/weight-mapping-to-arrays.md"
+      },
+      {
+        "source": "series/microarchitecture/08-in-memory-computing/07-workloads/README.md",
+        "target": "CIM/wiki/07-workloads/README.md"
+      },
+      {
+        "source": "series/microarchitecture/08-in-memory-computing/07-workloads/cnn-on-cim.md",
+        "target": "CIM/wiki/07-workloads/cnn-on-cim.md"
+      },
+      {
+        "source": "series/microarchitecture/08-in-memory-computing/07-workloads/edge-ai-and-cim.md",
+        "target": "CIM/wiki/07-workloads/edge-ai-and-cim.md"
+      },
+      {
+        "source": "series/microarchitecture/08-in-memory-computing/07-workloads/llm-decode-and-cim.md",
+        "target": "CIM/wiki/07-workloads/llm-decode-and-cim.md"
+      },
+      {
+        "source": "series/microarchitecture/08-in-memory-computing/07-workloads/transformer-on-cim.md",
+        "target": "CIM/wiki/07-workloads/transformer-on-cim.md"
+      },
+      {
+        "source": "series/microarchitecture/08-in-memory-computing/07-workloads/workload-characterization-for-cim.md",
+        "target": "CIM/wiki/07-workloads/workload-characterization-for-cim.md"
+      },
+      {
+        "source": "series/microarchitecture/08-in-memory-computing/08-industry-and-products/README.md",
+        "target": "CIM/wiki/08-industry-and-products/README.md"
+      },
+      {
+        "source": "series/microarchitecture/08-in-memory-computing/08-industry-and-products/company-cards/README.md",
+        "target": "CIM/wiki/08-industry-and-products/company-cards/README.md"
+      },
+      {
+        "source": "series/microarchitecture/08-in-memory-computing/08-industry-and-products/company-cards/cim-companies-axelera.md",
+        "target": "CIM/wiki/08-industry-and-products/company-cards/cim-companies-axelera.md"
+      },
+      {
+        "source": "series/microarchitecture/08-in-memory-computing/08-industry-and-products/company-cards/cim-companies-mythic.md",
+        "target": "CIM/wiki/08-industry-and-products/company-cards/cim-companies-mythic.md"
+      },
+      {
+        "source": "series/microarchitecture/08-in-memory-computing/08-industry-and-products/company-cards/nmc-companies-upmem.md",
+        "target": "CIM/wiki/08-industry-and-products/company-cards/nmc-companies-upmem.md"
+      },
+      {
+        "source": "series/microarchitecture/08-in-memory-computing/08-industry-and-products/company-cards/pim-companies-samsung-hbm-pim.md",
+        "target": "CIM/wiki/08-industry-and-products/company-cards/pim-companies-samsung-hbm-pim.md"
+      },
+      {
+        "source": "series/microarchitecture/08-in-memory-computing/08-industry-and-products/company-cards/pim-companies-sk-hynix-aim.md",
+        "target": "CIM/wiki/08-industry-and-products/company-cards/pim-companies-sk-hynix-aim.md"
+      },
+      {
+        "source": "series/microarchitecture/08-in-memory-computing/08-industry-and-products/company-comparison-matrix.md",
+        "target": "CIM/wiki/08-industry-and-products/company-comparison-matrix.md"
+      },
+      {
+        "source": "series/microarchitecture/08-in-memory-computing/08-industry-and-products/industry-landscape.md",
+        "target": "CIM/wiki/08-industry-and-products/industry-landscape.md"
+      },
+      {
+        "source": "series/microarchitecture/08-in-memory-computing/08-industry-and-products/manufacturing-and-test-challenges.md",
+        "target": "CIM/wiki/08-industry-and-products/manufacturing-and-test-challenges.md"
+      },
+      {
+        "source": "series/microarchitecture/08-in-memory-computing/08-industry-and-products/value-chain-and-commercialization.md",
+        "target": "CIM/wiki/08-industry-and-products/value-chain-and-commercialization.md"
+      },
+      {
+        "source": "series/microarchitecture/08-in-memory-computing/09-research-frontier/README.md",
+        "target": "CIM/wiki/09-research-frontier/README.md"
+      },
+      {
+        "source": "series/microarchitecture/08-in-memory-computing/09-research-frontier/case-study-samsung-hbm-pim-research-angle.md",
+        "target": "CIM/wiki/09-research-frontier/case-study-samsung-hbm-pim-research-angle.md"
+      },
+      {
+        "source": "series/microarchitecture/08-in-memory-computing/09-research-frontier/case-study-tsmc-16nm-cim-macro.md",
+        "target": "CIM/wiki/09-research-frontier/case-study-tsmc-16nm-cim-macro.md"
+      },
+      {
+        "source": "series/microarchitecture/08-in-memory-computing/09-research-frontier/case-study-u-tokyo-reram-cim.md",
+        "target": "CIM/wiki/09-research-frontier/case-study-u-tokyo-reram-cim.md"
+      },
+      {
+        "source": "series/microarchitecture/08-in-memory-computing/09-research-frontier/metrics-glossary.md",
+        "target": "CIM/wiki/09-research-frontier/metrics-glossary.md"
+      },
+      {
+        "source": "series/microarchitecture/08-in-memory-computing/09-research-frontier/open-problems.md",
+        "target": "CIM/wiki/09-research-frontier/open-problems.md"
+      },
+      {
+        "source": "series/microarchitecture/08-in-memory-computing/09-research-frontier/paper-review-template.md",
+        "target": "CIM/wiki/09-research-frontier/paper-review-template.md"
+      },
+      {
+        "source": "series/microarchitecture/08-in-memory-computing/09-research-frontier/recent-progress-themes.md",
+        "target": "CIM/wiki/09-research-frontier/recent-progress-themes.md"
+      },
+      {
+        "source": "series/microarchitecture/08-in-memory-computing/09-research-frontier/research-vs-industry-perspective.md",
+        "target": "CIM/wiki/09-research-frontier/research-vs-industry-perspective.md"
+      },
+      {
+        "source": "series/microarchitecture/08-in-memory-computing/10-reference/README.md",
+        "target": "CIM/wiki/10-reference/README.md"
+      },
+      {
+        "source": "series/microarchitecture/08-in-memory-computing/10-reference/decision-tree-cim-route-selection.md",
+        "target": "CIM/wiki/10-reference/decision-tree-cim-route-selection.md"
+      },
+      {
+        "source": "series/microarchitecture/08-in-memory-computing/10-reference/glossary.md",
+        "target": "CIM/wiki/10-reference/glossary.md"
+      },
+      {
+        "source": "series/microarchitecture/08-in-memory-computing/10-reference/high-frequency-questions.md",
+        "target": "CIM/wiki/10-reference/high-frequency-questions.md"
+      },
+      {
+        "source": "series/microarchitecture/08-in-memory-computing/10-reference/reading-roadmap-by-goal.md",
+        "target": "CIM/wiki/10-reference/reading-roadmap-by-goal.md"
+      },
+      {
+        "source": "series/microarchitecture/08-in-memory-computing/10-reference/source-notes.md",
+        "target": "CIM/README.md"
+      },
+      {
+        "source": "series/microarchitecture/08-in-memory-computing/README.md",
+        "target": "CIM/wiki/README.md"
+      },
+      {
+        "source": "series/microarchitecture/08-in-memory-computing/SUMMARY.md",
+        "target": "CIM/wiki/SUMMARY.md"
+      },
+      {
+        "source": "series/microarchitecture/09-power-implementation/brain-vs-chip-power.md",
+        "target": "COMPUTE/wiki/07-chip-organization/brain-vs-chip-power.md"
+      },
+      {
+        "source": "series/microarchitecture/09-power-implementation/fpga-vs-asic/README.md",
+        "target": "COMPUTE/wiki/05-fpga-vs-asic/README.md"
+      },
+      {
+        "source": "series/microarchitecture/09-power-implementation/fpga-vs-asic/lut-mux-and-10x-overhead.md",
+        "target": "COMPUTE/wiki/05-fpga-vs-asic/lut-mux-and-10x-overhead.md"
+      },
+      {
+        "source": "series/microarchitecture/reading-and-reference/01-routes/README.md",
+        "target": "COMPUTE/wiki/README.md"
+      },
+      {
+        "source": "series/microarchitecture/reading-and-reference/01-routes/self-test-questions.md",
+        "target": "COMPUTE/self-test-questions.md"
+      },
+      {
+        "source": "series/microarchitecture/reading-and-reference/01-routes/taxonomy-and-roadmap.md",
+        "target": "COMPUTE/wiki/01-overview/taxonomy-and-roadmap.md"
+      },
+      {
+        "source": "series/microarchitecture/reading-and-reference/02-analysis/README.md",
+        "target": "COMPUTE/wiki/01-overview/README.md"
+      },
+      {
+        "source": "series/microarchitecture/reading-and-reference/02-analysis/compute-communication-ratio.md",
+        "target": "COMPUTE/wiki/01-overview/compute-communication-ratio.md"
+      },
+      {
+        "source": "series/microarchitecture/reading-and-reference/02-analysis/problem-statement.md",
+        "target": "COMPUTE/wiki/01-overview/problem-statement.md"
+      },
+      {
+        "source": "series/microarchitecture/reading-and-reference/03-modeling/README.md",
+        "target": "COMPUTE/wiki/08-modeling-for-archax/README.md"
+      },
+      {
+        "source": "series/microarchitecture/reading-and-reference/03-modeling/modeling-insights.md",
+        "target": "COMPUTE/wiki/08-modeling-for-archax/modeling-insights.md"
+      },
+      {
+        "source": "series/microarchitecture/00-overview/README.md",
+        "target": "microarchitecture/00-overview/README.md"
+      },
+      {
+        "source": "series/microarchitecture/00-overview/microarchitecture-decisions.md",
+        "target": "microarchitecture/00-overview/microarchitecture-decisions.md"
+      },
+      {
+        "source": "series/microarchitecture/02-pipeline/stalls-and-backpressure.md",
+        "target": "COMPUTE/wiki/04-clocking-and-pipeline/stalls-and-backpressure.md"
+      },
+      {
+        "source": "series/microarchitecture/03-instruction-execution/README.md",
+        "target": "microarchitecture/03-instruction-execution/README.md"
+      },
+      {
+        "source": "series/microarchitecture/03-instruction-execution/dependencies-bypass-issue.md",
+        "target": "microarchitecture/03-instruction-execution/dependencies-bypass-issue.md"
+      },
+      {
+        "source": "series/microarchitecture/03-instruction-execution/instruction-lifecycle.md",
+        "target": "microarchitecture/03-instruction-execution/instruction-lifecycle.md"
+      },
+      {
+        "source": "series/microarchitecture/04-parallel-execution/img/systolic-2x2.svg",
+        "target": "COMPUTE/wiki/03-systolic-array/img/systolic-2x2.svg"
+      },
+      {
+        "source": "series/microarchitecture/04-parallel-execution/simd-vector-simt.md",
+        "target": "COMPUTE/wiki/03-systolic-array/simd-vector-simt.md"
+      },
+      {
+        "source": "series/microarchitecture/06-task-control/README.md",
+        "target": "microarchitecture/06-task-control/README.md"
+      },
+      {
+        "source": "series/microarchitecture/06-task-control/dma-compute-writeback.md",
+        "target": "microarchitecture/06-task-control/dma-compute-writeback.md"
+      },
+      {
+        "source": "series/microarchitecture/09-power-implementation/README.md",
+        "target": "microarchitecture/09-power-implementation/README.md"
+      },
+      {
+        "source": "series/microarchitecture/reading-and-reference/README.md",
+        "target": "microarchitecture/reading-and-reference/README.md"
+      }
+    ],
+    "aliases": [
+      {
+        "source": "series/microarchitecture/COMPUTE/wiki/02-datapath-foundations/multiply-accumulate-from-gates.md",
+        "target": "COMPUTE/wiki/02-datapath-foundations/multiply-accumulate-from-gates.md"
+      },
+      {
+        "source": "series/microarchitecture/COMPUTE/wiki/02-datapath-foundations/mux-and-data-movement-cost.md",
+        "target": "COMPUTE/wiki/02-datapath-foundations/mux-and-data-movement-cost.md"
+      },
+      {
+        "source": "series/microarchitecture/COMPUTE/wiki/02-datapath-foundations/quadratic-bitwidth-scaling.md",
+        "target": "COMPUTE/wiki/02-datapath-foundations/quadratic-bitwidth-scaling.md"
+      },
+      {
+        "source": "series/microarchitecture/COMPUTE/wiki/02-datapath-foundations/number-formats-for-ai.md",
+        "target": "COMPUTE/wiki/02-datapath-foundations/number-formats-for-ai.md"
+      },
+      {
+        "source": "series/microarchitecture/COMPUTE/wiki/02-datapath-foundations/dadda-and-adder-trees.md",
+        "target": "COMPUTE/wiki/02-datapath-foundations/dadda-and-adder-trees.md"
+      },
+      {
+        "source": "series/microarchitecture/COMPUTE/wiki/02-datapath-foundations/README.md",
+        "target": "COMPUTE/wiki/02-datapath-foundations/README.md"
+      },
+      {
+        "source": "series/microarchitecture/COMPUTE/wiki/04-clocking-and-pipeline/feedback-loop-clock-constraint.md",
+        "target": "COMPUTE/wiki/04-clocking-and-pipeline/feedback-loop-clock-constraint.md"
+      },
+      {
+        "source": "series/microarchitecture/COMPUTE/wiki/04-clocking-and-pipeline/pipeline-register-insertion.md",
+        "target": "COMPUTE/wiki/04-clocking-and-pipeline/pipeline-register-insertion.md"
+      },
+      {
+        "source": "series/microarchitecture/COMPUTE/wiki/04-clocking-and-pipeline/README.md",
+        "target": "COMPUTE/wiki/04-clocking-and-pipeline/README.md"
+      },
+      {
+        "source": "series/microarchitecture/COMPUTE/wiki/04-clocking-and-pipeline/frequency-is-not-throughput.md",
+        "target": "COMPUTE/wiki/04-clocking-and-pipeline/frequency-is-not-throughput.md"
+      },
+      {
+        "source": "series/microarchitecture/COMPUTE/wiki/04-clocking-and-pipeline/global-clock-synchronization.md",
+        "target": "COMPUTE/wiki/04-clocking-and-pipeline/global-clock-synchronization.md"
+      },
+      {
+        "source": "series/microarchitecture/COMPUTE/wiki/03-systolic-array/weight-loading-and-trickle-feed.md",
+        "target": "COMPUTE/wiki/03-systolic-array/weight-loading-and-trickle-feed.md"
+      },
+      {
+        "source": "series/microarchitecture/COMPUTE/wiki/03-systolic-array/why-systolic-array.md",
+        "target": "COMPUTE/wiki/03-systolic-array/why-systolic-array.md"
+      },
+      {
+        "source": "series/microarchitecture/COMPUTE/wiki/03-systolic-array/README.md",
+        "target": "COMPUTE/wiki/03-systolic-array/README.md"
+      },
+      {
+        "source": "series/microarchitecture/COMPUTE/wiki/03-systolic-array/dataflow-taxonomy.md",
+        "target": "COMPUTE/wiki/03-systolic-array/dataflow-taxonomy.md"
+      },
+      {
+        "source": "series/microarchitecture/COMPUTE/wiki/03-systolic-array/array-sizing-tradeoff.md",
+        "target": "COMPUTE/wiki/03-systolic-array/array-sizing-tradeoff.md"
+      },
+      {
+        "source": "series/microarchitecture/DMA/wiki/SUMMARY.md",
+        "target": "DMA/wiki/SUMMARY.md"
+      },
+      {
+        "source": "series/microarchitecture/DMA/wiki/README.md",
+        "target": "DMA/wiki/README.md"
+      },
+      {
+        "source": "series/microarchitecture/DMA/wiki/07-workloads-case-studies/axi-dma-case-card.md",
+        "target": "DMA/wiki/07-workloads-case-studies/axi-dma-case-card.md"
+      },
+      {
+        "source": "series/microarchitecture/DMA/wiki/07-workloads-case-studies/ai-accelerator-dma.md",
+        "target": "DMA/wiki/07-workloads-case-studies/ai-accelerator-dma.md"
+      },
+      {
+        "source": "series/microarchitecture/DMA/wiki/07-workloads-case-studies/pcie-nic-dma-case-card.md",
+        "target": "DMA/wiki/07-workloads-case-studies/pcie-nic-dma-case-card.md"
+      },
+      {
+        "source": "series/microarchitecture/DMA/wiki/07-workloads-case-studies/nvme-storage-dma-case-card.md",
+        "target": "DMA/wiki/07-workloads-case-studies/nvme-storage-dma-case-card.md"
+      },
+      {
+        "source": "series/microarchitecture/DMA/wiki/07-workloads-case-studies/gpu-copy-engine-case-card.md",
+        "target": "DMA/wiki/07-workloads-case-studies/gpu-copy-engine-case-card.md"
+      },
+      {
+        "source": "series/microarchitecture/DMA/wiki/07-workloads-case-studies/cpu-gpu-npu-comparison.md",
+        "target": "DMA/wiki/07-workloads-case-studies/cpu-gpu-npu-comparison.md"
+      },
+      {
+        "source": "series/microarchitecture/DMA/wiki/07-workloads-case-studies/hbm-to-tile-data-supply-chain.md",
+        "target": "DMA/wiki/07-workloads-case-studies/hbm-to-tile-data-supply-chain.md"
+      },
+      {
+        "source": "series/microarchitecture/DMA/wiki/07-workloads-case-studies/README.md",
+        "target": "DMA/wiki/07-workloads-case-studies/README.md"
+      },
+      {
+        "source": "series/microarchitecture/DMA/wiki/07-workloads-case-studies/embedded-storage-network.md",
+        "target": "DMA/wiki/07-workloads-case-studies/embedded-storage-network.md"
+      },
+      {
+        "source": "series/microarchitecture/DMA/wiki/07-workloads-case-studies/ai-local-dma-case-card.md",
+        "target": "DMA/wiki/07-workloads-case-studies/ai-local-dma-case-card.md"
+      },
+      {
+        "source": "series/microarchitecture/DMA/wiki/06-performance-modeling/modeling-method.md",
+        "target": "DMA/wiki/06-performance-modeling/modeling-method.md"
+      },
+      {
+        "source": "series/microarchitecture/DMA/wiki/06-performance-modeling/metrics-bottlenecks.md",
+        "target": "DMA/wiki/06-performance-modeling/metrics-bottlenecks.md"
+      },
+      {
+        "source": "series/microarchitecture/DMA/wiki/06-performance-modeling/sensitivity-coupling.md",
+        "target": "DMA/wiki/06-performance-modeling/sensitivity-coupling.md"
+      },
+      {
+        "source": "series/microarchitecture/DMA/wiki/06-performance-modeling/calibration-validation.md",
+        "target": "DMA/wiki/06-performance-modeling/calibration-validation.md"
+      },
+      {
+        "source": "series/microarchitecture/DMA/wiki/06-performance-modeling/model-schema.md",
+        "target": "DMA/wiki/06-performance-modeling/model-schema.md"
+      },
+      {
+        "source": "series/microarchitecture/DMA/wiki/06-performance-modeling/README.md",
+        "target": "DMA/wiki/06-performance-modeling/README.md"
+      },
+      {
+        "source": "series/microarchitecture/DMA/wiki/06-performance-modeling/debug-observability.md",
+        "target": "DMA/wiki/06-performance-modeling/debug-observability.md"
+      },
+      {
+        "source": "series/microarchitecture/DMA/wiki/06-performance-modeling/optimization-playbook.md",
+        "target": "DMA/wiki/06-performance-modeling/optimization-playbook.md"
+      },
+      {
+        "source": "series/microarchitecture/DMA/wiki/06-performance-modeling/parameter-reference.md",
+        "target": "DMA/wiki/06-performance-modeling/parameter-reference.md"
+      },
+      {
+        "source": "series/microarchitecture/DMA/wiki/01-overview/taxonomy.md",
+        "target": "DMA/wiki/01-overview/taxonomy.md"
+      },
+      {
+        "source": "series/microarchitecture/DMA/wiki/01-overview/learning-roadmap.md",
+        "target": "DMA/wiki/01-overview/learning-roadmap.md"
+      },
+      {
+        "source": "series/microarchitecture/DMA/wiki/01-overview/README.md",
+        "target": "DMA/wiki/01-overview/README.md"
+      },
+      {
+        "source": "series/microarchitecture/DMA/wiki/01-overview/goal-oriented-navigation.md",
+        "target": "DMA/wiki/01-overview/goal-oriented-navigation.md"
+      },
+      {
+        "source": "series/microarchitecture/DMA/wiki/01-overview/problem-statement.md",
+        "target": "DMA/wiki/01-overview/problem-statement.md"
+      },
+      {
+        "source": "series/microarchitecture/DMA/wiki/09-reference-research/ip-analysis-template.md",
+        "target": "DMA/wiki/09-reference-research/ip-analysis-template.md"
+      },
+      {
+        "source": "series/microarchitecture/DMA/wiki/09-reference-research/case-index.md",
+        "target": "DMA/wiki/09-reference-research/case-index.md"
+      },
+      {
+        "source": "series/microarchitecture/DMA/wiki/09-reference-research/glossary.md",
+        "target": "DMA/wiki/09-reference-research/glossary.md"
+      },
+      {
+        "source": "series/microarchitecture/DMA/wiki/09-reference-research/reading-questions.md",
+        "target": "DMA/wiki/09-reference-research/reading-questions.md"
+      },
+      {
+        "source": "series/microarchitecture/DMA/wiki/09-reference-research/study-template.md",
+        "target": "DMA/wiki/09-reference-research/study-template.md"
+      },
+      {
+        "source": "series/microarchitecture/DMA/wiki/09-reference-research/README.md",
+        "target": "DMA/wiki/09-reference-research/README.md"
+      },
+      {
+        "source": "series/microarchitecture/DMA/wiki/09-reference-research/paper-card-template.md",
+        "target": "DMA/wiki/09-reference-research/paper-card-template.md"
+      },
+      {
+        "source": "series/microarchitecture/DMA/wiki/08-industry-ip/dma-ip-checklist.md",
+        "target": "DMA/wiki/08-industry-ip/dma-ip-checklist.md"
+      },
+      {
+        "source": "series/microarchitecture/DMA/wiki/08-industry-ip/README.md",
+        "target": "DMA/wiki/08-industry-ip/README.md"
+      },
+      {
+        "source": "series/microarchitecture/DMA/wiki/08-industry-ip/dma-comparison-matrix.md",
+        "target": "DMA/wiki/08-industry-ip/dma-comparison-matrix.md"
+      },
+      {
+        "source": "series/microarchitecture/DMA/wiki/08-industry-ip/vendor-landscape.md",
+        "target": "DMA/wiki/08-industry-ip/vendor-landscape.md"
+      },
+      {
+        "source": "series/microarchitecture/DMA/wiki/05-system-integration/soc-peripheral-io.md",
+        "target": "DMA/wiki/05-system-integration/soc-peripheral-io.md"
+      },
+      {
+        "source": "series/microarchitecture/DMA/wiki/05-system-integration/README.md",
+        "target": "DMA/wiki/05-system-integration/README.md"
+      },
+      {
+        "source": "series/microarchitecture/DMA/wiki/05-system-integration/axi-pcie-view.md",
+        "target": "DMA/wiki/05-system-integration/axi-pcie-view.md"
+      },
+      {
+        "source": "series/microarchitecture/DMA/wiki/05-system-integration/dma-and-memory-system.md",
+        "target": "DMA/wiki/05-system-integration/dma-and-memory-system.md"
+      },
+      {
+        "source": "series/microarchitecture/DMA/wiki/05-system-integration/dma-and-noc.md",
+        "target": "DMA/wiki/05-system-integration/dma-and-noc.md"
+      },
+      {
+        "source": "series/microarchitecture/DMA/wiki/04-programming-model/tiling-double-buffering.md",
+        "target": "DMA/wiki/04-programming-model/tiling-double-buffering.md"
+      },
+      {
+        "source": "series/microarchitecture/DMA/wiki/04-programming-model/README.md",
+        "target": "DMA/wiki/04-programming-model/README.md"
+      },
+      {
+        "source": "series/microarchitecture/DMA/wiki/04-programming-model/queues-doorbells-completions.md",
+        "target": "DMA/wiki/04-programming-model/queues-doorbells-completions.md"
+      },
+      {
+        "source": "series/microarchitecture/DMA/wiki/04-programming-model/synchronization-errors.md",
+        "target": "DMA/wiki/04-programming-model/synchronization-errors.md"
+      },
+      {
+        "source": "series/microarchitecture/DMA/wiki/04-programming-model/software-stack.md",
+        "target": "DMA/wiki/04-programming-model/software-stack.md"
+      },
+      {
+        "source": "series/microarchitecture/DMA/wiki/03-dma-microarchitecture/multidimensional-stride-dma.md",
+        "target": "DMA/wiki/03-dma-microarchitecture/multidimensional-stride-dma.md"
+      },
+      {
+        "source": "series/microarchitecture/DMA/wiki/03-dma-microarchitecture/README.md",
+        "target": "DMA/wiki/03-dma-microarchitecture/README.md"
+      },
+      {
+        "source": "series/microarchitecture/DMA/wiki/03-dma-microarchitecture/channels-virtualization.md",
+        "target": "DMA/wiki/03-dma-microarchitecture/channels-virtualization.md"
+      },
+      {
+        "source": "series/microarchitecture/DMA/wiki/03-dma-microarchitecture/engine-components.md",
+        "target": "DMA/wiki/03-dma-microarchitecture/engine-components.md"
+      },
+      {
+        "source": "series/microarchitecture/DMA/wiki/03-dma-microarchitecture/scheduling-outstanding.md",
+        "target": "DMA/wiki/03-dma-microarchitecture/scheduling-outstanding.md"
+      },
+      {
+        "source": "series/microarchitecture/DMA/wiki/02-fundamentals/README.md",
+        "target": "DMA/wiki/02-fundamentals/README.md"
+      },
+      {
+        "source": "series/microarchitecture/DMA/wiki/02-fundamentals/noncoherent-vs-coherent-dma.md",
+        "target": "DMA/wiki/02-fundamentals/noncoherent-vs-coherent-dma.md"
+      },
+      {
+        "source": "series/microarchitecture/DMA/wiki/02-fundamentals/address-descriptor-burst.md",
+        "target": "DMA/wiki/02-fundamentals/address-descriptor-burst.md"
+      },
+      {
+        "source": "series/microarchitecture/DMA/wiki/02-fundamentals/transfer-basics.md",
+        "target": "DMA/wiki/02-fundamentals/transfer-basics.md"
+      },
+      {
+        "source": "series/microarchitecture/DMA/wiki/02-fundamentals/consistency-cache-coherency.md",
+        "target": "DMA/wiki/02-fundamentals/consistency-cache-coherency.md"
+      },
+      {
+        "source": "series/microarchitecture/COMPUTE/wiki/07-chip-organization/cpu-vs-gpu-core-area.md",
+        "target": "COMPUTE/wiki/07-chip-organization/cpu-vs-gpu-core-area.md"
+      },
+      {
+        "source": "series/microarchitecture/COMPUTE/wiki/07-chip-organization/brain-vs-chip-power.md",
+        "target": "COMPUTE/wiki/07-chip-organization/brain-vs-chip-power.md"
+      },
+      {
+        "source": "series/microarchitecture/COMPUTE/wiki/07-chip-organization/gpu-as-tiled-tpu.md",
+        "target": "COMPUTE/wiki/07-chip-organization/gpu-as-tiled-tpu.md"
+      },
+      {
+        "source": "series/microarchitecture/COMPUTE/wiki/07-chip-organization/README.md",
+        "target": "COMPUTE/wiki/07-chip-organization/README.md"
+      },
+      {
+        "source": "series/microarchitecture/CIM/wiki/SUMMARY.md",
+        "target": "CIM/wiki/SUMMARY.md"
+      },
+      {
+        "source": "series/microarchitecture/CIM/wiki/README.md",
+        "target": "CIM/wiki/README.md"
+      },
+      {
+        "source": "series/microarchitecture/CIM/wiki/08-industry-and-products/industry-landscape.md",
+        "target": "CIM/wiki/08-industry-and-products/industry-landscape.md"
+      },
+      {
+        "source": "series/microarchitecture/CIM/wiki/08-industry-and-products/value-chain-and-commercialization.md",
+        "target": "CIM/wiki/08-industry-and-products/value-chain-and-commercialization.md"
+      },
+      {
+        "source": "series/microarchitecture/CIM/wiki/08-industry-and-products/README.md",
+        "target": "CIM/wiki/08-industry-and-products/README.md"
+      },
+      {
+        "source": "series/microarchitecture/CIM/wiki/08-industry-and-products/manufacturing-and-test-challenges.md",
+        "target": "CIM/wiki/08-industry-and-products/manufacturing-and-test-challenges.md"
+      },
+      {
+        "source": "series/microarchitecture/CIM/wiki/08-industry-and-products/company-comparison-matrix.md",
+        "target": "CIM/wiki/08-industry-and-products/company-comparison-matrix.md"
+      },
+      {
+        "source": "series/microarchitecture/CIM/wiki/02-memory-technologies/dram-pim-deep-dive.md",
+        "target": "CIM/wiki/02-memory-technologies/dram-pim-deep-dive.md"
+      },
+      {
+        "source": "series/microarchitecture/CIM/wiki/02-memory-technologies/sram-cim-foundation.md",
+        "target": "CIM/wiki/02-memory-technologies/sram-cim-foundation.md"
+      },
+      {
+        "source": "series/microarchitecture/CIM/wiki/02-memory-technologies/reram-cim-deep-dive.md",
+        "target": "CIM/wiki/02-memory-technologies/reram-cim-deep-dive.md"
+      },
+      {
+        "source": "series/microarchitecture/CIM/wiki/02-memory-technologies/README.md",
+        "target": "CIM/wiki/02-memory-technologies/README.md"
+      },
+      {
+        "source": "series/microarchitecture/CIM/wiki/02-memory-technologies/memory-tech-comparison-matrix.md",
+        "target": "CIM/wiki/02-memory-technologies/memory-tech-comparison-matrix.md"
+      },
+      {
+        "source": "series/microarchitecture/CIM/wiki/02-memory-technologies/pcm-mram-for-cim.md",
+        "target": "CIM/wiki/02-memory-technologies/pcm-mram-for-cim.md"
+      },
+      {
+        "source": "series/microarchitecture/CIM/wiki/02-memory-technologies/reram-as-compute-element.md",
+        "target": "CIM/wiki/02-memory-technologies/reram-as-compute-element.md"
+      },
+      {
+        "source": "series/microarchitecture/CIM/wiki/02-memory-technologies/dram-pim-foundation.md",
+        "target": "CIM/wiki/02-memory-technologies/dram-pim-foundation.md"
+      },
+      {
+        "source": "series/microarchitecture/CIM/wiki/02-memory-technologies/sram-cim-deep-dive.md",
+        "target": "CIM/wiki/02-memory-technologies/sram-cim-deep-dive.md"
+      },
+      {
+        "source": "series/microarchitecture/CIM/wiki/02-memory-technologies/flash-cim-niche.md",
+        "target": "CIM/wiki/02-memory-technologies/flash-cim-niche.md"
+      },
+      {
+        "source": "series/microarchitecture/CIM/wiki/10-reference/reading-roadmap-by-goal.md",
+        "target": "CIM/wiki/10-reference/reading-roadmap-by-goal.md"
+      },
+      {
+        "source": "series/microarchitecture/CIM/wiki/10-reference/glossary.md",
+        "target": "CIM/wiki/10-reference/glossary.md"
+      },
+      {
+        "source": "series/microarchitecture/CIM/wiki/10-reference/high-frequency-questions.md",
+        "target": "CIM/wiki/10-reference/high-frequency-questions.md"
+      },
+      {
+        "source": "series/microarchitecture/CIM/wiki/10-reference/README.md",
+        "target": "CIM/wiki/10-reference/README.md"
+      },
+      {
+        "source": "series/microarchitecture/CIM/wiki/10-reference/decision-tree-cim-route-selection.md",
+        "target": "CIM/wiki/10-reference/decision-tree-cim-route-selection.md"
+      },
+      {
+        "source": "series/microarchitecture/CIM/wiki/09-research-frontier/case-study-samsung-hbm-pim-research-angle.md",
+        "target": "CIM/wiki/09-research-frontier/case-study-samsung-hbm-pim-research-angle.md"
+      },
+      {
+        "source": "series/microarchitecture/CIM/wiki/09-research-frontier/case-study-tsmc-16nm-cim-macro.md",
+        "target": "CIM/wiki/09-research-frontier/case-study-tsmc-16nm-cim-macro.md"
+      },
+      {
+        "source": "series/microarchitecture/CIM/wiki/09-research-frontier/README.md",
+        "target": "CIM/wiki/09-research-frontier/README.md"
+      },
+      {
+        "source": "series/microarchitecture/CIM/wiki/09-research-frontier/recent-progress-themes.md",
+        "target": "CIM/wiki/09-research-frontier/recent-progress-themes.md"
+      },
+      {
+        "source": "series/microarchitecture/CIM/wiki/09-research-frontier/metrics-glossary.md",
+        "target": "CIM/wiki/09-research-frontier/metrics-glossary.md"
+      },
+      {
+        "source": "series/microarchitecture/CIM/wiki/09-research-frontier/case-study-u-tokyo-reram-cim.md",
+        "target": "CIM/wiki/09-research-frontier/case-study-u-tokyo-reram-cim.md"
+      },
+      {
+        "source": "series/microarchitecture/CIM/wiki/09-research-frontier/paper-review-template.md",
+        "target": "CIM/wiki/09-research-frontier/paper-review-template.md"
+      },
+      {
+        "source": "series/microarchitecture/CIM/wiki/09-research-frontier/research-vs-industry-perspective.md",
+        "target": "CIM/wiki/09-research-frontier/research-vs-industry-perspective.md"
+      },
+      {
+        "source": "series/microarchitecture/CIM/wiki/09-research-frontier/open-problems.md",
+        "target": "CIM/wiki/09-research-frontier/open-problems.md"
+      },
+      {
+        "source": "series/microarchitecture/CIM/wiki/01-overview/why-cim-now-and-why-not-before.md",
+        "target": "CIM/wiki/01-overview/why-cim-now-and-why-not-before.md"
+      },
+      {
+        "source": "series/microarchitecture/CIM/wiki/01-overview/taxonomy.md",
+        "target": "CIM/wiki/01-overview/taxonomy.md"
+      },
+      {
+        "source": "series/microarchitecture/CIM/wiki/01-overview/learning-roadmap.md",
+        "target": "CIM/wiki/01-overview/learning-roadmap.md"
+      },
+      {
+        "source": "series/microarchitecture/CIM/wiki/01-overview/README.md",
+        "target": "CIM/wiki/01-overview/README.md"
+      },
+      {
+        "source": "series/microarchitecture/CIM/wiki/01-overview/two-axes-memory-and-paradigm.md",
+        "target": "CIM/wiki/01-overview/two-axes-memory-and-paradigm.md"
+      },
+      {
+        "source": "series/microarchitecture/CIM/wiki/01-overview/cim-pim-nmc-taxonomy.md",
+        "target": "CIM/wiki/01-overview/cim-pim-nmc-taxonomy.md"
+      },
+      {
+        "source": "series/microarchitecture/CIM/wiki/01-overview/problem-statement.md",
+        "target": "CIM/wiki/01-overview/problem-statement.md"
+      },
+      {
+        "source": "series/microarchitecture/CIM/wiki/06-software-stack/runtime-and-scheduling.md",
+        "target": "CIM/wiki/06-software-stack/runtime-and-scheduling.md"
+      },
+      {
+        "source": "series/microarchitecture/CIM/wiki/06-software-stack/weight-mapping-to-arrays.md",
+        "target": "CIM/wiki/06-software-stack/weight-mapping-to-arrays.md"
+      },
+      {
+        "source": "series/microarchitecture/CIM/wiki/06-software-stack/model-adaptation-strategies.md",
+        "target": "CIM/wiki/06-software-stack/model-adaptation-strategies.md"
+      },
+      {
+        "source": "series/microarchitecture/CIM/wiki/06-software-stack/quantization-for-cim.md",
+        "target": "CIM/wiki/06-software-stack/quantization-for-cim.md"
+      },
+      {
+        "source": "series/microarchitecture/CIM/wiki/06-software-stack/software-stack-comparison.md",
+        "target": "CIM/wiki/06-software-stack/software-stack-comparison.md"
+      },
+      {
+        "source": "series/microarchitecture/CIM/wiki/06-software-stack/README.md",
+        "target": "CIM/wiki/06-software-stack/README.md"
+      },
+      {
+        "source": "series/microarchitecture/CIM/wiki/06-software-stack/compilation-flow-overview.md",
+        "target": "CIM/wiki/06-software-stack/compilation-flow-overview.md"
+      },
+      {
+        "source": "series/microarchitecture/CIM/wiki/05-architecture-and-system/reliability-and-error-tolerance.md",
+        "target": "CIM/wiki/05-architecture-and-system/reliability-and-error-tolerance.md"
+      },
+      {
+        "source": "series/microarchitecture/CIM/wiki/05-architecture-and-system/from-macro-to-system.md",
+        "target": "CIM/wiki/05-architecture-and-system/from-macro-to-system.md"
+      },
+      {
+        "source": "series/microarchitecture/CIM/wiki/05-architecture-and-system/cim-modeling-parameter-schema.md",
+        "target": "CIM/wiki/05-architecture-and-system/cim-modeling-parameter-schema.md"
+      },
+      {
+        "source": "series/microarchitecture/CIM/wiki/05-architecture-and-system/memory-hierarchy-with-cim.md",
+        "target": "CIM/wiki/05-architecture-and-system/memory-hierarchy-with-cim.md"
+      },
+      {
+        "source": "series/microarchitecture/CIM/wiki/05-architecture-and-system/README.md",
+        "target": "CIM/wiki/05-architecture-and-system/README.md"
+      },
+      {
+        "source": "series/microarchitecture/CIM/wiki/05-architecture-and-system/dataflow-mapping-on-cim.md",
+        "target": "CIM/wiki/05-architecture-and-system/dataflow-mapping-on-cim.md"
+      },
+      {
+        "source": "series/microarchitecture/CIM/wiki/05-architecture-and-system/performance-energy-modeling.md",
+        "target": "CIM/wiki/05-architecture-and-system/performance-energy-modeling.md"
+      },
+      {
+        "source": "series/microarchitecture/CIM/wiki/05-architecture-and-system/interconnect-and-reduction.md",
+        "target": "CIM/wiki/05-architecture-and-system/interconnect-and-reduction.md"
+      },
+      {
+        "source": "series/microarchitecture/CIM/wiki/05-architecture-and-system/cim-system-integration-with-host.md",
+        "target": "CIM/wiki/05-architecture-and-system/cim-system-integration-with-host.md"
+      },
+      {
+        "source": "series/microarchitecture/CIM/wiki/07-workloads/llm-decode-and-cim.md",
+        "target": "CIM/wiki/07-workloads/llm-decode-and-cim.md"
+      },
+      {
+        "source": "series/microarchitecture/CIM/wiki/07-workloads/transformer-on-cim.md",
+        "target": "CIM/wiki/07-workloads/transformer-on-cim.md"
+      },
+      {
+        "source": "series/microarchitecture/CIM/wiki/07-workloads/cnn-on-cim.md",
+        "target": "CIM/wiki/07-workloads/cnn-on-cim.md"
+      },
+      {
+        "source": "series/microarchitecture/CIM/wiki/07-workloads/edge-ai-and-cim.md",
+        "target": "CIM/wiki/07-workloads/edge-ai-and-cim.md"
+      },
+      {
+        "source": "series/microarchitecture/CIM/wiki/07-workloads/README.md",
+        "target": "CIM/wiki/07-workloads/README.md"
+      },
+      {
+        "source": "series/microarchitecture/CIM/wiki/07-workloads/workload-characterization-for-cim.md",
+        "target": "CIM/wiki/07-workloads/workload-characterization-for-cim.md"
+      },
+      {
+        "source": "series/microarchitecture/CIM/wiki/04-circuit-and-macro/cim-macro-primitives.md",
+        "target": "CIM/wiki/04-circuit-and-macro/cim-macro-primitives.md"
+      },
+      {
+        "source": "series/microarchitecture/CIM/wiki/04-circuit-and-macro/data-encoding-strategies.md",
+        "target": "CIM/wiki/04-circuit-and-macro/data-encoding-strategies.md"
+      },
+      {
+        "source": "series/microarchitecture/CIM/wiki/04-circuit-and-macro/non-idealities-and-error-sources.md",
+        "target": "CIM/wiki/04-circuit-and-macro/non-idealities-and-error-sources.md"
+      },
+      {
+        "source": "series/microarchitecture/CIM/wiki/04-circuit-and-macro/README.md",
+        "target": "CIM/wiki/04-circuit-and-macro/README.md"
+      },
+      {
+        "source": "series/microarchitecture/CIM/wiki/04-circuit-and-macro/macro-design-tradeoff-framework.md",
+        "target": "CIM/wiki/04-circuit-and-macro/macro-design-tradeoff-framework.md"
+      },
+      {
+        "source": "series/microarchitecture/CIM/wiki/04-circuit-and-macro/precision-and-quantization-at-circuit.md",
+        "target": "CIM/wiki/04-circuit-and-macro/precision-and-quantization-at-circuit.md"
+      },
+      {
+        "source": "series/microarchitecture/CIM/wiki/04-circuit-and-macro/peripheral-overhead.md",
+        "target": "CIM/wiki/04-circuit-and-macro/peripheral-overhead.md"
+      },
+      {
+        "source": "series/microarchitecture/CIM/wiki/04-circuit-and-macro/adc-dac-sa-in-cim.md",
+        "target": "CIM/wiki/04-circuit-and-macro/adc-dac-sa-in-cim.md"
+      },
+      {
+        "source": "series/microarchitecture/CIM/wiki/03-compute-paradigms/analog-vs-digital-tradeoff-map.md",
+        "target": "CIM/wiki/03-compute-paradigms/analog-vs-digital-tradeoff-map.md"
+      },
+      {
+        "source": "series/microarchitecture/CIM/wiki/03-compute-paradigms/digital-cim-deep-dive.md",
+        "target": "CIM/wiki/03-compute-paradigms/digital-cim-deep-dive.md"
+      },
+      {
+        "source": "series/microarchitecture/CIM/wiki/03-compute-paradigms/paradigm-memory-crossmap.md",
+        "target": "CIM/wiki/03-compute-paradigms/paradigm-memory-crossmap.md"
+      },
+      {
+        "source": "series/microarchitecture/CIM/wiki/03-compute-paradigms/analog-cim-deep-dive.md",
+        "target": "CIM/wiki/03-compute-paradigms/analog-cim-deep-dive.md"
+      },
+      {
+        "source": "series/microarchitecture/CIM/wiki/03-compute-paradigms/README.md",
+        "target": "CIM/wiki/03-compute-paradigms/README.md"
+      },
+      {
+        "source": "series/microarchitecture/CIM/wiki/03-compute-paradigms/digital-cim-fundamentals.md",
+        "target": "CIM/wiki/03-compute-paradigms/digital-cim-fundamentals.md"
+      },
+      {
+        "source": "series/microarchitecture/CIM/wiki/03-compute-paradigms/analog-cim-fundamentals.md",
+        "target": "CIM/wiki/03-compute-paradigms/analog-cim-fundamentals.md"
+      },
+      {
+        "source": "series/microarchitecture/CIM/wiki/03-compute-paradigms/mixed-signal-cim.md",
+        "target": "CIM/wiki/03-compute-paradigms/mixed-signal-cim.md"
+      },
+      {
+        "source": "series/microarchitecture/CIM/wiki/08-industry-and-products/company-cards/cim-companies-axelera.md",
+        "target": "CIM/wiki/08-industry-and-products/company-cards/cim-companies-axelera.md"
+      },
+      {
+        "source": "series/microarchitecture/CIM/wiki/08-industry-and-products/company-cards/pim-companies-samsung-hbm-pim.md",
+        "target": "CIM/wiki/08-industry-and-products/company-cards/pim-companies-samsung-hbm-pim.md"
+      },
+      {
+        "source": "series/microarchitecture/CIM/wiki/08-industry-and-products/company-cards/pim-companies-sk-hynix-aim.md",
+        "target": "CIM/wiki/08-industry-and-products/company-cards/pim-companies-sk-hynix-aim.md"
+      },
+      {
+        "source": "series/microarchitecture/CIM/wiki/08-industry-and-products/company-cards/nmc-companies-upmem.md",
+        "target": "CIM/wiki/08-industry-and-products/company-cards/nmc-companies-upmem.md"
+      },
+      {
+        "source": "series/microarchitecture/CIM/wiki/08-industry-and-products/company-cards/README.md",
+        "target": "CIM/wiki/08-industry-and-products/company-cards/README.md"
+      },
+      {
+        "source": "series/microarchitecture/CIM/wiki/08-industry-and-products/company-cards/cim-companies-mythic.md",
+        "target": "CIM/wiki/08-industry-and-products/company-cards/cim-companies-mythic.md"
+      },
+      {
+        "source": "series/microarchitecture/COMPUTE/wiki/05-fpga-vs-asic/lut-mux-and-10x-overhead.md",
+        "target": "COMPUTE/wiki/05-fpga-vs-asic/lut-mux-and-10x-overhead.md"
+      },
+      {
+        "source": "series/microarchitecture/COMPUTE/wiki/05-fpga-vs-asic/README.md",
+        "target": "COMPUTE/wiki/05-fpga-vs-asic/README.md"
+      },
+      {
+        "source": "series/microarchitecture/COMPUTE/wiki/01-overview/compute-communication-ratio.md",
+        "target": "COMPUTE/wiki/01-overview/compute-communication-ratio.md"
+      },
+      {
+        "source": "series/microarchitecture/COMPUTE/wiki/01-overview/taxonomy-and-roadmap.md",
+        "target": "COMPUTE/wiki/01-overview/taxonomy-and-roadmap.md"
+      },
+      {
+        "source": "series/microarchitecture/COMPUTE/wiki/01-overview/README.md",
+        "target": "COMPUTE/wiki/01-overview/README.md"
+      },
+      {
+        "source": "series/microarchitecture/COMPUTE/wiki/01-overview/problem-statement.md",
+        "target": "COMPUTE/wiki/01-overview/problem-statement.md"
+      },
+      {
+        "source": "series/microarchitecture/COMPUTE/wiki/README.md",
+        "target": "COMPUTE/wiki/README.md"
+      },
+      {
+        "source": "series/microarchitecture/COMPUTE/self-test-questions.md",
+        "target": "COMPUTE/self-test-questions.md"
+      },
+      {
+        "source": "series/microarchitecture/COMPUTE/wiki/08-modeling-for-archax/README.md",
+        "target": "COMPUTE/wiki/08-modeling-for-archax/README.md"
+      },
+      {
+        "source": "series/microarchitecture/COMPUTE/wiki/08-modeling-for-archax/modeling-insights.md",
+        "target": "COMPUTE/wiki/08-modeling-for-archax/modeling-insights.md"
+      },
+      {
+        "source": "series/microarchitecture/DMA/README.md",
+        "target": "DMA/README.md"
+      },
+      {
+        "source": "series/microarchitecture/CIM/README.md",
+        "target": "CIM/README.md"
+      },
+      {
+        "source": "series/microarchitecture/foundations/electrical-timing-foundations.md",
+        "target": "electrical-timing-foundations.md"
+      },
+      {
+        "source": "series/microarchitecture/foundations/img/electrical-timing-rc.svg",
+        "target": "img/electrical-timing-rc.svg"
+      },
+      {
+        "source": "series/microarchitecture/COMPUTE/wiki/02-datapath-foundations",
+        "target": "COMPUTE/wiki/02-datapath-foundations"
+      },
+      {
+        "source": "series/microarchitecture/COMPUTE/wiki/04-clocking-and-pipeline",
+        "target": "COMPUTE/wiki/04-clocking-and-pipeline"
+      },
+      {
+        "source": "series/microarchitecture/COMPUTE/wiki/03-systolic-array",
+        "target": "COMPUTE/wiki/03-systolic-array"
+      },
+      {
+        "source": "series/microarchitecture/DMA/wiki",
+        "target": "DMA/wiki"
+      },
+      {
+        "source": "series/microarchitecture/DMA/wiki/07-workloads-case-studies",
+        "target": "DMA/wiki/07-workloads-case-studies"
+      },
+      {
+        "source": "series/microarchitecture/DMA/wiki/06-performance-modeling",
+        "target": "DMA/wiki/06-performance-modeling"
+      },
+      {
+        "source": "series/microarchitecture/DMA/wiki/01-overview",
+        "target": "DMA/wiki/01-overview"
+      },
+      {
+        "source": "series/microarchitecture/DMA/wiki/09-reference-research",
+        "target": "DMA/wiki/09-reference-research"
+      },
+      {
+        "source": "series/microarchitecture/DMA/wiki/08-industry-ip",
+        "target": "DMA/wiki/08-industry-ip"
+      },
+      {
+        "source": "series/microarchitecture/DMA/wiki/05-system-integration",
+        "target": "DMA/wiki/05-system-integration"
+      },
+      {
+        "source": "series/microarchitecture/DMA/wiki/04-programming-model",
+        "target": "DMA/wiki/04-programming-model"
+      },
+      {
+        "source": "series/microarchitecture/DMA/wiki/03-dma-microarchitecture",
+        "target": "DMA/wiki/03-dma-microarchitecture"
+      },
+      {
+        "source": "series/microarchitecture/DMA/wiki/02-fundamentals",
+        "target": "DMA/wiki/02-fundamentals"
+      },
+      {
+        "source": "series/microarchitecture/COMPUTE/wiki/07-chip-organization",
+        "target": "COMPUTE/wiki/07-chip-organization"
+      },
+      {
+        "source": "series/microarchitecture/CIM/wiki",
+        "target": "CIM/wiki"
+      },
+      {
+        "source": "series/microarchitecture/CIM/wiki/08-industry-and-products",
+        "target": "CIM/wiki/08-industry-and-products"
+      },
+      {
+        "source": "series/microarchitecture/CIM/wiki/02-memory-technologies",
+        "target": "CIM/wiki/02-memory-technologies"
+      },
+      {
+        "source": "series/microarchitecture/CIM/wiki/10-reference",
+        "target": "CIM/wiki/10-reference"
+      },
+      {
+        "source": "series/microarchitecture/CIM/wiki/09-research-frontier",
+        "target": "CIM/wiki/09-research-frontier"
+      },
+      {
+        "source": "series/microarchitecture/CIM/wiki/01-overview",
+        "target": "CIM/wiki/01-overview"
+      },
+      {
+        "source": "series/microarchitecture/CIM/wiki/06-software-stack",
+        "target": "CIM/wiki/06-software-stack"
+      },
+      {
+        "source": "series/microarchitecture/CIM/wiki/05-architecture-and-system",
+        "target": "CIM/wiki/05-architecture-and-system"
+      },
+      {
+        "source": "series/microarchitecture/CIM/wiki/07-workloads",
+        "target": "CIM/wiki/07-workloads"
+      },
+      {
+        "source": "series/microarchitecture/CIM/wiki/04-circuit-and-macro",
+        "target": "CIM/wiki/04-circuit-and-macro"
+      },
+      {
+        "source": "series/microarchitecture/CIM/wiki/03-compute-paradigms",
+        "target": "CIM/wiki/03-compute-paradigms"
+      },
+      {
+        "source": "series/microarchitecture/CIM/wiki/08-industry-and-products/company-cards",
+        "target": "CIM/wiki/08-industry-and-products/company-cards"
+      },
+      {
+        "source": "series/microarchitecture/COMPUTE/wiki/05-fpga-vs-asic",
+        "target": "COMPUTE/wiki/05-fpga-vs-asic"
+      },
+      {
+        "source": "series/microarchitecture/COMPUTE/wiki/01-overview",
+        "target": "COMPUTE/wiki/01-overview"
+      },
+      {
+        "source": "series/microarchitecture/COMPUTE/wiki",
+        "target": "COMPUTE/wiki"
+      },
+      {
+        "source": "series/microarchitecture/COMPUTE/wiki/08-modeling-for-archax",
+        "target": "COMPUTE/wiki/08-modeling-for-archax"
+      },
+      {
+        "source": "series/microarchitecture/DMA",
+        "target": "DMA/wiki/09-reference-research"
+      },
+      {
+        "source": "series/microarchitecture/CIM",
+        "target": "CIM/wiki/10-reference"
+      }
+    ]
   }
 }

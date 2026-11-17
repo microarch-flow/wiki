@@ -49,6 +49,10 @@ def fixture_wiki(root):
     write(root / "docs/reviews/round-3/expected.json", '{"fixture": true}\n')
     write(root / "img" / "image.svg", "<svg xmlns='http://www.w3.org/2000/svg'/>\n")
     write(root / "electrical-timing-foundations.md", "# Timing\n")
+    write(root / "series/microarchitecture/README.md", "# 微架构\n")
+    write(root / "series/microarchitecture/02-pipeline/README.md",
+          "# 流水线\n\n## 阅读顺序\n\n1. [Timing](../../../electrical-timing-foundations.md)\n")
+    write(root / "series/microarchitecture/reading-and-reference/README.md", "# COMPUTE\n")
     for name, content in {
         "home.md": "# 首页\n\n<!-- site-series -->\n",
         "series.md": "# 系列\n\n<!-- site-series -->\n",
@@ -75,6 +79,14 @@ def fixture_wiki(root):
             ],
         },
         "foundations": {"article": "electrical-timing-foundations.md", "images": "img"},
+        "microarchitecture": {
+            "homepage": "series/microarchitecture/README.md",
+            "mappings": [
+                {"source": "series/microarchitecture/02-pipeline/README.md", "target": "COMPUTE/wiki/04-clocking-and-pipeline/README.md"},
+                {"source": "series/microarchitecture/reading-and-reference/README.md", "target": "COMPUTE/wiki/README.md"},
+            ],
+            "aliases": [],
+        },
     }))
     shutil.copytree(ROOT / "website" / "assets", root / "website" / "assets")
 
@@ -104,6 +116,27 @@ def fixture_repo(path, files):
 
 
 class MultiRepositoryTests(unittest.TestCase):
+    def test_microarchitecture_alias_and_fail_closed_source_coverage(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp) / "wiki"
+            fixture_wiki(root)
+            write(root / "website/series.json", '{"series": [{"title": "微架构", "description": "fixture", "page": "microarchitecture.md"}]}')
+            write(root / "docs/reviews/old-compute.md", "# Review\n\n[Original](../../old/COMPUTE/README.md#compute)\n")
+            path = root / "website/source-layout.json"
+            layout = json.loads(path.read_text())
+            layout["microarchitecture"]["aliases"].append({
+                "source": "old/COMPUTE/README.md", "target": "COMPUTE/wiki/README.md",
+            })
+            path.write_text(json.dumps(layout))
+            stage_site(root=root)
+            staged = root / ".site-build/docs/reviews/old-compute.md"
+            original = staged.read_text()
+            self.assertIn("../COMPUTE/wiki/README.md#compute", original)
+            write(root / "series/microarchitecture/00-overview/unmapped.md", "# Unmapped\n")
+            with self.assertRaisesRegex(ValueError, "mappings do not cover source files"):
+                stage_site(root=root)
+            self.assertEqual(staged.read_text(), original)
+
     def test_flat_interconnect_sources_keep_published_paths_and_old_review_links(self):
         with tempfile.TemporaryDirectory() as temp:
             root = Path(temp) / "wiki"
@@ -182,9 +215,9 @@ class MultiRepositoryTests(unittest.TestCase):
             write(storage / "reading-and-reference/01-reading/cache-scratchpad-introduction.md", "# Cache\n")
             write(storage / "assets/overview.svg", "<svg/>\n")
             write(storage / "01-memory-hierarchy/task.md", "# Historical task\n")
-            write(wiki / "COMPUTE/wiki/README.md", (
-                "# COMPUTE\n\n[存储首页](../../series/storage/README.md#storage)\n"
-                "[缓存](../../series/storage/reading-and-reference/01-reading/cache-scratchpad-introduction.md#cache)\n"
+            write(wiki / "series/microarchitecture/reading-and-reference/README.md", (
+                "# COMPUTE\n\n[存储首页](../../storage/README.md#storage)\n"
+                "[缓存](../../storage/reading-and-reference/01-reading/cache-scratchpad-introduction.md#cache)\n"
             ))
 
             layout_path = wiki / "website/source-layout.json"
@@ -370,7 +403,7 @@ class MultiRepositoryTests(unittest.TestCase):
             self.assertEqual((docs / "series/chip-development/README.md").read_text(encoding="utf-8"), staged)
 
             layout["storage"]["mappings"][0]["source"] = "series/storage/01-memory-hierarchy/README.md"
-            layout["topics"]["COMPUTE"] = layout["topics"]["BUS"]
+            layout["topics"]["NOC"] = layout["topics"]["BUS"]
             layout_path.write_text(json.dumps(layout), encoding="utf-8")
             with self.assertRaisesRegex(ValueError, "staged to multiple paths"):
                 stage_site(root=wiki, build_root=build)

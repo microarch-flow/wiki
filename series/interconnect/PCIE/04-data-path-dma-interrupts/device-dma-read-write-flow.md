@@ -55,4 +55,4 @@ title: "设备 DMA 的读写路径：谁请求，数据往哪里走？"
 
 设备读容易受完整返回 RTT、Tag 窗口和 Completion 接收能力限制；设备写也会受数据供给、Posted 信用和主机接收服务限制。两者都可能达不到链路上界，不能把“写不等 Completion”理解成“写没有等待”。
 
-下一步读[队列与通知](queues-doorbells-completions-msix.md)和[读延迟模型](pcie-read-completion-latency.md)。引擎如何把描述符拆成搬运任务由 [DMA 专题](../../../microarchitecture/DMA/wiki/05-system-integration/axi-pcie-view.md)展开；协议参数依据集中在[建模速查](../08-reference/pcie-modeling-params.md)。
+下一步读[队列与通知](queues-doorbells-completions-msix.md)和[读延迟模型](pcie-read-completion-latency.md)。引擎如何把描述符拆成搬运任务由 [DMA 专题](../../../microarchitecture/05-dma/05-system-integration/axi-pcie-view.md)展开；协议参数依据集中在[建模速查](../08-reference/pcie-modeling-params.md)。

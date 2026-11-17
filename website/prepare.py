@@ -9,7 +9,8 @@ from pathlib import PurePosixPath
 import shutil
 import tempfile
 
-from ownership import GROUPS, STORAGE, owner
+from ownership import GROUPS, MICRO, STORAGE, owner
+from microarchitecture_navigation import MICRO_TOPICS
 from sources import copy_source, fetch_checkout, load_series, source_directory, validate_output_paths
 from stage_links import PublishedPaths
 from storage_navigation import INTEGRATION_PAGE_SECTION, MEMORY_HOME, MEMORY_PAGE_SECTION, RESOURCE_HOME, RESOURCE_PAGE_SECTION, STORAGE_RESOURCES
@@ -18,7 +19,7 @@ from storage_navigation import INTEGRATION_PAGE_SECTION, MEMORY_HOME, MEMORY_PAG
 ROOT = Path(__file__).resolve().parent.parent
 TOPICS = ("RAM", "COMPUTE", "BUS", "NOC", "D2D", "DMA", "PCIE", "COHERENCE",
           "SCALEUP", "NETWORK", "CIM", "CPO", "FAB", "SERDES", "HBF")
-SOURCE_TOPICS = tuple(name for name in TOPICS if name not in {"RAM", "HBF"})
+SOURCE_TOPICS = tuple(name for name in TOPICS if name not in {"RAM", "HBF", "COMPUTE", "DMA", "CIM"})
 INTERCONNECT_TOPICS = frozenset({"BUS", "NOC", "D2D", "PCIE", "COHERENCE",
                                 "SCALEUP", "NETWORK", "SERDES", "CPO"})
 BUS_LEGACY_INDEX = "docs/archive/interconnect/BUS/README.md"
@@ -46,8 +47,8 @@ def _path_inside(root, value, is_directory):
 
 def load_layout(path):
     data = json.loads(Path(path).read_text(encoding="utf-8"))
-    if not isinstance(data, dict) or set(data) != {"topics", "foundations", "storage"}:
-        raise ValueError("Source layout needs topics, foundations and storage")
+    if not isinstance(data, dict) or set(data) != {"topics", "foundations", "storage", "microarchitecture"}:
+        raise ValueError("Source layout needs topics, foundations, storage and microarchitecture")
     if not isinstance(data["topics"], dict) or set(data["topics"]) != set(SOURCE_TOPICS):
         raise ValueError("Source layout must map each non-storage topic exactly once")
     if not isinstance(data["foundations"], dict) or set(data["foundations"]) != {"article", "images"}:
@@ -67,6 +68,15 @@ def load_layout(path):
     for item in storage["aliases"]:
         if not isinstance(item, dict) or set(item) != {"source", "target"}:
             raise ValueError("Each storage alias needs source and target")
+    micro = data["microarchitecture"]
+    if not isinstance(micro, dict) or set(micro) != {"homepage", "mappings", "aliases"}:
+        raise ValueError("Microarchitecture layout needs homepage, mappings and aliases")
+    for key in ("mappings", "aliases"):
+        if not isinstance(micro[key], list):
+            raise ValueError(f"Microarchitecture {key} must be a list")
+        for item in micro[key]:
+            if not isinstance(item, dict) or set(item) != {"source", "target"}:
+                raise ValueError("Microarchitecture entries need source and target")
     return data
 
 
@@ -221,6 +231,64 @@ def _copy_storage(docs, published, mappings, aliases, root, roots):
         published.add(source, destination, rewrite_page=False)
 
 
+def _copy_microarchitecture(root, docs, published, data, article, images):
+    """Cover the source tree exactly once and retain explicit legacy targets."""
+    base = root / "series/microarchitecture"
+    homepage = _path_inside(root, data["homepage"], False)
+    if homepage != base / "README.md":
+        raise ValueError("Microarchitecture homepage must be series/microarchitecture/README.md")
+    foundation_files = {article, *_storage_files(images)}
+    covered = {homepage, *foundation_files}
+    metadata = {}
+    targets = set()
+    for item in data["mappings"]:
+        source = _path_inside(root, item["source"], False)
+        if base not in source.parents or source in covered:
+            raise ValueError(f"Invalid or repeated microarchitecture source: {source}")
+        target_path = PurePosixPath(item["target"])
+        if (target_path.is_absolute() or any(p in {".", "..", ".git"} for p in target_path.parts)
+                or "\\" in item["target"] or not target_path.parts
+                or target_path.parts[0] not in {"COMPUTE", "DMA", "CIM", "microarchitecture"}
+                or item["target"].startswith("COMPUTE/wiki/06-memory-discipline/")):
+            raise ValueError(f"Invalid microarchitecture publication target: {target_path}")
+        destination = docs / target_path
+        if destination.exists() or item["target"] in targets:
+            raise ValueError(f"Microarchitecture output collision: {destination}")
+        relative = source.relative_to(base).as_posix()
+        if source.suffix == ".md":
+            group = MICRO_TOPICS.get(relative.split("/")[0])
+            if group is None or owner(item["target"]) != (MICRO, group):
+                raise ValueError(f"Microarchitecture source and navigation differ: {source} -> {destination}")
+            metadata[relative] = item["target"]
+        covered.add(source)
+        targets.add(item["target"])
+        destination.parent.mkdir(parents=True, exist_ok=True)
+        shutil.copy2(source, destination)
+        published.add(source, destination)
+        if source.name == "README.md":
+            published.add(source.parent, destination.parent, rewrite_page=False)
+    available = set(_storage_files(base))
+    if covered - foundation_files != available - foundation_files:
+        missing = sorted(str(p) for p in available - covered)
+        extra = sorted(str(p) for p in covered - available - foundation_files)
+        raise ValueError(f"Microarchitecture mappings do not cover source files: missing={missing}, extra={extra}")
+    metadata["02-pipeline/electrical-timing-foundations.md"] = "electrical-timing-foundations.md"
+    for item in data["aliases"]:
+        path = PurePosixPath(item["source"])
+        target = PurePosixPath(item["target"])
+        if (not path.parts or not target.parts or path.is_absolute() or target.is_absolute()
+                or ".." in path.parts or ".." in target.parts or ".git" in path.parts or ".git" in target.parts
+                or "\\" in item["source"] or "\\" in item["target"]):
+            raise ValueError("Microarchitecture alias escapes the checkout")
+        # Foundation targets are copied later in stage_site.
+        if not (docs / target).exists() and str(target) != "electrical-timing-foundations.md" and target.parts[0] != "img":
+            raise ValueError(f"Missing microarchitecture alias target: {target}")
+        published.add(root / path, docs / target, rewrite_page=False)
+    shutil.copy2(homepage, docs / "microarchitecture.md")
+    published.add(homepage, docs / "microarchitecture.md")
+    (docs.parent / "microarchitecture-navigation.json").write_text(json.dumps(metadata, ensure_ascii=False, indent=2) + "\n")
+
+
 def stage_site(root=ROOT, build_root=None, registry=None, source_root=None, layout=None):
     """Build a complete staging tree before replacing the previous one.
 
@@ -243,6 +311,10 @@ def stage_site(root=ROOT, build_root=None, registry=None, source_root=None, layo
     images = _path_inside(root, layout_data["foundations"]["images"], True)
     reviews = _path_inside(root, "docs/reviews", True)
     local_sources = [source_directory(root, item["local"]["directory"]) for item in entries if "local" in item]
+    micro_source = root / "series/microarchitecture"
+    for local in local_sources:
+        if local == micro_source or local in micro_source.parents or micro_source in local.parents:
+            raise ValueError(f"Microarchitecture overlaps a local series source: {local}")
     # An explicitly staged topic must never also be included recursively in a
     # local series: this could duplicate published pages or expose wiki.old.
     for topic, source in topics.items():
@@ -293,6 +365,7 @@ def stage_site(root=ROOT, build_root=None, registry=None, source_root=None, layo
                     published.add(source / filename, target / filename)
 
         _copy_storage(docs, published, storage_mappings, layout_data["storage"]["aliases"], root, storage_roots)
+        _copy_microarchitecture(root, docs, published, layout_data["microarchitecture"], article, images)
 
         # Keep the published URLs stable when the review sources move.
         _assert_no_symlinks(reviews)
@@ -309,10 +382,10 @@ def stage_site(root=ROOT, build_root=None, registry=None, source_root=None, layo
         # not be treated as source Markdown for link rewriting.
         published.add(root / "README.md", docs / "README.md", rewrite_page=False)
         shutil.copy2(root / "website" / "series.md", docs / "series.md")
-        shutil.copy2(root / "website" / "microarchitecture.md", docs / "microarchitecture.md")
         shutil.copy2(storage_home, docs / "storage.md")
         published.add(storage_home, docs / "storage.md")
         shutil.copy2(root / "website" / "interconnect.md", docs / "interconnect.md")
+        published.add(root / "series/interconnect/README.md", docs / "interconnect.md", rewrite_page=False)
         shutil.copy2(root / "website" / "articles.md", docs / "articles.md")
         shutil.copy2(root / "website" / "visuals.md", docs / "visuals.md")
         shutil.copytree(root / "website" / "assets", docs / "assets")
@@ -357,6 +430,7 @@ def stage_site(root=ROOT, build_root=None, registry=None, source_root=None, layo
             shutil.rmtree(destination)
         docs.rename(destination)
         (staging / "series.json").replace(build_root / "series.json")
+        (staging / "microarchitecture-navigation.json").replace(build_root / "microarchitecture-navigation.json")
     print(f"Staged source documents in {destination}")
 
 

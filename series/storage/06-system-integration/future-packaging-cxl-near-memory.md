@@ -3,7 +3,7 @@
 <span id="cxl近存计算与未来封装方向"></span>
 
 上级：[存储系统集成与选型](./README.md)
-相关：[存储层次与系统角色](../01-memory-hierarchy/01-system-basics/memory-hierarchy-as-system.md) · [CXL 与 PCIe 的边界](../../interconnect/PCIE/07-advanced-topics/cxl-and-pcie-boundary.md) · [HBM-PIM 案例](../../microarchitecture/CIM/wiki/09-research-frontier/case-study-samsung-hbm-pim-research-angle.md)
+相关：[存储层次与系统角色](../01-memory-hierarchy/01-system-basics/memory-hierarchy-as-system.md) · [CXL 与 PCIe 的边界](../../interconnect/PCIE/07-advanced-topics/cxl-and-pcie-boundary.md) · [HBM-PIM 案例](../../microarchitecture/08-in-memory-computing/09-research-frontier/case-study-samsung-hbm-pim-research-angle.md)
 
 ## 这页在回答什么问题
 
@@ -31,7 +31,7 @@
 
 近存计算通常指将部分处理移到靠近数据的位置；PIM（processing in memory）用于描述不同程度的存储侧处理。名称的使用范围会随资料变化，因此比较时应明确：计算在独立逻辑、内存 die 的处理单元，还是阵列及其外围电路中执行；数据通过哪些接口移动；支持哪些操作。
 
-例如，[Samsung 的 HBM-PIM 技术介绍](https://semiconductor.samsung.com/news-events/tech-blog/hbm-pim-cutting-edge-memory-technology-to-accelerate-next-generation-ai/)描述了在 HBM 中加入处理能力。它并不意味着 DRAM cell 本身完成所有算术，也不表示所有应用都能获益。具体 bank、命令和软件约束见 [HBM-PIM 案例](../../microarchitecture/CIM/wiki/09-research-frontier/case-study-samsung-hbm-pim-research-angle.md)。
+例如，[Samsung 的 HBM-PIM 技术介绍](https://semiconductor.samsung.com/news-events/tech-blog/hbm-pim-cutting-edge-memory-technology-to-accelerate-next-generation-ai/)描述了在 HBM 中加入处理能力。它并不意味着 DRAM cell 本身完成所有算术，也不表示所有应用都能获益。具体 bank、命令和软件约束见 [HBM-PIM 案例](../../microarchitecture/08-in-memory-computing/09-research-frontier/case-study-samsung-hbm-pim-research-angle.md)。
 
 假设一个操作原来要将大量输入送到处理器、计算后只返回少量结果。若存储侧支持该操作，且任务能在那里访问输入，则减少跨边界传输可能有利；但还要计入启动、数据布局、同步、局部计算能力和结果搬运。数据需要频繁在主机和存储侧交替修改时，这些代价可能抵消收益。
 

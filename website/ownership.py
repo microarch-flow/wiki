@@ -2,14 +2,15 @@
 
 from storage_navigation import INTEGRATION_HOME, INTEGRATION_TOPIC, RESOURCE_HOME, RESOURCE_PAGE_SECTION, STORAGE_RESOURCES, SYSTEM_SELECTION
 
+from microarchitecture_navigation import MICRO_TOPICS
+
 MICRO = "微架构"
 STORAGE = "存储系统"
 INTERCONNECT = "芯片与系统互连"
 DEVELOPMENT = "芯片开发与实现"
 
 GROUPS = {
-    MICRO: ("系列导读", "数值格式与算术数据通路", "时钟、流水线与吞吐", "计算阵列与数据流",
-            "DMA 与异步数据搬运", "处理单元与芯片顶层组织", "存内计算 CIM", "制造与封测导读"),
+    MICRO: tuple(MICRO_TOPICS.values()),
     STORAGE: ("存储层级与数据路径", "SRAM 器件与应用", "DRAM 器件与接口", "DRAM 控制器与请求调度",
               "HBF 高带宽闪存", "存储系统集成与选型"),
     INTERCONNECT: ("片上事务与总线（BUS）", "片上网络（NoC）", "封装内芯粒互连",
@@ -26,8 +27,12 @@ HBM_SYSTEM_SELECTION = "RAM/wiki/09-ai-chip-memory-architecture/hbm-vs-lpddr-for
 def owner(path):
     """Return the primary series and topic for a staged original-wiki path."""
     path = str(path)
+    if path.startswith("microarchitecture/"):
+        return MICRO, MICRO_TOPICS[path.split("/")[1]]
+    if path == "COMPUTE/wiki/07-chip-organization/brain-vs-chip-power.md":
+        return MICRO, "功耗管理与实现权衡"
     if path == "electrical-timing-foundations.md":
-        return MICRO, "时钟、流水线与吞吐"
+        return MICRO, "流水线、时序与时钟域"
     if path == RESOURCE_HOME or path in RESOURCE_PAGE_SECTION or path.startswith("RAM/wiki/10-reference/"):
         return STORAGE, STORAGE_RESOURCES
     if path in {INTEGRATION_HOME, SYSTEM_SELECTION}:
@@ -36,18 +41,18 @@ def owner(path):
         return STORAGE, "存储系统集成与选型"
     if path.startswith("COMPUTE/"):
         for prefix, group in (
-            ("02-datapath-foundations", "数值格式与算术数据通路"),
-            ("03-systolic-array", "计算阵列与数据流"),
-            ("04-clocking-and-pipeline", "时钟、流水线与吞吐"),
-            ("05-fpga-vs-asic", "处理单元与芯片顶层组织"),
-            ("07-chip-organization", "处理单元与芯片顶层组织"),
-            ("08-modeling-for-archax", "处理单元与芯片顶层组织"),
+            ("02-datapath-foundations", "数值格式与运算数据通路"),
+            ("03-systolic-array", "并行执行与计算阵列"),
+            ("04-clocking-and-pipeline", "流水线、时序与时钟域"),
+            ("05-fpga-vs-asic", "功耗管理与实现权衡"),
+            ("07-chip-organization", "处理单元与片上组织"),
+            ("08-modeling-for-archax", "分析方法与查阅练习"),
         ):
             if path.startswith(f"COMPUTE/wiki/{prefix}/"):
                 return MICRO, group
         if path.startswith("COMPUTE/wiki/06-memory-discipline/"):
             return STORAGE, "存储层级与数据路径"
-        return MICRO, "系列导读"
+        return MICRO, "分析方法与查阅练习"
     if path.startswith("RAM/"):
         for prefixes, group in (
             (("02-sram-foundations", "03-sram-applications"), "SRAM 器件与应用"),
@@ -61,7 +66,7 @@ def owner(path):
         return STORAGE, "存储层级与数据路径"
     for prefix, series, group in (
         ("DMA/", MICRO, "DMA 与异步数据搬运"),
-        ("CIM/", MICRO, "存内计算 CIM"),
+        ("CIM/", MICRO, "存内与近存计算"),
         ("HBF/", STORAGE, "HBF 高带宽闪存"),
         ("BUS/", INTERCONNECT, "片上事务与总线（BUS）"),
         ("NOC/", INTERCONNECT, "片上网络（NoC）"),

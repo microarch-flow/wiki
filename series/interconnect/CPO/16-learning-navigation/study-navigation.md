@@ -25,7 +25,7 @@
 4. [光链路基础与功率预算](../04-optical-engine/optical-link-basics.md)
 5. [带宽、功耗与热](../05-electrical-thermal-reliability/bandwidth-power-thermal.md)
 
-如果电路或时序概念不熟悉，可按需补读[电路到时序的共用基础](../../../microarchitecture/foundations/electrical-timing-foundations.md)；器件细节见[激光器、调制器、探测器](../04-optical-engine/laser-modulator-detector.md)。
+如果电路或时序概念不熟悉，可按需补读[电路到时序的共用基础](../../../microarchitecture/02-pipeline/electrical-timing-foundations.md)；器件细节见[激光器、调制器、探测器](../04-optical-engine/laser-modulator-detector.md)。
 
 读完后你应该能回答：
 

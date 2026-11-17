@@ -315,13 +315,13 @@
    [NOC 流量](../../../interconnect/NOC/05-system-integration/traffic-patterns-and-characterization.md)、[RAM 控制器模型](../../04-dram-controller/mc-modeling-for-simulation.md)
 
 78. [J] 在 NPU double buffering 中，DMA refill 应如何同时对齐 DRAM 访问局部性和片上消费节拍？
-   [DMA 双缓冲](../../../microarchitecture/DMA/wiki/04-programming-model/tiling-double-buffering.md)、[RAM activation buffer](../../01-memory-hierarchy/04-npu-case/activation-buffer-and-double-buffering.md)
+   [DMA 双缓冲](../../../microarchitecture/05-dma/04-programming-model/tiling-double-buffering.md)、[RAM activation buffer](../../01-memory-hierarchy/04-npu-case/activation-buffer-and-double-buffering.md)
 
 79. [J] HBM 的 interposer 路由、PDN/SI 和热约束可能如何影响持续带宽？package test 与良率又如何影响成本或可供货性，为什么不能直接把它们当作带宽损失？
    [FAB 封装信号完整性](../../../chip-development/FAB/wiki/06-cross-cutting-engineering/signal-integrity-in-package.md)、[RAM HBM 成本](../../06-system-integration/packaging/why-hbm-is-expensive.md)
 
 80. [J] 从 RAM 视角看，DRAM-PIM 与 SRAM-CIM 在数据位置、刷新/保持、外围计算开销和上层 memory hierarchy 边界上有什么本质差异？
-   [CIM DRAM-PIM](../../../microarchitecture/CIM/wiki/02-memory-technologies/dram-pim-foundation.md)、[CIM SRAM-CIM](../../../microarchitecture/CIM/wiki/02-memory-technologies/sram-cim-foundation.md)
+   [CIM DRAM-PIM](../../../microarchitecture/08-in-memory-computing/02-memory-technologies/dram-pim-foundation.md)、[CIM SRAM-CIM](../../../microarchitecture/08-in-memory-computing/02-memory-technologies/sram-cim-foundation.md)
 
 
 </ol>

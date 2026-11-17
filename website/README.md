@@ -8,6 +8,12 @@ Wiki 与博客的共同写作和设计要求见 [Wiki 与博客设计规则](../
 
 `website/ownership.py` 指定原有文章、Workload 和芯片开发流程文章的主系列和主专题。按更具体的文件规则处理 HBM、FAB 良率等例外。文章可以从多个导读链接，但只能在主导航出现一次；构建会拒绝重复的主导航条目。新增文章时，检查其路径是否落在正确的规则内，并核对面包屑与阅读链接。
 
+微架构的正文按机制维护在 `series/microarchitecture/`：`00-overview/` 是系列导读，`01-datapath/` 至 `09-power-implementation/` 是九个技术专题，`reading-and-reference/` 收拢路线、指标与建模。系列首页只在该目录的 `README.md` 维护，封面由网站钩子生成。DMA、CIM 的九章与十章保留，源码省去旧的 `wiki/` 层。
+
+`website/source-layout.json` 的 `microarchitecture` 条目按文件映射到原 COMPUTE、DMA、CIM 发布路径；新主题使用 `microarchitecture/` 路径。`prepare.py` 检查来源覆盖、目标冲突和主归属，并在构建目录生成来源到发布路径的导航元数据。`microarchitecture_navigation.py` 按源码目录组织侧栏，使用每个目录首页的编号“阅读顺序”决定顺序和短标题，要求覆盖该目录的全部文章及子目录首页。不能根据公开 URL 推断源码所在专题。
+
+旧页面锚点由正文中的 `micro-legacy-anchor` 元素保留。`website/tests/data/microarchitecture-legacy-pages.json` 保存迁移前 173 页及正文锚点的基线；测试验证旧路径、锚点、搜索和唯一导航。历史 `wiki.old/`、`seed/`、写作任务和旧网站首页保存在 `docs/archive/microarchitecture/`，不参与发布。相邻文章只更新受迁移影响的源码链接。
+
 存储系统的源码和导航按相同的六个专题组织，省略 RAM、HBF 等来源名称造成的重复层级。HBM 器件与接口文章位于 DRAM 命令与接口的阅读顺序中；HBM 的封装、成本与选型文章属于系统集成专题，两者通过正文链接关联。源码已迁入 `series/storage/` 下对应的专题目录；原发布网址保持不变。
 
 “存储层级与数据路径”的导航按 `website/storage_navigation.py` 中的四组和阅读顺序生成。“系统基础”“访问路径与数据管理”“性能分析与瓶颈”“NPU 数据路径与存储组织”分别对应 `01-memory-hierarchy/` 下的 `01-system-basics/`、`02-access-paths/`、`03-performance/`、`04-npu-case/`。跨专题阅读路线、自测和参考资料位于 `series/storage/reading-and-reference/`，在网站中作为“查阅与练习”展示，不是第七个技术专题。根目录的总导读及 `01-reading/`、`02-reference/` 两组分别对应网站首页、阅读路线与自测、参考资料与工具；原 RAM 路线兼作阅读分组入口，并保留历史章节。页面路径和顺序由 `website/storage_navigation.py` 与 `website/source-layout.json` 共同维护。
@@ -108,7 +114,7 @@ python website/prepare.py
 mkdocs serve
 ```
 
-根据命令输出打开本地地址。编辑正文、存储系统系列首页、`website/home.md`、`website/series.md`、`website/microarchitecture.md`、`website/series.json`、`website/visuals.md` 或网站资源后，重新执行 `python website/prepare.py`，再启动或刷新预览。如果用本地检出替代配置中的外仓 `source`，重新执行时也要带上 `--source-root`；仓内 `local` 来源不需要该参数。`.site-build/` 是可重新生成的构建目录，不要直接在其中维护正文。
+根据命令输出打开本地地址。编辑正文、存储系统系列首页、`website/home.md`、`website/series.md`、`series/microarchitecture/README.md`、`website/series.json`、`website/visuals.md` 或网站资源后，重新执行 `python website/prepare.py`，再启动或刷新预览。如果用本地检出替代配置中的外仓 `source`，重新执行时也要带上 `--source-root`；仓内 `local` 来源不需要该参数。`.site-build/` 是可重新生成的构建目录，不要直接在其中维护正文。
 
 要只生成静态文件：
 
@@ -138,11 +144,11 @@ mkdocs build
 ## 内容和图解
 
 - 正文来源位于 `series/`；`wiki.old/`、`task.md`、`seed/` 和 `docs/archive/` 不在网站构建范围内。
-- 总首页维护在 `website/home.md`，系列目录维护在 `website/series.md`，微架构系列首页维护在 `website/microarchitecture.md`，存储系统系列首页维护在 `series/storage/README.md`，系列列表维护在 `website/series.json`。精选文章列表维护在 `website/articles.md`，互动图解维护在 `website/visuals.md`，图形与脚本位于 `website/assets/`。精选文章直接引用现有正文，后续可逐篇修改原文。
-- 其余六个系列首页的封面图位于 `website/assets/images/series-covers/`，由 `website/hooks.py` 结合页面原有标题与导语生成。图片的替代文字和图注也在该文件维护；首页正文和原有链接仍由各系列的 Markdown 维护。
+- 总首页维护在 `website/home.md`，系列目录维护在 `website/series.md`，微架构系列首页维护在 `series/microarchitecture/README.md`，存储系统系列首页维护在 `series/storage/README.md`，系列列表维护在 `website/series.json`。精选文章列表维护在 `website/articles.md`，互动图解维护在 `website/visuals.md`，图形与脚本位于 `website/assets/`。精选文章直接引用现有正文，后续可逐篇修改原文。
+- 各系列首页的封面图位于 `website/assets/images/series-covers/`，由 `website/hooks.py` 结合页面原有标题与导语生成。图片的替代文字和图注也在该文件维护；首页正文和原有链接仍由各系列的 Markdown 维护。
 - DRAM 图解只表示一次显式 PRE 读流程的逻辑阶段，不给出周期数或替代器件规格。
 - 双缓冲图解假设搬运和计算各占一个周期，且资源访问不冲突。它不代表实际设备的实测性能。
-- 电路与时序文章维护在 `series/microarchitecture/foundations/electrical-timing-foundations.md`，原理图位于其相邻的 `img/`。暂存后仍使用原根文章和 `img/` 路径。公式区和路径卡片使用文中的 HTML 及 `site.css` 样式；构建时 `website/hooks.py` 只为该页添加阅读布局容器。公式不依赖外部脚本。
+- 电路与时序文章维护在 `series/microarchitecture/02-pipeline/electrical-timing-foundations.md`，原理图位于其相邻的 `img/`。暂存后仍使用原根文章和 `img/` 路径。公式区和路径卡片使用文中的 HTML 及 `site.css` 样式；构建时 `website/hooks.py` 只为该页添加阅读布局容器。公式不依赖外部脚本。
 - 6T SRAM 文章通过 `website/hooks.py` 在正文标记处插入读写图解；模板位于 `website/partials/sram-demo.html`，状态与控制逻辑位于 `website/assets/javascripts/sram.js`。结构图和操作步骤都是教学示意，不是电路仿真。
 - RAM 概览通过正文标记插入 cache miss 与后续复用图解；模板为 `website/partials/ram-overview-demo.html`，状态与控制逻辑为 `website/assets/javascripts/ram-overview.js`。图解采用文章中的两次顺序读取示例；路径示意图分别提供桌面和窄屏版本。
 - 修改图解时，同步检查状态文案、相关约束、链接，以及键盘操作和减少动态效果的设置。

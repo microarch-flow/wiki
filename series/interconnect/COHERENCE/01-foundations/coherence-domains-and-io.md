@@ -31,4 +31,4 @@
 
 ## 本专题与 DMA 教程的分工
 
-本专题关注请求进入哪个一致性域、谁响应探查、谁保存脏数据。驱动怎样映射缓冲区、交还所有权及调用缓存维护接口，继续阅读 [DMA 的一致性与缓存维护](../../../microarchitecture/DMA/wiki/02-fundamentals/consistency-cache-coherency.md)。接口概览见 [Coherent 与 Non-Coherent 路径](../../BUS/03-on-chip-protocol-families/coherent-bus-vs-noncoherent-bus.md)。
+本专题关注请求进入哪个一致性域、谁响应探查、谁保存脏数据。驱动怎样映射缓冲区、交还所有权及调用缓存维护接口，继续阅读 [DMA 的一致性与缓存维护](../../../microarchitecture/05-dma/02-fundamentals/consistency-cache-coherency.md)。接口概览见 [Coherent 与 Non-Coherent 路径](../../BUS/03-on-chip-protocol-families/coherent-bus-vs-noncoherent-bus.md)。

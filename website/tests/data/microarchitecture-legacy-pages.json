@@ -1,0 +1,2085 @@
+{
+  "microarchitecture.md": {
+    "html": "microarchitecture/index.html",
+    "ids": [
+      "topics",
+      "on-chip-data-supply",
+      "architecture-modeling"
+    ]
+  },
+  "electrical-timing-foundations.md": {
+    "html": "electrical-timing-foundations/index.html",
+    "ids": [
+      "从电荷到芯片时序一条可手算的路径",
+      "1-电压变化需要电流和时间",
+      "1-电压为什么需要时间才能变化",
+      "先用恒流做一次估算",
+      "2-用-rc-模型观察电压怎样上升",
+      "2-传播和采样不是同一件事",
+      "3-到达门限为什么还不等于完成采样",
+      "3-从上面的充电时间得到一个周期约束",
+      "4-算一条路径需要多长的时钟周期",
+      "参数变化会怎样影响余量",
+      "5-为什么-setup-通过了还要检查-hold",
+      "4-从物理过程到离散事件",
+      "6-怎样把物理时间变成模型中的事件",
+      "接下来怎么读"
+    ]
+  },
+  "CIM/README.md": {
+    "html": "CIM/index.html",
+    "ids": [
+      "cim"
+    ]
+  },
+  "COMPUTE/self-test-questions.md": {
+    "html": "COMPUTE/self-test-questions/index.html",
+    "ids": [
+      "compute-wiki-自测问题列表",
+      "01-overview7-题",
+      "02-datapath-foundations14-题",
+      "03-systolic-array11-题",
+      "04-clocking-and-pipeline11-题",
+      "05-fpga-vs-asic5-题",
+      "06-memory-discipline5-题",
+      "07-chip-organization8-题",
+      "08-modeling-for-archax3-题",
+      "跨章节综合题4-题"
+    ]
+  },
+  "DMA/README.md": {
+    "html": "DMA/index.html",
+    "ids": [
+      "dma"
+    ]
+  },
+  "CIM/wiki/SUMMARY.md": {
+    "html": "CIM/wiki/SUMMARY/index.html",
+    "ids": [
+      "知识地图",
+      "01-overview-坐标系",
+      "02-memory-technologies-横轴",
+      "03-compute-paradigms-纵轴",
+      "04-circuit-and-macro-电路与宏",
+      "05-architecture-and-system-架构与系统",
+      "06-software-stack-软件栈",
+      "07-workloads-工作负载",
+      "08-industry-and-products-产业与产品",
+      "09-research-frontier-研究前沿",
+      "10-reference-速查"
+    ]
+  },
+  "CIM/wiki/README.md": {
+    "html": "CIM/wiki/index.html",
+    "ids": [
+      "cim-wiki",
+      "这份-wiki-在回答什么问题",
+      "全-wiki-的两个锚点",
+      "十章地图",
+      "从哪里开始",
+      "一句话理解"
+    ]
+  },
+  "CIM/wiki/08-industry-and-products/industry-landscape.md": {
+    "html": "CIM/wiki/08-industry-and-products/industry-landscape/index.html",
+    "ids": [
+      "cim-产业全景startupidmip-公司学术孵化的分工",
+      "这页在回答什么问题",
+      "一句话理解",
+      "产业启示"
+    ]
+  },
+  "CIM/wiki/08-industry-and-products/value-chain-and-commercialization.md": {
+    "html": "CIM/wiki/08-industry-and-products/value-chain-and-commercialization/index.html",
+    "ids": [
+      "cim-商业化路径从论文到-tape-out-到量产的真实门槛",
+      "这页在回答什么问题",
+      "一句话理解",
+      "产业启示"
+    ]
+  },
+  "CIM/wiki/08-industry-and-products/README.md": {
+    "html": "CIM/wiki/08-industry-and-products/index.html",
+    "ids": [
+      "08-产业与产品",
+      "这页在回答什么问题",
+      "一句话理解",
+      "产业启示"
+    ]
+  },
+  "CIM/wiki/08-industry-and-products/manufacturing-and-test-challenges.md": {
+    "html": "CIM/wiki/08-industry-and-products/manufacturing-and-test-challenges/index.html",
+    "ids": [
+      "制造与测试挑战cim-特有的工艺与测试问题",
+      "这页在回答什么问题",
+      "一句话理解",
+      "产业启示"
+    ]
+  },
+  "CIM/wiki/08-industry-and-products/company-comparison-matrix.md": {
+    "html": "CIM/wiki/08-industry-and-products/company-comparison-matrix/index.html",
+    "ids": [
+      "公司全景对比矩阵技术路线-产品阶段-应用定位",
+      "这页在回答什么问题",
+      "一句话理解",
+      "产业启示"
+    ]
+  },
+  "CIM/wiki/02-memory-technologies/dram-pim-deep-dive.md": {
+    "html": "CIM/wiki/02-memory-technologies/dram-pim-deep-dive/index.html",
+    "ids": [
+      "dram-pim-深入hbm-pimaimaimxbank-level-vs-channel-level",
+      "这页在回答什么问题",
+      "bank-level-与-channel-level",
+      "与-analogdigitalmixed-signal-的关系",
+      "hbm-pim-的系统价值",
+      "aimaimx-的边界",
+      "与-nmc-的边界",
+      "指标口径",
+      "一句话理解",
+      "研究启示"
+    ]
+  },
+  "CIM/wiki/02-memory-technologies/sram-cim-foundation.md": {
+    "html": "CIM/wiki/02-memory-technologies/sram-cim-foundation/index.html",
+    "ids": [
+      "sram-cim-基础6t8t10t-cell-怎么变成计算单元",
+      "这页在回答什么问题",
+      "sram-cim-的起点是片上存储已经存在",
+      "6t8t10t-的本质差异",
+      "sram-更自然走-digital-mixed-signal",
+      "sram-cim-与普通-sram-buffer-mac-的边界",
+      "一句话理解",
+      "研究启示"
+    ]
+  },
+  "CIM/wiki/02-memory-technologies/reram-cim-deep-dive.md": {
+    "html": "CIM/wiki/02-memory-technologies/reram-cim-deep-dive/index.html",
+    "ids": [
+      "reram-cim-深入crossbar-结构ir-dropsneak-path",
+      "这页在回答什么问题",
+      "crossbar-mvm-的理想图",
+      "reram-在三种-paradigm-下的落点",
+      "ir-drop-为什么是核心问题",
+      "sneak-path-与选择器问题",
+      "adcdac-不只是外围细节",
+      "误差如何传到模型",
+      "与-3d-集成的关系",
+      "一句话理解",
+      "研究启示"
+    ]
+  },
+  "CIM/wiki/02-memory-technologies/README.md": {
+    "html": "CIM/wiki/02-memory-technologies/index.html",
+    "ids": [
+      "02-memory-technologies",
+      "这页在回答什么问题",
+      "本章的横轴",
+      "推荐阅读顺序",
+      "一句话理解",
+      "研究启示"
+    ]
+  },
+  "CIM/wiki/02-memory-technologies/memory-tech-comparison-matrix.md": {
+    "html": "CIM/wiki/02-memory-technologies/memory-tech-comparison-matrix/index.html",
+    "ids": [
+      "三大-memory-路线全景对比",
+      "这页在回答什么问题",
+      "路线对比矩阵",
+      "不能直接横比的指标",
+      "路线选择的第一性问题",
+      "常见误解",
+      "一句话理解",
+      "研究启示"
+    ]
+  },
+  "CIM/wiki/02-memory-technologies/pcm-mram-for-cim.md": {
+    "html": "CIM/wiki/02-memory-technologies/pcm-mram-for-cim/index.html",
+    "ids": [
+      "pcm-和-mram-作为-cim-介质与-reram-的异同",
+      "这页在回答什么问题",
+      "pcm接近-analog-multi-level但写入和漂移重",
+      "mram只有-read-path-参与计算时才进入-cim",
+      "与-reram-的共性和差异",
+      "paradigm-映射",
+      "一句话理解",
+      "研究启示"
+    ]
+  },
+  "CIM/wiki/02-memory-technologies/reram-as-compute-element.md": {
+    "html": "CIM/wiki/02-memory-technologies/reram-as-compute-element/index.html",
+    "ids": [
+      "reram-作为计算元件电阻态如何编码权重",
+      "这页在回答什么问题",
+      "从电阻态到权重",
+      "为什么它天然偏-analog-mixed-signal",
+      "权重表示的几个硬问题",
+      "与-sram-cim-的根本差异",
+      "一句话理解",
+      "研究启示"
+    ]
+  },
+  "CIM/wiki/02-memory-technologies/dram-pim-foundation.md": {
+    "html": "CIM/wiki/02-memory-technologies/dram-pim-foundation/index.html",
+    "ids": [
+      "dram-pim-基础为什么在-dram-die-上加-compute-unit",
+      "这页在回答什么问题",
+      "dram-pim-的问题来源",
+      "本-wiki-的边界",
+      "为什么-dram-pim-更偏-digital-processing",
+      "适合的-workload",
+      "一句话理解",
+      "研究启示"
+    ]
+  },
+  "CIM/wiki/02-memory-technologies/sram-cim-deep-dive.md": {
+    "html": "CIM/wiki/02-memory-technologies/sram-cim-deep-dive/index.html",
+    "ids": [
+      "sram-cim-深入bitline-加和charge-sharing典型-macro-结构",
+      "这页在回答什么问题",
+      "三种常见计算路径",
+      "典型-macro-结构",
+      "精度路径如何形成",
+      "与工艺节点的关系",
+      "常见误解",
+      "一句话理解",
+      "研究启示"
+    ]
+  },
+  "CIM/wiki/02-memory-technologies/flash-cim-niche.md": {
+    "html": "CIM/wiki/02-memory-technologies/flash-cim-niche/index.html",
+    "ids": [
+      "flash-cimmythic-的路线及其工程现实",
+      "这页在回答什么问题",
+      "flash-为什么能做-cim",
+      "为什么它是-niche",
+      "与-reram-cim-的差异",
+      "mythic-给出的教训",
+      "一句话理解",
+      "研究启示"
+    ]
+  },
+  "CIM/wiki/10-reference/reading-roadmap-by-goal.md": {
+    "html": "CIM/wiki/10-reference/reading-roadmap-by-goal/index.html",
+    "ids": [
+      "按目标的阅读路径",
+      "这页在回答什么问题",
+      "一句话理解",
+      "维护原则"
+    ]
+  },
+  "CIM/wiki/10-reference/glossary.md": {
+    "html": "CIM/wiki/10-reference/glossary/index.html",
+    "ids": [
+      "术语表",
+      "这页在回答什么问题",
+      "一句话理解",
+      "维护原则"
+    ]
+  },
+  "CIM/wiki/10-reference/high-frequency-questions.md": {
+    "html": "CIM/wiki/10-reference/high-frequency-questions/index.html",
+    "ids": [
+      "高频问题cim-领域最容易混淆的概念",
+      "这页在回答什么问题",
+      "一句话理解",
+      "维护原则",
+      "adc-共享会减少转换总数吗"
+    ]
+  },
+  "CIM/wiki/10-reference/README.md": {
+    "html": "CIM/wiki/10-reference/index.html",
+    "ids": [
+      "10-reference",
+      "这页在回答什么问题",
+      "一句话理解",
+      "维护原则"
+    ]
+  },
+  "CIM/wiki/10-reference/decision-tree-cim-route-selection.md": {
+    "html": "CIM/wiki/10-reference/decision-tree-cim-route-selection/index.html",
+    "ids": [
+      "cim-路线选型决策树",
+      "这页在回答什么问题",
+      "一句话理解",
+      "维护原则"
+    ]
+  },
+  "CIM/wiki/09-research-frontier/case-study-samsung-hbm-pim-research-angle.md": {
+    "html": "CIM/wiki/09-research-frontier/case-study-samsung-hbm-pim-research-angle/index.html",
+    "ids": [
+      "案例samsung-hbm-pim-的研究视角",
+      "这页在回答什么问题",
+      "一句话理解",
+      "研究启示"
+    ]
+  },
+  "CIM/wiki/09-research-frontier/case-study-tsmc-16nm-cim-macro.md": {
+    "html": "CIM/wiki/09-research-frontier/case-study-tsmc-16nm-cim-macro/index.html",
+    "ids": [
+      "案例tsmc-16nm-cim-macro",
+      "这页在回答什么问题",
+      "一句话理解",
+      "研究启示"
+    ]
+  },
+  "CIM/wiki/09-research-frontier/README.md": {
+    "html": "CIM/wiki/09-research-frontier/index.html",
+    "ids": [
+      "09-研究前沿",
+      "这页在回答什么问题",
+      "一句话理解",
+      "研究启示"
+    ]
+  },
+  "CIM/wiki/09-research-frontier/recent-progress-themes.md": {
+    "html": "CIM/wiki/09-research-frontier/recent-progress-themes/index.html",
+    "ids": [
+      "近期研究主题超低比特3d-集成-cim新型-cell",
+      "这页在回答什么问题",
+      "一句话理解",
+      "研究启示"
+    ]
+  },
+  "CIM/wiki/09-research-frontier/metrics-glossary.md": {
+    "html": "CIM/wiki/09-research-frontier/metrics-glossary/index.html",
+    "ids": [
+      "cim-论文中常见指标的精确定义",
+      "这页在回答什么问题",
+      "一句话理解",
+      "研究启示"
+    ]
+  },
+  "CIM/wiki/09-research-frontier/case-study-u-tokyo-reram-cim.md": {
+    "html": "CIM/wiki/09-research-frontier/case-study-u-tokyo-reram-cim/index.html",
+    "ids": [
+      "案例东大-reram-cim",
+      "这页在回答什么问题",
+      "一句话理解",
+      "研究启示"
+    ]
+  },
+  "CIM/wiki/09-research-frontier/paper-review-template.md": {
+    "html": "CIM/wiki/09-research-frontier/paper-review-template/index.html",
+    "ids": [
+      "cim-论文阅读模板",
+      "这页在回答什么问题",
+      "一句话理解",
+      "研究启示"
+    ]
+  },
+  "CIM/wiki/09-research-frontier/research-vs-industry-perspective.md": {
+    "html": "CIM/wiki/09-research-frontier/research-vs-industry-perspective/index.html",
+    "ids": [
+      "研究视角与产业视角的差异",
+      "这页在回答什么问题",
+      "一句话理解",
+      "研究启示"
+    ]
+  },
+  "CIM/wiki/09-research-frontier/open-problems.md": {
+    "html": "CIM/wiki/09-research-frontier/open-problems/index.html",
+    "ids": [
+      "cim-研究的-open-problems",
+      "这页在回答什么问题",
+      "一句话理解",
+      "研究启示"
+    ]
+  },
+  "CIM/wiki/01-overview/why-cim-now-and-why-not-before.md": {
+    "html": "CIM/wiki/01-overview/why-cim-now-and-why-not-before/index.html",
+    "ids": [
+      "早期-pim-原型与-ai-时代的新机会",
+      "这页在回答什么问题",
+      "早期为什么难以成为主流",
+      "2010s-后发生了什么变化",
+      "为什么重生不等于成熟",
+      "一条历史判断线",
+      "常见误解",
+      "一句话理解"
+    ]
+  },
+  "CIM/wiki/01-overview/taxonomy.md": {
+    "html": "CIM/wiki/01-overview/taxonomy/index.html",
+    "ids": [
+      "cim-整体分类体系",
+      "这页在回答什么问题",
+      "维度一计算位置",
+      "维度二memory-technology",
+      "维度三compute-paradigm",
+      "维度四系统层级",
+      "维度五workload-适配",
+      "一张总图",
+      "一句话理解"
+    ]
+  },
+  "CIM/wiki/01-overview/learning-roadmap.md": {
+    "html": "CIM/wiki/01-overview/learning-roadmap/index.html",
+    "ids": [
+      "学习路径与章节依赖关系",
+      "这页在回答什么问题",
+      "最短判断力路径",
+      "架构建模路径",
+      "论文阅读路径",
+      "产业判断路径",
+      "章节依赖关系",
+      "一句话理解"
+    ]
+  },
+  "CIM/wiki/01-overview/README.md": {
+    "html": "CIM/wiki/01-overview/index.html",
+    "ids": [
+      "01-overview",
+      "这页在回答什么问题",
+      "本章先钉住两件事",
+      "推荐阅读顺序",
+      "本章对后续章节的约束",
+      "一句话理解"
+    ]
+  },
+  "CIM/wiki/01-overview/two-axes-memory-and-paradigm.md": {
+    "html": "CIM/wiki/01-overview/two-axes-memory-and-paradigm/index.html",
+    "ids": [
+      "两条正交主线memory-technology-compute-paradigm",
+      "这页在回答什么问题",
+      "横轴memory-technology",
+      "纵轴compute-paradigm",
+      "交叉矩阵",
+      "为什么两条轴必须同时出现",
+      "与其他-wiki-的连接",
+      "一句话理解"
+    ]
+  },
+  "CIM/wiki/01-overview/cim-pim-nmc-taxonomy.md": {
+    "html": "CIM/wiki/01-overview/cim-pim-nmc-taxonomy/index.html",
+    "ids": [
+      "cimpimnmc-的严格区分",
+      "这页在回答什么问题",
+      "本-wiki-的三条定义",
+      "判定表",
+      "边界案例怎么判",
+      "为什么这个区分重要",
+      "本-wiki-的命名纪律",
+      "常见误解",
+      "一句话理解"
+    ]
+  },
+  "CIM/wiki/01-overview/problem-statement.md": {
+    "html": "CIM/wiki/01-overview/problem-statement/index.html",
+    "ids": [
+      "memory-wall-与-von-neumann-bottleneck为什么-cim-在-ai-时代被重新点燃",
+      "这页在回答什么问题",
+      "传统路径的问题不在一层-memory",
+      "cimpimnmc-试图减少的不是同一种搬运",
+      "ai-workload-为什么重新放大这个问题",
+      "为什么不能把-cim-说成解决-memory-wall",
+      "常见误解",
+      "一句话理解"
+    ]
+  },
+  "CIM/wiki/06-software-stack/runtime-and-scheduling.md": {
+    "html": "CIM/wiki/06-software-stack/runtime-and-scheduling/index.html",
+    "ids": [
+      "runtime-与调度write-慢read-快的非对称性如何被利用",
+      "这页在回答什么问题",
+      "runtime-的职责",
+      "write-慢read-快的路线差异",
+      "调度策略",
+      "一句话理解",
+      "工具链启示"
+    ]
+  },
+  "CIM/wiki/06-software-stack/weight-mapping-to-arrays.md": {
+    "html": "CIM/wiki/06-software-stack/weight-mapping-to-arrays/index.html",
+    "ids": [
+      "权重到-array-的映射tilingduplicationfolding",
+      "这页在回答什么问题",
+      "三个基本动作",
+      "三条-paradigm-的映射差异",
+      "mapping-失败的常见原因",
+      "pimnmc-对照",
+      "一句话理解",
+      "工具链启示"
+    ]
+  },
+  "CIM/wiki/06-software-stack/model-adaptation-strategies.md": {
+    "html": "CIM/wiki/06-software-stack/model-adaptation-strategies/index.html",
+    "ids": [
+      "模型适配noise-aware-trainingqatretraining",
+      "这页在回答什么问题",
+      "三类适配",
+      "三条-paradigm-的适配差异",
+      "适配边界",
+      "一句话理解",
+      "工具链启示"
+    ]
+  },
+  "CIM/wiki/06-software-stack/quantization-for-cim.md": {
+    "html": "CIM/wiki/06-software-stack/quantization-for-cim/index.html",
+    "ids": [
+      "cim-专用的量化策略低比特非对称calibration-的特殊性",
+      "这页在回答什么问题",
+      "三层精度",
+      "三条-paradigm-的量化差异",
+      "非对称与校准",
+      "常见误解",
+      "一句话理解",
+      "工具链启示"
+    ]
+  },
+  "CIM/wiki/06-software-stack/software-stack-comparison.md": {
+    "html": "CIM/wiki/06-software-stack/software-stack-comparison/index.html",
+    "ids": [
+      "不同-cimpim-路线的软件栈差异",
+      "这页在回答什么问题",
+      "路线对比",
+      "三条-paradigm-的软件成熟度",
+      "cimpimnmc-边界",
+      "一句话理解",
+      "工具链启示"
+    ]
+  },
+  "CIM/wiki/06-software-stack/README.md": {
+    "html": "CIM/wiki/06-software-stack/index.html",
+    "ids": [
+      "06-software-stack",
+      "这页在回答什么问题",
+      "本章页面地图",
+      "三条-paradigm-的软件差异",
+      "一句话理解",
+      "工具链启示"
+    ]
+  },
+  "CIM/wiki/06-software-stack/compilation-flow-overview.md": {
+    "html": "CIM/wiki/06-software-stack/compilation-flow-overview/index.html",
+    "ids": [
+      "cim-编译流程总览模型到算子再到-macro-映射",
+      "这页在回答什么问题",
+      "编译流程",
+      "ir-必须表达什么",
+      "graph-partition",
+      "pimnmc-编译边界",
+      "一句话理解",
+      "工具链启示"
+    ]
+  },
+  "CIM/wiki/05-architecture-and-system/reliability-and-error-tolerance.md": {
+    "html": "CIM/wiki/05-architecture-and-system/reliability-and-error-tolerance/index.html",
+    "ids": [
+      "可靠性与误差容忍analog-路线的核心系统问题",
+      "这页在回答什么问题",
+      "误差传播链",
+      "三条-paradigm-的可靠性差异",
+      "系统策略",
+      "pimnmc-对照",
+      "一句话理解",
+      "建模启示"
+    ]
+  },
+  "CIM/wiki/05-architecture-and-system/from-macro-to-system.md": {
+    "html": "CIM/wiki/05-architecture-and-system/from-macro-to-system/index.html",
+    "ids": [
+      "从-cell-到-systemmacrotile-与-chip-的层级",
+      "这页在回答什么问题",
+      "层级链",
+      "三条-paradigm-的收益衰减链",
+      "pimnmc-边界",
+      "一句话理解",
+      "建模启示"
+    ]
+  },
+  "CIM/wiki/05-architecture-and-system/cim-modeling-parameter-schema.md": {
+    "html": "CIM/wiki/05-architecture-and-system/cim-modeling-parameter-schema/index.html",
+    "ids": [
+      "建模参数字典从四元组到可实现参数表",
+      "这页在回答什么问题",
+      "四元组总览",
+      "resource-参数",
+      "arraycell-阵列",
+      "adc-dac-sense-ampanalogmixed-signal-外围",
+      "accumulator-局部逻辑digitalmixed-signal",
+      "buffer-noc-全局存储-host",
+      "topology-参数",
+      "interaction-参数",
+      "capability-参数",
+      "能量子模型",
+      "adc-样本转换次数与共享",
+      "性能子模型与利用率",
+      "校准锚点",
+      "最小可实现-schema",
+      "一句话理解",
+      "建模启示"
+    ]
+  },
+  "CIM/wiki/05-architecture-and-system/memory-hierarchy-with-cim.md": {
+    "html": "CIM/wiki/05-architecture-and-system/memory-hierarchy-with-cim/index.html",
+    "ids": [
+      "cim-系统的存储层次on-arraybuffermain-memory-的分工",
+      "这页在回答什么问题",
+      "层次分工",
+      "三条-paradigm-的层次差异",
+      "dramhbmgddr-pim-与-nmc-的区别",
+      "一句话理解",
+      "建模启示"
+    ]
+  },
+  "CIM/wiki/05-architecture-and-system/README.md": {
+    "html": "CIM/wiki/05-architecture-and-system/index.html",
+    "ids": [
+      "05-architecture-and-system",
+      "这页在回答什么问题",
+      "本章的系统层级",
+      "本章页面地图",
+      "三条-paradigm-到系统层的差异",
+      "一句话理解",
+      "建模启示"
+    ]
+  },
+  "CIM/wiki/05-architecture-and-system/dataflow-mapping-on-cim.md": {
+    "html": "CIM/wiki/05-architecture-and-system/dataflow-mapping-on-cim/index.html",
+    "ids": [
+      "dataflow-在-cim-上的映射weight-stationary-的天然契合与边界",
+      "这页在回答什么问题",
+      "三种驻留视角",
+      "三条-paradigm-的映射差异",
+      "算子映射差异",
+      "一句话理解",
+      "建模启示"
+    ]
+  },
+  "CIM/wiki/05-architecture-and-system/performance-energy-modeling.md": {
+    "html": "CIM/wiki/05-architecture-and-system/performance-energy-modeling/index.html",
+    "ids": [
+      "性能与能效建模从-macro-到-system-的指标推导",
+      "这页在回答什么问题",
+      "最小能耗模型",
+      "最小性能模型",
+      "三条-paradigm-的建模差异",
+      "roofline-风格判断",
+      "指标口径表",
+      "一句话理解",
+      "建模启示"
+    ]
+  },
+  "CIM/wiki/05-architecture-and-system/interconnect-and-reduction.md": {
+    "html": "CIM/wiki/05-architecture-and-system/interconnect-and-reduction/index.html",
+    "ids": [
+      "cim-阵列间的互连与-reduction与-noc-的关系",
+      "这页在回答什么问题",
+      "traffic-类型",
+      "三条-paradigm-的互连压力",
+      "拓扑选择",
+      "pimnmc-对照",
+      "一句话理解",
+      "建模启示"
+    ]
+  },
+  "CIM/wiki/05-architecture-and-system/cim-system-integration-with-host.md": {
+    "html": "CIM/wiki/05-architecture-and-system/cim-system-integration-with-host/index.html",
+    "ids": [
+      "cim-加速器与-host-的集成从-pcie-attached-到-soc-内嵌",
+      "这页在回答什么问题",
+      "三种集成形态",
+      "三条-paradigm-的-host-压力",
+      "接口机制",
+      "一句话理解",
+      "建模启示"
+    ]
+  },
+  "CIM/wiki/07-workloads/llm-decode-and-cim.md": {
+    "html": "CIM/wiki/07-workloads/llm-decode-and-cim/index.html",
+    "ids": [
+      "llm-decode-阶段memory-bound-工作负载与-cim-的契合度",
+      "这页在回答什么问题",
+      "decode-的瓶颈",
+      "cim-能做什么",
+      "pimnmc-为什么更自然",
+      "三条-paradigm-的-decode-差异",
+      "一句话理解",
+      "建模启示"
+    ]
+  },
+  "CIM/wiki/07-workloads/transformer-on-cim.md": {
+    "html": "CIM/wiki/07-workloads/transformer-on-cim/index.html",
+    "ids": [
+      "transformerattention-与-kv-cache-给-cim-带来的新挑战",
+      "这页在回答什么问题",
+      "子模块拆解",
+      "prefill-与-decode-不同",
+      "三条-paradigm-的-transformer-差异",
+      "一句话理解",
+      "建模启示"
+    ]
+  },
+  "CIM/wiki/07-workloads/cnn-on-cim.md": {
+    "html": "CIM/wiki/07-workloads/cnn-on-cim/index.html",
+    "ids": [
+      "cnncim-的标准应用场景及其上限",
+      "这页在回答什么问题",
+      "cnn-为什么适合",
+      "上限在哪里",
+      "三条-paradigm-的-cnn-落点",
+      "一句话理解",
+      "建模启示"
+    ]
+  },
+  "CIM/wiki/07-workloads/edge-ai-and-cim.md": {
+    "html": "CIM/wiki/07-workloads/edge-ai-and-cim/index.html",
+    "ids": [
+      "edge-ai能效需求驱动下-cim-的现实定位",
+      "这页在回答什么问题",
+      "edge-的关键条件",
+      "三条-paradigm-的-edge-落点",
+      "子场景差异",
+      "pimnmc-对照",
+      "一句话理解",
+      "建模启示"
+    ]
+  },
+  "CIM/wiki/07-workloads/README.md": {
+    "html": "CIM/wiki/07-workloads/index.html",
+    "ids": [
+      "07-workloads",
+      "这页在回答什么问题",
+      "本章页面地图",
+      "三条-paradigm-的-workload-偏好",
+      "一句话理解",
+      "建模启示"
+    ]
+  },
+  "CIM/wiki/07-workloads/workload-characterization-for-cim.md": {
+    "html": "CIM/wiki/07-workloads/workload-characterization-for-cim/index.html",
+    "ids": [
+      "什么样的-workload-适合-cim什么样的不适合",
+      "这页在回答什么问题",
+      "判断维度",
+      "三条-paradigm-的-workload-差异",
+      "cimpimnmc-的-workload-分界",
+      "一句话理解",
+      "建模启示"
+    ]
+  },
+  "CIM/wiki/04-circuit-and-macro/cim-macro-primitives.md": {
+    "html": "CIM/wiki/04-circuit-and-macro/cim-macro-primitives/index.html",
+    "ids": [
+      "cim-macro-的基本原语arraydriversenseaccumulator",
+      "这页在回答什么问题",
+      "macro-的基本链路",
+      "原语如何对应三条-paradigm",
+      "四个容易误判的位置",
+      "和传统-sramdram-macro-的区别",
+      "一句话理解",
+      "研究启示"
+    ]
+  },
+  "CIM/wiki/04-circuit-and-macro/data-encoding-strategies.md": {
+    "html": "CIM/wiki/04-circuit-and-macro/data-encoding-strategies/index.html",
+    "ids": [
+      "数据编码bit-serialbinaryunarystochastic",
+      "这页在回答什么问题",
+      "数值表示与时间展开",
+      "三条-paradigm-的编码差异",
+      "编码和-memory-technology-的错配",
+      "读论文时的记录模板",
+      "一句话理解",
+      "研究启示"
+    ]
+  },
+  "CIM/wiki/04-circuit-and-macro/non-idealities-and-error-sources.md": {
+    "html": "CIM/wiki/04-circuit-and-macro/non-idealities-and-error-sources/index.html",
+    "ids": [
+      "非理想性总览noisemismatchvariationretention",
+      "这页在回答什么问题",
+      "误差分层",
+      "三条-paradigm-的误差形态",
+      "memory-technology-的差异",
+      "校准的代价",
+      "一句话理解",
+      "研究启示"
+    ]
+  },
+  "CIM/wiki/04-circuit-and-macro/README.md": {
+    "html": "CIM/wiki/04-circuit-and-macro/index.html",
+    "ids": [
+      "04-circuit-and-macro",
+      "这页在回答什么问题",
+      "本章的层级",
+      "本章页面地图",
+      "三条-paradigm-在-macro-层的差异",
+      "读本章时要盯住的口径",
+      "一句话理解",
+      "研究启示"
+    ]
+  },
+  "CIM/wiki/04-circuit-and-macro/macro-design-tradeoff-framework.md": {
+    "html": "CIM/wiki/04-circuit-and-macro/macro-design-tradeoff-framework/index.html",
+    "ids": [
+      "macro-设计的决策框架从-workload-到-macro-参数",
+      "这页在回答什么问题",
+      "决策链",
+      "关键参数怎么选",
+      "paradigm-specific-设计取舍",
+      "工艺与封装因素",
+      "评价框架",
+      "一句话理解",
+      "研究启示"
+    ]
+  },
+  "CIM/wiki/04-circuit-and-macro/precision-and-quantization-at-circuit.md": {
+    "html": "CIM/wiki/04-circuit-and-macro/precision-and-quantization-at-circuit/index.html",
+    "ids": [
+      "精度与量化在电路层的实现约束",
+      "这页在回答什么问题",
+      "精度的五个层级",
+      "三条-paradigm-的精度来源",
+      "quantization-不是软件后处理",
+      "常见误解",
+      "一句话理解",
+      "研究启示"
+    ]
+  },
+  "CIM/wiki/04-circuit-and-macro/peripheral-overhead.md": {
+    "html": "CIM/wiki/04-circuit-and-macro/peripheral-overhead/index.html",
+    "ids": [
+      "peripheral-开销为什么-adc控制电路常常吃掉主要功耗与面积",
+      "这页在回答什么问题",
+      "peripheral-包括什么",
+      "三条-paradigm-的外围重心",
+      "外围占比如何计算",
+      "macro-指标的最低披露要求",
+      "与系统互连的边界",
+      "一句话理解",
+      "研究启示"
+    ]
+  },
+  "CIM/wiki/04-circuit-and-macro/adc-dac-sa-in-cim.md": {
+    "html": "CIM/wiki/04-circuit-and-macro/adc-dac-sa-in-cim/index.html",
+    "ids": [
+      "adcdacsense-ampanalog-cim-的咽喉",
+      "这页在回答什么问题",
+      "三类电路的职责",
+      "三条-paradigm-的差异",
+      "adc-共享不是免费午餐",
+      "与-ram-sense-path-的关系",
+      "一句话理解",
+      "研究启示"
+    ]
+  },
+  "CIM/wiki/03-compute-paradigms/analog-vs-digital-tradeoff-map.md": {
+    "html": "CIM/wiki/03-compute-paradigms/analog-vs-digital-tradeoff-map/index.html",
+    "ids": [
+      "analog-vs-digital能效精度可扩展性工程可实现性的全景对比",
+      "这页在回答什么问题",
+      "维度一能效来源",
+      "维度二精度与可扩展性",
+      "维度三工程可实现性",
+      "维度四工艺节点",
+      "维度五可重构性与动态权重",
+      "维度六可靠性与误差容忍",
+      "决策表",
+      "常见误解",
+      "一句话理解",
+      "研究启示"
+    ]
+  },
+  "CIM/wiki/03-compute-paradigms/digital-cim-deep-dive.md": {
+    "html": "CIM/wiki/03-compute-paradigms/digital-cim-deep-dive/index.html",
+    "ids": [
+      "digital-cim-深入bit-serialbit-parallelpopcount典型-macro",
+      "这页在回答什么问题",
+      "bit-serial",
+      "bit-parallel",
+      "popcount-路径",
+      "典型-macro-数据路径",
+      "memory-technology-边界",
+      "与-analog-的真正差异",
+      "一句话理解",
+      "研究启示"
+    ]
+  },
+  "CIM/wiki/03-compute-paradigms/paradigm-memory-crossmap.md": {
+    "html": "CIM/wiki/03-compute-paradigms/paradigm-memory-crossmap/index.html",
+    "ids": [
+      "三种-paradigm-三种-memory哪些组合是主流哪些罕见为什么",
+      "这页在回答什么问题",
+      "crossmap",
+      "三个主流组合",
+      "罕见组合为什么罕见",
+      "一句话理解",
+      "研究启示"
+    ]
+  },
+  "CIM/wiki/03-compute-paradigms/analog-cim-deep-dive.md": {
+    "html": "CIM/wiki/03-compute-paradigms/analog-cim-deep-dive/index.html",
+    "ids": [
+      "analog-cim-深入非理想性噪声源device-variation温度漂移",
+      "这页在回答什么问题",
+      "非理想性分层",
+      "analog-paradigm-的-memory-落点",
+      "精度瓶颈不是单个-bit-数",
+      "温度和时间为什么危险",
+      "系统补偿的代价",
+      "一句话理解",
+      "研究启示"
+    ]
+  },
+  "CIM/wiki/03-compute-paradigms/README.md": {
+    "html": "CIM/wiki/03-compute-paradigms/index.html",
+    "ids": [
+      "03-compute-paradigms",
+      "这页在回答什么问题",
+      "本章的纵轴",
+      "推荐阅读顺序",
+      "一句话理解",
+      "研究启示"
+    ]
+  },
+  "CIM/wiki/03-compute-paradigms/digital-cim-fundamentals.md": {
+    "html": "CIM/wiki/03-compute-paradigms/digital-cim-fundamentals/index.html",
+    "ids": [
+      "digital-cimbitwise-compute-与-sram-阵列的结合",
+      "这页在回答什么问题",
+      "digital-cim-的基本形式",
+      "主要落在哪些-memory-上",
+      "为什么-digital-不等于低价值",
+      "一句话理解",
+      "研究启示"
+    ]
+  },
+  "CIM/wiki/03-compute-paradigms/analog-cim-fundamentals.md": {
+    "html": "CIM/wiki/03-compute-paradigms/analog-cim-fundamentals/index.html",
+    "ids": [
+      "analog-cim用电流电压代表乘累加结果",
+      "这页在回答什么问题",
+      "analog-cim-的基本执行链",
+      "主要落在哪些-memory-上",
+      "为什么-analog-不是免费-mac",
+      "常见误解",
+      "一句话理解",
+      "研究启示"
+    ]
+  },
+  "CIM/wiki/03-compute-paradigms/mixed-signal-cim.md": {
+    "html": "CIM/wiki/03-compute-paradigms/mixed-signal-cim/index.html",
+    "ids": [
+      "mixed-signal-cim在哪一段切换为什么切换",
+      "这页在回答什么问题",
+      "mixed-signal-的基本边界",
+      "主要落在哪些-memory-上",
+      "为什么-mixed-signal-容易美化指标",
+      "工程意义",
+      "一句话理解",
+      "研究启示"
+    ]
+  },
+  "CIM/wiki/08-industry-and-products/company-cards/cim-companies-axelera.md": {
+    "html": "CIM/wiki/08-industry-and-products/company-cards/cim-companies-axelera/index.html",
+    "ids": [
+      "axelerasram-cim-商业化的代表",
+      "这页在回答什么问题",
+      "一句话理解",
+      "产业启示"
+    ]
+  },
+  "CIM/wiki/08-industry-and-products/company-cards/pim-companies-samsung-hbm-pim.md": {
+    "html": "CIM/wiki/08-industry-and-products/company-cards/pim-companies-samsung-hbm-pim/index.html",
+    "ids": [
+      "samsung-hbm-pim属于-pim-不是-cim",
+      "这页在回答什么问题",
+      "一句话理解",
+      "产业启示"
+    ]
+  },
+  "CIM/wiki/08-industry-and-products/company-cards/pim-companies-sk-hynix-aim.md": {
+    "html": "CIM/wiki/08-industry-and-products/company-cards/pim-companies-sk-hynix-aim/index.html",
+    "ids": [
+      "sk-hynix-aimaimx属于-pim-不是-cim",
+      "这页在回答什么问题",
+      "一句话理解",
+      "产业启示"
+    ]
+  },
+  "CIM/wiki/08-industry-and-products/company-cards/nmc-companies-upmem.md": {
+    "html": "CIM/wiki/08-industry-and-products/company-cards/nmc-companies-upmem/index.html",
+    "ids": [
+      "upmem同-die-可编程-pim-案例",
+      "这页在回答什么问题",
+      "一句话理解",
+      "产业启示"
+    ]
+  },
+  "CIM/wiki/08-industry-and-products/company-cards/README.md": {
+    "html": "CIM/wiki/08-industry-and-products/company-cards/index.html",
+    "ids": [
+      "公司卡片",
+      "这页在回答什么问题",
+      "一句话理解",
+      "产业启示"
+    ]
+  },
+  "CIM/wiki/08-industry-and-products/company-cards/cim-companies-mythic.md": {
+    "html": "CIM/wiki/08-industry-and-products/company-cards/cim-companies-mythic/index.html",
+    "ids": [
+      "mythicflash-based-analog-cim-的代表与教训",
+      "这页在回答什么问题",
+      "一句话理解",
+      "产业启示"
+    ]
+  },
+  "COMPUTE/wiki/README.md": {
+    "html": "COMPUTE/wiki/index.html",
+    "ids": [
+      "compute-域-wikiai-算力单元为何长成这样",
+      "全域主线",
+      "章节地图",
+      "阅读路径",
+      "与其他域的接口",
+      "自测"
+    ]
+  },
+  "COMPUTE/wiki/07-chip-organization/cpu-vs-gpu-core-area.md": {
+    "html": "COMPUTE/wiki/07-chip-organization/cpu-vs-gpu-core-area/index.html",
+    "ids": [
+      "cpu-与-gpu-的资源组织控制并行与存储",
+      "比较什么",
+      "分支预测的职责",
+      "gpu-的-warp-调度实例",
+      "专用化与模型"
+    ]
+  },
+  "COMPUTE/wiki/07-chip-organization/brain-vs-chip-power.md": {
+    "html": "COMPUTE/wiki/07-chip-organization/brain-vs-chip-power/index.html",
+    "ids": [
+      "频率动态功耗与每任务能量",
+      "功率和能量的单位",
+      "固定电压下的降频例子",
+      "建模启示"
+    ]
+  },
+  "COMPUTE/wiki/07-chip-organization/gpu-as-tiled-tpu.md": {
+    "html": "COMPUTE/wiki/07-chip-organization/gpu-as-tiled-tpu/index.html",
+    "ids": [
+      "gpu-与-tpu-的顶层组织局部资源和跨单元通信",
+      "芯片资源如何连接",
+      "两个具体组织",
+      "2-粗粒度-vs-细粒度一张对比表",
+      "3-matx-的方向splittable-systolic-array",
+      "建模启示"
+    ]
+  },
+  "COMPUTE/wiki/07-chip-organization/README.md": {
+    "html": "COMPUTE/wiki/07-chip-organization/index.html",
+    "ids": [
+      "07-芯片顶层组织"
+    ]
+  },
+  "COMPUTE/wiki/08-modeling-for-archax/README.md": {
+    "html": "COMPUTE/wiki/08-modeling-for-archax/index.html",
+    "ids": [
+      "08-面向-archax-的建模建议"
+    ]
+  },
+  "COMPUTE/wiki/08-modeling-for-archax/modeling-insights.md": {
+    "html": "COMPUTE/wiki/08-modeling-for-archax/modeling-insights/index.html",
+    "ids": [
+      "面向-archax-的建模建议边界事件与资源",
+      "1-分边界记录计算和通信",
+      "2-格式位宽与执行能力",
+      "3-rf-与阵列的资源预算",
+      "4-权重加载与重叠",
+      "5-cache-与-scratchpad-的事件语义",
+      "6-资源拓扑与跨单元流量",
+      "7-时钟路径与反馈依赖"
+    ]
+  },
+  "COMPUTE/wiki/05-fpga-vs-asic/lut-mux-and-10x-overhead.md": {
+    "html": "COMPUTE/wiki/05-fpga-vs-asic/lut-mux-and-10x-overhead/index.html",
+    "ids": [
+      "fpga-vs-asic可配置性lut-与实现开销",
+      "选择的输入和代价",
+      "lut4-与可配置互连",
+      "量化研究的适用范围",
+      "建模启示"
+    ]
+  },
+  "COMPUTE/wiki/05-fpga-vs-asic/README.md": {
+    "html": "COMPUTE/wiki/05-fpga-vs-asic/index.html",
+    "ids": [
+      "05-fpga-vs-asic可配置性的实现代价"
+    ]
+  },
+  "COMPUTE/wiki/01-overview/compute-communication-ratio.md": {
+    "html": "COMPUTE/wiki/01-overview/compute-communication-ratio/index.html",
+    "ids": [
+      "计算数据移动与硬件成本先确定指标边界",
+      "计算与搬运算术强度",
+      "面积带宽吞吐与能耗",
+      "各层应记录什么",
+      "建模启示"
+    ]
+  },
+  "COMPUTE/wiki/01-overview/taxonomy-and-roadmap.md": {
+    "html": "COMPUTE/wiki/01-overview/taxonomy-and-roadmap/index.html",
+    "ids": [
+      "学习路线与域边界原语-阵列-流水-布局",
+      "这页在回答什么问题",
+      "1-为什么自底向上",
+      "2-章节地图",
+      "3-域边界compute-不重写什么",
+      "4-怎么读三种进入路径",
+      "5-本篇在主线上的位置",
+      "建模启示"
+    ]
+  },
+  "COMPUTE/wiki/01-overview/README.md": {
+    "html": "COMPUTE/wiki/01-overview/index.html",
+    "ids": [
+      "01-总览计算资源与数据供应"
+    ]
+  },
+  "COMPUTE/wiki/01-overview/problem-statement.md": {
+    "html": "COMPUTE/wiki/01-overview/problem-statement/index.html",
+    "ids": [
+      "算力单元需要同时满足计算和供数",
+      "问题与输入输出",
+      "一个选择网络的简化代理",
+      "用相同边界比较数据移动",
+      "建模启示"
+    ]
+  },
+  "COMPUTE/wiki/02-datapath-foundations/multiply-accumulate-from-gates.md": {
+    "html": "COMPUTE/wiki/02-datapath-foundations/multiply-accumulate-from-gates/index.html",
+    "ids": [
+      "从部分积到-mac整数范围归约与累加",
+      "mac-的职责",
+      "累加位宽与数值语义",
+      "部分积和-full-adder",
+      "结构代理和仿真指标",
+      "建模启示"
+    ]
+  },
+  "COMPUTE/wiki/02-datapath-foundations/mux-and-data-movement-cost.md": {
+    "html": "COMPUTE/wiki/02-datapath-foundations/mux-and-data-movement-cost/index.html",
+    "ids": [
+      "mux-与数据移动选择网络的实现成本",
+      "选择网络做什么",
+      "两个门数代理的例子",
+      "面积代理与流量是不同的量",
+      "建模启示"
+    ]
+  },
+  "COMPUTE/wiki/02-datapath-foundations/quadratic-bitwidth-scaling.md": {
+    "html": "COMPUTE/wiki/02-datapath-foundations/quadratic-bitwidth-scaling/index.html",
+    "ids": [
+      "乘法位宽实现面积与有效吞吐",
+      "整数乘法器的结构估计",
+      "浮点和累加的边界",
+      "算法与精度的权衡",
+      "建模启示"
+    ]
+  },
+  "COMPUTE/wiki/02-datapath-foundations/number-formats-for-ai.md": {
+    "html": "COMPUTE/wiki/02-datapath-foundations/number-formats-for-ai/index.html",
+    "ids": [
+      "ai-数字格式位字段块缩放与存储成本",
+      "格式如何影响计算与传输",
+      "同位宽的指数与精度取舍",
+      "mxfp4元素指数和共享-scale-同时存在",
+      "格式与吞吐不能只按位宽推导",
+      "建模启示"
+    ]
+  },
+  "COMPUTE/wiki/02-datapath-foundations/dadda-and-adder-trees.md": {
+    "html": "COMPUTE/wiki/02-datapath-foundations/dadda-and-adder-trees/index.html",
+    "ids": [
+      "压缩树与进位结构从多行部分积到结果",
+      "输入和输出",
+      "carry-save-为什么推迟跨列传播",
+      "wallace-与-dadda-的调度",
+      "末级进位与时钟",
+      "建模启示"
+    ]
+  },
+  "COMPUTE/wiki/02-datapath-foundations/README.md": {
+    "html": "COMPUTE/wiki/02-datapath-foundations/index.html",
+    "ids": [
+      "02-datapath-基础"
+    ]
+  },
+  "COMPUTE/wiki/03-systolic-array/weight-loading-and-trickle-feed.md": {
+    "html": "COMPUTE/wiki/03-systolic-array/weight-loading-and-trickle-feed/index.html",
+    "ids": [
+      "权重载入与-trickle-feed宽度周期和重叠",
+      "机制与接口",
+      "首块换-tile-与覆盖条件",
+      "建模启示"
+    ]
+  },
+  "COMPUTE/wiki/03-systolic-array/why-systolic-array.md": {
+    "html": "COMPUTE/wiki/03-systolic-array/why-systolic-array/index.html",
+    "ids": [
+      "systolic-array用局部传递和复用组织计算",
+      "工作方式",
+      "一个具单位的阵列边界例子",
+      "面积和带宽不能由此直接推出",
+      "5-与-cim-的边界",
+      "建模启示"
+    ]
+  },
+  "COMPUTE/wiki/03-systolic-array/README.md": {
+    "html": "COMPUTE/wiki/03-systolic-array/index.html",
+    "ids": [
+      "03-systolic-array局部复用与数据流"
+    ]
+  },
+  "COMPUTE/wiki/03-systolic-array/dataflow-taxonomy.md": {
+    "html": "COMPUTE/wiki/03-systolic-array/dataflow-taxonomy/index.html",
+    "ids": [
+      "dataflow权重部分和与输入如何复用",
+      "dataflow-的输入和输出",
+      "weight-stationary",
+      "output-stationary",
+      "row-stationary-与卷积复用",
+      "为什么小-batch-不决定唯一瓶颈",
+      "建模启示"
+    ]
+  },
+  "COMPUTE/wiki/03-systolic-array/array-sizing-tradeoff.md": {
+    "html": "COMPUTE/wiki/03-systolic-array/array-sizing-tradeoff/index.html",
+    "ids": [
+      "阵列-sizing容量供数与利用率",
+      "输入与决策",
+      "固定-rf-假设下的面积摊销",
+      "利用率与边界带宽",
+      "硬件例子与比较边界",
+      "建模启示"
+    ]
+  },
+  "COMPUTE/wiki/04-clocking-and-pipeline/feedback-loop-clock-constraint.md": {
+    "html": "COMPUTE/wiki/04-clocking-and-pipeline/feedback-loop-clock-constraint/index.html",
+    "ids": [
+      "反馈环的时钟约束依赖频率与启动间隔",
+      "反馈环是什么",
+      "增加寄存器为何改变依赖",
+      "一个时钟域的频率约束",
+      "建模启示"
+    ]
+  },
+  "COMPUTE/wiki/04-clocking-and-pipeline/pipeline-register-insertion.md": {
+    "html": "COMPUTE/wiki/04-clocking-and-pipeline/pipeline-register-insertion/index.html",
+    "ids": [
+      "pipeline-register-插入路径延迟与吞吐的权衡",
+      "一次前馈切分",
+      "前提与代价",
+      "建模启示"
+    ]
+  },
+  "COMPUTE/wiki/04-clocking-and-pipeline/README.md": {
+    "html": "COMPUTE/wiki/04-clocking-and-pipeline/index.html",
+    "ids": [
+      "04-时钟与流水"
+    ]
+  },
+  "COMPUTE/wiki/04-clocking-and-pipeline/frequency-is-not-throughput.md": {
+    "html": "COMPUTE/wiki/04-clocking-and-pipeline/frequency-is-not-throughput/index.html",
+    "ids": [
+      "频率延迟与吞吐分别定义再比较",
+      "频率与有效工作量",
+      "插入流水级的权衡",
+      "batch-与工作点",
+      "建模启示"
+    ]
+  },
+  "COMPUTE/wiki/04-clocking-and-pipeline/global-clock-synchronization.md": {
+    "html": "COMPUTE/wiki/04-clocking-and-pipeline/global-clock-synchronization/index.html",
+    "ids": [
+      "时钟同步采样边沿与时序约束",
+      "时钟域与数据路径",
+      "setup-上界与-hold-下界",
+      "pvt-与工程证据",
+      "建模启示"
+    ]
+  },
+  "DMA/wiki/SUMMARY.md": {
+    "html": "DMA/wiki/SUMMARY/index.html",
+    "ids": [
+      "知识地图",
+      "01-概览与问题定义",
+      "02-基础对象与传输语义",
+      "03-dma-引擎微架构",
+      "04-软件栈与编程模型",
+      "05-系统集成",
+      "06-性能建模与调优",
+      "07-工作负载与案例",
+      "08-dma-ip-与产业视角",
+      "09-参考资料与研究模板"
+    ]
+  },
+  "DMA/wiki/README.md": {
+    "html": "DMA/wiki/index.html",
+    "ids": [
+      "dma-wiki",
+      "dashboard",
+      "快速开始",
+      "路线-1第一次学-dma",
+      "路线-2想把-dma-engine-学透",
+      "路线-3想从软件和系统角度建立判断",
+      "工作台",
+      "学习",
+      "分析",
+      "查阅",
+      "这套-wiki-的边界",
+      "维护原则"
+    ]
+  },
+  "DMA/wiki/07-workloads-case-studies/axi-dma-case-card.md": {
+    "html": "DMA/wiki/07-workloads-case-studies/axi-dma-case-card/index.html",
+    "ids": [
+      "axi-dma-案例卡",
+      "这页在回答什么问题",
+      "典型系统位置",
+      "它通常在解决什么问题",
+      "核心机制",
+      "一个-32-b-搬运例",
+      "first-bring-up-最值得先看什么",
+      "最常见瓶颈",
+      "常见误解",
+      "一句话理解",
+      "建模启示"
+    ]
+  },
+  "DMA/wiki/07-workloads-case-studies/ai-accelerator-dma.md": {
+    "html": "DMA/wiki/07-workloads-case-studies/ai-accelerator-dma/index.html",
+    "ids": [
+      "ai-加速器里的-dma",
+      "这页在回答什么问题",
+      "ai-系统里的-dma-不只是-io-辅助块而是供数骨架",
+      "ai-dma-典型会跨哪些路径",
+      "为什么它比传统-dma-更难",
+      "最重要的能力不是通用性而是节拍组织能力",
+      "常见误解",
+      "一句话理解",
+      "建模启示"
+    ]
+  },
+  "DMA/wiki/07-workloads-case-studies/pcie-nic-dma-case-card.md": {
+    "html": "DMA/wiki/07-workloads-case-studies/pcie-nic-dma-case-card/index.html",
+    "ids": [
+      "pcie-nic-dma-案例卡",
+      "这页在回答什么问题",
+      "典型系统位置",
+      "它通常在解决什么问题",
+      "核心机制",
+      "最常见瓶颈",
+      "延迟要怎么拆",
+      "常见误解",
+      "一句话理解",
+      "建模启示"
+    ]
+  },
+  "DMA/wiki/07-workloads-case-studies/nvme-storage-dma-case-card.md": {
+    "html": "DMA/wiki/07-workloads-case-studies/nvme-storage-dma-case-card/index.html",
+    "ids": [
+      "nvme-存储路径中的-dma",
+      "这页在回答什么问题",
+      "典型系统位置",
+      "它通常在解决什么问题",
+      "核心机制",
+      "最常见瓶颈",
+      "为什么它和-nic-类似但不相同",
+      "常见误解",
+      "一句话理解",
+      "建模启示"
+    ]
+  },
+  "DMA/wiki/07-workloads-case-studies/gpu-copy-engine-case-card.md": {
+    "html": "DMA/wiki/07-workloads-case-studies/gpu-copy-engine-case-card/index.html",
+    "ids": [
+      "gpu-copy-engine-案例卡",
+      "这页在回答什么问题",
+      "典型系统位置",
+      "它通常在解决什么问题",
+      "核心机制",
+      "两个-tile-的依赖例",
+      "最常见瓶颈",
+      "为什么它比普通-dma-更像执行图组件",
+      "常见误解",
+      "一句话理解",
+      "建模启示"
+    ]
+  },
+  "DMA/wiki/07-workloads-case-studies/cpu-gpu-npu-comparison.md": {
+    "html": "DMA/wiki/07-workloads-case-studies/cpu-gpu-npu-comparison/index.html",
+    "ids": [
+      "cpu-gpu-npu-系统中的-dma-分工",
+      "这页在回答什么问题",
+      "cpu-socdma-更像系统基础设施",
+      "gpudma-更像异步数据通路",
+      "npu-ai-acceleratordma-更像供数调度器",
+      "这三类系统最核心的差别在哪里",
+      "常见误解",
+      "一句话理解",
+      "建模启示"
+    ]
+  },
+  "DMA/wiki/07-workloads-case-studies/hbm-to-tile-data-supply-chain.md": {
+    "html": "DMA/wiki/07-workloads-case-studies/hbm-to-tile-data-supply-chain/index.html",
+    "ids": [
+      "hbm-到-tile-的数据供给链",
+      "这页在回答什么问题",
+      "一条典型供给链长什么样",
+      "为什么这条链常常是哪里都像瓶颈",
+      "这条链最容易出问题的地方",
+      "一个系统判断框架",
+      "常见误解",
+      "一句话理解",
+      "建模启示"
+    ]
+  },
+  "DMA/wiki/07-workloads-case-studies/README.md": {
+    "html": "DMA/wiki/07-workloads-case-studies/index.html",
+    "ids": [
+      "07-工作负载与案例",
+      "推荐阅读顺序",
+      "本章输出物"
+    ]
+  },
+  "DMA/wiki/07-workloads-case-studies/embedded-storage-network.md": {
+    "html": "DMA/wiki/07-workloads-case-studies/embedded-storage-network/index.html",
+    "ids": [
+      "嵌入式多媒体与存储网络路径",
+      "这页在回答什么问题",
+      "三类典型路径其实都在回答持续数据流怎么稳定推进",
+      "多媒体路径为什么更强调周期确定性",
+      "存储和网络为什么更强调-queue-深度与-completion",
+      "常见误解",
+      "一句话理解",
+      "建模启示"
+    ]
+  },
+  "DMA/wiki/07-workloads-case-studies/ai-local-dma-case-card.md": {
+    "html": "DMA/wiki/07-workloads-case-studies/ai-local-dma-case-card/index.html",
+    "ids": [
+      "ai-local-dma-案例卡",
+      "这页在回答什么问题",
+      "典型系统位置",
+      "它通常在解决什么问题",
+      "核心机制",
+      "两个-buffer-的可检查时序",
+      "最常见瓶颈",
+      "为什么它最能体现-dma-的系统性",
+      "常见误解",
+      "一句话理解",
+      "建模启示"
+    ]
+  },
+  "DMA/wiki/06-performance-modeling/modeling-method.md": {
+    "html": "DMA/wiki/06-performance-modeling/modeling-method/index.html",
+    "ids": [
+      "从抽象模型到系统诊断",
+      "这页在回答什么问题",
+      "模型最容易犯的两个错误",
+      "第一层理想带宽模型",
+      "第二层事务与队列模型",
+      "第三层系统耦合模型",
+      "按问题选层次而不是按信仰选层次",
+      "如何把-05-章的系统抽象接进模型",
+      "常见误解",
+      "一句话理解",
+      "建模启示"
+    ]
+  },
+  "DMA/wiki/06-performance-modeling/metrics-bottlenecks.md": {
+    "html": "DMA/wiki/06-performance-modeling/metrics-bottlenecks/index.html",
+    "ids": [
+      "指标瓶颈与实验设计",
+      "这页在回答什么问题",
+      "平均带宽几乎从来不够",
+      "先把延迟边界定义清楚",
+      "最值得同时看的几类指标",
+      "常见瓶颈位置其实很固定",
+      "三组最值得先做的实验",
+      "实验设计最容易犯的错",
+      "常见误解",
+      "一句话理解",
+      "建模启示"
+    ]
+  },
+  "DMA/wiki/06-performance-modeling/sensitivity-coupling.md": {
+    "html": "DMA/wiki/06-performance-modeling/sensitivity-coupling/index.html",
+    "ids": [
+      "旋钮敏感度与耦合",
+      "核心原则",
+      "一组可复核的反例",
+      "探索方法"
+    ]
+  },
+  "DMA/wiki/06-performance-modeling/calibration-validation.md": {
+    "html": "DMA/wiki/06-performance-modeling/calibration-validation/index.html",
+    "ids": [
+      "校准与验证",
+      "核心原则",
+      "观测如何约束参数",
+      "误差与模型层级",
+      "验证流程"
+    ]
+  },
+  "DMA/wiki/06-performance-modeling/model-schema.md": {
+    "html": "DMA/wiki/06-performance-modeling/model-schema/index.html",
+    "ids": [
+      "模型数据结构与事件规范",
+      "这页在回答什么问题",
+      "顶层数据模型",
+      "knobscapability输入",
+      "resourcesresource-topology输入",
+      "stateinteraction-驱动运行时",
+      "metrics输出与-observability",
+      "规范事件与偏序canonical-event-taxonomy",
+      "axi4pcie-的必要依赖",
+      "时间戳与延迟",
+      "按目标选择事件",
+      "与各页结构体的关系",
+      "常见误解",
+      "一句话理解"
+    ]
+  },
+  "DMA/wiki/06-performance-modeling/README.md": {
+    "html": "DMA/wiki/06-performance-modeling/index.html",
+    "ids": [
+      "06-性能建模与调优",
+      "推荐阅读顺序",
+      "本章输出物"
+    ]
+  },
+  "DMA/wiki/06-performance-modeling/debug-observability.md": {
+    "html": "DMA/wiki/06-performance-modeling/debug-observability/index.html",
+    "ids": [
+      "观测计数器与调试路径",
+      "这页在回答什么问题",
+      "没有观测点的-dma本质上是黑盒",
+      "最值得有的计数器",
+      "最值得有的状态观测",
+      "一条更实用的调试路径",
+      "不同-dma-类型需要盯的观测点并不一样",
+      "为什么-observability-本身是-ip-评估项",
+      "常见误解",
+      "一句话理解",
+      "建模启示"
+    ]
+  },
+  "DMA/wiki/06-performance-modeling/optimization-playbook.md": {
+    "html": "DMA/wiki/06-performance-modeling/optimization-playbook/index.html",
+    "ids": [
+      "优化与调参手册",
+      "这页在回答什么问题",
+      "调优前先分清是哪一类坏",
+      "再分清你面对的是哪类-dma",
+      "最值得优先调的几类旋钮",
+      "一个更稳的调参顺序",
+      "为什么把所有值都往大拧经常适得其反",
+      "常见误解",
+      "一句话理解",
+      "建模启示"
+    ]
+  },
+  "DMA/wiki/06-performance-modeling/parameter-reference.md": {
+    "html": "DMA/wiki/06-performance-modeling/parameter-reference/index.html",
+    "ids": [
+      "参数与公式速查",
+      "这页在回答什么问题",
+      "一阶解析公式",
+      "1-路径带宽上界与共享资源",
+      "2-littles-law-outstanding-该开多大",
+      "3-burst-传输效率",
+      "4-dram-有效带宽与-row-hit",
+      "5-单次有限批次与稳态",
+      "6-完成路径与-forward-progress",
+      "参数速查表",
+      "可调旋钮capability",
+      "结构容量resource",
+      "延迟参数用于-l2l3单位按时钟域统一",
+      "派生指标metrics模型输出",
+      "怎么用这张表做建模",
+      "常见误解",
+      "一句话理解"
+    ]
+  },
+  "DMA/wiki/01-overview/taxonomy.md": {
+    "html": "DMA/wiki/01-overview/taxonomy/index.html",
+    "ids": [
+      "dma-分类框架",
+      "这页在回答什么问题",
+      "不要按名字分类要按约束组合分类",
+      "第一维它在谁和谁之间搬",
+      "第二维谁来描述任务任务是一次性的还是长期流动的",
+      "第三维它处在什么系统语义里",
+      "第四维它如何组织并发",
+      "一个工程上更有用的分类问法",
+      "常见误解",
+      "一句话理解",
+      "建模启示"
+    ]
+  },
+  "DMA/wiki/01-overview/learning-roadmap.md": {
+    "html": "DMA/wiki/01-overview/learning-roadmap/index.html",
+    "ids": [
+      "学习路线图",
+      "这页在回答什么问题",
+      "先学角色再学对象再学节奏",
+      "路线-1建立最小判断力",
+      "路线-2学会从系统角度看-dma",
+      "路线-3面向-ai-高性能系统深化",
+      "学完以后你应该能回答",
+      "常见误解",
+      "一句话理解",
+      "建模启示"
+    ]
+  },
+  "DMA/wiki/01-overview/README.md": {
+    "html": "DMA/wiki/01-overview/index.html",
+    "ids": [
+      "01-概览与问题定义",
+      "推荐阅读顺序",
+      "本章输出物",
+      "建模提示"
+    ]
+  },
+  "DMA/wiki/01-overview/goal-oriented-navigation.md": {
+    "html": "DMA/wiki/01-overview/goal-oriented-navigation/index.html",
+    "ids": [
+      "按目标学习-dma",
+      "这页在回答什么问题",
+      "目标-1先建立系统判断力",
+      "目标-2做驱动系统软件或-bring-up",
+      "目标-3做-ai-芯片架构或数据流设计",
+      "目标-4做性能分析和定位",
+      "目标-5做论文和-ip-研究沉淀",
+      "目标-6开发性能建模-架构探索工具",
+      "常见误解",
+      "一句话理解",
+      "建模启示"
+    ]
+  },
+  "DMA/wiki/01-overview/problem-statement.md": {
+    "html": "DMA/wiki/01-overview/problem-statement/index.html",
+    "ids": [
+      "dma-在解决什么问题",
+      "这页在回答什么问题",
+      "cpu-为什么不能继续亲自搬",
+      "dma-真正接管了什么",
+      "dma-解决的不是单点性能而是-forward-progress",
+      "dma-在不同系统里的角色为什么差这么大",
+      "常见误解",
+      "一句话理解",
+      "建模启示"
+    ]
+  },
+  "DMA/wiki/09-reference-research/ip-analysis-template.md": {
+    "html": "DMA/wiki/09-reference-research/ip-analysis-template/index.html",
+    "ids": [
+      "ip-分析模板",
+      "这页在回答什么问题",
+      "推荐结构",
+      "为什么-ip-模板里要单列integration-风险",
+      "常见误解",
+      "一句话理解"
+    ]
+  },
+  "DMA/wiki/09-reference-research/case-index.md": {
+    "html": "DMA/wiki/09-reference-research/case-index/index.html",
+    "ids": [
+      "案例索引",
+      "这页在回答什么问题",
+      "当前已有案例页",
+      "下一批建议补的案例",
+      "新增案例时建议固定补的四件事",
+      "常见误解",
+      "一句话理解"
+    ]
+  },
+  "DMA/wiki/09-reference-research/glossary.md": {
+    "html": "DMA/wiki/09-reference-research/glossary/index.html",
+    "ids": [
+      "术语表",
+      "这页在回答什么问题",
+      "核心术语",
+      "最容易被混掉的三组词",
+      "一条统一口径",
+      "常见误解",
+      "一句话理解"
+    ]
+  },
+  "DMA/wiki/09-reference-research/reading-questions.md": {
+    "html": "DMA/wiki/09-reference-research/reading-questions/index.html",
+    "ids": [
+      "阅读问题清单",
+      "这页在回答什么问题",
+      "必读问题",
+      "进阶问题",
+      "为什么这套问题有效",
+      "常见误解",
+      "一句话理解"
+    ]
+  },
+  "DMA/wiki/09-reference-research/study-template.md": {
+    "html": "DMA/wiki/09-reference-research/study-template/index.html",
+    "ids": [
+      "研究模板",
+      "这页在回答什么问题",
+      "适用范围",
+      "推荐结构",
+      "为什么模板里必须有完成语义边界",
+      "常见误解",
+      "一句话理解"
+    ]
+  },
+  "DMA/wiki/09-reference-research/README.md": {
+    "html": "DMA/wiki/09-reference-research/index.html",
+    "ids": [
+      "09-参考资料与研究模板",
+      "推荐阅读顺序",
+      "本章输出物"
+    ]
+  },
+  "DMA/wiki/09-reference-research/paper-card-template.md": {
+    "html": "DMA/wiki/09-reference-research/paper-card-template/index.html",
+    "ids": [
+      "论文卡模板",
+      "这页在回答什么问题",
+      "推荐结构",
+      "为什么论文卡不能只记结果数字",
+      "常见误解",
+      "一句话理解"
+    ]
+  },
+  "DMA/wiki/08-industry-ip/dma-ip-checklist.md": {
+    "html": "DMA/wiki/08-industry-ip/dma-ip-checklist/index.html",
+    "ids": [
+      "dma-ip-评估清单",
+      "这页在回答什么问题",
+      "先问它要服务哪条系统路径",
+      "功能层该看什么",
+      "微架构层该看什么",
+      "系统接入层该看什么",
+      "软件层和可观测性层不能后看",
+      "一个更实用的评估顺序",
+      "常见误解",
+      "一句话理解",
+      "建模启示"
+    ]
+  },
+  "DMA/wiki/08-industry-ip/README.md": {
+    "html": "DMA/wiki/08-industry-ip/index.html",
+    "ids": [
+      "08-dma-ip-与产业视角",
+      "推荐阅读顺序",
+      "本章输出物"
+    ]
+  },
+  "DMA/wiki/08-industry-ip/dma-comparison-matrix.md": {
+    "html": "DMA/wiki/08-industry-ip/dma-comparison-matrix/index.html",
+    "ids": [
+      "dma-对照矩阵",
+      "这页在回答什么问题",
+      "先说明这张表不在比较谁更强",
+      "对照矩阵",
+      "怎么用这张表",
+      "这张表最容易被误读的地方",
+      "常见误解",
+      "一句话理解",
+      "建模启示"
+    ]
+  },
+  "DMA/wiki/08-industry-ip/vendor-landscape.md": {
+    "html": "DMA/wiki/08-industry-ip/vendor-landscape/index.html",
+    "ids": [
+      "dma-ip-与厂商图谱",
+      "这页在回答什么问题",
+      "先按系统位置和主路径分再看厂商和产品",
+      "真正值得关注的是哪几类产品差异",
+      "为什么厂商图谱仍然有价值",
+      "研究-dma-ip-时最不值钱的信息",
+      "常见误解",
+      "一句话理解",
+      "建模启示"
+    ]
+  },
+  "DMA/wiki/05-system-integration/soc-peripheral-io.md": {
+    "html": "DMA/wiki/05-system-integration/soc-peripheral-io/index.html",
+    "ids": [
+      "soc-外设与-io-dma",
+      "这页在回答什么问题",
+      "外设-dma-的第一性问题是把持续数据流从-cpu-控制路径里剥离出来",
+      "它和高性能-dma-的共性是什么",
+      "不可回压外设与循环-buffer",
+      "它和高性能-dma-的差异到底在哪",
+      "外设-dma-为什么仍然值得放进这套-wiki-主线",
+      "常见误解",
+      "一句话理解",
+      "建模启示"
+    ]
+  },
+  "DMA/wiki/05-system-integration/README.md": {
+    "html": "DMA/wiki/05-system-integration/index.html",
+    "ids": [
+      "05-系统集成",
+      "推荐阅读顺序",
+      "本章输出物"
+    ]
+  },
+  "DMA/wiki/05-system-integration/axi-pcie-view.md": {
+    "html": "DMA/wiki/05-system-integration/axi-pcie-view/index.html",
+    "ids": [
+      "axi-pcie-视角下的-dma",
+      "这页在回答什么问题",
+      "axi-视角下dma-是片上-master",
+      "axi-dma-最常见的系统约束是什么",
+      "pcie-视角下dma-是设备侧发起者",
+      "为什么-pcie-dma-的完成更像软件契约问题",
+      "一个对照判断",
+      "常见误解",
+      "一句话理解",
+      "建模启示"
+    ]
+  },
+  "DMA/wiki/05-system-integration/dma-and-memory-system.md": {
+    "html": "DMA/wiki/05-system-integration/dma-and-memory-system/index.html",
+    "ids": [
+      "dma-与-local-memory-ddr-hbm",
+      "这页在回答什么问题",
+      "dma-的真实上限由三类端点共同决定",
+      "local-memory-里的问题常常比外存更硬",
+      "ddr-hbm-真正卡人的地方不是规格值而是访问形状",
+      "bursttile-和-row-locality-为什么必须一起看",
+      "一个工程上很好用的判断",
+      "从系统建模角度怎么看",
+      "常见误解",
+      "一句话理解",
+      "建模启示"
+    ]
+  },
+  "DMA/wiki/05-system-integration/dma-and-noc.md": {
+    "html": "DMA/wiki/05-system-integration/dma-and-noc/index.html",
+    "ids": [
+      "dma-与-noc",
+      "这页在回答什么问题",
+      "noc-看到的往往不是应用流量而是-dma-重新塑形后的流量",
+      "dma-在-noc-上常表现出哪几类流量形状",
+      "只看链路规格会错在哪里",
+      "在-ai-系统里最该盯哪几种冲突",
+      "从系统建模角度怎么看",
+      "常见误解",
+      "一句话理解",
+      "建模启示"
+    ]
+  },
+  "DMA/wiki/04-programming-model/tiling-double-buffering.md": {
+    "html": "DMA/wiki/04-programming-model/tiling-double-buffering/index.html",
+    "ids": [
+      "tilingdouble-buffer-与-overlap",
+      "这页在回答什么问题",
+      "没有-tiling-和-buffering-时系统节拍通常是串行的",
+      "tiling-先决定任务粒度double-buffering-再决定节拍组织",
+      "double-buffering-的核心是用空间换时间",
+      "关键条件收益取决于搬运时间和计算时间的相对关系",
+      "单次任务与有限批次",
+      "为什么它总是和-dma-绑在一起",
+      "tiling-和-memory-system-的耦合不能回避",
+      "什么情况下需要-n-buffering-或-triple-buffering",
+      "一个简化时序图",
+      "常见误解",
+      "一句话理解",
+      "建模启示"
+    ]
+  },
+  "DMA/wiki/04-programming-model/README.md": {
+    "html": "DMA/wiki/04-programming-model/index.html",
+    "ids": [
+      "04-软件栈与编程模型",
+      "推荐阅读顺序",
+      "本章输出物"
+    ]
+  },
+  "DMA/wiki/04-programming-model/queues-doorbells-completions.md": {
+    "html": "DMA/wiki/04-programming-model/queues-doorbells-completions/index.html",
+    "ids": [
+      "队列doorbell-与-completion",
+      "这页在回答什么问题",
+      "queue-解决的是批量提交而不是只是排队",
+      "doorbell-解决的是何时值得让硬件开始看",
+      "completion-解决的是软件世界何时可以继续",
+      "必须把三种完成区分开",
+      "interruptpolling-和-completion-record-的-trade-off",
+      "一个简化流程图",
+      "常见误解",
+      "一句话理解",
+      "建模启示"
+    ]
+  },
+  "DMA/wiki/04-programming-model/synchronization-errors.md": {
+    "html": "DMA/wiki/04-programming-model/synchronization-errors/index.html",
+    "ids": [
+      "同步一致性与常见错误",
+      "这页在回答什么问题",
+      "dma-最难的-bug-通常不是数据路径坏了而是边界没对齐",
+      "最常见的四类错误",
+      "先问清楚done到底是哪种-done",
+      "一个最典型的错法",
+      "排查顺序为什么很重要",
+      "常见误解",
+      "一句话理解",
+      "建模启示"
+    ]
+  },
+  "DMA/wiki/04-programming-model/software-stack.md": {
+    "html": "DMA/wiki/04-programming-model/software-stack/index.html",
+    "ids": [
+      "软件栈与编程模型",
+      "这页在回答什么问题",
+      "dma-的软件栈不是给硬件下命令而是建立长期契约",
+      "典型的软件分层各在做什么",
+      "地址桥接是软件栈里最容易被低估的一层",
+      "三种常见控制模式对应三种软件责任",
+      "软件真正影响性能的地方在哪里",
+      "常见误解",
+      "一句话理解",
+      "建模启示"
+    ]
+  },
+  "DMA/wiki/03-dma-microarchitecture/multidimensional-stride-dma.md": {
+    "html": "DMA/wiki/03-dma-microarchitecture/multidimensional-stride-dma/index.html",
+    "ids": [
+      "多维-dma-与-stride-地址生成",
+      "这页在回答什么问题",
+      "线性-dma-为什么很快就不够",
+      "多维地址生成真正节省了什么",
+      "至少要看哪几个字段",
+      "2d-地址与边界例",
+      "为什么它和-memory-system-有强耦合",
+      "什么时候-2d3d-dma-反而不值",
+      "常见误解",
+      "一句话理解",
+      "建模启示"
+    ]
+  },
+  "DMA/wiki/03-dma-microarchitecture/README.md": {
+    "html": "DMA/wiki/03-dma-microarchitecture/index.html",
+    "ids": [
+      "03-dma-引擎微架构",
+      "推荐阅读顺序",
+      "本章输出物"
+    ]
+  },
+  "DMA/wiki/03-dma-microarchitecture/channels-virtualization.md": {
+    "html": "DMA/wiki/03-dma-microarchitecture/channels-virtualization/index.html",
+    "ids": [
+      "多通道虚拟化与隔离",
+      "这页在回答什么问题",
+      "先把-channelqueuestreamcontext-分开",
+      "多通道首先是在解决共享资源争用",
+      "虚拟化不是锦上添花而是设备侧地址世界的延伸",
+      "隔离失效时会发生什么",
+      "常见误解",
+      "一句话理解",
+      "建模启示"
+    ]
+  },
+  "DMA/wiki/03-dma-microarchitecture/engine-components.md": {
+    "html": "DMA/wiki/03-dma-microarchitecture/engine-components/index.html",
+    "ids": [
+      "dma-引擎的组成",
+      "这页在回答什么问题",
+      "dma-不是一条直线数据通路",
+      "一个最小可用-dma-engine-至少有什么",
+      "为什么简单-dma-和高性能-dma-差这么多",
+      "先看哪四个块最有判断力",
+      "常见误解",
+      "一句话理解",
+      "建模启示"
+    ]
+  },
+  "DMA/wiki/03-dma-microarchitecture/scheduling-outstanding.md": {
+    "html": "DMA/wiki/03-dma-microarchitecture/scheduling-outstanding/index.html",
+    "ids": [
+      "调度outstanding-与回包组织",
+      "这页在回答什么问题",
+      "outstanding-不是越大越好而是用来换-latency-hiding",
+      "真正的难点是-request-和-response-必须一起看",
+      "调度器至少在决定三件事",
+      "回包组织为什么经常比发包更难",
+      "什么时候会看到平均不错尾巴很差",
+      "常见误解",
+      "一句话理解",
+      "建模启示"
+    ]
+  },
+  "DMA/wiki/02-fundamentals/README.md": {
+    "html": "DMA/wiki/02-fundamentals/index.html",
+    "ids": [
+      "02-基础对象与传输语义",
+      "推荐阅读顺序",
+      "本章输出物"
+    ]
+  },
+  "DMA/wiki/02-fundamentals/noncoherent-vs-coherent-dma.md": {
+    "html": "DMA/wiki/02-fundamentals/noncoherent-vs-coherent-dma/index.html",
+    "ids": [
+      "non-coherent-vs-coherent-dma",
+      "这页在回答什么问题",
+      "这不是先进与落后之争而是谁承担复杂度",
+      "non-coherent-什么时候反而更自然",
+      "coherent-什么时候值得",
+      "性能上到底谁更好",
+      "linux-示例映射可见性和所有权",
+      "coherent-descriptor可见性不等于顺序",
+      "streaming-接收-buffer设备写cpu-读",
+      "常见误解",
+      "一句话理解",
+      "建模启示"
+    ]
+  },
+  "DMA/wiki/02-fundamentals/address-descriptor-burst.md": {
+    "html": "DMA/wiki/02-fundamentals/address-descriptor-burst/index.html",
+    "ids": [
+      "地址描述符与-burst",
+      "这页在回答什么问题",
+      "先把三层语义分开",
+      "为什么-dma-会从寄存器编程演化到-descriptor",
+      "一个-descriptor-通常至少要回答什么",
+      "burst-决定的不是搬多少而是怎么占用系统",
+      "边界规则为什么会把一个任务打碎",
+      "scatter-gather-的价值和代价",
+      "常见误解",
+      "一句话理解",
+      "建模启示"
+    ]
+  },
+  "DMA/wiki/02-fundamentals/transfer-basics.md": {
+    "html": "DMA/wiki/02-fundamentals/transfer-basics/index.html",
+    "ids": [
+      "传输对象与基本语义",
+      "这页在回答什么问题",
+      "dma-操作的不是裸地址而是带约束的移动任务",
+      "一次-dma-任务至少跨四个阶段",
+      "为什么数据搬完不等于系统完成",
+      "四类最基本的传输对象",
+      "常见误解",
+      "一句话理解",
+      "建模启示"
+    ]
+  },
+  "DMA/wiki/02-fundamentals/consistency-cache-coherency.md": {
+    "html": "DMA/wiki/02-fundamentals/consistency-cache-coherency/index.html",
+    "ids": [
+      "缓存一致性iommu-与地址空间",
+      "这页在回答什么问题",
+      "non-coherent-dma-的难点不是-api而是所有权切换",
+      "coherent-dma-为什么仍然会出错",
+      "iommu-smmu-改变的是设备的地址世界",
+      "地址空间一旦分层completion-语义也会变化",
+      "常见误解",
+      "一句话理解",
+      "建模启示"
+    ]
+  }
+}

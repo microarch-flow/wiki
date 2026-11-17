@@ -27,7 +27,7 @@
 4. [光链路基础与功率预算](./04-optical-engine/optical-link-basics.md)：理解器件和光学参考面。
 5. [功耗与热](./05-electrical-thermal-reliability/bandwidth-power-thermal.md) → [制造流程](./06-manufacturing/process-flow.md) → [KGD 与良率](./06-manufacturing/known-good-die-and-yield.md)：检查系统代价。
 
-需要电路和时序基础时，可先读[电路到时序的共用基础](../../microarchitecture/foundations/electrical-timing-foundations.md)。其他学习目标见[学习顺序导航](./16-learning-navigation/study-navigation.md)。
+需要电路和时序基础时，可先读[电路到时序的共用基础](../../microarchitecture/02-pipeline/electrical-timing-foundations.md)。其他学习目标见[学习顺序导航](./16-learning-navigation/study-navigation.md)。
 
 <span id="路线-3想从论文进入"></span>
 <span id="路线-4想做产业公司研究"></span>

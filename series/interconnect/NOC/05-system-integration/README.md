@@ -2,7 +2,7 @@
 
 上级：[NoC Wiki](../README.md)
 
-相关：[04 路由、仲裁与服务保证](../04-routing-and-flow-control/README.md)、[DMA 与 NoC](../../../microarchitecture/DMA/wiki/05-system-integration/dma-and-noc.md)、[存储系统](../../../storage/README.md)
+相关：[04 路由、仲裁与服务保证](../04-routing-and-flow-control/README.md)、[DMA 与 NoC](../../../microarchitecture/05-dma/05-system-integration/dma-and-noc.md)、[存储系统](../../../storage/README.md)
 
 <span id="05-system-integration"></span><span id="这页在回答什么问题"></span>路由器和链路提供消息通路；端点还要产生请求、接收结果并遵守事务语义。本章沿任务、请求和返回路径，观察接口与系统资源怎样共同决定前进和性能。
 

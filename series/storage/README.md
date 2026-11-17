@@ -11,4 +11,4 @@
 
 需要选择学习路径、查阅资料或练习时，请从[查阅与练习](./reading-and-reference/README.md)开始。按原章节顺序阅读可从[原 RAM 阅读路线](./reading-and-reference/01-reading/README.md)进入。
 
-制造与封装机制见 [FAB](../chip-development/FAB/wiki/README.md)。[DMA 双缓冲](../microarchitecture/DMA/wiki/04-programming-model/tiling-double-buffering.md)说明搬运与计算如何配合。
+制造与封装机制见 [FAB](../chip-development/FAB/wiki/README.md)。[DMA 双缓冲](../microarchitecture/05-dma/04-programming-model/tiling-double-buffering.md)说明搬运与计算如何配合。

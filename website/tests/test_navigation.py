@@ -742,7 +742,7 @@ class GeneratedNavigationTests(unittest.TestCase):
                 "完整论文卡", "完整卡：CPO status, challenges, and solutions",
             ],
             "electrical-timing-foundations/index.html": [
-                "首页", "微架构", "时钟、流水线与吞吐", "从电荷到芯片时序：一条可手算的路径",
+                "首页", "微架构", "流水线、时序与时钟域", "从电荷到芯片时序：一条可手算的路径",
             ],
             "SERDES/wiki/05-signaling-and-metrics/ber-confidence-and-fec/index.html": [
                 "首页", "芯片与系统互连", "高速电链路（SerDes）", "05 信号与指标",

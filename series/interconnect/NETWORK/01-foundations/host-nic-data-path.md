@@ -22,7 +22,7 @@ NIC 不只负责把内存内容送上线缆。它还要取得合法缓冲区、�
 
 ## 把网络方向转换为主机方向
 
-典型主机内存 TX 中，NIC 从主机读取载荷；RX 中，NIC 向主机写入载荷。描述符和完成状态还会产生其他方向的事务。具体 PCIe 流量见 [NIC 数据路径](../../PCIE/06-workloads-case-studies/nic-dma-case-card.md)，ring 与批处理见 [DMA NIC 案例](../../../microarchitecture/DMA/wiki/07-workloads-case-studies/pcie-nic-dma-case-card.md)。
+典型主机内存 TX 中，NIC 从主机读取载荷；RX 中，NIC 向主机写入载荷。描述符和完成状态还会产生其他方向的事务。具体 PCIe 流量见 [NIC 数据路径](../../PCIE/06-workloads-case-studies/nic-dma-case-card.md)，ring 与批处理见 [DMA NIC 案例](../../../microarchitecture/05-dma/07-workloads-case-studies/pcie-nic-dma-case-card.md)。
 
 如果网络端口空闲而 CPU 忙于消费完成，增加交换机带宽不能解决问题。如果两个 NIC 共用受限的 PCIe 上行口，两个标称端口速率也不能直接相加作为应用上界。
 
