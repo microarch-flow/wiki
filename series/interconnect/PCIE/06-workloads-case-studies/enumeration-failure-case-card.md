@@ -1,37 +1,46 @@
-# 枚举失败案例卡
+---
+title: "设备不可用：区分发现、资源分配与 DMA 启动失败"
+---
 
-上级：[06 工作负载与案例](./README.md)
+<div id="枚举失败案例卡" class="pcie-legacy-anchor"></div>
+<div id="这页在回答什么问题" class="pcie-legacy-anchor"></div>
 
-相关：[配置空间、BAR 与 Capability](../03-configuration-enumeration-addressing/config-space-bar-capability.md)、[枚举、总线号与资源分配](../03-configuration-enumeration-addressing/enumeration-bus-number-resource-allocation.md)
+# 设备不可用：区分发现、资源分配与 DMA 启动失败
 
-## 这页在回答什么问题
+上级：[工作负载与案例](README.md)
 
-设备插上去后“系统看不见”时，应该先怎样拆问题，而不是立刻怀疑所有层都坏了。
+“枚举失败”常被用来描述所有设备不可用现象，但它会掩盖关键差别。先确认配置空间是否发现 Function，再分别检查 MMIO 和设备发起的 DMA。
 
-## 典型现象
+<div id="典型现象" class="pcie-legacy-anchor"></div>
+<div id="最短排查链" class="pcie-legacy-anchor"></div>
 
-- **配置读不可达**：设备未出现在枚举结果，检查训练状态、桥的次级/下级 bus 范围和配置请求路径。
-- **BDF 可见但 MMIO 不通**：检查 BAR 是否获地址、上游桥窗口是否覆盖，以及 Function 的 Memory Space Enable 是否打开。BAR 资源不足不等于 Function 未枚举。
-- **MMIO 正常但设备 DMA 不动**：检查 Bus Master Enable、DMA 映射、权限与设备状态。关闭 Bus Master 主要影响设备发起的内存事务，不会单独使配置读消失。所需 capability 是否使能另按设备接口检查。
+## 三类现象与三条路径
 
-## 最短排查链
+| 现象 | 已有证据 | 优先检查 |
+| --- | --- | --- |
+| 没有目标 BDF | 配置发现未成功 | 链路、复位、设备就绪、总线号和配置路由 |
+| BDF 可见，BAR 资源未分配或 MMIO 不通 | 配置路径至少部分有效 | 地址资源、桥窗口、Memory Space Enable |
+| MMIO 正常，DMA 不动 | 控制访问可用 | Bus Master、映射、设备状态、描述符与发布顺序 |
 
-1. 先看链路是否训练成功
-2. 再看配置空间是否可读
-3. 再看 bridge / switch / bus number / 资源窗口是否闭环
-4. 最后再看驱动是否依赖了未开启的 capability
+Bus Master 未打开通常不会单独让配置读消失；BAR 资源不足也不等于 Function 没有被发现。
 
-## 最常见根因
+<div id="最常见根因" class="pcie-legacy-anchor"></div>
 
-- 物理链路没起来或训练不稳
-- 上游 bridge 资源窗口配置不完整
-- BAR 空间规划冲突
-- 多级拓扑下 bus number 不够或分配异常
+## 构造案例：可见但没有可用 BAR
 
-## 为什么这个案例很重要
+假设系统能读到设备 Vendor/Device ID，日志提示某个 Memory BAR 无法分配；驱动申请该资源失败。此时先记录 BAR 需求、平台可用地址窗口和所有上游桥窗口，检查资源覆盖及类型限制。
 
-因为它提醒你：配置发现、地址资源和运行使能是不同阶段；只说“枚举失败”会丢掉决定下一步的证据。
+不能先把问题归因于 SerDes，因为配置事务已提供链路可工作的证据；也不能据此排除间歇性链路故障。需要在同一复现窗口检查实际链路与错误状态。
 
-## 一句话理解
+## 对照案例：MMIO 正常但 DMA 被拒绝
 
-设备没被系统看见时，先把问题限定在 `链路建立 -> 配置空间可达 -> 资源分配闭环` 这条主线上。
+若寄存器可访问，设备发出 DMA 后出现 IOMMU fault，则应检查请求身份、映射地址与权限。它与前例的资源分配问题不同。若设备根本没有发请求，则先检查 Bus Master 和设备引擎启动条件。
+
+<div id="为什么这个案例很重要" class="pcie-legacy-anchor"></div>
+<div id="一句话理解" class="pcie-legacy-anchor"></div>
+
+## 保存能决定下一步的证据
+
+保留拓扑、配置读结果、资源分配日志、BAR/桥窗口及 Command 状态，再记录 DMA 与 IOMMU 证据。修复后验证的路径必须对应原失败阶段，并继续验证后续阶段，不能以“现在有 BDF”作为整卡验收。
+
+机制详见[枚举与资源分配](../03-configuration-enumeration-addressing/enumeration-bus-number-resource-allocation.md)；驱动资源与使能职责参见 [Linux PCI 指南](https://docs.kernel.org/PCI/pci.html)。

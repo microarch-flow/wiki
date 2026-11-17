@@ -1,34 +1,39 @@
-# CXL 和 PCIE 的边界
+---
+title: "PCIe 与 CXL 的边界：I/O 事务之外增加了什么？"
+---
 
-上级：[07 高级主题](./README.md)
+<div id="cxl-和-pcie-的边界" class="pcie-legacy-anchor"></div>
+<div id="这页在回答什么问题" class="pcie-legacy-anchor"></div>
 
-相关：[PCIE 在解决什么问题](../01-overview/problem-statement.md)、[CXL：从设备发现到内存访问](../../COHERENCE/cxl-host-memory.md)
+# PCIe 与 CXL 的边界：I/O 事务之外增加了什么？
 
-## 这页在回答什么问题
+上级：[高级主题](README.md)
 
-为什么学 CXL 之前最好先学 PCIE，以及两者边界应该怎么理解。
+CXL 复用 PCIe 的物理基础和部分 I/O 基础设施，并提供缓存与内存访问协议。普通 PCIe 链路不会仅因连接器或速率相同，就自动具备 CXL 一致性能力。
 
-## 一个最实用的判断
+<div id="一个最实用的判断" class="pcie-legacy-anchor"></div>
 
-CXL 不是绕开 PCIE 凭空出现的新世界，它建立在 PCIE 物理和部分链路基础之上，但目标比传统 PCIE 更靠近内存语义和一致性扩展。
+## 三种协议的主要职责
 
-## 为什么先学 PCIE
+| 协议 | 典型职责 | 与本文的关系 |
+| --- | --- | --- |
+| CXL.io | 发现、配置及 I/O 访问 | 延续 PCIe 相关管理与事务基础 |
+| CXL.cache | 设备一致地访问和缓存主机内存 | 需要额外的一致性协议与状态 |
+| CXL.mem | 主机访问设备连接的内存 | 具有对应的内存访问语义 |
 
-因为很多前置概念都来自这里：
+这是典型主机与设备关系的入口说明，不是所有 CXL 版本和复杂拓扑的完整方向表。[Linux CXL 设备与协议说明](https://docs.kernel.org/driver-api/cxl/devices/device-types.html)可用于核对这些基本职责。
 
-- 拓扑和链路训练
-- 配置和枚举
-- host-device 资源组织
-- 基本错误处理与可管理性
+<div id="两者边界怎么抓" class="pcie-legacy-anchor"></div>
 
-## 两者边界怎么抓
+## 一个 Type 3 内存扩展例子
 
-- 传统 PCIE 更偏 `设备互连和 DMA 契约`。
-- `CXL.io` 提供发现、配置和 I/O 管理；`CXL.cache` 支持设备一致地访问和缓存主机内存；`CXL.mem` 支持主机访问设备连接的内存。各自的请求对象与方向不同。
-- 例如 Type 3 内存扩展设备使用 CXL.io 和 CXL.mem，主机可按配置访问其设备内存；不能因此假定该设备用 CXL.cache 缓存主机内存。
+设备使用 CXL.io 与 CXL.mem。主机先发现并配置资源，再按系统映射访问设备内存。它不因此需要用 CXL.cache 缓存主机内存，也不等于驱动让设备用普通 DMA 将所有数据复制进主机 DRAM。
 
-仅有普通 PCIe 物理连接不足以产生 CXL 一致性事务。主机和设备必须支持相应 CXL 协议与设备类型，链路须协商进入支持的模式，软件还要配置可访问资源。参见 [CXL 3.0 规范](https://computeexpresslink.org/wp-content/uploads/2024/02/CXL-3.0-Specification.pdf) 的设备类型和协议说明。
+要成立，主机和设备须支持相应协议与类型，路径须协商和配置到适用模式，软件须管理可访问内存。仅有普通 PCIe BAR 和总线枚举不足以提供这条内存路径。
 
-## 一句话理解
+<div id="为什么先学-pcie" class="pcie-legacy-anchor"></div>
+<div id="一句话理解" class="pcie-legacy-anchor"></div>
 
-PCIE 是理解现代设备互连的地基，CXL 是在这块地基上往更强内存语义继续延展。
+## 本专题讲到哪里
+
+这里保留发现、配置、物理链路和协议选择的边界。CXL 的内存映射、一致性、扩展、池化与共享继续读[一致性专题：从设备发现到内存访问](../../COHERENCE/cxl-host-memory.md)。讨论性能时应指定规范版本和目标系统，不把某代 PCIe 的 Non-Flit 包开销直接用于所有 CXL 协议。

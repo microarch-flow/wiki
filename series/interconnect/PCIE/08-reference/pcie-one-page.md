@@ -1,31 +1,40 @@
-# PCIE 一页版总览
+---
+title: "PCIe 一页总览：从配置到软件完成"
+---
 
-上级：[08 术语与检查清单](./README.md)
+<div id="pcie-一页版总览" class="pcie-legacy-anchor"></div>
 
-## 一页抓住 PCIE
+# PCIe 一页总览：从配置到软件完成
 
-- `角色`：Root Complex、Switch、Endpoint
-- `分层`：Transaction、Data Link、Physical
-- `管理面`：config space、BAR、capability、enumeration
-- `数据面`：MMIO control、DMA read/write、completion
-- `通知面`：MSI / MSI-X、polling、status memory
-- `隔离面`：IOMMU、virtualization、address translation
-- `调试面`：AER、link status、counters、timeout / UR / CA
+上级：[查阅、建模与检查清单](README.md)
+
+本页用于回顾。需要机制、推导或证据时，从表中进入正文。
+
+<div id="一页抓住-pcie" class="pcie-legacy-anchor"></div>
+
+## 一页抓住系统路径
+
+| 要确认的事 | 关键对象 | 正文 |
+| --- | --- | --- |
+| 谁连接谁 | RC、Root Port、Switch、EP、Function | [拓扑](../02-link-transaction-basics/topology-root-complex-switch-endpoint.md) |
+| 谁可以发送 | 类别信用、缓冲、链路及排序状态 | [信用与重放](../02-link-transaction-basics/credit-flow-control-and-replay.md) |
+| 请求何时结束 | Requester ID、Tag、完整 Completion | [一次读取](../02-link-transaction-basics/tlp-dllp-completion-basics.md) |
+| 地址如何可用 | BDF、BAR、桥窗口、DMA 映射 | [配置与地址](../03-configuration-enumeration-addressing/README.md) |
+| 软件何时能消费 | 所有权、同步、CQE、通知 | [运行路径](../04-data-path-dma-interrupts/README.md) |
+| 为什么慢或失败 | 服务量、在途状态、错误证据 | [性能与调试](../05-performance-debug/README.md) |
 
 ## 最常见主线
 
-1. 主机枚举设备并分配 BAR
-2. 驱动通过 MMIO 配置 queue 和 doorbell
-3. 设备通过 DMA 访问主机内存
-4. 完成信息写回 host memory
-5. 通过 MSI-X 或 polling 驱动软件推进
+发现 Function → 分配资源并准备驱动 → 建立 DMA 映射 → 发布工作 → 设备访问 → 发布结果 → 软件消费与回收。实际设备可以使用不同队列和通知接口，但每个阶段的必要条件仍须明确。
+
+<div id="一句话理解" class="pcie-legacy-anchor"></div>
 
 ## 最容易混淆的三组词
 
-- `PCIe Completion` vs `software completion queue`：前者是 non-posted 请求的返回 TLP；后者是保存完成记录的队列，单个命令的状态在 completion queue entry（CQE）中。写 CQE 可用 posted Memory Write，无相应事务 Completion；软件可轮询有效 CQE，不一定需要 MSI-X。
-- `BAR address` vs `DMA address`：BAR 描述设备的目标资源窗口，主机通过 MMIO 访问是常见例子。DMA 地址是平台为发起设备映射目标资源所给的地址；目标可以是主机 buffer，也可以是在平台和拓扑允许时的对端设备 BAR 资源。窗口地址与请求者所用地址及翻译路径不能假定相同，见 [P2P 与拓扑约束](../07-advanced-topics/p2p-switch-topology-constraints.md)。
-- `link bandwidth` vs `end-to-end throughput`：前者按指定链路、方向和时间窗计字节，后者按应用或 DMA 在同一窗口实际交付的有效字节计；协议开销、排队和其他路径资源使两者不同。
+**链路 ACK、PCIe Completion、CQE**：ACK 确认一跳；Completion 返回 Non-Posted 请求的结果；CQE 保存设备命令状态。写 CQE 常用 posted Memory Write，不要求对应的事务 Completion。
 
-## 一句话理解
+**BAR 地址、DMA 地址**：BAR 描述目标资源窗口；DMA 地址供设备发起访问。P2P 的 DMA 目标也可以是对端 BAR 资源。两者数值及转换不能预先假定。
 
-PCIE 的核心不是某个字段定义，而是它如何把 host、device、memory 和 software stack 组织成一个可运行的系统契约。
+**链路上界、有效吞吐**：上界由指定链路、方向及模式决定；有效吞吐按实际交付字节计。协议开销、请求窗口、服务能力和软件供给都会影响结果。
+
+开始计算前查[建模参数](pcie-modeling-params.md)；开始定位前查[调试清单](pcie-debug-checklist.md)。

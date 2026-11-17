@@ -1,54 +1,59 @@
-# Posted / Non-Posted / Completion 与 Ordering
+---
+title: "Posted、Non-Posted 与排序：何时可以继续下一步？"
+---
 
-上级：[02 链路、分层与事务基础](./README.md)
+<div id="posted-non-posted-completion-与-ordering" class="pcie-legacy-anchor"></div>
+<div id="这页在回答什么问题" class="pcie-legacy-anchor"></div>
 
-相关：[TLP、DLLP 与 Completion 语义](./tlp-dllp-completion-basics.md)、[PCIe Read Completion 延迟为什么敏感](../04-data-path-dma-interrupts/pcie-read-completion-latency.md)
+# Posted、Non-Posted 与排序：何时可以继续下一步？
 
-## 这页在回答什么问题
+上级：[链路、分层与事务基础](README.md)
 
-为什么 posted、non-posted 和 completion 的区别，会直接影响系统可见性、延迟和调试方式。
+请求类型决定是否有事务返回；排序规则决定某些事务能否越过其他事务。两者都不直接规定一个设备软件命令何时完成，也不能替代 CPU 的内存屏障与 DMA 同步。
 
-## 先抓三个词
+<div id="先抓三个词" class="pcie-legacy-anchor"></div>
+<div id="一个直观对照" class="pcie-legacy-anchor"></div>
 
-- `posted request`：不产生对应的事务级 Completion，例如普通 Memory Write。
-- `non-posted request`：需要事务级 Completion，例如 Memory Read、配置读写。
-- `completion`：与 non-posted 请求匹配的返回 TLP；成功 Memory Read 返回数据，成功配置写返回不带数据的 Cpl。错误状态也可能通过 Completion 返回。
+## 先区分请求与返回
 
-## 一个直观对照
+| 对象 | 示例 | Requester 等待什么 |
+| --- | --- | --- |
+| Posted 请求 | 普通 Memory Write | 无对应常规事务 Completion；仍受信用、排序和目标服务约束 |
+| Non-Posted 请求 | Memory Read、配置读写 | 对应 Completion 或规定的错误处理 |
+| Completion | 成功读的 CplD、成功配置写的 Cpl | 它是请求的返回，不是另一笔业务命令完成记录 |
 
-- 普通 Memory Write 是 posted 路径
-- 普通 Memory Read 成功时由 Completion 返回数据；UR、CA 等错误 Completion 返回状态，不提供有效读取数据
-- config read 也依赖 completion
+Posted 不等于“没有错误”，也不等于“发出即全局可见”。错误要通过适用的状态和报告路径定位。
 
-## Ordering 为什么重要
+<div id="ordering-为什么重要" class="pcie-legacy-anchor"></div>
 
-因为系统里同时存在：
+## 排序规则不是全局串行执行
 
-- 控制面 MMIO 写
-- 数据面 DMA read/write
-- interrupt 或 message
+PCIe 对不同类别、Traffic Class（TC）及属性组合规定允许或禁止的超越关系。独立读请求的 Completion 不必按请求发出次序整体返回；接收端须按身份和 Tag 匹配。Relaxed Ordering、ID-Based Ordering 等能力会改变适用条件，不能只凭两笔事务相邻发出就断言全系统观察顺序。
 
-如果不了解 ordering 和可见性边界，就容易出现：
+本文的发布示例采用设备规定的同一排序域，不启用会破坏所需先后关系的放宽属性。具体桥或 IP 还可能提供更严格的交付顺序；不能把一种 IP 的接口保证推广到所有 PCIe 路径。[AMD 接收排序说明](https://docs.amd.com/r/en-US/pg156-ultrascale-pcie-gen3/Receive-Transaction-Ordering)给出了请求、Completion 与放宽属性的具体例子。
 
-- doorbell 已写，但 descriptor 还没对设备真正可见
-- completion queue 已更新，但 CPU 观察点还没同步
-- 软件把“请求已发出”和“对端已经处理完”误当成同一件事
+## 主机发布描述符：内存先于 Doorbell
 
-以主机发布描述符为例，前提是设备接口规定 doorbell 后可读取描述符：CPU 先填字段，再按 DMA 映射和平台契约完成交接与发布排序，最后用规定的 MMIO 访问器写 doorbell。对于非一致的 streaming 映射，还须在交给设备之前按 DMA API 同步；仅靠 PCIe ordering 不能刷新 CPU 缓存。设备观察到有效的描述符后才可取数。完成队列（CQ）的读取顺序取决于 DMA 映射：
+前提是设备接口规定 Doorbell 更新后允许取描述符。执行顺序是：CPU 填写字段 → 按 DMA 映射契约交接缓冲区并完成发布排序 → 用平台规定的 MMIO 访问器写 Doorbell → 设备取描述符。
 
-- **一致性 coherent CQ**：设备按接口契约先写内容再发布 phase/ownership；CPU 按该接口检查有效位，观察到交还后执行 `dma_rmb()`，再读取完成项内容。
-- **非一致 streaming CQ**：CPU 不能在同步前读取该缓冲区的有效位。先由该缓冲区以外的通知或所有权契约确认设备已交还，再按 DMA API 执行 sync-for-CPU，然后读取有效位和数据。复用前按契约 sync-for-device。通知本身必须具有接口规定的交还语义。
+缓存维护、内存排序和 MMIO 访问是不同操作。非一致 streaming 映射需要适用的 DMA 同步；coherent 映射省去相应缓存维护，但仍不能任意交换字段和有效位的发布顺序。单靠 PCIe 排序不能刷新 CPU 缓存。
 
-不同接口的屏障、同步和 MMIO 访问器不能互换，见 [Linux DMA 映射指南](https://docs.kernel.org/core-api/dma-api-howto.html) 和 [内存屏障示例](https://docs.kernel.org/core-api/wrappers/memory-barriers.html)。
+## 设备发布完成：数据、有效位与通知
 
-## 对工程最重要的判断
+假设设备接口要求先写结果和 CQE 内容，再发布有效位或 phase，最后通知主机。PCIe 的正常写排序为这类发布关系提供基础；MSI/MSI-X 是向配置地址的写，不是无序的旁路线脉冲。[Linux MSI 指南](https://docs.kernel.org/PCI/msi-howto.html)解释了中断写不能越过其所依赖的前序数据写的常规使用条件。
 
-PCIE 下很多同步问题都不是“功能错了”，而是：
+CPU 仍需按队列及映射契约消费：
 
-- 请求类型不同
-- 返回路径不同
-- 软件观察点不同
+- coherent CQ：先检查有效位或 phase，观察到交还后执行所需读取屏障，再读内容；Linux 驱动中的 `dma_rmb()` 是对应例子。
+- 非一致 streaming CQ：不能在同步前偷读有效位。先由缓冲区之外的通知或所有权机制确认交还，再 sync-for-CPU，然后读取；复用前按需 sync-for-device。
 
-## 一句话理解
+中断可能对应多个 CQE、错误事件或已经被其他消费者处理的工作。它不能替代具体队列状态检查。
 
-posted / non-posted / completion 的区别，本质上是在定义“请求何时才算真正完成，以及谁能观察到这个完成”。
+<div id="对工程最重要的判断" class="pcie-legacy-anchor"></div>
+<div id="一句话理解" class="pcie-legacy-anchor"></div>
+
+## 观察点必须写进接口契约
+
+“MMIO 写调用返回”“设备收到 Doorbell”“读事务收齐”“CQE 有效”“应用得到结果”是五个不同事件。某些场景用对设备的安全寄存器读回冲刷 posted 写；读回的目标、寄存器副作用和排序条件必须由平台与设备接口允许，不能把任意读当成全局屏障。
+
+缓冲区交接细节集中在[缓冲区与可见性](../04-data-path-dma-interrupts/host-memory-pinned-buffer-visibility.md)。软件依据见 [Linux DMA 指南](https://docs.kernel.org/core-api/dma-api-howto.html)和[内存屏障示例](https://docs.kernel.org/core-api/wrappers/memory-barriers.html)。

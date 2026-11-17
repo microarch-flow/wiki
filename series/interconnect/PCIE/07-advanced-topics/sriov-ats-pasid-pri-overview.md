@@ -1,34 +1,53 @@
-# SR-IOV、ATS、PASID、PRI
+---
+title: "SR-IOV 与地址空间扩展：PF/VF、ATS、PASID、PRI"
+---
 
-上级：[07 高级主题](./README.md)
+<div id="sr-iovatspasidpri" class="pcie-legacy-anchor"></div>
+<div id="这页在回答什么问题" class="pcie-legacy-anchor"></div>
 
-相关：[IOMMU、地址翻译与设备隔离](../03-configuration-enumeration-addressing/iommu-address-translation-device-isolation.md)
+# SR-IOV 与地址空间扩展：PF/VF、ATS、PASID、PRI
 
-## 这页在回答什么问题
+上级：[高级主题](README.md)
 
-为什么现代虚拟化和高性能设备经常会把 SR-IOV、ATS、PASID、PRI 放在一起讨论。
+这些能力解决两组不同问题。SR-IOV 将设备能力呈现为多个 Function；ATS、PASID、PRI 参与地址空间及翻译协同。使用 VF 不要求同时启用后三者，支持其中一项也不保证整条共享地址路径可用。
 
-## 这些词各自大致在解决什么
+## SR-IOV：把功能呈现给不同使用者
 
-- `SR-IOV`：PF 管理和启用多个 VF。每个 VF 可用自己的 Function 身份配置和分配；VF 的存在不要求同时使用 ATS、PASID 或 PRI。
-- `ATS`：设备向翻译服务请求地址翻译，并可缓存有效结果；命中设备缓存可减少再次查询。映射变化时必须遵循失效协议，不能继续使用旧翻译。
-- `PASID`：请求附带地址空间标识，与设备请求身份一起选择上下文。相同虚拟地址在不同 PASID 下可以指向不同页面。
-- `PRI`：在支持的缺页处理路径中，设备可发 page request，请求软件处理缺页；处理结果可能成功、失败或被拒绝。
+PF（Physical Function）管理相关设备能力及 VF 的启用。VF（Virtual Function）有自己的 Function 身份和可用资源，可以由对应驱动使用，或在平台支持时分配给虚拟机。
 
-例如支持 SVA 的系统把进程地址空间绑定到 PASID。设备以该上下文请求地址翻译；若页面缺失且 PRI 可用，设备请求缺页服务并等待响应。成功后按接口重新获取翻译；失败或拒绝时必须报告/处理失败，不能假设数据已可访问。具体组合由设备、IOMMU、驱动和平台共同决定。参见 [Linux SR-IOV 指南](https://docs.kernel.org/PCI/pci-iov-howto.html) 与 [SVA/ATS/PRI 文档](https://docs.kernel.org/arch/x86/sva.html)。
+| 输入 | 执行 | 输出与限制 |
+| --- | --- | --- |
+| PF 能力、资源和软件配置 | PF/系统启用允许数量的 VF | 出现可配置的 VF；不是凭空增加物理带宽 |
+| VF 归属和 IOMMU 映射 | 为使用者建立访问与隔离路径 | 请求按身份接受权限检查 |
+| 多 VF 同时工作 | 设备调度共享队列、内存及链路资源 | 吞吐隔离依赖实际资源和仲裁策略 |
 
-## 为什么它们经常成组出现
+例如四个 VF 共用一条上行链路。每个 VF 可独立分配，并不意味着每个 VF 都能独占整条链路的峰值带宽。功能隔离、内存访问隔离和性能隔离应分别评估。[Linux SR-IOV 指南](https://docs.kernel.org/PCI/pci-iov-howto.html)说明 PF/VF 的发现和使能方式。
 
-因为它们共同服务于：
+<div id="这些词各自大致在解决什么" class="pcie-legacy-anchor"></div>
 
-- 多租户
-- 虚拟机直通
-- 更细粒度的设备地址空间管理
+## ATS、PASID、PRI：分别补哪一段
 
-## 首版应该抓什么
+| 能力 | 职责 | 不能单独保证 |
+| --- | --- | --- |
+| ATS | 设备向翻译服务请求翻译，并可缓存有效结果 | 缓存永远有效；映射变化仍需失效 |
+| PASID | 请求携带地址空间标识，与请求身份共同选择上下文 | 访问已授权，或设备必然支持可分页内存 |
+| PRI | 在支持的路径中请求页面服务并接收处理结果 | 每次缺页都成功，或收到响应后无需重新取得翻译 |
 
-先抓“它们在扩展 host-device 契约”，不急着吃透全部协议细节。
+ATS 可缓存的不只是一个裸物理地址，还需要遵守返回权限和有效性规则。PASID 是上下文标识，不是绕过 IOMMU 的授权令牌。
 
-## 一句话理解
+<div id="为什么它们经常成组出现" class="pcie-legacy-anchor"></div>
 
-这组能力的核心价值，是把设备从“粗粒度 DMA 主体”推进成“能参与多地址空间和虚拟化协同的系统节点”。
+## 一条受支持的 SVA 路径
+
+教学前提：设备、IOMMU、驱动及进程绑定均支持该 SVA 模式。软件将进程地址空间绑定到设备上下文。设备带相应 PASID 访问，使用 ATS 获取翻译；若页面缺失且支持 PRI，则请求页面服务。
+
+页面服务成功后，设备仍须按规则重新获取有效翻译再访问；失败时进入错误处理。页面映射变化后，平台需要使设备缓存的旧翻译失效；进程退出和设备解绑也要处理在途操作。具体 x86/ENQCMD 组合见 [Linux SVA 文档](https://docs.kernel.org/arch/x86/sva.html)，不能把该组合的全部细节推广到所有架构。
+
+<div id="首版应该抓什么" class="pcie-legacy-anchor"></div>
+<div id="一句话理解" class="pcie-legacy-anchor"></div>
+
+## 设计时分别列出依赖
+
+先写清要划分 Function，还是让一个设备服务多个进程地址空间。再检查资源、请求身份、翻译、缺页、失效和故障退出。普通显式 DMA 映射可能已经满足需求，不必为了缩写齐全引入可分页共享地址的复杂性。
+
+前置概念见 [IOMMU](../03-configuration-enumeration-addressing/iommu-address-translation-device-isolation.md)；路径是否能访问对端资源见 [P2P](p2p-switch-topology-constraints.md)。

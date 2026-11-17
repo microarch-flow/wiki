@@ -1,51 +1,49 @@
-# PCIE 设计检查清单
+---
+title: "PCIe 设计检查清单"
+---
 
-上级：[08 术语与检查清单](./README.md)
+<div id="这页在回答什么问题" class="pcie-legacy-anchor"></div>
 
-相关：[PCIE 调试检查清单](./pcie-debug-checklist.md)、[IOMMU、地址翻译与设备隔离](../03-configuration-enumeration-addressing/iommu-address-translation-device-isolation.md)
+# PCIe 设计检查清单
 
-## 这页在回答什么问题
+上级：[查阅、建模与检查清单](README.md)
 
-做 endpoint、板卡、平台集成或 host-device 软件接口设计时，哪些问题应该在评审阶段就提前问清楚。
+评审时为每项提供设计值、约束来源和验证方法。未定义的项应标明负责人和关闭条件，不用“已考虑”代替证据。
 
 ## 角色与拓扑
 
-- 设备处在什么拓扑位置：直连 root complex 还是挂在 switch 下
-- 是否需要考虑多功能、虚拟化、P2P 或热插拔
-- 是否明确了和主机平台的协同假设
+- 画出 RC、每跳端口、Switch 与 Function；标明目标与实际可支持的速率、宽度、模式。
+- 标出共享链路及每方向流量，说明 P2P、热插拔或虚拟化是否属于需求。
 
 ## 配置与资源
 
-- config space 和 capability 是否完整、边界清晰
-- BAR 数量、大小、用途是否明确
-- BAR 中哪些是控制面，哪些是状态或窗口资源
-- 枚举后必须使能的能力是否列清楚
+- 列出 BAR 类型、大小、对齐、用途及平台资源需求；检查沿途桥窗口。
+- 区分能力声明、软件使能和运行状态；说明驱动需要的 Memory Space、Bus Master 与中断配置。
 
 ## 数据路径
 
-- 队列、descriptor、doorbell 和 completion 模型是否定义清楚
-- DMA read 和 DMA write 的主路径是否分别分析过
-- outstanding、包粒度、batched submit 是否有基本策略
-- host memory buffer 生命周期和可见性是否闭环
+- 写明描述符、数据、CQE 的生产者与消费者，定义缓冲区所有权和回收时刻。
+- 分别画设备读写事务；列出 MPS、MRRS、边界拆分、实际包长与在途资源。
+- 用目标吞吐和完整 RTT 检查读窗口，并同时验证返回缓冲与下游服务能力。
 
 ## 中断与完成
 
-- MSI 或 MSI-X 使用模型是否明确
-- completion record、status bit、interrupt 三者关系是否说清
-- 中断合并、轮询和低延迟路径是否有明确取舍
+- 定义成功、失败、取消与复位后命令的完成条件；区分事务返回与 CQE。
+- 说明队列到向量映射、屏蔽、合并、轮询与重新启用通知的竞争处理。
+- 指定缓存同步、发布排序和 MMIO 访问要求。
 
 ## 地址翻译与隔离
 
-- 是否依赖 IOMMU，以及依赖方式是否清晰
-- DMA 地址空间、host 物理地址和软件地址视角是否区分清楚
-- 多租户、虚拟化或不可信设备场景下的隔离边界是否定义清楚
+- 记录 DMA 地址来源、DMA mask、域、权限及映射生命周期。
+- 若使用 ATS/PASID/PRI，定义翻译失效、页面服务失败和进程退出处理。
+- 若使用 P2P，证明目标资源、路由及隔离策略均允许，明确对端移除时的停止与撤映射。
+
+<div id="一句话理解" class="pcie-legacy-anchor"></div>
 
 ## 可观测性与调试
 
-- 是否预留了链路状态、错误、队列和 completion 的观测点
-- 性能分析时能否区分链路瓶颈、host memory 瓶颈和软件提交瓶颈
-- 错误发生时，能否快速回看 AER、链路状态和 DMA 活动
+- 预留队列、Tag、返回、错误及适用信用/重放观测；标明计数单位和方向。
+- 能否区分供给不足、服务排队和软件回收慢？每类至少准备一个可复现条件。
+- 明确错误恢复的副作用、在途 DMA 停止条件及证据保存方式。
 
-## 一句话理解
-
-PCIE 设计评审最怕把“能枚举”“能发包”“能 DMA”“能通知”“能隔离”当成同一件事，它们必须分别闭环。
+参数口径见[建模速查](pcie-modeling-params.md)，运行故障检查见[调试清单](pcie-debug-checklist.md)。

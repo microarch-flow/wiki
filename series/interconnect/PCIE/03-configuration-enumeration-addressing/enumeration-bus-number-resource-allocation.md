@@ -1,41 +1,51 @@
-# 枚举、总线号与资源分配
+---
+title: "枚举、总线号与资源分配：从发现到可运行"
+---
 
-上级：[03 配置、枚举与地址映射](./README.md)
+<div id="枚举总线号与资源分配" class="pcie-legacy-anchor"></div>
+<div id="这页在回答什么问题" class="pcie-legacy-anchor"></div>
 
-相关：[配置空间、BAR 与 Capability](./config-space-bar-capability.md)
+# 枚举、总线号与资源分配：从发现到可运行
 
-## 这页在回答什么问题
+上级：[配置、枚举与地址映射](README.md)
 
-为什么设备插上去以后不是天然就能工作，主机到底做了哪些组织工作。
+枚举发现已有 Function，并建立访问下游所需的总线号与资源配置。固件、操作系统和驱动会分担这些工作；真实平台可能保留固件分配，也可能重分配，不能把下面的逻辑步骤当成唯一实现顺序。
 
-## 枚举在做什么
+<div id="枚举在做什么" class="pcie-legacy-anchor"></div>
 
-枚举过程通常要完成：
+## 枚举需要哪些输入和输出
 
-1. 从上游扫描配置空间，发现已有的 device/function 和 bridge；BDF 是它们在拓扑中的标识，软件不是凭空分配设备功能。
-2. 为桥设置下级 bus number 范围，使配置请求能转发到下游。
-3. 读取 Function 的标识、BAR 和 capability；分配 BAR 地址并配置上游桥资源窗口。
-4. 驱动按需使能 Memory Space、Bus Master 和所选中断模式。MSI-X 不是枚举或 DMA 的必选项。
+输入包括可用 Root Port、可访问的配置机制、平台地址窗口及下游组件。输出是已发现的 Function、桥层次、资源分配及能力信息。Device/Function 并非软件随意创造；桥的 bus number 范围则需要软件组织。
 
-## 它为什么本质上是系统资源组织
+1. 访问当前可达 Function 的配置空间，识别普通 Function 与桥。
+2. 为桥建立可用的次级总线及下级范围，使配置请求能继续到达下游。
+3. 读取资源需求，为 BAR 和桥窗口分配合法地址范围。
+4. 驱动绑定设备，申请资源，设置 DMA 能力和映射，按需打开 Memory Space、Bus Master 和中断模式。
 
-因为主机不仅是在“找设备”，还在决定：
+最后一步属于运行准备。MSI-X 不是发现设备或执行 DMA 的必选项。
 
-- 哪段地址留给哪个设备 BAR
-- 哪些设备可以发 DMA
-- 多级 switch / bridge 下资源窗口怎么切
+## 两级桥怎样选择配置路径
 
-## 为什么这里经常出问题
+教学拓扑：上游桥 B0 的 secondary=1、subordinate=3；其下总线 1 上有桥 B1，secondary=2、subordinate=3。位于 bus 3 的 Function 处于两个范围内，配置请求才有对应的下游转发路径。若 B0 的 subordinate 错设为 2，下游 bus 3 就不在该桥覆盖范围内。
 
-常见故障包括：
+这里讨论的是配置路由。Memory BAR 访问还需要另一组地址窗口；总线号范围正确不代表 Memory 窗口也正确。
 
-- BAR 空间不够
-- bus number 规划不合理
-- 某级 bridge 窗口没打开
-- capability 配置不完整
+<div id="它为什么本质上是系统资源组织" class="pcie-legacy-anchor"></div>
 
-这些问题表面像“设备不工作”，本质上常是资源组织没闭环。诊断时分别记录：①配置读是否能发现 BDF；②BAR 已分配且桥窗口与 Memory Space Enable 是否允许 MMIO；③Bus Master Enable、DMA 映射及设备状态是否允许设备发起 DMA。第二或第三项失败时，第一项仍可能成功；下游总线号超出桥转发范围则可能连配置发现都失败。
+## 地址资源怎样沿桥覆盖
 
-## 一句话理解
+假设某 Endpoint 的 Memory BAR 被分配到一个 64 KiB 窗口。沿途每一级适用的桥 Memory 窗口都必须覆盖它，并满足对应桥窗口的粒度、类型及平台资源限制。配置读本身不要求目标 BAR 已经分配好，因此“读得到 Vendor ID”和“读得到 BAR 寄存器”是不同验证。
 
-枚举不是点名，而是把拓扑、资源和能力装配成一张可运行的系统地图。
+<div id="为什么这里经常出问题" class="pcie-legacy-anchor"></div>
+<div id="一句话理解" class="pcie-legacy-anchor"></div>
+
+## 把失败定位到具体阶段
+
+| 证据 | 优先检查 | 不能直接推断 |
+| --- | --- | --- |
+| 配置结果没有目标 Function | 链路、复位、设备就绪、总线号和配置路由 | 一定是 BAR 不够 |
+| Function 可见但资源未分配 | 平台地址窗口、BAR 需求、桥窗口 | Function 没有被枚举 |
+| MMIO 正常但 DMA 不发出 | Bus Master、设备启动条件、描述符与映射 | 配置路径故障 |
+| DMA 已发出但访问失败 | 地址、权限、目标状态及事务错误 | MSI-X 未开就是根因 |
+
+下一步用[地址视角](mmio-config-dma-address-view.md)区分 CPU 与设备拿到的地址。复盘示例见[设备不可用案例](../06-workloads-case-studies/enumeration-failure-case-card.md)。实际驱动初始化职责参考 [Linux PCI 驱动指南](https://docs.kernel.org/PCI/pci.html)。

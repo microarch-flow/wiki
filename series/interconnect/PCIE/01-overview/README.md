@@ -1,14 +1,12 @@
 # 01 概览与问题定义
 
-这一部分先回答三个问题：
+上级：[系统 I/O 互连（PCIe）](../README.md)
 
-- PCIE 到底在系统里解决什么问题
-- 学 PCIE 时先抓哪些主线最划算
-- 哪些主题属于核心，哪些属于延伸
+先明确 PCIe 负责的系统问题，再选顺序学习或按目标查阅。问题地图中的维度不是额外的协议分层。
 
 ## 推荐阅读顺序
 
-1. [PCIE 在解决什么问题](./problem-statement.md)
-2. [PCIE 分类框架](./taxonomy.md)
+1. [PCIe 解决什么问题](./problem-statement.md)
+2. [问题地图](./taxonomy.md)
 3. [学习路线图](./learning-roadmap.md)
-4. [按目标学习 PCIE](./goal-oriented-navigation.md)
+4. [按目标学习](./goal-oriented-navigation.md)

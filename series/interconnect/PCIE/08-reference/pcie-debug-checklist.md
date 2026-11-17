@@ -1,33 +1,36 @@
-# PCIE 调试检查清单
+# PCIe 调试检查清单
 
-上级：[08 术语与检查清单](./README.md)
+上级：[查阅、建模与检查清单](README.md)
+
+从可观察状态逐级排查。先保存复现窗口与配置，清状态、重训练或复位后再取的快照不能替代故障发生时的证据。
 
 ## 链路与拓扑
 
-- 链路是否成功训练到预期速率和宽度
-- 设备是否处在预期的 root complex / switch 拓扑下
-- 是否存在降速、掉 lane 或不稳定重训练
+- 记录目标 Function 和全部相关上游端口；比较实际速率、宽度与预期配置。
+- 若降档，先查布线、分叉和目标设置，再结合重训练及错误记录分析通道。
 
 ## 枚举与配置
 
-- 配置空间是否可访问
-- BAR 是否正确分配并使能
-- bus mastering、MSI-X、相关 capability 是否已闭环配置
+- 配置空间是否发现 Function？没有发现时查复位、就绪、总线号与配置路径。
+- 已发现但 MMIO 不通时，查 BAR 资源、桥窗口和 Memory Space Enable。
+- MMIO 正常但 DMA 未发出时，查 Bus Master 与设备启动、队列状态；不要把 MSI-X 当作必选条件。
 
 ## DMA 与地址
 
-- DMA mapping 是否建立正确
-- IOMMU 是否放通且域配置正确
-- queue / descriptor / buffer 生命周期是否稳定
+- 描述符里是否使用正确设备的 DMA 映射地址、长度和方向？
+- 是否存在 IOMMU fault、过期映射、越界或提前释放？
+- CPU 是否按所有权与同步规则访问缓冲区？
 
 ## 通知与完成
 
-- doorbell 是否真的送达设备
-- completion record 是否对 host 可见
-- MSI-X 或 polling 是否和完成状态匹配
+- Doorbell 已发布的工作是否真的被设备消费？
+- CQE 是否有效、状态是什么、对应哪个命令？不要只数中断。
+- 数据已完成但应用等待时，查 phase、同步、屏蔽、轮询和软件回收。
 
 ## 性能与错误
 
-- read 还是 write 在主导瓶颈
-- outstanding、MPS、MRRS 是否合理
-- AER、UR、CA、timeout 是否给出更明确方向
+- 分别统计方向载荷、实际请求长度、完整 RTT 与可用/占用槽数。
+- 将信用阻塞、重放和 AER 分开计数；不能用日志条数替代重发次数。
+- UR/CA 表示错误返回；Completion Timeout 与软件等待 CQE 超时分别定位。
+
+每项记录“证据、候选解释、反例检查、下一动作”。机制见[瓶颈拆解](../05-performance-debug/host-device-bottleneck-breakdown.md)，完整记录使用[复盘模板](pcie-debug-postmortem-template.md)。

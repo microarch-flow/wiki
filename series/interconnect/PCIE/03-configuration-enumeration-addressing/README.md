@@ -1,14 +1,12 @@
 # 03 配置、枚举与地址映射
 
-这一部分回答“设备为什么会被系统看见并能正常使用”：
+上级：[系统 I/O 互连（PCIe）](../README.md)
 
-- 配置空间里放了什么
-- 枚举和资源分配怎么做
-- MMIO、BAR、DMA 地址分别是什么
+本章区分设备被发现、资源可访问和 DMA 被允许三个阶段。读完后，应能说明 CPU 与设备各自使用的地址，以及映射由谁建立。
 
 ## 推荐阅读顺序
 
-1. [配置空间、BAR 与 Capability](./config-space-bar-capability.md)
-2. [枚举、总线号与资源分配](./enumeration-bus-number-resource-allocation.md)
-3. [MMIO、配置访问、DMA 地址空间视角](./mmio-config-dma-address-view.md)
-4. [IOMMU、地址翻译与设备隔离](./iommu-address-translation-device-isolation.md)
+1. [配置空间与 BAR](./config-space-bar-capability.md)
+2. [枚举与资源分配](./enumeration-bus-number-resource-allocation.md)
+3. [配置、BAR 与 DMA 地址](./mmio-config-dma-address-view.md)
+4. [IOMMU 翻译与隔离](./iommu-address-translation-device-isolation.md)

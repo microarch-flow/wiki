@@ -585,6 +585,11 @@ def on_config(config, **kwargs):
         for filename, short in reading_items(chapter):
             path = chapter / filename
             config.extra["storage_sidebar_labels"][path.relative_to(root).as_posix()] = (short, title(path))
+    # PCIe keeps source-aligned chapters; reading lists own article short labels.
+    for chapter in sorted((root / "PCIE" / "wiki").glob("*/")):
+        for filename, short in reading_items(chapter):
+            path = chapter / filename
+            config.extra["storage_sidebar_labels"][path.relative_to(root).as_posix()] = (short, title(path))
     if (root / D2D_SUMMARY).is_file():
         for _name, _anchor, pages in read_d2d_sections(root):
             for short, path in pages:

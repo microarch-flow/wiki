@@ -1,49 +1,47 @@
-# PCIE 高频问题
+# PCIe 高频问题
 
-上级：[08 术语与检查清单](./README.md)
+上级：[查阅、建模与检查清单](README.md)
 
-相关：[PCIe 建模参数与公式速查](./pcie-modeling-params.md)
+本页提供短答和推导入口；数字应以链接正文中的模式与条件为准。
 
 ## 为什么 write 常比 read 更容易跑满
 
-普通 Memory Read 是 non-posted，依赖事务 Completion，容易被最终返回的往返延迟和在途深度限制。普通 Memory Write 是 posted，无需等待逐笔事务 Completion；但要连续发送，还须有持续的上游数据供给、足够 credit、可用链路及下游服务能力，也可能受仲裁和拥塞限制。稳态读吞吐受 `平均在途数 × 每请求平均字节 / 平均完整 RTT` 等资源共同约束。
+普通写不等待逐笔事务 Completion；读需要有限的在途窗口覆盖完整返回时间。但写仍受数据供给、信用和接收服务约束，不能保证一定更快。见[读延迟与并发](../04-data-path-dma-interrupts/pcie-read-completion-latency.md)。
 
 ## BAR 和 DMA 地址有什么区别
 
-BAR 定义设备暴露的目标资源窗口，主机常用 MMIO 访问它。DMA 地址是平台提供给发起设备访问已映射资源的地址：常见路径的目标是主机内存；在拓扑、平台和驱动支持的 P2P 路径中，也可以是对端设备允许访问的 BAR 资源。目标窗口与请求者所用地址及翻译不能假定数值相同，见 [P2P 与拓扑约束](../07-advanced-topics/p2p-switch-topology-constraints.md)。
+BAR 描述目标资源窗口；DMA 地址供设备发起访问。P2P 的目标也可以是对端 BAR。CPU 虚拟、物理和总线地址的转换见[地址视角](../03-configuration-enumeration-addressing/mmio-config-dma-address-view.md)。
 
 ## 为什么设备明明支持 DMA，却还要看 IOMMU
 
-因为“能访问”不等于“应该被允许任意访问”，还要考虑翻译、隔离和虚拟化。
+DMA 能力不等于访问已授权。映射、域、权限及翻译模式决定目标是否可达；miss 与 fault 也有不同结果。见 [IOMMU](../03-configuration-enumeration-addressing/iommu-address-translation-device-isolation.md)。
 
 ## 为什么 MSI-X 常和 queue 一起讨论
 
-因为高性能设备通常用 queue 承载任务，用 MSI-X 通知主机推进完成处理。
+队列保存工作和结果，MSI-X 提示软件处理。向量与队列可以多对一，中断可以合并；具体命令是否完成仍看 CQE。见[队列与通知](../04-data-path-dma-interrupts/queues-doorbells-completions-msix.md)。
 
-## 为什么看起来是 PCIE 问题，最后却落到 host memory
+## 为什么看起来是 PCIe 问题，最后却落到 host memory
 
-因为 host-device 路径的尾部常常连着 IOMMU、DDR、NUMA 和 CPU 软件栈，链路不是唯一瓶颈。
+DMA 服务经过翻译、主机内存及软件路径。链路空闲也可能是在等待这些模块。见[瓶颈拆解](../05-performance-debug/host-device-bottleneck-breakdown.md)。
 
 ## 建模高频问题
 
-下面是建性能模型时最常要查的数，完整表见 [PCIe 建模参数与公式速查](./pcie-modeling-params.md)。
-
 ### 某个 Gen × lane 的名义带宽是多少
 
-每 lane 单向有效带宽：Gen3 ~985 MB/s、Gen4 ~1.97 GB/s、Gen5 ~3.94 GB/s，乘 lane 数。例：Gen5 x16 ≈ 63 GB/s。这一列已扣编码开销，不要再乘一次。
+先注明单向还是双向、原始还是编码后、Non-Flit 还是 Flit。只扣编码的容量不能称为应用有效吞吐。[速率表](pcie-modeling-params.md#链路速率和计数边界)集中维护数值。
 
 ### MPS 到底影响多少带宽
 
-MPS 是上限，实际 payload 可以更小。只在 Non-Flit 模式的示例假设中，若每包非 payload 占用 24 B，且实际有效数据为 128 B，则效率为 `128/(128+24) ≈ 84.2%`。实际包格式、DLLP、重传及链路模式会改变效率；不要重复计算已经包含的开销。
+它只给出载荷上限。实际包更小时，不能按 MPS 计算效率；开销还取决于类型与模式。[包长模型](pcie-modeling-params.md#non-flit-mode按真实-tlp-大小估算)给出可替换假设。
 
 ### read 要多少并发才能灌满链路
 
-`所需 outstanding ≥ ceil(目标有效吞吐 × 平均 RTT / 每请求平均有效字节)`。假设 Gen4 x8 的目标 `12.8 GB/s`、RTT `1 µs`、每请求 `512 B`，需要 25 个。目标还必须低于链路有效带宽；更高 RTT 或较小请求会增加需要的并发。
+给定目标、完整 RTT 与实际请求长度，可以求容量下界；它不是达到吞吐的充分条件。推导和 25 笔请求算例见[读并发](../04-data-path-dma-interrupts/pcie-read-completion-latency.md)。
 
 ### Tag 上限是多少
 
-5-bit 通常最多 32，Extended Tag 已使能时最多 256。10-bit Tag 已使能并且目标支持时，针对单个 completer 最多 768；实际还受 requester 的槽数、缓冲、目标能力及 Tag 分配限制。10-bit 字段有 1024 个位模式，不等于 1024 个可用于单目标的请求。
+看请求模式、使能、目标支持和实现资源，不能把字段位数直接转换成所有设备的可用槽数。[Tag 表](pcie-modeling-params.md#read-吞吐与-tag)区分协议能力与 IP 容量。
 
 ### 一个 read 会被拆成几个 completion
 
-不能只由 RCB 算出。MRRS 限制请求长度，MPS 限制数据包长度，RCB 限制允许的拆分位置；实际分包还取决于地址和 completer。对齐的 256 B read，在 MRRS≥256、MPS=256、RCB=64 的条件下，可以是一个 256 B CplD，也可以是四个 64 B CplD。
+不能只用 RCB 相除。先确定合法请求边界，再结合地址、MPS、RCB 和 Completer 策略计算。[分包示例](pcie-modeling-params.md#completion-的边界大小与分包)说明一包与多包都合法的情形。

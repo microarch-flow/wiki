@@ -1,47 +1,47 @@
-# 分层架构：Transaction / Data Link / Physical
+---
+title: "PCIe 三层架构：事务、逐跳可靠性与物理链路"
+---
 
-上级：[02 链路、分层与事务基础](./README.md)
+<div id="分层架构transaction-data-link-physical" class="pcie-legacy-anchor"></div>
+<div id="这页在回答什么问题" class="pcie-legacy-anchor"></div>
 
-相关：[TLP、DLLP 与 Completion 语义](./tlp-dllp-completion-basics.md)、[SerDes：PHY、SerDes 与协议](../../SERDES/01-overview/phy-serdes-protocol.md)
+# PCIe 三层架构：事务、逐跳可靠性与物理链路
 
-## 这页在回答什么问题
+上级：[链路、分层与事务基础](README.md)
 
-为什么 PCIE 要分层，以及这三层各自解决什么问题。
+同一次读取需要表达访问目标、可靠传过每一跳，并把比特送到介质上。PCIe 将这些职责分开。分层有助于找到故障观察点，但不意味着各层的性能互不影响。
 
 ## Transaction Layer 关心什么
 
-- read / write / message 这类事务语义
-- 请求和 completion 的配对关系
-- 地址、属性、长度、tag 等事务字段
+事务层接收设备或主机接口提交的访问，形成 TLP，携带类型、地址、长度、请求身份、Tag 和属性。接收端解释 TLP；对于需要返回的请求，生成对应 Completion。
 
-这层更接近“系统在表达什么请求”。
+事务层还执行适用的排序规则，并通过基于信用的流控管理 TLP 接收缓冲使用。信用检查回答“接收端能否容纳这类包”，不是“事务是否已完成”。[AMD PG054](https://docs.amd.com/r/en-US/pg054-7series-pcie/Transaction-Layer)明确列出了事务排序和信用流控职责。
 
 ## Data Link Layer 关心什么
 
-在传统 **Non-Flit** 模式下，Data Link 层用序号、LCRC、ACK/NAK 与重放缓冲保证相邻端口间的 TLP 传输。ACK 只确认这一跳，重放也只作用于这一跳。
+传统 Non-Flit 模式下，数据链路层为相邻端口间的 TLP 传输维护序号、LCRC、ACK/NAK 和重放状态。发送端保留未被确认的包；遇到适用的重放条件时，按协议重发。链路失效仍可能需要上层恢复，不能把逐跳可靠性理解为任意故障下都保证成功。
 
-流控约束发送：发送端必须有该 TLP 类别所需的 header/data credit 才能发送；接收端消费缓冲后，通过链路控制信息更新 credit。credit 表示接收容量，不表示请求已经完成。Non-Flit 使用 UpdateFC DLLP 等链路控制包；Flit 模式的控制承载形式不同，不能直接套用这个包模型。
+DLLP 在此模式下承载 ACK/NAK、流控更新等控制信息。**流控管理的职责与控制信息的传递载体是两回事。** 不能因为信用更新由 DLLP 传递，就把所有流控判断都归入数据链路层。
 
-例如，EP 向主机发送 Memory Read，先等待 EP→Switch 链路所需 credit；Switch 收到请求后向 EP 返回该跳的 ACK，并继续向 RC 转发；RC 接收后向 Switch 返回其对应的 ACK。即使 EP 收到链路 ACK，该读 Tag 仍占用，直到匹配的事务 Completion 收齐或请求按错误处理结束。链路未训练成功时，上述正常传输尚不能开始。实现和模式应以目标规范为准；可参见 [PCIe 2.1 基础规范](https://www.intel.com/content/dam/support/us/en/programmable/support-resources/fpga-wiki/asset03/pci-express-base-r2.1.pdf)。
+Flit Mode 改变了传输组织及可靠性保护粒度。旧模式的“每个 TLP 一套 framing/LCRC”和 DLLP 开销模型不能直接搬过去。
 
 ## Physical Layer 关心什么
 
-- lane、速率、训练、均衡
-- 电气与编码细节
-- 链路建立和物理可达性
+物理层把链路数据转换为各 lane 上的信号，并处理适用的编码、对齐、训练、速率及宽度协商等功能。协议 PHY 与具体 SerDes 电路之间还有实现边界，详见 [PHY、SerDes 与协议](../../SERDES/01-overview/phy-serdes-protocol.md)。
 
-这层更接近“比特怎样在介质上真的跑起来”。
+链路尚未就绪时，事务不能按正常路径传送；进入 L0 也不证明所有温度、通道和长期误码条件都合格。
 
-## 为什么分层对体系结构有价值
+<div id="为什么分层对体系结构有价值" class="pcie-legacy-anchor"></div>
+<div id="一句话理解" class="pcie-legacy-anchor"></div>
 
-因为很多问题根本不在同一层：
+## 用一次读取分开三个观察点
 
-- `AER/Unsupported Request` 往往是事务语义或路由问题
-- `credit 不够` 更像链路级流控问题
-- `速率降档` 更像物理链路质量问题
+假设 EP 经 Switch 读取主机内存。EP 先取得请求发送条件并发出 Memory Read。每跳独立处理接收与链路确认；主机侧随后返回一个或多个 CplD。EP 收齐所需数据后，才正常结束该读请求。
 
-不分层，调试会很快失焦。
+| 观察 | 能证明什么 | 不能证明什么 |
+| --- | --- | --- |
+| 链路训练成功 | 该链路达到相应运行状态 | BAR、映射或目标服务正确 |
+| 该跳 ACK 到达 | 该跳对应传输已被确认 | 最终目标已经完成读取 |
+| 最终成功 CplD 收齐 | 该笔读取所需数据已返回 | 设备的软件命令已执行完毕 |
 
-## 一句话理解
-
-Transaction 层决定“想做什么”，Data Link 层决定“怎么可靠送达”，Physical 层决定“比特是否跑得动”。
+下一篇[一次 PCIe 读取](tlp-dllp-completion-basics.md)继续追踪事务身份；[信用与重放](credit-flow-control-and-replay.md)解释等待和资源释放。传统协议栈示例可参见 [Altera PCIe 协议栈](https://docs.altera.com/r/docs/683093/current/pci-express-protocol-stack)。

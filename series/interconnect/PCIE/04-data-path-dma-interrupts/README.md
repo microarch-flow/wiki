@@ -1,14 +1,12 @@
 # 04 数据路径、DMA 与中断
 
-这一部分把 PCIE 放回真实运行路径里：
+上级：[系统 I/O 互连（PCIe）](../README.md)
 
-- 设备怎样 DMA 读写主机内存
-- 软件怎样用 queue 和 doorbell 提交工作
-- 完成与中断怎样回到主机
+先建立缓冲区合法可用的前提，再追踪设备读写、队列提交与完成。最后用完整返回时间解释有限请求窗口的性能约束。
 
 ## 推荐阅读顺序
 
-1. [设备 DMA 的读写路径](./device-dma-read-write-flow.md)
-2. [队列、Doorbell、Completion 与 MSI-X](./queues-doorbells-completions-msix.md)
-3. [PCIe Read Completion 延迟为什么敏感](./pcie-read-completion-latency.md)
-4. [主机内存、Pinned Buffer 与设备可见性](./host-memory-pinned-buffer-visibility.md)
+1. [缓冲区与可见性](./host-memory-pinned-buffer-visibility.md)
+2. [设备 DMA 读写](./device-dma-read-write-flow.md)
+3. [队列、CQE 与 MSI-X](./queues-doorbells-completions-msix.md)
+4. [读延迟与并发](./pcie-read-completion-latency.md)

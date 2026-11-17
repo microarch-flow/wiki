@@ -1,64 +1,65 @@
-# PCIe Read Completion 延迟为什么敏感
+---
+title: "PCIe 读取为何需要并发：完整返回时间与 Tag 窗口"
+---
 
-上级：[04 数据路径、DMA 与中断](./README.md)
+<div id="pcie-read-completion-延迟为什么敏感" class="pcie-legacy-anchor"></div>
+<div id="这页在回答什么问题" class="pcie-legacy-anchor"></div>
 
-相关：[设备 DMA 的读写路径](./device-dma-read-write-flow.md)、[带宽、延迟、Credit、MPS 与 MRRS](../05-performance-debug/bandwidth-latency-credit-mps-mrrs.md)、[PCIe 建模参数与公式速查](../08-reference/pcie-modeling-params.md)
+# PCIe 读取为何需要并发：完整返回时间与 Tag 窗口
 
-## 这页在回答什么问题
+上级：[数据路径、DMA 与中断](README.md)
 
-为什么很多 PCIE 设备在读主机内存时更容易掉速，read completion latency 到底卡在哪里。
+设备读主机内存时，请求发出后还要等数据返回。若待完成请求数量有限，链路即使很宽，也可能被请求窗口限制。分析前先区分实际平均在途数、硬件槽容量和软件队列深度。
 
-## 一个最短链条
+<div id="一个最短链条" class="pcie-legacy-anchor"></div>
 
-1. device 发起 memory read request
-2. 请求穿过 Root Complex / switch / host memory 路径
-3. host 侧准备返回数据
-4. completion TLP 沿返回路径回到 device
+## RTT 到哪个事件为止
 
-只要其中任一段变慢，device 就会等。
+本文的请求 RTT 从 Memory Read 发出，计到全部所需数据成功返回、对应请求槽可回收。它包括请求路径、目标服务、排队及 Completion 返回。第一笔 CplD 到达只表示开始返回，不一定释放 Tag。
 
-## 为什么它比 write 更敏感
+教学例：512 B 请求分成两个 256 B CplD，首包在 0.6 µs 到达，末包在 1.0 µs 到达。用于请求槽占用的 RTT 是 1.0 µs。若改用首包延迟，模型会高估有限槽数的吞吐能力。
 
-- read 必须等返回
-- device 可并发挂起的请求数有限
-- completion 返回分片和调度可能带来额外延迟
-- host 侧缓存、IOMMU、内存拥塞都会放大等待
+<div id="量化小节littles-law" class="pcie-legacy-anchor"></div>
 
-## 最常见的四类瓶颈
+## 从稳态计数推导吞吐
 
-- outstanding 深度不够
-- MRRS / MPS 配置不合适
-- switch / root complex 返回路径拥塞
-- host memory 或 IOMMU 延迟偏大
+在同一稳定采样窗口内，设请求完成率为 λ，平均完整 RTT 为 T，时间平均在途数为 N̄，每请求平均有效字节为 S。无持续积压增长，且统计对象和成功完成口径一致时，Little 定律给出：
 
-## 最值得记住的判断
+> **N̄ = λT，B = λS，因此 B = N̄S / T。**
 
-PCIe read 性能差，常常不是“带宽不够”，而是 `在途请求数 × 每请求有效数据 / 平均往返时间` 达不到所需吞吐。
+这里 B 是该请求流交付的有效字节率。不能把所有协议流量计入 N̄，却只把某个业务的字节计入 B；错误重试和未结束的瞬态也需单独处理。
 
-## 量化小节（Little's Law）
+<div id="为什么它比-write-更敏感" class="pcie-legacy-anchor"></div>
+<div id="最值得记住的判断" class="pcie-legacy-anchor"></div>
 
-上面那句判断写成公式就是：
+## 用槽容量预测需要多少并发
 
-```
-read 吞吐 ≈ (平均在途请求数 × 每请求平均有效字节) / 平均 RTT
-```
+若 Requester 最多允许 N<sub>cap</sub> 笔请求在途，则 N̄ ≤ N<sub>cap</sub>。给定目标吞吐 B<sub>target</sub> 和该负载下的 T、S，至少需要：
 
-要灌满链路所需的并发深度（带宽时延积）：
+> **N<sub>cap</sub> ≥ ⌈B<sub>target</sub> × T / S⌉。**
 
-```
-所需 outstanding ≥ 链路有效带宽 × RTT / bytes_per_request
-```
+这只是必要的容量条件。预测还须满足请求供给、请求方向带宽、返回方向带宽、目标服务和完成缓冲等限制。RTT 会随负载变化，不能无限提高槽数却把排队时延固定不变。
 
-这里使用同一稳态采样窗口：平均在途数是随时间平均的实际请求数，而不是直接把硬件槽容量当作实际值；RTT 从请求发出算到该请求全部所需数据成功返回、请求槽可回收。首个 CplD 到达时间可能更早。请求分片且末片延迟变大时，槽会被占用更久。若用硬槽上限 N 估算，则 `N × S / RTT` 只是并发窗口上界；结果还受请求供给、Completion 返回带宽、缓冲和其他资源限制。
+## 一个可复算的例子
 
-三个量分别被这些参数钳制：
+假设 Gen4 x8，目标有效吞吐 12.8 GB/s，完整 RTT=1 µs，每请求有效数据 512 B；GB 采用十进制。
 
-- **outstanding_requests** —— 取决于 Tag 模式、目标能力和实际槽数：5-bit 通常最多 32，Extended 已启用最多 256；10-bit 已启用且目标支持时，单个 completer 最多 768。
-- **每请求平均有效字节** —— MRRS 只限制单 read 的最大请求长度；实际长度还受地址边界、剩余数据和请求生成器影响，不能直接当成 MRRS。
-- **平均 RTT** —— 包含 RC、switch、内存及 IOMMU 路径；数百 ns 或 µs 量级只能作为未校准的示例假设，各段实际值应通过目标平台的计数器或测量确定。
+> 所需容量下界 = ⌈12.8 × 10⁹ × 10⁻⁶ / 512⌉ = **25 笔请求**。
 
-举例：Gen4 x8 的编码后上界约 15.75 GB/s；假设目标有效吞吐 12.8 GB/s、RTT=1 µs、单请求 512 B，则需要 `ceil(12.8e9 × 1e-6 / 512) = 25` 个并发请求以覆盖该目标的带宽时延积。目标还须低于扣除协议开销后的实际有效带宽；若只有 32 个可用槽，RTT 进一步上升或其他资源不足仍可能导致掉速。完整参数表见 [PCIe 建模参数与公式速查](../08-reference/pcie-modeling-params.md)。
+Gen4 x8 仅扣编码后的单向上界约 15.75 GB/s；实际可用带宽还要扣协议开销。若设备只有 16 个可用槽，且仍采用上述 RTT 与长度，窗口上界为 8.192 GB/s，无法达到目标。若有 32 个槽，只能说明窗口条件有余量，不能保证达到 12.8 GB/s。
 
-## 一句话理解
+<div id="最常见的四类瓶颈" class="pcie-legacy-anchor"></div>
+<div id="一句话理解" class="pcie-legacy-anchor"></div>
 
-read completion latency 是很多 PCIE 设备吞吐上不去的隐藏主线，因为它直接限制了 device 能把流水线撑多深。
+## 哪个参数改变了等待
+
+| 变化 | 可能影响 | 必须同时检查 |
+| --- | --- | --- |
+| 请求变小 | 同样字节率需要更多请求 | 4 KiB 边界、剩余长度、生成策略 |
+| 返回末片更晚 | 槽占用时间增加 | Completion 拥塞、目标服务 |
+| 软件队列加深 | 可能改善请求供给 | Requester 是否仍只有固定少量 Tag |
+| 增大 MRRS | 允许更长请求 | 实际长度、返回分包和接收缓冲 |
+
+普通写不等待逐笔事务 Completion，但仍受信用与接收服务约束。不能用本读窗口公式直接描述所有写瓶颈。
+
+Tag 能力、分包规则和带宽表集中在[建模速查](../08-reference/pcie-modeling-params.md)，观测方法见[瓶颈拆解](../05-performance-debug/host-device-bottleneck-breakdown.md)。Little 定律的原始来源：[Little，1961](https://doi.org/10.1287/opre.9.3.383)。

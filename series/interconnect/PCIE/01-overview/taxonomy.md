@@ -1,76 +1,52 @@
-# PCIE 分类框架
+---
+title: "PCIe 问题地图：角色、事务、地址与性能"
+---
 
-上级：[01 概览与问题定义](./README.md)
+<div id="pcie-分类框架" class="pcie-legacy-anchor"></div>
+<div id="这页在回答什么问题" class="pcie-legacy-anchor"></div>
 
-相关：[链路、分层与事务基础](../02-link-transaction-basics/README.md)、[高级主题](../07-advanced-topics/README.md)、[PCIe 建模参数与公式速查](../08-reference/pcie-modeling-params.md)
+# PCIe 问题地图：角色、事务、地址与性能
 
-## 这页在回答什么问题
+上级：[概览与问题定义](README.md)
 
-学 PCIE 时，应该按什么维度切分问题，才不容易把协议、拓扑、软件和性能搅在一起。
+排查 PCIe 问题前，先给观察对象分类。下面五个维度用于组织工程问题，只有“协议分层”指 PCIe 的三层体系；其他维度并不是叠在它上面的协议层。
 
-## 一个实用的五层分类法
+<div id="一个实用的五层分类法" class="pcie-legacy-anchor"></div>
+<div id="1-系统角色层" class="pcie-legacy-anchor"></div>
+<div id="2-协议分层" class="pcie-legacy-anchor"></div>
+<div id="3-资源与寻址层" class="pcie-legacy-anchor"></div>
+<div id="4-数据路径层" class="pcie-legacy-anchor"></div>
+<div id="5-系统能力层" class="pcie-legacy-anchor"></div>
 
-### 1. 系统角色层
+## 五个分析维度
 
-- Root Complex
-- Switch
-- Endpoint
-- Host software
-- Device DMA engine
+| 维度 | 输入或对象 | 要回答的问题 | 正文 |
+| --- | --- | --- | --- |
+| 系统角色 | RC、Root Port、Switch、Endpoint | 谁发请求，谁返回，共享哪段路径？ | [拓扑](../02-link-transaction-basics/topology-root-complex-switch-endpoint.md) |
+| 协议分层 | TLP、链路控制、物理信号 | 是事务未完成、链路等待还是未建链？ | [分层](../02-link-transaction-basics/layered-architecture-transaction-data-link-physical.md) |
+| 资源与寻址 | BDF、BAR、DMA 地址、IOMMU 域 | 请求到哪个资源，使用什么地址？ | [地址视角](../03-configuration-enumeration-addressing/mmio-config-dma-address-view.md) |
+| 数据路径 | 描述符、数据、CQE、中断 | 谁拥有缓冲区，哪个事件允许下一步？ | [运行路径](../04-data-path-dma-interrupts/README.md) |
+| 系统能力 | AER、SR-IOV、ATS、P2P | 哪些能力已配置，平台是否支持？ | [高级主题](../07-advanced-topics/README.md) |
 
-### 2. 协议分层
+<div id="为什么这样切分有用" class="pcie-legacy-anchor"></div>
 
-- Transaction Layer
-- Data Link Layer
-- Physical Layer
+## 同一现象怎样拆开
 
-### 3. 资源与寻址层
+“设备读得慢”至少有三种不同解释。读请求未发出，可能在等 Tag 或请求方向的信用；请求已发出但返回慢，可能在等翻译、内存或 Completion 链路；数据已收齐但应用仍等待，可能在等设备执行、CQE 或软件处理。
 
-- config space
-- BAR / MMIO
-- bus number / device / function
-- DMA address
-- IOMMU translation
+因此应记录请求发出、最终 CplD 收齐、CQE 发布和软件消费四个时刻。仅有应用耗时，无法区分这些原因。
 
-### 4. 数据路径层
+<div id="6-量化-可建模维度" class="pcie-legacy-anchor"></div>
+<div id="一句话理解" class="pcie-legacy-anchor"></div>
 
-- MMIO control path
-- DMA read/write data path
-- completion path
-- interrupt / MSI-X notification path
+## 把问题转换成可测量参数
 
-### 5. 系统能力层
+| 对象 | 记录什么 | 不能直接推出什么 |
+| --- | --- | --- |
+| 每段链路 | 速率、宽度、方向吞吐、模式 | 应用必然达到名义带宽 |
+| 读请求窗口 | 可用槽数、平均占用、完整 RTT、实际请求长度 | MRRS 就是每笔长度 |
+| 接收路径 | 各类信用、物理缓冲、更新延迟 | 有信用就一定有 Tag |
+| 错误路径 | AER 状态、重放增量、采样窗口 | AER 日志条数等于重放次数 |
+| 软件接口 | 队列占用、批大小、通知和消费时刻 | 中断次数等于完成项数 |
 
-- virtualization
-- isolation
-- reliability / AER
-- performance tuning
-- P2P / switch topology
-
-## 6. 量化 / 可建模维度
-
-如果学 PCIE 的目的是建性能模型，上面五层各自对应一组可量化参数，建模时按这个映射取数（完整表见 [PCIe 建模参数与公式速查](../08-reference/pcie-modeling-params.md)）：
-
-| 分类层 | 对应的可建模量 |
-| --- | --- |
-| 系统角色层 | switch 级数（每级加延迟）、RC 往返延迟 |
-| 协议分层 | 编码效率（8b/10b、128b/130b、FLIT/FEC）、TLP 格式和链路模式开销 |
-| 资源与寻址层 | IOMMU 翻译命中率、hit/miss 延迟 |
-| 数据路径层 | MPS / MRRS / RCB、Tag 数、credit 池深度 |
-| 系统能力层 | 多 VF 共享带宽、P2P 路径；链路重放次数和 AER 错误报告分别观测 |
-
-链路错误可能触发重放并占用链路；AER 负责记录和报告错误，报告使能或日志条数本身不产生重放。比较计数时要注明采样时间窗、端口及方向、工作负载，并确认计数器定义。
-
-这样切分的好处是：**模型的每个参数都能落到一个明确的层**，调参时知道动的是协议开销、并发上限还是路径延迟，而不是笼统地调一个「带宽系数」。
-
-## 为什么这样切分有用
-
-因为很多常见混淆都来自跨层混用：
-
-- 把 `PCIe completion` 和 `软件 completion queue` 当成同一个概念
-- 把 `BAR 可见地址` 和 `DMA 地址` 当成天然同一套地址
-- 把 `链路速率问题` 和 `软件排队问题` 混成一个瓶颈
-
-## 一句话理解
-
-学 PCIE 最有效的方式，是先把 `角色`、`分层`、`寻址`、`数据路径`、`系统能力` 这五类问题拆开。
+参数定义与公式集中在[建模速查](../08-reference/pcie-modeling-params.md)。一个参数可能同时受多个模块影响，例如 RTT 包含路径服务与排队；分类的作用是确定观察边界，而不是把所有原因强行归到单一模块。

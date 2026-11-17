@@ -1,59 +1,55 @@
-# TLP、DLLP 与 Completion 语义
+---
+title: "一次 PCIe 读取：TLP、链路确认与 Completion"
+---
 
-上级：[02 链路、分层与事务基础](./README.md)
+<div id="tlpdllp-与-completion-语义" class="pcie-legacy-anchor"></div>
+<div id="这页在回答什么问题" class="pcie-legacy-anchor"></div>
 
-相关：[Posted / Non-Posted / Completion 与 Ordering](./posted-nonposted-completion-ordering.md)、[设备 DMA 的读写路径](../04-data-path-dma-interrupts/device-dma-read-write-flow.md)
+# 一次 PCIe 读取：TLP、链路确认与 Completion
 
-## 这页在回答什么问题
+上级：[链路、分层与事务基础](README.md)
 
-PCIE 里最常见的几个词到底分别是什么，以及 completion 为什么是很多性能和调试问题的中心。
+一次 Memory Read 至少包含请求与事务返回。链路确认是另一层事件，设备向软件报告的命令完成又是第三层。区分三者，才能正确计算延迟和回收资源。
 
-## TLP 是什么
+<div id="tlp-是什么" class="pcie-legacy-anchor"></div>
 
-TLP 是事务层包，承载：
+## TLP 承载什么
 
-- memory read / write
-- config read / write
-- message
-- completion
+TLP（Transaction Layer Packet）携带内存、配置、I/O、消息或 Completion 等事务信息。Memory Read 请求包含目标地址和请求长度，但不携带要读取的数据；Memory Write 携带写入数据；成功读返回由带数据的 Completion（CplD）承载。
 
-可以把它理解成“系统级请求在链路上的可传输载体”。
+常规 Non-Flit TLP 的字段随包类型、地址宽度及可选能力变化。不能把所有 TLP 都建成固定头长加 MPS：MPS 是载荷上限，无数据请求根本没有该载荷。
 
-## DLLP 是什么
+<div id="completion-是什么" class="pcie-legacy-anchor"></div>
 
-在传统 Non-Flit 模式，DLLP 用于相邻端口间的链路控制，常见作用包括：
+## 沿两跳追踪一个 Tag
 
-- ack / nak
-- flow control 信息交换
-- 维持相邻链路可靠传输
+教学前提：传统 Non-Flit 模式、EP 经 Switch 读主机内存，请求合法且最终成功。请求长度 256 B，目标允许拆成两笔 128 B CplD；此例只描述事件关系，不规定 ACK 与返回之间的固定时延。
 
-它不直接等价于上层的业务请求。
+| 事件 | 参与者保留或更新的状态 |
+| --- | --- |
+| EP 分配 Tag 并发出 Memory Read | Requester 保留地址、长度和待完成状态 |
+| Switch 接收并转发 | 各链路独立维护确认、信用和重放状态 |
+| EP 收到第一跳 ACK | 可按链路规则回收已确认的重放条目；读 Tag 仍占用 |
+| EP 收到第一笔 128 B CplD | 按 Requester ID、Tag 及返回字段匹配，记录尚缺数据 |
+| EP 收到最后一笔合法 CplD | 全部所需数据收齐，成功请求槽可正常回收 |
 
-## Completion 是什么
+不同请求的 Completion 可以交错返回，因此不能只用“最近发出的请求”匹配。对于一笔被拆分的读取，还要检查 Byte Count、Lower Address、长度和状态等适用字段；仅 Tag 相同不足以证明返回完整且合法。[AMD Completion 接口说明](https://docs.amd.com/r/en-US/pg213-pcie4-ultrascale-plus/Requester-Completion-Descriptor-Format)展示了这些信息在具体 IP 中的表达。
 
-completion 是对某些请求的返回，常见于：
+<div id="dllp-是什么" class="pcie-legacy-anchor"></div>
 
-- memory read 返回数据
-- config read 返回寄存器内容
-- 配置写等 non-posted 请求返回无数据的状态
+## DLLP 确认的是哪一段
 
-例如 EP 经 Switch 向主机发一个带 Tag 的 Memory Read。EP 向 Switch 发请求 TLP 后，Switch 向 EP 回 ACK；Switch 向 RC 转发该 TLP 后，RC 向 Switch 回 ACK。每个 ACK 只确认对应一跳，且 ACK 可以累计确认多个 TLP。主机随后可能把数据拆成多个 CplD TLP。EP 按请求身份和 Tag 匹配并检查返回，成功请求要等全部所需数据收齐后才正常释放 Tag；错误终止另按错误处理。两跳 ACK 与 credit 更新都不是端到端事务完成。
+Non-Flit 的 ACK/NAK DLLP 作用于相邻端口；ACK 可以累计确认多个 TLP。Switch 下游链路的 ACK 不替代上游链路的 ACK，也不代替事务 Completion。信用更新同样只说明相应接收容量。
 
-设备执行软件命令后还可能把 **CQE** 写到主机内存。CQE 是软件队列中的命令状态，和上述 PCIe Completion 是不同对象；CQE 写入本身通常是 posted Memory Write，不要求对应的事务 Completion。Non-Flit 链路控制和重放可参见 [PCIe 2.1 基础规范](https://www.intel.com/content/dam/support/us/en/programmable/support-resources/fpga-wiki/asset03/pci-express-base-r2.1.pdf)。
+发送端重放缓冲、接收端 TLP 缓冲与 Requester 的在途请求表是不同资源，释放条件见[信用流控与链路重放](credit-flow-control-and-replay.md)。
 
-## 为什么它很关键
+<div id="为什么它很关键" class="pcie-legacy-anchor"></div>
+<div id="一句话理解" class="pcie-legacy-anchor"></div>
 
-因为 write 和 read 的系统体验很不一样：
+## Completion 不总是数据，也不是 CQE
 
-- 普通 posted Memory Write 不要求事务级 Completion
-- read 则必须等待 completion 回来
+成功配置写等 Non-Posted 请求返回无数据 Cpl；UR、CA 等错误也可通过 Completion 状态返回。错误终止与超时须按协议和设备恢复规则处理，不能把不完整数据当成成功结果。
 
-这会直接影响：
+CQE（Completion Queue Entry）是设备接口定义的软件完成项。设备通常用 posted Memory Write 写 CQE，该写没有对应的常规事务 Completion。一个软件命令可能包含很多 PCIe 读写；这些事务都完成，也不自动证明设备计算或存储操作已经结束。
 
-- DMA read 和 DMA write 的性能差异
-- 延迟链条长度
-- tag / outstanding 深度的需求
-
-## 一句话理解
-
-TLP 承载事务，DLLP 维持链路可靠性，completion 则决定很多读取路径为什么天然更敏感。
+下一篇读[信用与重放](credit-flow-control-and-replay.md)，再读[请求类型与排序](posted-nonposted-completion-ordering.md)。

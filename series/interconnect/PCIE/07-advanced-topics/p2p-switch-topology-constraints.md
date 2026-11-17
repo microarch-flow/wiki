@@ -1,33 +1,53 @@
-# Peer-to-Peer、Switch 与拓扑约束
+---
+title: "PCIe P2P：对端资源、路由与隔离必须同时成立"
+---
 
-上级：[07 高级主题](./README.md)
+<div id="peer-to-peerswitch-与拓扑约束" class="pcie-legacy-anchor"></div>
+<div id="这页在回答什么问题" class="pcie-legacy-anchor"></div>
 
-相关：[Root Complex、Switch、Endpoint 在系统里各做什么](../02-link-transaction-basics/topology-root-complex-switch-endpoint.md)
+# PCIe P2P：对端资源、路由与隔离必须同时成立
 
-## 这页在回答什么问题
+上级：[高级主题](README.md)
 
-为什么同样是两块 PCIE 设备，peer-to-peer 直连传输有时能做、有时很难做。
+P2P DMA 是设备直接访问另一设备可供访问的资源，例如对端 BAR 中的一段内存。普通设备到主机内存的 DMA 也不需要 CPU 逐字节搬运，因此“CPU 不复制”不能作为 P2P 的定义。
 
-## P2P 在说什么
+<div id="p2p-在说什么" class="pcie-legacy-anchor"></div>
 
-P2P DMA 指一个设备发起事务，把载荷直接读自或写入另一个设备可供访问的资源，例如对端 BAR 中可用于 DMA 的窗口。普通设备到主机内存的 DMA 同样无需 CPU 逐字节搬运，因此不能仅以 CPU 是否主动复制区分。
+## 从目标资源开始检查
 
-## 为什么它受拓扑限制
+目标设备必须公开适合该访问的资源，提供者与请求者的驱动需要协同建立映射与生命周期。不能把有副作用的任意 MMIO 寄存器区直接当成普通共享内存。
 
-- 设备可能不在同一个 switch 域下
-- root complex 行为和平台策略可能不同
-- 地址转换、隔离和路由规则可能不放行
+| 条件 | 问题 |
+| --- | --- |
+| 目标 | 哪个 BAR 区域允许对端读写？ |
+| 请求者 | 使用什么 DMA 地址、宽度和访问类型？ |
+| 路径 | TLP 会本地下行口转发，还是被重定向到上游？ |
+| 隔离 | ACS、IOMMU 与平台策略是否允许该路径？ |
+| 生命周期 | 对端移除或复位前，谁停止并撤销访问？ |
 
-例如两个 EP 在同一 Switch 下，软件建立允许的对端 BAR 映射，EP A 向 EP B 的窗口发写请求；若路由与 ACS 配置允许，Switch 可在本地下行口转发，不占上行链路。ACS 重定向可能改变路径；跨主桥的转发、映射和隔离若不受平台支持，P2P 请求可能被拒绝或不可达。只有软件明确选择并建立主机缓冲中转时才应把它建模为两次普通 DMA，不能假定硬件自动回退。参见 [Linux P2P DMA 文档](https://docs.kernel.org/driver-api/pci/p2pdma.html)。
+<div id="为什么它受拓扑限制" class="pcie-legacy-anchor"></div>
 
-## 工程上最重要的判断
+## 同一 Switch 不等于必然直转
 
-P2P 不是“设备支持就行”，而是：
+```mermaid
+flowchart TD
+    A[EP A：发起访问] --> S[Switch]
+    S -->|允许本地转发| B[EP B：目标 BAR 资源]
+    S -->|ACS 等策略可能重定向| H[上游 Root Port / 主桥]
+    H -->|只有平台支持时才可继续| B
+```
 
-- 拓扑是否允许
-- 平台是否支持
-- 映射和安全策略是否闭环
+图中是两种候选路径，不是同一请求被同时复制。若 A→B 本地转发成立，载荷可不占 Switch 上行链路；若被重定向，上行路径与主桥支持就会影响可达性和性能。
 
-## 一句话理解
+PCIe 没有给不同 hierarchy domain 之间规定通用转发保证。Linux 对跨主桥路径采用受支持条件和已知平台规则，不能从“同一台主机”推断可达。[Linux P2P DMA 文档](https://docs.kernel.org/driver-api/pci/p2pdma.html)说明了拓扑与驱动协同边界。
 
-P2P 的难点不在概念，而在它把拓扑、路由、隔离和平台策略同时拉进了同一个问题里。
+<div id="工程上最重要的判断" class="pcie-legacy-anchor"></div>
+<div id="一句话理解" class="pcie-legacy-anchor"></div>
+
+## 不支持时不会自动变成两次 DMA
+
+若路径不支持，软件可能明确选择主机缓冲中转：A→主机缓冲，再主机缓冲→B。它需要两段搬运、额外缓冲及同步，并非 Switch 自动提供的透明回退。
+
+比较 P2P 与中转时，应统计实际路径、各方向字节、完成边界和资源占用。少走主机内存可能有收益，但目标 BAR 服务能力、路由和同步仍可能成为瓶颈。
+
+地址区别见[配置、BAR 与 DMA](../03-configuration-enumeration-addressing/mmio-config-dma-address-view.md)，共享链路分析见[拓扑文章](../02-link-transaction-basics/topology-root-complex-switch-endpoint.md)。
