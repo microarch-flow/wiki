@@ -56,6 +56,9 @@ class GeneratedNavigationTests(unittest.TestCase):
             ]},
             {"03 系统集成与验证": [
                 "D2D/wiki/03-system-design/interoperability-and-bring-up.md",
+                "D2D/wiki/03-system-design/flow-control-and-forward-progress.md",
+                "D2D/wiki/03-system-design/effective-bandwidth-and-latency.md",
+                "D2D/wiki/03-system-design/link-testing-and-diagnosis.md",
             ]},
         ]})
         self.assertEqual(groups[5], {"加速器互连": ["SCALEUP/wiki/README.md"]})
@@ -107,6 +110,9 @@ class GeneratedNavigationTests(unittest.TestCase):
             "D2D/wiki/02-interfaces/aib-2/": "封装内芯粒互连",
             "D2D/wiki/02-interfaces/chi-c2c/": "封装内芯粒互连",
             "D2D/wiki/03-system-design/interoperability-and-bring-up/": "封装内芯粒互连",
+            "D2D/wiki/03-system-design/flow-control-and-forward-progress/": "封装内芯粒互连",
+            "D2D/wiki/03-system-design/effective-bandwidth-and-latency/": "封装内芯粒互连",
+            "D2D/wiki/03-system-design/link-testing-and-diagnosis/": "封装内芯粒互连",
             "COHERENCE/wiki/": "一致性与内存互连",
             "COHERENCE/wiki/cxl-host-memory/": "一致性与内存互连",
             "SCALEUP/wiki/": "加速器互连",

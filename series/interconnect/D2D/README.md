@@ -50,6 +50,9 @@ UCIe 不是唯一的封装内 D2D 选择。例如，[BoW PHY 2.0](./bow-phy.md)�
 7. [AIB 2.0](./02-interfaces/aib-2.md)：另一种并行物理接口怎样传递数据。
 8. [AMBA CHI C2C](./02-interfaces/chi-c2c.md)：一致性消息怎样组织并跨芯粒传输。
 9. [芯粒互操作与启动](./03-system-design/interoperability-and-bring-up.md)：从设计匹配到链路和系统就绪。
+10. [跨芯粒流控与前进条件](./03-system-design/flow-control-and-forward-progress.md)：请求、snoop 和数据怎样取得发送授权。
+11. [跨芯粒读取的有效性能](./03-system-design/effective-bandwidth-and-latency.md)：线路速率、在途窗口和目标服务怎样限制吞吐。
+12. [链路测试与故障定位](./03-system-design/link-testing-and-diagnosis.md)：按测试路径判断覆盖范围和故障线索。
 
 也可以按问题查看[知识地图](./SUMMARY.md)。
 

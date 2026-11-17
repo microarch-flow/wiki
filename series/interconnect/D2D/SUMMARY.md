@@ -21,3 +21,6 @@
 ## 03 系统集成与验证 {#system-integration}
 
 - [芯粒互操作与启动](./03-system-design/interoperability-and-bring-up.md)
+- [跨芯粒流控与前进条件](./03-system-design/flow-control-and-forward-progress.md)
+- [跨芯粒读取的有效性能](./03-system-design/effective-bandwidth-and-latency.md)
+- [链路测试与故障定位](./03-system-design/link-testing-and-diagnosis.md)

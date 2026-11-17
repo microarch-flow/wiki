@@ -50,4 +50,5 @@ Arm 已发布 [CHI C2C Issue B](https://developer.arm.com/community/arm-communit
 - [一致性与内存互连](../../COHERENCE/README.md)：理解缓存副本、权限和一致性域。
 - [UCIe 1.1 读取案例](../ucie-pcie-read.md)：比较 PCIe 读取的 Completion 与链路交付。
 - [芯粒互操作与启动](../03-system-design/interoperability-and-bring-up.md)：看链路和系统需要哪些共同配置。
+- [跨芯粒流控与前进条件](../03-system-design/flow-control-and-forward-progress.md)：沿 snoop 和返回数据分析消息 credit。
 - [NoC：跨 die 网关与排队](../../NOC/06-ai-noc-specifics/chiplet-and-die-to-die-interconnect.md)：分析有限缓冲、回压和片上网络的关系。
