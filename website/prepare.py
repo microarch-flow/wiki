@@ -14,6 +14,7 @@ from microarchitecture_navigation import MICRO_TOPICS
 from sources import copy_source, fetch_checkout, load_series, source_directory, validate_output_paths
 from stage_links import PublishedPaths
 from workload import stage_workload
+from inference import stage_inference
 from storage_navigation import INTEGRATION_PAGE_SECTION, MEMORY_HOME, MEMORY_PAGE_SECTION, RESOURCE_HOME, RESOURCE_PAGE_SECTION, STORAGE_RESOURCES
 
 
@@ -398,6 +399,8 @@ def stage_site(root=ROOT, build_root=None, registry=None, source_root=None, layo
                 selected = source_directory(root, local["directory"])
                 if local["publish"] == "external/workload-wiki":
                     stage_workload(selected, docs / local["publish"], published)
+                elif local["publish"] == "series/inference-runtime":
+                    stage_inference(selected, docs / local["publish"], published)
                 else:
                     copy_source(selected, docs / local["publish"], public_only=True)
                     published.add_tree(selected, docs / local["publish"])

@@ -4,7 +4,7 @@
 
 ## 03：显存利用率与并发上限
 
-位置：[03 朴素实现的瓶颈](../series/inference-runtime/topics/03-naive-bottlenecks.md)的“量化与公式 → 碎片 → 显存利用率乘子”第一条等式。
+位置：[03 朴素实现的瓶颈](https://github.com/microarch-flow/wiki/blob/49f5e56d5906e0065c96eb0712fc53be0da4de8e/series/inference-runtime/topics/03-naive-bottlenecks.md)的“量化与公式 → 碎片 → 显存利用率乘子”第一条等式。
 
 原文定义 `η = E[s_actual] / s_max`。第一条等式左侧写作 `η × M_KV / (s_max × KV_tok)`，右侧写作 `η × M_KV / (E[s_actual] × KV_tok)`。按上述定义，左侧是右侧的 `η` 倍；除 `η = 1` 等特殊情况外，两者不相等。紧接着的文字又把朴素并发写为 `M_KV / (s_max × KV_tok)`，与第一条等式左侧不一致。
 
@@ -14,7 +14,7 @@
 
 ## 06：共享前缀的读取次数
 
-位置：[06 KV cache 管理](../series/inference-runtime/topics/06-paged-kv-cache.md)的“与架构建模的接口”，CoW 和共享读一项。
+位置：[06 KV cache 管理](https://github.com/microarch-flow/wiki/blob/49f5e56d5906e0065c96eb0712fc53be0da4de8e/series/inference-runtime/topics/06-paged-kv-cache.md)的“与架构建模的接口”，CoW 和共享读一项。
 
 原文称共享前缀只存一份，并将其进一步写成只读一份、摊给多个序列。多个序列引用同一组 KV block 可以减少重复存储；它本身不能保证多个查询只从某一存储层读取一次。实际读取次数和流量还取决于请求是否共同执行、attention 内核的数据复用、缓存命中与淘汰等条件。
 

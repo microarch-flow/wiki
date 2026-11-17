@@ -1,65 +1,54 @@
-# 大模型推理与推理引擎 · 学习 Wiki
+# 推理运行时：从模型执行到在线服务
 
-> 视角:**系统软件架构师 / 成本模型**。不是通用入门教程——每个机制尽量落到可量化的量(roofline、算术强度、KV 字节、带宽、流量、固定成本摊薄),并标注「与硬件建模 / 架构探索的接口」。写作约束见 [`_conventions.md`](_conventions.md),术语见 [`glossary.md`](glossary.md)。
+<div class="inference-legacy-anchors" aria-hidden="true"><span id="大模型推理与推理引擎-学习-wiki"></span></div>
 
-## 状态总览
+推理运行时把模型计算变成可持续处理请求的系统。本系列以自回归 LLM 服务为主线，连接模型加载、算子执行、状态管理、调度、解码和分布式服务，并说明如何验证性能结论。
 
-编号已按**阅读顺序(依赖自底向上)**重排。状态取值:`未开始 → 草稿 → 已审阅`。
+读者可以从一次请求的完整路径开始。涉及模型结构的数学基础链接到“算法与模型”；通用存储与通信机制分别链接到“存储系统”和“芯片与系统互连”。GPU 是主要示例平台，硬件相关结论均需保留其条件。
 
-### 地基 (Foundations)
+<div class="inference-legacy-anchors" aria-hidden="true"><span id="单机服务栈-single-node-serving-stack"></span><span id="加速与扩展-acceleration-scale-out"></span><span id="应用层与收口-app-layer-synthesis"></span></div>
 
-| # | 条目 | 文件 | 状态 |
-|---|---|---|---|
-| 01 | LLM 推理基础:自回归、Prefill/Decode、compute vs memory-bound、KV 字节公式(含 GQA/MQA) | [`01-prefill-decode.md`](topics/01-prefill-decode.md) | 草稿 |
-| 02 | 服务指标与 SLO:TTFT / ITL / TPOT / throughput / goodput(被各篇与 SLA 判定引用) | [`02-metrics-slo.md`](topics/02-metrics-slo.md) | 草稿 |
-| 03 | 朴素实现的瓶颈:KV 显存碎片、静态批尾部浪费、prefill/decode 互相干扰 | [`03-naive-bottlenecks.md`](topics/03-naive-bottlenecks.md) | 草稿 |
+## 阅读顺序
 
-### 单机服务栈 (Single-node serving stack)
+1. [请求路径与服务指标](01-request-and-metrics/README.md)
+2. [模型加载与执行计划](02-model-execution/README.md)
+3. [算子内核与低精度执行](03-kernels-and-precision/README.md)
+4. [运行时状态与 KV 管理](04-state-and-memory/README.md)
+5. [批处理与请求调度](05-batching-and-scheduling/README.md)
+6. [采样与解码控制](06-sampling-and-decoding/README.md)
+7. [分布式执行与阶段分离](07-distributed-execution/README.md)
+8. [服务生命周期与副本管理](08-serving-lifecycle/README.md)
+9. [测量、建模与框架案例](09-measurement-and-cases/README.md)
 
-| # | 条目 | 文件 | 状态 |
-|---|---|---|---|
-| 04 | 动态 shape 与变长:不 padding、cu_seqlens/ragged、continuous batching、chunked prefill | [`04-dynamic-shape-batching.md`](topics/04-dynamic-shape-batching.md) | 草稿 |
-| 05 | 注意力核与解码 kernel:FlashAttention / FlashDecoding / paged kernel(为何 prefill 与 decode kernel 形态不同) | [`05-attention-kernels.md`](topics/05-attention-kernels.md) | 草稿 |
-| 06 | KV cache 管理:PagedAttention(分页、block table、按层分桶、CoW 前缀共享) | [`06-paged-kv-cache.md`](topics/06-paged-kv-cache.md) | 草稿 |
-| 07 | 前缀复用:RadixAttention(radix tree、最长前缀匹配、LRU)、与 API 层 prompt caching | [`07-radix-prefix-reuse.md`](topics/07-radix-prefix-reuse.md) | 草稿 |
-| 08 | 调度:iteration 内调度循环、准入水位、抢占(recompute vs swap) | [`08-scheduling.md`](topics/08-scheduling.md) | 草稿 |
+<div class="inference-legacy-anchors" aria-hidden="true"><span id="地基-foundations"></span><span id="推荐阅读顺序"></span></div>
 
-### 加速与扩展 (Acceleration & scale-out)
+## 先建立主线，再深入机制
 
-| # | 条目 | 文件 | 状态 |
-|---|---|---|---|
-| 09 | 投机解码:draft-verify、rejection sampling 无损、加速比、Medusa/EAGLE/lookahead、与 batch 的张力 | [`09-speculative-decoding.md`](topics/09-speculative-decoding.md) | 草稿 |
-| 10 | 量化:权重 + KV(FP8/INT8/AWQ/GPTQ);精度档 $p$ 作为可扫参数对成本模型的影响 | [`10-quantization.md`](topics/10-quantization.md) | 草稿 |
-| 11 | 集群并行:TP / PP / EP、推理 vs 训练的差异 | [`11-cluster-parallelism.md`](topics/11-cluster-parallelism.md) | 草稿 |
-| 12 | PD 分离 + KV 传输 / offload 分层存储(同一带宽公式换 NVLink↔PCIe↔NVMe 档) | [`12-pd-disaggregation.md`](topics/12-pd-disaggregation.md) | 草稿 |
+第一次阅读可以沿“完整请求路径 → Prefill/Decode → 服务指标 → 模型加载 → 内存预算 → 批处理与调度 → 采样 → 测量”前进。它回答一个请求怎样获得资源、产生输出并结束。
 
-### 应用层与收口 (App layer & synthesis)
+需要优化具体问题时，再进入 Attention 内核、量化、前缀复用、推测解码或多设备执行。分布式章节依赖单实例的状态和调度概念，综合估算放在最后。
 
-| # | 条目 | 文件 | 状态 |
-|---|---|---|---|
-| 13 | 约束解码:grammar / FSM / JSON-constrained 输出 | [`13-constrained-decoding.md`](topics/13-constrained-decoding.md) | 草稿 |
-| 14 | 框架对比:vLLM 与 SGLang 的核心设计与定位差异 | [`14-framework-comparison.md`](topics/14-framework-comparison.md) | 草稿 |
-| 15 | 量化估算算例:Llama-3 70B + H100 80GB 推导 KV/token、最大并发、ITL、TTFT、吞吐 | [`15-quantitative-estimation.md`](topics/15-quantitative-estimation.md) | 草稿 |
+<div class="inference-legacy-anchors" aria-hidden="true"><span id="状态总览"></span></div>
 
-每写完一篇,这里与该篇顶部状态行同步更新。
+## 内容状态与证据边界
 
-## 推荐阅读顺序
+本版包含 29 篇正文与 9 个专题导读。原有 15 篇保留主文并完成职责调整，新增或拆出 14 篇。正文区分来源事实、构造示例、条件估算和需要实测的结果。
 
-编号即阅读顺序。三条主线:
+公式复算与最小事件模型可在本地运行。它们验证算术和事件关系，不证明某个 GPU 配置满足 p99 SLO。框架案例固定源码版本，不提供未经同条件测试的性能排名。
 
-1. **地基(01–03)**:`01` 是后面所有数字的来源(两阶段 + roofline + KV 字节),务必先读;`02` 把 TTFT/ITL/吞吐/goodput 定义清楚,后面所有「浪费 / 约束 / 判定」都引用它;`03` 说明朴素实现为什么不行,引出整个服务栈。
-2. **单机服务栈(04–08)**:`04` continuous batching 回应 `03` 的尾部浪费 → `05` kernel 解释 prefill/decode 算力形态 → `06` PagedAttention 回应 KV 碎片 → `07` 前缀复用 → `08` 调度把 04–07 串成一个 iteration 循环。
-3. **加速与扩展 + 收口(09–15)**:`09` 投机解码(时延/吞吐权衡)→ `10` 量化(成本模型的精度旋钮)→ `11` 多卡并行 → `12` PD 分离把单机栈搬上集群(KV 过链路)→ `13` 约束解码 → `14` vLLM vs SGLang 把机制映射到真实框架 → `15` 全链路算例,作为成本模型的「黄金样例」。
+<div class="inference-legacy-anchors" aria-hidden="true"><span id="约定"></span></div>
 
-## 约定
+## 查阅与维护
 
-- 命名:`topics/NN-slug.md`,两位序号。
-- 公式:行内 `$...$`、独立 `$$...$$`;每符号给量纲;关键公式带代入算例。
-- 数字纪律:`【精确值】` / `【典型量级】` / `TODO(核实)`,不编造。
-- 交叉引用:相对链接 + 术语表锚点。
+- [术语表](glossary.md)：跨专题共用概念与定义。
+- [写作与建模约定](_conventions.md)：符号、单位、证据和状态边界。
+- [测量、建模与框架案例](09-measurement-and-cases/README.md)：从验证方法到综合应用。
 
-## 决策记录 (changelog)
+<div class="inference-legacy-anchors" aria-hidden="true"><span id="决策记录-changelog"></span></div>
 
-- **v0.3**:15 篇初稿全部完成(状态=草稿);过一轮交叉引用 + 一致性检查(链接/锚点/符号/数字),修正 2 处错链 + 统一算力口径;glossary 71 词条。待逐篇审阅。
-- **v0.2**:采纳全部提案。新增 `02 指标/SLO`、`05 kernel`、`10 量化`、`13 约束解码`;`PD 分离`从原「集群」篇拆出为 `12` 并合并 KV offload/传输;`GQA/MQA` 并入 `01`;编号按阅读顺序重排(原「集群并行」由 03 后移至 11–12)。
-- **v0.1**:初版 10 篇骨架。
+## 历史演进
+
+- v0.1：初版 10 篇骨架。
+- v0.2：加入指标、内核、量化、约束解码；将 PD 分离独立，并与 KV 卸载合写。
+- v0.3：完成 15 篇初稿及一轮链接、符号和数字一致性检查，仍待技术审阅。
+- v0.4：按请求与运行时职责组织九个专题；修正条件模型和统计口径，拆分形状与调度、专家并行、KV 分层存储，补齐执行、服务生命周期和验证。现有公开 URL 与锚点保留。

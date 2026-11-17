@@ -41,6 +41,6 @@ UALink 200G 1.0 是本专题保留的标准案例。它面向 pod 内加速器�
 | [系统网络](../NETWORK/README.md) | Ethernet、RDMA、RoCE 与 InfiniBand | 连接多个通信域，承载域间流量 |
 | [D2D](../D2D/README.md)、[SerDes](../SERDES/README.md)、[CPO](../CPO/README.md) | 封装内承载、物理信号和集成 | 提供物理基础，不单独决定上层访问语义 |
 
-[推理运行时的集群并行文章](../../inference-runtime/topics/11-cluster-parallelism.md)仍是草稿。其并行方式可作为相关背景，但涉及“TP 必须节点内 NVLink”等表述不应作为通用约束。本专题按具体通信量、时延、带宽和任务目标分析。
+[推理运行时的并行基础](../../inference-runtime/07-distributed-execution/11-cluster-parallelism.md)解释 TP、PP、DP 的执行与状态布局；本专题进一步按具体通信量、时延、带宽和任务目标分析互连需求。
 
 资料与验证范围见[术语、版本与一手资料](06-modeling-and-reference/glossary-and-sources.md)。

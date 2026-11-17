@@ -133,29 +133,6 @@ def development_owner(path):
     return "工程流程与制造导读"
 
 
-INFERENCE_GROUPS = ("推理执行阶段与服务指标", "推理算子、内核与量化执行", "KV 缓存管理与前缀复用",
-                    "请求调度与动态批处理", "解码策略与输出约束", "分布式并行与分离式推理",
-                    "系列案例与估算", "术语与约定")
-
-
-def inference_owner(path):
-    """Assign the numbered inference drafts to their primary topics."""
-    path = str(path)
-    number = path.split("/", 1)[-1].split("-", 1)[0] if path.startswith("topics/") else ""
-    for numbers, group in (
-        ({"01", "02", "03", "15"}, "推理执行阶段与服务指标"),
-        ({"05", "10"}, "推理算子、内核与量化执行"),
-        ({"06", "07"}, "KV 缓存管理与前缀复用"),
-        ({"04", "08"}, "请求调度与动态批处理"),
-        ({"09", "13"}, "解码策略与输出约束"),
-        ({"11", "12"}, "分布式并行与分离式推理"),
-        ({"14"}, "系列案例与估算"),
-    ):
-        if number in numbers:
-            return group
-    return "术语与约定"
-
-
 from workload import CHAPTERS as WORKLOAD_CHAPTERS, MOVES as WORKLOAD_MOVES
 
 WORKLOAD_GROUPS = tuple(label for label, _ in WORKLOAD_CHAPTERS)

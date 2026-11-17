@@ -1,0 +1,1232 @@
+{
+  "source_commit": "49f5e56d5906e0065c96eb0712fc53be0da4de8e",
+  "pages": {
+    "README.md": {
+      "path": "series/inference-runtime/",
+      "ids": [
+        "大模型推理与推理引擎-学习-wiki",
+        "series-home-content",
+        "状态总览",
+        "地基-foundations",
+        "单机服务栈-single-node-serving-stack",
+        "加速与扩展-acceleration-scale-out",
+        "应用层与收口-app-layer-synthesis",
+        "推荐阅读顺序",
+        "约定",
+        "决策记录-changelog"
+      ],
+      "headings": [
+        {
+          "id": "大模型推理与推理引擎-学习-wiki",
+          "text": "大模型推理与推理引擎 · 学习 Wiki"
+        },
+        {
+          "id": "状态总览",
+          "text": "状态总览"
+        },
+        {
+          "id": "地基-foundations",
+          "text": "地基 (Foundations)"
+        },
+        {
+          "id": "单机服务栈-single-node-serving-stack",
+          "text": "单机服务栈 (Single-node serving stack)"
+        },
+        {
+          "id": "加速与扩展-acceleration-scale-out",
+          "text": "加速与扩展 (Acceleration & scale-out)"
+        },
+        {
+          "id": "应用层与收口-app-layer-synthesis",
+          "text": "应用层与收口 (App layer & synthesis)"
+        },
+        {
+          "id": "推荐阅读顺序",
+          "text": "推荐阅读顺序"
+        },
+        {
+          "id": "约定",
+          "text": "约定"
+        },
+        {
+          "id": "决策记录-changelog",
+          "text": "决策记录 (changelog)"
+        }
+      ]
+    },
+    "_conventions.md": {
+      "path": "series/inference-runtime/_conventions/",
+      "ids": [
+        "写作规范-conventions",
+        "1-读者视角贯穿全篇",
+        "2-每篇统一结构",
+        "3-术语-terminology",
+        "4-公式-math",
+        "5-数字纪律-numbers",
+        "6-交叉引用与状态-linking-status",
+        "7-语言"
+      ],
+      "headings": [
+        {
+          "id": "写作规范-conventions",
+          "text": "写作规范 / Conventions"
+        },
+        {
+          "id": "1-读者视角贯穿全篇",
+          "text": "1. 读者视角(贯穿全篇)"
+        },
+        {
+          "id": "2-每篇统一结构",
+          "text": "2. 每篇统一结构"
+        },
+        {
+          "id": "3-术语-terminology",
+          "text": "3. 术语 (Terminology)"
+        },
+        {
+          "id": "4-公式-math",
+          "text": "4. 公式 (Math)"
+        },
+        {
+          "id": "5-数字纪律-numbers",
+          "text": "5. 数字纪律 (Numbers)"
+        },
+        {
+          "id": "6-交叉引用与状态-linking-status",
+          "text": "6. 交叉引用与状态 (Linking & Status)"
+        },
+        {
+          "id": "7-语言",
+          "text": "7. 语言"
+        }
+      ]
+    },
+    "glossary.md": {
+      "path": "series/inference-runtime/glossary/",
+      "ids": [
+        "术语表-glossary",
+        "ac",
+        "autoregressive",
+        "prefill",
+        "decode",
+        "kv-cache",
+        "compute-bound",
+        "memory-bound",
+        "arithmetic-intensity",
+        "roofline",
+        "chunked-prefill",
+        "continuous-batching",
+        "dk",
+        "gqa",
+        "mqa",
+        "hbm",
+        "flash-attention",
+        "flash-decoding",
+        "online-softmax",
+        "internal-fragmentation",
+        "external-fragmentation",
+        "head-of-line-blocking",
+        "static-batching",
+        "paged-attention",
+        "block-table",
+        "cow",
+        "lr",
+        "ragged-layout",
+        "padding",
+        "selective-batching",
+        "iteration-level-scheduling",
+        "stall-free-scheduling",
+        "radix-attention",
+        "tp",
+        "pp",
+        "ep",
+        "dp",
+        "moe",
+        "all-reduce",
+        "all-to-all",
+        "pipeline-bubble",
+        "pd-disaggregation",
+        "kv-transfer",
+        "tiered-kv",
+        "sz",
+        "prompt-caching",
+        "apc",
+        "speculative-decoding",
+        "acceptance-rate",
+        "rejection-sampling",
+        "tree-attention",
+        "admission-watermark",
+        "preemption",
+        "thrashing",
+        "weight-only-quant",
+        "w8a8",
+        "awq",
+        "gptq",
+        "kv-quant",
+        "outlier-channel",
+        "cu-seqlens",
+        "constrained-decoding",
+        "token-mask",
+        "fsm",
+        "ttft",
+        "itl",
+        "tpot",
+        "e2e",
+        "mbu",
+        "mfu",
+        "throughput",
+        "goodput",
+        "vllm",
+        "sglang",
+        "xgrammar"
+      ],
+      "headings": [
+        {
+          "id": "术语表-glossary",
+          "text": "术语表 / Glossary"
+        },
+        {
+          "id": "ac",
+          "text": "A–C"
+        },
+        {
+          "id": "dk",
+          "text": "D–K"
+        },
+        {
+          "id": "lr",
+          "text": "L–R"
+        },
+        {
+          "id": "sz",
+          "text": "S–Z"
+        }
+      ]
+    },
+    "topics/01-prefill-decode.md": {
+      "path": "series/inference-runtime/topics/01-prefill-decode/",
+      "ids": [
+        "01-llm-推理基础prefill-decode-两阶段-inference-fundamentals",
+        "概念-concept",
+        "机制-mechanism",
+        "一个-decoder-layer-做什么用于后面计数",
+        "形状差异-computememory-bound-分野的根因",
+        "量化与公式-quantification",
+        "1-kv-cache-字节数-最常用的一条",
+        "2-decode-的算术强度与-roofline",
+        "3-由带宽直接得-decode-时延吞吐下界",
+        "与架构建模的接口-modeling-interface",
+        "延伸阅读-references"
+      ],
+      "headings": [
+        {
+          "id": "01-llm-推理基础prefill-decode-两阶段-inference-fundamentals",
+          "text": "01 LLM 推理基础:Prefill / Decode 两阶段 / Inference Fundamentals"
+        },
+        {
+          "id": "概念-concept",
+          "text": "概念 (Concept)"
+        },
+        {
+          "id": "机制-mechanism",
+          "text": "机制 (Mechanism)"
+        },
+        {
+          "id": "一个-decoder-layer-做什么用于后面计数",
+          "text": "一个 decoder layer 做什么(用于后面计数)"
+        },
+        {
+          "id": "形状差异-computememory-bound-分野的根因",
+          "text": "形状差异 = compute/memory-bound 分野的根因"
+        },
+        {
+          "id": "量化与公式-quantification",
+          "text": "量化与公式 (Quantification)"
+        },
+        {
+          "id": "1-kv-cache-字节数-最常用的一条",
+          "text": "(1) KV cache 字节数 —— 最常用的一条"
+        },
+        {
+          "id": "2-decode-的算术强度与-roofline",
+          "text": "(2) Decode 的算术强度与 roofline"
+        },
+        {
+          "id": "3-由带宽直接得-decode-时延吞吐下界",
+          "text": "(3) 由带宽直接得 decode 时延/吞吐下界"
+        },
+        {
+          "id": "与架构建模的接口-modeling-interface",
+          "text": "与架构建模的接口 (Modeling Interface)"
+        },
+        {
+          "id": "延伸阅读-references",
+          "text": "延伸阅读 (References)"
+        }
+      ]
+    },
+    "topics/02-metrics-slo.md": {
+      "path": "series/inference-runtime/topics/02-metrics-slo/",
+      "ids": [
+        "02-服务指标与-slo-serving-metrics-slos",
+        "概念-concept",
+        "机制-mechanism定义表",
+        "量化与公式-quantification",
+        "1-e2e-分解-sla-判定的骨架式",
+        "2-throughputlatency-tradeoff-与-batch-旋钮",
+        "3-goodput-架构探索的目标函数",
+        "4-mbu-decode-效率的单一数字",
+        "算例示意非某型号实测",
+        "与架构建模的接口-modeling-interface",
+        "延伸阅读-references"
+      ],
+      "headings": [
+        {
+          "id": "02-服务指标与-slo-serving-metrics-slos",
+          "text": "02 服务指标与 SLO / Serving Metrics & SLOs"
+        },
+        {
+          "id": "概念-concept",
+          "text": "概念 (Concept)"
+        },
+        {
+          "id": "机制-mechanism定义表",
+          "text": "机制 (Mechanism):定义表"
+        },
+        {
+          "id": "量化与公式-quantification",
+          "text": "量化与公式 (Quantification)"
+        },
+        {
+          "id": "1-e2e-分解-sla-判定的骨架式",
+          "text": "(1) E2E 分解 —— SLA 判定的骨架式"
+        },
+        {
+          "id": "2-throughputlatency-tradeoff-与-batch-旋钮",
+          "text": "(2) throughput–latency tradeoff 与 batch 旋钮"
+        },
+        {
+          "id": "3-goodput-架构探索的目标函数",
+          "text": "(3) Goodput —— 架构探索的目标函数"
+        },
+        {
+          "id": "4-mbu-decode-效率的单一数字",
+          "text": "(4) MBU —— decode 效率的单一数字"
+        },
+        {
+          "id": "算例示意非某型号实测",
+          "text": "算例(示意,非某型号实测)"
+        },
+        {
+          "id": "与架构建模的接口-modeling-interface",
+          "text": "与架构建模的接口 (Modeling Interface)"
+        },
+        {
+          "id": "延伸阅读-references",
+          "text": "延伸阅读 (References)"
+        }
+      ]
+    },
+    "topics/03-naive-bottlenecks.md": {
+      "path": "series/inference-runtime/topics/03-naive-bottlenecks/",
+      "ids": [
+        "03-朴素实现的瓶颈-bottlenecks-of-a-naive-engine",
+        "概念-concept",
+        "机制-mechanism",
+        "瓶颈-1kv-显存碎片",
+        "瓶颈-2静态批处理的尾部浪费",
+        "瓶颈-3prefill-decode-互相干扰",
+        "量化与公式-quantification",
+        "1-碎片-显存利用率乘子-eta_textmem",
+        "2-尾部浪费-batch-效率乘子-eta_textbatch",
+        "3-prefill-干扰-itl-尾部惩罚",
+        "三乘子合一为什么朴素-goodput-只剩零头",
+        "与架构建模的接口-modeling-interface",
+        "延伸阅读-references"
+      ],
+      "headings": [
+        {
+          "id": "03-朴素实现的瓶颈-bottlenecks-of-a-naive-engine",
+          "text": "03 朴素实现的瓶颈 / Bottlenecks of a Naive Engine"
+        },
+        {
+          "id": "概念-concept",
+          "text": "概念 (Concept)"
+        },
+        {
+          "id": "机制-mechanism",
+          "text": "机制 (Mechanism)"
+        },
+        {
+          "id": "瓶颈-1kv-显存碎片",
+          "text": "瓶颈 1:KV 显存碎片"
+        },
+        {
+          "id": "瓶颈-2静态批处理的尾部浪费",
+          "text": "瓶颈 2:静态批处理的尾部浪费"
+        },
+        {
+          "id": "瓶颈-3prefill-decode-互相干扰",
+          "text": "瓶颈 3:prefill / decode 互相干扰"
+        },
+        {
+          "id": "量化与公式-quantification",
+          "text": "量化与公式 (Quantification)"
+        },
+        {
+          "id": "1-碎片-显存利用率乘子-eta_textmem",
+          "text": "(1) 碎片 → 显存利用率乘子 \\(\\eta_\\text{mem}\\)"
+        },
+        {
+          "id": "2-尾部浪费-batch-效率乘子-eta_textbatch",
+          "text": "(2) 尾部浪费 → batch 效率乘子 \\(\\eta_\\text{batch}\\)"
+        },
+        {
+          "id": "3-prefill-干扰-itl-尾部惩罚",
+          "text": "(3) prefill 干扰 → ITL 尾部惩罚"
+        },
+        {
+          "id": "三乘子合一为什么朴素-goodput-只剩零头",
+          "text": "三乘子合一:为什么朴素 goodput 只剩零头"
+        },
+        {
+          "id": "与架构建模的接口-modeling-interface",
+          "text": "与架构建模的接口 (Modeling Interface)"
+        },
+        {
+          "id": "延伸阅读-references",
+          "text": "延伸阅读 (References)"
+        }
+      ]
+    },
+    "topics/04-dynamic-shape-batching.md": {
+      "path": "series/inference-runtime/topics/04-dynamic-shape-batching/",
+      "ids": [
+        "04-动态-shape-与变长处理-dynamic-shape-variable-length-serving",
+        "概念-concept",
+        "机制-mechanism",
+        "1-为什么不-padding",
+        "2-cu_seqlens-与-raggedpacked-varlen布局",
+        "3-continuous-batchingiteration-级调度",
+        "4-chunked-prefill分块预填充",
+        "量化与公式-quantification",
+        "1-ragged-vs-padding-的计算量",
+        "2-chunked-prefill-的-stall-上界与代价",
+        "3-实测收益论文报告值作量级参照",
+        "与架构建模的接口-modeling-interface",
+        "延伸阅读-references"
+      ],
+      "headings": [
+        {
+          "id": "04-动态-shape-与变长处理-dynamic-shape-variable-length-serving",
+          "text": "04 动态 shape 与变长处理 / Dynamic Shape & Variable-Length Serving"
+        },
+        {
+          "id": "概念-concept",
+          "text": "概念 (Concept)"
+        },
+        {
+          "id": "机制-mechanism",
+          "text": "机制 (Mechanism)"
+        },
+        {
+          "id": "1-为什么不-padding",
+          "text": "1. 为什么不 padding"
+        },
+        {
+          "id": "2-cu_seqlens-与-raggedpacked-varlen布局",
+          "text": "2. cu_seqlens 与 ragged(packed / varlen)布局"
+        },
+        {
+          "id": "3-continuous-batchingiteration-级调度",
+          "text": "3. Continuous batching(iteration 级调度)"
+        },
+        {
+          "id": "4-chunked-prefill分块预填充",
+          "text": "4. Chunked prefill(分块预填充)"
+        },
+        {
+          "id": "量化与公式-quantification",
+          "text": "量化与公式 (Quantification)"
+        },
+        {
+          "id": "1-ragged-vs-padding-的计算量",
+          "text": "(1) ragged vs padding 的计算量"
+        },
+        {
+          "id": "2-chunked-prefill-的-stall-上界与代价",
+          "text": "(2) chunked prefill 的 stall 上界与代价"
+        },
+        {
+          "id": "3-实测收益论文报告值作量级参照",
+          "text": "(3) 实测收益(论文报告值,作量级参照)"
+        },
+        {
+          "id": "与架构建模的接口-modeling-interface",
+          "text": "与架构建模的接口 (Modeling Interface)"
+        },
+        {
+          "id": "延伸阅读-references",
+          "text": "延伸阅读 (References)"
+        }
+      ]
+    },
+    "topics/05-attention-kernels.md": {
+      "path": "series/inference-runtime/topics/05-attention-kernels/",
+      "ids": [
+        "05-注意力核与解码-kernelprefill-vs-decode-attention-kernels",
+        "概念-concept",
+        "机制-mechanism",
+        "flashattention不落-s-矩阵的-tiling-online-softmax",
+        "decode-为什么不能照搬-flashattention占用率塌方",
+        "flashdecoding加第三个并行维split-kv",
+        "paged-attention-kernel在-gather-之上做-flashdecoding",
+        "量化与公式-quantification",
+        "1-prefill为什么必须不落-s",
+        "2-decode占用率条件-split-数",
+        "3-把-01-的理想下界接到实测-tpot",
+        "与架构建模的接口-modeling-interface",
+        "延伸阅读-references"
+      ],
+      "headings": [
+        {
+          "id": "05-注意力核与解码-kernelprefill-vs-decode-attention-kernels",
+          "text": "05 注意力核与解码 kernel:Prefill vs Decode / Attention Kernels"
+        },
+        {
+          "id": "概念-concept",
+          "text": "概念 (Concept)"
+        },
+        {
+          "id": "机制-mechanism",
+          "text": "机制 (Mechanism)"
+        },
+        {
+          "id": "flashattention不落-s-矩阵的-tiling-online-softmax",
+          "text": "FlashAttention:不落 \\(S\\) 矩阵的 tiling + online softmax"
+        },
+        {
+          "id": "decode-为什么不能照搬-flashattention占用率塌方",
+          "text": "Decode 为什么不能照搬 FlashAttention:占用率塌方"
+        },
+        {
+          "id": "flashdecoding加第三个并行维split-kv",
+          "text": "FlashDecoding:加第三个并行维(split-KV)"
+        },
+        {
+          "id": "paged-attention-kernel在-gather-之上做-flashdecoding",
+          "text": "Paged attention kernel:在 gather 之上做 FlashDecoding"
+        },
+        {
+          "id": "量化与公式-quantification",
+          "text": "量化与公式 (Quantification)"
+        },
+        {
+          "id": "1-prefill为什么必须不落-s",
+          "text": "(1) prefill:为什么必须不落 \\(S\\)"
+        },
+        {
+          "id": "2-decode占用率条件-split-数",
+          "text": "(2) decode:占用率条件 → split 数"
+        },
+        {
+          "id": "3-把-01-的理想下界接到实测-tpot",
+          "text": "(3) 把 01 的理想下界接到实测 TPOT"
+        },
+        {
+          "id": "与架构建模的接口-modeling-interface",
+          "text": "与架构建模的接口 (Modeling Interface)"
+        },
+        {
+          "id": "延伸阅读-references",
+          "text": "延伸阅读 (References)"
+        }
+      ]
+    },
+    "topics/06-paged-kv-cache.md": {
+      "path": "series/inference-runtime/topics/06-paged-kv-cache/",
+      "ids": [
+        "06-kv-cache-管理pagedattention-paged-kv-cache",
+        "概念-concept",
+        "机制-mechanism",
+        "分页-paging",
+        "block-table-寻址地址翻译",
+        "按层分桶-per-layer-bucketing",
+        "cow-前缀共享-copy-on-write",
+        "量化与公式-quantification",
+        "1-eta_textmem从预留到分页",
+        "2-块大小-b_textblk-的权衡cross-cutting-旋钮",
+        "3-block-table-开销可忽略",
+        "与架构建模的接口-modeling-interface",
+        "延伸阅读-references"
+      ],
+      "headings": [
+        {
+          "id": "06-kv-cache-管理pagedattention-paged-kv-cache",
+          "text": "06 KV cache 管理:PagedAttention / Paged KV Cache"
+        },
+        {
+          "id": "概念-concept",
+          "text": "概念 (Concept)"
+        },
+        {
+          "id": "机制-mechanism",
+          "text": "机制 (Mechanism)"
+        },
+        {
+          "id": "分页-paging",
+          "text": "分页 (paging)"
+        },
+        {
+          "id": "block-table-寻址地址翻译",
+          "text": "block table 寻址(地址翻译)"
+        },
+        {
+          "id": "按层分桶-per-layer-bucketing",
+          "text": "按层分桶 (per-layer bucketing)"
+        },
+        {
+          "id": "cow-前缀共享-copy-on-write",
+          "text": "CoW 前缀共享 (copy-on-write)"
+        },
+        {
+          "id": "量化与公式-quantification",
+          "text": "量化与公式 (Quantification)"
+        },
+        {
+          "id": "1-eta_textmem从预留到分页",
+          "text": "(1) \\(\\eta_\\text{mem}\\):从预留到分页"
+        },
+        {
+          "id": "2-块大小-b_textblk-的权衡cross-cutting-旋钮",
+          "text": "(2) 块大小 \\(B_\\text{blk}\\) 的权衡(cross-cutting 旋钮)"
+        },
+        {
+          "id": "3-block-table-开销可忽略",
+          "text": "(3) block table 开销可忽略"
+        },
+        {
+          "id": "与架构建模的接口-modeling-interface",
+          "text": "与架构建模的接口 (Modeling Interface)"
+        },
+        {
+          "id": "延伸阅读-references",
+          "text": "延伸阅读 (References)"
+        }
+      ]
+    },
+    "topics/07-radix-prefix-reuse.md": {
+      "path": "series/inference-runtime/topics/07-radix-prefix-reuse/",
+      "ids": [
+        "07-前缀复用radixattention-prefix-reuse",
+        "概念-concept",
+        "机制-mechanism",
+        "radix-tree压缩前缀树",
+        "最长前缀匹配-复用",
+        "lru-淘汰",
+        "cache-aware-scheduling",
+        "与-api-层-prompt-caching-的关系",
+        "量化与公式-quantification",
+        "1-prefill-成本摊薄",
+        "2-ttft-对命中的敏感prefill-compute-bound近线性于-token",
+        "3-kv-存储流量去重",
+        "4-api-计费即摊薄把-1-翻译成钱",
+        "5-实测收益论文报告值",
+        "与架构建模的接口-modeling-interface",
+        "延伸阅读-references"
+      ],
+      "headings": [
+        {
+          "id": "07-前缀复用radixattention-prefix-reuse",
+          "text": "07 前缀复用:RadixAttention / Prefix Reuse"
+        },
+        {
+          "id": "概念-concept",
+          "text": "概念 (Concept)"
+        },
+        {
+          "id": "机制-mechanism",
+          "text": "机制 (Mechanism)"
+        },
+        {
+          "id": "radix-tree压缩前缀树",
+          "text": "radix tree(压缩前缀树)"
+        },
+        {
+          "id": "最长前缀匹配-复用",
+          "text": "最长前缀匹配 → 复用"
+        },
+        {
+          "id": "lru-淘汰",
+          "text": "LRU 淘汰"
+        },
+        {
+          "id": "cache-aware-scheduling",
+          "text": "cache-aware scheduling"
+        },
+        {
+          "id": "与-api-层-prompt-caching-的关系",
+          "text": "与 API 层 prompt caching 的关系"
+        },
+        {
+          "id": "量化与公式-quantification",
+          "text": "量化与公式 (Quantification)"
+        },
+        {
+          "id": "1-prefill-成本摊薄",
+          "text": "(1) prefill 成本摊薄"
+        },
+        {
+          "id": "2-ttft-对命中的敏感prefill-compute-bound近线性于-token",
+          "text": "(2) TTFT 对命中的敏感(prefill compute-bound,近线性于 token)"
+        },
+        {
+          "id": "3-kv-存储流量去重",
+          "text": "(3) KV 存储/流量去重"
+        },
+        {
+          "id": "4-api-计费即摊薄把-1-翻译成钱",
+          "text": "(4) API 计费即摊薄(把 (1) 翻译成钱)"
+        },
+        {
+          "id": "5-实测收益论文报告值",
+          "text": "(5) 实测收益(论文报告值)"
+        },
+        {
+          "id": "与架构建模的接口-modeling-interface",
+          "text": "与架构建模的接口 (Modeling Interface)"
+        },
+        {
+          "id": "延伸阅读-references",
+          "text": "延伸阅读 (References)"
+        }
+      ]
+    },
+    "topics/08-scheduling.md": {
+      "path": "series/inference-runtime/topics/08-scheduling/",
+      "ids": [
+        "08-调度iteration-循环准入与抢占-scheduling",
+        "概念-concept",
+        "机制-mechanism",
+        "iteration-调度循环",
+        "准入水位admission-watermark",
+        "抢占recompute-vs-swap",
+        "量化与公式-quantification",
+        "1-recompute-vs-swap-的交叉点与序列长度无关",
+        "2-抖动thrashing边界",
+        "与架构建模的接口-modeling-interface",
+        "延伸阅读-references"
+      ],
+      "headings": [
+        {
+          "id": "08-调度iteration-循环准入与抢占-scheduling",
+          "text": "08 调度:iteration 循环、准入与抢占 / Scheduling"
+        },
+        {
+          "id": "概念-concept",
+          "text": "概念 (Concept)"
+        },
+        {
+          "id": "机制-mechanism",
+          "text": "机制 (Mechanism)"
+        },
+        {
+          "id": "iteration-调度循环",
+          "text": "iteration 调度循环"
+        },
+        {
+          "id": "准入水位admission-watermark",
+          "text": "准入水位(admission watermark)"
+        },
+        {
+          "id": "抢占recompute-vs-swap",
+          "text": "抢占:recompute vs swap"
+        },
+        {
+          "id": "量化与公式-quantification",
+          "text": "量化与公式 (Quantification)"
+        },
+        {
+          "id": "1-recompute-vs-swap-的交叉点与序列长度无关",
+          "text": "(1) recompute vs swap 的交叉点(与序列长度无关!)"
+        },
+        {
+          "id": "2-抖动thrashing边界",
+          "text": "(2) 抖动(thrashing)边界"
+        },
+        {
+          "id": "与架构建模的接口-modeling-interface",
+          "text": "与架构建模的接口 (Modeling Interface)"
+        },
+        {
+          "id": "延伸阅读-references",
+          "text": "延伸阅读 (References)"
+        }
+      ]
+    },
+    "topics/09-speculative-decoding.md": {
+      "path": "series/inference-runtime/topics/09-speculative-decoding/",
+      "ids": [
+        "09-投机解码-speculative-decoding",
+        "概念-concept",
+        "机制-mechanism",
+        "draftverify-流程",
+        "rejection-sampling-的无损性为什么不掉质量",
+        "变体都保持无损差别在怎么造更准的-draft",
+        "量化与公式-quantification",
+        "1-期望产出与加速比leviathan-公式",
+        "2-与-batch-的张力核心架构结论",
+        "与架构建模的接口-modeling-interface",
+        "延伸阅读-references"
+      ],
+      "headings": [
+        {
+          "id": "09-投机解码-speculative-decoding",
+          "text": "09 投机解码 / Speculative Decoding"
+        },
+        {
+          "id": "概念-concept",
+          "text": "概念 (Concept)"
+        },
+        {
+          "id": "机制-mechanism",
+          "text": "机制 (Mechanism)"
+        },
+        {
+          "id": "draftverify-流程",
+          "text": "draft–verify 流程"
+        },
+        {
+          "id": "rejection-sampling-的无损性为什么不掉质量",
+          "text": "rejection sampling 的无损性(为什么不掉质量)"
+        },
+        {
+          "id": "变体都保持无损差别在怎么造更准的-draft",
+          "text": "变体(都保持无损,差别在\"怎么造更准的 draft\")"
+        },
+        {
+          "id": "量化与公式-quantification",
+          "text": "量化与公式 (Quantification)"
+        },
+        {
+          "id": "1-期望产出与加速比leviathan-公式",
+          "text": "(1) 期望产出与加速比(Leviathan 公式)"
+        },
+        {
+          "id": "2-与-batch-的张力核心架构结论",
+          "text": "(2) 与 batch 的张力(核心架构结论)"
+        },
+        {
+          "id": "与架构建模的接口-modeling-interface",
+          "text": "与架构建模的接口 (Modeling Interface)"
+        },
+        {
+          "id": "延伸阅读-references",
+          "text": "延伸阅读 (References)"
+        }
+      ]
+    },
+    "topics/10-quantization.md": {
+      "path": "series/inference-runtime/topics/10-quantization/",
+      "ids": [
+        "10-量化权重-激活-kv-quantization",
+        "概念-concept",
+        "机制-mechanism",
+        "格式与字节",
+        "权重量化weight-onlyw4a16awq-gptq",
+        "权重激活量化w8a8fp8-smoothquant",
+        "kv-量化p_kvfp8-int8-int4-kv",
+        "量化与公式-quantification",
+        "1-精度档表llama-3-70bp70e9textkv_texttoktextfp16320-kib",
+        "2-三个旋钮打三个项回写-01",
+        "3-回写各篇这就是牵一发",
+        "4-质量代价有损必须实测",
+        "与架构建模的接口-modeling-interface",
+        "延伸阅读-references"
+      ],
+      "headings": [
+        {
+          "id": "10-量化权重-激活-kv-quantization",
+          "text": "10 量化:权重 / 激活 / KV / Quantization"
+        },
+        {
+          "id": "概念-concept",
+          "text": "概念 (Concept)"
+        },
+        {
+          "id": "机制-mechanism",
+          "text": "机制 (Mechanism)"
+        },
+        {
+          "id": "格式与字节",
+          "text": "格式与字节"
+        },
+        {
+          "id": "权重量化weight-onlyw4a16awq-gptq",
+          "text": "权重量化(weight-only,W4A16):AWQ / GPTQ"
+        },
+        {
+          "id": "权重激活量化w8a8fp8-smoothquant",
+          "text": "权重+激活量化(W8A8):FP8 / SmoothQuant"
+        },
+        {
+          "id": "kv-量化p_kvfp8-int8-int4-kv",
+          "text": "KV 量化(\\(p_{kv}\\)):FP8 / INT8 / INT4 KV"
+        },
+        {
+          "id": "量化与公式-quantification",
+          "text": "量化与公式 (Quantification)"
+        },
+        {
+          "id": "1-精度档表llama-3-70bp70e9textkv_texttoktextfp16320-kib",
+          "text": "(1) 精度档表(Llama-3 70B,\\(P=70\\)e9,\\(\\text{KV}_\\text{tok}^{\\text{fp16}}=320\\) KiB)"
+        },
+        {
+          "id": "2-三个旋钮打三个项回写-01",
+          "text": "(2) 三个旋钮打三个项(回写 01)"
+        },
+        {
+          "id": "3-回写各篇这就是牵一发",
+          "text": "(3) 回写各篇(这就是\"牵一发\")"
+        },
+        {
+          "id": "4-质量代价有损必须实测",
+          "text": "(4) 质量代价(有损,必须实测)"
+        },
+        {
+          "id": "与架构建模的接口-modeling-interface",
+          "text": "与架构建模的接口 (Modeling Interface)"
+        },
+        {
+          "id": "延伸阅读-references",
+          "text": "延伸阅读 (References)"
+        }
+      ]
+    },
+    "topics/11-cluster-parallelism.md": {
+      "path": "series/inference-runtime/topics/11-cluster-parallelism/",
+      "ids": [
+        "11-集群并行tp-pp-ep-cluster-parallelism",
+        "概念-concept",
+        "机制-mechanism",
+        "tp张量并行megatron-式",
+        "pp流水线并行",
+        "ep专家并行moe",
+        "量化与公式-quantification",
+        "1-各维如何重映射成本模型的量",
+        "2-tp-通信成本为什么-tp-吃-nvlink",
+        "3-pp-气泡",
+        "推理-vs-训练的差异架构师视角",
+        "与架构建模的接口-modeling-interface",
+        "延伸阅读-references"
+      ],
+      "headings": [
+        {
+          "id": "11-集群并行tp-pp-ep-cluster-parallelism",
+          "text": "11 集群并行:TP / PP / EP / Cluster Parallelism"
+        },
+        {
+          "id": "概念-concept",
+          "text": "概念 (Concept)"
+        },
+        {
+          "id": "机制-mechanism",
+          "text": "机制 (Mechanism)"
+        },
+        {
+          "id": "tp张量并行megatron-式",
+          "text": "TP(张量并行,Megatron 式)"
+        },
+        {
+          "id": "pp流水线并行",
+          "text": "PP(流水线并行)"
+        },
+        {
+          "id": "ep专家并行moe",
+          "text": "EP(专家并行,MoE)"
+        },
+        {
+          "id": "量化与公式-quantification",
+          "text": "量化与公式 (Quantification)"
+        },
+        {
+          "id": "1-各维如何重映射成本模型的量",
+          "text": "(1) 各维如何重映射成本模型的量"
+        },
+        {
+          "id": "2-tp-通信成本为什么-tp-吃-nvlink",
+          "text": "(2) TP 通信成本(为什么 TP 吃 NVLink)"
+        },
+        {
+          "id": "3-pp-气泡",
+          "text": "(3) PP 气泡"
+        },
+        {
+          "id": "推理-vs-训练的差异架构师视角",
+          "text": "推理 vs 训练的差异(架构师视角)"
+        },
+        {
+          "id": "与架构建模的接口-modeling-interface",
+          "text": "与架构建模的接口 (Modeling Interface)"
+        },
+        {
+          "id": "延伸阅读-references",
+          "text": "延伸阅读 (References)"
+        }
+      ]
+    },
+    "topics/12-pd-disaggregation.md": {
+      "path": "series/inference-runtime/topics/12-pd-disaggregation/",
+      "ids": [
+        "12-pd-分离-kv-传输-分层存储-prefill-decode-disaggregation",
+        "概念-concept",
+        "机制-mechanism",
+        "两池分工slo-解耦",
+        "kv-传输",
+        "kv-offload-分层存储",
+        "量化与公式-quantification",
+        "1-kv-传输成本复用-0108-的带宽式",
+        "2-何时值得分离",
+        "3-goodput坐实-02",
+        "4-分层-kv-的取舍",
+        "与架构建模的接口-modeling-interface",
+        "延伸阅读-references"
+      ],
+      "headings": [
+        {
+          "id": "12-pd-分离-kv-传输-分层存储-prefill-decode-disaggregation",
+          "text": "12 PD 分离 + KV 传输 / 分层存储 / Prefill-Decode Disaggregation"
+        },
+        {
+          "id": "概念-concept",
+          "text": "概念 (Concept)"
+        },
+        {
+          "id": "机制-mechanism",
+          "text": "机制 (Mechanism)"
+        },
+        {
+          "id": "两池分工slo-解耦",
+          "text": "两池分工(SLO 解耦)"
+        },
+        {
+          "id": "kv-传输",
+          "text": "KV 传输"
+        },
+        {
+          "id": "kv-offload-分层存储",
+          "text": "KV offload / 分层存储"
+        },
+        {
+          "id": "量化与公式-quantification",
+          "text": "量化与公式 (Quantification)"
+        },
+        {
+          "id": "1-kv-传输成本复用-0108-的带宽式",
+          "text": "(1) KV 传输成本(复用 01/08 的带宽式)"
+        },
+        {
+          "id": "2-何时值得分离",
+          "text": "(2) 何时值得分离"
+        },
+        {
+          "id": "3-goodput坐实-02",
+          "text": "(3) goodput(坐实 02)"
+        },
+        {
+          "id": "4-分层-kv-的取舍",
+          "text": "(4) 分层 KV 的取舍"
+        },
+        {
+          "id": "与架构建模的接口-modeling-interface",
+          "text": "与架构建模的接口 (Modeling Interface)"
+        },
+        {
+          "id": "延伸阅读-references",
+          "text": "延伸阅读 (References)"
+        }
+      ]
+    },
+    "topics/13-constrained-decoding.md": {
+      "path": "series/inference-runtime/topics/13-constrained-decoding/",
+      "ids": [
+        "13-约束解码grammar-fsm-json-constrained-decoding",
+        "概念-concept",
+        "机制-mechanism",
+        "mask-状态推进热路径",
+        "让-mask-变便宜从-ov步-到-o1步",
+        "tokenization-对齐真正的硬骨头",
+        "两笔成本又是固定成本摊薄",
+        "量化与公式-quantification",
+        "1-每步有效时间mask-在不在关键路径",
+        "2-编译摊薄",
+        "3-mask-应用本身廉价贵的是-mask-计算",
+        "与架构建模的接口-modeling-interface",
+        "延伸阅读-references"
+      ],
+      "headings": [
+        {
+          "id": "13-约束解码grammar-fsm-json-constrained-decoding",
+          "text": "13 约束解码:grammar / FSM / JSON / Constrained Decoding"
+        },
+        {
+          "id": "概念-concept",
+          "text": "概念 (Concept)"
+        },
+        {
+          "id": "机制-mechanism",
+          "text": "机制 (Mechanism)"
+        },
+        {
+          "id": "mask-状态推进热路径",
+          "text": "mask + 状态推进(热路径)"
+        },
+        {
+          "id": "让-mask-变便宜从-ov步-到-o1步",
+          "text": "让 mask 变便宜:从 O(V)/步 到 O(1)/步"
+        },
+        {
+          "id": "tokenization-对齐真正的硬骨头",
+          "text": "tokenization 对齐(真正的硬骨头)"
+        },
+        {
+          "id": "两笔成本又是固定成本摊薄",
+          "text": "两笔成本(又是\"固定成本摊薄\")"
+        },
+        {
+          "id": "量化与公式-quantification",
+          "text": "量化与公式 (Quantification)"
+        },
+        {
+          "id": "1-每步有效时间mask-在不在关键路径",
+          "text": "(1) 每步有效时间:mask 在不在关键路径"
+        },
+        {
+          "id": "2-编译摊薄",
+          "text": "(2) 编译摊薄"
+        },
+        {
+          "id": "3-mask-应用本身廉价贵的是-mask-计算",
+          "text": "(3) mask 应用本身廉价,贵的是 mask 计算"
+        },
+        {
+          "id": "与架构建模的接口-modeling-interface",
+          "text": "与架构建模的接口 (Modeling Interface)"
+        },
+        {
+          "id": "延伸阅读-references",
+          "text": "延伸阅读 (References)"
+        }
+      ]
+    },
+    "topics/14-framework-comparison.md": {
+      "path": "series/inference-runtime/topics/14-framework-comparison/",
+      "ids": [
+        "14-框架对比vllm-vs-sglang-framework-comparison",
+        "概念-concept",
+        "机制-mechanism映射矩阵",
+        "量化与定位-performance-positioning",
+        "与架构建模的接口-modeling-interface",
+        "延伸阅读-references"
+      ],
+      "headings": [
+        {
+          "id": "14-框架对比vllm-vs-sglang-framework-comparison",
+          "text": "14 框架对比:vLLM vs SGLang / Framework Comparison"
+        },
+        {
+          "id": "概念-concept",
+          "text": "概念 (Concept)"
+        },
+        {
+          "id": "机制-mechanism映射矩阵",
+          "text": "机制 (Mechanism):映射矩阵"
+        },
+        {
+          "id": "量化与定位-performance-positioning",
+          "text": "量化与定位 (Performance & Positioning)"
+        },
+        {
+          "id": "与架构建模的接口-modeling-interface",
+          "text": "与架构建模的接口 (Modeling Interface)"
+        },
+        {
+          "id": "延伸阅读-references",
+          "text": "延伸阅读 (References)"
+        }
+      ]
+    },
+    "topics/15-quantitative-estimation.md": {
+      "path": "series/inference-runtime/topics/15-quantitative-estimation/",
+      "ids": [
+        "15-量化估算算例llama-3-70b-on-h100-worked-example",
+        "0-配置与常数setup",
+        "1-kvtoken01",
+        "2-显存-最大并发0608",
+        "3-tpot-itl-vs-batch0105",
+        "4-ttft0102",
+        "5-吞吐与-goodput-工作点0208",
+        "6-旋钮敏感度sweeps",
+        "a-上下文翻-4-倍-显存绑吞吐崩kv-主导01",
+        "b-fp8-量化-砍一半-gpu配置-b10",
+        "汇总表配置-allama-3-70b-4h100-fp16-s4k",
+        "与架构建模的接口-modeling-interface",
+        "延伸阅读-references"
+      ],
+      "headings": [
+        {
+          "id": "15-量化估算算例llama-3-70b-on-h100-worked-example",
+          "text": "15 量化估算算例:Llama-3 70B on H100 / Worked Example"
+        },
+        {
+          "id": "0-配置与常数setup",
+          "text": "0. 配置与常数(Setup)"
+        },
+        {
+          "id": "1-kvtoken01",
+          "text": "1. KV/token(01)"
+        },
+        {
+          "id": "2-显存-最大并发0608",
+          "text": "2. 显存 → 最大并发(06/08)"
+        },
+        {
+          "id": "3-tpot-itl-vs-batch0105",
+          "text": "3. TPOT / ITL vs batch(01/05)"
+        },
+        {
+          "id": "4-ttft0102",
+          "text": "4. TTFT(01/02)"
+        },
+        {
+          "id": "5-吞吐与-goodput-工作点0208",
+          "text": "5. 吞吐与 goodput 工作点(02/08)"
+        },
+        {
+          "id": "6-旋钮敏感度sweeps",
+          "text": "6. 旋钮敏感度(Sweeps)"
+        },
+        {
+          "id": "a-上下文翻-4-倍-显存绑吞吐崩kv-主导01",
+          "text": "(a) 上下文翻 4 倍 → 显存绑、吞吐崩(KV 主导,01)"
+        },
+        {
+          "id": "b-fp8-量化-砍一半-gpu配置-b10",
+          "text": "(b) FP8 量化 → 砍一半 GPU(配置 B,10)"
+        },
+        {
+          "id": "汇总表配置-allama-3-70b-4h100-fp16-s4k",
+          "text": "汇总表(配置 A,Llama-3 70B / 4×H100 / FP16 / s≈4k)"
+        },
+        {
+          "id": "与架构建模的接口-modeling-interface",
+          "text": "与架构建模的接口 (Modeling Interface)"
+        },
+        {
+          "id": "延伸阅读-references",
+          "text": "延伸阅读 (References)"
+        }
+      ]
+    }
+  }
+}

@@ -15,7 +15,8 @@ _WEBSITE = str(Path(__file__).resolve().parent)
 if _WEBSITE not in sys.path:
     sys.path.insert(0, _WEBSITE)
 from sources import load_series, series_landing  # noqa: E402
-from ownership import GROUPS, MICRO, STORAGE, INTERCONNECT, DEVELOPMENT, INFERENCE_GROUPS, owner, development_owner, inference_owner  # noqa: E402
+from ownership import GROUPS, MICRO, STORAGE, INTERCONNECT, DEVELOPMENT, owner, development_owner  # noqa: E402
+from inference import navigation as inference_navigation  # noqa: E402
 from workload import navigation as workload_navigation  # noqa: E402
 from storage_navigation import (INTEGRATION_AFTER, INTEGRATION_HOME, INTEGRATION_PACKAGING,
                                 INTEGRATION_TOPIC, MEMORY_HOME, MEMORY_SECTIONS, MEMORY_TOPIC,
@@ -501,14 +502,18 @@ def development_tree(root, directory):
     return result
 
 
-def inference_tree(root, directory):
-    landing = series_landing(directory)
-    result = [landing.relative_to(root).as_posix()]
-    pages = sorted(path for path in directory.rglob("*.md") if path != landing)
-    for group in INFERENCE_GROUPS:
-        entries = [path.relative_to(root).as_posix() for path in pages if inference_owner(path.relative_to(directory).as_posix()) == group]
-        if entries:
-            result.append({group: entries})
+def inference_tree(root, directory, labels):
+    tree = inference_navigation(root)
+    result = [tree[0]]
+    for section in tree[1:]:
+        label, entries = next(iter(section.items()))
+        pages = []
+        for entry in entries:
+            short, path = next(iter(entry.items())) if isinstance(entry, dict) else (label, entry)
+            if isinstance(entry, dict) or path.endswith("/README.md"):
+                labels[path] = (short, title(root / path))
+            pages.append(path)
+        result.append({label: pages})
     return result
 
 
@@ -744,7 +749,7 @@ def on_config(config, **kwargs):
             elif entry["local"]["publish"] == "series/chip-development":
                 tree = development_tree(root, directory)
             elif entry["local"]["publish"] == "series/inference-runtime":
-                tree = inference_tree(root, directory)
+                tree = inference_tree(root, directory, config.extra["storage_sidebar_labels"])
             else:
                 tree = make_tree(directory, root, ("README.md", "index.md"))
             config.nav.append({entry["title"]: tree})

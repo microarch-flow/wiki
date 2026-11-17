@@ -31,3 +31,29 @@ span.arithmatex-inline-display {
 .md-nav--secondary .inference-toc-math .katex {
   font-size: 1em;
 }
+
+/* Compatibility targets occupy no reading space and stay near their topic. */
+.inference-legacy-anchors {
+  height: 0;
+  margin: 0;
+  padding: 0;
+}
+
+.inference-legacy-anchors span {
+  scroll-margin-top: 5rem;
+}
+
+/* Ordered event paths remain vertical, including on narrow screens. */
+.md-typeset ol.inference-flow {
+  margin: 1rem 0;
+  padding-left: 1.5rem;
+}
+
+.md-typeset .inference-flow li {
+  margin: .6rem 0;
+  padding: .65rem .8rem;
+  border-left: 3px solid #789584;
+  border-radius: 0 .25rem .25rem 0;
+  background: rgba(48, 92, 69, .045);
+  overflow-wrap: anywhere;
+}

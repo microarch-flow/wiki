@@ -135,6 +135,10 @@ mkdocs build
 
 推理运行时与 Workload 文章中的数学公式使用仓内 KaTeX 渲染，不依赖运行时访问外部 CDN。窄屏下的长公式可以横向滚动，并可通过键盘聚焦。其他系列的 Markdown 解析保持原有方式。
 
+推理运行时的源码按九个专题维护。`website/inference.py` 保存 15 篇旧文的源码到公开路径映射；正文移动后仍发布到原 `series/inference-runtime/topics/` 地址。每个专题首页的编号“阅读顺序”决定侧栏顺序与短标题，构建拒绝漏列、重复或放错专题的文章。新增文章直接使用专题路径，不创建第二份旧文正文。
+
+`website/tests/fixtures/inference-legacy.json` 记录重组前 18 个页面及 277 个实际 DOM 锚点；正文中的 `inference-legacy-anchors` 将旧片段定位到相关说明。`test_inference_refinement.py` 检查旧 URL、锚点、全文链接、导航、搜索和唯一发布位置。`series/inference-runtime/examples/verify_examples.py` 另外运行 9 项公式与教学事件模型检查；这些不属于 GPU 性能验收。Python 示例通过 GitHub 源码链接提供，不作为网站正文发布。
+
 构建完成后，可以运行 `python -m unittest discover -s website/tests`，检查各页面的当前导航项和面包屑链接。
 
 ## 发布到 GitHub Pages

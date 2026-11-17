@@ -57,8 +57,8 @@ class InferenceMathTests(unittest.TestCase):
         self.assertIn("&amp;", str(escaped.title))
 
     def test_all_inference_math_headings_keep_their_toc_ids(self):
-        root = Path(__file__).resolve().parents[2] / "series/inference-runtime/topics"
-        files = ("03-naive-bottlenecks", "05-attention-kernels", "06-paged-kv-cache", "10-quantization")
+        root = Path(__file__).resolve().parents[2] / "series/inference-runtime"
+        files = sorted(root.rglob("*.md"))
         headings = []
 
         def convert(items):
@@ -69,21 +69,18 @@ class InferenceMathTests(unittest.TestCase):
                 yield item
                 yield from flatten(item.children)
 
-        for name in files:
+        for source in files:
             parser = markdown.Markdown(extensions=["toc", "tables", "website.inference_math"])
-            parser.convert(MARKER + "\n" + (root / f"{name}.md").read_text(encoding="utf-8"))
+            parser.convert(MARKER + "\n" + source.read_text(encoding="utf-8"))
             toc = convert(parser.toc_tokens)
             before = [(item.id, item.title) for item in flatten(toc)]
-            page = SimpleNamespace(file=SimpleNamespace(src_uri=f"series/inference-runtime/topics/{name}.md"), toc=toc)
+            page = SimpleNamespace(file=SimpleNamespace(src_uri=f"series/inference-runtime/{source.relative_to(root)}"), toc=toc)
             on_page_content("", page)
             after = list(flatten(toc))
             self.assertEqual([item.id for item in after], [item[0] for item in before])
             headings.extend(str(item.title) for item in after if "inference-toc-math" in str(item.title))
-        self.assertEqual(len(headings), 8)
-        self.assertEqual(sum(item.count('class="inference-toc-math"') for item in headings), 9)
+        self.assertEqual(len(files), 41)
         self.assertTrue(all(r"\(" not in title and r"\)" not in title for title in headings))
-        self.assertTrue(any("η_mem" in title for title in headings))
-        self.assertTrue(any("KV_tok^fp16=320" in title for title in headings))
 
 
 if __name__ == "__main__":

@@ -1,99 +1,129 @@
-# 术语表 / Glossary
+# 推理运行时术语表
 
-> **占位状态。** 这里只放跨多篇复用的核心术语种子;每写一篇 topic,把该篇首次出现的术语补进来(见 [_conventions.md](_conventions.md) §3)。
->
-> 格式:每行「中文(English, 缩写)— 一句话定义」。锚点用行内 `<a id="…">`,供各篇 `glossary.md#锚点` 链接。定义只给概念,**不放具体数字**(数字进各篇算例)。
+<div class="inference-legacy-anchors" aria-hidden="true"><span id="术语表-glossary"></span></div>
 
-## A–C
+这里维护跨专题的简明定义。具体公式、实现条件与例子以对应文章为准；性能相关术语都需要明确统计或资源边界。
 
-| 术语 | 一句话定义 |
+<div class="inference-legacy-anchors" aria-hidden="true"><span id="ac"></span></div>
+
+## 请求、阶段与指标
+
+| 术语 | 定义 |
 |---|---|
-| <a id="autoregressive"></a>自回归 (autoregressive) | 逐 token 生成,第 $t$ 个 token 的输入依赖前 $t-1$ 个的输出,因此 decode 天然串行。 |
-| <a id="prefill"></a>预填充 (prefill) | 一次性并行处理整段 prompt、填充 KV cache 的阶段;通常 compute-bound。 |
-| <a id="decode"></a>解码 (decode) | 自回归逐 token 生成阶段;每步只算 1 个新 token,通常 memory-bound。 |
-| <a id="kv-cache"></a>KV 缓存 (KV cache) | 缓存历史 token 的 Key/Value 张量,避免每步重算注意力;显存占用随 Σseq_len 线性增长。 |
-| <a id="compute-bound"></a>计算受限 (compute-bound) | 算术强度高于硬件 ridge point,瓶颈在算力 (FLOP/s) 而非带宽。 |
-| <a id="memory-bound"></a>访存受限 (memory-bound) | 算术强度低于 ridge point,瓶颈在带宽 (byte/s),算力闲置。 |
-| <a id="arithmetic-intensity"></a>算术强度 (arithmetic intensity) | FLOP 数 ÷ 访存字节数 [FLOP/byte];与硬件 ridge point 比较判定 compute/memory-bound。 |
-| <a id="roofline"></a>Roofline | 以算术强度为横轴、可达性能为纵轴的上界模型;拐点 (ridge point) $= C/BW$。 |
-| <a id="chunked-prefill"></a>分块预填充 (chunked prefill) | 把长 prompt 的 prefill 切成多个 chunk,与 decode 步交错调度,平滑算力占用。 |
-| <a id="continuous-batching"></a>连续批处理 (continuous batching) | 以 iteration 为粒度动态增删 batch 内请求,完成即出、空位即补,消除静态批尾部浪费。 |
+| <a id="autoregressive"></a>自回归（autoregressive） | 按已有输入和输出历史生成后续内容；单序列存在生成依赖，不同请求仍可并行。 |
+| <a id="prefill"></a>预填充（Prefill） | 处理未复用的输入位置并建立状态，可整段或分块执行；性能限制取决于形状与实现。 |
+| <a id="decode"></a>解码（Decode） | 使用历史状态继续生成；普通单步通常每条被选择的序列处理一个新位置。 |
+| <a id="ttft"></a>首 token 时延（TTFT） | 从规定的请求起点到首个有效输出的时间，包含哪些阶段须明确。 |
+| <a id="itl"></a>token 间时延（ITL） | 同一请求相邻输出 token 的时间间隔；只有 chunk 时间时不能还原真实逐 token 间隔。 |
+| <a id="tpot"></a>每输出 token 时间（TPOT） | 本文指首 token 之后的平均间隔，输出多于一个 token 时为 (E2E−TTFT)/(N−1)。 |
+| <a id="e2e"></a>端到端时延（E2E） | 从请求起点到规定终点的时间；最后 token 与协议结束可以是不同终点。 |
+| <a id="throughput"></a>吞吐（throughput） | 单位时间的完成请求数或 token 数，必须明确计数对象与窗口。 |
+| <a id="goodput"></a>有效吞吐（goodput） | 只计入满足预先定义成功与服务条件的请求或其 token；两种单位不能混同。 |
+| <a id="mbu"></a>模型带宽利用率（MBU） | 逻辑字节模型除以时间和峰值带宽的比率；须与硬件计数器测得的带宽区分。 |
+| <a id="mfu"></a>模型算力利用率（MFU） | 估算的模型 FLOP 除以时间和指定精度峰值；不等同于硬件忙碌比例。 |
+| <a id="open-loop"></a>开环压测（open-loop） | 按预定到达过程发送请求，不以之前请求完成作为下一次发送的必要条件。 |
+| <a id="closed-loop"></a>闭环压测（closed-loop） | 按固定并发或反馈规则补充请求；服务变慢时到达速率可能自动降低。 |
 
-## D–K
+<div class="inference-legacy-anchors" aria-hidden="true"><span id="dk"></span></div>
 
-| 术语 | 一句话定义 |
+## 执行、形状与内核
+
+| 术语 | 定义 |
 |---|---|
-| <a id="gqa"></a>分组查询注意力 (Grouped-Query Attention, GQA) | 多个 query 头共享一组 KV 头,把 KV cache 字节数按 $h_{kv}/h$ 缩小;MQA 是 $h_{kv}=1$ 的极端。 |
-| <a id="mqa"></a>多查询注意力 (Multi-Query Attention, MQA) | 所有 query 头共享单一 KV 头($h_{kv}=1$)。 |
-| <a id="hbm"></a>高带宽显存 (High Bandwidth Memory, HBM) | GPU 片上堆叠显存;decode 阶段权重+KV 的读取带宽常是吞吐上界。 |
-| <a id="flash-attention"></a>FlashAttention | IO-aware 精确注意力:tiling + online softmax,不在 HBM 物化 $O(s^2)$ 的 $QK^\top$;prefill 主力 kernel。 |
-| <a id="flash-decoding"></a>FlashDecoding(split-KV) | 在 batch×head 之外再沿 KV 序列维切分并行、最后 reduction 合并;救低 batch/长 context 的 decode 占用率。 |
-| <a id="online-softmax"></a>在线 softmax (online softmax) | 增量遍历 KV 块时维护 running max/sum,按指数差 rescale 部分输出,免物化整行;FlashAttention/Decoding 的数值核心。 |
-| <a id="internal-fragmentation"></a>内部碎片 (internal fragmentation) | 已分配给某请求、但未被实际 token 用到的 KV 空间(如按 $s_\max$ 预留却只用一小段)。 |
-| <a id="external-fragmentation"></a>外部碎片 (external fragmentation) | 变长连续块分配/释放后,显存里留下的、装不下新请求的空闲"洞"。 |
-| <a id="head-of-line-blocking"></a>队头阻塞 (head-of-line blocking) | 新请求被前面未排空的批/队列挡住,无法及时进入服务,推高 TTFT。 |
-| <a id="static-batching"></a>静态批处理 (static batching) | 凑齐一批一起跑到全部完成才换批;长度异质时尾部空转,被 continuous batching 取代。 |
-| <a id="paged-attention"></a>分页注意力 (PagedAttention) | 把 KV cache 切成固定大小 block、用 block table 间接寻址,消除显存碎片、支持前缀共享 (CoW)。 |
-| <a id="block-table"></a>块表 (block table) | 每个请求一张「逻辑 block → 物理 block」映射表,是 PagedAttention 的间接寻址结构;跨层共享。 |
-| <a id="cow"></a>写时复制 (Copy-on-Write, CoW) | 多序列共享前缀 block(引用计数),某序列要写入分叉时只复制那一个 block;前缀共享的物理机制。 |
+| <a id="compute-bound"></a>计算受限（compute-bound） | 指定工作和观察边界下，计算资源是实际主要限制；Roofline 只能提供资源界限。 |
+| <a id="memory-bound"></a>访存受限（memory-bound） | 指定层级的数据访问是主要限制；需说明带宽、访问延迟或其他具体约束。 |
+| <a id="arithmetic-intensity"></a>算术强度（arithmetic intensity） | 同一边界的工作量除以数据量，单位 FLOP/byte。 |
+| <a id="roofline"></a>Roofline | 以计算与带宽资源上界约束可达性能的模型，不能独自证明实际瓶颈。 |
+| <a id="hbm"></a>高带宽内存（HBM） | 高带宽堆叠 DRAM；与计算芯片上的 SRAM、缓存层级分别计数。 |
+| <a id="gqa"></a>分组查询注意力（GQA） | 多个查询头共享一组 KV 头；容量需按 KV 头数计算。 |
+| <a id="mqa"></a>多查询注意力（MQA） | 多个查询头共享一组 K/V 的注意力结构。 |
+| <a id="flash-attention"></a>FlashAttention | 通过分块和在线 softmax 减少完整注意力中间矩阵的 HBM 物化。 |
+| <a id="flash-decoding"></a>Flash-Decoding／split-KV | 沿 KV 范围划分部分计算后归约，以增加某些 Decode 形状的并行度。 |
+| <a id="online-softmax"></a>在线 softmax（online softmax） | 维护最大值、指数和及加权和，通过重标度合并分块结果。 |
+| <a id="ragged-layout"></a>变长打包布局（ragged／packed） | 连接有效 token 并保存序列边界；必须防止不同请求之间错误注意。 |
+| <a id="padding"></a>填充（padding） | 补齐形状以匹配矩形张量、内核或执行桶，可能增加工作也可能提高计划复用。 |
+| <a id="cu-seqlens"></a>cu_seqlens | 累积序列长度数组，为变长内核提供请求边界。 |
+| <a id="execution-provider"></a>执行提供者（Execution Provider） | ONNX Runtime 中声明并实现节点或子图执行能力的后端接口。 |
+| <a id="cuda-graph"></a>CUDA Graph | 表示设备操作及依赖的执行图，可减少重复提交开销；捕获与重放存在条件。 |
 
-## L–R
+## 状态、缓存与内存
 
-| 术语 | 一句话定义 |
+| 术语 | 定义 |
 |---|---|
-| <a id="ragged-layout"></a>不规则布局 (ragged / packed / varlen layout) | 把变长序列首尾相接拍平成一维(总长 $\sum s_i$)、用 cu_seqlens 记边界,免 padding。 |
-| <a id="padding"></a>填充 (padding) | 把变长序列补到 batch 内最长以凑矩形张量;pad 位仍耗算力/显存,被 ragged 布局取代。 |
-| <a id="selective-batching"></a>选择性批处理 (selective batching) | Orca 提出:对可批的大 GEMM(投影/FFN)整批算、对依赖 KV 长度的 attention 逐序列拆算。 |
-| <a id="iteration-level-scheduling"></a>迭代级调度 (iteration-level scheduling) | 以单次 forward 为粒度调度:每步踢掉已完成、补入新请求;是 continuous batching 的机制。 |
-| <a id="stall-free-scheduling"></a>无停顿调度 (stall-free scheduling) | Sarathi-Serve:新请求的 prefill chunk 拼入运行中 batch 而不暂停在跑的 decode。 |
-| <a id="radix-attention"></a>基数注意力 (RadixAttention) | 用 radix tree 索引已缓存的 KV 前缀,做最长前缀匹配复用 + LRU 淘汰。 |
-| <a id="tp"></a>张量并行 (Tensor Parallelism, TP) | 把单层权重按维度切到多卡,每步需 all-reduce;降低单卡权重/激活占用,增加通信。 |
-| <a id="pp"></a>流水线并行 (Pipeline Parallelism, PP) | 按层切分到多卡,micro-batch 流水;省显存但有 bubble。 |
-| <a id="ep"></a>专家并行 (Expert Parallelism, EP) | MoE 场景把不同专家放到不同卡,按路由 all-to-all 分发 token。 |
-| <a id="dp"></a>数据并行 (Data Parallelism, DP) | 整模型多副本,各处理不同请求;扩吞吐,不降单请求延迟、不省单卡显存。 |
-| <a id="moe"></a>混合专家 (Mixture of Experts, MoE) | 每层多个专家,每 token 路由 top-$k$;总参数大但每 token 仅激活 $k/E$,配 EP 部署。 |
-| <a id="all-reduce"></a>all-reduce | 跨卡规约+广播(TP 每层 2 次,同步、在关键路径);需高带宽互连(NVLink)。 |
-| <a id="all-to-all"></a>all-to-all | 每卡向所有卡分发/收集不同分片;MoE EP 的 token 派发/合并(每 MoE 层 2 次)。 |
-| <a id="pipeline-bubble"></a>流水线气泡 (pipeline bubble) | PP 中 stage 等待上游的空闲;占比 $\frac{N_{pp}-1}{m+N_{pp}-1}$,decode 因 micro-batch 难做大而气泡大。 |
-| <a id="pd-disaggregation"></a>PD 分离 (Prefill-Decode Disaggregation) | 把 prefill 与 decode 放到不同节点/池,各自独立扩缩,KV 经链路传输。 |
-| <a id="kv-transfer"></a>KV 传输 (KV transfer) | PD 分离中把 prefill 算出的 KV 过链路传给 decode 池;layer-wise 流式 + 前缀复用免传隐藏开销。 |
-| <a id="tiered-kv"></a>分层 KV / KV offload | KV 在 HBM→DRAM→SSD/NVMe 多级存储;热的留 HBM、冷的下沉,按链路档与复用率决定放哪层。 |
+| <a id="kv-cache"></a>KV 缓存（KV cache） | 保存已计算位置的 K/V，减少历史位置重算；新查询仍需计算注意力。 |
+| <a id="internal-fragmentation"></a>内部碎片（internal fragmentation） | 已分配单元中未装入有效载荷的空间，需与预留策略和块尾部口径对应。 |
+| <a id="external-fragmentation"></a>外部碎片（external fragmentation） | 空闲空间被分割，导致总量足够却无法满足所需连续分配。 |
+| <a id="paged-attention"></a>分页注意力（PagedAttention） | 用软件块与映射管理 KV，并由匹配内核读取；不代表所有显存浪费均被消除。 |
+| <a id="block-table"></a>块表（block table） | 将请求逻辑块映射到缓存池块；是否跨层共享取决于缓存组与布局。 |
+| <a id="cow"></a>写时复制（CoW） | 共享状态需要私有写入时先创建副本，避免改变其他使用者可见的内容。 |
+| <a id="radix-attention"></a>RadixAttention | 用压缩前缀树组织可复用 KV 的一种设计，并配套引用与淘汰管理。 |
+| <a id="prompt-caching"></a>提示缓存（prompt caching） | 服务接口中的输入复用能力；实际保存内容、保留期和计费由具体服务定义。 |
+| <a id="apc"></a>自动前缀缓存（APC） | 按输入前缀及必要身份信息自动查找并复用已缓存状态。 |
+| <a id="cache-identity"></a>缓存身份（cache identity） | 影响缓存状态语义的模型、输入、位置、适配器及隔离等条件。 |
+| <a id="tiered-kv"></a>分层 KV／KV offload | 在设备内存、主机内存或其他介质间保存和恢复 KV，需显式处理一致性与完成。 |
+| <a id="kv-transfer"></a>KV 传输（KV transfer） | 将指定位置与布局的状态送至接收方；传输完成和可执行就绪需分别定义。 |
 
-## S–Z
+## 批处理、调度与服务
 
-| 术语 | 一句话定义 |
+| 术语 | 定义 |
 |---|---|
-| <a id="prompt-caching"></a>提示缓存 (prompt caching) | API 层把前缀 KV 复用产品化:cache read ≈0.1× 输入价、write ≈1.25×/2×、带 TTL 与跨租户隔离;引擎侧对应 RadixAttention / APC。 |
-| <a id="apc"></a>自动前缀缓存 (Automatic Prefix Caching, APC) | vLLM 中按前缀自动复用已缓存 KV 的功能,与 RadixAttention 同类。 |
-| <a id="speculative-decoding"></a>投机解码 (speculative decoding) | 用小 draft 模型猜多个 token,大模型一次并行 verify,rejection sampling 保证分布无损。 |
-| <a id="acceptance-rate"></a>接受率 (acceptance rate, $\alpha$) | draft 提议 token 被 target 接受的概率;决定投机加速比上界 $1/(1-\alpha)$,由模型×workload 决定、需实测。 |
-| <a id="rejection-sampling"></a>拒绝采样 (rejection sampling) | 以 $\min(1,p/q)$ 接受 draft、否则从残差分布 $\propto\max(0,p-q)$ 重采;保证产出精确服从 target 分布 $p$。 |
-| <a id="tree-attention"></a>树注意力 (tree attention) | 在一棵候选 token 树上用不规则 mask 一次并行验证多条续写;Medusa/EAGLE/SpecInfer 的验证机制。 |
-| <a id="admission-watermark"></a>准入水位 (admission watermark) | 准入新请求时为 KV 增长保留的 block 缓冲比 $w$;防 iteration 中途 OOM 与抖动。 |
-| <a id="preemption"></a>抢占 (preemption) | 显存不够时把运行中请求踢回等待;恢复有 recompute(重跑 prefill)与 swap(KV 出/回 CPU)两种。 |
-| <a id="thrashing"></a>抖动 (thrashing) | 准入过激导致 preempt↔resume churn、有用产出塌方;同 OS 换页抖动。 |
-| <a id="weight-only-quant"></a>权重量化 (weight-only, W4A16) | 仅压权重(常 INT4)、激活仍 FP16,在线 dequant;代表 AWQ/GPTQ。压 $P p_w$,利低 batch decode 与装卡,不提算力。 |
-| <a id="w8a8"></a>W8A8 / FP8 量化 | 权重+激活都低精(INT8/FP8),启用低精 tensor core 提算力;代表 SmoothQuant、Hopper FP8(E4M3/E5M2)。 |
-| <a id="awq"></a>AWQ | Activation-aware Weight Quantization:用激活幅度找 ~1% salient 权重通道并 per-channel 保护,W4 近无损。 |
-| <a id="gptq"></a>GPTQ | 基于 Hessian/OBQ 二阶误差补偿的逐层权重量化(W4/W3)。 |
-| <a id="kv-quant"></a>KV 量化 (KV quantization) | 压 KV cache($\text{KV}_\text{tok}\propto p_{kv}$),FP8 常近无损;利并发与长上下文 decode 带宽。 |
-| <a id="outlier-channel"></a>离群通道 (outlier channel) | 激活中少数幅值极大的维度,使激活量化困难;weight-only 易、W8A8 需 SmoothQuant 类处理。 |
-| <a id="cu-seqlens"></a>cu_seqlens | 变长 batch 的累积序列长度前缀和数组,配合 ragged/packed 布局免 padding。 |
-| <a id="constrained-decoding"></a>约束解码 (constrained decoding) | 每步对 logits 打 mask 强制输出符合 regex/CFG/JSON;保证合法但偏移分布(区别于投机的无损)。 |
-| <a id="token-mask"></a>token 掩码 (token mask / logit mask) | 把违反约束的 token logit 置 $-\infty$ 的向量;预编译 FSM 使其计算降到 O(1)/步。 |
-| <a id="fsm"></a>有限状态机 (Finite-State Machine, FSM) | 约束解码跟踪合法续写的状态机;Outlines 将 regex/CFG 编译为 FSM 并对词表建索引。 |
-| <a id="ttft"></a>首 token 时延 (Time To First Token, TTFT) | 请求到达到吐出第一个 token 的时间;主要由 prefill 决定。 |
-| <a id="itl"></a>token 间时延 (Inter-Token Latency, ITL) | decode 阶段相邻输出 token 的**实际间隔**,是一个分布(含 jitter);SLO 关心其尾部 p99。本 wiki 约定 ITL=分布、TPOT=其均值(见 [`02`](topics/02-metrics-slo.md))。 |
-| <a id="tpot"></a>每输出 token 时间 (Time Per Output Token, TPOT) | 首 token 之后的**平均**每 token 时间 $=(\text{E2E}-\text{TTFT})/(N_\text{out}-1)$,一个标量;由 decode 带宽决定。 |
-| <a id="e2e"></a>端到端时延 (End-to-End latency, E2E) | 请求到达到最后一个 token $=\text{TTFT}+(N_\text{out}-1)\cdot\text{TPOT}$。 |
-| <a id="mbu"></a>模型带宽利用率 (Model Bandwidth Utilization, MBU) | decode 实测等效 HBM 带宽 ÷ 峰值带宽;memory-bound 阶段的效率上界指标。 |
-| <a id="mfu"></a>模型算力利用率 (Model FLOPs Utilization, MFU) | prefill/训练实测 FLOP/s ÷ 峰值算力;compute-bound 阶段的效率指标。 |
-| <a id="throughput"></a>吞吐 (throughput) | 单位时间产出 token 数 (token/s),系统级或单请求级。 |
-| <a id="goodput"></a>有效吞吐 (goodput) | 仅计满足 SLA(TTFT/ITL 约束)的请求贡献的吞吐。 |
-| <a id="vllm"></a>vLLM | 以 PagedAttention 为核心抽象的通用高吞吐推理服务器(Berkeley);重心在 block 内存管理。 |
-| <a id="sglang"></a>SGLang | 以 RadixAttention + 结构化前端 DSL 为核心的推理框架(LMSYS);重心在程序结构感知与前缀复用。 |
-| <a id="xgrammar"></a>XGrammar | 高效结构化生成引擎(SGLang 集成):上下文无关/相关 token 分离 + mask 缓存 + 与 GPU 重叠。 |
+| <a id="static-batching"></a>静态批处理（static batching） | 在一组执行中保持固定批成员的方式；适用性取决于请求与执行模式。 |
+| <a id="continuous-batching"></a>连续批处理（continuous batching） | 在迭代边界调整批成员，减少完成后空槽位等待；不保证无排队。 |
+| <a id="iteration-level-scheduling"></a>迭代级调度 | 以一次模型迭代为选择粒度，重新决定可运行请求及工作范围。 |
+| <a id="chunked-prefill"></a>分块 Prefill | 将输入位置分多轮计算，后续块仍读取语义要求的历史状态。 |
+| <a id="selective-batching"></a>选择性批处理（selective batching） | 按算子特性决定哪些工作合批；Orca 用它组织线性层和注意力。 |
+| <a id="stall-free-scheduling"></a>无停顿调度（stall-free scheduling） | Sarathi-Serve 对其分块 Prefill 与 Decode 组织方式的命名，不是通用硬实时保证。 |
+| <a id="head-of-line-blocking"></a>队头阻塞 | 前部任务或资源条件阻止后续可执行任务得到服务。 |
+| <a id="admission-watermark"></a>准入水位 | 为增长或突发需求保留资源的策略参数，不存在统一默认最优比例。 |
+| <a id="preemption"></a>抢占（preemption） | 暂停请求以让出执行或状态资源；恢复可采用保留、重算或迁移等实现。 |
+| <a id="thrashing"></a>抖动（thrashing） | 频繁暂停和恢复消耗大量资源，却很少完成有用输出的状态。 |
+| <a id="backpressure"></a>背压（backpressure） | 下游压力向上游传播，限制继续接收或生成工作。 |
+| <a id="request-lifecycle"></a>请求生命周期 | 从接收到完成或失败的状态变化，以及与在途工作和资源回收的关联。 |
 
----
+<div class="inference-legacy-anchors" aria-hidden="true"><span id="sz"></span></div>
 
-**待补**:随各篇推进补充——FlashAttention、FlashDecoding、prompt caching、recompute/swap 抢占、algorithm intensity 的 decode 推导、量化 (FP8/INT8/AWQ/GPTQ) 等。
+## 采样、约束与低精度
+
+| 术语 | 定义 |
+|---|---|
+| <a id="logits"></a>logits | 模型对候选 token 给出的未归一化分数，后续处理共同定义最终分布。 |
+| <a id="speculative-decoding"></a>推测解码（speculative decoding） | 先提出多个候选再验证的生成方法；结果保证由具体接受算法决定。 |
+| <a id="acceptance-rate"></a>接受率（acceptance rate） | 按指定位置与统计口径，候选被接受的比例或条件概率；不单独决定加速比。 |
+| <a id="rejection-sampling"></a>拒绝采样 | 通过接受概率与拒绝后的残差采样保持目标分布，前提是分布和实现步骤一致。 |
+| <a id="tree-attention"></a>树注意力（tree attention） | 用路径相关掩码并行计算候选树，禁止候选读取不属于自身路径的状态。 |
+| <a id="constrained-decoding"></a>约束解码 | 限制合法续写集合并推进解析状态；合法前缀不等于完整或语义正确输出。 |
+| <a id="token-mask"></a>token 掩码 | 标记当前允许候选的词表掩码，其计算成本依语法、分词和状态实现而定。 |
+| <a id="fsm"></a>有限状态机（FSM） | 具有有限状态与转移的计算模型；一般递归 CFG 不能直接等同于有限状态机。 |
+| <a id="weight-only-quant"></a>权重量化（weight-only） | 主要压缩权重表示，实际计算格式与解量化路径由匹配内核决定。 |
+| <a id="w8a8"></a>W8A8 | 权重与激活均使用约 8 bit 表示的一类配置；具体编码与累加精度另行定义。 |
+| <a id="awq"></a>AWQ | 利用激活信息优化权重量化误差的方法，质量与性能仍需按模型和任务验证。 |
+| <a id="gptq"></a>GPTQ | 利用近似二阶信息和误差补偿进行权重量化的方法。 |
+| <a id="kv-quant"></a>KV 量化 | 降低 KV 表示精度，改变载荷与读写路径，并引入需要验证的数值误差。 |
+| <a id="outlier-channel"></a>离群通道 | 幅值或分布显著偏离其他通道的维度，可能影响量化范围与误差。 |
+
+<div class="inference-legacy-anchors" aria-hidden="true"><span id="lr"></span></div>
+
+## 分布式与框架
+
+| 术语 | 定义 |
+|---|---|
+| <a id="tp"></a>张量并行（TP） | 在算子或层内切分张量，并通过必要通信形成后继所需结果。 |
+| <a id="pp"></a>流水线并行（PP） | 按层或阶段分配计算，以激活传递连接各阶段。 |
+| <a id="ep"></a>专家并行（EP） | 将专家分配到不同 rank，并按 token 路由派发与合并结果。 |
+| <a id="dp"></a>数据并行（DP） | 将不同输入分配到并行执行组；稠密服务常采用模型副本，MoE 组合需另看 rank 布局。 |
+| <a id="moe"></a>混合专家（MoE） | 按输入选择部分专家执行的模型结构，路由与通信成本仍需计入。 |
+| <a id="all-reduce"></a>all-reduce | 集合规约并使各参与方得到规约结果；算法、次数和通信路径由实现决定。 |
+| <a id="all-to-all"></a>all-to-all | 参与方互相交换各自面向不同目标的数据分片，可存在不均匀流量。 |
+| <a id="pipeline-bubble"></a>流水线气泡 | 阶段缺少可执行工作形成的空闲，受依赖、失衡和调度影响。 |
+| <a id="context-parallelism"></a>上下文并行 | 沿序列或状态位置维分配注意力工作与存储，保持规定的全局依赖。 |
+| <a id="pd-disaggregation"></a>PD 分离 | 将 Prefill 与 Decode 分配到不同执行实例或池，并交接所需状态。 |
+| <a id="vllm"></a>vLLM | 提供请求调度、状态管理、模型执行与服务接口等能力的推理项目，行为需注明版本。 |
+| <a id="sglang"></a>SGLang | 包含模型服务运行时与相关生成能力的项目，不能仅按历史 DSL 定位理解。 |
+| <a id="xgrammar"></a>XGrammar | 结构化生成引擎，结合可预处理的 token 信息与运行时语法状态生成约束。 |
+
+## 继续查阅
+
+- [请求与指标](01-request-and-metrics/README.md)
+- [状态与 KV 管理](04-state-and-memory/README.md)
+- [采样与解码](06-sampling-and-decoding/README.md)
+- [写作与建模约定](_conventions.md)

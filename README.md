@@ -11,7 +11,7 @@
 | 系列 | 内容 |
 | --- | --- |
 | [算法与模型](./series/workload/README.md) | 模型组件、视觉、自动驾驶、机器人和芯片工作负载 |
-| [推理运行时](./series/inference-runtime/README.md) | 推理阶段、内核、KV 缓存、调度和分布式服务；正文目前为草稿 |
+| [推理运行时](./series/inference-runtime/README.md) | 请求路径、模型执行、状态管理、调度、解码、分布式服务与性能验证 |
 | [芯片微架构](./series/microarchitecture/README.md) | 运算、流水线、指令控制、并行执行、异步搬运与资源协作 |
 | [存储系统](./series/storage/README.md) | SRAM、DRAM、HBM 和高带宽闪存 |
 | [芯片与系统互连](./series/interconnect/README.md) | 片上总线、网络、PCIe、SerDes 和光互连 |
