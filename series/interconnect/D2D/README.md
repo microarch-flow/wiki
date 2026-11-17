@@ -33,11 +33,28 @@ UCIe 继续演进。[UCIe.mem 存储访问](./02-interfaces/ucie-memory.md)说�
 
 ## 不同接口解决不同问题
 
-UCIe 不是唯一的封装内 D2D 选择。例如，[BoW PHY 2.0](./bow-phy.md)描述一种物理接口；OCP 还提供独立的[事务与链路层规范](https://www.opencompute.org/chiplets/25/transaction-and-link-layer-specification-for-bunch-of-wires-bow-interfaces)。[BoW.Flexi](./bow-flexi.md)则有自己的事务层、链路层和物理层。比较方案时，应先确认各规范覆盖哪些层，不能只比较名称。
+下面的入口覆盖不同层次，不能仅凭名称判断它们是否可以替换或配合。具体组合还要核对两端实现、接口配置和封装条件。
 
-[AIB 2.0](./02-interfaces/aib-2.md)提供另一种并行物理接口；[OIF 112G XSR+](./02-interfaces/oif-cei-112g-xsr-plus.md)提供一种高速串行电接口。[AMBA CHI C2C](./02-interfaces/chi-c2c.md)则关注 CHI 消息的跨芯片组织，可以与相容的承载接口配合。无论选用哪种方案，都需要检查[芯粒互操作与启动](./03-system-design/interoperability-and-bring-up.md)涉及的共同条件。
+| 入口 | 本专题关注的职责 |
+| --- | --- |
+| [UCIe 1.1 读取案例](./ucie-pcie-read.md) | 在选定配置下，用 UCIe 承载 PCIe 请求和 Completion。 |
+| [UCIe-3D 垂直连接](./02-interfaces/ucie-3d.md) | 通过堆叠界面的物理接口传递数据；上层仍需配合。 |
+| [UCIe.mem 存储访问](./02-interfaces/ucie-memory.md) | 在 UCIe 4.0 中组织计算芯粒与内存逻辑 die 之间的内存请求和响应。 |
+| [BoW PHY 2.0](./bow-phy.md) | 定义数据线、随路时钟等物理接口；上层事务规则需要另行确定。 |
+| [BoW.Flexi 读取案例](./bow-flexi.md) | 使用 BoW.Flexi 自身的事务层、链路层和物理层，展示一次 AHB 读取。 |
+| [AIB 2.0](./02-interfaces/aib-2.md) | 提供并行物理接口；上层协议和封装连接仍需配合。 |
+| [OIF 112G XSR+](./02-interfaces/oif-cei-112g-xsr-plus.md) | 定义高速串行电接口；事务语义和其他上层职责需要另行确定。 |
+| [AMBA CHI C2C](./02-interfaces/chi-c2c.md) | 组织跨芯片的 CHI 消息，与相容的承载接口配合。 |
+
+例如，OCP 还提供独立的[事务与链路层规范](https://www.opencompute.org/chiplets/25/transaction-and-link-layer-specification-for-bunch-of-wires-bow-interfaces)。BoW.Flexi 有自己的分层定义，不能仅凭名称假定它与 BoW PHY 2.0 直接互通。配合前还应检查[芯粒互操作与启动](./03-system-design/interoperability-and-bring-up.md)涉及的条件。
 
 计算 die 访问封装内 HBM 时也要跨越 die 边界，但使用什么接口取决于具体系统；不能仅凭“跨 die”就假设它使用 UCIe。[HBM 的堆叠与封装内互连](../../storage/06-system-integration/packaging/hbm-2.5d-3d-tsv.md)区分了堆栈内部连接与计算侧接口。
+
+## 按问题选读
+
+- **初识芯粒互连**：从[芯粒是什么](./01-foundations/what-is-a-chiplet.md)开始，依次看[芯粒怎样在封装内连接](./01-foundations/in-package-connections.md)和[一次跨芯粒通信](./01-foundations/cross-die-communication.md)，再选择 [UCIe 1.1 读取案例](./ucie-pcie-read.md)或 [BoW.Flexi 读取案例](./bow-flexi.md)。
+- **启动和故障定位**：先看[芯粒互操作与启动](./03-system-design/interoperability-and-bring-up.md)，再用 [UCIe 1.1 链路启动与训练](./02-interfaces/ucie-1-1-link-bring-up.md)了解具体流程。需要排查时，继续阅读[链路测试与故障定位](./03-system-design/link-testing-and-diagnosis.md)；如需了解管理测试入口，可选读 [UCIe 2.0 测试访问与管理](./03-system-design/ucie-dfx-test-access.md)。
+- **性能和系统设计**：依次阅读[跨芯粒流控与前进条件](./03-system-design/flow-control-and-forward-progress.md)、[跨芯粒读取的有效性能](./03-system-design/effective-bandwidth-and-latency.md)和[多芯粒拓扑与数据放置](./03-system-design/multi-chiplet-topology.md)，再用 [AMD MI300A 产品案例](./04-product-cases/amd-mi300a.md)了解一个公开的系统实例。
 
 ## 阅读顺序
 

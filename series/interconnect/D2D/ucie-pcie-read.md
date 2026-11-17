@@ -48,17 +48,25 @@ A 要从地址 `0x8000_1000` 读取一个 4 字节对齐的 32 位寄存器。�
 
 ## 接下来怎么读
 
-- [UCIe 1.1 链路启动与训练](./02-interfaces/ucie-1-1-link-bring-up.md)：看本例开始前，边带、主带和 Adapter 怎样就绪。
-- [UCIe.mem 存储访问](./02-interfaces/ucie-memory.md)：比较 UCIe 4.0 的另一种内存访问路径。
+**理解本例的启动与完成**
+
 - [一次跨芯粒通信](./01-foundations/cross-die-communication.md)：先区分接口、封装通道和读取完成。
-- [UCIe-3D 垂直连接](./02-interfaces/ucie-3d.md)：比较堆叠芯粒的另一种接口路径。
-- [BoW PHY 2.0](./bow-phy.md)：从数据线、随路时钟和 slice 看另一种封装内物理接口。
-- [BoW.Flexi 读取案例](./bow-flexi.md)：从 AHB 桥和数据包看另一种跨芯粒读取路径。
-- [AMBA CHI C2C](./02-interfaces/chi-c2c.md)：看一致性消息怎样组织并使用相容的承载接口。
+- [UCIe 1.1 链路启动与训练](./02-interfaces/ucie-1-1-link-bring-up.md)：看本例开始前，边带、主带和 Adapter 怎样就绪。
 - [芯粒互操作与启动](./03-system-design/interoperability-and-bring-up.md)：区分接口匹配、链路就绪和目标功能就绪。
 - [跨芯粒链路错误检测与重放](./03-system-design/link-reliability.md)：看启用重放的链路怎样检测错误并尝试恢复。
 - [跨芯粒读取的有效性能](./03-system-design/effective-bandwidth-and-latency.md)：看事务窗口和目标服务怎样约束吞吐。
-- [NoC：跨 die 网关与排队](../NOC/06-ai-noc-specifics/chiplet-and-die-to-die-interconnect.md)：继续分析网关、有限缓冲和回压。
 - [PCIe：事务与 Completion](../PCIE/02-link-transaction-basics/tlp-dllp-completion-basics.md)：区分链路控制、事务 Completion 和软件命令完成。
+
+**比较其他接口**
+
+- [UCIe-3D 垂直连接](./02-interfaces/ucie-3d.md)：比较堆叠芯粒的另一种接口路径。
+- [UCIe.mem 存储访问](./02-interfaces/ucie-memory.md)：比较 UCIe 4.0 的另一种内存访问路径。
+- [BoW PHY 2.0](./bow-phy.md)：从数据线、随路时钟和 slice 看另一种封装内物理接口。
+- [BoW.Flexi 读取案例](./bow-flexi.md)：从 AHB 桥和数据包看另一种跨芯粒读取路径。
+- [AMBA CHI C2C](./02-interfaces/chi-c2c.md)：看一致性消息怎样组织并使用相容的承载接口。
+
+**深入系统和物理路径**
+
+- [NoC：跨 die 网关与排队](../NOC/06-ai-noc-specifics/chiplet-and-die-to-die-interconnect.md)：继续分析网关、有限缓冲和回压。
 - [SerDes：封装内接口的物理取舍](../SERDES/08-system-applications/chiplet-and-d2d.md)：分析宽度、每线速率和封装通道。
 - [HBM 的堆叠与封装内互连](../../storage/06-system-integration/packaging/hbm-2.5d-3d-tsv.md)：比较 HBM 堆栈内部连接与计算侧接口。

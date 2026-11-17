@@ -71,12 +71,20 @@ BoW PHY 2.0 不规定一次 AXI 或 PCIe 读取何时完成。OCP 另有[事务�
 
 ## 接下来怎么读
 
-- [芯粒怎样在封装内连接](./01-foundations/in-package-connections.md)：先区分两端 PHY 和封装布线路径。
+**继续看 BoW 的具体用途**
+
 - [BoW PHY 2.0 坏线重映射](./02-interfaces/bow-phy-redundancy.md)：看支持冗余的 slice 怎样使用备用线。
 - [BoW 存储接口](./02-interfaces/bow-memory.md)：看控制器或存储芯粒怎样使用 BoW 参考连接。
+
+**比较其他接口**
+
 - [UCIe 1.1 读取案例](./ucie-pcie-read.md)：从一次 PCIe 读取理解事务与跨 die 承载。
 - [AIB 2.0](./02-interfaces/aib-2.md)：比较另一种并行接口的数据线、时钟和封装连接。
 - [OIF 112G XSR+](./02-interfaces/oif-cei-112g-xsr-plus.md)：以相同的原始线路速率口径比较一种高速串行接口。
+
+**理解封装与系统约束**
+
+- [芯粒怎样在封装内连接](./01-foundations/in-package-connections.md)：先区分两端 PHY 和封装布线路径。
 - [跨芯粒读取的有效性能](./03-system-design/effective-bandwidth-and-latency.md)：从原始线路速率继续分析有效吞吐上界。
 - [SerDes：封装内接口的物理取舍](../SERDES/08-system-applications/chiplet-and-d2d.md)：比较接口宽度、每线速率和封装通道。
 - [NoC：跨 die 网关与排队](../NOC/06-ai-noc-specifics/chiplet-and-die-to-die-interconnect.md)：分析片上网络与跨 die 接口之间的队列和回压。
