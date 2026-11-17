@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 320" role="img" aria-labelledby="title description">
+  <title id="title">上下堆叠裸片的连接示意</title>
+  <desc id="description">芯粒 A 位于芯粒 B 上方。信号从 A 经过两块裸片之间的凸点连接界面进入 B。图中未表示硅通孔或其他供电连接。</desc>
+  <rect x="28" y="22" width="584" height="276" rx="14" fill="#f2f5ed" stroke="#c4d2bd" stroke-width="2"/>
+  <rect x="130" y="38" width="380" height="84" rx="8" fill="#d6e8d5" stroke="#416c54" stroke-width="3"/>
+  <text x="320" y="85" text-anchor="middle" font-family="sans-serif" font-size="27" fill="#203e35">芯粒 A</text>
+  <g fill="#a66f36" stroke="#80572e" stroke-width="2">
+    <circle cx="180" cy="133" r="11"/><circle cx="250" cy="133" r="11"/><circle cx="320" cy="133" r="11"/>
+    <circle cx="390" cy="133" r="11"/><circle cx="460" cy="133" r="11"/>
+  </g>
+  <rect x="130" y="144" width="380" height="84" rx="8" fill="#d6e8d5" stroke="#416c54" stroke-width="3"/>
+  <text x="320" y="200" text-anchor="middle" font-family="sans-serif" font-size="27" fill="#203e35">芯粒 B</text>
+  <path d="M320 120 V149" fill="none" stroke="#a84e36" stroke-width="7"/>
+  <path d="M310 142 L320 156 L330 142" fill="none" stroke="#a84e36" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+  <text x="320" y="270" text-anchor="middle" font-family="sans-serif" font-size="22" fill="#38574a">示例：信号经过两块裸片之间的凸点</text>
+</svg>

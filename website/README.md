@@ -24,6 +24,8 @@ Wiki 与博客的共同写作和设计要求见 [Wiki 与博客设计规则](../
 
 芯片与系统互连的系列首页维护在 `website/interconnect.md`，仓库内的专题入口维护在 `series/interconnect/README.md`。九个专题的正文都位于 `series/interconnect/`，各专题以根目录的 `README.md` 为正文入口。`website/prepare.py` 将专题内容暂存到原有的 `专题名/wiki/` 发布路径，并为旧源码路径注册站内链接映射。BUS 原专题仓库说明保存在 `docs/archive/interconnect/BUS/README.md`，仍发布在原来的 `BUS/` 入口；其余互连历史资料不参与发布。专题源码位置由 `website/source-layout.json` 指定，主归属由 `website/ownership.py` 决定。侧栏直接展示专题首页及其章节；CPO 的章节仍按技术、产业、研究和维护分组。未列入分组的新章节仍会显示，维护时应为它选择合适分组。
 
+封装内芯粒互连的侧栏分组、短标题和顺序维护在 `series/interconnect/D2D/SUMMARY.md`。基础文章位于 `01-foundations/`；既有接口案例保留原源码与公开路径，通过知识地图归入“接口与案例”。新增文章时须将其列入一个分组；构建会检查遗漏、重复和无效链接。
+
 旧源码路径映射只用于生成博客。指向 GitHub `main` 分支旧源码路径的链接不会自动跳转；固定历史提交中的旧路径仍可访问。
 
 NoC 的十个阅读分组、文章短标题和顺序维护在 `series/interconnect/NOC/SUMMARY.md`，网站通过 `website/noc_navigation.py` 读取暂存的知识地图。九个原章节导读归入“查阅与练习 → 原章节入口”。新增文章时，须在知识地图中将它列入一个分组；构建会检查页面是否遗漏或重复。文章的“上级”指向当前阅读分组，历史导读链接标为“原章节”；面包屑也显示当前分组。部分历史源码目录名与阅读分组不同，归属以知识地图为准，发布路径仍保持原状。

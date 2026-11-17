@@ -1,6 +1,6 @@
 # BoW PHY 2.0：数据怎样通过并行线路跨越芯粒？
 
-上级：[封装内芯粒互连](./README.md)
+上级：[02 接口与案例](./SUMMARY.md#interfaces)
 
 OCP 的 Bunch of Wires（BoW）芯粒互连规范包含不同文档。本文聚焦 [BoW PHY 2.0](https://www.opencompute.org/documents/bow-specification-v2-0d-final-pdf/) 的主带物理层（PHY）接口：发送端怎样把数据与时钟送过封装，接收端怎样还原数据。上层交换的是读取、写入还是其他消息，需要由所选协议另行定义。
 
@@ -71,6 +71,7 @@ BoW PHY 2.0 不规定一次 AXI 或 PCIe 读取何时完成。OCP 另有[事务�
 
 ## 接下来怎么读
 
+- [芯粒怎样在封装内连接](./01-foundations/in-package-connections.md)：先区分两端 PHY 和封装布线路径。
 - [UCIe 1.1 读取案例](./ucie-pcie-read.md)：从一次 PCIe 读取理解事务与跨 die 承载。
 - [SerDes：封装内接口的物理取舍](../SERDES/08-system-applications/chiplet-and-d2d.md)：比较接口宽度、每线速率和封装通道。
 - [NoC：跨 die 网关与排队](../NOC/06-ai-noc-specifics/chiplet-and-die-to-die-interconnect.md)：分析片上网络与跨 die 接口之间的队列和回压。

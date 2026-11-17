@@ -1,8 +1,16 @@
 # 封装内芯粒互连：数据怎样跨越 die 边界？
 
-把两颗芯粒放进同一封装，并不意味着它们已经能交换数据。封装需要提供连接通道；两端还需要兼容的物理接口、承载方式和上层协议。
+芯粒是为与其他裸片共同组成系统而设计的功能裸片。例如，一个封装中可以有计算芯粒和 I/O 芯粒。封装为裸片提供支撑、连接和保护等功能。
 
-Die-to-die（D2D）描述 die 之间的连接，不指定唯一标准或电路结构。本文关注封装内的 D2D：先区分一次通信所需的几类条件，再用 UCIe 承载 PCIe 读取作为例子。
+把两颗芯粒放进同一封装，并不意味着它们已经能交换数据。封装需要提供连接通道；两端还需要兼容的物理接口、承载方式和上层协议。Die-to-die（D2D）描述裸片之间的连接，不指定唯一标准或电路结构。本文关注封装内的 D2D。
+
+## 芯粒怎样在封装内连接
+
+以电互连为例，发送端的物理接口（PHY）产生信号；信号经过焊盘、凸点和封装内布线等结构，到达另一颗芯粒的接收端 PHY。布线可以经过封装基板、中介层或局部硅桥；上下堆叠的裸片也可以经过连接界面通信。具体路径取决于封装结构。
+
+封装通道负责连接，不会自动定义消息的含义。两端还要按共同支持的规则组织和接收数据，系统才能完成所需的读取、写入或其他操作。
+
+如果刚接触这些概念，可从[芯粒是什么](./01-foundations/what-is-a-chiplet.md)开始，再看[封装内连接](./01-foundations/in-package-connections.md)和[一次跨芯粒通信](./01-foundations/cross-die-communication.md)。
 
 ## 先区分四个问题
 
@@ -19,27 +27,24 @@ Die-to-die（D2D）描述 die 之间的连接，不指定唯一标准或电路�
 
 ## 以 UCIe 为例
 
-[UCIe 联盟](https://www.uciexpress.org/specifications)将 UCIe 定义为封装级互连规范，覆盖 D2D 物理层、协议和软件等内容。它可以承载 PCIe 和 CXL 等上层协议。联盟说明 UCIe 1.1 向后兼容 1.0，但两颗具体芯粒仍要有可配合的物理接口、协议、格式和配置，才能完成所需通信。
-
-下面是一个**构造案例**。假设芯粒 A 和 B 支持 UCIe 1.1 及兼容的 PCIe 承载模式，链路已就绪，B 的设备地址窗口也已配置：
-
-1. A 发起 PCIe Memory Read；UCIe 接口将请求传到 B。
-2. 假设 B 的 PCIe 端点通过桥转换为 AXI 读，再经片上网络访问目标寄存器。网关或网络拥塞时，请求可能等待。
-3. 目标返回数据，B 形成带数据的 PCIe Completion。A 匹配返回、检查状态并收齐所需数据后，读取才成功完成。
-
-在此例中，PCIe 定义读取请求和 Completion 的语义，UCIe 提供所选模式下的跨 die 承载。B 内部的 AXI 和 NoC 是案例假设。链路接收到请求，也不代表目标寄存器已经完成读取。
+[UCIe 联盟](https://www.uciexpress.org/specifications)将 UCIe 定义为封装级互连规范，覆盖 D2D 物理层、协议和软件等内容。假设两颗芯粒支持相容的 UCIe 1.1 和 PCIe 承载配置，一次 PCIe 读取可以经 UCIe 到达对端，再由对端返回 Completion。链路收到请求不代表读取已经成功；完整过程见 [UCIe 1.1 读取案例](./ucie-pcie-read.md)。
 
 ## 不同接口解决不同问题
 
-UCIe 不是唯一的封装内 D2D 选择。例如，[BoW PHY 2.0](./bow-phy.md)描述一种物理接口；OCP 还提供独立的[事务与链路层规范](https://www.opencompute.org/chiplets/25/transaction-and-link-layer-specification-for-bunch-of-wires-bow-interfaces)。比较方案时，应先确认各规范覆盖哪些层，不能只比较名称。
+UCIe 不是唯一的封装内 D2D 选择。例如，[BoW PHY 2.0](./bow-phy.md)描述一种物理接口；OCP 还提供独立的[事务与链路层规范](https://www.opencompute.org/chiplets/25/transaction-and-link-layer-specification-for-bunch-of-wires-bow-interfaces)。[BoW.Flexi](./bow-flexi.md)则有自己的事务层、链路层和物理层。比较方案时，应先确认各规范覆盖哪些层，不能只比较名称。
 
 计算 die 访问封装内 HBM 时也要跨越 die 边界，但使用什么接口取决于具体系统；不能仅凭“跨 die”就假设它使用 UCIe。[HBM 的堆叠与封装内互连](../../storage/06-system-integration/packaging/hbm-2.5d-3d-tsv.md)区分了堆栈内部连接与计算侧接口。
 
 ## 阅读顺序
 
-1. [UCIe 1.1 读取案例](./ucie-pcie-read.md)：两端怎样准备链路，PCIe 请求怎样跨 die 并返回结果。
-2. [BoW PHY 2.0](./bow-phy.md)：数据、时钟和 slice 怎样组成封装内连接。
-3. [BoW.Flexi 读取案例](./bow-flexi.md)：AHB 读取怎样封包、跨芯粒并返回。
+1. [芯粒是什么](./01-foundations/what-is-a-chiplet.md)：区分裸片、芯粒和封装。
+2. [芯粒怎样在封装内连接](./01-foundations/in-package-connections.md)：认识中介层、硅桥和堆叠连接。
+3. [一次跨芯粒通信](./01-foundations/cross-die-communication.md)：沿请求和返回路径区分接口与通道。
+4. [UCIe 1.1 读取案例](./ucie-pcie-read.md)：PCIe 请求怎样跨 die 并返回结果。
+5. [BoW PHY 2.0](./bow-phy.md)：数据、时钟和 slice 怎样组成封装内连接。
+6. [BoW.Flexi 读取案例](./bow-flexi.md)：AHB 读取怎样封包、跨芯粒并返回。
+
+也可以按问题查看[知识地图](./SUMMARY.md)。
 
 ## 继续阅读
 

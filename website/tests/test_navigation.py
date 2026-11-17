@@ -41,8 +41,17 @@ class GeneratedNavigationTests(unittest.TestCase):
         self.assertEqual([next(iter(group)) for group in groups], list(GROUPS[INTERCONNECT]))
         self.assertEqual(len(groups), 9)
         self.assertEqual(groups[2], {"封装内芯粒互连": [
-            "D2D/wiki/README.md", "D2D/wiki/ucie-pcie-read.md", "D2D/wiki/bow-phy.md",
-            "D2D/wiki/bow-flexi.md",
+            "D2D/wiki/README.md", {"知识地图": "D2D/wiki/SUMMARY.md"},
+            {"01 芯粒与连接基础": [
+                "D2D/wiki/01-foundations/what-is-a-chiplet.md",
+                "D2D/wiki/01-foundations/in-package-connections.md",
+                "D2D/wiki/01-foundations/cross-die-communication.md",
+            ]},
+            {"02 接口与案例": [
+                "D2D/wiki/ucie-pcie-read.md",
+                "D2D/wiki/bow-phy.md",
+                "D2D/wiki/bow-flexi.md",
+            ]},
         ]})
         self.assertEqual(groups[5], {"加速器互连": ["SCALEUP/wiki/README.md"]})
         self.assertEqual(groups[6], {"系统网络": ["NETWORK/wiki/README.md"]})
@@ -83,6 +92,10 @@ class GeneratedNavigationTests(unittest.TestCase):
         locations = {item["location"] for item in search}
         cases = {
             "D2D/wiki/": "封装内芯粒互连",
+            "D2D/wiki/SUMMARY/": "封装内芯粒互连",
+            "D2D/wiki/01-foundations/what-is-a-chiplet/": "封装内芯粒互连",
+            "D2D/wiki/01-foundations/in-package-connections/": "封装内芯粒互连",
+            "D2D/wiki/01-foundations/cross-die-communication/": "封装内芯粒互连",
             "D2D/wiki/ucie-pcie-read/": "封装内芯粒互连",
             "D2D/wiki/bow-phy/": "封装内芯粒互连",
             "D2D/wiki/bow-flexi/": "封装内芯粒互连",
@@ -105,14 +118,17 @@ class GeneratedNavigationTests(unittest.TestCase):
 
         ucie = (SITE / "D2D/wiki/ucie-pcie-read/index.html").read_text(encoding="utf-8")
         self.assertIn('title="UCIe 1.1 如何承载一次 PCIe 读取？"', ucie)
+        self.assertIn("<title>UCIe 1.1 如何承载一次 PCIe 读取？ - 技术笔记</title>", ucie)
         self.assertRegex(ucie, r'<span class="md-ellipsis">\s*UCIe 1\.1 读取案例\s*</span>')
 
         bow = (SITE / "D2D/wiki/bow-phy/index.html").read_text(encoding="utf-8")
         self.assertIn('title="BoW PHY 2.0：数据怎样通过并行线路跨越芯粒？"', bow)
+        self.assertIn("<title>BoW PHY 2.0：数据怎样通过并行线路跨越芯粒？ - 技术笔记</title>", bow)
         self.assertRegex(bow, r'<span class="md-ellipsis">\s*BoW PHY 2\.0\s*</span>')
 
         flexi = (SITE / "D2D/wiki/bow-flexi/index.html").read_text(encoding="utf-8")
         self.assertIn('title="BoW.Flexi：AHB 读取怎样封装成跨芯粒数据包？"', flexi)
+        self.assertIn("<title>BoW.Flexi：AHB 读取怎样封装成跨芯粒数据包？ - 技术笔记</title>", flexi)
         self.assertRegex(flexi, r'<span class="md-ellipsis">\s*BoW\.Flexi 读取案例\s*</span>')
 
         cxl = (SITE / "COHERENCE/wiki/cxl-host-memory/index.html").read_text(encoding="utf-8")
@@ -120,8 +136,12 @@ class GeneratedNavigationTests(unittest.TestCase):
         self.assertRegex(cxl, r'<span class="md-ellipsis">\s*CXL 内存访问\s*</span>')
 
         for location, anchor in (
+            ("D2D/wiki/", "封装内芯粒互连数据怎样跨越-die-边界"),
+            ("D2D/wiki/", "先区分四个问题"),
+            ("D2D/wiki/", "以-ucie-为例"),
             ("D2D/wiki/", "不同接口解决不同问题"),
             ("D2D/wiki/", "阅读顺序"),
+            ("D2D/wiki/", "继续阅读"),
             ("D2D/wiki/ucie-pcie-read/", "ucie-11-如何承载一次-pcie-读取"),
             ("D2D/wiki/ucie-pcie-read/", "先约定一次读取"),
             ("D2D/wiki/ucie-pcie-read/", "请求经过哪些职责边界"),
@@ -137,6 +157,13 @@ class GeneratedNavigationTests(unittest.TestCase):
             ("D2D/wiki/bow-phy/", "phy-怎样接入上层协议"),
             ("D2D/wiki/bow-phy/", "bowflexi-的边界"),
             ("D2D/wiki/bow-phy/", "接下来怎么读"),
+            ("D2D/wiki/bow-flexi/", "bowflexiahb-读取怎样封装成跨芯粒数据包"),
+            ("D2D/wiki/bow-flexi/", "先约定接口和读取"),
+            ("D2D/wiki/bow-flexi/", "一次读取经过哪些层"),
+            ("D2D/wiki/bow-flexi/", "请求和响应怎样封包"),
+            ("D2D/wiki/bow-flexi/", "读取何时完成"),
+            ("D2D/wiki/bow-flexi/", "写入响应和可选-ecc"),
+            ("D2D/wiki/bow-flexi/", "接下来怎么读"),
             ("BUS/wiki/02-fundamentals/bus-vs-noc-vs-point-to-point/", "三者的分界不是线多线少"),
             ("NOC/wiki/06-ai-noc-specifics/chiplet-and-die-to-die-interconnect/", "跨-die-不再是多几-hop"),
             ("SERDES/wiki/08-system-applications/chiplet-and-d2d/", "宽接口与较高速接口的取舍"),

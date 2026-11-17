@@ -19,6 +19,7 @@ from storage_navigation import (INTEGRATION_AFTER, INTEGRATION_HOME, INTEGRATION
                                 INTEGRATION_TOPIC, MEMORY_HOME, MEMORY_SECTIONS, MEMORY_TOPIC,
                                 RESOURCE_HOME, RESOURCE_SECTIONS, STORAGE_RESOURCES, SYSTEM_SELECTION)  # noqa: E402
 from noc_navigation import NOC_SUMMARY, noc_topic_tree, read_noc_sections  # noqa: E402
+from d2d_navigation import D2D_SUMMARY, d2d_topic_tree, read_d2d_sections  # noqa: E402
 
 
 TOPICS = (
@@ -368,6 +369,8 @@ def grouped_original_topics(root, series):
         for name, label in TOPICS:
             if series == INTERCONNECT and group == "片上网络（NoC）" and name == "NOC":
                 tree = noc_topic_tree(root)
+            elif series == INTERCONNECT and group == "封装内芯粒互连" and name == "D2D":
+                tree = d2d_topic_tree(root)
             elif series == INTERCONNECT and group == "共封装光学（CPO）" and name == "CPO":
                 tree = cpo_topic_tree(root, group)
             else:
@@ -576,12 +579,16 @@ def on_config(config, **kwargs):
         path = f"{name}/wiki/README.md"
         if owner(path)[0] == INTERCONNECT and (root / path).is_file():
             config.extra["storage_sidebar_labels"][path] = (owner(path)[1], title(root / path))
-    # Reuse reading-list labels for the D2D and coherence topic articles.
-    for topic in ("D2D", "COHERENCE"):
+    # Reuse reading-list labels for coherence topic articles.
+    for topic in ("COHERENCE",):
         chapter = root / topic / "wiki"
         for filename, short in reading_items(chapter):
             path = chapter / filename
             config.extra["storage_sidebar_labels"][path.relative_to(root).as_posix()] = (short, title(path))
+    if (root / D2D_SUMMARY).is_file():
+        for _name, _anchor, pages in read_d2d_sections(root):
+            for short, path in pages:
+                config.extra["storage_sidebar_labels"][path] = (short, title(root / path))
     if (root / NOC_SUMMARY).is_file():
         sections, legacy = read_noc_sections(root)
         config.extra["noc_legacy_pages"] = {path for _, path in legacy}

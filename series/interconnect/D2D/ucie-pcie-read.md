@@ -1,6 +1,6 @@
 # UCIe 1.1 如何承载一次 PCIe 读取？
 
-上级：[封装内芯粒互连](./README.md)
+上级：[02 接口与案例](./SUMMARY.md#interfaces)
 
 一次跨芯粒读取同时依赖上层事务、D2D 承载和封装内信号通道。本文以 UCIe 1.1 承载 PCIe 为例，说明两端需要准备什么，以及请求、数据和完成状态怎样通过这些边界。
 
@@ -48,6 +48,7 @@ A 要从地址 `0x8000_1000` 读取一个 4 字节对齐的 32 位寄存器。�
 
 ## 接下来怎么读
 
+- [一次跨芯粒通信](./01-foundations/cross-die-communication.md)：先区分接口、封装通道和读取完成。
 - [BoW PHY 2.0](./bow-phy.md)：从数据线、随路时钟和 slice 看另一种封装内物理接口。
 - [BoW.Flexi 读取案例](./bow-flexi.md)：从 AHB 桥和数据包看另一种跨芯粒读取路径。
 - [NoC：跨 die 网关与排队](../NOC/06-ai-noc-specifics/chiplet-and-die-to-die-interconnect.md)：继续分析网关、有限缓冲和回压。

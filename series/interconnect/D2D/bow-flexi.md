@@ -1,6 +1,6 @@
 # BoW.Flexi：AHB 读取怎样封装成跨芯粒数据包？
 
-上级：[封装内芯粒互连](./README.md)
+上级：[02 接口与案例](./SUMMARY.md#interfaces)
 
 一颗芯粒上的 AHB 发起方要读取另一颗芯粒上的寄存器，跨芯粒接口怎样传递地址，又怎样把读数据交回来？本文使用 [OCP BoW.Flexi 1.0.0 规范](https://www.opencompute.org/wp-content/uploads/2026/10/bow-flexi_1p0_final.pdf)中的 AHB 桥作为参考，构造一次读取。
 
@@ -68,6 +68,7 @@ ECC 是可选项。启用时，链路层为数据包加入纠错信息；规范�
 
 ## 接下来怎么读
 
+- [一次跨芯粒通信](./01-foundations/cross-die-communication.md)：先区分接口、封装通道和读取完成。
 - [BoW PHY 2.0](./bow-phy.md)：看另一种 BoW 物理接口怎样组织数据线和随路时钟。
 - [UCIe 1.1 读取案例](./ucie-pcie-read.md)：看 PCIe 请求与 Completion 怎样通过 UCIe 跨芯粒传递。
 - [NoC：跨 die 网关与排队](../NOC/06-ai-noc-specifics/chiplet-and-die-to-die-interconnect.md)：继续分析请求进入网关后的缓冲和回压。
