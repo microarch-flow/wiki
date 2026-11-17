@@ -51,6 +51,11 @@ class GeneratedNavigationTests(unittest.TestCase):
                 "D2D/wiki/ucie-pcie-read.md",
                 "D2D/wiki/bow-phy.md",
                 "D2D/wiki/bow-flexi.md",
+                "D2D/wiki/02-interfaces/aib-2.md",
+                "D2D/wiki/02-interfaces/chi-c2c.md",
+            ]},
+            {"03 系统集成与验证": [
+                "D2D/wiki/03-system-design/interoperability-and-bring-up.md",
             ]},
         ]})
         self.assertEqual(groups[5], {"加速器互连": ["SCALEUP/wiki/README.md"]})
@@ -99,6 +104,9 @@ class GeneratedNavigationTests(unittest.TestCase):
             "D2D/wiki/ucie-pcie-read/": "封装内芯粒互连",
             "D2D/wiki/bow-phy/": "封装内芯粒互连",
             "D2D/wiki/bow-flexi/": "封装内芯粒互连",
+            "D2D/wiki/02-interfaces/aib-2/": "封装内芯粒互连",
+            "D2D/wiki/02-interfaces/chi-c2c/": "封装内芯粒互连",
+            "D2D/wiki/03-system-design/interoperability-and-bring-up/": "封装内芯粒互连",
             "COHERENCE/wiki/": "一致性与内存互连",
             "COHERENCE/wiki/cxl-host-memory/": "一致性与内存互连",
             "SCALEUP/wiki/": "加速器互连",

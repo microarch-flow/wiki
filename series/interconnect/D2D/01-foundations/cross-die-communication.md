@@ -45,4 +45,6 @@
 
 - [UCIe 1.1 读取案例](../ucie-pcie-read.md)：沿一次 PCIe 读取区分请求、链路承载和 Completion。
 - [BoW.Flexi 读取案例](../bow-flexi.md)：看一个 AHB 读取如何被组织成数据包。
+- [AMBA CHI C2C](../02-interfaces/chi-c2c.md)：看一致性消息怎样跨越芯粒边界。
+- [芯粒互操作与启动](../03-system-design/interoperability-and-bring-up.md)：检查设计匹配、链路就绪和系统资源配置。
 - [芯粒怎样在封装内连接](./in-package-connections.md)：回看封装通道的常见结构。

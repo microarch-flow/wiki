@@ -73,6 +73,7 @@ BoW PHY 2.0 不规定一次 AXI 或 PCIe 读取何时完成。OCP 另有[事务�
 
 - [芯粒怎样在封装内连接](./01-foundations/in-package-connections.md)：先区分两端 PHY 和封装布线路径。
 - [UCIe 1.1 读取案例](./ucie-pcie-read.md)：从一次 PCIe 读取理解事务与跨 die 承载。
+- [AIB 2.0](./02-interfaces/aib-2.md)：比较另一种并行接口的数据线、时钟和封装连接。
 - [SerDes：封装内接口的物理取舍](../SERDES/08-system-applications/chiplet-and-d2d.md)：比较接口宽度、每线速率和封装通道。
 - [NoC：跨 die 网关与排队](../NOC/06-ai-noc-specifics/chiplet-and-die-to-die-interconnect.md)：分析片上网络与跨 die 接口之间的队列和回压。
 

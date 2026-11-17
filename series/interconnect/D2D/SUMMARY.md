@@ -15,3 +15,9 @@
 - [UCIe 1.1 读取案例](./ucie-pcie-read.md)
 - [BoW PHY 2.0](./bow-phy.md)
 - [BoW.Flexi 读取案例](./bow-flexi.md)
+- [AIB 2.0](./02-interfaces/aib-2.md)
+- [AMBA CHI C2C](./02-interfaces/chi-c2c.md)
+
+## 03 系统集成与验证 {#system-integration}
+
+- [芯粒互操作与启动](./03-system-design/interoperability-and-bring-up.md)

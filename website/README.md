@@ -24,7 +24,7 @@ Wiki 与博客的共同写作和设计要求见 [Wiki 与博客设计规则](../
 
 芯片与系统互连的系列首页维护在 `website/interconnect.md`，仓库内的专题入口维护在 `series/interconnect/README.md`。九个专题的正文都位于 `series/interconnect/`，各专题以根目录的 `README.md` 为正文入口。`website/prepare.py` 将专题内容暂存到原有的 `专题名/wiki/` 发布路径，并为旧源码路径注册站内链接映射。BUS 原专题仓库说明保存在 `docs/archive/interconnect/BUS/README.md`，仍发布在原来的 `BUS/` 入口；其余互连历史资料不参与发布。专题源码位置由 `website/source-layout.json` 指定，主归属由 `website/ownership.py` 决定。侧栏直接展示专题首页及其章节；CPO 的章节仍按技术、产业、研究和维护分组。未列入分组的新章节仍会显示，维护时应为它选择合适分组。
 
-封装内芯粒互连的侧栏分组、短标题和顺序维护在 `series/interconnect/D2D/SUMMARY.md`。基础文章位于 `01-foundations/`；既有接口案例保留原源码与公开路径，通过知识地图归入“接口与案例”。新增文章时须将其列入一个分组；构建会检查遗漏、重复和无效链接。
+封装内芯粒互连的侧栏分组、短标题和顺序维护在 `series/interconnect/D2D/SUMMARY.md`。基础文章位于 `01-foundations/`，新接口案例位于 `02-interfaces/`，系统集成文章位于 `03-system-design/`；既有接口案例保留原源码与公开路径，通过知识地图归入“接口与案例”。新增文章时须将其列入一个分组；构建会检查遗漏、重复和无效链接。
 
 旧源码路径映射只用于生成博客。指向 GitHub `main` 分支旧源码路径的链接不会自动跳转；固定历史提交中的旧路径仍可访问。
 
