@@ -1,4 +1,5 @@
 # 10 重点公司与合作关系图谱
+<!-- nav-title: 公司关系 -->
 
 这一章把前面的“产业链角色”和“供应链分层”进一步落到公司级。
 
@@ -14,9 +15,9 @@
 - 涉及时效性较强的合作关系时，以文中注明的公开时间为准
 - 这里更适合做“研究入口”和“关系框架”，不适合当作法律或商业尽调结论
 
-建议顺序：
+## 阅读顺序
 
-- [公司分组地图](./company-groups.md)
-- [合作关系图](./partnership-map.md)
-- [重点组合案例](./key-combinations.md)
-- [如何研究一家公司在 CPO 生态中的位置](./how-to-study-a-company.md)
+1. [公司分组地图](./company-groups.md)
+2. [合作关系图](./partnership-map.md)
+3. [重点组合案例](./key-combinations.md)
+4. [公司研究方法](./how-to-study-a-company.md)

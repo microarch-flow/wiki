@@ -20,6 +20,8 @@ NVIDIA 在 CPO 生态里的核心位置，是 `AI 系统需求牵引方 + 网络
 
 NVIDIA 在 [2025-03-18 公告](https://nvidianews.nvidia.com/news/nvidia-spectrum-x-co-packaged-optics-networking-switches-ai-factories)发布 `Spectrum-X Photonics` 和 `Quantum-X Photonics`，并列出生态伙伴。
 
+[2026-05-31 公告](https://nvidianews.nvidia.com/news/vera-rubin-full-production-agentic-ai-factory)称 `Spectrum-X Ethernet Photonics` 已进入生产。这是厂商对指定产品的生产状态声明；公告没有给出可据此比较的客户现场端口数。不能把它直接用于推算任务性能或市场份额。
+
 这说明它已经不再只是笼统谈 photonics，而是在公开定义：
 
 - 哪些平台会用
@@ -77,7 +79,7 @@ NVIDIA 的客户入口是：
 
 ## 你接下来最该看的观察指标
 
-1. 是否有更多公开客户部署信号
+1. 是否有可核实的客户交付、现场端口和运行数据
 2. NVIDIA 是否持续强化 photonics 作为 AI factory 核心组成的表述
 3. 生态伙伴是否继续扩大，还是开始收敛到更稳定的供货结构
 

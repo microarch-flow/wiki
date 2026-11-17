@@ -1,10 +1,14 @@
-# 谁最可能先规模化落地
+# 如何比较 CPO 商用进展
+
+<span id="谁最可能先规模化落地"></span>
 
 上级：[12 研究结论与竞争观察框架](./README.md)
 
 相关：[AI 集群场景与使用逻辑](../07-applications-economics/ai-cluster-use-cases.md)、[重点组合案例](../10-company-ecosystem/key-combinations.md)
 
-## 最可能先落地的不是“最先进路线”，而是“最先讲通系统收益的路线”
+<span id="最可能先落地的不是最先进路线而是最先讲通系统收益的路线"></span>
+
+## 先定义比较条件
 
 判断谁会先规模化，不要先问谁技术最炫，而要问：
 
@@ -17,7 +21,7 @@
 
 先定义比较终点和年份：芯片量产、整机交付、现场端口数和客户部署是不同指标。只有同口径的厂商生产声明或客户数据才能比较，融资和伙伴名单不能代替出货量。
 
-- **交换平台**：优先核对 [Broadcom 深卡](../11-deep-company-cards/broadcom.md)中的 TH5-Bailly 特定型号量产声明，以及 [NVIDIA 深卡](../11-deep-company-cards/nvidia.md)中的平台目标和当时计划。
+- **交换平台**：核对 [Broadcom 深卡](../11-deep-company-cards/broadcom.md)中不同型号的量产与出货声明，以及 [NVIDIA 深卡](../11-deep-company-cards/nvidia.md)中指定产品的生产声明。它们均不能替代客户部署数据。
 - **optical I/O 子系统**：跟踪 [Ayar Labs](../11-deep-company-cards/ayar-labs.md) 的组件资格、客户集成和交付证据。
 - **系统与能力内化**：跟踪 Cisco、AMD 的收购与具体产品材料。收购不能直接判定量产顺序。
 

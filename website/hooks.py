@@ -156,8 +156,12 @@ def title(path):
     return match.group(1).strip() if match else path.stem.replace("-", " ")
 
 
-def reading_items(directory, index_name="README.md", article_directory=None):
-    """Read labels and targets from an index's numbered sibling reading list."""
+def reading_items(directory, index_name="README.md", article_directory=None, include_subdirs=False):
+    """Read labels and targets from an index's numbered reading list.
+
+    CPO also orders immediate child sections by linking to their README.
+    Other topics retain the original sibling-article behavior.
+    """
     index = directory / index_name
     article_directory = article_directory or directory
     if not index.is_file():
@@ -194,8 +198,14 @@ def reading_items(directory, index_name="README.md", article_directory=None):
         if target.scheme or target.netloc or not target.path:
             continue
         path = (directory / unquote(target.path)).resolve()
-        if path.parent == article_directory.resolve() and path.is_file() and path.suffix.lower() == ".md" and path.name not in {index_name, "README.md", "SUMMARY.md"} and all(name != path.name for name, _ in items):
-            items.append((path.name, unescape(item.group(1)).strip()))
+        name = None
+        if path.is_file() and path.suffix.lower() == ".md":
+            if path.parent == article_directory.resolve() and path.name not in {index_name, "README.md", "SUMMARY.md"}:
+                name = path.name
+            elif include_subdirs and path.name == "README.md" and path.parent.parent == article_directory.resolve():
+                name = path.parent.name
+        if name and all(existing != name for existing, _ in items):
+            items.append((name, unescape(item.group(1)).strip()))
     return items
 
 
@@ -237,7 +247,9 @@ def make_tree(directory, root, index_names=("README.md",), include=None):
     summary = directory / "SUMMARY.md"
     if summary.is_file() and include(summary):
         items.append({"知识地图": summary.relative_to(root).as_posix()})
-    priority = {name: number for number, name in enumerate(reading_order(directory, index.name if index else "README.md"))}
+    is_cpo = directory.relative_to(root).parts[:2] == ("CPO", "wiki")
+    ordered = reading_items(directory, index.name if index else "README.md", include_subdirs=is_cpo)
+    priority = {name: number for number, (name, _label) in enumerate(ordered)}
     for path in sorted(directory.iterdir(), key=lambda p: (priority.get(p.name, len(priority)), p.name.lower())):
         if path.is_dir():
             if not any(path.rglob("*.md")):
@@ -246,7 +258,7 @@ def make_tree(directory, root, index_names=("README.md",), include=None):
             label = title(section_index) if section_index else path.name
             # Material also uses the section label as the mobile drawer title;
             # changing only the chapter link leaves that title unshortened.
-            if section_index and section_index.relative_to(root).parts[:2] == ("SERDES", "wiki"):
+            if section_index and section_index.relative_to(root).parts[:2] in (("SERDES", "wiki"), ("CPO", "wiki")):
                 metadata = re.search(r"^<!--\s*nav-title:\s*(.+?)\s*-->\s*$", section_index.read_text(encoding="utf-8"), re.MULTILINE)
                 if metadata:
                     label = metadata.group(1)
@@ -377,10 +389,10 @@ CPO_SECTIONS = (
     ("技术与工程", ("01-overview", "03-architecture-platform", "04-optical-engine",
                     "05-electrical-thermal-reliability", "06-manufacturing", "07-applications-economics")),
     ("产业与公司", ("02-industry", "09-supply-chain-geography", "10-company-ecosystem",
-                    "11-deep-company-cards", "12-conclusions-competition", "15-china-opportunities")),
-    ("研究与索引", ("08-research", "13-one-page-summary", "14-indexes", "16-learning-navigation")),
-    ("维护与模板", ("17-report-template", "18-sources-and-updates", "19-versioning-and-usage",
-                    "20-editorial-style")),
+                    "11-deep-company-cards", "12-conclusions-competition", "15-china-opportunities",
+                    "18-sources-and-updates")),
+    ("学习与查阅", ("08-research", "13-one-page-summary", "14-indexes", "16-learning-navigation")),
+    ("维护与模板", ("17-report-template", "19-versioning-and-usage", "20-editorial-style")),
 )
 
 
@@ -392,7 +404,8 @@ def cpo_topic_tree(root, group):
         for directory in directories:
             index = root / "CPO" / "wiki" / directory / "README.md"
             if index.is_file():
-                section_for_title[title(index)] = label
+                metadata = re.search(r"^<!--\s*nav-title:\s*(.+?)\s*-->\s*$", index.read_text(encoding="utf-8"), re.MULTILINE)
+                section_for_title[metadata.group(1) if metadata else title(index)] = label
     grouped = {label: [] for label, _ in CPO_SECTIONS}
     ungrouped = []
     for item in tree:
@@ -650,6 +663,19 @@ def on_config(config, **kwargs):
             for filename, short in reading_items(chapter):
                 path = chapter / filename
                 config.extra["storage_sidebar_labels"][path.relative_to(root).as_posix()] = (short, title(path))
+    # CPO reading lists may also contain immediate child-section indexes.
+    cpo_root = root / "CPO" / "wiki"
+    for index in sorted(cpo_root.rglob("README.md")):
+        if index.parent == cpo_root:
+            continue
+        metadata = re.search(r"^<!--\s*nav-title:\s*(.+?)\s*-->\s*$", index.read_text(encoding="utf-8"), re.MULTILINE)
+        if metadata:
+            config.extra["storage_sidebar_labels"][index.relative_to(root).as_posix()] = (metadata.group(1), title(index))
+        for name, short in reading_items(index.parent, include_subdirs=True):
+            path = index.parent / name
+            if path.is_dir():
+                path = path / "README.md"
+            config.extra["storage_sidebar_labels"][path.relative_to(root).as_posix()] = (short, title(path))
     if (root / D2D_SUMMARY).is_file():
         for _name, _anchor, pages in read_d2d_sections(root):
             for short, path in pages:
@@ -817,7 +843,9 @@ def on_page_content(html, page, **kwargs):
         html = f'<div class="ram-problem-article">\n{html}\n</div>'
     elif page.file.src_uri.startswith("RAM/wiki/03-sram-applications/"):
         html = f'<div class="sram-application-article">\n{html}\n</div>'
-    if has_breadcrumbs(page):
+    # CPO breadcrumbs are inserted after indexing so search results start with
+    # article content, rather than an ordered list of navigation ancestors.
+    if has_breadcrumbs(page) and not page.file.src_uri.startswith("CPO/wiki/"):
         config = kwargs["config"]
         html = render_breadcrumbs(page, Path(config.docs_dir), config.extra.get("storage_sidebar_labels")) + "\n" + html
     return html
@@ -825,6 +853,13 @@ def on_page_content(html, page, **kwargs):
 
 def on_post_page(output, page, **kwargs):
     """Shorten configured sidebar labels and expose the current page accessibly."""
+    if page.file.src_uri.startswith("CPO/wiki/") and has_breadcrumbs(page):
+        config = kwargs["config"]
+        crumb = render_breadcrumbs(page, Path(config.docs_dir), config.extra.get("storage_sidebar_labels"))
+        output, count = re.subn(r'(<article class="md-content__inner md-typeset">)',
+                                lambda match: match.group(1) + "\n" + crumb, output, count=1)
+        if count != 1:
+            raise ValueError(f"CPO article container not found: {page.file.src_uri}")
     labels = kwargs["config"].extra.get("storage_sidebar_urls", {})
     start = output.find('<div class="md-sidebar md-sidebar--primary"')
     end = output.find('<div class="md-sidebar md-sidebar--secondary"', start)

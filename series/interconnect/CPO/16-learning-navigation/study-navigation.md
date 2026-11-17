@@ -19,12 +19,13 @@
 
 推荐顺序：
 
-1. [电路到时序的共用基础](../../../microarchitecture/foundations/electrical-timing-foundations.md)
-2. [光链路基础与功率预算](../04-optical-engine/optical-link-basics.md)
-3. [激光器、调制器、探测器](../04-optical-engine/laser-modulator-detector.md)
-4. [CPO 在解决什么问题](../01-overview/problem-statement.md)
-5. [CPO 分类框架](../01-overview/taxonomy.md)
-6. [带宽、功耗与热](../05-electrical-thermal-reliability/bandwidth-power-thermal.md)
+1. [CPO 在解决什么问题](../01-overview/problem-statement.md)
+2. [CPO 分类框架](../01-overview/taxonomy.md)
+3. [系统栈与接口位置](../03-architecture-platform/system-stack.md)
+4. [光链路基础与功率预算](../04-optical-engine/optical-link-basics.md)
+5. [带宽、功耗与热](../05-electrical-thermal-reliability/bandwidth-power-thermal.md)
+
+如果电路或时序概念不熟悉，可按需补读[电路到时序的共用基础](../../../microarchitecture/foundations/electrical-timing-foundations.md)；器件细节见[激光器、调制器、探测器](../04-optical-engine/laser-modulator-detector.md)。
 
 读完后你应该能回答：
 
@@ -89,13 +90,13 @@
 3. [区域格局：美国、台湾地区、日本、欧洲、中国大陆](../09-supply-chain-geography/regional-landscape.md)
 4. [合作关系图](../10-company-ecosystem/partnership-map.md)
 5. [重点公司深卡](../11-deep-company-cards/README.md)
-6. [平台赢家、关键拼图与风险点](../12-conclusions-competition/winners-components-risks.md)
+6. [平台角色、关键部件与风险](../12-conclusions-competition/winners-components-risks.md)
 
 读完后你应该能回答：
 
 - 谁控制平台入口
 - 谁更像关键拼图
-- 谁最可能先推动规模化
+- 如何区分产品演示、生产声明和客户部署证据
 
 ## 路径 E：想重点看中国大陆机会
 
@@ -107,15 +108,15 @@
 推荐顺序：
 
 1. [中国大陆在 CPO 生态中的位置](../15-china-opportunities/china-position.md)
-2. [最值得关注的机会环节](../15-china-opportunities/opportunity-areas.md)
+2. [中国大陆可研究的机会环节](../15-china-opportunities/opportunity-areas.md)
 3. [主要约束与短板](../15-china-opportunities/constraints.md)
 4. [研究与跟踪框架](../15-china-opportunities/how-to-track-china.md)
 
 读完后你应该能回答：
 
-- 大陆最现实的切入点在哪
-- 哪些环节更值得长期投入
-- 短板主要在哪里
+- 可以从哪些环节收集产品、测试和客户资格证据
+- 哪些判断仍是研究假设
+- 如何比较具体项目的进入条件
 
 ## 如果你时间很少
 
@@ -126,7 +127,7 @@
 3. [系统栈与接口位置](../03-architecture-platform/system-stack.md)
 4. [带宽、功耗与热](../05-electrical-thermal-reliability/bandwidth-power-thermal.md)
 5. [阶段性研究结论](../12-conclusions-competition/interim-conclusions.md)
-6. [谁最可能先规模化落地](../12-conclusions-competition/who-scales-first.md)
+6. [如何比较 CPO 商用进展](../12-conclusions-competition/who-scales-first.md)
 
 ## 如果你想把它讲给别人听
 

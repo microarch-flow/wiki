@@ -2,6 +2,8 @@
 
 上级：[公司卡片](./README.md)
 
+公司进展、公告日期和证据边界见 [Intel 深卡](../../11-deep-company-cards/intel.md)。
+
 相关：[光链路基础](../../04-optical-engine/optical-link-basics.md)、[激光器、调制器、探测器](../../04-optical-engine/laser-modulator-detector.md)
 
 ## 公司角色

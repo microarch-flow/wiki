@@ -31,7 +31,7 @@
 
 ### 标准化不如 pluggable 完整
 
-pluggable 的巨大优势之一就是接口成熟、替换方便、生态清楚。CPO 在这方面天然更难。
+前面板可插拔模块的成熟接口和替换方式可降低集成难度。CPO 也有正在发布或推进的接口工作，但具体互通性取决于采用的版本及产品实现。例如，OIF 已发布 [3.2T 共封装模块和外置激光源实施协议](https://www.oiforum.com/technical-work/implementation-agreements-ias/)；单凭协议存在不能证明不同产品可互换。
 
 ## 一个实用判断框架
 

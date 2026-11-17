@@ -32,6 +32,8 @@ Intel 于 [2024-06-26 发布的 OCI 演示公告](https://download.intel.com/new
 
 这说明 Intel 的路线不是纯概念演示，而是试图把现有量产硅光平台延伸到更深度的 package optical I/O。
 
+可插拔模块和 OCI 应分别跟踪。[Jabil 2023-10-30 公告](https://investors.jabil.com/news/news-details/2023/Jabil-Invests-in-the-Future-of-AI-with-Intel-Silicon-Photonics-Transceiver-Deal/default.aspx)称将接手 Intel 现有硅光可插拔模块产品线的制造、销售及后续模块开发；Jabil 的[2025 年 1.6T 模块公告](https://www.jabil.com/news/jabil-launches-1.6t-pluggable-transceiver.html)说明该模块使用 Intel 硅光引擎。这些材料不能推出 Intel 的 OCI 或全部硅光能力已转移。
+
 ## 它的公开技术路线
 
 Intel 当前最值得跟踪的公开路线是：
@@ -60,7 +62,7 @@ Intel 的优势更多来自平台和工艺积累，而不是“生态展示最�
 
 Intel 的客户入口主要在：
 
-- data center networking optics
+- 数据中心网络光学器件及平台；模块制造和销售主体须按具体产品与日期核实
 - compute platform interconnect
 - silicon photonics component and platform supply
 

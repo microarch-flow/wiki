@@ -22,7 +22,9 @@ Wiki 与博客的共同写作和设计要求见 [Wiki 与博客设计规则](../
 
 原有专题的源码位置由 `website/source-layout.json` 指定，暂存时映射回原发布路径。存储系统的六个源码目录依次为 `01-memory-hierarchy/`、`02-sram/`、`03-dram/`、`04-dram-controller/`、`05-hbf/`、`06-system-integration/`；共享图片位于 `assets/`。系列首页由 `series/storage/README.md` 维护。历史维护资料保存在 `docs/archive/storage/`，不参与发布。
 
-芯片与系统互连的系列首页维护在 `website/interconnect.md`，仓库内的专题入口维护在 `series/interconnect/README.md`。九个专题的正文都位于 `series/interconnect/`，各专题以根目录的 `README.md` 为正文入口。`website/prepare.py` 将专题内容暂存到原有的 `专题名/wiki/` 发布路径，并为旧源码路径注册站内链接映射。BUS 原专题仓库说明保存在 `docs/archive/interconnect/BUS/README.md`，仍发布在原来的 `BUS/` 入口；其余互连历史资料不参与发布。专题源码位置由 `website/source-layout.json` 指定，主归属由 `website/ownership.py` 决定。侧栏直接展示专题首页及其章节；CPO 的章节仍按技术、产业、研究和维护分组。未列入分组的新章节仍会显示，维护时应为它选择合适分组。
+芯片与系统互连的系列首页维护在 `website/interconnect.md`，仓库内的专题入口维护在 `series/interconnect/README.md`。九个专题的正文都位于 `series/interconnect/`，各专题以根目录的 `README.md` 为正文入口。`website/prepare.py` 将专题内容暂存到原有的 `专题名/wiki/` 发布路径，并为旧源码路径注册站内链接映射。BUS 原专题仓库说明保存在 `docs/archive/interconnect/BUS/README.md`，仍发布在原来的 `BUS/` 入口；其余互连历史资料不参与发布。专题源码位置由 `website/source-layout.json` 指定，主归属由 `website/ownership.py` 决定。侧栏直接展示专题首页及其章节；CPO 的章节按技术、产业、查阅和维护分组。未列入分组的新章节仍会显示，维护时应为它选择合适分组。
+
+CPO 保留 101 个页面及 `CPO/wiki/` 公开路径。侧栏按技术与工程、产业与公司、学习与查阅、维护与模板四组展示；分组维护在 `website/hooks.py`，知识地图使用相同顺序。各目录首页的编号“阅读顺序”维护同目录文章及直接子目录的顺序和短标题；子目录通过其 `README.md` 链接排序。章节的 `nav-title` 注释用于侧栏和手机抽屉，正文及当前页面面包屑保留完整标题。更改标题时保留旧锚点，并检查全部页面的来源、导航、搜索和链接。
 
 封装内芯粒互连的侧栏分组、短标题和顺序维护在 `series/interconnect/D2D/SUMMARY.md`。基础文章位于 `01-foundations/`，新接口案例位于 `02-interfaces/`，系统集成文章位于 `03-system-design/`，产品与系统案例位于 `04-product-cases/`；既有接口案例保留原源码与公开路径，通过知识地图归入“接口与案例”。新增文章时须将其列入一个分组；构建会检查遗漏、重复和无效链接。
 

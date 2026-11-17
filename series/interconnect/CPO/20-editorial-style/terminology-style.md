@@ -13,7 +13,7 @@
 | 推荐写法 | 说明 |
 | --- | --- |
 | CPO（Co-Packaged Optics） | 首次出现补全英文 |
-| NPO（Near-Packaged Optics） | 与 CPO 同级写法 |
+| NPO（Near-Packaged Optics） | 注明基板和封装层级；与 CPO 的命名可能按来源重叠 |
 | pluggable optics | 需要强调模块时再写 `pluggable module` |
 | silicon photonics | 非必要不缩写成 `SiPh` |
 | optical I/O chiplet | `chiplet` 是关键含义，不建议省略 |

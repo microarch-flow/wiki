@@ -27,3 +27,9 @@
 - `CPO` 不是 `所有板上光学`
 - `外置激光` 不是 `非 CPO`
 - `功耗更低` 不等于 `系统更便宜`
+
+## 接口资料怎么查
+
+- [OIF 已发布实施协议](https://www.oiforum.com/technical-work/implementation-agreements-ias/)列有 3.2T 共封装模块、ELSFP 光源和管理接口等文件。使用时核对具体版本和适用的电、光、机械与管理边界。
+- [OIF 当前项目](https://www.oiforum.com/technical-work/current-work/)列出仍在制定的工作；2026-11-17 核阅时，12.8T / 6.4T NPO 模块接口仍作为项目列示。项目、演示和已发布实施协议应分开记录。
+- 协议规定接口，不证明任意两个产品已经过互通验证。产品是否符合某版本，应查看该产品的符合性与互通证据。

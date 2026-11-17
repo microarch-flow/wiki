@@ -1,14 +1,15 @@
 # 公司卡片
+<!-- nav-title: 公司卡片 -->
 
 本目录用于按统一框架记录 CPO 相关公司的角色、能力边界和观察重点。
 
-建议阅读顺序：
+## 阅读顺序
 
-- [Broadcom：交换芯片主导型 CPO 观察框架](./broadcom-switch-cpo.md)
-- [Cisco：系统与硅光协同型 CPO 观察框架](./cisco-system-silicon-photonics.md)
-- [Intel：硅光平台型 CPO 观察框架](./intel-silicon-photonics.md)
-- [Marvell：互连与平台协同型 CPO 观察框架](./marvell-interconnect-platform.md)
-- [NVIDIA：AI 网络牵引型 CPO 观察框架](./nvidia-ai-network-cpo.md)
+1. [Broadcom 速览](./broadcom-switch-cpo.md)
+2. [Cisco 速览](./cisco-system-silicon-photonics.md)
+3. [Intel 速览](./intel-silicon-photonics.md)
+4. [Marvell 速览](./marvell-interconnect-platform.md)
+5. [NVIDIA 速览](./nvidia-ai-network-cpo.md)
 
 ## 使用方法
 

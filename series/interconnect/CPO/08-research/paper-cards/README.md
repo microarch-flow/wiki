@@ -1,4 +1,5 @@
 # 论文卡片库
+<!-- nav-title: 论文卡片库 -->
 
 本目录用于沉淀“具体论文卡片”，和 [案例库](../case-studies/README.md) 的区别是：
 
@@ -7,11 +8,11 @@
 
 ## 推荐阅读顺序
 
-- [系统架构类论文卡片](./system-architecture-papers.md)
-- [硅光与光引擎类论文卡片](./silicon-photonics-engine-papers.md)
-- [外置激光与光源架构类论文卡片](./external-laser-papers.md)
-- [封装集成类论文卡片](./packaging-integration-papers.md)
-- [热与可靠性类论文卡片](./thermal-reliability-papers.md)
+1. [系统架构论文](./system-architecture-papers.md)
+2. [硅光与光引擎论文](./silicon-photonics-engine-papers.md)
+3. [外置光源论文](./external-laser-papers.md)
+4. [封装集成论文](./packaging-integration-papers.md)
+5. [热与可靠性论文](./thermal-reliability-papers.md)
 
 ## 使用方法
 

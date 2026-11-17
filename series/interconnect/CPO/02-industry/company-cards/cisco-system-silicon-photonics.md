@@ -2,6 +2,8 @@
 
 上级：[公司卡片](./README.md)
 
+公司进展、公告日期和证据边界见 [Cisco 深卡](../../11-deep-company-cards/cisco.md)。
+
 相关：[系统栈与接口位置](../../03-architecture-platform/system-stack.md)、[落地障碍与商业化判断](../../07-applications-economics/adoption-barriers.md)
 
 ## 公司角色

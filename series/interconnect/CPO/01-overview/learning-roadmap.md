@@ -2,66 +2,33 @@
 
 上级：[01 概览与问题定义](./README.md)
 
-相关：[术语表](../08-research/glossary.md)、[产业链与角色](../02-industry/value-chain.md)
+相关：[完整学习路线](../16-learning-navigation/study-navigation.md)、[术语表](../08-research/glossary.md)
 
 ## 建议学习路径
 
 ### 阶段 1：先搞清系统问题
 
-先搞清：
-
-- 为什么交换机带宽上升会逼迫 I/O 架构变化
-- 为什么铜互连功耗会随通道速率和长度变得很难看
-- 为什么前面板密度和模块笼子会变成约束
+先看[系统问题](./problem-statement.md)：电通道、面板密度和功耗何时约束目标配置。
 
 ### 阶段 2：先分清相邻概念
 
-先搞清：
-
-- pluggable optics
-- NPO
-- OBO 和 optical I/O
-- CPO
-- external laser
+用[分类框架](./taxonomy.md)区分集成位置、光源位置和器件工艺；同一方案可以同时落在多个维度。
 
 ### 阶段 3：建立系统栈视角
 
-先建立从上到下的链路：
-
-- switch ASIC
-- SerDes
-- retimer / gearbox
-- driver / TIA
-- modulator / detector
-- fiber attach / connector
+沿[系统栈](../03-architecture-platform/system-stack.md)追踪数据和可选供光支路；retimer 与 gearbox 是否存在取决于实现。
 
 ### 阶段 4：进入光引擎
 
-重点理解：
-
-- 硅光在做什么
-- 为什么激光器经常不愿意和最热的 ASIC 绑死
-- 调制器、探测器、driver、TIA 之间怎么配合
+阅读[光链路基础](../04-optical-engine/optical-link-basics.md)，明确各器件的输入、输出和预算参考面。
 
 ### 阶段 5：进入共性工程问题
 
-重点理解：
-
-- 功耗
-- 热
-- 封装应力与可靠性
-- 测试
-- 良率
-- 可维护性
+从[功耗与热](../05-electrical-thermal-reliability/bandwidth-power-thermal.md)进入，再看[制造与良率](../06-manufacturing/README.md)和[测试与可靠性](../05-electrical-thermal-reliability/reliability-test.md)。
 
 ### 阶段 6：再看产业与商业化
 
-重点理解：
-
-- 谁控制交换芯片
-- 谁控制硅光/光引擎
-- 谁承担封装和组装
-- 谁来为系统可维护性买单
+从[产业角色](../02-industry/value-chain.md)进入；公司关系和产品状态以[来源表](../18-sources-and-updates/company-ecosystem-sources.md)为准。
 
 ## 常见误区
 

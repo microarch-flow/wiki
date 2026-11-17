@@ -26,7 +26,7 @@
 
 - 搞清 CPO 到底在解决什么问题
 - 搞清为什么“更近的光 I/O”是系统问题，而不是模块形态问题
-- 搞清 AI / HPC 为什么比传统数据中心更需要它
+- 搞清哪些 AI / HPC 系统约束可能使它值得考虑
 
 ### 读完后必须回答
 
@@ -86,7 +86,7 @@
 
 1. polymer waveguide interface 相比传统 fiber attach 解决了什么
 2. optics-first 和 optics-last assembly 分别对应什么制造考量
-3. 为什么 reflow compatibility 和 JEDEC stress 比峰值链路速率更能说明落地性
+3. reflow compatibility、JEDEC stress 和峰值链路速率分别能证明什么，缺少什么
 4. 这几篇材料是否已经回答了系统级散热和维护问题，如果没有，还缺什么
 
 ### 今天最值得你记住的一件事
@@ -136,7 +136,7 @@
 2. 为什么 external laser 和 optical I/O chiplet 会反复出现
 3. 为什么 polymer waveguide interface 值得关注
 4. 为什么 thermal / assembly / reliability 文献在判断落地性时权重很高
-5. 为什么 AI / HPC 比一般网络更可能先推动 CPO
+5. 在哪些系统条件下 AI / HPC 可能优先考虑 CPO，以及这一判断需要什么部署证据
 
 ## 下一步怎么继续
 

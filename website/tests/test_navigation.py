@@ -738,7 +738,7 @@ class GeneratedNavigationTests(unittest.TestCase):
                 "6T SRAM cell：它如何保存、读取和写入 1 bit",
             ],
             "CPO/wiki/08-research/detailed-cards/cpo-status-challenges-solutions/index.html": [
-                "首页", "芯片与系统互连", "共封装光学（CPO）", "研究与索引", "08 研究模板与术语",
+                "首页", "芯片与系统互连", "共封装光学（CPO）", "学习与查阅", "文献与术语",
                 "完整论文卡", "完整卡：CPO status, challenges, and solutions",
             ],
             "electrical-timing-foundations/index.html": [

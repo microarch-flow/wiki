@@ -6,22 +6,21 @@
 
 ## 主线判断：更深度的光电靠近集成是长期方向
 
-长期看，更深度的 optical I/O 前移是高概率趋势。  
-原因不是市场宣传，而是系统物理边界越来越明确：
+将 optical I/O 靠近主芯片是一种值得持续跟踪的系统选择。以下是研究假设，不是对未来份额的预测：
 
 - 长高速电通道越来越贵
 - 面板密度越来越紧
 - AI / HPC 的总带宽需求越来越大
 
-所以“不再把所有光电转换都留在前面板”是长期方向。
+这些约束可能使部分系统采用更近的光电转换；具体方案仍需与持续演进的可插拔模块及电互连按相同边界比较。
 
 ## 但主线不等于单一形态
 
 长期主线更可能是一个连续谱，而不是一个唯一答案：
 
 - 更高端 pluggable 继续演进
-- NPO / OBO 作为过渡或折中路线存在
-- CPO 在高带宽密度场景更强
+- NPO / OBO 可作为不同系统的长期或阶段性选择
+- CPO 可能适用于部分受带宽密度或电通道约束的场景
 - chiplet optical I/O 可能在更广泛的 package-level system 中扩展
 
 ## 我当前更看好的主线
@@ -33,7 +32,7 @@
 - Broadcom
 - NVIDIA
 
-截至 2025-05-15，Broadcom [公告](https://investors.broadcom.com/news-releases/news-release-details/broadcom-announces-third-generation-co-packaged-optics-cpo)对 TH5-Bailly 使用 volume-production 表述；NVIDIA 的 [2025-03-18 公告](https://nvidianews.nvidia.com/news/nvidia-spectrum-x-co-packaged-optics-networking-switches-ai-factories)描述平台目标和当时计划。两者不构成相同量纲的部署排名。
+Broadcom 对 TH5-Bailly 给出量产声明，并在 2025-10-08 声明 TH6-Davisson 出货；NVIDIA 在 2026-05-31 声明 Spectrum-X Ethernet Photonics 进入生产。日期和来源见[公司来源表](../18-sources-and-updates/company-ecosystem-sources.md)。这些厂商声明不能构成客户现场端口数排名。
 
 ### 主线 B：package optical I/O 子系统化
 
@@ -55,4 +54,4 @@
 
 ## 一句话判断
 
-长期主线不是“所有东西都会变成同一种 CPO”，而是“光电转换会持续向 package 和 compute 更靠近，但会以多种集成深度并存的方式演进”。
+多种集成位置可能并存；是否继续向封装内靠近，应以接口、功耗、制造和客户维护数据持续检验。

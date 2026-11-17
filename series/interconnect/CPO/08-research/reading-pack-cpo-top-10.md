@@ -51,7 +51,7 @@
 
 - 类型：连接工程 / OFC 论文
 - 为什么接着读：它把 chiplet 光 I/O 推到连接、KGD 和工程可制造性层面
-- 你要记住：当论文开始讨论 connectorized、V-groove、known good chiplet 时，说明问题已经进入量产工程区
+- 你要记住：这些术语表明论文开始讨论连接和筛测；是否达到量产要求，还需装配节拍、覆盖率、良率与批次数据
 - 链接：https://opg.optica.org/abstract.cfm?uri=OFC-2025-Th3H.2
 
 ### 5. `Optoelectronic Glass Substrates for Co-packaging of Optics and ASICs`
@@ -79,7 +79,7 @@
 
 - 类型：模块集成 / IEDM 报告
 - 为什么第八篇读：它把单模 polymer waveguide、lane density 和 optics-last assembly 放到同一页里
-- 你要记住：只要开始讨论 optics-last assembly，作者就在认真面对量产装配窗口
+- 你要记住：optics-last 涉及装配顺序；能否用于量产仍需验证良率、节拍和可靠性
 - 链接：https://research.ibm.com/publications/co-packaged-optics-module-with-single-mode-polymer-waveguide
 
 ### 9. `Improved connectorization of compliant polymer waveguide ribbon for silicon nanophotonics chip interfacing to optical fibers`
@@ -99,9 +99,9 @@
 ## 读完这 10 篇后，你应该能回答什么
 
 1. 为什么 CPO 不是“更高级的光模块”
-2. 为什么 AI / HPC 比通用数据中心更可能率先推动 CPO
+2. 在什么约束下，AI / HPC 系统可能优先考虑 CPO
 3. 为什么 external laser、chiplet optical I/O、polymer waveguide interface 会反复出现
-4. 为什么封装、连接和可靠性论文对判断落地性比器件峰值指标更重要
+4. 器件指标、封装、连接和可靠性各能支持什么结论
 
 ## 不建议的读法
 

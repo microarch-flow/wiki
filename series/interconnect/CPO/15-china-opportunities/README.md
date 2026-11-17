@@ -1,4 +1,5 @@
 # 15 中国大陆机会点专题
+<!-- nav-title: 中国大陆研究 -->
 
 这一章不从“是否能全面主导 CPO”出发，而是从更现实的问题出发：
 
@@ -6,9 +7,9 @@
 - 哪些环节更像长期建设能力
 - 哪些环节短期更容易形成工程与商业价值
 
-建议顺序：
+## 阅读顺序
 
-- [中国大陆在 CPO 生态中的位置](./china-position.md)
-- [最值得关注的机会环节](./opportunity-areas.md)
-- [主要约束与短板](./constraints.md)
-- [研究与跟踪框架](./how-to-track-china.md)
+1. [中国大陆在 CPO 生态中的位置](./china-position.md)
+2. [可研究的机会环节](./opportunity-areas.md)
+3. [主要约束与短板](./constraints.md)
+4. [研究与跟踪框架](./how-to-track-china.md)

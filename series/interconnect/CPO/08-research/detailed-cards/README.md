@@ -1,4 +1,5 @@
 # 完整论文卡
+<!-- nav-title: 完整论文卡 -->
 
 本目录用于存放“值得单独深读”的论文长卡。
 
@@ -9,9 +10,11 @@
 
 ## 当前已整理
 
-- [完整卡：CPO status, challenges, and solutions](./cpo-status-challenges-solutions.md)
-- [完整卡：In-Package Optical I/O](./in-package-optical-io.md)
-- [完整卡：TeraPHY optical I/O chiplet](./teraphy-chiplet.md)
+### 阅读顺序
+
+1. [CPO 综述](./cpo-status-challenges-solutions.md)
+2. [封装内光 I/O](./in-package-optical-io.md)
+3. [TeraPHY 芯粒](./teraphy-chiplet.md)
 
 ## 这层和前面几层怎么分工
 

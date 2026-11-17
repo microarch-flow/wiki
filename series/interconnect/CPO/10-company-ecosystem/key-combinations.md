@@ -90,8 +90,8 @@ Broadcom [2025-05-15 公告](https://investors.broadcom.com/news-releases/news-r
 
 ### 你该关注什么
 
-- 这条线目前更像能力补齐，而不是已经公开成型的大规模 CPO 产品路线
-- 但它意味着未来 AI 计算平台竞争里，photonics 不再是可有可无的边角能力
+- 截至 [2025-05-28 收购公告](https://www.amd.com/en/blogs/2025/amd-acquires-enosemi-to-accelerate-co-packaged-optics-innovation.html)，该关系说明 AMD 内化 PIC 设计与产品化经验；公告未给出具体 CPO 产品的供货规模
+- 后续应按产品、客户资格和交付情况检验其影响
 
 ## 一句话理解
 

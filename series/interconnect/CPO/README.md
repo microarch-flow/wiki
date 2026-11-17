@@ -1,107 +1,51 @@
 # CPO Wiki
 
-> `CPO 不是更高级的光模块，而是在高带宽 AI / HPC 系统逼近电互连与面板密度边界后，对 I/O 架构、封装、光学、制造和维护边界的一次联合重构。`
+共封装光学（CPO）将光引擎与主芯片在封装层级紧密集成，以缩短部分高速电通道。它同时改变光链路、散热、制造、测试和维护边界。收益要按具体系统比较。
 
-## Dashboard
+<span id="dashboard"></span>
 
-| 你现在要做什么 | 直接入口 |
+## 从哪里开始
+
+| 目标 | 入口 |
 | --- | --- |
-| 5 分钟快速理解 CPO | [CPO 一页版总览](./13-one-page-summary/cpo-one-page.md) |
-| 第一次系统学习 CPO | [学习顺序导航页](./16-learning-navigation/study-navigation.md) |
-| 直接开始读论文 | [CPO 入门必读 10 篇](./08-research/reading-pack-cpo-top-10.md) |
-| 做产业链/供应链研究 | [供应链分层地图](./09-supply-chain-geography/supply-chain-stack.md) |
-| 看公司生态和路线竞争 | [合作关系图](./10-company-ecosystem/partnership-map.md) |
-| 做内部分享或 PPT | [CPO 研究汇报模板](./17-report-template/cpo-report-template.md) |
-| 快速查术语/公司/路线 | [索引页](./14-indexes/README.md) |
-| 重点看中国大陆机会 | [中国大陆机会点专题](./15-china-opportunities/README.md) |
-| 了解这套 wiki 的边界和维护方式 | [版本说明与使用说明](./19-versioning-and-usage/README.md) |
-| 查看统一写法和页面模板 | [编辑规范与页面模板](./20-editorial-style/README.md) |
+| 先了解全貌 | [CPO 一页版总览](./13-one-page-summary/cpo-one-page.md) |
+| 选择完整学习路线 | [学习顺序导航](./16-learning-navigation/study-navigation.md) |
+| 研究论文 | [入门文献与阅读顺序](./08-research/reading-pack-cpo-top-10.md) |
+| 研究产业与公司 | [产业角色](./02-industry/value-chain.md) · [合作关系](./10-company-ecosystem/partnership-map.md) · [公司深卡](./11-deep-company-cards/README.md) |
+| 查询术语、公司与路线 | [专题索引](./14-indexes/README.md) |
 
-## 快速开始
+<span id="快速开始"></span>
+<span id="路线-1第一次看-cpo"></span>
+<span id="路线-2想系统学透"></span>
+<span id="学习"></span>
 
-### 路线 1：第一次看 CPO
+## 技术阅读主线
 
-1. [电路到时序的共用基础](../../microarchitecture/foundations/electrical-timing-foundations.md)
-2. [光链路基础与功率预算](./04-optical-engine/optical-link-basics.md)
-3. [激光器、调制器和探测器](./04-optical-engine/laser-modulator-detector.md)
-4. [CPO 在解决什么问题](./01-overview/problem-statement.md)
-5. [CPO 分类框架](./01-overview/taxonomy.md)
-6. [带宽、功耗与热](./05-electrical-thermal-reliability/bandwidth-power-thermal.md)
+1. [CPO 解决什么问题](./01-overview/problem-statement.md)：先确定要缩短的电段和系统约束。
+2. [CPO 与相邻概念](./01-overview/taxonomy.md)：分清封装层级、光源位置和器件工艺。
+3. [系统栈与电光接口](./03-architecture-platform/system-stack.md)：沿发送和接收方向追踪数据。
+4. [光链路基础与功率预算](./04-optical-engine/optical-link-basics.md)：理解器件和光学参考面。
+5. [功耗与热](./05-electrical-thermal-reliability/bandwidth-power-thermal.md) → [制造流程](./06-manufacturing/process-flow.md) → [KGD 与良率](./06-manufacturing/known-good-die-and-yield.md)：检查系统代价。
 
-### 路线 2：想系统学透
+需要电路和时序基础时，可先读[电路到时序的共用基础](../../microarchitecture/foundations/electrical-timing-foundations.md)。其他学习目标见[学习顺序导航](./16-learning-navigation/study-navigation.md)。
 
-1. [学习顺序导航页](./16-learning-navigation/study-navigation.md)
-2. [系统栈与接口位置](./03-architecture-platform/system-stack.md)
-3. [带宽、功耗与热](./05-electrical-thermal-reliability/bandwidth-power-thermal.md)
-4. [测试、可靠性与失效定位](./05-electrical-thermal-reliability/reliability-test.md)
-5. [制造流程](./06-manufacturing/process-flow.md)
+<span id="路线-3想从论文进入"></span>
+<span id="路线-4想做产业公司研究"></span>
+<span id="工作台"></span>
+<span id="研究"></span>
+<span id="判断"></span>
 
-### 路线 3：想从论文进入
+## 文献与产业研究
 
-1. [CPO 入门必读 10 篇](./08-research/reading-pack-cpo-top-10.md)
-2. [4 天学习计划与阅读提问清单](./08-research/4-day-study-plan.md)
-3. [完整论文卡](./08-research/detailed-cards/README.md)
-4. [论文卡片库](./08-research/paper-cards/README.md)
+论文入口给出[十篇入门文献](./08-research/reading-pack-cpo-top-10.md)和[四天阅读计划](./08-research/4-day-study-plan.md)。论文短卡记录具体证据，完整卡解释少数材料的思路和局限。
 
-### 路线 4：想做产业/公司研究
+产业研究从[供应链分层](./09-supply-chain-geography/supply-chain-stack.md)进入，再看[公司合作关系](./10-company-ecosystem/partnership-map.md)及[公司与生态来源表](./18-sources-and-updates/company-ecosystem-sources.md)。[竞争观察](./12-conclusions-competition/README.md)区分公开事实和研究假设；[中国大陆研究](./15-china-opportunities/README.md)按产品与资格证据评估具体环节。
 
-1. [供应链分层地图](./09-supply-chain-geography/supply-chain-stack.md)
-2. [合作关系图](./10-company-ecosystem/partnership-map.md)
-3. [重点公司深卡](./11-deep-company-cards/README.md)
-4. [研究结论与竞争观察框架](./12-conclusions-competition/README.md)
+<span id="输出"></span>
+<span id="重点专题"></span>
+<span id="全目录"></span>
+<span id="维护原则"></span>
 
-## 工作台
+## 索引与维护
 
-### 学习
-
-- [概览与问题定义](./01-overview/README.md)
-- [系统架构与集成平台](./03-architecture-platform/README.md)
-- [光引擎与核心器件](./04-optical-engine/README.md)
-- [电性能、热与可靠性](./05-electrical-thermal-reliability/README.md)
-- [制造、测试与良率](./06-manufacturing/README.md)
-
-### 研究
-
-- [研究模板与术语](./08-research/README.md)
-- [完整论文卡](./08-research/detailed-cards/README.md)
-- [供应链与区域格局](./09-supply-chain-geography/README.md)
-- [重点公司与合作关系图谱](./10-company-ecosystem/README.md)
-- [重点公司深卡](./11-deep-company-cards/README.md)
-
-### 判断
-
-- [阶段性研究结论](./12-conclusions-competition/interim-conclusions.md)
-- [谁最可能先规模化落地](./12-conclusions-competition/who-scales-first.md)
-- [长期主线与次主线判断](./12-conclusions-competition/long-term-route-view.md)
-- [平台赢家、关键拼图与风险点](./12-conclusions-competition/winners-components-risks.md)
-
-### 输出
-
-- [一页版总览](./13-one-page-summary/README.md)
-- [术语、公司与路线索引](./14-indexes/README.md)
-- [中国大陆机会点专题](./15-china-opportunities/README.md)
-- [学习顺序导航](./16-learning-navigation/README.md)
-- [研究汇报模板](./17-report-template/README.md)
-- [版本说明与使用说明](./19-versioning-and-usage/README.md)
-- [编辑规范与页面模板](./20-editorial-style/README.md)
-
-## 重点专题
-
-| 主题 | 入口 |
-| --- | --- |
-| 技术主线 | [概览与问题定义](./01-overview/README.md) / [系统架构与集成平台](./03-architecture-platform/README.md) |
-| 工程难点 | [电性能、热与可靠性](./05-electrical-thermal-reliability/README.md) / [制造、测试与良率](./06-manufacturing/README.md) |
-| 产业链与供应链 | [产业链与角色](./02-industry/README.md) / [供应链与区域格局](./09-supply-chain-geography/README.md) |
-| 公司生态 | [重点公司与合作关系图谱](./10-company-ecosystem/README.md) / [重点公司深卡](./11-deep-company-cards/README.md) |
-| 中国大陆专题 | [中国大陆机会点专题](./15-china-opportunities/README.md) |
-
-## 全目录
-
-- [知识地图](./SUMMARY.md)
-
-## 维护原则
-
-- 每页尽量只解决一个问题
-- 优先区分系统层、封装层、器件层，再进入公司和产品
-- 对论文、公司、路线尽量模板化记录，避免信息散乱
-- 对时效性强的公司关系，优先以公开官方材料和具体日期为准
+[知识地图](./SUMMARY.md)列出全部章节。[研究汇报模板](./17-report-template/README.md)和[编辑规范](./20-editorial-style/README.md)服务内容维护。公司关系应记录原始来源和日期；演示、生产声明和客户部署使用不同的证据口径。

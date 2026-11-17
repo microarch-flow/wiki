@@ -2,6 +2,8 @@
 
 上级：[公司卡片](./README.md)
 
+公司进展、公告日期和证据边界见 [Marvell 深卡](../../11-deep-company-cards/marvell.md)。
+
 相关：[系统栈与接口位置](../../03-architecture-platform/system-stack.md)、[带宽、功耗与热](../../05-electrical-thermal-reliability/bandwidth-power-thermal.md)
 
 ## 公司角色

@@ -2,6 +2,8 @@
 
 上级：[公司卡片](./README.md)
 
+公司进展、公告日期和证据边界见 [Broadcom 深卡](../../11-deep-company-cards/broadcom.md)。
+
 相关：[产业链与角色](../value-chain.md)、[AI 集群场景与使用逻辑](../../07-applications-economics/ai-cluster-use-cases.md)
 
 ## 公司角色

@@ -108,6 +108,7 @@ body { background: var(--paper); }
 .timing-equation { display: flex; flex-wrap: wrap; align-items: baseline; gap: .3rem 1.5rem; overflow-x: auto; margin: 1.15rem 0; padding: .8rem 1rem; border: 1px solid #cee0ce; border-left: .18rem solid var(--note-border); border-radius: .35rem; background: var(--note-surface); color: #1d493a; font-family: Georgia, 'Times New Roman', serif; font-size: .84rem; line-height: 1.7; }
 .timing-equation > span { white-space: nowrap; }
 .timing-equation sub, .timing-equation sup { line-height: 0; }
+.timing-equation.cpo-equation > span { white-space: normal; }
 
 .portal-page { margin: -.3rem 0 2rem; }
 .portal-hero { display: grid; grid-template-columns: 1.04fr .96fr; min-height: 26rem; overflow: hidden; border: 1px solid #dbe6d7; border-radius: .85rem; background: #e9f0e6; }

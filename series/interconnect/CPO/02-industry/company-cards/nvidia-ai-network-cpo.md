@@ -2,6 +2,8 @@
 
 上级：[公司卡片](./README.md)
 
+公司进展、公告日期和证据边界见 [NVIDIA 深卡](../../11-deep-company-cards/nvidia.md)。
+
 相关：[AI 集群场景与使用逻辑](../../07-applications-economics/ai-cluster-use-cases.md)、[CPO 在解决什么问题](../../01-overview/problem-statement.md)
 
 ## 公司角色

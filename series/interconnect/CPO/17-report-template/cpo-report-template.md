@@ -134,14 +134,14 @@
 
 讲：
 
-- 谁最可能先落地
+- 哪些项目有可比较的生产、交付或部署证据
 - 哪条路线更像主线
-- 谁更像平台赢家，谁更像关键拼图
+- 各方承担什么平台、部件与交付职责
 
 参考页：
 
-- [谁最可能先规模化落地](../12-conclusions-competition/who-scales-first.md)
-- [平台赢家、关键拼图与风险点](../12-conclusions-competition/winners-components-risks.md)
+- [如何比较 CPO 商用进展](../12-conclusions-competition/who-scales-first.md)
+- [平台角色、关键部件与风险](../12-conclusions-competition/winners-components-risks.md)
 
 ### 第 8 页：结论与跟踪框架
 
@@ -207,4 +207,4 @@
 
 ## 一句话总结
 
-一份好的 CPO 汇报，不是把技术术语堆满，而是把“为什么需要、为什么难、谁最可能先做成、接下来该看什么”讲清楚。
+一份 CPO 汇报应讲清系统约束、工程代价、证据支持的进展，以及需要继续验证的问题。

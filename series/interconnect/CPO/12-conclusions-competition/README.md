@@ -1,4 +1,5 @@
 # 12 研究结论与竞争观察框架
+<!-- nav-title: 竞争观察 -->
 
 这一章的目标不是再补知识点，而是把前面 11 章压缩成：
 
@@ -8,10 +9,10 @@
 
 如果你已经读完前面的技术、论文、供应链和公司图谱，这一章应该帮助你把“知道很多信息”变成“能形成稳定判断”。
 
-建议顺序：
+## 阅读顺序
 
-- [阶段性研究结论](./interim-conclusions.md)
-- [谁最可能先规模化落地](./who-scales-first.md)
-- [长期主线与次主线判断](./long-term-route-view.md)
-- [平台赢家、关键拼图与风险点](./winners-components-risks.md)
-- [如何持续跟踪 CPO 竞争格局](./how-to-track.md)
+1. [阶段性研究结论](./interim-conclusions.md)
+2. [比较商用进展](./who-scales-first.md)
+3. [长期主线与次主线判断](./long-term-route-view.md)
+4. [平台角色与风险](./winners-components-risks.md)
+5. [如何持续跟踪 CPO 竞争格局](./how-to-track.md)

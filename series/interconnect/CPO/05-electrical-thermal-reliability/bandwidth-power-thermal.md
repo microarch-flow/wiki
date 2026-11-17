@@ -2,7 +2,7 @@
 
 上级：[05 电性能、热与可靠性](./README.md)
 
-相关：[CPO 在解决什么问题](../01-overview/problem-statement.md)、[封装与集成路线](../03-architecture-platform/packaging-routes.md)
+相关：[CPO 在解决什么问题](../01-overview/problem-statement.md)、[封装与集成路线](../03-architecture-platform/packaging-routes.md)、[SerDes 带宽与能耗口径](../../SERDES/05-signaling-and-metrics/bandwidth-power-efficiency.md)
 
 ## 带宽
 
@@ -10,7 +10,7 @@ CPO 的价值常常首先体现在带宽密度上：
 
 - 交换 ASIC 周边可以摆放更多高带宽光 I/O
 - 高速电信号无需长距离跑到前面板
-- 更容易支撑更高 radix 与更高总交换容量
+- 当封装、端口及 ASIC 资源允许时，可能支持更高 radix 或总交换容量
 
 但要注意，带宽不是白来的。更高通道数会直接推高：
 
@@ -37,17 +37,17 @@ CPO 试图降低的是“长电链路 + 模块化接口”那部分系统功耗�
 
 ## 负载变化怎样改变每比特能耗
 
-统一用观察窗口内的有效 payload 比特数作分母。令 `R_payload` 是有效 payload 平均速率，`R_line` 是线侧所有传输比特的平均速率；两者都以 bit/s 计。令 `P_static` 为同一窗口、同一系统边界内的平均静态功率，`e_line` 为每个线侧 bit 引起的动态能量。若各线侧 bit 的动态成本可用同一常数近似：
+统一用观察窗口内的有效 payload 比特数作分母。令 R<sub>payload</sub> 是有效 payload 平均速率，R<sub>line</sub> 是线侧所有传输比特的平均速率；两者都以 bit/s 计。令 P<sub>static</sub> 为同一窗口、同一系统边界内的平均静态功率，e<sub>line</sub> 为每个线侧 bit 引起的动态能量。若各线侧 bit 的动态成本可用同一常数近似：
 
-```text
-E_per_useful_bit = (P_static + e_line × R_line) / R_payload
-```
+<div class="timing-equation cpo-equation" role="math" aria-label="每有效比特能耗等于静态功率加上线侧动态功率，再除以有效载荷速率。">
+  <span>E<sub>useful bit</sub> = (P<sub>static</sub> + e<sub>line</sub> × R<sub>line</sub>) / R<sub>payload</sub></span>
+</div>
 
-公式不假设空闲、编码或协议开销为零。例如，`P_static=10 W`、`e_line=5 pJ/line-bit`、`R_line=100 Gbit/s`、`R_payload=10 Gbit/s`。线侧动态功率为 `0.5 W`；结果为 `(10+0.5)/10e9 = 1050 pJ/useful-bit`。这假设线侧即使 payload 降到 10 Gbit/s，仍持续传输 100 Gbit/s 的编码或空闲内容，且这些内容按同样的动态能量计费。
+公式不假设空闲、编码或协议开销为零。例如，P<sub>static</sub> = 10 W、e<sub>line</sub> = 5 pJ/线侧 bit、R<sub>line</sub> = 100 Gbit/s、R<sub>payload</sub> = 10 Gbit/s。线侧动态功率为 0.5 W；每有效 bit 能耗为 (10 + 0.5) / (10 × 10⁹) = 1050 pJ。这里假设线侧即使 payload 降到 10 Gbit/s，仍持续传输 100 Gbit/s 的编码或空闲内容，且每个线侧 bit 的动态能量相同。
 
-另一个模型直接把动态能量定义为 `e_payload=5 pJ/useful-bit`，且没有额外空闲动态功耗。静态功率保持 `10 W` 时，100 Gbit/s 的有效速率得到 `100+5=105 pJ/useful-bit`；10 Gbit/s 得到 `1000+5=1005 pJ/useful-bit`。这两个数只适用于该模型，不能把 `5 pJ/line-bit` 直接代入。
+另一个模型直接把动态能量定义为 e<sub>payload</sub> = 5 pJ/有效 bit，且没有额外空闲动态功耗。静态功率保持 10 W 时，100 Gbit/s 的有效速率得到 100 + 5 = 105 pJ/有效 bit；10 Gbit/s 得到 1000 + 5 = 1005 pJ/有效 bit。这两个数只适用于该模型，不能把 5 pJ/线侧 bit 直接代入。
 
-这些数字仅作手算，不代表产品。若光源可关断、功率随温度变化、多个链路共享光源或需要冗余，必须明确时间窗口、功率归属、线侧和有效速率。`R_payload=0` 时每有效 bit 能耗无定义，应单独报告空闲功率。比较 CPO 与其他方案时，还需在相同边界计入两者的 SerDes、冷却及其他组件。
+这些数字仅作手算，不代表产品。若光源可关断、功率随温度变化、多个链路共享光源或需要冗余，必须明确时间窗口、功率归属、线侧和有效速率。R<sub>payload</sub> = 0 时每有效 bit 能耗无定义，应单独报告空闲功率。比较 CPO 与其他方案时，还需在相同边界计入两者的 SerDes、冷却及其他组件。
 
 ## 热
 
@@ -64,7 +64,13 @@ E_per_useful_bit = (P_static + e_line × R_line) / R_payload
 - 是否存在局部热点把光器件逼出工作窗口
 - 热循环是否会加剧可靠性问题
 
-在固定冷却边界的稳态近似中，光引擎温升可按 `ΔT_engine = Σ R_th(engine,j) × P_j` 估计。`P_j` 包括邻近 ASIC 和引擎自身的功率，`R_th` 是对应热源到引擎的互热阻，需由目标结构测量或校准。负载随时间变化时还需热容或热 RC 响应，不能直接套稳态结果。
+在固定冷却边界、材料参数近似不变且热响应可线性叠加的稳态模型中，光引擎温升可由各热源估计：
+
+<div class="timing-equation cpo-equation" role="math" aria-label="光引擎温升等于各热源到光引擎的互热阻与该热源功率乘积之和。">
+  <span>ΔT<sub>engine</sub> = Σ R<sub>th(engine,j)</sub> × P<sub>j</sub></span>
+</div>
+
+P<sub>j</sub> 包括邻近 ASIC 和引擎自身的功率，互热阻 R<sub>th</sub> 需由目标结构测量或校准。负载随时间变化时还需热容或热 RC 响应，不能直接套稳态结果。
 
 温度越过器件规定工作窗时，先报告超出适用范围。只有已知传感器、阈值、滞回和动作等控制策略时，模型才可生成对应的降速或停机；没有这些信息不能自动添加运行事件。
 

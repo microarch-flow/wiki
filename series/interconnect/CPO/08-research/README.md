@@ -1,4 +1,5 @@
 # 08 研究模板与术语
+<!-- nav-title: 文献与术语 -->
 
 这一章用于后续持续扩展。
 
@@ -19,13 +20,13 @@
 
 如果你只是想开始读，先不要直接跳到卡片库，先走阅读包和学习计划更有效。
 
-建议顺序：
+## 阅读顺序
 
-- [术语表](./glossary.md)
-- [CPO 入门必读 10 篇](./reading-pack-cpo-top-10.md)
-- [4 天学习计划与阅读提问清单](./4-day-study-plan.md)
-- [论文阅读模板](./paper-review-template.md)
-- [论文卡片库](./paper-cards/README.md)
-- [完整论文卡](./detailed-cards/README.md)
-- [公司分析模板](./company-analysis-template.md)
-- [案例库](./case-studies/README.md)
+1. [术语表](./glossary.md)
+2. [CPO 入门必读 10 篇](./reading-pack-cpo-top-10.md)
+3. [4 天学习计划与阅读提问清单](./4-day-study-plan.md)
+4. [论文阅读模板](./paper-review-template.md)
+5. [论文卡片库](./paper-cards/README.md)
+6. [完整论文卡](./detailed-cards/README.md)
+7. [公司分析模板](./company-analysis-template.md)
+8. [案例库](./case-studies/README.md)

@@ -1,4 +1,5 @@
 # 11 重点公司深卡
+<!-- nav-title: 公司深卡 -->
 
 这一章把“公司观察框架”进一步展开成可持续使用的深卡。
 
@@ -14,7 +15,7 @@
 
 说明：
 
-- 本章基于截至 `2026-05-04` 可见的公开官方材料整理
+- 各卡按所列公告日期记录事实；时效性来源见[公司生态来源表](../18-sources-and-updates/company-ecosystem-sources.md)
 - 这里的“合作”优先指公开披露的路线协同或生态展示，不自动等于稳定量产供货
 
 ## 这层和前后两层怎么分工
@@ -30,12 +31,12 @@
 如果你只想要最终判断，直接去看第 12 章。  
 如果你要做真正的公司研究，这一层最适合停留。
 
-建议顺序：
+## 阅读顺序
 
-- [Broadcom 深卡](./broadcom.md)
-- [NVIDIA 深卡](./nvidia.md)
-- [Cisco 深卡](./cisco.md)
-- [Ayar Labs 深卡](./ayar-labs.md)
-- [AMD 深卡](./amd.md)
-- [Intel 深卡](./intel.md)
-- [Marvell 深卡](./marvell.md)
+1. [Broadcom 深卡](./broadcom.md)
+2. [NVIDIA 深卡](./nvidia.md)
+3. [Cisco 深卡](./cisco.md)
+4. [Ayar Labs 深卡](./ayar-labs.md)
+5. [AMD 深卡](./amd.md)
+6. [Intel 深卡](./intel.md)
+7. [Marvell 深卡](./marvell.md)

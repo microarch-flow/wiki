@@ -1,10 +1,13 @@
 # 案例库
+<!-- nav-title: 案例库 -->
 
 本目录先不追求覆盖大量具体论文，而是先建立三种最常见的读法：
 
-- [案例：系统动机型论文怎么读](./system-motivation-paper.md)
-- [案例：外置激光 CPO 论文怎么读](./external-laser-cpo-paper.md)
-- [案例：热与可靠性论文怎么读](./thermal-reliability-paper.md)
+## 阅读顺序
+
+1. [系统论文读法](./system-motivation-paper.md)
+2. [外置光源论文读法](./external-laser-cpo-paper.md)
+3. [热与可靠性论文读法](./thermal-reliability-paper.md)
 
 ## 为什么先这样组织
 

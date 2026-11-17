@@ -1,4 +1,5 @@
 # 03 系统架构与集成平台
+<!-- nav-title: 系统架构 -->
 
 这一章从系统视角看 CPO。
 
@@ -8,7 +9,7 @@
 - 电域和光域的边界在哪里
 - CPO 会牵动哪些封装和平台选择
 
-建议顺序：
+## 阅读顺序
 
-- [系统栈与接口位置](./system-stack.md)
-- [封装与集成路线](./packaging-routes.md)
+1. [系统栈与电光接口](./system-stack.md)
+2. [封装与集成路线](./packaging-routes.md)

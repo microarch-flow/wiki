@@ -1,4 +1,5 @@
 # 09 供应链与区域格局
+<!-- nav-title: 供应链与区域 -->
 
 这一章专门补足“技术之外”的那一层。
 
@@ -14,8 +15,8 @@
 - 不同国家和地区分别控制哪些关键环节
 - 为什么很多路线技术上成立，但产业上推进很慢
 
-建议顺序：
+## 阅读顺序
 
-- [供应链分层地图](./supply-chain-stack.md)
-- [区域格局：美国、台湾地区、日本、欧洲、中国大陆](./regional-landscape.md)
-- [成本、量产与 adoption 约束](./cost-yield-adoption.md)
+1. [供应链分层地图](./supply-chain-stack.md)
+2. [区域格局](./regional-landscape.md)
+3. [成本与量产约束](./cost-yield-adoption.md)

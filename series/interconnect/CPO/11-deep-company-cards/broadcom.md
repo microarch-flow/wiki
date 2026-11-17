@@ -21,6 +21,8 @@ Broadcom 在 CPO 生态里的核心位置，是 `交换芯片平台主导方`。
 
 Broadcom [2025-05-15 公告](https://investors.broadcom.com/news-releases/news-release-details/broadcom-announces-third-generation-co-packaged-optics-cpo)称第二代 `Tomahawk 5-Bailly`（TH5-Bailly）芯片组已进入 volume production；同一公告另发布第三代 `200G/lane` 产品线。前者是厂商对特定型号的生产阶段声明，不能推导良率或客户部署数量。
 
+Broadcom 随后在 [2025-10-08 公告](https://investors.broadcom.com/news-releases/news-release-details/broadcom-announces-tomahawkr-6-davisson-industrys-first-1024)称第三代 `Tomahawk 6-Davisson` CPO 交换芯片开始出货，标称交换容量 102.4 Tb/s，并列出可现场替换的 ELSFP 光源模块。这是该产品的厂商出货声明，不等于已知整机数量、客户现场端口数或实测故障率。
+
 这很关键，因为：
 
 - 这不是抽象研究项目，而是和主力交换芯片平台绑定的公开路线

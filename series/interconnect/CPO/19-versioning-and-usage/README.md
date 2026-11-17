@@ -1,4 +1,5 @@
 # 19 版本说明与使用说明
+<!-- nav-title: 使用与维护 -->
 
 这一章用于回答 4 个问题：
 
@@ -9,8 +10,8 @@
 
 它不是技术内容章节，而是帮助你把这套 wiki 当成一个长期工具来用。
 
-建议顺序：
+## 阅读顺序
 
-- [这套 wiki 适合谁、适合做什么](./who-is-this-for.md)
-- [当前完成度评估](./current-coverage.md)
-- [如何维护和继续扩展](./how-to-maintain.md)
+1. [适用对象](./who-is-this-for.md)
+2. [当前完成度评估](./current-coverage.md)
+3. [如何维护和继续扩展](./how-to-maintain.md)
