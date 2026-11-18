@@ -25,13 +25,22 @@ hide:
 
   <section class="portal-foundations" id="common-foundations" aria-labelledby="common-foundations-heading">
     <div class="portal-section-heading"><h2 id="common-foundations-heading">共同基础</h2></div>
-    <a class="portal-foundation-card" href="foundations/silicon-to-logic/">
-      <div>
-        <h3>从硅到门电路</h3>
-        <p>从硅晶格、掺杂和晶体管读到 CMOS 门电路，接上时序、存储与前道工艺。</p>
-      </div>
-      <span class="portal-foundation-arrow" aria-hidden="true">→</span>
-    </a>
+    <div class="portal-foundations-grid">
+      <a class="portal-foundation-card" href="foundations/silicon-to-logic/">
+        <div>
+          <h3>从硅到门电路</h3>
+          <p>从硅晶格、掺杂和晶体管读到 CMOS 门电路，接上时序、存储与前道工艺。</p>
+        </div>
+        <span class="portal-foundation-arrow" aria-hidden="true">→</span>
+      </a>
+      <a class="portal-foundation-card" href="foundations/voltage-to-clock/">
+        <div>
+          <h3>从电容充电到时钟边沿</h3>
+          <p>沿着波形看比较器怎样反复翻转、晶振怎样定频，以及寄存器怎样按边沿采样。</p>
+        </div>
+        <span class="portal-foundation-arrow" aria-hidden="true">→</span>
+      </a>
+    </div>
   </section>
 
   <section class="portal-series" id="series">
