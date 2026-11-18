@@ -4,7 +4,7 @@
 
 时钟定义的是**什么时候采样**，它不会让电路中的信号传播得更快。本文从一个电容充电的例子出发，算出节点到达参考电压的时间，再把它放进一条寄存器到寄存器的路径，最后说明如何把这些时间用于周期模型。
 
-节点充放电所用的电路关系见[电压、电流、电阻与电容](../../../foundations/silicon-to-logic/README.md#用电压电流电阻和电容描述一个节点)。驱动电流经过的上拉和下拉路径见 [CMOS 反相器与逻辑门](../../../foundations/silicon-to-logic/README.md#cmos-门怎样用充放电实现逻辑运算)。
+节点充放电所用的电路关系见[反相器的负载电流与输出电压](../../../foundations/silicon-to-logic/README.md#用电压电流电阻和电容描述一个节点)。驱动电流经过的上拉和下拉路径见 [CMOS 反相器与逻辑门](../../../foundations/silicon-to-logic/README.md#cmos-门怎样用充放电实现逻辑运算)。
 
 <div class="timing-journey" aria-label="本文的四个步骤：节点充电、信号传播、时钟采样、建立事件模型">
   <div><span>01 / 电路</span><strong>节点充电</strong><small>电流改变电容上的电压</small></div>

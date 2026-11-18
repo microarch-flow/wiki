@@ -57,9 +57,17 @@ class GeneratedNavigationTests(unittest.TestCase):
         topic = "foundations/silicon-to-logic/"
         article = (SITE / topic / "index.html").read_text(encoding="utf-8")
         sections = re.findall(r'<h2 id="([^"]+)">', article)
-        self.assertEqual(sections, ["阅读顺序", *SILICON_TO_LOGIC_LEGACY_SECTIONS.values(), "用到哪里"])
-        self.assertIn('id="接下来怎么读"', article)
-        for slug, anchor in SILICON_TO_LOGIC_LEGACY_SECTIONS.items():
+        legacy_sections = SILICON_TO_LOGIC_LEGACY_SECTIONS
+        self.assertEqual(sections, [
+            legacy_sections["silicon-and-doping"], "p-型与-n-型掺杂",
+            legacy_sections["pn-junction"], legacy_sections["bipolar-transistor"],
+            legacy_sections["mosfet"], legacy_sections["cmos-logic"], "用到哪里",
+        ])
+        for anchor in ("阅读顺序", "先选参考点和方向", "电阻把压差换算成支路电流",
+                       "电容把电流换算成电压变化", "接下来怎么读"):
+            self.assertIn(f'id="{anchor}"', article)
+        for slug, anchor in legacy_sections.items():
+            self.assertIn(f'id="{anchor}"', article)
             redirect = (SITE / topic / slug / "index.html").read_text(encoding="utf-8")
             self.assertIn(f'content="0; url=../#{anchor}"', redirect)
             self.assertIn(f'href="../#{anchor}"', redirect)
