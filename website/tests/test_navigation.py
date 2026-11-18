@@ -22,7 +22,7 @@ from storage_navigation import (INTEGRATION_AFTER, INTEGRATION_HOME, INTEGRATION
                                 SYSTEM_SELECTION)  # noqa: E402
 
 LANDING_PAGES = {
-    "index.html", "series/index.html", "microarchitecture/index.html",
+    "index.html", "microarchitecture/index.html",
     "storage/index.html", "interconnect/index.html", "articles/index.html", "visuals/index.html",
 }
 ACTIVE_LINK = re.compile(r'<a\s+href="([^"]+)"\s+class="[^"]*\bmd-nav__link--active\b[^"]*"[^>]*>')
@@ -42,7 +42,6 @@ class GeneratedNavigationTests(unittest.TestCase):
         self.assertLess(start, end)
         tabs = re.search(r'<nav class="md-tabs"[^>]*>(.*?)</nav>', home, re.DOTALL).group(1)
         self.assertNotIn('href="series/"', tabs)
-        self.assertTrue((SITE / "series/index.html").is_file())
         topic = "foundations/silicon-to-logic/"
         self.assertIn(f'href="{topic}"', home[start:end])
         article = Path(topic) / "cmos-logic/index.html"
@@ -52,6 +51,15 @@ class GeneratedNavigationTests(unittest.TestCase):
         self.assertEqual(labels[:3], ["首页", "共同基础", "从硅到门电路"])
         link = re.search(r'<a href="([^"]+)">共同基础</a>', breadcrumb).group(1)
         self.assertEqual(urljoin(page_url(article), link), "https://example.test/#common-foundations")
+
+    def test_series_redirect_targets_homepage_section(self):
+        redirect = (SITE / "series/index.html").read_text(encoding="utf-8")
+        self.assertIn('http-equiv="refresh" content="0; url=../#series"', redirect)
+        self.assertIn('href="../#series"', redirect)
+        self.assertIn('id="series"', (SITE / "index.html").read_text(encoding="utf-8"))
+        index = json.loads((SITE / "search/search_index.json").read_text(encoding="utf-8"))
+        self.assertFalse(any(entry["location"].startswith("series/#") or entry["location"] == "series/"
+                             for entry in index["docs"]))
 
     def test_interconnect_topics_navigation_search_and_cpo_coverage(self):
         docs = SITE.parent / "docs"
@@ -803,7 +811,8 @@ class GeneratedNavigationTests(unittest.TestCase):
 
     def test_current_navigation_and_breadcrumb_links(self):
         self.assertTrue(SITE.is_dir(), "Build the site before running this test")
-        pages = sorted(p for p in SITE.rglob("*.html") if p.name != "404.html")
+        pages = sorted(p for p in SITE.rglob("*.html")
+                       if p.name != "404.html" and p != SITE / "series/index.html")
         self.assertGreater(len(pages), 1)
         errors = []
         for path in pages:
@@ -813,7 +822,7 @@ class GeneratedNavigationTests(unittest.TestCase):
             end = html.find('<div class="md-sidebar md-sidebar--secondary"', start)
             primary = html[start:end] if start >= 0 and end >= 0 else ""
             active = list(ACTIVE_LINK.finditer(primary))
-            if relative.parts[0] != "reviews" and relative.as_posix() != "series/index.html":
+            if relative.parts[0] != "reviews":
                 if len(active) != 1 or 'aria-current="page"' not in active[0].group():
                     errors.append(f"{relative}: expected one accessible current navigation link")
                     continue

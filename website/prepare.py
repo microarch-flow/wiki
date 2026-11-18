@@ -389,7 +389,9 @@ def stage_site(root=ROOT, build_root=None, registry=None, source_root=None, layo
         # The copied website template is already written in site paths and must
         # not be treated as source Markdown for link rewriting.
         published.add(root / "README.md", docs / "README.md", rewrite_page=False)
-        shutil.copy2(root / "website" / "series.md", docs / "series.md")
+        series_redirect = docs / "series" / "index.html"
+        series_redirect.parent.mkdir(exist_ok=True)
+        shutil.copy2(root / "website" / "series-redirect.html", series_redirect)
         shutil.copy2(storage_home, docs / "storage.md")
         published.add(storage_home, docs / "storage.md")
         shutil.copy2(root / "website" / "interconnect.md", docs / "interconnect.md")

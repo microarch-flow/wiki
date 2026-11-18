@@ -54,8 +54,8 @@ def fixture_wiki(root):
           "# 流水线\n\n## 阅读顺序\n\n1. [Timing](../../../electrical-timing-foundations.md)\n")
     write(root / "series/microarchitecture/reading-and-reference/README.md", "# COMPUTE\n")
     for name, content in {
-        "home.md": "# 首页\n\n<!-- site-series -->\n",
-        "series.md": "# 系列\n\n<!-- site-series -->\n",
+        "home.md": "# 首页\n\n## 探索系列 {#series}\n\n<!-- site-series -->\n",
+        "series-redirect.html": (ROOT / "website/series-redirect.html").read_text(encoding="utf-8"),
         "microarchitecture.md": "# 微架构\n",
         "interconnect.md": "# 芯片与系统互连\n",
         "articles.md": "# 精选文章\n",
@@ -510,8 +510,8 @@ class MultiRepositoryTests(unittest.TestCase):
             self.assertIn("alpha 系列", home)
             self.assertIn("beta 系列", home)
             series_page = (site / "series/index.html").read_text(encoding="utf-8")
-            self.assertIn('href="../external/alpha/"', series_page)
-            self.assertIn('href="../external/beta/"', series_page)
+            self.assertIn('http-equiv="refresh" content="0; url=../#series"', series_page)
+            self.assertIn('id="series"', home)
             self.assertTrue((site / "RAM/wiki/index.html").is_file())
             self.assertTrue((site / "external/alpha/img/chart.svg").is_file())
 

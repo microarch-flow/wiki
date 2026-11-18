@@ -142,17 +142,16 @@ def read_series(root, registry=None):
     return result
 
 
-def render_series(entries, relative_root=""):
+def render_series(entries):
     """Render public links; the empty future tile is presentational only."""
     cards = []
     for index, entry in enumerate(entries, 1):
-        href = entry["href"] if urlsplit(entry["href"]).scheme else relative_root + entry["href"]
         cards.append(
             '<a class="portal-series-card" href="{}">'
             '<span class="portal-card-number">SERIES / {:02d}</span>'
             '<span class="portal-card-arrow" aria-hidden="true">↗</span>'
             '<h3>{}</h3><p>{}</p><span class="portal-card-link">进入系列 →</span></a>'.format(
-                escape(href, quote=True), index,
+                escape(entry["href"], quote=True), index,
                 escape(entry["title"]), escape(entry["description"]),
             )
         )
@@ -611,7 +610,7 @@ def render_breadcrumbs(page, root, sidebar_labels=None):
 
 
 def has_breadcrumbs(page):
-    return page.file.src_uri not in {"README.md", "series.md", "microarchitecture.md", "storage.md", "interconnect.md", "articles.md", "visuals.md"}
+    return page.file.src_uri not in {"README.md", "microarchitecture.md", "storage.md", "interconnect.md", "articles.md", "visuals.md"}
 
 
 def validate_unique_navigation(entries):
@@ -823,9 +822,6 @@ def on_page_markdown(markdown, page, **kwargs):
         config = kwargs["config"]
         markdown = markdown.replace("__SITE_NAME__", escape(config.site_name))
         markdown = markdown.replace("<!-- site-series -->", render_series(read_series(Path(config.docs_dir))))
-    elif page.file.src_uri == "series.md":
-        config = kwargs["config"]
-        markdown = markdown.replace("<!-- site-series -->", render_series(read_series(Path(config.docs_dir)), "../"))
 
     if page.file.src_uri == "RAM/wiki/01-overview/README.md":
         template = (Path(__file__).parent / "partials" / "ram-overview-demo.html").read_text(encoding="utf-8")

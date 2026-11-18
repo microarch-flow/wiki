@@ -120,7 +120,7 @@ python website/prepare.py
 mkdocs serve
 ```
 
-根据命令输出打开本地地址。编辑正文、存储系统系列首页、`website/home.md`、`website/series.md`、`series/microarchitecture/README.md`、`website/series.json`、`website/visuals.md` 或网站资源后，重新执行 `python website/prepare.py`，再启动或刷新预览。如果用本地检出替代配置中的外仓 `source`，重新执行时也要带上 `--source-root`；仓内 `local` 来源不需要该参数。`.site-build/` 是可重新生成的构建目录，不要直接在其中维护正文。
+根据命令输出打开本地地址。编辑正文、存储系统系列首页、`website/home.md`、`series/microarchitecture/README.md`、`website/series.json`、`website/visuals.md` 或网站资源后，重新执行 `python website/prepare.py`，再启动或刷新预览。如果用本地检出替代配置中的外仓 `source`，重新执行时也要带上 `--source-root`；仓内 `local` 来源不需要该参数。`.site-build/` 是可重新生成的构建目录，不要直接在其中维护正文。
 
 要只生成静态文件：
 
@@ -154,7 +154,7 @@ mkdocs build
 ## 内容和图解
 
 - 系列正文位于 `series/`，共同基础正文位于 `foundations/`。`wiki.old/`、`task.md`、`seed/` 和 `docs/archive/` 不在网站构建范围内。
-- 总首页及「探索系列」维护在 `website/home.md`。`website/series.md` 保留 `/series/` 的兼容访问入口。微架构系列首页维护在 `series/microarchitecture/README.md`，存储系统系列首页维护在 `series/storage/README.md`，系列列表维护在 `website/series.json`。精选文章列表维护在 `website/articles.md`，互动图解维护在 `website/visuals.md`，图形与脚本位于 `website/assets/`。精选文章直接引用现有正文，后续可逐篇修改原文。
+- 总首页及「探索系列」维护在 `website/home.md`。旧地址 `/series/` 通过 `website/series-redirect.html` 跳转到首页的 `#series`。微架构系列首页维护在 `series/microarchitecture/README.md`，存储系统系列首页维护在 `series/storage/README.md`，系列列表维护在 `website/series.json`。精选文章列表维护在 `website/articles.md`，互动图解维护在 `website/visuals.md`，图形与脚本位于 `website/assets/`。精选文章直接引用现有正文，后续可逐篇修改原文。
 - 各系列首页的封面图位于 `website/assets/images/series-covers/`，由 `website/hooks.py` 结合页面原有标题与导语生成。图片的替代文字和图注也在该文件维护；首页正文和原有链接仍由各系列的 Markdown 维护。
 - DRAM 图解只表示一次显式 PRE 读流程的逻辑阶段，不给出周期数或替代器件规格。
 - 双缓冲图解假设搬运和计算各占一个周期，且资源访问不冲突。它不代表实际设备的实测性能。
