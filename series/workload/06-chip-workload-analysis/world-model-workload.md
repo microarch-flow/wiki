@@ -21,7 +21,7 @@
 | --- | --- | --- |
 | 逐时刻候选 rollout | 编码 + 各候选各时刻 transition 求和 + 评分 | 状态复用、候选 batch、递推依赖 |
 | 整段序列 diffusion/flow | 编码 + NFE × 序列网络 + 解码/评分 | 单次求值已含哪些时间和候选轴 |
-| 想象中训练策略，部署 actor | 训练与部署分开统计 | 真实执行是否调用预测或搜索 |
+| 想象中训练策略，在线按观测选动作 | DreamerV3 每次交互计观测编码、循环状态更新和 actor | 想象时域进入训练账，实际观测与状态进入在线账 |
 
 DreamerV3 的真实交互属于第三种；BEVWorld 的未来 latent 生成采用序列 diffusion；V-JEPA 2-AC 的在线规划包含候选搜索。不能给三者统一乘上 candidate×horizon。
 

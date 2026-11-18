@@ -9,7 +9,7 @@
 
 ## 先建立四个区别
 
-任务规定输入输出与成功标准；网络结构规定如何表示和交换信息；训练目标规定从数据中学什么；执行路径规定部署时调用哪些模块。它们可以自由组合，不应压成同一棵“算法类别树”。
+任务规定输入、输出与成功标准。网络结构规定信息怎样表示和交换。训练目标规定数据提供什么监督。执行路径规定训练或部署时实际调用哪些模块。把它们组合起来需要检查接口。例如，离散词表头可以接下一 token 的分类损失，连续速度场则需要同形状的速度目标和相应的采样器。
 
 例如，VLA 可以使用 Transformer 骨干、模仿学习目标和 flow matching 动作头。BEVWorld 可以同时是 BEV 表示、latent 预测、diffusion 生成与视频/点云输出。分类应让这些组合能被准确表达。
 
@@ -18,9 +18,9 @@
 | 专题 | 核心问题 |
 | --- | --- |
 | [导读与共同基础](00-overview/README.md) | 怎样区分任务、阶段、形状与计数口径 |
-| [骨干网络与序列建模](01-foundation-model-components/README.md) | 特征和位置之间怎样交换信息 |
+| [网络组件与序列建模](01-foundation-model-components/README.md) | 骨干、融合层、注意力与专家怎样处理特征 |
 | [表示学习与训练目标](learning-objectives/README.md) | 监督信号来自哪里，表示学到了什么 |
-| [自回归与扩散生成](generative-models/README.md) | 输出按什么依赖产生，需要几次求值 |
+| [生成机制](generative-models/README.md) | 自回归、扩散与 Flow Matching 各学习什么，怎样生成样本 |
 | [语言与多模态模型](language-and-multimodal/README.md) | token、视觉特征与语言怎样连接 |
 | [视觉感知与三维场景表示](02-vision-and-3d-perception/README.md) | 从观测恢复哪些语义和空间信息 |
 | [决策与策略学习](decision-and-policy/README.md) | 怎样预测、选择并执行动作 |

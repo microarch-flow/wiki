@@ -19,9 +19,9 @@ MOVES = {
 }
 CHAPTERS = (
     ("导读与共同基础", "00-overview"),
-    ("骨干网络与序列建模", "01-foundation-model-components"),
+    ("网络组件与序列建模", "01-foundation-model-components"),
     ("表示学习与训练目标", "learning-objectives"),
-    ("自回归与扩散生成", "generative-models"),
+    ("生成机制", "generative-models"),
     ("语言与多模态模型", "language-and-multimodal"),
     ("视觉感知与三维场景表示", "02-vision-and-3d-perception"),
     ("决策与策略学习", "decision-and-policy"),

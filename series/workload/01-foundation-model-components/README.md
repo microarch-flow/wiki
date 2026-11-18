@@ -1,6 +1,8 @@
-# 骨干网络与序列建模导读
+# 网络组件与序列建模导读
 
 上级：[算法与模型](../README.md)
+
+<span id="骨干网络与序列建模导读" class="workload-legacy-anchor"></span>
 
 <span id="foundation-model-components" class="workload-legacy-anchor"></span>
 <span id="这章在回答什么问题" class="workload-legacy-anchor"></span>
@@ -8,7 +10,7 @@
 <span id="页面列表" class="workload-legacy-anchor"></span>
 <span id="本章到-06-的映射" class="workload-legacy-anchor"></span>
 
-<!-- nav-title: 骨干网络与序列建模 -->
+<!-- nav-title: 网络组件与序列建模 -->
 
 
 这里解释可复用的网络组件：输入怎样变成特征，位置或时间之间怎样交换信息。对比学习等训练目标、扩散等生成机制已分到各自专题。

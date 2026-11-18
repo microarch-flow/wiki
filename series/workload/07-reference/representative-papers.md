@@ -43,7 +43,7 @@
 
 | 来源 | 建议关注的问题 |
 | --- | --- |
-| [DreamerV3 v2](https://arxiv.org/html/2301.04104v2) | 想象训练与 actor 部署分开 |
+| [DreamerV3 v2](https://arxiv.org/html/2301.04104v2) | 对照想象训练与真实交互中的观测编码、状态更新和 actor |
 | [V-JEPA 2 v1](https://arxiv.org/html/2506.09985v1) | 无动作预训练与动作条件规划 |
 | [BEVWorld v3](https://arxiv.org/html/2407.05679v3)、[OccWorld](https://arxiv.org/abs/2311.16038) | 表示、生成机制与输出交叉组合 |
 | [GAIA-1](https://arxiv.org/abs/2309.17080)、[Genie](https://arxiv.org/abs/2402.15391)、[ReSim](https://arxiv.org/abs/2506.09981) | 生成环境的条件与评估用途 |

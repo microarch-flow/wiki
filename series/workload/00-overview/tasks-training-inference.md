@@ -36,7 +36,7 @@ $$
 
 ## 进入后续专题
 
-模型的结构见[骨干网络与序列建模](../01-foundation-model-components/README.md)，监督信号见[表示学习与训练目标](../learning-objectives/README.md)。若要估算成本，再固定[张量与计数口径](tensor-shapes-and-cost.md)，分别列出训练、推理或闭环中的调用。
+要跟踪一次计算，接着读[张量形状与计算量](tensor-shapes-and-cost.md)。模型的结构见[网络组件与序列建模](../01-foundation-model-components/README.md)，监督信号见[表示学习与训练目标](../learning-objectives/README.md)。
 
 ## 来源与延伸
 

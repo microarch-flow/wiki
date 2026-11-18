@@ -10,7 +10,7 @@
 <span id="workload-characterization" class="workload-legacy-anchor"></span>
 
 
-本轮核查日期为 **2026-11-17**。以原始论文、官方项目与厂商文档支持机制和测量。论文报告、教学假设和本地网站验证属于不同证据，不互相替代。
+案例版本核查于 **2026-11-17**，基础机制复核于 **2026-11-18**。表中测量值取自列出的论文版本。正文用“构造例”标出用于手算的参数。
 
 ## 关键修正的证据
 
@@ -23,8 +23,8 @@
 | [OpenVLA v3](https://arxiv.org/html/2406.09246v3) | 原始实验为第三人称相机；7 维动作分箱 | 原模型已使用腕部多相机 |
 | [π0 v1](https://arxiv.org/html/2410.24164v1) | RTX 4090 总推理 73 ms；动作前向部分 27 ms | 73 ms 全是动作专家，50 Hz 等于 50 次完整推理 |
 | [GR00T N1 v2](https://arxiv.org/html/2503.14734v2) | 10/120 Hz 系统描述与 16-action/63.9 ms 分别记录 | 120 次完整 chunk 采样或固定复用 12 次 |
-| [DreamerV3 v2](https://arxiv.org/html/2301.04104v2) | 训练含 decoder，真实执行由 actor 选动作 | latent 没有 decoder，部署必做候选搜索 |
-| [V-JEPA 2 v1](https://arxiv.org/html/2506.09985v1) | 机器人规划属于 2-AC；特定实验每动作 16 s | 所有 latent 模型已满足高频控制 |
+| [DreamerV3 v2，式 1 和式 4](https://arxiv.org/html/2301.04104v2) | 真实交互由观测与上一动作更新模型状态，再由 actor 选动作 | 只计 actor 网络，或把训练想象时域乘进每次交互 |
+| [V-JEPA 2 v1，表 3](https://arxiv.org/html/2506.09985v1) | 机器人规划属于 2-AC，设备和测量条件见[规划案例](../05-world-model-and-generative/latent-world-model.md) | 所有 latent 模型已满足高频控制 |
 | [BEVWorld v3](https://arxiv.org/html/2407.05679v3) | BEV latent、序列 diffusion 与观测 decoder 同时存在 | BEV、latent、视频是互斥类别 |
 | [OccWorld](https://arxiv.org/abs/2311.16038) | 2 s 历史预测 3 s 未来；输入监督配置应区分 | 真值 occupancy 输入结果等于 camera 端到端结果 |
 | [NAVSIM v2](https://arxiv.org/abs/2406.15349v2) | 非反应式仿真评价 | 完整反应式交通世界或真实道路安全证明 |
