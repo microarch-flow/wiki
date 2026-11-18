@@ -21,7 +21,9 @@
 4. [BEV 世界模型](bev-world-model.md)
 5. [占用世界模型](occupancy-world-model.md)
 
-## 原入口
+<span id="原入口" class="workload-legacy-anchor"></span>
+
+## 历史入口
 
 这些页面保留旧引用，完整内容已合并到对应主文。
 
@@ -30,4 +32,4 @@
 
 ## 阅读边界
 
-生成机制基础见[自回归与扩散](../generative-models/README.md)；部署位置和成本见[世界模型工作负载](../06-chip-workload-analysis/world-model-workload.md)。
+想理解想象训练，先做[策略更新算例](../decision-and-policy/imitation-and-reinforcement-learning.md)。想理解 BEVWorld，先走通[鸟瞰坐标](../02-vision-and-3d-perception/bev-perception.md)和[扩散采样](../generative-models/diffusion-models.md)。看清输入和执行阶段后，再读[世界模型工作负载](../06-chip-workload-analysis/world-model-workload.md)核算资源。

@@ -27,7 +27,7 @@
 | [V-JEPA 2 v1，表 3](https://arxiv.org/html/2506.09985v1) | 机器人规划属于 2-AC，设备和测量条件见[规划案例](../05-world-model-and-generative/latent-world-model.md) | 所有 latent 模型已满足高频控制 |
 | [BEVWorld v3](https://arxiv.org/html/2407.05679v3) | BEV latent、序列 diffusion 与观测 decoder 同时存在 | BEV、latent、视频是互斥类别 |
 | [OccWorld](https://arxiv.org/abs/2311.16038) | 2 s 历史预测 3 s 未来；输入监督配置应区分 | 真值 occupancy 输入结果等于 camera 端到端结果 |
-| [NAVSIM v2](https://arxiv.org/abs/2406.15349v2) | 非反应式仿真评价 | 完整反应式交通世界或真实道路安全证明 |
+| [NAVSIM v1 基准，原论文第二版](https://arxiv.org/abs/2406.15349v2) | 自车按规划更新，背景交通主体沿记录轨迹运动 | 完整反应式交通世界或真实道路安全证明 |
 
 ## 数字与结论怎样使用
 

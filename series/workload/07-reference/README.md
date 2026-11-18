@@ -19,7 +19,9 @@
 2. [代表论文与阅读目的](representative-papers.md)
 3. [来源、版本与核查边界](source-tracking.md)
 
-## 原入口
+<span id="原入口" class="workload-legacy-anchor"></span>
+
+## 历史入口
 
 这些页面保留旧引用，完整内容已合并到对应主文。
 

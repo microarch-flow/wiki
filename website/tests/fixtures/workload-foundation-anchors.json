@@ -1,0 +1,629 @@
+{
+  "baseline": "9b3586022a12fb97128998dee0aa1f602a5bcca7",
+  "prefix": "external/workload-wiki",
+  "additional_ids": {
+    "00-overview/glossary": [
+      "术语与单位本系列的统一口径",
+      "任务与模型",
+      "学习与执行",
+      "数量与评价"
+    ],
+    "00-overview": [
+      "导读与共同基础",
+      "原入口",
+      "阅读边界"
+    ],
+    "00-overview/representative-works-index": [
+      "代表工作索引原入口",
+      "继续阅读"
+    ],
+    "00-overview/research-questions": [
+      "研究问题原入口",
+      "继续阅读"
+    ],
+    "00-overview/tasks-training-inference": [
+      "从任务到模型训练推理与评估各解决什么问题",
+      "任务先定义输出含义",
+      "训练时哪些量发生变化",
+      "推理时参数状态与输出",
+      "如何判断结果是否有效",
+      "进入后续专题",
+      "来源与延伸"
+    ],
+    "00-overview/tensor-shapes-and-cost": [
+      "张量形状与计算量从一个线性层建立计数口径",
+      "从输入到输出",
+      "一个可以手算的例子",
+      "常见形状变化",
+      "从工作量到性能还缺什么",
+      "来源与延伸"
+    ],
+    "00-overview/unified-relationship-map": [
+      "概念关系图任务结构目标与执行不是同一层",
+      "一张组合图",
+      "三个具体组合",
+      "从概念走到计量"
+    ],
+    "00-overview/wiki-roadmap": [
+      "系列建设与阅读路线原入口",
+      "继续阅读"
+    ],
+    "00-overview/workload-lens": [
+      "从算法到工作负载阅读入口",
+      "从哪里开始",
+      "一个最小检查"
+    ],
+    "01-foundation-model-components/attention-and-transformer": [
+      "attention-与-transformer从加权读取到一个完整-block",
+      "从形状理解加权读取",
+      "多头与完整-block",
+      "计算量交点不是性能分界线",
+      "适用边界与后续阅读",
+      "来源与延伸"
+    ],
+    "01-foundation-model-components/attention-variants-and-efficiency": [
+      "attention-效率哪些方法改变计算哪些改变实现",
+      "四种常被混淆的改动",
+      "gqa-为什么减少-kv-cache",
+      "flashattention-怎样避免大中间张量",
+      "何时需要改变模型本身",
+      "来源与延伸"
+    ],
+    "01-foundation-model-components/cnn-backbone": [
+      "cnn-骨干局部卷积如何形成多尺度特征",
+      "一个卷积层在计算什么",
+      "为什么要逐级降采样",
+      "普通卷积深度卷积与-11-卷积",
+      "工作负载边界",
+      "来源与延伸"
+    ],
+    "01-foundation-model-components/contrastive-learning": [
+      "对比学习用样本关系定义表示空间",
+      "正样本与负样本从哪里来",
+      "simclrmoco-与-clip-的不同接口",
+      "训练路径不等于部署路径",
+      "来源与延伸"
+    ],
+    "01-foundation-model-components/diffusion-models": [
+      "扩散模型学习去噪再逐步生成样本",
+      "训练时如何构造输入",
+      "采样时为何反复调用网络",
+      "像素latent-与条件是不同维度",
+      "与其他生成方式比较",
+      "来源与延伸"
+    ],
+    "01-foundation-model-components": [
+      "骨干网络与序列建模导读",
+      "阅读边界"
+    ],
+    "01-foundation-model-components/jepa-and-self-supervised": [
+      "jepa预测目标表示而非重建每个像素",
+      "上下文目标编码器与预测器",
+      "为什么需要避免坍塌",
+      "从图像表征到视频与动作",
+      "工作负载需要分开记录",
+      "来源与延伸"
+    ],
+    "01-foundation-model-components/mamba-and-ssm": [
+      "mamba-与状态空间模型用递推状态处理序列",
+      "从一个递推例子开始",
+      "mamba-的选择性来自哪里",
+      "训练扫描与流式推理",
+      "适用边界",
+      "来源与延伸"
+    ],
+    "01-foundation-model-components/mixture-of-experts": [
+      "moe如何为每个-token-选择一部分专家",
+      "一个稀疏专家层怎样执行",
+      "稀疏计算省了什么",
+      "训练与容量约束",
+      "与其他模型机制的关系",
+      "来源与延伸"
+    ],
+    "01-foundation-model-components/neck-feature-fusion": [
+      "多尺度特征融合fpn-为什么连接不同分辨率",
+      "fpn-的基本路径",
+      "相加拼接与双向融合",
+      "与任务头和三维融合的边界",
+      "来源与延伸"
+    ],
+    "01-foundation-model-components/vision-transformer-backbone": [
+      "vit-与-swin图像如何变成-token-序列",
+      "vit-的输入与输出",
+      "swin-如何控制连接范围",
+      "两种骨干怎样选择与衔接",
+      "工作负载中的实际差异",
+      "来源与延伸"
+    ],
+    "02-vision-and-3d-perception/bev-perception": [
+      "bev-感知把多视角观测对齐到地面坐标",
+      "坐标变换为什么需要深度",
+      "lift-splat-与查询式方法",
+      "一个网格例子",
+      "时序融合与实现边界",
+      "来源与延伸"
+    ],
+    "02-vision-and-3d-perception": [
+      "视觉感知与三维场景表示导读",
+      "阅读顺序",
+      "阅读边界"
+    ],
+    "02-vision-and-3d-perception/instance-segmentation": [
+      "实例分割把同类目标分成不同个体",
+      "两种常见生成路径",
+      "掩码怎样成为一个实例",
+      "工作负载与边界",
+      "来源与延伸"
+    ],
+    "02-vision-and-3d-perception/lidar-point-cloud-processing": [
+      "lidar-点云从不规则采样到可计算的空间表示",
+      "先统一坐标和时间",
+      "三类常见处理路径",
+      "体素化的边界条件",
+      "工作负载与融合",
+      "来源与延伸"
+    ],
+    "02-vision-and-3d-perception/multi-sensor-fusion": [
+      "多传感器融合先对齐证据再组合表示",
+      "先确定共同参考",
+      "三个融合位置",
+      "缺失与错误如何传播",
+      "成本沿数据路径统计",
+      "来源与延伸"
+    ],
+    "02-vision-and-3d-perception/object-detection": [
+      "目标检测从图像到目标集合",
+      "两类输出组织",
+      "为什么密集输出需要去重",
+      "检测质量怎样评价",
+      "工作负载拆分",
+      "来源与延伸"
+    ],
+    "02-vision-and-3d-perception/occupancy-prediction": [
+      "occupancy-感知已占用空闲与未知空间",
+      "三种状态不能混为二类",
+      "从观测到体素",
+      "稠密与稀疏表示的取舍",
+      "评价与规划边界",
+      "来源与延伸"
+    ],
+    "02-vision-and-3d-perception/semantic-segmentation": [
+      "语义分割为每个位置分配类别",
+      "输入logits-与标签",
+      "为什么需要上下文和细节",
+      "评价和误用",
+      "输出规模也是成本",
+      "来源与延伸"
+    ],
+    "02-vision-and-3d-perception/video-understanding": [
+      "视频理解时间采样如何改变模型看到的问题",
+      "三种时序处理方式",
+      "帧数与时间跨度不是同一量",
+      "在线与离线的可用信息",
+      "工作负载中的时间轴",
+      "来源与延伸"
+    ],
+    "03-autonomous-driving-algorithms/behavior-cloning-e2e": [
+      "驾驶行为克隆模仿轨迹为何不等于闭环成功",
+      "训练样本中包含什么",
+      "平均轨迹为什么可能不可用",
+      "分布偏移来自执行反馈",
+      "评价和工作负载",
+      "来源与延伸"
+    ],
+    "03-autonomous-driving-algorithms/data-closed-loop-and-simulation": [
+      "数据闭环与仿真每种测试能证明什么",
+      "从失败到新模型",
+      "测试环境按反馈能力区分",
+      "合成数据怎样验收",
+      "工作负载与证据记录",
+      "来源与延伸"
+    ],
+    "03-autonomous-driving-algorithms": [
+      "自动驾驶感知预测与规划导读",
+      "阅读顺序",
+      "阅读边界"
+    ],
+    "03-autonomous-driving-algorithms/modular-to-bev-evolution": [
+      "从模块化到共享-bev驾驶系统改变了哪些接口",
+      "模块化把责任放在接口上",
+      "共享表示减少了什么",
+      "端到端的范围要写全",
+      "比较收益需要相同条件",
+      "来源与延伸"
+    ],
+    "03-autonomous-driving-algorithms/planning-oriented-e2e": [
+      "规划导向端到端让中间任务服务自车决策",
+      "uniad-的信息链",
+      "目标函数如何表达取舍",
+      "一个信息不足的反例",
+      "评价和计算路径",
+      "来源与延伸"
+    ],
+    "03-autonomous-driving-algorithms/vlm-vla-for-ad": [
+      "驾驶中的-vlm-与-vla语义推理怎样连接车辆动作",
+      "三种接入位置",
+      "语言与几何之间缺少什么",
+      "可解释文本不是因果证据",
+      "本文保留的边界",
+      "来源与延伸"
+    ],
+    "03-autonomous-driving-algorithms/world-model-for-ad": [
+      "驾驶世界模型预测未来比较动作与生成测试场景",
+      "三个用途有三种接口",
+      "反事实需要什么证据",
+      "生成质量与任务质量",
+      "在线与离线成本",
+      "来源与延伸"
+    ],
+    "04-robotics-and-vla/action-tokenizer": [
+      "动作表示与生成分箱fast扩散和-flow-matching",
+      "逐维分箱",
+      "fast-压缩了什么",
+      "连续动作块也可以有-token",
+      "预测长度执行长度与频率",
+      "选择时比较哪些代价",
+      "来源与延伸"
+    ],
+    "04-robotics-and-vla/groot": [
+      "gr00t-n1视觉语言条件与连续动作头",
+      "两部分如何连接",
+      "参数与频率的原始口径",
+      "动作块执行需要另一层接口",
+      "如何评价这个案例",
+      "来源与延伸"
+    ],
+    "04-robotics-and-vla": [
+      "机器人策略与视觉语言动作模型导读",
+      "阅读顺序",
+      "阅读边界"
+    ],
+    "04-robotics-and-vla/openvla": [
+      "openvla-原模型视觉语言骨干如何输出七维动作",
+      "从图像和指令到动作",
+      "七维动作的含义",
+      "推理路径和权重读取",
+      "能力与测量边界",
+      "来源与延伸"
+    ],
+    "04-robotics-and-vla/robot-world-model": [
+      "机器人世界模型预测怎样进入策略学习或规划",
+      "三种调用方式",
+      "一个候选规划例子",
+      "接触与模型误差",
+      "延迟不能只看-latent-大小",
+      "来源与延伸"
+    ],
+    "04-robotics-and-vla/robotics-vs-autonomous-driving": [
+      "机器人与自动驾驶相同决策闭环不同动作接口",
+      "先比较接口而不是模型名称",
+      "动作语义决定迁移难度",
+      "共用训练方法分别验证闭环",
+      "工作负载如何比较",
+      "来源与延伸"
+    ],
+    "04-robotics-and-vla/rt-series": [
+      "rt-1-与-rt-2机器人数据和视觉语言预训练如何衔接",
+      "rt-1压缩视觉输入学习机器人动作",
+      "rt-2把动作加入视觉语言任务",
+      "频率必须与配置一起引用",
+      "两篇论文对工作负载的启示",
+      "来源与延伸"
+    ],
+    "04-robotics-and-vla/vla-fundamentals": [
+      "vla-基础把视觉与语言条件转成可执行动作",
+      "一条完整的执行路径",
+      "动作输出需要明确什么",
+      "两类动作生成机制",
+      "训练迁移与评估",
+      "来源与延伸"
+    ],
+    "05-world-model-and-generative/bev-world-model": [
+      "bev-世界模型在统一空间中预测场景演化",
+      "从当前感知到未来预测",
+      "bevworld-的完整路径",
+      "保留什么压缩什么",
+      "评价与工作负载",
+      "来源与延伸"
+    ],
+    "05-world-model-and-generative/diffusion-for-world-model": [
+      "扩散世界模型时间长度与采样次数怎样计量",
+      "输出整段未来还是递推下一步",
+      "条件如何影响未来",
+      "少步采样的收益需要质量约束",
+      "与动作生成分开",
+      "来源与延伸"
+    ],
+    "05-world-model-and-generative/edge-cloud-collaborative-world-model": [
+      "世界模型的端云协作按调用时限划分职责",
+      "三种可比较的方案",
+      "远端调用的预算",
+      "日志与模型更新",
+      "为什么表示名称不能决定位置",
+      "来源与延伸"
+    ],
+    "05-world-model-and-generative": [
+      "世界模型与环境预测导读",
+      "阅读顺序",
+      "原入口",
+      "阅读边界"
+    ],
+    "05-world-model-and-generative/latent-world-model": [
+      "latent-世界模型压缩状态怎样服务学习与规划",
+      "dreamerv3在想象中训练策略",
+      "v-jepa-2-ac预测目标表示来规划",
+      "何时可以不解码",
+      "压缩的收益与边界",
+      "来源与延伸"
+    ],
+    "05-world-model-and-generative/occupancy-world-model": [
+      "占用世界模型预测未来三维空间如何变化",
+      "occworld-的表示与生成",
+      "联合预测不等于动作条件评估",
+      "碰撞检查为什么不只是一次-lookup",
+      "成本与误差怎样分解",
+      "来源与延伸"
+    ],
+    "05-world-model-and-generative/video-world-model": [
+      "视频世界模型从未来画面到可用环境预测",
+      "从历史与条件到未来",
+      "一致性比单帧清晰更难",
+      "输出规模和模型内部规模",
+      "适用范围",
+      "来源与延伸"
+    ],
+    "05-world-model-and-generative/world-model-fundamentals": [
+      "世界模型基础预测对象条件与用途",
+      "从部分观测建立状态",
+      "四个互相独立的分类轴",
+      "模型怎样进入决策",
+      "世界模型与视频生成的关系",
+      "成本沿调用路径展开",
+      "来源与延伸"
+    ],
+    "05-world-model-and-generative/world-model-is-not-video-generation": [
+      "世界模型与视频生成关系速查",
+      "三个常见问题",
+      "继续阅读"
+    ],
+    "06-chip-workload-analysis/ad-robotics-chip-architecture-summary": [
+      "从驾驶与机器人负载到架构实验",
+      "用代表性变化覆盖工作点",
+      "三类架构取舍",
+      "向-archax-等工具提交什么",
+      "怎样报告结论"
+    ],
+    "06-chip-workload-analysis/bev-workload": [
+      "bev-工作负载视角变换采样与历史特征",
+      "lss-的逻辑中间量",
+      "查询式路径的另一组变量",
+      "输出与历史状态",
+      "适合验证的假设",
+      "来源与延伸"
+    ],
+    "06-chip-workload-analysis/cloud-inference-and-simulation-chip": [
+      "云端推理与仿真吞吐并发和通信的取舍",
+      "三类作业的目标不同",
+      "多设备并行搬走了哪些成本",
+      "生成系统还包含数据管道",
+      "证据与跨专题入口",
+      "来源与延伸"
+    ],
+    "06-chip-workload-analysis/cnn-workload": [
+      "cnn-工作负载复用分块与中间特征",
+      "一个可复算的卷积",
+      "分块需要同时满足什么",
+      "深度卷积和特征融合",
+      "该测什么",
+      "来源与延伸"
+    ],
+    "06-chip-workload-analysis/e2e-workload": [
+      "端到端驾驶工作负载共享计算与关键路径",
+      "一次请求的阶段",
+      "共享与分支要分别计量",
+      "延迟吞吐与截止时间",
+      "评价方法",
+      "来源与延伸"
+    ],
+    "06-chip-workload-analysis/edge-inference-chip-requirements": [
+      "端侧推理约束从截止时间推导芯片需求",
+      "从周期中分配预算",
+      "容量先于带宽可行性",
+      "特殊算子来自实际执行图",
+      "精度与实时性分别验收",
+      "来源与延伸"
+    ],
+    "06-chip-workload-analysis": [
+      "算法工作负载分析导读",
+      "阅读顺序",
+      "原入口",
+      "阅读边界"
+    ],
+    "06-chip-workload-analysis/moe-workload": [
+      "moe-工作负载从专家分配计数到数据交付",
+      "构造一个可核算的分配",
+      "专家计算与返回",
+      "逻辑载荷为什么不是网络流量",
+      "容量排队与完成时间",
+      "复核步骤",
+      "来源与延伸"
+    ],
+    "06-chip-workload-analysis/occupancy-workload": [
+      "occupancy-工作负载三维分辨率稀疏性与输出解码",
+      "分辨率怎样放大容量",
+      "稀疏计算为什么不按占用率直接缩放",
+      "当前感知与未来生成分开",
+      "测量重点",
+      "来源与延伸"
+    ],
+    "06-chip-workload-analysis/ssm-workload": [
+      "ssm-工作负载区分并行扫描与流式状态更新",
+      "固定一个分析对象",
+      "持久状态与临时张量",
+      "递推与扫描",
+      "与-attention-怎样公平比较",
+      "来源与延伸"
+    ],
+    "06-chip-workload-analysis/transformer-workload": [
+      "transformer-工作负载prefilldecode-与-kv-容量",
+      "阶段改变了矩阵形状",
+      "权重流量与-kv-流量分开",
+      "kv-容量的明确例子",
+      "算法结构与内核实现分开",
+      "测量与跨专题边界",
+      "来源与延伸"
+    ],
+    "06-chip-workload-analysis/vla-workload": [
+      "vla-工作负载编码动作生成与执行节拍",
+      "离散动作与连续动作路径",
+      "一个执行节拍例子",
+      "权重缓存和状态",
+      "测量协议",
+      "来源与延伸"
+    ],
+    "06-chip-workload-analysis/workload-analysis-methodology": [
+      "工作负载分析方法从执行路径推导资源需求",
+      "第一步固定比较对象",
+      "第二步画实际执行图",
+      "第三步分别计量四个量",
+      "第四步建立有条件的性能估算",
+      "第五步测量并做敏感性分析",
+      "与其他系列和架构模型连接",
+      "来源与延伸"
+    ],
+    "06-chip-workload-analysis/workload-characterization-axes": [
+      "工作负载记录字段让不同案例可以比较",
+      "最小可复现信息",
+      "资源与执行字段",
+      "如何写瓶颈结论",
+      "架构建模不是实现证明"
+    ],
+    "06-chip-workload-analysis/world-model-workload": [
+      "世界模型工作负载调用图比模型类别更重要",
+      "三种调用图分别计数",
+      "两个可复算的例子",
+      "状态与输出的峰值容量",
+      "质量和系统边界",
+      "来源与延伸"
+    ],
+    "07-reference": [
+      "查阅资料导读",
+      "阅读顺序",
+      "原入口",
+      "阅读边界"
+    ],
+    "07-reference/multi-dimensional-index": [
+      "按问题查阅从术语找到主文",
+      "机制与任务",
+      "决策与资源"
+    ],
+    "07-reference/reading-roadmap-by-goal": [
+      "按目标阅读原入口",
+      "继续阅读"
+    ],
+    "07-reference/representative-papers": [
+      "代表论文与阅读目的",
+      "结构目标与生成",
+      "感知驾驶与机器人",
+      "世界模型与成本"
+    ],
+    "07-reference/source-tracking": [
+      "来源版本与核查边界",
+      "关键修正的证据",
+      "数字与结论怎样使用",
+      "未作为已核实事实保留的内容",
+      "历史与维护"
+    ],
+    "07-reference/workload-comparison-table": [
+      "工作负载比较索引先选阶段再看资源",
+      "按执行特征定位",
+      "两个不能直接比较的例子"
+    ],
+    "decision-and-policy/imitation-and-reinforcement-learning": [
+      "模仿学习与强化学习动作监督和回报分别怎样使用",
+      "行为克隆的输入与目标",
+      "为什么闭环会改变数据分布",
+      "强化学习增加了什么",
+      "比较学习方案时记录什么",
+      "来源与延伸"
+    ],
+    "decision-and-policy": [
+      "决策与策略学习导读",
+      "阅读顺序",
+      "阅读边界"
+    ],
+    "decision-and-policy/prediction-planning-control": [
+      "预测规划策略与控制从观测到执行的边界",
+      "先定义可用信息",
+      "规划的输入与输出",
+      "滚动时域怎样使用反馈",
+      "策略与控制器怎样连接",
+      "评估必须包含执行条件",
+      "来源与延伸"
+    ],
+    "generative-models/autoregressive-generation": [
+      "自回归生成从条件概率到下一个-token",
+      "模型学习什么",
+      "一次生成的步骤",
+      "因果掩码与-kv-cache",
+      "训练与生成之间的差别",
+      "来源与延伸"
+    ],
+    "generative-models/flow-matching": [
+      "flow-matching学习把噪声变成样本的速度场",
+      "一个直线路径例子",
+      "训练一步与生成多步",
+      "与扩散有什么关系",
+      "动作块例子与成本边界",
+      "来源与延伸"
+    ],
+    "generative-models": [
+      "自回归与扩散生成导读",
+      "阅读顺序",
+      "阅读边界"
+    ],
+    ".": [
+      "算法与模型从任务机制到工作负载",
+      "先建立四个区别",
+      "系列地图",
+      "按目标选择路线",
+      "与整个-wiki-的边界"
+    ],
+    "language-and-multimodal": [
+      "语言与多模态模型导读",
+      "阅读顺序",
+      "阅读边界"
+    ],
+    "language-and-multimodal/language-models": [
+      "语言模型从-token-id-到下一词元分布",
+      "完整计算路径",
+      "三类结构的不同用途",
+      "训练目标与使用方式",
+      "模型选择怎样改变执行",
+      "评估边界",
+      "来源与延伸"
+    ],
+    "language-and-multimodal/vision-language-models": [
+      "视觉语言模型图像表示怎样进入语言计算",
+      "三种常见接口",
+      "视觉-token-从哪里来",
+      "对齐训练与指令学习",
+      "从理解到行动还缺什么",
+      "工作负载延伸",
+      "来源与延伸"
+    ],
+    "learning-objectives": [
+      "表示学习与训练目标导读",
+      "阅读顺序",
+      "阅读边界"
+    ],
+    "learning-objectives/masked-reconstruction-and-distillation": [
+      "掩码重建与自蒸馏监督目标来自哪里",
+      "掩码重建",
+      "自蒸馏",
+      "三种目标怎样比较",
+      "训练成本与部署接口",
+      "来源与延伸"
+    ]
+  }
+}

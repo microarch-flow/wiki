@@ -8,9 +8,9 @@ Wiki 与博客的共同写作和设计要求见 [Wiki 与博客设计规则](../
 
 `website/ownership.py` 指定原有文章和芯片开发流程文章的主系列和主专题。按更具体的文件规则处理 HBM、FAB 良率等例外。文章可以从多个导读链接，但只能在主导航出现一次；构建会拒绝重复的主导航条目。新增文章时，检查其路径是否落在正确的规则内，并核对面包屑与阅读链接。
 
-Workload 的十二个专题及七条源码移动映射维护在 `website/workload.py`。专题导读的“阅读顺序”和“原入口”编号链接共同决定侧栏顺序与短标题；构建会拒绝遗漏、重复、越界或不存在的条目。源码按当前专题组织，移动文章暂存到历史公开路径；新旧源码引用均映射到同一公开页面。新增正文须加入对应导读；只有实际移动旧文件时才增加映射，不因标题变化而改 URL。兼容入口页保留导航与锚点，但从搜索中排除，搜索引导读者进入主文。
+Workload 的十二个专题及七条源码移动映射维护在 `website/workload.py`。专题导读的“阅读顺序”编号链接决定侧栏正文顺序与短标题。“历史入口”下的编号链接单独形成可展开的子目录，七个兼容页从搜索排除。构建检查遗漏、重复、越界和目标存在性。源码按当前专题组织，已移动的文章继续使用历史公开路径，新旧源码引用均映射到同一页面。新增正文须加入对应导读，标题调整时保留旧锚点。
 
-Workload 与推理系列共用本地 KaTeX 渲染，其他系列的数学解析范围不变。`website/tests/fixtures/workload-legacy.json` 记录重构前的 70 个公开路径和 610 个正文锚点；`test_workload_refinement.py` 检查旧入口、全文链接、导航、搜索和源码映射。历史来源记录在 `docs/archive/workload/`，不参与网站发布。
+Workload 与推理系列共用本地 KaTeX 渲染。`website/tests/fixtures/workload-legacy.json` 记录首次重构前 70 个公开路径及 610 个正文锚点。`workload-foundation-anchors.json` 记录后续 86 页相对首份清单增加的 451 个锚点。`test_workload_refinement.py` 对照两份基线检查旧入口，并检查正文链接、导航、搜索和源码映射。`test_workload_examples.py` 用 Python 标准库复算基础与系统算例，可单独运行，也随完整网站测试执行。历史出处保存在 `docs/archive/workload/`。
 
 微架构的正文按机制维护在 `series/microarchitecture/`：`00-overview/` 是系列导读，`01-datapath/` 至 `09-power-implementation/` 是九个技术专题，`reading-and-reference/` 收拢路线、指标与建模。系列首页只在该目录的 `README.md` 维护，封面由网站钩子生成。DMA、CIM 的九章与十章保留，源码省去旧的 `wiki/` 层。
 

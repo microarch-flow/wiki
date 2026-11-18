@@ -474,17 +474,24 @@ def grouped_original_topics(root, series):
 def workload_tree(root, directory, labels=None):
     tree = workload_navigation(root)
     result = [tree[0]]
+
+    def sidebar_pages(entries):
+        pages = []
+        for entry in entries:
+            short, target = next(iter(entry.items()))
+            if isinstance(target, list):
+                pages.append({short: sidebar_pages(target)})
+            else:
+                if labels is not None:
+                    labels[target] = (short, title(root / target))
+                pages.append(target)
+        return pages
+
     for group in tree[1:]:
         label, entries = next(iter(group.items()))
-        pages = [entries[0]]
         if labels is not None:
             labels[entries[0]] = (label, title(root / entries[0]))
-        for entry in entries[1:]:
-            short, path = next(iter(entry.items()))
-            if labels is not None:
-                labels[path] = (short, title(root / path))
-            pages.append(path)
-        result.append({label: pages})
+        result.append({label: [entries[0], *sidebar_pages(entries[1:])]})
     return result
 
 

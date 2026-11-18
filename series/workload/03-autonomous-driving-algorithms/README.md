@@ -11,7 +11,7 @@
 <!-- nav-title: 自动驾驶感知、预测与规划 -->
 
 
-这里连接驾驶系统的观测、场景表示和自车决策。按接口和评估条件比较方法，不把模块化、BEV、端到端和 VLA 排成必然替代关系。
+进入案例前，先走通[多相机观测如何汇入 BEV](../02-vision-and-3d-perception/bev-perception.md)，再跟随[候选规划与反馈](../decision-and-policy/prediction-planning-control.md)追到执行命令。这样可以在同一驾驶场景中分别检查感知输出、自车选择和其他主体的响应。
 
 ## 阅读顺序
 

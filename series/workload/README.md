@@ -24,21 +24,23 @@
 | [语言与多模态模型](language-and-multimodal/README.md) | token、视觉特征与语言怎样连接 |
 | [视觉感知与三维场景表示](02-vision-and-3d-perception/README.md) | 从观测恢复哪些语义和空间信息 |
 | [决策与策略学习](decision-and-policy/README.md) | 怎样预测、选择并执行动作 |
+| [世界模型与环境预测](05-world-model-and-generative/README.md) | 用什么表示预测未来，怎样服务训练或规划 |
 | [自动驾驶感知、预测与规划](03-autonomous-driving-algorithms/README.md) | 驾驶任务怎样连接感知与自车决策 |
 | [机器人策略与视觉语言动作模型](04-robotics-and-vla/README.md) | 视觉语言条件怎样变成机器人动作 |
-| [世界模型与环境预测](05-world-model-and-generative/README.md) | 预测哪种未来，服务训练还是规划 |
 | [算法工作负载分析](06-chip-workload-analysis/README.md) | 怎样从执行图推导资源并验证瓶颈 |
 | [查阅资料](07-reference/README.md) | 怎样找到概念入口、原始论文和版本 |
 
 ## 按目标选择路线
 
-初次建立概念：先读[任务、训练与推理](00-overview/tasks-training-inference.md)，再读[张量形状](00-overview/tensor-shapes-and-cost.md)和[概念关系图](00-overview/unified-relationship-map.md)，随后按专题导读进入机制文章。
+初读从[任务、训练与推理](00-overview/tasks-training-inference.md)和[张量形状](00-overview/tensor-shapes-and-cost.md)开始。用[概念关系图](00-overview/unified-relationship-map.md)定位问题，再按目标选择一条路线。
 
-分析加速器负载：读[分析方法](06-chip-workload-analysis/workload-analysis-methodology.md)，选择一个[CNN/Transformer/SSM/MoE 或系统案例](06-chip-workload-analysis/workload-comparison-table.md)，固定形状和质量后再比较资源。
+**理解视觉感知。** 沿[网络组件导读](01-foundation-model-components/README.md)从 CNN 读到多尺度融合，再读 Attention 和 ViT/Swin。带着同一张图进入[感知专题](02-vision-and-3d-perception/README.md)，分别看模型怎样输出框、像素标签或鸟瞰网格。需要理解多相机驾驶时，先走通 [BEV 的投影与汇聚](02-vision-and-3d-perception/bev-perception.md)，再读[驾驶系统](03-autonomous-driving-algorithms/README.md)。
 
-理解驾驶系统：先读[感知](02-vision-and-3d-perception/README.md)与[预测、规划、控制](decision-and-policy/prediction-planning-control.md)，再读[驾驶专题](03-autonomous-driving-algorithms/README.md)与其评估边界。
+**理解语言和动作生成。** 从 [Attention](01-foundation-model-components/attention-and-transformer.md) 转到[自回归的错位预测](generative-models/autoregressive-generation.md)，再走通[语言模型](language-and-multimodal/language-models.md)、[图文模型](language-and-multimodal/vision-language-models.md)和 [VLA 的动作接口](04-robotics-and-vla/vla-fundamentals.md)。若要读连续动作头，先核对[扩散的一步更新](generative-models/diffusion-models.md)和 [Flow Matching 的积分](generative-models/flow-matching.md)，再比较[动作表示与生成](04-robotics-and-vla/action-tokenizer.md)。
 
-理解机器人与世界模型：先读[VLM](language-and-multimodal/vision-language-models.md)和[动作表示](04-robotics-and-vla/action-tokenizer.md)，再比较[VLA](04-robotics-and-vla/vla-fundamentals.md)与[环境预测](05-world-model-and-generative/world-model-fundamentals.md)的不同职责。
+**理解策略和世界模型。** 先分清[预测、规划与控制](decision-and-policy/prediction-planning-control.md)，再看[示范动作和回报怎样更新策略](decision-and-policy/imitation-and-reinforcement-learning.md)。进入[世界模型基础](05-world-model-and-generative/world-model-fundamentals.md)后，沿 [Dreamer 或 CEM](05-world-model-and-generative/latent-world-model.md) 追到一次真实动作。若关心规划用的状态如何学得，可先读[自蒸馏](learning-objectives/masked-reconstruction-and-distillation.md)和 [JEPA 表征预测](learning-objectives/jepa-and-self-supervised.md)。最后选择[机器人接触](04-robotics-and-vla/robot-world-model.md)或[驾驶交互](03-autonomous-driving-algorithms/world-model-for-ad.md)核对反馈条件。
+
+**分析资源需求。** 先用[张量算例](00-overview/tensor-shapes-and-cost.md)区分容量和流量，再读[工作负载分析方法](06-chip-workload-analysis/workload-analysis-methodology.md)。从[对照索引](06-chip-workload-analysis/workload-comparison-table.md)选择刚学过的一种机制，固定阶段、形状和精度，计算其工作量与读写量。可以从四个提示 token 的 [Transformer 算例](06-chip-workload-analysis/transformer-workload.md#同一层的两次前向)开始。
 
 ## 与整个 Wiki 的边界
 

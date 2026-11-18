@@ -11,7 +11,7 @@
 <!-- nav-title: 机器人策略与视觉语言动作模型 -->
 
 
-从动作接口开始，再比较离散与连续生成。RT、OpenVLA、GR00T 是固定论文版本的案例；控制频率与模型调用次数分别记录。
+先读[图文模型](../language-and-multimodal/vision-language-models.md)，弄清策略收到哪些特征。本章从动作接口进入模型案例。读离散动作前先看[自回归](../generative-models/autoregressive-generation.md)，读连续动作前先看[扩散](../generative-models/diffusion-models.md)与 [Flow Matching](../generative-models/flow-matching.md)。最后一篇使用[世界模型](../05-world-model-and-generative/latent-world-model.md)比较机器人动作，需要知道候选怎样被评分。
 
 <span id="阅读方式" class="workload-legacy-anchor"></span>
 

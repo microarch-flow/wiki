@@ -73,7 +73,7 @@ LayerNorm 使用均值和方差；RMSNorm 基于均方根缩放，省去减均�
 
 Attention 提供长距离交互路径，不保证一定优于卷积，也不保证自动学到可靠因果关系。位置编码、掩码、训练目标和数据决定模型能使用什么信息。
 
-视觉 encoder、跨模态交叉注意力与自回归 decoder 的执行阶段不同。本文给出算子结构；[Transformer 工作负载](../06-chip-workload-analysis/transformer-workload.md)再讨论 prefill、decode、权重流量和 KV cache。
+沿视觉路线继续读 [ViT 与 Swin](vision-transformer-backbone.md)，看图像 patch 怎样交换信息。沿语言路线读[自回归生成](../generative-models/autoregressive-generation.md)，看因果掩码允许每个位置看到哪些 token。要计算同一层在 prefill 与 decode 两个阶段的工作量和 KV 流量，读 [Transformer 工作负载](../06-chip-workload-analysis/transformer-workload.md)。
 
 ## 来源与延伸
 

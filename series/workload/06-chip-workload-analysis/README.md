@@ -33,7 +33,9 @@
 15. [架构实验设计](ad-robotics-chip-architecture-summary.md)
 16. [工作负载比较索引](workload-comparison-table.md)
 
-## 原入口
+<span id="原入口" class="workload-legacy-anchor"></span>
+
+## 历史入口
 
 这些页面保留旧引用，完整内容已合并到对应主文。
 

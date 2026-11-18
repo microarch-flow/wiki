@@ -42,7 +42,7 @@ flowchart TD
 
 Llama 3 是包含 GQA 等设计的公开实例。GQA 改变 KV head 数；MoE 改变每个 token 使用哪些专家；滑动窗口改变可见历史。它们都需要在模型配置中明确，不能只记录参数总量。
 
-算法侧说明哪些状态可复用及其大小；运行时决定怎样分配、共享与回收这些状态。继续阅读[自回归生成](../generative-models/autoregressive-generation.md)和 [Transformer 工作负载](../06-chip-workload-analysis/transformer-workload.md)。
+要在提示前加一张图，接着读[视觉表示如何进入语言模型](vision-language-models.md)。要计算这一层每轮读写多少权重和 KV，接着读 [Transformer 工作负载](../06-chip-workload-analysis/transformer-workload.md)。缓存分配与回收由运行时负责。
 
 ## 评估边界
 

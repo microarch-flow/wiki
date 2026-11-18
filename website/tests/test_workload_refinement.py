@@ -24,6 +24,7 @@ SOURCE = ROOT / "series/workload"
 SITE = ROOT / ".site-build/site"
 DOCS = ROOT / ".site-build/docs"
 BASE = json.loads((ROOT / "website/tests/fixtures/workload-legacy.json").read_text())["pages"]
+PRIOR_IDS = json.loads((ROOT / "website/tests/fixtures/workload-foundation-anchors.json").read_text())["additional_ids"]
 
 
 def location(path):
@@ -52,13 +53,24 @@ class WorkloadRefinementTests(unittest.TestCase):
         self.assertEqual(len(tree), 13)
         self.assertEqual([next(iter(group)) for group in tree[1:]], [label for label, _ in CHAPTERS])
         self.assertEqual(len(list(SOURCE.rglob("*.md"))), 86)
+        series_map = re.findall(r"^\| \[([^]]+)\]\(([^/]+)/README.md\)", (SOURCE / "README.md").read_text(), re.M)
+        self.assertEqual(series_map, list(CHAPTERS))
         for label, directory in CHAPTERS:
             guide = SOURCE / directory / "README.md"
-            links = re.findall(r"^\d+\. \[([^]]+)\]\(([^)]+)\)", guide.read_text(), re.M)
+            regular, _, archive = guide.read_text().partition("## 历史入口")
+            pattern = r"^\d+\. \[([^]]+)\]\(([^)]+)\)"
+            reading = re.findall(pattern, regular, re.M)
+            history = re.findall(pattern, archive, re.M)
+            links = reading + history
             entries = next(group[label] for group in tree[1:] if label in group)
-            self.assertEqual(len(entries), len(links) + 1)
-            for entry, (short, target) in zip(entries[1:], links):
-                self.assertEqual(entry, {short: public_path(f"{directory}/{target}")})
+            expected = [{short: public_path(f"{directory}/{target}")} for short, target in reading]
+            if history:
+                expected.append({"历史入口": [
+                    {short: public_path(f"{directory}/{target}")} for short, target in history
+                ]})
+            self.assertEqual(entries[1:], expected)
+            for short, target in links:
+                self.assertEqual((short, target) in history, "exclude: true" in (guide.parent / target).read_text())
             page = (SITE / location(guide.relative_to(SOURCE)) / "index.html").read_text()
             primary = page.split('<div class="md-sidebar md-sidebar--primary"', 1)[1].split('<div class="md-sidebar md-sidebar--secondary"', 1)[0]
             positions = []
@@ -70,6 +82,15 @@ class WorkloadRefinementTests(unittest.TestCase):
                 self.assertIn(short, matches[0][1])
                 positions.append(matches[0][0])
             self.assertEqual(positions, sorted(positions))
+
+    def test_headings_published_after_the_first_reconstruction(self):
+        self.assertEqual(len(PRIOR_IDS), 86)
+        self.assertEqual(sum(map(len, PRIOR_IDS.values())), 451)
+        for path, anchors in PRIOR_IDS.items():
+            with self.subTest(page=path):
+                ids = re.findall(r'\bid="([^"]+)"', content(SITE / PREFIX / path / "index.html"))
+                for anchor in anchors:
+                    self.assertEqual(ids.count(anchor), 1, (path, anchor))
 
     def test_search_titles_breadcrumbs_and_article_links(self):
         entries = json.loads((SITE / "search/search_index.json").read_text())["docs"]
@@ -85,13 +106,14 @@ class WorkloadRefinementTests(unittest.TestCase):
             with self.subTest(page=relative):
                 if "exclude: true" in text:
                     excluded += 1
-                    self.assertNotIn(loc, indexed)
+                    self.assertFalse(any(key == loc or key.startswith(loc + "#") for key in indexed), loc)
                 else:
                     self.assertEqual(indexed[loc], full)
                 self.assertIn(f'<link rel="canonical" href="https://microarch-flow.github.io/wiki/{loc}">', html)
                 crumb = re.search(r'<nav class="site-breadcrumbs"[^>]*>(.*?)</nav>', html, re.S)[1]
                 if relative != "README.md":
                     self.assertIn(workload_owner(relative), unescape(crumb))
+                self.assertEqual("历史入口</span>" in crumb, "exclude: true" in text)
                 article = content(path)
                 self.assertNotIn("上级：", article)
                 ids = re.findall(r'\bid="([^"]+)"', article)

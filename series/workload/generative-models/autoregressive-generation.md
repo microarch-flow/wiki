@@ -46,6 +46,8 @@ $$
 
 自回归适合明确有序的离散输出。连续动作也可以先离散化，但词表分辨率、序列长度和误差会成为新设计条件。与[扩散](diffusion-models.md)、[Flow Matching](flow-matching.md)比较时，必须固定输出对象和质量目标。
 
+沿语言路线读[语言模型](../language-and-multimodal/language-models.md)，把这里的一个位置对应到实际张量，看隐藏向量怎样变成词表分数，以及生成时为何只需取最后一个位置。
+
 ## 来源与延伸
 
 - [Transformer：因果掩码与序列生成](https://arxiv.org/abs/1706.03762)

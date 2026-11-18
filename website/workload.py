@@ -25,9 +25,9 @@ CHAPTERS = (
     ("语言与多模态模型", "language-and-multimodal"),
     ("视觉感知与三维场景表示", "02-vision-and-3d-perception"),
     ("决策与策略学习", "decision-and-policy"),
+    ("世界模型与环境预测", "05-world-model-and-generative"),
     ("自动驾驶感知、预测与规划", "03-autonomous-driving-algorithms"),
     ("机器人策略与视觉语言动作模型", "04-robotics-and-vla"),
-    ("世界模型与环境预测", "05-world-model-and-generative"),
     ("算法工作负载分析", "06-chip-workload-analysis"),
     ("查阅资料", "07-reference"),
 )
@@ -68,13 +68,15 @@ def navigation(root):
         if not (root / index).is_file():
             raise ValueError(f"Workload chapter index missing: {index}")
         seen.add(index)
-        entries = [index]
-        active = False
+        sections = {"阅读顺序": [], "历史入口": []}
+        section = None
         for line in (root / index).read_text(encoding="utf-8").splitlines():
             if line.startswith("## "):
-                active = line[3:].strip() in {"阅读顺序", "原入口"}
+                section = sections.get(line[3:].strip())
                 continue
-            match = re.match(r"^\d+\. \[([^\]]+)\]\(([^)]+)\)", line) if active else None
+            if section is None:
+                continue
+            match = re.match(r"^\d+\. \[([^\]]+)\]\(([^)]+)\)", line)
             if not match:
                 continue
             short, raw = match.groups()
@@ -85,9 +87,12 @@ def navigation(root):
             if path in seen:
                 raise ValueError(f"Duplicate Workload navigation page: {path}")
             seen.add(path)
-            entries.append({short: path})
-        if len(entries) == 1:
+            section.append({short: path})
+        if not sections["阅读顺序"]:
             raise ValueError(f"Empty Workload chapter: {label}")
+        entries = [index, *sections["阅读顺序"]]
+        if sections["历史入口"]:
+            entries.append({"历史入口": sections["历史入口"]})
         tree.append({label: entries})
     expected = {p.relative_to(root).as_posix() for p in (root / PREFIX).rglob("*.md")}
     if seen != expected:

@@ -27,6 +27,8 @@ class FoundationExamples(unittest.TestCase):
         macs = sum(k for _row in range(m) for _col in range(n))
         nbytes = 2 * (m*k + k*n + m*n)
         self.assertEqual((macs, nbytes, round(2 * macs / nbytes, 2)), (192, 208, 1.85))
+        padded_height, kernel, stride = 7 + 2, 3, 2
+        self.assertEqual(list(range(0, padded_height - kernel + 1, stride)), [0, 2, 4, 6])
 
     def test_expert_selection_and_capacity(self):
         scores = [0.6, 0.3, 0.1]

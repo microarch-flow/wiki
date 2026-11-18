@@ -18,7 +18,9 @@
 3. [概念关系图](unified-relationship-map.md)
 4. [术语与单位](glossary.md)
 
-## 原入口
+<span id="原入口" class="workload-legacy-anchor"></span>
+
+## 历史入口
 
 这些页面保留旧引用，完整内容已合并到对应主文。
 

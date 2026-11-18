@@ -13,14 +13,14 @@
 <!-- nav-title: 网络组件与序列建模 -->
 
 
-这里解释可复用的网络组件：输入怎样变成特征，位置或时间之间怎样交换信息。对比学习等训练目标、扩散等生成机制已分到各自专题。
+从 CNN 开始看局部特征，再看不同尺度怎样融合。接着用 Attention 建立位置间交换信息的计算图，再读它在 ViT 与 Swin 中的两种组织方式。后面的 SSM 和 MoE 分别处理时序状态与专家选择。第一次阅读可先熟悉[张量的轴、广播和归约](../00-overview/tensor-shapes-and-cost.md)。
 
 ## 阅读顺序
 
 1. [CNN 骨干](cnn-backbone.md)
-2. [ViT 与 Swin](vision-transformer-backbone.md)
-3. [多尺度特征融合](neck-feature-fusion.md)
-4. [Attention 与 Transformer](attention-and-transformer.md)
+2. [多尺度特征融合](neck-feature-fusion.md)
+3. [Attention 与 Transformer](attention-and-transformer.md)
+4. [ViT 与 Swin](vision-transformer-backbone.md)
 5. [Attention 效率](attention-variants-and-efficiency.md)
 6. [Mamba 与 SSM](mamba-and-ssm.md)
 7. [混合专家 MoE](mixture-of-experts.md)
