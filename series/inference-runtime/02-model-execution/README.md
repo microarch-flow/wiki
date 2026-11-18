@@ -14,4 +14,4 @@
 
 动态形状属于执行表示，连续批处理属于请求选择。这里讨论二者的交接，不重复调度策略。
 
-前置阅读：[请求路径与服务指标](../01-request-and-metrics/README.md)。继续阅读：[算子内核与低精度执行](../03-kernels-and-precision/README.md)。
+前置阅读：[完整请求路径](../01-request-and-metrics/request-path.md)中的引擎与执行器职责。继续阅读：[算子内核与低精度执行](../03-kernels-and-precision/README.md)。

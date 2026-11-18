@@ -1,5 +1,6 @@
 """Small deterministic teaching model; times are assumptions, not GPU results."""
 
+import argparse
 from dataclasses import dataclass
 import json
 import math
@@ -88,9 +89,15 @@ def simulate(requests, token_budget=5):
     return {"time_ms": now, "steps": steps, "requests": output}
 
 
-def example():
-    return simulate([Request("A", 0, 8, 4), Request("B", 0, 3, 2), Request("C", 5, 6, 3)])
+def example(token_budget=5):
+    requests = [Request("A", 0, 8, 4), Request("B", 0, 3, 2), Request("C", 5, 6, 3)]
+    return simulate(requests, token_budget)
 
 
 if __name__ == "__main__":
-    print(json.dumps(example(), ensure_ascii=False, indent=2))
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--token-budget", type=int, default=5, help="max input tokens per step")
+    args = parser.parse_args()
+    if args.token_budget < 1:
+        parser.error("--token-budget must be positive")
+    print(json.dumps(example(args.token_budget), ensure_ascii=False, indent=2))

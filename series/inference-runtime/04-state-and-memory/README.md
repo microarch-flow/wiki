@@ -15,4 +15,4 @@
 
 共享存储不代表读取一次，命中率不等于加速比。所有收益都应回到同一容量和流量边界。
 
-前置阅读：[算子内核与低精度执行](../03-kernels-and-precision/README.md)。继续阅读：[批处理与请求调度](../05-batching-and-scheduling/README.md)。
+前置阅读：[Prefill 与 Decode](../01-request-and-metrics/01-prefill-decode.md)中的阶段关系和 KV 状态。上一专题：[算子内核与低精度执行](../03-kernels-and-precision/README.md)。继续阅读：[批处理与请求调度](../05-batching-and-scheduling/README.md)。

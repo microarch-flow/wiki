@@ -20,16 +20,48 @@
 python3 series/inference-runtime/examples/runtime_model.py
 ~~~
 
-输入是 A、B、C 三条构造请求，输入长度为 8、3、6，输出长度为 4、2、3，到达时间为 0、0、5 ms。本轮 token 预算为 5，优先 Decode，再按到达顺序处理 Prefill；Prefill 完成时产生首 token。
+沿用[连续批处理的 A、B 算例](../05-batching-and-scheduling/04-dynamic-shape-batching.md#一个两请求执行例子)，再加入 5 ms 到达的 C。A、B 同时在 0 ms 到达。三条请求的输入长度为 8、3、6，输出长度为 4、2、3。每轮预算为 5 个输入 token。先安排 Decode，再按到达顺序处理 Prefill，同一时刻到达时按输入顺序。Prefill 完成时产生首 token。
 
 每轮构造耗时为：
 
 $$T_{\rm step}=1+0.1N_{\rm prefill}+0.2N_{\rm decode}
 +0.001S_{\rm decode}\quad[\mathrm{ms}]$$
 
-$S_{\rm decode}$ 是本轮 Decode 请求在执行前已有 KV 位置数之和。系数完全为教学假设；公式没有拟合硬件，也没有完整计算 Prefill Attention、内核和通信。
+$N_{\rm prefill}$、$N_{\rm decode}$ 分别是本轮处理的两类输入 token 数。$S_{\rm decode}$ 是本轮 Decode 请求在执行前已有 KV 位置数之和。系数为教学假设，省略了 Prefill Attention 的历史访问成本以及内核与通信的细节。
 
-程序输出每轮开始／结束时间、工作清单、token 事件和请求指标。该输入应产生 8 轮、共 9 个输出 token，最终时间为 10.943 ms。这是模型输出，不是推理实测。
+### 从轮次算到首 token
+
+下表取自模型输出。“A 第 2 个”表示 A 在本轮结束时新增第 2 个输出 token。
+
+| 轮次 | 开始至结束（ms） | 本轮处理的输入 | 轮末输出 |
+|---|---|---|---|
+| 1 | 0.000–1.500 | A Prefill 5 | 无 |
+| 2 | 1.500–3.000 | A Prefill 3，B Prefill 2 | A 第 1 个 |
+| 3 | 3.000–4.308 | A Decode 1，B Prefill 1 | A 第 2 个，B 第 1 个 |
+| 4 | 4.308–5.720 | A Decode 1，B Decode 1 | A 第 3 个，B 第 2 个 |
+| 5 | 5.720–7.330 | A Decode 1，C Prefill 4 | A 第 4 个 |
+| 6 | 7.330–8.530 | C Prefill 2 | C 第 1 个 |
+| 7 | 8.530–9.736 | C Decode 1 | C 第 2 个 |
+| 8 | 9.736–10.943 | C Decode 1 | C 第 3 个 |
+
+例如第 3 轮开始时，A 有 8 个已缓存位置，轮内有 1 个 Decode token 和 1 个 Prefill token。因此该轮耗时 $1+0.1+0.2+0.001\times8=1.308$ ms。B 到轮末才处理完输入，首 token 的时间是 4.308 ms。
+
+C 在第 4 轮执行中到达，直到 5.720 ms 才入批。它先后处理 4 个和 2 个输入 token，在 8.530 ms 产生首 token。模型内的 TTFT 为 $8.530-5.000=3.530$ ms，其中 0.720 ms 在等待入批。这个模型以请求到达为计时起点，以轮末产生 token 为输出时刻，省略了网络和客户端缓冲。服务压测应采用[客户端的计时定义](../01-request-and-metrics/02-metrics-slo.md#在同一条时间线上定义延迟)。
+
+### 只改变每轮预算
+
+~~~sh
+python3 series/inference-runtime/examples/runtime_model.py --token-budget 6
+~~~
+
+| 模型结果 | 每轮 5 个 token | 每轮 6 个 token |
+|---|---:|---:|
+| A 的 TTFT（ms） | 3.000 | 3.100 |
+| B 的 TTFT（ms） | 4.308 | 3.100 |
+| C 的 TTFT（ms） | 3.530 | 3.530 |
+| 最后一个 token 的时刻（ms） | 10.943 | 10.943 |
+
+预算为 6 时，两条请求都能在第 2 轮完成 Prefill。前两轮合计处理 11 个输入 token，比预算为 5 时多处理一个。因此 B 提前一轮产生首 token，A 则多等这一输入 token 在模型中增加的 0.100 ms。两组仍各执行 8 轮、输出 9 个 token。只看最后完成时刻会遗漏这次等待时间的重新分配。
 
 ## 先验证事件，再讨论性能
 

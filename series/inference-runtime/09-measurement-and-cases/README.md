@@ -15,4 +15,6 @@
 
 公式复算、模型验证和硬件实测各自解决不同问题。没有执行目标硬件实验时，不给出性能排名或 SLO 通过结论。
 
-前置阅读：[服务生命周期与副本管理](../08-serving-lifecycle/README.md)。
+前置阅读：[延迟、吞吐与 SLO](../01-request-and-metrics/02-metrics-slo.md)。事件模型接续[连续批处理与分块 Prefill 的 A、B 算例](../05-batching-and-scheduling/04-dynamic-shape-batching.md#一个两请求执行例子)。
+
+上一专题：[服务生命周期与副本管理](../08-serving-lifecycle/README.md)。

@@ -38,15 +38,18 @@ $$D_{\rm KV}=s\,k_{kv}$$
 
 $k_{kv}$ 已包含层数，不能再乘一次 L。接收方已有相同有效前缀时可以减少缺失范围；布局转换、复制和协议元数据另算。
 
-以 $s=2000,k_{kv}=320$ KiB/token 为构造例子，载荷是 625 MiB，即 655.36 MB。假定有效带宽为 64 GB/s，纯传输项为 10.24 ms。
+沿用[分层存储的传输算例](../04-state-and-memory/tiered-kv.md#搬运与重算怎样比较)，625 MiB 在 64 GB/s 有效带宽下的单向纯传输项为 10.24 ms。PD 交接还需单独估计目标端何时有预算、何时安装完成。
 
 链路规格、双向聚合带宽和实际单向有效带宽不能混用。TP/PP 配置不同还可能要求多对多传输或重排，而非一条连续复制。
 
 ## 首 token 在哪里产生很重要
 
-若 Prefill 端采样并立即返回第一个 token，KV 交接的未隐藏部分可能主要体现在第一个到第二个 token 的间隔。若接收端准备就绪后才返回首 token，则会进入 TTFT。
+以 Prefill 结束并完成首 token 采样的时刻为 0，假设上述 10.24 ms 全在关键路径上。接收端就绪后再花 2 ms 计算并产生第二个 token，省略其他等待和网络送达时间。
 
-因此“输出很长，可以摊薄传输”只可能改善某些平均成本，不能证明传输不影响 TTFT 或早期 ITL。应给出真实事件时间线，按[指标定义](../01-request-and-metrics/02-metrics-slo.md)计数。
+- **先返回首 token。** 客户端在 0 ms 和 12.24 ms 看到两个 token，第一段 ITL 为 12.24 ms。交接等待落在第一段 ITL。
+- **交接就绪才返回首 token。** 客户端在 10.24 ms 和 12.24 ms 看到两个 token，第一段 ITL 为 2 ms。交接等待使 TTFT 增加 10.24 ms。
+
+两种策略的第二个 token 同时就绪，用户感受到的停顿位置不同。这些时刻相对 Prefill 结束计。实际验收应从请求发送时刻按[指标定义](../01-request-and-metrics/02-metrics-slo.md)计算 TTFT。
 
 <div class="inference-legacy-anchors" aria-hidden="true"><span id="2-何时值得分离"></span><span id="3-goodput坐实-02"></span><span id="与架构建模的接口-modeling-interface"></span></div>
 

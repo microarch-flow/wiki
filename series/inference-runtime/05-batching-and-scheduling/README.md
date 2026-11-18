@@ -13,4 +13,4 @@
 
 Token 预算控制工作规模，实际耗时还依赖形状和上下文。内存不足时必须有明确的等待、恢复或拒绝路径。
 
-前置阅读：[运行时状态与 KV 管理](../04-state-and-memory/README.md)。继续阅读：[采样与解码控制](../06-sampling-and-decoding/README.md)。
+前置阅读：[状态与内存预算](../04-state-and-memory/runtime-state.md)和[分页 KV](../04-state-and-memory/06-paged-kv-cache.md)，了解调度器要预留和申请哪些资源。继续阅读：[采样与解码控制](../06-sampling-and-decoding/README.md)。

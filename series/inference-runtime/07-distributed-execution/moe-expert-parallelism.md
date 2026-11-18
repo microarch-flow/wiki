@@ -22,13 +22,13 @@ MoE 在每个位置选择部分专家执行。专家并行将专家分布到不�
 
 ## 通信量从路由矩阵得到
 
-定义 $T_{ij}$ 为来源 rank i 发给目标 rank j 的分配数。若每份隐藏向量维度为 d、元素字节为 p，则一次派发的远端有效载荷约为：
+定义 $T_{ij}$ 为从来源 rank $i$ 分配到目标 rank $j$ 上各专家的份数。假定每份专家输入都独立发送，隐藏向量维度为 $d$，每个元素占 $p$ byte，则一次派发的远端有效载荷为
 
 $$D_{\rm dispatch}=dp\sum_{i\ne j}T_{ij}$$
 
-相同布局下，合并回传还需相应有效载荷；元数据、打包、协议和复制另算。落在本地专家的份数不应计成跨网络传输。
+再看一个放置例子。若同一个 token 选中的两个专家都在同一个远端 rank，逐专家发送需要传两份向量。若按目标 rank 只发送一份再在接收端分发，则只传一份向量，但两个专家仍各算一次。此时应按每个来源发往各目标的不同 token 数计载荷。本地交付从远端字节数中排除。
 
-因此 all-to-all 的平均总字节不足以解释热点。链路和 rank 负载分析见[MoE 派发与合并](../../interconnect/SCALEUP/05-workloads-and-performance/moe-dispatch-and-combine.md)。
+回传量取决于输出形状、精度及合并位置。对齐填充、元数据和物理链路字节另计。如何把派发载荷映射到热点，见[MoE 派发与合并](../../interconnect/SCALEUP/05-workloads-and-performance/moe-dispatch-and-combine.md)。
 
 ## 容量限制与负载平衡的代价
 

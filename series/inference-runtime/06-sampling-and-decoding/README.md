@@ -14,4 +14,4 @@
 
 逐位结果一致、分布一致、语法合法和任务质量接近是不同性质。每种机制只声明其真正能保证的部分。
 
-前置阅读：[批处理与请求调度](../05-batching-and-scheduling/README.md)。继续阅读：[分布式执行与阶段分离](../07-distributed-execution/README.md)。
+前置阅读：[Prefill 与 Decode 的阶段解释](../01-request-and-metrics/01-prefill-decode.md#从自回归依赖到两个阶段)。上一专题：[批处理与请求调度](../05-batching-and-scheduling/README.md)。继续阅读：[分布式执行与阶段分离](../07-distributed-execution/README.md)。

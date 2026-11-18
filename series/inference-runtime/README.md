@@ -24,9 +24,17 @@
 
 ## 先建立主线，再深入机制
 
-第一次阅读可以沿“完整请求路径 → Prefill/Decode → 服务指标 → 模型加载 → 内存预算 → 批处理与调度 → 采样 → 测量”前进。它回答一个请求怎样获得资源、产生输出并结束。
+第一次阅读可沿一次请求的生命周期前进。
 
-需要优化具体问题时，再进入 Attention 内核、量化、前缀复用、推测解码或多设备执行。分布式章节依赖单实例的状态和调度概念，综合估算放在最后。
+1. 从[完整请求路径](01-request-and-metrics/request-path.md)认清各模块的职责。
+2. 先读 [Prefill 与 Decode 的阶段解释](01-request-and-metrics/01-prefill-decode.md#从自回归依赖到两个阶段)，再看[延迟、吞吐与 SLO](01-request-and-metrics/02-metrics-slo.md)。阶段篇的工作量和带宽推导可在第二遍阅读时回看。
+3. 用[模型加载与执行后端](02-model-execution/model-loading.md)了解副本如何准备就绪。
+4. 连读[状态与内存预算](04-state-and-memory/runtime-state.md)和[分页 KV](04-state-and-memory/06-paged-kv-cache.md)，看请求增长时怎样申请状态空间。
+5. 在[连续批处理与分块 Prefill](05-batching-and-scheduling/04-dynamic-shape-batching.md)中手推 A、B 每轮的执行计划。
+6. 在[采样、停止与输出](06-sampling-and-decoding/sampling-and-stopping.md)中跟踪 token 怎样变成用户收到的文本，再读[取消、故障与资源回收](08-serving-lifecycle/request-resource-lifecycle.md)，区分停止输出和归还资源的时刻。
+7. 用[压测与性能定位](09-measurement-and-cases/benchmarking-and-profiling.md)确定测量口径，再到 [Trace 与事件模型](09-measurement-and-cases/trace-and-event-model.md)加入请求 C，复算等待时间和首 token 时延。
+
+需要优化具体问题时，再进入 Attention 内核、量化、前缀复用、推测解码或多设备执行。分布式章节以单实例的状态和调度为基础。最后可用[容量与性能估算](09-measurement-and-cases/15-quantitative-estimation.md)把各项预算接起来。
 
 <div class="inference-legacy-anchors" aria-hidden="true"><span id="状态总览"></span></div>
 

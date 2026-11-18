@@ -14,4 +14,4 @@
 
 内核负责完成给定工作；KV 管理器负责状态生命周期。数值正确性、容量收益与性能收益分别验证。
 
-前置阅读：[模型加载与执行计划](../02-model-execution/README.md)。继续阅读：[运行时状态与 KV 管理](../04-state-and-memory/README.md)。
+前置阅读：[Prefill 与 Decode](../01-request-and-metrics/01-prefill-decode.md)的阶段解释，以及[动态形状与数据布局](../02-model-execution/dynamic-shapes.md)中的变长批表示。继续阅读：[运行时状态与 KV 管理](../04-state-and-memory/README.md)。

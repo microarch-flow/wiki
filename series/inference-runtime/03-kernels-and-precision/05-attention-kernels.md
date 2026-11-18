@@ -14,6 +14,14 @@ Attention 内核的任务是在给定 Q、K、V、掩码和状态布局的条件
 
 如果完整 Prefill 在 HBM 物化分数或概率矩阵，会产生平方级中间存储。单 token Decode 的这一矩阵是一行，不能将两者都称为同样的 $N^2$ 中间矩阵问题。
 
+### 分块 Prefill 的有效位置对
+
+对单头全因果 Attention，设序列已有 $h$ 个历史位置，本轮追加 $q$ 个连续位置。本块中的第 $j$ 个查询可见全部 $h$ 个历史位置和本块前 $j$ 个位置，其中包含自身。有效查询—键位置对数为
+
+$$\sum_{j=1}^{q}(h+j)=qh+\frac{q(q+1)}{2}.$$
+
+例如已有 3 个位置，本轮追加 2 个，两个查询分别可见 4、5 个位置，合计 9 对。完整 Prefill 取 $h=0$，普通单 token Decode 取 $q=1$。混合批要按每条序列各自的 $h$ 和 $q$ 求和。这个计数刻画掩码允许的工作，内核实际执行的指令数还取决于分块和掩码实现。
+
 <div class="inference-legacy-anchors" aria-hidden="true"><span id="机制-mechanism"></span><span id="flashattention不落-s-矩阵的-tiling-online-softmax"></span></div>
 
 ## 分块与在线归一化
@@ -42,7 +50,7 @@ $$\Theta(N^2d_h^2/M_e)$$
 
 若片上容量用字节 $M_b$ 表示，需先用元素字节数换算 $M_e=M_b/p$，不能直接把两种单位混用。公式也不是一个可直接代入得到真实执行时间的精确流量计数。
 
-批中各序列的工作应按 $\sum_i s_i^2$ 累加；求和后不能再重复乘同一批大小。逐层执行时的峰值中间内存也不等于把每层峰值全部相加。
+批中各序列的工作应各算一次。对于长度为 $s_i$ 的完整 Prefill，若用未经因果掩码裁剪的方形分数矩阵近似，位置对数为 $\sum_i s_i^2$。分块 Prefill 或 Decode 应使用各自的查询范围。估算峰值中间内存时，则要看哪些层的中间量同时存在。
 
 <div class="inference-legacy-anchors" aria-hidden="true"><span id="decode-为什么不能照搬-flashattention占用率塌方"></span><span id="flashdecoding加第三个并行维split-kv"></span><span id="2-decode占用率条件-split-数"></span></div>
 
@@ -51,6 +59,8 @@ $$\Theta(N^2d_h^2/M_e)$$
 低请求数、少量查询行时，仅按请求和头分配工作可能无法提供足够并行度。Split-KV 沿历史 KV 分段，各段计算局部最大值、指数和及输出，再用同类归一化关系合并。
 
 它增加可并行工作，也增加临时状态、归约和启动成本。上下文很短或请求已很多时，继续拆分可能得不偿失。实际划分还受 GQA 头分组、内核 tile 和设备资源影响。
+
+[上下文并行的双分片算例](../07-distributed-execution/context-parallelism.md#decode-上下文并行)演示了如何合并局部结果。单设备 split-KV 使用相同的归一化关系。
 
 <div class="inference-legacy-anchors" aria-hidden="true"><span id="paged-attention-kernel在-gather-之上做-flashdecoding"></span></div>
 
@@ -67,5 +77,6 @@ $$\Theta(N^2d_h^2/M_e)$$
 至少覆盖短／长查询、短／长 KV、小／大批量、不同头布局和数据类型。先与参考计算核对掩码、位置和数值误差，再测执行时间、工作区及实际流量。不能给某个内核名称附加通用加速倍数。
 
 - [FlashAttention 原论文](https://arxiv.org/html/2205.14135)：在线计算与 IO 分析。
+- [FlashAttention v2.1 因果掩码示例](https://github.com/Dao-AILab/flash-attention#21-change-behavior-of-causal-flag)：查询长度为 2、键长度为 5 的矩形掩码。
 - [Flash-Decoding 官方技术说明](https://pytorch.org/blog/flash-decoding/)：沿 KV 维增加并行度。
 - [分页 KV](../04-state-and-memory/06-paged-kv-cache.md)负责状态管理；[性能定位](../09-measurement-and-cases/benchmarking-and-profiling.md)负责把内核测量连接到请求指标。

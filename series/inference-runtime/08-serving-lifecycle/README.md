@@ -13,4 +13,6 @@
 
 路由、引擎调度和资源回收属于不同控制层。模型身份、在途工作和已提交输出将它们连接起来。
 
-前置阅读：[分布式执行与阶段分离](../07-distributed-execution/README.md)。继续阅读：[测量、建模与框架案例](../09-measurement-and-cases/README.md)。
+前置阅读：[完整请求路径](../01-request-and-metrics/request-path.md)和 [CPU 与设备协作](../02-model-execution/host-device-execution.md)中的完成事件。涉及两池的路由与扩缩容时，可参阅 [PD 分离与 KV 交接](../07-distributed-execution/12-pd-disaggregation.md)。
+
+上一专题：[分布式执行与阶段分离](../07-distributed-execution/README.md)。继续阅读：[测量、建模与框架案例](../09-measurement-and-cases/README.md)。

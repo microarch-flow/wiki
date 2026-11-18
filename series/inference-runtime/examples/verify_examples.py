@@ -13,8 +13,14 @@ class FormulaExamples(unittest.TestCase):
         self.assertEqual(kv * 8192, 2.5 * 1024**3)
         self.assertEqual(kv * 2000, 625 * 1024**2)
         self.assertAlmostEqual(kv * 2000 / 64e9 * 1000, 10.24)
-        self.assertEqual(int(140e9 // (kv * 4096)), 104)
-        self.assertEqual(int(140e9 // (kv * 8192)), 52)
+        available_blocks = 140_000_000_000 // (16 * kv)
+        full_requests, free_blocks = divmod(available_blocks, 4096 // 16)
+        self.assertEqual(full_requests, 104)
+        self.assertEqual(free_blocks, 78)
+        self.assertLess(free_blocks, full_requests)  # One new block per request.
+        self.assertEqual(100 * kv, 32_768_000)
+        self.assertEqual(100 * 16 * kv, 524_288_000)
+        self.assertEqual(available_blocks // (8192 // 16), 52)
 
     def test_paging_and_gemm(self):
         allocated = math.ceil(1500 / 16) * 16
@@ -63,6 +69,18 @@ class EventExamples(unittest.TestCase):
         self.assertEqual(result["requests"]["A"]["output_times_ms"], [3.0, 4.308, 5.72, 7.33])
         self.assertEqual(result["requests"]["B"]["output_times_ms"], [4.308, 5.72])
         self.assertEqual(result["requests"]["C"]["output_times_ms"], [8.53, 9.736, 10.943])
+        first_c_step = next(step for step in result["steps"]
+                            if any(work["request"] == "C" for work in step["work"]))
+        self.assertEqual(first_c_step["start_ms"], 5.72)
+        self.assertEqual(result["requests"]["C"]["ttft_ms"], 3.53)
+
+        larger_budget = example(token_budget=6)
+        self.assertEqual(len(larger_budget["steps"]), 8)
+        self.assertAlmostEqual(larger_budget["time_ms"], result["time_ms"])
+        self.assertEqual(
+            [larger_budget["requests"][name]["ttft_ms"] for name in ("A", "B", "C")],
+            [3.1, 3.1, 3.53],
+        )
 
     def test_arrival_budget_progress_and_output_invariants(self):
         requests = [Request("late", 8, 2, 3), Request("early", 0, 7, 2), Request("one", 3, 1, 1)]

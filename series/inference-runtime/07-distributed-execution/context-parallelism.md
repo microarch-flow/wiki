@@ -27,7 +27,9 @@ KV 头切分沿头维分配状态，适合有足够 KV 头的布局。上下文�
 $$M=\max_r m_r,\qquad
 o=\frac{\sum_r e^{m_r-M}z_r}{\sum_r e^{m_r-M}\ell_r}$$
 
-空分片需明确处理。这个关系与[在线 Attention](../03-kernels-and-precision/05-attention-kernels.md)相同，但跨设备合并还增加通信与同步。
+设两个 rank 各有一个有效位置。两处的分数分别是 $0$ 和 $\ln 3$，对应的值取标量 $0$ 和 $4$。局部归一化后各自只剩一个值，直接平均得到 2。全局归一化时，两个位置的权重之比是 $1:3$，正确结果是 $(1\times0+3\times4)/(1+3)=3$。分片合并需要保留这个相对权重。
+
+无有效位置的分片对分子和分母均贡献零。若所有分片都为空，要按内核的全掩码规则处理，避免除以零。这个合并关系也用于[单设备 split-KV](../03-kernels-and-precision/05-attention-kernels.md#decode-的并行度与-split-kv)，跨设备时还要传递归约所需的信息并同步。
 
 ## 为什么 TP 增大后 KV 可能没有继续下降
 
