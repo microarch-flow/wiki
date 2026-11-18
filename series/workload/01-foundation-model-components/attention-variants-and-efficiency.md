@@ -27,13 +27,7 @@
 
 令 query 头数为 $h_q$，KV 头数为 $h_{kv}$，每头维度为 $d_h$。MHA 通常 $h_{kv}=h_q$；MQA 使用一组 KV；GQA 位于两者之间。一组 query 头共享相同的 K/V，但仍各自计算注意力权重。
 
-缓存 $L$ 层、$B$ 条序列、每条 $T$ 个位置时，若 K/V 每元素占 $s$ 字节：
-
-$$
-C_{KV}=2LBT h_{kv}d_hs
-$$
-
-构造例：$L=32,B=1,T=4096,h_{kv}=8,d_h=128,s=2$，KV 为 512 MiB。把 KV 头改为 32 时为 2 GiB。这里未计分页碎片、量化元数据或其他状态。缓存变小不保证端到端加速四倍，因为其他计算没有同比减少。
+例如 4 个 query 头共用 2 个 KV 头，前两个 query 头读取同一份 K/V，后两个读取另一份。与 4 组独立 KV 相比，每个历史位置只需保存一半的键和值，4 个 query 头仍各有自己的注意力分布。固定层数、长度和精度后的字节数，以及 prefill 与 decode 的完整算例见 [Transformer 工作负载](../06-chip-workload-analysis/transformer-workload.md)。
 
 <span id="attention-variants-and-efficiency" class="workload-legacy-anchor"></span>
 <span id="flashattention把-attention-重新定性为-io-问题" class="workload-legacy-anchor"></span>

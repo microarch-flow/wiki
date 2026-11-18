@@ -31,7 +31,7 @@ FAST 对动作块归一化，沿时间维做离散余弦变换（DCT），缩放
 
 Diffusion Policy 学习条件动作分布，通过多次去噪生成动作块。π0 使用 flow matching，以连续动作 token 表示整个未来块，再逐步更新它们。二者无需逐维离散动作词表，但仍可在 Transformer 中使用 token 序列。
 
-一次网络求值若覆盖整个 $H\times D$ 动作块，则总成本按实际 NFE 计，不再把调用次数重复乘 $H$。训练时抽取噪声时间与采样时多次求值，也应分开。
+在这类接口中，求解器每次把当前动作块与噪声时间传给网络，下一轮接着更新同一块。两种更新分别见[扩散的一步反向采样](../generative-models/diffusion-models.md#采样时为何反复调用网络)和 [Flow Matching 的速度积分](../generative-models/flow-matching.md#训练一步与生成多步)。从动作周期算每秒工作量，见 [VLA 工作负载](../06-chip-workload-analysis/vla-workload.md)。
 
 ## 预测长度、执行长度与频率
 

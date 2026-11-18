@@ -20,13 +20,13 @@
 3. [视频世界模型](video-world-model.md)
 4. [BEV 世界模型](bev-world-model.md)
 5. [占用世界模型](occupancy-world-model.md)
-6. [扩散世界模型](diffusion-for-world-model.md)
 
 ## 原入口
 
 这些页面保留旧引用，完整内容已合并到对应主文。
 
 1. [世界模型与视频关系速查](world-model-is-not-video-generation.md)
+2. [扩散世界模型的条件与成本](diffusion-for-world-model.md)
 
 ## 阅读边界
 

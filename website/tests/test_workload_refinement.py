@@ -107,7 +107,7 @@ class WorkloadRefinementTests(unittest.TestCase):
                     self.assertTrue(target.is_file(), (loc, href))
                     if url.fragment:
                         self.assertIn(unquote(url.fragment), re.findall(r'\bid="([^"]+)"', target.read_text()), (loc, href))
-        self.assertEqual(excluded, 6)
+        self.assertEqual(excluded, 7)
 
     def test_source_links_and_mapped_pages_have_single_public_location(self):
         for source in SOURCE.rglob("*.md"):

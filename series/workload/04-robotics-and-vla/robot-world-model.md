@@ -32,7 +32,7 @@
 
 ## 延迟不能只看 latent 大小
 
-V-JEPA 2-AC 原论文 v1 的一项 RTX 4090 规划实验报告每个动作约 16 s；这是特定候选数与搜索轮数下的结果。它说明采用 latent 并不自动满足高频控制。
+接触发生时，旧的状态估计可能已失效。如果从拍照到动作下发经过多个控制周期，候选的评分针对的是采样时刻的手、物体和夹爪状态。工程上应记录观测时间、规划完成时间、实际接触时间，以及何时重新观测。V-JEPA 2-AC 的搜索配置与计时集中在[规划案例](../05-world-model-and-generative/latent-world-model.md)。
 
 系统分析应分开编码、候选预测、代价计算与执行。定义与模型差异见[世界模型基础](../05-world-model-and-generative/world-model-fundamentals.md)，计算路径见[世界模型工作负载](../06-chip-workload-analysis/world-model-workload.md)。
 
