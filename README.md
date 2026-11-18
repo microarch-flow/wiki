@@ -1,6 +1,6 @@
 # 芯片 Wiki 学习入口
 
-本 wiki 面向希望理解芯片，并建立可解释模拟器的读者。建议先读[电路到时序的共用基础](./series/microarchitecture/02-pipeline/electrical-timing-foundations.md)。它从电容充电算到采样边沿，再说明这些连续过程如何成为离散事件模型的参数。
+本 wiki 面向希望理解芯片，并建立可解释模拟器的读者。想从器件开始，可先读[从硅到门电路](./foundations/silicon-to-logic/README.md)，了解晶体管怎样控制电流，门电路怎样形成电平。然后读[电路与时序基础](./series/microarchitecture/02-pipeline/electrical-timing-foundations.md)，从电容充电算到采样边沿和离散事件。
 
 网站版的本地预览、内容维护与 GitHub Pages 发布方法见[网站构建与维护](./website/README.md)。
 
@@ -18,7 +18,7 @@
 | [芯片架构实例](./series/chip-architectures/README.md) | 具体产品代际的计算、存储、互连和软件映射 |
 | [芯片开发与实现](./series/chip-development/README.md) | 开发流程、晶圆制造、封装与测试 |
 
-网站的[全部系列](https://microarch-flow.github.io/wiki/series/)提供公开阅读入口。源码目录归属与网站的文件级导航归属可以不同。
+网站首页的[探索系列](https://microarch-flow.github.io/wiki/#series)提供公开阅读入口。源码目录归属与网站的文件级导航归属可以不同。
 
 ## 先回答哪些问题
 

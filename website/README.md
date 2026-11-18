@@ -8,6 +8,8 @@ Wiki 与博客的共同写作和设计要求见 [Wiki 与博客设计规则](../
 
 `website/ownership.py` 指定原有文章和芯片开发流程文章的主系列和主专题。按更具体的文件规则处理 HBM、FAB 良率等例外。文章可以从多个导读链接，但只能在主导航出现一次；构建会拒绝重复的主导航条目。新增文章时，检查其路径是否落在正确的规则内，并核对面包屑与阅读链接。
 
+「共同基础」的专题正文位于 `foundations/`。每个专题目录的 `README.md` 作为入口，其「阅读顺序」决定侧栏的顺序和短标题。网站沿用该目录路径，文章从「首页 → 共同基础」进入。首页卡片维护在 `website/home.md`，排在「探索系列」之前。
+
 Workload 的十二个专题及七条源码移动映射维护在 `website/workload.py`。专题导读的“阅读顺序”编号链接决定侧栏正文顺序与短标题。“历史入口”下的编号链接单独形成可展开的子目录，七个兼容页从搜索排除。构建检查遗漏、重复、越界和目标存在性。源码按当前专题组织，已移动的文章继续使用历史公开路径，新旧源码引用均映射到同一页面。新增正文须加入对应导读，标题调整时保留旧锚点。
 
 Workload 与推理系列共用本地 KaTeX 渲染。`website/tests/fixtures/workload-legacy.json` 记录首次重构前 70 个公开路径及 610 个正文锚点。`workload-foundation-anchors.json` 记录后续 86 页相对首份清单增加的 451 个锚点。`test_workload_refinement.py` 对照两份基线检查旧入口，并检查正文链接、导航、搜索和源码映射。`test_workload_examples.py` 用 Python 标准库复算基础与系统算例，可单独运行，也随完整网站测试执行。历史出处保存在 `docs/archive/workload/`。
@@ -151,8 +153,8 @@ mkdocs build
 
 ## 内容和图解
 
-- 正文来源位于 `series/`；`wiki.old/`、`task.md`、`seed/` 和 `docs/archive/` 不在网站构建范围内。
-- 总首页维护在 `website/home.md`，系列目录维护在 `website/series.md`，微架构系列首页维护在 `series/microarchitecture/README.md`，存储系统系列首页维护在 `series/storage/README.md`，系列列表维护在 `website/series.json`。精选文章列表维护在 `website/articles.md`，互动图解维护在 `website/visuals.md`，图形与脚本位于 `website/assets/`。精选文章直接引用现有正文，后续可逐篇修改原文。
+- 系列正文位于 `series/`，共同基础正文位于 `foundations/`。`wiki.old/`、`task.md`、`seed/` 和 `docs/archive/` 不在网站构建范围内。
+- 总首页及「探索系列」维护在 `website/home.md`。`website/series.md` 保留 `/series/` 的兼容访问入口。微架构系列首页维护在 `series/microarchitecture/README.md`，存储系统系列首页维护在 `series/storage/README.md`，系列列表维护在 `website/series.json`。精选文章列表维护在 `website/articles.md`，互动图解维护在 `website/visuals.md`，图形与脚本位于 `website/assets/`。精选文章直接引用现有正文，后续可逐篇修改原文。
 - 各系列首页的封面图位于 `website/assets/images/series-covers/`，由 `website/hooks.py` 结合页面原有标题与导语生成。图片的替代文字和图注也在该文件维护；首页正文和原有链接仍由各系列的 Markdown 维护。
 - DRAM 图解只表示一次显式 PRE 读流程的逻辑阶段，不给出周期数或替代器件规格。
 - 双缓冲图解假设搬运和计算各占一个周期，且资源访问不冲突。它不代表实际设备的实测性能。

@@ -26,6 +26,8 @@ from noc_navigation import NOC_SUMMARY, noc_topic_tree, read_noc_sections  # noq
 from d2d_navigation import D2D_SUMMARY, d2d_topic_tree, read_d2d_sections  # noqa: E402
 
 
+COMMON_FOUNDATIONS = "共同基础"
+
 TOPICS = (
     ("RAM", "RAM · 存储系统"),
     ("COMPUTE", "COMPUTE · 计算"),
@@ -588,9 +590,17 @@ def render_breadcrumbs(page, root, sidebar_labels=None):
     sidebar_labels = sidebar_labels or {}
     storage_groups = {MEMORY_TOPIC, STORAGE_RESOURCES, *(name for name, _, _ in MEMORY_SECTIONS),
                       *(name for name, _, _ in RESOURCE_SECTIONS)}
-    items.extend((sidebar_labels.get(index.file.src_uri, (label,))[0]
-                  if index is not None and label not in storage_groups else label,
-                  index.url if index is not None else None) for label, index in breadcrumb_ancestors(page))
+    for label, index in breadcrumb_ancestors(page):
+        if index is None:
+            url = "/#common-foundations" if label == COMMON_FOUNDATIONS else None
+        else:
+            path = index.file.src_uri
+            if path == "README.md":
+                continue
+            url = index.url
+            if label not in storage_groups:
+                label = sidebar_labels.get(path, (label,))[0]
+        items.append((label, url))
     links = [
         ('<li><a href="{}">{}</a></li>'.format(escape(get_relative_url(url, page.url), quote=True), escape(label))
          if url is not None else '<li><span>{}</span></li>'.format(escape(label)))
@@ -716,6 +726,14 @@ def on_config(config, **kwargs):
             config.extra["storage_sidebar_labels"][path] = (short, title(root / path))
     micro_topics, micro_labels = micro_navigation(root)
     config.extra["storage_sidebar_labels"].update(micro_labels)
+    home = "README.md"
+    foundations = root / "foundations"
+    if foundations.is_dir():
+        home = [home, {COMMON_FOUNDATIONS: make_tree(foundations, root)}]
+        for directory in sorted(foundations.glob("*/")):
+            for name, short in reading_items(directory):
+                path = directory / name
+                config.extra["storage_sidebar_labels"][path.relative_to(root).as_posix()] = (short, title(path))
     storage_topics = grouped_original_topics(root, STORAGE)
     storage_resources = storage_resources_tree(root)
     validate_storage_navigation(root, [*storage_topics, *storage_resources])
@@ -734,8 +752,7 @@ def on_config(config, **kwargs):
                 paths.append(asset)
         setattr(config, setting, paths)
     config.nav = [
-        {"首页": "README.md"},
-        {"系列": "series.md"},
+        {"首页": home},
         {"微架构": [
             {"微架构首页": "microarchitecture.md"},
             {"精选文章": "articles.md"},

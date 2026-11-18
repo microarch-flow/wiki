@@ -142,6 +142,15 @@ body { background: var(--paper); }
 .portal-sheet-mark b:nth-child(2), .portal-sheet-mark b:nth-child(3) { background: #88b6a0; }
 .portal-art-label { position: absolute; right: 2.3rem; bottom: 1.2rem; color: #789381; font-size: .48rem; font-weight: 800; letter-spacing: .12em; }
 .portal-series { padding: 3.6rem 0 3rem; }
+.portal-foundations { padding-top: 2.65rem; scroll-margin-top: 5.5rem; }
+.portal-foundations .portal-section-heading { margin-bottom: .9rem; }
+.portal-foundations + .portal-series { padding-top: 2.65rem; }
+.md-typeset .portal-foundation-card { display: flex; align-items: center; justify-content: space-between; gap: 1rem; padding: clamp(1rem, 2.5vw, 1.45rem); border: 1px solid #cddccd; border-radius: .45rem; background: #e9f0e6; color: var(--ink); text-decoration: none; }
+.md-typeset .portal-foundation-card h3 { margin: 0 0 .3rem; color: var(--ink); font-size: 1.05rem; line-height: 1.4; }
+.md-typeset .portal-foundation-card p { margin: 0; color: var(--note-ink); font-size: .74rem; line-height: 1.7; }
+.md-typeset .portal-foundation-card:hover { border-color: #8daf97; background: #e2ede0; }
+.md-typeset .portal-foundation-card:focus-visible { outline: 2px solid var(--md-accent-fg-color); outline-offset: .18rem; }
+.portal-foundation-arrow { flex: none; color: #32745e; font-size: 1.2rem; line-height: 1; }
 .portal-section-heading { display: flex; justify-content: space-between; align-items: end; gap: 1rem; margin-bottom: 1.4rem; }
 .md-typeset .portal-section-heading h2 { margin: .65rem 0 0; color: var(--ink); font-size: 1.42rem; line-height: 1.35; }
 .md-typeset .portal-section-heading > p { margin: 0; color: #839489; font-size: .64rem; line-height: 1.7; text-align: right; }

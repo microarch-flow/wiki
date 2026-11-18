@@ -7,6 +7,8 @@
 
 为什么 transistor 从 planar 演化到 FinFET，再走向 GAAFET/nanosheet。核心不是器件物理推导，而是理解 gate control 如何决定 scaling、功耗、频率和设计规则。
 
+栅极怎样在平面器件中形成反型沟道，见 [MOSFET 与沟道电流](../../../../../foundations/silicon-to-logic/mosfet.md)。
+
 ## 为什么 planar 走到极限
 
 Planar MOSFET 的 gate 在沟道上方控制电流。尺寸较大时，这种控制足够有效；channel 缩短后，source/drain 对 channel 的影响增强，gate 对电流的控制变弱，短沟道效应、漏电和阈值控制问题变严重。

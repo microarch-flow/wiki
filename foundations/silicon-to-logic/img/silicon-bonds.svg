@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="500" height="330" viewBox="0 0 500 330" role="img" aria-labelledby="title desc">
+  <title id="title">硅原子与四个近邻共享价电子</title>
+  <desc id="desc">平面成键示意。中心硅原子与四个近邻分别共享两个电子。实物的四条键呈四面体方向。</desc>
+  <rect x="1" y="1" width="498" height="328" rx="15" fill="#eef3e9" stroke="#cddccd"/>
+  <g stroke="#77a391" stroke-width="3">
+    <path d="M195 164H77 M195 164H313 M195 164V52 M195 164V276"/>
+  </g>
+  <g fill="#dce9da" stroke="#476c58" stroke-width="2">
+    <circle cx="77" cy="164" r="29"/>
+    <circle cx="313" cy="164" r="29"/>
+    <circle cx="195" cy="52" r="29"/>
+    <circle cx="195" cy="276" r="29"/>
+    <circle cx="195" cy="164" r="32" fill="#c5dfc9"/>
+  </g>
+  <g fill="#2f6f62">
+    <circle cx="136" cy="156" r="5"/><circle cx="136" cy="172" r="5"/>
+    <circle cx="254" cy="156" r="5"/><circle cx="254" cy="172" r="5"/>
+    <circle cx="187" cy="108" r="5"/><circle cx="203" cy="108" r="5"/>
+    <circle cx="187" cy="220" r="5"/><circle cx="203" cy="220" r="5"/>
+  </g>
+  <path d="M256 145 L272 105 H302" fill="none" stroke="#476c58" stroke-width="1.8"/>
+  <g font-family="system-ui, sans-serif" fill="#173d35" font-size="22" font-weight="600">
+    <g text-anchor="middle">
+      <text x="77" y="172">Si</text><text x="195" y="172">Si</text><text x="313" y="172">Si</text>
+      <text x="195" y="60">Si</text><text x="195" y="284">Si</text>
+    </g>
+    <text x="311" y="100">一对共享电子</text>
+    <text x="311" y="128" font-size="19" font-weight="400">形成一个共价键</text>
+  </g>
+</svg>

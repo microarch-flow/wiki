@@ -35,6 +35,24 @@ def page_url(relative):
 
 
 class GeneratedNavigationTests(unittest.TestCase):
+    def test_common_foundations_entry_precedes_series(self):
+        home = (SITE / "index.html").read_text(encoding="utf-8")
+        start = home.index('id="common-foundations"')
+        end = home.index('id="series"')
+        self.assertLess(start, end)
+        tabs = re.search(r'<nav class="md-tabs"[^>]*>(.*?)</nav>', home, re.DOTALL).group(1)
+        self.assertNotIn('href="series/"', tabs)
+        self.assertTrue((SITE / "series/index.html").is_file())
+        topic = "foundations/silicon-to-logic/"
+        self.assertIn(f'href="{topic}"', home[start:end])
+        article = Path(topic) / "cmos-logic/index.html"
+        html = (SITE / article).read_text(encoding="utf-8")
+        breadcrumb = BREADCRUMB.search(html).group(1)
+        labels = re.findall(r"<(?:a|span)\b[^>]*>([^<]+)</(?:a|span)>", breadcrumb)
+        self.assertEqual(labels[:3], ["首页", "共同基础", "从硅到门电路"])
+        link = re.search(r'<a href="([^"]+)">共同基础</a>', breadcrumb).group(1)
+        self.assertEqual(urljoin(page_url(article), link), "https://example.test/#common-foundations")
+
     def test_interconnect_topics_navigation_search_and_cpo_coverage(self):
         docs = SITE.parent / "docs"
         groups = grouped_original_topics(docs, INTERCONNECT)
@@ -795,7 +813,7 @@ class GeneratedNavigationTests(unittest.TestCase):
             end = html.find('<div class="md-sidebar md-sidebar--secondary"', start)
             primary = html[start:end] if start >= 0 and end >= 0 else ""
             active = list(ACTIVE_LINK.finditer(primary))
-            if relative.parts[0] != "reviews":
+            if relative.parts[0] != "reviews" and relative.as_posix() != "series/index.html":
                 if len(active) != 1 or 'aria-current="page"' not in active[0].group():
                     errors.append(f"{relative}: expected one accessible current navigation link")
                     continue

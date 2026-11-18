@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="520" height="298" viewBox="0 0 520 298" role="img" aria-labelledby="title desc">
+  <title id="title">处于热平衡的 PN 结</title>
+  <desc id="desc">耗尽区的 P 侧有固定负离子，N 侧有固定正离子。内建电场由右侧 N 区指向左侧 P 区。</desc>
+  <rect x="1" y="1" width="518" height="296" rx="15" fill="#eef3e9" stroke="#cddccd"/>
+  <path d="M168 81 V71 H352 V81" fill="none" stroke="#476c58" stroke-width="2"/>
+  <rect x="28" y="94" width="232" height="103" fill="#f2e5d1"/>
+  <rect x="260" y="94" width="232" height="103" fill="#dceadc"/>
+  <rect x="168" y="94" width="92" height="103" fill="#e6ccae"/>
+  <rect x="260" y="94" width="92" height="103" fill="#bddbc9"/>
+  <rect x="28" y="94" width="464" height="103" fill="none" stroke="#6d8677" stroke-width="2"/>
+  <path d="M260 94V197" stroke="#476c58" stroke-width="2" stroke-dasharray="5 5"/>
+  <g text-anchor="middle" font-family="system-ui, sans-serif" fill="#173d35" font-size="22">
+    <text x="260" y="57" font-weight="600">耗尽区</text>
+    <text x="96" y="137" font-weight="600">P 区</text>
+    <text x="423" y="137" font-weight="600">N 区</text>
+    <text x="96" y="166" font-size="19">多数为空穴</text>
+    <text x="423" y="166" font-size="19">多数为电子</text>
+    <g font-family="sans-serif" font-weight="700" font-size="28">
+      <text x="195" y="137">−</text><text x="233" y="137">−</text>
+      <text x="195" y="170">−</text><text x="233" y="170">−</text>
+      <text x="287" y="137">+</text><text x="325" y="137">+</text>
+      <text x="287" y="170">+</text><text x="325" y="170">+</text>
+    </g>
+    <text x="106" y="223" font-size="19">− 固定受主离子</text>
+    <text x="410" y="223" font-size="19">+ 固定施主离子</text>
+    <text x="260" y="276" font-weight="600">内建电场</text>
+  </g>
+  <path d="M350 245H173 M173 245l11-7 M173 245l11 7" fill="none" stroke="#2f6f62" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>

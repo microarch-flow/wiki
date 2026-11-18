@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="520" height="354" viewBox="0 0 520 354" role="img" aria-labelledby="title desc">
+  <title id="title">CMOS 反相器与负载电容</title>
+  <desc id="desc">输入连到 PMOS 和 NMOS 的栅极。PMOS 源极接 VDD，NMOS 源极接地，漏极连在输出节点。负载电容从输出接地。</desc>
+  <rect x="1" y="1" width="518" height="352" rx="15" fill="#eef3e9" stroke="#cddccd"/>
+  <g fill="none" stroke="#173d35" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+    <!-- PMOS and NMOS are shown with simplified three-terminal symbols. -->
+    <path d="M283 58V89H250 M250 86V132 M234 86V132 M250 129H283V231H250 M250 228V274 M234 228V274 M250 271H283V310"/>
+    <path d="M60 180H130 M130 109V251 M130 109H207 M130 251H234"/>
+    <circle cx="218" cy="109" r="10" fill="#eef3e9"/>
+    <path d="M228 109H234 M283 180H468 M412 180V221 M393 221H431 M393 233H431 M412 233V310"/>
+    <path d="M265 58H301 M265 310H301 M272 318H294 M279 326H287 M394 310H430 M401 318H423 M408 326H416"/>
+  </g>
+  <g fill="#162c24">
+    <circle cx="130" cy="180" r="4.5"/><circle cx="283" cy="180" r="4.5"/><circle cx="412" cy="180" r="4.5"/>
+  </g>
+  <g font-family="system-ui, sans-serif" fill="#173d35" font-size="22" font-weight="600">
+    <text x="283" y="43" text-anchor="middle">V<tspan baseline-shift="sub" font-size="15">DD</tspan></text>
+    <text x="46" y="169">输入</text>
+    <text x="468" y="166" text-anchor="end">输出</text>
+    <text x="306" y="117" fill="#72572e">PMOS</text>
+    <text x="306" y="259" fill="#2f6f62">NMOS</text>
+    <text x="438" y="234">C<tspan baseline-shift="sub" font-size="15">L</tspan></text>
+  </g>
+</svg>

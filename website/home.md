@@ -23,6 +23,17 @@ hide:
     </div>
   </section>
 
+  <section class="portal-foundations" id="common-foundations" aria-labelledby="common-foundations-heading">
+    <div class="portal-section-heading"><h2 id="common-foundations-heading">共同基础</h2></div>
+    <a class="portal-foundation-card" href="foundations/silicon-to-logic/">
+      <div>
+        <h3>从硅到门电路</h3>
+        <p>从硅晶格、掺杂和晶体管读到 CMOS 门电路，接上时序、存储与前道工艺。</p>
+      </div>
+      <span class="portal-foundation-arrow" aria-hidden="true">→</span>
+    </a>
+  </section>
+
   <section class="portal-series" id="series">
     <div class="portal-section-heading"><div><p class="section-number">THE COLLECTION / 01</p><h2>探索系列</h2></div><p>从一个主题进入，<br>沿着问题继续深入。</p></div>
     <div class="portal-series-grid">

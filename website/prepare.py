@@ -369,6 +369,12 @@ def stage_site(root=ROOT, build_root=None, registry=None, source_root=None, layo
         _copy_storage(docs, published, storage_mappings, layout_data["storage"]["aliases"], root, storage_roots)
         _copy_microarchitecture(root, docs, published, layout_data["microarchitecture"], article, images)
 
+        for index in sorted((root / "foundations").glob("*/README.md")):
+            source = source_directory(root, index.parent.relative_to(root).as_posix())
+            target = docs / "foundations" / source.name
+            copy_source(source, target, public_only=True)
+            published.add_tree(source, target)
+
         # Keep the published URLs stable when the review sources move.
         _assert_no_symlinks(reviews)
         shutil.copytree(reviews, docs / "reviews")
