@@ -25,6 +25,14 @@ SOURCE_TOPICS = tuple(name for name in TOPICS if name not in {"RAM", "HBF", "COM
 INTERCONNECT_TOPICS = frozenset({"BUS", "NOC", "D2D", "PCIE", "COHERENCE",
                                 "SCALEUP", "NETWORK", "SERDES", "CPO"})
 BUS_LEGACY_INDEX = "docs/archive/interconnect/BUS/README.md"
+SILICON_TO_LOGIC_LEGACY_SECTIONS = {
+    "circuit-quantities": "用电压电流电阻和电容描述一个节点",
+    "silicon-and-doping": "从硅的四个价电子理解-p-型和-n-型掺杂",
+    "pn-junction": "pn-结如何形成势垒二极管如何整流",
+    "bipolar-transistor": "三极管怎样放大电流并作为开关",
+    "mosfet": "mosfet-如何用栅极电压控制沟道电流",
+    "cmos-logic": "cmos-门怎样用充放电实现逻辑运算",
+}
 STORAGE_TOPICS = dict(zip((
     "01-memory-hierarchy", "02-sram", "03-dram", "04-dram-controller", "05-hbf", "06-system-integration",
 ), GROUPS[STORAGE]))
@@ -374,6 +382,14 @@ def stage_site(root=ROOT, build_root=None, registry=None, source_root=None, layo
             target = docs / "foundations" / source.name
             copy_source(source, target, public_only=True)
             published.add_tree(source, target)
+
+        silicon_to_logic = docs / "foundations/silicon-to-logic"
+        if (silicon_to_logic / "README.md").is_file():
+            template = (root / "website/foundation-section-redirect.html").read_text(encoding="utf-8")
+            for slug, anchor in SILICON_TO_LOGIC_LEGACY_SECTIONS.items():
+                redirect = silicon_to_logic / slug / "index.html"
+                redirect.parent.mkdir()
+                redirect.write_text(template.replace("__SECTION__", anchor), encoding="utf-8")
 
         # Keep the published URLs stable when the review sources move.
         _assert_no_symlinks(reviews)

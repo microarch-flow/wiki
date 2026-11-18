@@ -17,6 +17,7 @@ SITE = Path(__file__).resolve().parents[2] / ".site-build" / "site"
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from hooks import CPO_SECTIONS, grouped_original_topics, make_tree, storage_resources_tree  # noqa: E402
 from ownership import GROUPS, INTERCONNECT, STORAGE, owner  # noqa: E402
+from prepare import SILICON_TO_LOGIC_LEGACY_SECTIONS  # noqa: E402
 from storage_navigation import (INTEGRATION_AFTER, INTEGRATION_HOME, INTEGRATION_PACKAGING,
                                 MEMORY_HOME, MEMORY_SECTIONS, RESOURCE_HOME, RESOURCE_SECTIONS,
                                 SYSTEM_SELECTION)  # noqa: E402
@@ -44,13 +45,28 @@ class GeneratedNavigationTests(unittest.TestCase):
         self.assertNotIn('href="series/"', tabs)
         topic = "foundations/silicon-to-logic/"
         self.assertIn(f'href="{topic}"', home[start:end])
-        article = Path(topic) / "cmos-logic/index.html"
+        article = Path(topic) / "index.html"
         html = (SITE / article).read_text(encoding="utf-8")
         breadcrumb = BREADCRUMB.search(html).group(1)
         labels = re.findall(r"<(?:a|span)\b[^>]*>([^<]+)</(?:a|span)>", breadcrumb)
-        self.assertEqual(labels[:3], ["首页", "共同基础", "从硅到门电路"])
+        self.assertEqual(labels, ["首页", "共同基础", "从硅到门电路"])
         link = re.search(r'<a href="([^"]+)">共同基础</a>', breadcrumb).group(1)
         self.assertEqual(urljoin(page_url(article), link), "https://example.test/#common-foundations")
+
+    def test_silicon_to_logic_sections_and_legacy_routes(self):
+        topic = "foundations/silicon-to-logic/"
+        article = (SITE / topic / "index.html").read_text(encoding="utf-8")
+        sections = re.findall(r'<h2 id="([^"]+)">', article)
+        self.assertEqual(sections, ["阅读顺序", *SILICON_TO_LOGIC_LEGACY_SECTIONS.values(), "用到哪里"])
+        self.assertIn('id="接下来怎么读"', article)
+        for slug, anchor in SILICON_TO_LOGIC_LEGACY_SECTIONS.items():
+            redirect = (SITE / topic / slug / "index.html").read_text(encoding="utf-8")
+            self.assertIn(f'content="0; url=../#{anchor}"', redirect)
+            self.assertIn(f'href="../#{anchor}"', redirect)
+        index = json.loads((SITE / "search/search_index.json").read_text(encoding="utf-8"))
+        pages = [entry["location"] for entry in index["docs"]
+                 if entry["location"].startswith(topic) and "#" not in entry["location"]]
+        self.assertEqual(pages, [topic])
 
     def test_series_redirect_targets_homepage_section(self):
         redirect = (SITE / "series/index.html").read_text(encoding="utf-8")
@@ -811,8 +827,11 @@ class GeneratedNavigationTests(unittest.TestCase):
 
     def test_current_navigation_and_breadcrumb_links(self):
         self.assertTrue(SITE.is_dir(), "Build the site before running this test")
-        pages = sorted(p for p in SITE.rglob("*.html")
-                       if p.name != "404.html" and p != SITE / "series/index.html")
+        redirects = {SITE / "series/index.html", *(
+            SITE / "foundations/silicon-to-logic" / slug / "index.html"
+            for slug in SILICON_TO_LOGIC_LEGACY_SECTIONS
+        )}
+        pages = sorted(p for p in SITE.rglob("*.html") if p.name != "404.html" and p not in redirects)
         self.assertGreater(len(pages), 1)
         errors = []
         for path in pages:
