@@ -1,6 +1,8 @@
-# JEDEC 标准与可靠性认证
+# 可靠性鉴定标准怎样解释试验结果
 
-上级:[终测与可靠性](README.md)
+<span class="micro-legacy-anchor" id="jedec-标准与可靠性认证"></span>
+
+上级:[成品终测与可靠性](README.md)
 相关:[Burn-in 与应力测试](burn-in-and-stress-test.md), [失效分析的工程流程](failure-analysis-flow.md), [术语表](../08-reference/glossary.md)
 
 ## 这页在回答什么问题
@@ -9,7 +11,7 @@ JEDEC 等可靠性标准在芯片交付中起什么作用，为什么标准不�
 
 ## 标准的作用
 
-可靠性认证需要让设计方、制造方、封测方和客户对测试条件、样本量、判据和报告方式有共同语言。JEDEC 类标准提供的就是这种共同框架。
+可靠性鉴定需要让设计方、制造方、封测方和客户对测试条件、样本量、判据和报告方式有共同语言。例如 TI 用 JEDEC JESD47 框架评价新器件、显著变更和产品族。验收用的样本和试验条件需对应器件与版本。 [TI 资格鉴定说明](https://www.ti.com/en-us/quality-reliability/faqs)
 
 ```text
 reliability requirement
@@ -41,7 +43,7 @@ reliability requirement
 
 ## 标准不是万能保证
 
-通过标准认证不表示产品在所有场景下都不会失败。标准测试是约定条件下的验证，并不能覆盖所有真实工作负载、散热条件、板级设计和系统使用方式。高性能产品还需要结合实际 power profile、thermal profile、system workload 和客户应用场景做补充验证。
+试验通过的结论限定在报告描述的样本、应力、判据和配置。实际系统的负载、散热、板级及使用条件应按项目补充验证。高性能产品还需要结合实际 power profile、thermal profile、system workload 和客户应用场景做补充验证。
 
 ```text
 standard qualification

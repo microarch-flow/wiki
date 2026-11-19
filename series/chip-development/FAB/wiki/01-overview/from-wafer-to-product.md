@@ -1,7 +1,7 @@
 # 一片 wafer 到一颗成品芯片的完整路径
 
-上级:[芯片制造与封测 Wiki 总览](./README.md)
-相关:[前道与后道:产业分工和技术差异](./front-end-vs-back-end.md), [为什么必须在 wafer 阶段测试](../03-wafer-test-and-cp/why-wafer-sort-exists.md), [从传统封装到先进封装:演化逻辑](../04-back-end-packaging/packaging-from-traditional-to-advanced.md)
+上级:[从晶圆到成品的总览](./README.md)
+相关:[前道与后道:产业分工和技术差异](./front-end-vs-back-end.md), [晶圆筛测为什么放在封装之前](../03-wafer-test-and-cp/why-wafer-sort-exists.md), [从传统封装到先进封装:演化逻辑](../04-back-end-packaging/packaging-from-traditional-to-advanced.md)
 
 ## 这页在回答什么问题
 

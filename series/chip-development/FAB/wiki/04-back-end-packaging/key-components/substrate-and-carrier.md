@@ -1,7 +1,7 @@
 # 基板与载板:被忽视但关键的一环
 
-上级:[关键工艺组件](README.md)
-相关:[后道封装](../README.md), [Si Interposer](../2.5d-routes/si-interposer-fundamentals.md), [供电完整性](../../06-cross-cutting-engineering/power-delivery-pi-pdn-decap.md)
+上级:[组件与连接](README.md)
+相关:[封装结构与工艺](../README.md), [Si Interposer](../2.5d-routes/si-interposer-fundamentals.md), [供电完整性](../../06-cross-cutting-engineering/power-delivery-pi-pdn-decap.md)
 
 ## 这页在回答什么问题
 

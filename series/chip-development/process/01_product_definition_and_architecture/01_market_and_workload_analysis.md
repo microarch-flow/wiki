@@ -1,10 +1,12 @@
-# 市场与 Workload 分析
+# 怎样把目标场景转成可复现的工作负载
+
+<span class="micro-legacy-anchor" id="市场与-workload-分析"></span>
 
 ## 前置知识
 
 - 建议先读 [本目录 README](./README.md)。
-- 建议先读 [完整芯片生命周期总览](../00_overview/01_full_lifecycle.md)。
-- 成本判断可参考 [芯片项目成本结构总览](../00_overview/03_cost_structure.md)。
+- 建议先读 [芯片开发生命周期](../00_overview/01_full_lifecycle.md)。
+- 成本判断可参考 [芯片项目成本结构](../00_overview/03_cost_structure.md)。
 
 ## 核心问题
 
@@ -73,7 +75,7 @@ AI 芯片的产品定义必须从真实 [Workload](../00_overview/05_glossary.md
 
 ## 典型时长和交付物
 
-市场与 workload 分析通常需要数周到数月，取决于客户访问深度、模型复杂度和团队已有资产。创业公司早期可以先做约 4 到 8 周的快速收敛形成第一版 workload pack，但这个范围只是项目管理量级，不是行业承诺；后续仍要在架构探索中滚动更新。
+首版收敛速度取决于客户数据、模型输入和已有验证资产。先冻结一个可复现负载基线，再根据架构、软件与硅后数据更新。
 
 主要交付物包括 workload list、模型和输入版本、trace 数据、性能基线、客户需求假设、竞品对比、不可支持列表、benchmark 运行脚本和第一版产品指标草案。不可支持列表很重要，它明确告诉团队第一颗芯片不做什么，防止范围无限膨胀。
 
@@ -101,15 +103,15 @@ workload 分析还会影响后续 [UVM](../00_overview/05_glossary.md#uvm) 验�
 
 ## 典型场景
 
-某团队想做面向 LLM 推理的芯片，最初只设定“INT4 超高峰值算力”。workload 分析后发现，目标客户主要跑 7B 到 70B 模型，batch size 很小，p99 latency 很重要，KV cache 容量和带宽比峰值矩阵乘更关键。团队还发现客户需要与现有 PyTorch serving 框架集成，不能接受完全专有的软件栈。
+**教学假设。** 某团队想做面向 LLM 推理的芯片，最初只设定“INT4 超高峰值算力”。workload 分析后发现，目标客户主要跑 7B 到 70B 模型，batch size 很小，p99 latency 很重要，KV cache 容量和带宽比峰值矩阵乘更关键。团队还发现客户需要与现有 PyTorch serving 框架集成，不能接受完全专有的软件栈。
 
 如果团队继续按峰值 TOPS 设计，可能会做出大阵列但外部内存和调度不足，最终 demo 只能在大 batch synthetic matmul 上好看。正确调整后，团队把指标改为端到端 tokens/s/W、受支持模型列表、KV cache 策略、host 接口和编译器支持范围，并在架构探索中比较 HBM、GDDR 和 DDR 方案。
 
 ## 后续阅读
 
-- [02_spec_definition.md](./02_spec_definition.md)
-- [03_architecture_exploration.md](./03_architecture_exploration.md)
-- [06_milestones_and_signoffs.md](./06_milestones_and_signoffs.md)
+- [规格定义](./02_spec_definition.md)
+- [架构探索](./03_architecture_exploration.md)
+- [阶段评审需要哪些放行证据](./06_milestones_and_signoffs.md)
 - [AI 芯片特有的考虑](../06_cross_cutting_topics/06_ai_chip_specific.md)
 
 ## 参考公开来源

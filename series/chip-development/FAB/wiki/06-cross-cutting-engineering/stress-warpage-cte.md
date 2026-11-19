@@ -1,6 +1,6 @@
 # 应力、Warpage、CTE 失配:机械可靠性的核心
 
-上级:[跨工艺共性问题](README.md)
+上级:[封装工程约束](README.md)
 相关:[Molding 与 Underfill](../04-back-end-packaging/key-components/molding-and-underfill.md), [3DIC 的热与应力挑战](../04-back-end-packaging/3d-routes/3dic-thermal-and-stress-challenges.md), [失效模式总览](failure-modes-catalog.md)
 
 ## 这页在回答什么问题

@@ -246,7 +246,7 @@ def storage_sidebar_labels(root):
     return labels
 
 
-def make_tree(directory, root, index_names=("README.md",), include=None):
+def make_tree(directory, root, index_names=("README.md",), include=None, *, order_subdirs=False):
     items = []
     include = include or (lambda path: True)
     indexes = [directory / name for name in index_names if (directory / name).is_file()]
@@ -259,7 +259,8 @@ def make_tree(directory, root, index_names=("README.md",), include=None):
     if summary.is_file() and include(summary):
         items.append({"知识地图": summary.relative_to(root).as_posix()})
     is_cpo = directory.relative_to(root).parts[:2] == ("CPO", "wiki")
-    ordered = reading_items(directory, index.name if index else "README.md", include_subdirs=is_cpo)
+    ordered = reading_items(directory, index.name if index else "README.md",
+                            include_subdirs=is_cpo or order_subdirs)
     priority = {name: number for number, (name, _label) in enumerate(ordered)}
     for path in sorted(directory.iterdir(), key=lambda p: (priority.get(p.name, len(priority)), p.name.lower())):
         if path.is_dir():
@@ -273,7 +274,7 @@ def make_tree(directory, root, index_names=("README.md",), include=None):
                 metadata = re.search(r"^<!--\s*nav-title:\s*(.+?)\s*-->\s*$", section_index.read_text(encoding="utf-8"), re.MULTILINE)
                 if metadata:
                     label = metadata.group(1)
-            children = make_tree(path, root, index_names, include)
+            children = make_tree(path, root, index_names, include, order_subdirs=order_subdirs)
             if children:
                 items.append({label: children})
         elif path.is_file() and path.suffix.lower() == ".md" and path.name not in {*index_names, "SUMMARY.md"} and include(path):
@@ -499,17 +500,62 @@ def workload_tree(root, directory, labels=None):
     return result
 
 
-def development_tree(root, directory):
+def compact_development_sections(items, labels):
+    """Keep source chapters with a guide in this topic, and lift moved pages."""
+    compact = []
+    for item in items:
+        if isinstance(item, str):
+            compact.append(item)
+            continue
+        label, children = next(iter(item.items()))
+        if isinstance(children, str):
+            compact.append(item)
+            continue
+        guide = children[0]
+        contents = compact_development_sections(children, labels)
+        if (len(contents) > 1 and isinstance(guide, str)
+                and PurePosixPath(guide).name in {"README.md", "index.md"}):
+            compact.append({labels.get(guide, (label,))[0]: contents})
+        else:
+            compact.extend(contents)
+    return compact
+
+
+def development_tree(root, directory, labels):
     landing = series_landing(directory)
+    fab = root / "FAB" / "wiki"
+    for source in (directory, fab):
+        for index in sorted(source.rglob("README.md")):
+            for name, short in reading_items(index.parent, include_subdirs=True):
+                path = index.parent / name
+                if path.is_dir():
+                    path = path / "README.md"
+                labels[path.relative_to(root).as_posix()] = (short, title(path))
+
     result = [landing.relative_to(root).as_posix()]
     for group in GROUPS[DEVELOPMENT]:
         include = lambda path, g=group: path != landing and development_owner(path.relative_to(directory).as_posix()) == g
-        entries = make_tree(directory, root, ("README.md", "index.md"), include)
-        fab = owned_topic_tree(root, "FAB", DEVELOPMENT, group)
-        if fab:
-            entries.append({"FAB · 制造与封装": fab})
+        entries = make_tree(directory, root, ("README.md", "index.md"), include, order_subdirs=True)
+        if fab.is_dir():
+            entries.extend(make_tree(
+                fab, root,
+                include=lambda path: owner(path.relative_to(root).as_posix()) == (DEVELOPMENT, group),
+                order_subdirs=True,
+            ))
+        entries = compact_development_sections(entries, labels)
+        if len(entries) == 1 and isinstance(entries[0], dict) and group in entries[0]:
+            entries = entries[0][group]
         if entries:
             result.append({group: entries})
+    expected = {
+        path.relative_to(root).as_posix()
+        for source in (directory, fab)
+        for path in source.rglob("*.md")
+    }
+    assigned = validate_unique_navigation(result)
+    if assigned != expected:
+        raise ValueError(f"Chip development navigation mismatch: missing={sorted(expected - assigned)}, "
+                         f"extra={sorted(assigned - expected)}")
     return result
 
 
@@ -658,6 +704,7 @@ def validate_unique_navigation(entries):
                 raise ValueError(f"Page has more than one main navigation entry: {item}")
             seen.add(item)
     visit(entries)
+    return seen
 
 
 def validate_storage_navigation(root, entries):
@@ -800,7 +847,7 @@ def on_config(config, **kwargs):
             if entry["local"]["publish"] == "external/workload-wiki":
                 tree = workload_tree(root, directory, config.extra["storage_sidebar_labels"])
             elif entry["local"]["publish"] == "series/chip-development":
-                tree = development_tree(root, directory)
+                tree = development_tree(root, directory, config.extra["storage_sidebar_labels"])
             elif entry["local"]["publish"] == "series/inference-runtime":
                 tree = inference_tree(root, directory, config.extra["storage_sidebar_labels"])
             elif entry["local"]["publish"] == CHIP_ARCHITECTURES:

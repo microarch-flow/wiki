@@ -1,6 +1,6 @@
 # 术语表
 
-上级:[参考资料](README.md)
+上级:[FAB 参考资料](README.md)
 相关:[分类框架](../01-overview/taxonomy.md), [封装分类](../04-back-end-packaging/packaging-taxonomy.md), [关键指标速查表](key-metrics-table.md)
 
 ## 这页在回答什么问题
@@ -11,7 +11,7 @@
 
 | 术语 | 含义 | 继续阅读 |
 | --- | --- | --- |
-| Fabless | 无晶圆厂芯片设计公司 | [产业地图](../07-industry-map/README.md) |
+| Fabless | 无晶圆厂芯片设计公司 | [供应商与产业分工](../07-industry-map/README.md) |
 | Foundry | 晶圆代工厂 | [Foundry 版图](../07-industry-map/foundry-landscape-tsmc-intel-samsung.md) |
 | IDM | Integrated Device Manufacturer，设计制造一体厂 | [Foundry 版图](../07-industry-map/foundry-landscape-tsmc-intel-samsung.md) |
 | OSAT | Outsourced Semiconductor Assembly and Test，外包封装测试 | [OSAT 版图](../07-industry-map/osat-landscape-ase-amkor-jcet-tongfu.md) |
@@ -23,7 +23,7 @@
 | Wafer | 晶圆，前道制造的圆片载体 | [晶圆](../02-front-end-fabrication/wafer-the-substrate.md) |
 | Die | 晶圆上的单个电路区域或切割后的裸片；singulated die 明确指已切割裸片 | [从晶圆到产品](../01-overview/from-wafer-to-product.md) |
 | KGD | Known Good Die，按指定条件和判据筛选通过的 die；仍可能漏检或在组装中受损 | [KGD](../03-wafer-test-and-cp/kgd-known-good-die.md) |
-| Package | 封装后的芯片产品形态 | [后道封装](../04-back-end-packaging/README.md) |
+| Package | 封装后的芯片产品形态 | [封装结构与工艺](../04-back-end-packaging/README.md) |
 | Substrate | 封装基板，连接 package module 与 board | [基板与载板](../04-back-end-packaging/key-components/substrate-and-carrier.md) |
 | Carrier | 制程中的临时承载平台 | [基板与载板](../04-back-end-packaging/key-components/substrate-and-carrier.md) |
 

@@ -1,6 +1,6 @@
 # 高频问题:最容易混淆的概念
 
-上级:[参考资料](README.md)
+上级:[FAB 参考资料](README.md)
 相关:[术语表](glossary.md), [关键指标速查表](key-metrics-table.md), [工艺与封装选型决策树](decision-tree-process-and-package.md)
 
 ## 这页在回答什么问题
@@ -18,11 +18,11 @@
 | Embedded bridge 是缩小版 interposer 吗 | 不是。它是局部硅互连 + 全局低成本平台 | [Embedded Bridge](../04-back-end-packaging/2.5d-routes/embedded-bridge-emib-and-cowos-l.md) |
 | 2.5D 比 3D 落后吗 | 不是代际高低，2.5D 对 logic + HBM 仍是强路线 | [2.5D 路线](../04-back-end-packaging/2.5d-routes/README.md) |
 | Hybrid bonding 会替代 micro-bump 吗 | 它在极高密度场景更有价值，但 micro-bump 仍有成熟窗口 | [Micro-bump vs Hybrid Bonding](../04-back-end-packaging/3d-routes/micro-bump-vs-hybrid-bonding.md) |
-| 先进封装只是连线吗 | 不是，还包括 PI、SI、热、应力、测试、良率和产业链 | [跨工艺共性问题](../06-cross-cutting-engineering/README.md) |
+| 先进封装只是连线吗 | 不是，还包括 PI、SI、热、应力、测试、良率和产业链 | [封装工程约束](../06-cross-cutting-engineering/README.md) |
 | PI 是 die 内部问题吗 | 不是。先进封装中 PDN 跨 board、substrate、interposer/RDL、bump 和 die | [PI/PDN/Decap](../06-cross-cutting-engineering/power-delivery-pi-pdn-decap.md) |
 | 热能靠最后加散热器解决吗 | 不能。热路径由 die placement、stack、TIM/lid 和 package 结构决定 | [热路径](../06-cross-cutting-engineering/thermal-path-and-management.md) |
 | Warpage 只是外观问题吗 | 不是。它影响 bonding、bump、测试接触和板级组装 | [CTE/Warpage](../06-cross-cutting-engineering/stress-warpage-cte.md) |
-| 有平台名就等于量产能力相同吗 | 不等于。还要看客户导入、良率、材料设备、测试和供应链闭环 | [产业地图](../07-industry-map/README.md) |
+| 有平台名就等于量产能力相同吗 | 不等于。还要看客户导入、良率、材料设备、测试和供应链闭环 | [供应商与产业分工](../07-industry-map/README.md) |
 | OSAT 会被 foundry packaging 替代吗 | 不会简单替代。两者在协同方式、客户来源和平台能力上不同 | [OSAT 版图](../07-industry-map/osat-landscape-ase-amkor-jcet-tongfu.md) |
 | 3DIC 最难的是 bonding 吗 | Bonding 关键，但热、应力、薄 die、测试和良率共同决定难度 | [3DIC 热应力](../04-back-end-packaging/3d-routes/3dic-thermal-and-stress-challenges.md) |
 | 学路线名够了吗 | 不够。还要理解失效模式、测试、良率和产业链 | [失效模式总览](../06-cross-cutting-engineering/failure-modes-catalog.md) |

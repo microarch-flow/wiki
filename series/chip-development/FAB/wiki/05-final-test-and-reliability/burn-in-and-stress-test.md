@@ -1,7 +1,7 @@
 # Burn-in 与应力测试
 
-上级:[终测与可靠性](README.md)
-相关:[Final Test 的方法与流程](final-test-methodology.md), [热路径管理](../06-cross-cutting-engineering/thermal-path-and-management.md), [应力、Warpage 与 CTE](../06-cross-cutting-engineering/stress-warpage-cte.md)
+上级:[成品终测与可靠性](README.md)
+相关:[成品终测](final-test-methodology.md), [热路径管理](../06-cross-cutting-engineering/thermal-path-and-management.md), [应力、Warpage 与 CTE](../06-cross-cutting-engineering/stress-warpage-cte.md)
 
 ## 这页在回答什么问题
 

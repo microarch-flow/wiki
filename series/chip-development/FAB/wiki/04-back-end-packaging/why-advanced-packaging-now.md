@@ -1,7 +1,7 @@
 # 摩尔定律放缓如何把封装推到前台
 
-上级:[后道封装](./README.md)
-相关:[为什么工艺红利在让位于封装红利](../01-overview/why-process-and-packaging-matter-now.md), [工艺节点演化与 PPA 取舍](../02-front-end-fabrication/process-nodes-and-ppa-tradeoffs.md), [HBM 如何把产业逼向 2.5D 和 3D](./hbm-as-case-study/why-hbm-forces-2.5d-3d.md)
+上级:[封装结构与工艺](./README.md)
+相关:[为什么工艺红利在让位于封装红利](../01-overview/why-process-and-packaging-matter-now.md), [工艺节点演化与 PPA 取舍](../02-front-end-fabrication/process-nodes-and-ppa-tradeoffs.md), [HBM 为什么常与高密度封装配合](./hbm-as-case-study/why-hbm-forces-2.5d-3d.md)
 
 ## 这页在回答什么问题
 

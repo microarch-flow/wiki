@@ -1,6 +1,6 @@
 # Design Rule 和 PDK:架构师与工艺的接口
 
-上级:[前道工艺](./README.md)
+上级:[晶圆制造](./README.md)
 相关:[工艺节点、封装路线、测试阶段的命名体系](../01-overview/taxonomy.md), [光刻:把版图变成芯片的核心步骤](./photolithography-fundamentals.md), [工艺节点演化与 PPA 取舍](./process-nodes-and-ppa-tradeoffs.md)
 
 ## 这页在回答什么问题
@@ -42,6 +42,8 @@ process capability
 很多物理不可行来自架构阶段的隐性承诺。例如，在模型中把 SRAM bank 数量翻倍，后端会面对 macro placement、routing channel、power grid 和时钟问题；把 HBM interface 放在某一边，封装团队会面对 bump map、interposer routing 和热耦合；把频率目标写得过高，signoff 会面对 wire delay、IR drop 和 corner margin。
 
 PDK 不是后端团队的局部工具，而是架构假设的边界条件。早期架构模型越接近 PDK 真实资源，后期返工越少。
+
+工艺套件与配套交付物的具体组合随平台和版本而定。开放 PDK 也可能同时提供部分数字库。比如 IHP 文档分别描述了开放发布的适用范围和配套设计数据。采购和集成仍需核对每份视图、许可、节点和表征条件。 [IHP 开放 PDK](https://www.ihp-microelectronics.com/services/research-and-prototyping-service/open-source-design-enablement)
 
 ## 常见误解
 

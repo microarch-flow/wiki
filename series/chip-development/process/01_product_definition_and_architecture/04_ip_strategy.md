@@ -4,7 +4,7 @@
 
 - 建议先读 [规格定义](./02_spec_definition.md)。
 - 建议先读 [架构探索](./03_architecture_exploration.md)。
-- 成本背景可参考 [芯片项目成本结构总览](../00_overview/03_cost_structure.md)。
+- 成本背景可参考 [芯片项目成本结构](../00_overview/03_cost_structure.md)。
 
 ## IP 策略的核心
 
@@ -28,7 +28,7 @@
 
 ## 哪些适合买，哪些适合自研
 
-通常适合购买的 IP 包括 PCIe controller/PHY、DDR/HBM controller/PHY、USB/Ethernet SerDes、PLL、PMU、eFuse/OTP、JTAG/debug infrastructure、成熟 CPU core、标准 NoC、security subsystem 和标准 verification IP。
+可比较市场供应、自研及集成成本的 IP 包括 PCIe controller/PHY、DDR/HBM controller/PHY、USB/Ethernet SerDes、PLL、PMU、eFuse/OTP、JTAG/debug infrastructure、成熟 CPU core、标准 NoC、security subsystem 和标准 verification IP。
 
 购买理由不是团队写不出来，而是这些 IP 的价值在于多年硅验证、生态兼容、协议认证、foundry 适配和客户信任。自研一个 PCIe controller 也许可行，自研一个先进节点 PCIe PHY 并完成合规和量产支持，对创业公司通常不现实。
 
@@ -40,7 +40,7 @@ AI 芯片创业公司的差异化通常在 [NPU](../00_overview/05_glossary.md#n
 
 IP 授权常见模式包括一次性 license fee、按项目授权、按节点授权、按实例授权、royalty、maintenance fee、support fee、source code fee 和 evaluation license。硬 IP 还可能按 [Foundry](../00_overview/05_glossary.md#foundry)、process node、corner、metal stack 或封装条件限制使用。
 
-量级上，公开可讨论的安全表述只能到“范围和计价方式”。评估授权可能是低成本或限时的；成熟软 IP 可能从数万美元到更高量级；复杂 controller、CPU subsystem、NoC、安全 IP、VIP 或高速接口 IP 往往进入数十万到数百万美元量级；HBM、DDR、PCIe/CXL、SerDes PHY 等硬 IP 还会叠加节点、foundry、封装和支持费用。具体报价高度依赖 vendor、节点、区域、客户资质、项目数量、是否含 source access、是否含 royalty 和谈判结果，必须向供应商确认。
+比较授权时确认制程、实例、支持期限、保修、版税与可使用的视图。费用归入[芯片项目成本结构](../00_overview/03_cost_structure.md)。
 
 还要把集成 [NRE](../00_overview/05_glossary.md#nre) 算进去。IP 授权费之外，团队可能需要投入 wrapper、CDC/RDC、DFT、仿真模型、VIP、low-power integration、后端 hardening、封装/板级约束、firmware 和 bring-up 支持。对高速接口，集成成本和排期风险可能接近甚至超过 license 本身。
 
@@ -59,7 +59,7 @@ IP 授权常见模式包括一次性 license fee、按项目授权、按节点�
 | bug fix 和 support SLA 如何定义 | 影响项目排期 |
 | royalty 如何计算 | 影响毛利模型 |
 
-IP 成本不能只看报价。还要算集成人力、验证时间、EDA license、vendor support、bug 等待、wrapper 开发、CDC/RDC、DFT、低功耗、后端 macro placement、timing exception 和硅后 debug。
+IP 成本包括授权及集成。还要算集成人力、验证时间、EDA license、vendor support、bug 等待、wrapper 开发、CDC/RDC、DFT、低功耗、后端 macro placement、timing exception 和硅后 debug。
 
 ## IP 评估流程
 
@@ -125,14 +125,14 @@ IP 策略初版应在架构探索早期完成，关键 IP 的商务和技术评�
 
 ## 典型场景
 
-团队计划第一颗芯片支持 HBM 和 PCIe Gen5。架构上 HBM 能显著提高 LLM 推理性能，PPT 也更有吸引力。但 IP 评估发现，HBM PHY 依赖特定先进封装和 foundry 生态，封装供应、测试、基板、热设计和采购门槛都很高。PCIe Gen5 PHY 也要求严格的封装和板级 SI 支持。
+**教学假设。** 团队计划第一颗芯片支持 HBM 和 PCIe Gen5。架构上 HBM 能显著提高 LLM 推理性能，PPT 也更有吸引力。但 IP 评估发现，HBM PHY 依赖特定先进封装和 foundry 生态，封装供应、测试、基板、热设计和采购门槛都很高。PCIe Gen5 PHY 也要求严格的封装和板级 SI 支持。
 
 如果团队忽略这些问题，可能在后端或封装阶段才发现无法落地。更务实的选择可能是第一颗芯片使用更可获得的外部内存方案，保留架构接口，为第二代 HBM 版本做准备。或者做一个小面积 test chip 专门验证 HBM/SerDes 集成，而不是把所有风险压到主芯片。
 
 ## 后续阅读
 
-- [05_process_node_selection.md](./05_process_node_selection.md)
-- [06_milestones_and_signoffs.md](./06_milestones_and_signoffs.md)
+- [工艺节点选择](./05_process_node_selection.md)
+- [阶段评审需要哪些放行证据](./06_milestones_and_signoffs.md)
 - [开源芯片策略](../06_cross_cutting_topics/03_open_source_silicon.md)
 - [Foundry 关系](../06_cross_cutting_topics/02_foundry_relationships.md)
 - [Turnkey 服务](../06_cross_cutting_topics/05_turnkey_services.md)

@@ -1,7 +1,7 @@
 # 关键指标速查表
 
-上级:[参考资料](README.md)
-相关:[2.5D 路线 trade-off](../04-back-end-packaging/2.5d-routes/2.5d-routes-tradeoff-map.md), [Micro-bump vs Hybrid Bonding](../04-back-end-packaging/3d-routes/micro-bump-vs-hybrid-bonding.md), [产业地图](../07-industry-map/README.md)
+上级:[FAB 参考资料](README.md)
+相关:[2.5D 路线 trade-off](../04-back-end-packaging/2.5d-routes/2.5d-routes-tradeoff-map.md), [Micro-bump vs Hybrid Bonding](../04-back-end-packaging/3d-routes/micro-bump-vs-hybrid-bonding.md), [供应商与产业分工](../07-industry-map/README.md)
 
 ## 这页在回答什么问题
 

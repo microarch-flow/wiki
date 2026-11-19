@@ -1,13 +1,15 @@
-# 关键术语表
+# 开发流程术语表
+
+<span class="micro-legacy-anchor" id="关键术语表"></span>
 
 ## 前置知识
 
 - 无。本文件是全 Wiki 的术语入口。
-- 建议配合 [01_full_lifecycle.md](./01_full_lifecycle.md) 阅读。
+- 建议配合 [芯片开发生命周期](./01_full_lifecycle.md) 阅读。
 
 ## ASIC
 
-Application-Specific Integrated Circuit，专用集成电路。与 FPGA 不同，ASIC 最终会制造成固定功能的硅片，单位成本和能效通常更好，但前期 [NRE](#nre) 高，修改成本高。
+Application-Specific Integrated Circuit，专用集成电路。器件的电路在制造中实现，仍可通过处理器、寄存器和配置提供可编程行为。成本与能效取决于实现、规模及用途。
 
 ## SoC
 
@@ -35,7 +37,7 @@ Product Requirements Document，产品需求文档。它把客户场景、功能
 
 ## TOPS
 
-Tera Operations Per Second，每秒万亿次操作。常用于宣传 AI 芯片峰值算力，但它不能单独代表真实性能。真实客户更关心目标 workload 下的利用率、延迟、功耗、软件可用性和成本。
+Tera Operations Per Second，每秒万亿次操作。报告峰值时需声明精度、稀疏口径、时钟和算术计数规则，例如一次 MAC 是否计作两次操作。实际指标还取决于输入、映射、内存、并发和系统条件。
 
 ## NPU
 
@@ -83,7 +85,7 @@ Clock Domain Crossing，时钟域跨越。信号从一个时钟域进入另一�
 
 ## RDC
 
-Reset Domain Crossing，复位域跨越。不同复位信号或复位释放顺序导致的问题。软件背景的人容易低估 reset，因为软件进程重启和硬件复位不是一回事。
+Reset Domain Crossing，复位域交互。源域复位使其输出变化时，另一个仍工作的域可能在不合适的时刻采样。共用时钟也要检查异步复位和域间协议。 [CDC 与 RDC](../02_frontend_design_and_verification/06_cdc_and_rdc.md)
 
 ## DFT
 
@@ -131,11 +133,11 @@ Clock Tree Synthesis，时钟树综合。构建时钟分发网络，控制 skew�
 
 ## DRC
 
-Design Rule Check，设计规则检查。确认版图符合 foundry 工艺规则。DRC clean 是 tapeout 基本条件之一。
+Design Rule Check，设计规则检查。在指定版图、工艺规则集、配置和豁免范围内检查几何等要求。 [DRC 与 LVS](../03_backend_physical_design/07_drc_lvs_signoff.md)
 
 ## LVS
 
-Layout Versus Schematic，版图与网表一致性检查。确认物理版图实现与电路网表一致。LVS 不通过意味着版图可能不是你想要的电路。
+Layout Versus Schematic。把从版图抽取的电路与指定参考网表比较，结论受抽取、器件匹配和黑盒设置约束。 [DRC 与 LVS](../03_backend_physical_design/07_drc_lvs_signoff.md)
 
 ## IR Drop
 
@@ -189,7 +191,7 @@ Unified Power Format，IEEE 1801 标准功耗意图格式。描述 power domain�
 
 ## Mask Cost
 
-掩模版成本。Foundry 根据版图制作光罩用于光刻。先进节点 mask 数量多、复杂度高，full mask 成本通常达到百万美元以上量级，具体取决于节点和商务条件。
+掩模版成本。取决于工艺、需制作的掩模、掩模类型、共享方式和商务条件。 [芯片项目成本结构](03_cost_structure.md)
 
 别名：mask、光罩、掩模版成本。
 
@@ -199,7 +201,7 @@ Unified Power Format，IEEE 1801 标准功耗意图格式。描述 power domain�
 
 ## Yield
 
-良率。可销售良品占比。良率受工艺缺陷、die size、设计鲁棒性、封装、测试和量产成熟度影响。良率直接决定毛利。
+良率。在规定生产或筛测阶段，以通过特定判据的件数除以该阶段投入件数。报告注明对象、条件、分档、时间和是否包含复测。 [FAB 良率与缺陷密度](../../FAB/wiki/03-wafer-test-and-cp/yield-and-defect-density.md)
 
 别名：yield、良率。
 
@@ -233,7 +235,7 @@ High Bandwidth Memory，高带宽存储器。常用于高端 AI 加速器。HBM 
 
 ## PDK
 
-Process Design Kit，工艺设计套件。Foundry 提供的工艺规则、模型、库和参考文件集合。没有 PDK 很难进行真实物理设计和 signoff。
+Process Design Kit，工艺设计套件。通常包括工艺层、器件模型、设计规则、验证及提取所需文件。标准单元、SRAM compiler、I/O 及 PHY 可随套件提供，也可能独立授权和交付。核对各视图的版本和工作范围。 [FAB 工艺规则与 PDK](../../FAB/wiki/02-front-end-fabrication/design-rule-and-pdk.md)
 
 ## Open Source Silicon
 
@@ -305,15 +307,15 @@ Bill of Materials，物料清单。系统级产品中所有物料成本。芯片
 
 ## Bring-up
 
-硅后启动调试。首硅回来后让芯片从上电、时钟、复位、JTAG、boot 到基本功能运行。Bring-up 成功不代表量产 ready，但失败会阻断后续验证。
+硅后启动。按样品和板卡约束建立供电、时钟、复位、观测和最小功能。输出可用配置、复现记录和未关闭问题。 [首硅启动](../04_tapeout_and_post_silicon/04_post_silicon_bringup.md)
 
 ## Characterization
 
-特性化。测量芯片在不同电压、温度、频率、负载下的性能、功耗和 margin。结果用于 datasheet、binning、客户导入和量产测试。
+硅片特性化。在特定样品、工作条件和测量方法下得到功能、裕量和性能等结果，供数据手册、分档和生产测试使用。 [硅片特性化](../04_tapeout_and_post_silicon/06_characterization.md)
 
 ## Qualification
 
-资格认证/可靠性验证。用代表性样品和规定的 stress test 证明芯片、封装和制造流程适合目标市场。JEDEC JESD47 是集成电路可靠性资格测试的公开标准之一。Qualification 不是功能测试，而是进入量产和客户导入前的质量证据。
+资格鉴定。按适用的标准及客户要求选择代表性样本、应力和判据，支持指定设计、工艺和封装的放行。 [可靠性鉴定](../05_production_and_lifecycle/01_qualification_and_reliability.md)
 
 ## Respin
 
@@ -341,15 +343,15 @@ JEDEC Solid State Technology Association，制定半导体存储器、封装、�
 
 ## Volume Ramp
 
-量产爬坡。从工程样品或小批试产逐步扩大到稳定量产出货的过程。核心不是简单增加订单，而是同步爬升良率、测试覆盖、供应链产能、客户认证和质量监控。
+量产爬坡。根据适用的试产、质量、供应和客户证据，从工程批或试产逐步扩大到稳定出货。 [量产爬坡](../05_production_and_lifecycle/02_volume_ramp.md)
 
 ## Wafer Sort
 
-晶圆测试，也称 CP test。晶圆切割前用 probe card 和 ATE 测试 die，筛掉明显失效 die，并收集 wafer map 和良率数据。
+晶圆筛测。按产品测试条件在晶圆阶段测试裸片，得到分档与晶圆图。 [FAB 晶圆筛测](../../FAB/wiki/03-wafer-test-and-cp/cp-test-methodology.md)
 
 ## Final Test
 
-封装后最终测试。芯片完成封装后在 ATE 上进行功能、性能、功耗、接口和 binning 测试，是量产出货前的关键质量门禁。
+成品终测。用经验证的测试程序和限值判定封装件是否通过和所属档位。 [成品终测](../../FAB/wiki/05-final-test-and-reliability/final-test-methodology.md)
 
 ## Binning
 
@@ -441,11 +443,11 @@ Evaluation Board，评估板。用于首硅 bring-up、软件开发、客户评�
 
 ## Wafer Test
 
-晶圆测试，也叫 wafer sort。芯片还在晶圆上时用 probe card 和 ATE 做初筛。它用于识别坏 die，减少后续封装浪费。
+产品晶圆筛测见 [Wafer Sort](#wafer-sort)。工艺参数测试应另行注明所测的结构、指标和判据。
 
 ## MMMC
 
-Multi-Mode Multi-Corner，多模式多工艺角时序分析。现代 SoC 会在 functional、scan、低功耗等模式，以及不同工艺、电压、温度 corner 下检查 STA。
+Multi-Mode Multi-Corner，多模式多角分析。按功能、测试或低功耗模式选择适用的时钟和约束，并绑定 PVT、寄生及变异模型。 [静态时序分析](../03_backend_physical_design/05_static_timing_analysis.md)
 
 ## PVT Corner
 
@@ -453,7 +455,7 @@ Process、Voltage、Temperature corner，工艺、电压、温度组合。芯片
 
 ## WNS/TNS
 
-Worst Negative Slack / Total Negative Slack。WNS 表示最差路径 slack，TNS 表示所有违反路径负 slack 总和。STA closure 不能只看 WNS，还要看 violation 分布和路径类型。
+Worst Negative Slack / Total Negative Slack，最差裕量与负裕量汇总。具体以工具和报告为准。例如 AMD 的 UG906 对每个端点只累计其最差负裕量。记录检查类型、模式、角落和端点覆盖。 [时序算例](../03_backend_physical_design/05_static_timing_analysis.md#典型场景) · [AMD UG906](https://docs.amd.com/api/khub/documents/1tipwNqhy1~RxTdCrHCn1g/content)
 
 ## AOCV/POCV/LVF
 
@@ -485,9 +487,9 @@ Programmable Electrical Rule Checking，可编程电气规则检查。常用于�
 
 ## 后续阅读
 
-- [01_full_lifecycle.md](./01_full_lifecycle.md)
+- [芯片开发生命周期](./01_full_lifecycle.md)
 - [02_roles_and_teams.md](./02_roles_and_teams.md)
-- [03_cost_structure.md](./03_cost_structure.md)
+- [芯片项目成本结构](./03_cost_structure.md)
 
 ## 参考公开来源
 

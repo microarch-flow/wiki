@@ -1,6 +1,6 @@
 # 先进封装分类框架:2D/2.5D/3D
 
-上级:[后道封装](./README.md)
+上级:[封装结构与工艺](./README.md)
 相关:[工艺节点、封装路线、测试阶段的命名体系](../01-overview/taxonomy.md), [2.5D 路线](./2.5d-routes/README.md), [3D 路线](./3d-routes/README.md)
 
 ## 这页在回答什么问题

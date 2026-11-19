@@ -1,7 +1,7 @@
 # CoWoS-S 简化制造对象流
 
 上级:[2.5D 路线](README.md)
-相关:[Si Interposer:第一代主流 2.5D](si-interposer-fundamentals.md), [KGD:HBM/3DIC 时代的必要前提](../../03-wafer-test-and-cp/kgd-known-good-die.md), [HBM stack 是怎么制造出来的](../hbm-as-case-study/hbm-stack-manufacturing.md)
+相关:[Si Interposer:第一代主流 2.5D](si-interposer-fundamentals.md), [KGD 的筛选判据与残余风险](../../03-wafer-test-and-cp/kgd-known-good-die.md), [HBM stack 是怎么制造出来的](../hbm-as-case-study/hbm-stack-manufacturing.md)
 
 ## 这页在回答什么问题
 

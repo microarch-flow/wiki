@@ -1,61 +1,22 @@
-# 终测与可靠性
+# 成品终测与可靠性
 
-上级:[芯片制造与封测 Wiki 总览](../01-overview/README.md)
-相关:[晶圆测试与 CP](../03-wafer-test-and-cp/README.md), [后道封装](../04-back-end-packaging/README.md), [跨工艺共性问题](../06-cross-cutting-engineering/README.md)
+<span class="micro-legacy-anchor" id="终测与可靠性"></span>
+
+上级：[FAB 制造与封测](../README.md)
+
+<span class="micro-legacy-anchor" id="终测不是全部测试点"></span><span class="micro-legacy-anchor" id="先进封装让可靠性更难"></span><span class="micro-legacy-anchor" id="可靠性的工程目标"></span><span class="micro-legacy-anchor" id="一句话理解"></span><span class="micro-legacy-anchor" id="架构师启示"></span>
 
 ## 这页在回答什么问题
 
-封装完成后为什么还需要 final test、burn-in、stress test、reliability qualification 和 failure analysis。本章回答芯片如何从“封装完成”变成“按判据筛选和验证的产品”。
+封装后的测试确认什么？哪些证据来自逐件生产筛选，哪些证据来自代表性样本和失效分析？
 
-## 终测不是全部测试点
+<span class="micro-legacy-anchor" id="本章结构"></span><span class="micro-legacy-anchor" id="本章正文"></span>
 
-逐件出货路径：CP 筛选 → 装配及可选中测 → 按产品策略可选 burn-in → final test 和出货判定。具体顺序由产品测试计划定义。
+## 阅读顺序
 
-抽样资格路径：选择代表性样本 → 在规定应力与时间下试验 → 按判据形成该配置的 qualification 证据。样本测试不保证每一颗器件的现场寿命。
+1. [成品终测](final-test-methodology.md)确认封装后的电性、功能、接口及分档。
+2. [老化筛选与应力试验](burn-in-and-stress-test.md)说明各自使用的对象、条件及判据。
+3. [可靠性鉴定标准](reliability-jedec-standards.md)讲试验条件、样本与机理。
+4. [失效分析](failure-analysis-flow.md)从观测、定位走到验证原因。
 
-失效反馈路径：出现异常 → 复测与 failure analysis → 反馈设计、工艺和测试。普通工作负载不会经过这些制造测试节点。
-
-## 本章结构
-
-| 文档 | 回答的问题 |
-| --- | --- |
-| Final Test 的方法与流程 | 成品 package 如何做功能、电性、性能和分档测试 |
-| Burn-in 与应力测试 | 为什么要用温度、电压、功耗和循环应力提前暴露潜在缺陷 |
-| JEDEC 标准与可靠性认证 | 标准如何把可靠性验证变成可交付门槛 |
-| 失效分析的工程流程 | 出现问题后如何定位根因并反馈到设计、工艺和测试 |
-
-## 先进封装让可靠性更难
-
-先进封装中的失效对象更多：logic die、HBM stack、RDL、TSV、micro-bump、hybrid bonding interface、underfill、mold、substrate 都可能成为失效源。失效还可能跨层耦合：warpage 会影响 bonding，delamination 会改变热路径，PI 噪声会表现为功能不稳定，热循环会触发 bump fatigue。
-
-```text
-more objects
-  -> more interfaces
-  -> harder fault isolation
-  -> stronger need for staged test and reliability feedback
-```
-
-## 可靠性的工程目标
-
-可靠性不是“测试更严”这么简单。它要回答三件事：
-
-| 问题 | 工程含义 |
-| --- | --- |
-| 能否筛掉早期失效 | burn-in、stress test、screening |
-| 能否承受目标使用条件 | 温度、湿度、电压、热循环、机械应力 |
-| 出问题能否定位根因 | failure analysis、失效复现、设计/工艺反馈 |
-
-## 一句话理解
-
-终测支持逐件出货判定；资格验证与失效分析分别提供样本证据和改进反馈，不能保证单件现场寿命。
-
-## 架构师启示
-
-架构师不能把可靠性留给最后的测试团队。若架构使用多 HBM stack、3DIC、fine-pitch RDL 或 hybrid bonding，就必须在早期考虑 DFT、测试访问、热循环、失效隔离和中间测试节点，否则 final test 很难补救结构性风险。
-
-## 本章正文
-
-- [Burn-in 与应力测试](./burn-in-and-stress-test.md)
-- [失效分析的工程流程](./failure-analysis-flow.md)
-- [Final Test 的方法与流程](./final-test-methodology.md)
-- [JEDEC 标准与可靠性认证](./reliability-jedec-standards.md)
+逐件筛选给出每个投入件的判定。按产品采用的老化筛选用于降低早期失效风险。资格鉴定使用规定样本和应力，支持特定配置的放行。项目如何制定计划与批准见[可靠性鉴定](../../../process/05_production_and_lifecycle/01_qualification_and_reliability.md)。 [TI 资格鉴定与可靠性](https://www.ti.com/en-us/quality-reliability/faqs)

@@ -1,7 +1,9 @@
-# 为什么必须在 wafer 阶段测试
+# 晶圆筛测为什么放在封装之前
 
-上级:[中测:CP 阶段](./README.md)
-相关:[一切的起点:wafer 是什么、怎么来的](../02-front-end-fabrication/wafer-the-substrate.md), [KGD:HBM/3DIC 时代的必要前提](./kgd-known-good-die.md), [良率经济学:前道、中测、封装、终测的良率累积](../06-cross-cutting-engineering/yield-economics-across-stages.md)
+<span class="micro-legacy-anchor" id="为什么必须在-wafer-阶段测试"></span>
+
+上级:[晶圆筛测与 CP](./README.md)
+相关:[一切的起点:wafer 是什么、怎么来的](../02-front-end-fabrication/wafer-the-substrate.md), [KGD 的筛选判据与残余风险](./kgd-known-good-die.md), [跨阶段良率与单位交付成本](../06-cross-cutting-engineering/yield-economics-across-stages.md)
 
 ## 这页在回答什么问题
 

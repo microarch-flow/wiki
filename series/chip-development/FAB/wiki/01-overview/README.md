@@ -1,6 +1,8 @@
-# 芯片制造与封测 Wiki 总览
+# 从晶圆到成品的总览
 
-上级:[芯片制造与封测 Wiki](..)
+<span class="micro-legacy-anchor" id="芯片制造与封测-wiki-总览"></span>
+
+上级:[芯片制造与封测 Wiki](../README.md)
 相关:[为什么架构师必须懂工艺与封装](./problem-statement.md), [一片 wafer 到一颗成品芯片的完整路径](./from-wafer-to-product.md), [工艺节点、封装路线、测试阶段的命名体系](./taxonomy.md)
 
 ## 这页在回答什么问题
@@ -64,11 +66,13 @@ architecture intent
 
 一个实用做法是，在架构评审里把“制造与封测问题”前置成四个问题：目标节点能否支撑面积与 SRAM 密度；封装能否支撑所需带宽密度；热和供电路径是否有物理闭合方案；测试和 KGD 策略是否能把组合良率压到可接受范围。
 
-## 本章正文
+<span class="micro-legacy-anchor" id="本章正文"></span>
 
-- [一片 wafer 到一颗成品芯片的完整路径](./from-wafer-to-product.md)
-- [前道与后道:产业分工和技术差异](./front-end-vs-back-end.md)
-- [学习路径与各章节依赖关系](./learning-roadmap.md)
-- [为什么架构师必须懂工艺与封装](./problem-statement.md)
-- [工艺节点、封装路线、测试阶段的命名体系](./taxonomy.md)
-- [为什么工艺红利在让位于封装红利](./why-process-and-packaging-matter-now.md)
+## 阅读顺序
+
+1. [一片晶圆到成品芯片](from-wafer-to-product.md)
+2. [前道与后道](front-end-vs-back-end.md)
+3. [工艺、封装和测试术语](taxonomy.md)
+4. [架构设计为什么关心制造](problem-statement.md)
+5. [工艺与封装收益的边界](why-process-and-packaging-matter-now.md)
+6. [学习路线](learning-roadmap.md)

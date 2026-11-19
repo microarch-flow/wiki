@@ -457,3 +457,47 @@ body { background: var(--paper); }
   .md-typeset .ram-problem-article h1 > .headerlink,
   .md-typeset .sram-application-article h1 > .headerlink { position: absolute; }
 }
+
+.md-typeset .chip-lifecycle-flow {
+  box-sizing: border-box;
+  width: min(100%, 32rem);
+  margin: 1.3em auto;
+  padding: .8rem;
+  border: 1px solid var(--line);
+  border-radius: .65rem;
+  background: var(--note-surface);
+  text-align: center;
+}
+.chip-flow-step {
+  display: grid;
+  align-content: center;
+  gap: .15rem;
+  min-width: 0;
+  padding: .55rem .4rem;
+  border: 1px solid var(--line);
+  border-radius: .4rem;
+  color: var(--md-default-fg-color);
+  background: var(--md-code-bg-color);
+  line-height: 1.45;
+  overflow-wrap: anywhere;
+}
+.chip-flow-step small {
+  font-size: .8em;
+  color: var(--ink);
+}
+.chip-flow-pair {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: .5rem;
+}
+.chip-flow-arrow {
+  color: var(--md-accent-fg-color);
+  font-weight: 700;
+  line-height: 1.55;
+}
+.md-typeset .chip-lifecycle-flow figcaption {
+  margin: .65rem auto 0;
+  padding: 0 .15rem;
+  font-size: .8em;
+  font-style: normal;
+}

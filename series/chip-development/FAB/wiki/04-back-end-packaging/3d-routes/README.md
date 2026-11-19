@@ -1,7 +1,7 @@
 # 3D 路线
 
-上级:[后道封装](../README.md)
-相关:[2.5D 路线](../2.5d-routes/README.md), [KGD:HBM/3DIC 时代的必要前提](../../03-wafer-test-and-cp/kgd-known-good-die.md), [跨工艺共性问题](../../06-cross-cutting-engineering/README.md)
+上级:[封装结构与工艺](../README.md)
+相关:[2.5D 路线](../2.5d-routes/README.md), [KGD 的筛选判据与残余风险](../../03-wafer-test-and-cp/kgd-known-good-die.md), [封装工程约束](../../06-cross-cutting-engineering/README.md)
 
 ## 这页在回答什么问题
 
@@ -31,19 +31,16 @@ bottom die / base die
 
 很多 3DIC 误解来自把这三类词混用。Face-to-face 不是 W2W，hybrid bonding 也不等于某一种制造组织。它们可以交叉组合。
 
-## 本目录阅读顺序
+<span class="micro-legacy-anchor" id="本目录阅读顺序"></span><span class="micro-legacy-anchor" id="本章正文"></span>
 
-```text
-3d-routes
-  -> 3dic-fundamentals
-  -> tsv-through-silicon-via
-  -> micro-bump-vs-hybrid-bonding
-  -> w2w-vs-d2w
-  -> soic-face-to-face-to-back
-  -> 3dic-thermal-and-stress-challenges
-```
+## 阅读顺序
 
-先建立 3DIC 的目标，再解释 TSV 这种垂直互连能力。随后比较 micro-bump 和 hybrid bonding，理解连接密度如何提高制造门槛。再看 W2W/D2W 和 F2F/F2B，最后落到热、应力、warpage 和测试。
+1. [垂直堆叠的用途](3dic-fundamentals.md)
+2. [贯穿硅通孔 TSV](tsv-through-silicon-via.md)
+3. [微凸点与混合键合](micro-bump-vs-hybrid-bonding.md)
+4. [W2W 与 D2W](w2w-vs-d2w.md)
+5. [SoIC 结构与组装](soic-face-to-face-to-back.md)
+6. [3DIC 热与应力](3dic-thermal-and-stress-challenges.md)
 
 ## 3DIC 的硬问题
 
@@ -63,12 +60,3 @@ higher density
 ## 架构师启示
 
 架构师选择 3DIC 时，不能只计算 D2D 带宽收益。还要同步评估 die thinning、bonding pitch、热路径、KGD、失效隔离和中间测试节点。否则 3DIC 会从架构收益变成制造和可靠性风险。
-
-## 本章正文
-
-- [3DIC:为什么需要垂直堆叠](./3dic-fundamentals.md)
-- [3DIC 的热与应力挑战](./3dic-thermal-and-stress-challenges.md)
-- [Micro-bump vs Hybrid Bonding:键合技术的代际差](./micro-bump-vs-hybrid-bonding.md)
-- [SoIC:F2F/F2B/CoW/WoW 的关系](./soic-face-to-face-to-back.md)
-- [TSV:贯穿硅基的纵向连接](./tsv-through-silicon-via.md)
-- [Wafer-to-Wafer vs Die-to-Wafer:工艺与良率](./w2w-vs-d2w.md)

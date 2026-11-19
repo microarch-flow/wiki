@@ -1,6 +1,6 @@
 # HBM 代际演化与封装路线的耦合
 
-上级:[HBM:先进封装的标志性应用](README.md)
+上级:[HBM 制造与集成](README.md)
 相关:[为什么先进封装变重要](../why-advanced-packaging-now.md), [2.5D 路线 trade-off](../2.5d-routes/2.5d-routes-tradeoff-map.md), [关键指标表](../../08-reference/key-metrics-table.md)
 
 ## 这页在回答什么问题

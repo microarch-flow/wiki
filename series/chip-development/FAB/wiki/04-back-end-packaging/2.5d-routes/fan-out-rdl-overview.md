@@ -1,7 +1,7 @@
 # Fan-out RDL:Si Interposer 的替代路线
 
 上级:[2.5D 路线](README.md)
-相关:[Chip-first vs Chip-last:两条 Fan-out 工艺](fan-out-chip-first-vs-chip-last.md), [RDL:重布线层](../key-components/rdl-redistribution-layer.md), [CoWoS-S/R/L 的真正差别](cowos-s-r-l-comparison.md)
+相关:[Chip-first vs Chip-last:两条 Fan-out 工艺](fan-out-chip-first-vs-chip-last.md), [RDL:重布线层](../key-components/rdl-redistribution-layer.md), [CoWoS-S、R、L 的互连平台有何不同](cowos-s-r-l-comparison.md)
 
 ## 这页在回答什么问题
 

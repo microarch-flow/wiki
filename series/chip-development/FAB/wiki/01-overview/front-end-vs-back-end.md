@@ -1,7 +1,7 @@
 # 前道与后道:产业分工和技术差异
 
-上级:[芯片制造与封测 Wiki 总览](./README.md)
-相关:[一片 wafer 到一颗成品芯片的完整路径](./from-wafer-to-product.md), [前道工艺的整体节奏:FEOL/MOL/BEOL](../02-front-end-fabrication/process-flow-overview.md), [后道封装](../04-back-end-packaging/README.md)
+上级:[从晶圆到成品的总览](./README.md)
+相关:[一片 wafer 到一颗成品芯片的完整路径](./from-wafer-to-product.md), [前道工艺的整体节奏:FEOL/MOL/BEOL](../02-front-end-fabrication/process-flow-overview.md), [封装结构与工艺](../04-back-end-packaging/README.md)
 
 ## 这页在回答什么问题
 
@@ -31,7 +31,7 @@
 
 传统产业分工可以粗略写成：foundry 做前道 wafer，OSAT 做封装与测试，fabless 做设计和产品定义。但先进封装让边界变得更紧。因为 2.5D/3D 集成需要把 wafer-level 工艺能力、封装 assembly、测试和设计协同放在同一条量产链上，一些 foundry 会把高端封装平台纳入自身体系，一些 OSAT 也会向 fan-out、bridge、2.5D 和系统级封装上探。
 
-本章不展开具体公司版图，产业分工的详细讨论放在 [产业地图](../07-industry-map/README.md)。这里要保留的技术结论是：越先进的封装，越不能把 foundry、OSAT、memory、substrate、材料和测试当作彼此独立的后置供应商选择。
+本章不展开具体公司版图，产业分工的详细讨论放在 [供应商与产业分工](../07-industry-map/README.md)。这里要保留的技术结论是：越先进的封装，越不能把 foundry、OSAT、memory、substrate、材料和测试当作彼此独立的后置供应商选择。
 
 ## 常见误解
 

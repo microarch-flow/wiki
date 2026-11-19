@@ -1,7 +1,7 @@
 # Wafer-to-Wafer vs Die-to-Wafer:工艺与良率
 
 上级:[3D 路线](README.md)
-相关:[SoIC:F2F/F2B/CoW/WoW 的关系](soic-face-to-face-to-back.md), [KGD:HBM/3DIC 时代的必要前提](../../03-wafer-test-and-cp/kgd-known-good-die.md), [Micro-bump vs Hybrid Bonding](micro-bump-vs-hybrid-bonding.md)
+相关:[SoIC:F2F/F2B/CoW/WoW 的关系](soic-face-to-face-to-back.md), [KGD 的筛选判据与残余风险](../../03-wafer-test-and-cp/kgd-known-good-die.md), [Micro-bump vs Hybrid Bonding](micro-bump-vs-hybrid-bonding.md)
 
 ## 这页在回答什么问题
 

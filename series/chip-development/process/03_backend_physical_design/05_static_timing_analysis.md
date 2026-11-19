@@ -1,99 +1,62 @@
-# Static Timing Analysis
+# 静态时序分析怎样读路径和签核报告
+
+<span class="micro-legacy-anchor" id="static-timing-analysis"></span>
 
 ## 前置知识
 
-- 建议先读 [Routing](./04_routing.md)。
-- 建议理解 [STA](../00_overview/05_glossary.md#sta)、[SDC](../00_overview/05_glossary.md#sdc)、[ECO](../00_overview/05_glossary.md#eco)、[Signoff](../00_overview/05_glossary.md#signoff)。
+先读[时钟树综合](03_clock_tree_synthesis.md)和[电路到时序的共用基础](../../../microarchitecture/02-pipeline/electrical-timing-foundations.md)。
 
 ## 核心概念
 
-Static Timing Analysis，简称 STA，是不用穷举输入向量而检查所有时序路径是否满足 setup/hold 要求的方法。STA 是数字芯片 signoff 的核心。它回答的问题不是“仿真有没有跑过”，而是在给定 PVT corner、mode、clock、寄生、variation 和约束下，信号是否能在正确时间到达寄存器。
-
-STA 的关键输出包括 [WNS/TNS](../00_overview/05_glossary.md#wnstns)、violating paths、setup/hold slack、transition、capacitance、clock uncertainty、SI-aware delay 和 path group QoR。错误的 SDC 会让 STA 结果失真：约束太松会漏 bug，约束太严会浪费面积功耗甚至导致不可收敛。
+静态时序分析（STA）按网表、时序约束、库与模型计算已覆盖的时序关系。它在给定模式和角落下传播信号最早及最晚到达时刻，再与要求比较。布线后分析使用提取的寄生数据。除了 setup 和 hold，还应按设计检查异步控制端的 recovery／removal、时钟脉宽和其他适用检查。 [OpenSTA 输入和检查](https://github.com/parallaxsw/OpenSTA/blob/master/README.md)
 
 ## 关键活动顺序
 
-1. 建立 [MMMC](../00_overview/05_glossary.md#mmmc)：multiple modes, multiple corners，包括 functional、scan、bist、低功耗模式、不同 [PVT corner](../00_overview/05_glossary.md#pvt-corner)。
-2. 审查 SDC：clock、generated clock、IO delay、false path、multi-cycle path、clock groups、case analysis。
-3. Pre-layout/placement/CTS/post-route 多阶段 STA，持续跟踪趋势。
-4. Post-route extraction 后使用 SPEF 做 signoff STA。
-5. 分析 setup violation：逻辑深度、线长、clock skew、cell delay、SI、IR impact。
-6. 分析 hold violation：过短路径、clock skew、min delay、OCV。
-7. 执行 ECO：cell sizing、buffer、VT swap、route optimization、logic restructuring、pipeline request。
-8. LEC/形式等价、incremental STA、power/DRC 回归，直到 closure。
-9. 生成 timing signoff package 和 waiver/risk 清单。
+1. 确认功能、测试和低功耗等模式。为每个分析场景绑定适用的库、PVT、RC 和变异模型。
+2. 核对主时钟、生成时钟、I/O 延迟和时序例外。报告未覆盖的端点，并逐项确认原因。
+3. 在综合、放置、CTS 和布线提取后更新估算。记录时钟是理想时钟还是传播时钟，防止混用报告。
+4. 按最差端点追到时钟、数据、约束和寄生，选择修复方式。同一设计改动可能改善 setup，同时恶化 hold 或功耗。
+5. 重新运行受影响的检查。报告与最终网表、版图、约束和例外一同归档。
 
-## 工具名
-
-主流 STA 工具包括 Synopsys PrimeTime、Cadence Tempus。实现工具内部也有 timing engine，如 Innovus 和 Fusion Compiler/IC Compiler II。寄生抽取来自 StarRC、Quantus 等。ECO 后等价检查使用 Synopsys Formality、Cadence Conformal。
-
-## 角色与典型时长
-
-STA engineer 是核心 owner，physical design engineer、RTL owner、DFT、low-power、IP owner 都参与。Block 级 STA closure 可以数周量级；复杂 SoC 多 mode/corner signoff 可能数月迭代。先进节点 corner/mode/variation 更多，STA 不是后端末尾的一次报告，而是贯穿整个 physical design 的闭环。
+<span class="micro-legacy-anchor" id="先进节点与-2816nm-差异"></span><span class="micro-legacy-anchor" id="常见坑"></span><span class="micro-legacy-anchor" id="创业公司取舍"></span>
 
 ## 关键决策点
 
-- Corner/mode 范围：少跑会漏风险，多跑会增加收敛成本。
-- Timing exception 是否可信：false path 和 multi-cycle path 必须有设计依据，不能作为“消 violation”的手段。
-- 修 setup 还是修 hold：setup 和 hold 经常互相影响，盲目加 buffer 可能修一个坏另一个。
-- 是否做 RTL ECO：如果关键路径是结构性问题，应前端修 pipeline，而不是后端硬塞 buffer。
-- 是否降低频率：创业公司必须把频率目标和 tapeout 风险放在一起决策。
-
-## 先进节点与 28/16nm 差异
-
-7nm 及以下，STA 需要更复杂的 variation 建模，如 [AOCV/POCV/LVF](../00_overview/05_glossary.md#aocvpocvlvf) 等；寄生、coupling、SI、IR drop、temperature gradient 对 timing 影响更强。先进节点还可能需要更多 PVT corner、mode 和 derate 策略，工具 runtime 和数据管理成本上升。
-
-## SI 与 Noise Signoff
-
-STA 不只检查理想 delay。Post-route 后需要把 crosstalk delta delay 和 noise 纳入 timing signoff。工具会根据 SPEF、coupling capacitance、aggressor switching window 和 victim path 计算 delay 变动；严重时还要检查 glitch/noise 是否可能让静态控制信号、reset、clock gate enable 或异步输入误翻转。
-
-常见修复包括 shielding、加 spacing、降低 slew、buffer insertion、重布线、调整 NDR 或把易受害信号移到更高层金属。修复后必须回归 STA、power 和 DRC。对高带宽 AI 芯片，宽总线的同步切换和 NoC 长线会放大 SI 风险，因此 SI 不能只在最后一次 signoff 才看。
-
-28nm/16nm 项目中，一些 timing 问题可能通过 sizing/buffering 较容易修复。先进节点下 wire delay 和 variation 更主导，逻辑门变快不代表芯片更容易跑高频。长线、跨 macro、跨 block 路径常需要微架构调整。
-
-## 常见坑
-
-- SDC 由前端随手写，后端没有逐条 review。
-- 用 false path 掩盖真实跨域或异常路径。
-- 只看 WNS，不看 TNS、path distribution 和 violation 类型。
-- 忽略 hold，认为 setup 收敛就结束。
-- ECO 后不跑 LEC 或不回归 power/DRC。
-- IP black box timing model 不完整或版本不一致。
-- 没有把 top critical paths 反馈给 RTL/架构团队。
-
-## 上下游接口
-
-STA 上游依赖网表、SDC、library、SPEF、OCV/derate、mode/corner 定义和 clock/power intent。下游影响 ECO、routing、power analysis、signoff 和 tapeout 决策。
-
-STA 对前端反推很强。关键路径如果来自过深组合逻辑、长距离单周期访问、集中仲裁、宽 mux、未分层控制，后端工程师应把 path schematic、物理位置、delay breakdown 反馈给 RTL owner。软件背景创始人应要求团队区分“后端可修 timing”和“架构需改 timing”。
-
-## 创业公司取舍
-
-创业公司第一颗芯片可以降低目标频率换取 closure 确定性。高频目标会显著增加后端迭代、EDA license、工程师时间和 tapeout 风险。若市场允许，选择较保守频率、较宽裕 timing margin、较少 mode/corner 复杂度，通常比极限 PPA 更符合首版芯片目标。
-
-但不能省 STA signoff。即使是 MPW 或 test chip，也要知道哪些路径未约束、哪些 violation 被接受，不能用“只是原型”作为无约束流片的理由。
+时序例外需要设计依据。False path 可以排除指定的普通时序检查。跨域同步结构和对应的物理约束仍需验证。Multicycle 约束需要真实的采样控制及配套的 setup 和 hold 边沿。 [Intel CDC 约束](https://www.intel.com/content/www/us/en/docs/programmable/683243/25-1/constraining-cdc-paths.html) · [电路与时序基础](../../../microarchitecture/02-pipeline/electrical-timing-foundations.md)
 
 ## 典型场景
 
-Post-route STA 显示 NPU 的 global accumulator path setup violation 严重。Delay breakdown 显示 cell delay 只占少数，大部分来自跨越两个 macro 区域的 interconnect。后端尝试 buffer 和 cell sizing 后改善有限，并引入 hold violation。正确决策是增加 pipeline stage 或改变 accumulator 分层，而不是继续消耗后端时间。这个 STA 结果实际上是在告诉架构团队：当前单周期通信假设不物理。
+**教学假设。** 同一标称时钟域的寄存器路径，周期 800 ps。基线的发送、接收时钟到达差取 0。数据到达时间包含 clock-to-Q 和数据路径延迟。setup 和 hold 可使用各自场景，本例单独给出早、晚数据。
+
+| 检查 | 到达时刻 | 要求时刻 | 裕量 |
+| --- | ---: | ---: | ---: |
+| Setup | 最晚 750 ps | 800 − 45 − 25 = 730 ps | 730 − 750 = **−20 ps** |
+| Hold | 最早 35 ps | 25 + 10 = 35 ps | 35 − 35 = **0 ps** |
+
+表中 setup 时间为 45 ps，setup 不确定度为 25 ps。hold 时间为 25 ps，hold 不确定度为 10 ps。若只将捕获时钟推迟 30 ps，setup 要求变成 760 ps，裕量为 +10 ps。hold 要求变成 65 ps，裕量为 −30 ps。实际时钟调整还需检查其他路径和分析条件。 [AMD setup 方程](https://docs.amd.com/r/2026.1-English/ug906-vivado-design-analysis/Setup/Recovery-Relationship?contentId=vOSoXJu3asbkH1uyuWp0Lg) · [AMD hold 方程](https://docs.amd.com/r/2026.1-English/ug906-vivado-design-analysis/Hold/Removal-Relationship?contentId=dZBm6BfVStfa~EyRyUpHjA)
+
+另举一个同一报告范围内的例子。两条路径到同一端点，裕量是 −20 和 −8 ps。另一端点的最差路径是 −5 ps。按 AMD UG906 的端点统计方式，WNS 为 −20 ps，TNS 为 −25 ps，违例端点有 2 个。使用其他工具或报告视图时，先确认 TNS 的聚合方式与非违例时的显示约定。 [AMD UG906，Design Timing Summary](https://docs.amd.com/api/khub/documents/1tipwNqhy1~RxTdCrHCn1g/content)
+
+## SI 与 Noise Signoff
+
+耦合和同时切换可能改变路径延迟，或在受害节点引入噪声。目标流程需要定义所用寄生、工作模式、耦合分析与电源条件。一次改线可能改变多个路径，应复查受影响的物理和时序结果。
+
+<span class="micro-legacy-anchor" id="工具名"></span><span class="micro-legacy-anchor" id="角色与典型时长"></span>
+
+## 上下游接口
+
+STA 接收网表、库、约束、寄生和分析场景。输出报告应包含设计版本、有效约束、未覆盖端点、相关路径和用于根因分析的时钟与数据延迟。若问题来自结构或流水边界，将具体关键路径反馈给 RTL 和架构组。
 
 ## 后续阅读
 
-- [Power Analysis](./06_power_analysis.md)
-- [DRC/LVS Signoff](./07_drc_lvs_signoff.md)
-- [前端综合准备](../02_frontend_design_and_verification/04_synthesis_preparation.md)
-- [前端签核标准](../02_frontend_design_and_verification/08_signoff_criteria.md)
+- [功耗、压降与电迁移](06_power_analysis.md)
+- [DRC 与 LVS 签核](07_drc_lvs_signoff.md)
+- [综合准备需要哪些输入与检查](../02_frontend_design_and_verification/04_synthesis_preparation.md)
 
-## 参考公开来源
-
-- [Synopsys PrimeTime](https://www.synopsys.com/implementation-and-signoff/signoff/primetime.html)
-- [Cadence Tempus 相关产品页面](https://www.cadence.com/en_US/home/tools/digital-design-and-signoff.html)
-- [Synopsys StarRC](https://www.synopsys.com/implementation-and-signoff/signoff/starrc.html)
-- J. Bhasker, Rakesh Chadha, *Static Timing Analysis for Nanometer Designs*
+<span class="micro-legacy-anchor" id="参考公开来源"></span>
 
 ## 内容可信度说明
 
-- **公开信息（高可信）**：STA、setup/hold、SDC、MMMC、寄生抽取、PrimeTime/Tempus 工具用途公开可查。
-- **行业惯例（中可信）**：timing exception review、ECO closure、AOCV/POCV/LVF 使用策略因节点和公司而异。
-- **经验性观察（中低可信）**：AI 芯片长线和集中控制经常导致结构性 timing 问题，需要 RTL/架构反馈。
-- **不确定/需向资深工程师确认（低可信）**：具体 signoff corner、derate、uncertainty、OCV 模型和 foundry 要求。
+- **公开事实。** STA 输入、基本 setup／hold 方程和 AMD 报告口径见所列资料。
+- **教学假设。** 裕量、时钟变化和端点数据为可手算示例。
+- **待项目核实。** 工具统计口径、例外路径、模式／角落及当前候选版图的覆盖。

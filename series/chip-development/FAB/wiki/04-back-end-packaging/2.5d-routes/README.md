@@ -1,6 +1,6 @@
 # 2.5D 路线
 
-上级:[后道封装](../README.md)
+上级:[封装结构与工艺](../README.md)
 相关:[封装分类](../packaging-taxonomy.md), [为什么先进封装变重要](../why-advanced-packaging-now.md), [HBM 作为案例](../hbm-as-case-study/README.md)
 
 ## 这页在回答什么问题
@@ -33,20 +33,17 @@ package substrate
 
 这三条路线不是线性升级关系，而是三组目标函数。Si interposer 追求极限密度，RDL 追求系统折中，bridge 追求局部高密度与全局扩展性的组合。
 
-## 本目录阅读顺序
+<span class="micro-legacy-anchor" id="本目录阅读顺序"></span><span class="micro-legacy-anchor" id="本章正文"></span>
 
-```text
-2.5d-routes
-  -> si-interposer-fundamentals
-  -> cowos-s-r-l-comparison
-  -> cowos-s-complete-process
-  -> fan-out-rdl-overview
-  -> fan-out-chip-first-vs-chip-last
-  -> embedded-bridge-emib-and-cowos-l
-  -> 2.5d-routes-tradeoff-map
-```
+## 阅读顺序
 
-先看 Si interposer，是因为它最清楚地展示了 2.5D 为什么适合 logic + HBM。再看 CoWoS-S/R/L，可以把同一平台族拆成三种不同中间层。随后看 Fan-out/RDL 和 bridge，理解为什么产业不会把所有问题都交给整块硅中介层。最后用 trade-off map 把路线选择方法收束起来。
+1. [硅中介层](si-interposer-fundamentals.md)
+2. [CoWoS-S、R、L](cowos-s-r-l-comparison.md)
+3. [CoWoS-S 制造对象流](cowos-s-complete-process.md)
+4. [Fan-out 与 RDL](fan-out-rdl-overview.md)
+5. [Chip-first 与 Chip-last](fan-out-chip-first-vs-chip-last.md)
+6. [局部硅桥](embedded-bridge-emib-and-cowos-l.md)
+7. [2.5D 路线取舍](2.5d-routes-tradeoff-map.md)
 
 ## 2.5D 的系统边界
 
@@ -71,13 +68,3 @@ package substrate
 选择 2.5D 时，架构师要先问系统真正需要哪一种密度：全局都需要硅级互连，还是只有局部 die-to-die 链路需要。这个问题会直接决定路线偏向 Si interposer、Fan-out/RDL，还是 embedded bridge。
 
 一个具体判断：如果 compute die 与多颗 HBM stack 之间需要非常宽的低能耗接口，并且封装成本可以接受，Si interposer 会变得合理。若只是几个 chiplet 间有局部高带宽需求，bridge 可能比整块 interposer 更接近真实目标函数。
-
-## 本章正文
-
-- [三种 2.5D 路线的 trade-off 全景](./2.5d-routes-tradeoff-map.md)
-- [CoWoS-S 简化制造对象流](./cowos-s-complete-process.md)
-- [CoWoS-S/R/L 的真正差别](./cowos-s-r-l-comparison.md)
-- [Embedded Bridge:Intel EMIB 与 TSMC CoWoS-L](./embedded-bridge-emib-and-cowos-l.md)
-- [Chip-first vs Chip-last:两条 Fan-out 工艺](./fan-out-chip-first-vs-chip-last.md)
-- [Fan-out RDL:Si Interposer 的替代路线](./fan-out-rdl-overview.md)
-- [Si Interposer:第一代主流 2.5D](./si-interposer-fundamentals.md)

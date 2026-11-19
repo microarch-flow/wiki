@@ -1,6 +1,6 @@
 # 学习路径与各章节依赖关系
 
-上级:[芯片制造与封测 Wiki 总览](./README.md)
+上级:[从晶圆到成品的总览](./README.md)
 相关:[为什么架构师必须懂工艺与封装](./problem-statement.md), [工艺节点、封装路线、测试阶段的命名体系](./taxonomy.md), [按目标的学习路径](../08-reference/reading-roadmap-by-goal.md)
 
 ## 这页在回答什么问题

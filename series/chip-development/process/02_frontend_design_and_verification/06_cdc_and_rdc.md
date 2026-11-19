@@ -2,97 +2,61 @@
 
 ## 前置知识
 
-- 建议先读 [RTL 设计工程实践](./01_rtl_design_practices.md)。
-- 建议先读 [微架构设计](./02_microarchitecture_design.md)。
-- 建议理解 [CDC](../00_overview/05_glossary.md#cdc)、[RDC](../00_overview/05_glossary.md#rdc)、[STA](../00_overview/05_glossary.md#sta)。
+先明确各接口的发送时钟、接收时钟与复位域。[微架构设计](02_microarchitecture_design.md)给出定义入口。
 
 ## 为什么跨域问题危险
 
-[CDC](../00_overview/05_glossary.md#cdc) 是 clock domain crossing，信号从一个时钟域进入另一个时钟域。[RDC](../00_overview/05_glossary.md#rdc) 是 reset domain crossing，不同 reset 或 reset release 顺序导致的问题。跨域 bug 的危险在于仿真经常不暴露，硅上表现为低概率、温度/电压相关、负载相关的随机错误。
-
-软件背景的人容易把跨域理解成多线程同步。这个类比有帮助，但不完整。硬件里的亚稳态是物理现象，不能靠“多跑几次 test”证明没有。必须使用同步结构、异步 FIFO、握手协议和静态 CDC/RDC 工具检查。
+异步时钟之间没有固定相位关系。信号在接收寄存器的采样窗口内变化，寄存器可能进入亚稳态。同步器给亚稳态更多恢复时间。实际失效率受单元、频率、翻转率和物理实现影响。多个信号分别同步时，还可能在不同接收周期稳定。 [AMD 同步器失效率说明](https://docs.amd.com/r/en-US/ug949-vivado-design-methodology/Optimizing-for-MTBF)
 
 ## 常见 CDC 场景
 
-| 场景 | 推荐结构 |
-|---|---|
-| 单 bit 控制信号慢变 | 两级或多级 synchronizer |
-| pulse 跨域 | pulse stretcher、toggle synchronizer、握手 |
-| 多 bit 数据 | valid/ready handshake、async FIFO、gray counter |
-| high-throughput stream | async FIFO 或 clock converter |
-| config register 到高速域 | shadow register + update handshake |
-| status 返回软件域 | synchronizer + sticky bit |
-| reset release | reset synchronizer |
+| 输入与要求 | 可选结构 | 要检查的条件 |
+| --- | --- | --- |
+| 低速单比特电平 | 目的域同步链 | 电平保持足够久。检查恢复时间及后端实现 |
+| 脉冲或单个事件 | 受约束的脉冲同步、翻转或请求／应答 | 事件间隔、两端复位、目的时钟是否继续 |
+| 低速多比特配置 | 数据保持与请求／应答 | 采样前数据稳定，直到返回确认 |
+| 连续多比特事务 | 异步 FIFO | 读写域满空条件、突发、反压、指针跨域和复位 |
 
-禁止把多 bit bus 直接逐位同步后当作同一时刻数据使用。每一位可能在不同周期稳定，组合后会产生不存在的值。
+逐位同步数据总线会丢失同一事务的一致性。灰码指针属于特定结构。接收端可跳过中间指针值，物理偏斜仍需保证相邻源端更新的变化在传输中不会被混合。 [Intel 双时钟 FIFO 实现约束](https://www.intel.com/content/www/us/en/docs/programmable/683241/24-3/user-configurable-timing-constraint.html)
 
 ## 亚稳态、同步器和 Async FIFO
 
-当异步信号在目的时钟采样边沿附近变化，触发器可能进入亚稳态。两级同步器不能消灭亚稳态，但能降低传播到后续逻辑的概率。同步器需要使用专门约束和库单元，后端也要避免被优化、重定时或放得太远。
-
-同步器只适合单 bit 控制或灰码指针等特定结构。数据 bus、counter、valid payload 需要协议保证。异步 FIFO 通常使用双口 memory、读写指针、gray code、跨域同步和满空判断。FIFO 深度要根据频率差、突发长度、backpressure 和系统 latency 计算。
-
-Async FIFO 风险包括 gray pointer 同步错误、full/empty 判断 off-by-one、reset 两侧释放顺序导致假满或假空、overflow/underflow 未被 assertion 捕获、DFT/test mode 不支持异步结构、STA false path 或 max delay 约束错误。建议优先使用经过验证的 FIFO IP 或公司标准库，不要让 agent 从零生成 async FIFO，除非有 formal proof 和成熟回归。
+同步链降低亚稳态传播概率。同步级数、单元和布局由目标平台、可靠性和延迟要求决定。异步 FIFO 用读写指针和占用边界控制访问。确定深度时检查突发量、生产与消费速率和反压可达性。若生产率能无限期大于消费率，任何有限深度都需要反压或明确丢弃规则。
 
 ## RDC 特有问题
 
-Reset domain crossing 经常被低估。两个模块使用同一 clock，但 reset source 不同，也可能发生 RDC。一个模块 reset 后输出默认值，另一个模块未 reset 或已经运行，就可能采样到非法组合。异步 reset 释放如果不同步，也会让状态机进入非法状态。
-
-RDC 策略包括异步断言、同步释放；reset tree 分层设计；reset dependency 文档化；reset 后 valid bit 清零；reset during operation 的行为定义；对 reset crossing 使用 RDC 工具检查。
+即使两个模块使用同一个时钟，若源寄存器异步复位，输出也可以在目的寄存器采样窗口中变化。目的域仍可运行时，应检查源复位是否经隔离、同步或协议控制。异步断言、同步释放是一种局部复位策略。域间还需定义复位顺序、在途事务和重新可用条件。 [Accellera CDC/RDC 1.0](https://accellera.org/images/downloads/standards/cdc/CDC_Standard_v1.0.pdf)
 
 ## CDC/RDC 工具流程
 
-常见工具包括 Synopsys VC SpyGlass CDC/RDC、Siemens Questa CDC/RDC、Cadence Jasper CDC 相关能力。工具会识别 clock/reset domain、跨域路径、同步器结构、reconvergence、data/control crossing 和 waiver。
-
-流程通常是：定义 clock 和 reset；定义同步器、FIFO 和已知 IP 模型；运行结构检查；分类 violation 为真实 bug、约束缺失、已验证结构、工具误报；为 waiver 写明理由、owner 和证据；对关键 crossing 增加 assertion 或 formal；在 RTL 变化后持续回归。CDC waiver 不是垃圾桶。没有证据的 waiver 会把硅上随机 bug 合法化。
+输入包括时钟、复位及其关系、IP 接口模型、低功耗状态和跨域约束。工具识别越域、重汇合、复位传播及预期结构。人工复核功能协议和规则豁免。标准化的 CDC/RDC 描述可用于 IP 到 SoC 的交接。
 
 ## 与 STA 的关系
 
-CDC 路径通常不能按普通同步时序分析处理，但这不等于所有跨域路径都可以随意 false path。异步 FIFO 的 gray pointer、synchronizer 输入、handshake path 需要合适的 false path、max delay 或 bus skew 约束。CDC 工具和 STA 约束必须一致。
+同步相关时钟仍按其关系检查。异步路径不按固定相位计算普通 setup 和 hold。根据同步拓扑，还可能需要最大数据延迟或总线偏斜检查。核对例外命中的路径、约束优先关系及同步链后级的时序。 [Intel 跨域路径约束](https://www.intel.com/content/www/us/en/docs/programmable/683243/25-1/constraining-cdc-paths.html)
 
-前端团队不能把 CDC 全推给后端。后端需要知道哪些路径是真异步、哪些是 generated clock、哪些是 physically exclusive、哪些需要特殊约束。
-
-## 角色、节奏、成本与接口
-
-CDC/RDC 的 owner 通常是 RTL lead 或专门的 CDC signoff engineer，block owner 负责解释每条 crossing，STA/后端负责约束一致性，DV/formal 负责对关键跨域协议补证据。CDC/RDC 不应等 SoC 集成末期才做；block 级应在接口稳定后开始跑，subsystem 和 SoC 级在每次 clock/reset 集成变化后回归。
-
-上游输入包括 clock/reset intent、RTL、跨域 primitive 清单、IP clocking 文档、UPF 和 SDC 初版。下游输出包括 CDC/RDC 报告、waiver、标准同步器实例清单、STA exception 建议和需要验证补强的 crossing 列表。成本主要是工具 license、报告 triage 人力和修复跨域结构的设计时间。创业公司可以外包一次 signoff 检查，但内部必须制定“禁止裸 crossing”的编码规则和标准跨域库。
-
-## Agent 生成 RTL 的跨域风险
-
-Agent 很容易在两个 clock domain 之间直接连信号，尤其是顶层集成 glue logic、status register、interrupt、DMA completion、debug path。它可能知道“加两级触发器”，但不知道什么时候两级触发器不适用于多 bit bus，也不知道 reset release、reconvergence 和 handshake liveness。
-
-因此所有生成 RTL 必须自动标注 clock/reset domain，并经过 CDC/RDC 检查。生成器最好内建跨域 primitive，只允许通过 `sync_bit`、`async_fifo`、`pulse_sync`、`reg_update_handshake` 等模板跨域，禁止随意 wire crossing。
+<span class="micro-legacy-anchor" id="agent-生成-rtl-的跨域风险"></span><span class="micro-legacy-anchor" id="创业公司视角"></span>
 
 ## 典型场景
 
-一个 compute tile 在 `npu_clk` 域完成任务后输出 `done_pulse`，控制寄存器在 `cfg_clk` 域读取 done 状态。Agent 生成 RTL 直接把 pulse 接到 cfg 域 sticky bit。仿真中两个 clock 对齐，test 全过。硅上若 pulse 宽度小于 cfg clock 周期，状态偶发丢失。
+**教学假设。** 目的域理想采样时刻为 0 ns 和 10 ns。源域的完成位在 2 ns 和 5 ns 各翻转一次。两次采样都是旧值，接收端可能丢掉两个事件。给普通翻转同步器增加同步级数仍需满足事件间隔。商业宏也有专用的间隔和复位要求。 [AMD 脉冲同步宏的输入条件](https://docs.amd.com/r/en-US/pg382-xpm-cdc-generator/XPM_CDC_PULSE)
 
-修复方式是用 toggle synchronizer 或跨域握手，把 done event 转换为目的域可可靠采样的事件；增加 assertion 检查 event 不丢失；CDC waiver 指向标准 synchronizer；软件寄存器定义为 sticky W1C。这个问题说明仿真对齐时钟会掩盖 CDC bug。
+在[SRAM＋DMA 规格](../01_product_definition_and_architecture/02_spec_definition.md#典型场景)中，完成状态保持到目的端确认。源端收到跨域返回的确认后，才释放事务槽。复位按规格清除该握手的状态，并在两端初始化完成后重新接收。若下一代需要多个完成事件在途，需用有容量与反压定义的队列等结构承载。
 
-## 创业公司视角
+## 角色、节奏、成本与接口
 
-CDC/RDC 是不能靠经验省掉的 signoff 项。创业公司可以外包 CDC signoff，但内部 RTL 规范必须限制跨域写法。最实用的做法是建立小型跨域 IP 库和 lint 规则：任何跨域必须实例化标准 primitive，代码评审直接拒绝裸 crossing。
-
-对第一颗芯片，尽量减少 clock domain 和 reset domain。每增加一个 domain，都增加验证、约束、低功耗、DFT 和硅后 debug 成本。
+RTL 负责人记录每个跨域的结构和协议。验证人员检查复位及反压的边界。STA 和物理实现人员复核对应约束和布局。下游交付记录应包含域定义、已检查路径、例外及依据，以及 IP 核验的版本。
 
 ## 后续阅读
 
-- [低功耗设计](./07_low_power_design.md)
-- [前端签核标准](./08_signoff_criteria.md)
-- [后端 STA](../03_backend_physical_design/05_static_timing_analysis.md)
-- [硅后调试](../04_tapeout_and_post_silicon/05_post_silicon_debug.md)
+- [低功耗设计](07_low_power_design.md)
+- [前端交接评审](08_signoff_criteria.md)
+- [静态时序分析](../03_backend_physical_design/05_static_timing_analysis.md)
 
-## 参考公开来源
-
-- [Synopsys SpyGlass CDC](https://www.synopsys.com/verification/static-and-formal-verification/spyglass/spyglass-cdc.html)
-- [Siemens Questa Design Solutions](https://www.siemens.com/en-us/products/ic/questa-one/design-solutions/)
-- [Siemens Questa RDC PDF](https://static.sw.cdn.siemens.com/siemens-disw-assets/public/78491/en-US/Siemens-SW-Questa-RDC-Reset-Domain-Crossing-Verification-FS-78491-C3.pdf)
-- [Accellera CDC Standard 下载页](https://accellera.com/downloads/standards)
+<span class="micro-legacy-anchor" id="参考公开来源"></span>
 
 ## 内容可信度说明
 
-- **公开信息（高可信）**：CDC/RDC 工具和 Accellera CDC 相关标准资源公开可查；亚稳态、同步器、异步 FIFO 是数字设计基础概念。
-- **行业惯例（中可信）**：CDC/RDC signoff 需要 clock/reset 定义、结构检查、waiver、assertion/formal 和 STA 约束一致性。
-- **经验性观察（中低可信）**：agent 生成 glue logic 时容易产生裸 crossing；创业公司应限制 clock/reset domain 数量，并使用标准跨域 primitive。
-- **不确定/需向资深工程师确认（低可信）**：具体 synchronizer 级数、MTBF 目标、FIFO 约束、RDC waiver 标准和 STA exception 写法需结合工艺、频率和工具确认。
+- **公开事实。** 同步链、脉冲宏、FIFO 跨域约束及 IP 抽象边界见所列资料。
+- **教学假设。** 0、2、5、10 ns 仅为采样反例。DMA 握手受指定复位和在途条件约束。
+- **待项目核实。** 实际可接受失效率、时钟变化范围、约束语法和例外范围。

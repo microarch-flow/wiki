@@ -1,6 +1,6 @@
 # 从架构需求反推工艺与封装选型
 
-上级:[跨工艺共性问题](README.md)
+上级:[封装工程约束](README.md)
 相关:[封装分类](../04-back-end-packaging/packaging-taxonomy.md), [2.5D 路线 trade-off](../04-back-end-packaging/2.5d-routes/2.5d-routes-tradeoff-map.md), [关键指标表](../08-reference/key-metrics-table.md)
 
 ## 这页在回答什么问题

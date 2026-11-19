@@ -1,7 +1,9 @@
-# 关键工艺组件
+# 组件与连接
 
-上级:[后道封装](../README.md)
-相关:[2.5D 路线](../2.5d-routes/README.md), [3D 路线](../3d-routes/README.md), [跨工艺共性问题](../../06-cross-cutting-engineering/README.md)
+<span class="micro-legacy-anchor" id="关键工艺组件"></span>
+
+上级:[封装结构与工艺](../README.md)
+相关:[2.5D 路线](../2.5d-routes/README.md), [3D 路线](../3d-routes/README.md), [封装工程约束](../../06-cross-cutting-engineering/README.md)
 
 ## 这页在回答什么问题
 
@@ -48,9 +50,11 @@ package route
 
 架构师定义封装时，不应只写“采用 2.5D”或“采用 3DIC”。更可执行的规格要落到组件层：需要多少 RDL 层、什么 bump pitch、基板承载多少电流、underfill 是否能支撑热循环、哪些界面最怕 delamination。
 
-## 本章正文
+<span class="micro-legacy-anchor" id="本章正文"></span>
 
-- [凸点与焊盘:从 C4 到 micro-bump](./bumps-and-pads.md)
-- [Molding 与 Underfill:机械保护层](./molding-and-underfill.md)
-- [RDL:截面结构与制造流程](./rdl-redistribution-layer.md)
-- [基板与载板:被忽视但关键的一环](./substrate-and-carrier.md)
+## 阅读顺序
+
+1. [凸点与焊盘](bumps-and-pads.md)
+2. [重布线层 RDL](rdl-redistribution-layer.md)
+3. [基板与载板](substrate-and-carrier.md)
+4. [塑封与底填](molding-and-underfill.md)

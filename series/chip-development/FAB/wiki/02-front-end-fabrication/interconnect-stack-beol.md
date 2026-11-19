@@ -1,6 +1,6 @@
 # BEOL 的金属互联:从 M0 到 redistribution
 
-上级:[前道工艺](./README.md)
+上级:[晶圆制造](./README.md)
 相关:[前道工艺的整体节奏:FEOL/MOL/BEOL](./process-flow-overview.md), [互连组件与数据路径分解](../../../../interconnect/BUS/04-microarchitecture-integration/interconnect-components.md), [封装内的信号完整性](../06-cross-cutting-engineering/signal-integrity-in-package.md)
 
 ## 这页在回答什么问题

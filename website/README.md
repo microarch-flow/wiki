@@ -64,6 +64,8 @@ NoC 的十个阅读分组、文章短标题和顺序维护在 `series/interconne
 
 `website/series.json` 可以为仓内系列分别指定源码目录和发布路径。例如，Workload 的源码是 `series/workload/`，发布路径仍为 `external/workload-wiki/`。芯片开发流程从 `series/chip-development/process/` 暂存，FAB 由十一域映射单独暂存。修改源码目录不必改变公开地址。仓内来源必须有唯一的 `README.md` 或 `index.md`；文章和图片留在所选目录内。构建会拒绝符号链接、路径越界及输出冲突，并排除 `AGENTS.md`、`task.md`、`wiki-plan.md`、`raw/`、`wiki.old/`、`seed/` 和非文章／图片附件。其他 Markdown 仍可能发布，加入仓内系列前必须逐项检查其公开范围。`series/` 是正文维护位置，`.site-build/` 是生成目录。
 
+芯片开发与实现沿用流程与 FAB 两组源码。归属由 `website/ownership.py` 维护，侧栏的顺序和短标题来自章导读中的编号阅读列表。跨专题文章显示在主归属中，原章节导读可继续提供正文链接。源码目录的首页不属于当前专题时，侧栏直接显示其中相关的文章。`website/tests/fixtures/chip-development-legacy.json` 保存 144 个公开路径和 1,756 个旧正文锚点。改名或合并小节后，把兼容锚点放在同页对应的阅读位置，并随网站测试检查旧链接及搜索。
+
 当前生产配置只使用本仓库的正文，不需要检出或联网读取旧来源仓库。仓内内容变更随主仓 `main` 推送发布。
 
 ## 可选：增加来自其他仓库的技术系列

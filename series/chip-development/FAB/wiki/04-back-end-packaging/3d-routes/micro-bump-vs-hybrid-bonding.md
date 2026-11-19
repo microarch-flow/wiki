@@ -50,7 +50,7 @@ flowchart TB
 | 互连寄生 | 相对更高 | 更低 |
 | 工艺成熟度 | 更成熟 | 门槛更高 |
 | 表面要求 | 高 | 更高 |
-| 主要价值 | 高密度且量产友好 | 极限密度和低 power-per-bit |
+| 主要价值 | 高密度且量产友好 | 极限密度和低 每比特能量（J/bit） |
 
 ## 为什么 hybrid bonding 会变重要
 
@@ -64,4 +64,4 @@ Micro-bump 是成熟的高密度凸点连接，hybrid bonding 是更短、更密
 
 ## 架构师启示
 
-连接技术不是后端实现细节。若架构收益依赖极低 power-per-bit 和超高 D2D 密度，就要提前确认 hybrid bonding 的 pitch、平坦度、测试和热应力窗口能否支持；若 micro-bump 已满足带宽目标，强行上 hybrid bonding 可能只是在制造端增加风险。
+连接技术不是后端实现细节。若架构收益依赖极低 每比特能量（J/bit） 和超高 D2D 密度，就要提前确认 hybrid bonding 的 pitch、平坦度、测试和热应力窗口能否支持；若 micro-bump 已满足带宽目标，强行上 hybrid bonding 可能只是在制造端增加风险。

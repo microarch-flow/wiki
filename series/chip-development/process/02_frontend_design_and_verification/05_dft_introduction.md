@@ -1,101 +1,67 @@
-# DFT 引入
+# 可测性设计（DFT）与制造测试
 
-制造后的测试阶段可继续阅读 [晶圆筛测与 KGD](../../FAB/wiki/03-wafer-test-and-cp/README.md) 和 [成品终测方法](../../FAB/wiki/05-final-test-and-reliability/final-test-methodology.md)。
+<span class="micro-legacy-anchor" id="dft-引入"></span>
 
 ## 前置知识
 
-- 建议先读 [综合准备](./04_synthesis_preparation.md)。
-- 建议先读 [前端签核标准](./08_signoff_criteria.md)。
-- 建议理解 [DFT](../00_overview/05_glossary.md#dft)、[Scan Chain](../00_overview/05_glossary.md#scan-chain)、[MBIST](../00_overview/05_glossary.md#mbist)、[ATE](../00_overview/05_glossary.md#ate)。
+先了解[综合准备需要哪些输入与检查](04_synthesis_preparation.md)。实际制造测试可继续读[晶圆筛测与 KGD](../../FAB/wiki/03-wafer-test-and-cp/README.md)和[成品终测](../../FAB/wiki/05-final-test-and-reliability/final-test-methodology.md)。
 
 ## DFT 解决什么问题
 
-[DFT](../00_overview/05_glossary.md#dft) 是 Design for Test，可测性设计。它解决的是制造后如何判断每颗芯片是否存在缺陷。功能仿真证明设计意图，DFT 和量产测试筛出制造缺陷。两者不是一回事。
-
-晶圆制造会产生随机缺陷、系统性缺陷、桥接、开路、存储器坏位、时序相关故障和封装问题。没有 DFT，内部触发器和 SRAM 很难被 [ATE](../00_overview/05_glossary.md#ate) 控制和观察，量产时无法有效筛选坏片，良率分析也缺少诊断数据。
+生产测试需要在有限时间、引脚和设备条件下控制芯片，并观察与物理缺陷有关的响应。DFT 在设计中提供测试访问、内部控制和观测结构。测试工程根据测试目标与接受条件，在晶圆或封装件上执行筛选和分档。 [OpenROAD DFT 模块](https://openroad.readthedocs.io/en/latest/main/openroad/dft/README.html) · [OCP 多芯粒测试](https://www.opencompute.org/documents/chiplet-integration-workflows-1-pdf)
 
 ## 常见 DFT 结构
 
-| 结构 | 作用 |
-|---|---|
-| Scan chain | 把触发器串起来，便于外部加载和观察内部状态 |
-| Scan compression | 降低 scan pattern 数据量和测试时间 |
-| MBIST | 测试 SRAM、register file、memory macro |
-| LBIST | 用内部逻辑产生测试 pattern，常见于安全相关应用 |
-| Boundary scan/JTAG | 板级连接测试和调试访问 |
-| IJTAG | 访问片内嵌入式仪器 |
-| Test points | 增强可控性和可观察性，提高 fault coverage |
-| ATPG | 自动生成测试向量 |
+| 结构 | 作用和边界 |
+| --- | --- |
+| Scan chain | 测试模式下移入状态，捕获响应，再移出供比较 |
+| Scan compression | 压缩测试数据或响应。有效性和测试功耗需结合网表及向量检查 |
+| MBIST | 用测试控制器对存储宏运行规定的访问序列。若有修复结构，还需验证配置、执行及复测 |
+| LBIST | 使用片内逻辑生成激励并压缩响应，按设计目标和覆盖分析安排使用 |
+| 测试访问端口和边界扫描 | 通过规定接口访问测试数据。边界扫描可检查板级连接，核内仪器访问还需对应网络及协议 |
+| Test point | 在难控制或难观察的位置提供额外测试访问，增加面积和约束 |
 
-AI 芯片含大量 SRAM，因此 [MBIST](../00_overview/05_glossary.md#mbist) 往往是 DFT 的核心工作之一。
+测试访问端口、边界扫描和 IJTAG 的标准描述不同层次。是否通过同一个端口访问，取决于芯片的实现和测试模式。 [IEEE 1149.1 范围](https://standards.ieee.org/ieee/1149.1/4484/) · [IEEE 1687 项目资料](https://standards.ieee.org/ieee/1687/10896/)
 
 ## 为什么 DFT 要早介入
 
-软件背景的人容易把测试理解为后期 QA。芯片 DFT 不能后期补。Scan 需要触发器结构适合替换，异步 reset/set、gated clock、latch、multiple clock、black box、memory macro 都会影响插入。MBIST 需要 memory 实例、端口、repair、测试时钟和 power mode 规划。JTAG/test mode 需要顶层 pin、寄存器和安全策略。
-
-DFT 后期才介入的后果包括：某些寄存器不可 scan，fault coverage 达不到目标；test mode 与功能模式冲突；scan chain 过长，测试时间和成本上升；ATPG pattern 产生大量 X，覆盖率差；MBIST controller 放不下或接不进 memory；测试功耗超过电源网或 ATE 能力，导致 false fail；后端需要大规模 ECO。
+封装引脚、测试时钟、电源岛和存储宏接口在设计阶段确定。DFT 团队据此规划访问和测试模式。Scan 单元替换、链连接与重排可跨越综合和布局步骤。链或网表变化后，应重新验证相关向量、时序和测试条件。OpenROAD 给出一种放置前替换、放置后建链的流程实例。 [OpenROAD DFT 流程](https://openroad.readthedocs.io/en/latest/main/openroad/dft/README.html)
 
 ## RTL 对 DFT 的影响
 
-RTL designer 应避免让 DFT 团队被迫重构设计。常见要求包括：
-
-- 时钟结构清晰，不手写危险 gated clock，使用标准 clock gate cell 或综合可识别风格。
-- reset 策略一致，避免无法控制的异步 set/reset。
-- test mode 能 bypass clock gating、isolation 或部分 low-power 控制。
-- memory 通过 wrapper 或明确接口接入 MBIST。
-- 不产生过多 X source，例如未初始化控制寄存器、三态总线、不可控 analog/IP 输出。
-- scan enable、test clock、test reset 在顶层规划清楚。
-- 安全逻辑和 debug/test 访问权限定义明确。
+明确可控的复位、测试时钟、测试模式和低功耗状态。为存储宏准备测试接口。触发器、隔离和时钟门控在测试模式下应有清楚的控制规则。功能模式与测试模式各自验证，特别检查测试电流和对正常访问的隔离。
 
 ## ATPG、覆盖率和成本
 
-ATPG 根据故障模型生成测试向量。常见故障模型包括 stuck-at、transition delay、bridging、cell-aware 等。覆盖率目标因产品、市场和安全要求而异，消费类、数据中心、汽车电子要求不同。不要在没有 DFT 专家的情况下承诺具体数字。
+ATPG 是生成测试向量的活动。输入包括可测网表、测试时钟与模式、约束及故障模型。输出包括向量和故障分类报告。测试工程根据设备和封装访问条件将向量转换、验证并部署。 [Synopsys TestMAX ATPG](https://www.synopsys.com/implementation-and-signoff/test-automation/testmax-atpg.html)
 
-测试覆盖率不是越高越免费。更高覆盖率可能增加 test points、pattern 数量、ATE 时间、测试功耗和调试成本。创业公司要在客户质量要求、成本和上市时间之间做取舍，但不能省掉基本制造测试。
+报告应写清楚故障模型、纳入分母的故障、如何处理不可测故障以及被检测的数量。故障模型覆盖率衡量向量对该模型的效果。晶圆筛选通过率和漏检率根据实际测试总体和判据计算。 [筛选分母和过杀](../../FAB/wiki/03-wafer-test-and-cp/test-cost-vs-coverage-tradeoff.md)
 
 ## DFT 与低功耗、后端和封测
 
-低功耗设计会显著影响 DFT。Power gating、isolation、retention、level shifter、clock gating 都需要 test mode 下的行为定义。某些 power domain 关闭时 scan path 如何连通，MBIST 如何供电，test pattern 是否会造成过高 toggle，都要提前规划。
-
-DFT 不止前端插 scan。它会影响后端 scan chain reorder、test clock tree、test pin、power grid、pattern 交付、ATE program、wafer sort 和 final test。OSAT 和测试工程师也需要早参与，尤其是高速接口、HBM、chiplet 或复杂封装项目。
-
-前端阶段至少要输出 DFT architecture、scan/MBIST plan、test mode 定义、pattern 策略、coverage 目标、DFT rule check 报告和风险列表。
+晶圆筛测可使用已规划的探针访问、结构测试和存储测试。封装后还能覆盖组装引入的问题及实际封装接口。多芯粒产品可能需要封装内再测芯粒、测 D2D 连线或在中间工序做筛选。要把同一故障的检测位置、可访问边界和测试条件一起评审。 [OCP 多芯粒测试](https://www.opencompute.org/documents/chiplet-integration-workflows-1-pdf)
 
 ## 角色、节奏、成本与接口
 
-DFT owner 通常是 DFT engineer 或 test lead，RTL、后端、低功耗、封测、ATE 工程师都需要参与。DFT 架构应在微架构和 top-level integration 阶段确定，scan/MBIST rule check 应在综合前后多次运行，ATPG 和 pattern 调试会延续到后端、tapeout 前和硅后测试开发。具体时长因 memory 数量、clock/reset 复杂度、test compression 和产品质量要求差异很大。
+DFT 组向 RTL、后端和测试组交付时钟、复位、电源和端口的测试约束，以及结构、向量与覆盖信息。测试组向设计和质量组返回失败日志和诊断条件。量产前应检查设备资源、工装、测试时长、并测、功耗与判据。
 
-上游输入包括 RTL、memory macro 清单、clock/reset 结构、UPF、IP DFT 文档、封装和测试策略。下游输出包括 scan/MBIST 插入约束、test mode、ATPG pattern、coverage 报告、ATE 程序输入和 failure analysis 数据。成本包括 DFT/ATPG license、DFT 工程人力、额外面积、测试时间和 ATE 成本。创业公司可以外包 DFT 执行，但不能外包 coverage、test mode 和测试成本的风险判断权。
+<span class="micro-legacy-anchor" id="创业公司视角"></span>
 
 ## 典型场景
 
-团队设计了一个大 NPU SRAM scratchpad，RTL 中把多个 SRAM macro 包在自定义 wrapper 里，但没有暴露标准 MBIST 接口。后期 DFT 工程师要求接入 MBIST controller，发现 wrapper 内部还有 clock gating 和 bank remap 逻辑，测试模式下无法单独控制每个 macro。修改影响 RTL、验证、综合和 floorplan。
-
-更好的做法是在微架构阶段就定义 memory wrapper 模板：功能端口、BIST 端口、repair 信息、test clock、test reset、power mode 和 DFT bypass。验证环境同时包含功能访问测试和 MBIST connectivity 检查。
-
-## 创业公司视角
-
-创业公司可以外包 DFT 实施和 ATPG，但不能外包 DFT 架构责任。内部至少要有人理解 scan、MBIST、test mode、coverage、ATE 时间和量产质量之间的关系。第一颗芯片如果没有量产计划，也应保留基本 DFT，因为硅后 debug、yield learning 和投资人/客户尽调都会看可测性。
-
-开源 RTL 项目更要注意：公开 RTL 不等于公开 foundry-specific DFT 实现。scan cell、memory BIST、test compression 可能依赖商业库和工具。可以开源 DFT 意图、wrapper、接口和可替代实现，但量产级 DFT 仍需要商业工具和工艺库配合。
+**教学假设。** DMA 算例使用一个 SRAM 宏。功能验证向 DMA 发请求并比较内存数据。生产测试可以通过 MBIST 单独访问该宏，按故障模型和宏支持条件筛查。若宏处于可关断的电源域，要逐项验证在测试模式下的供电、时钟和访问能力。
 
 ## 后续阅读
 
-- [CDC 与 RDC](./06_cdc_and_rdc.md)
-- [低功耗设计](./07_low_power_design.md)
-- [前端签核标准](./08_signoff_criteria.md)
-- [硅后 Bring-up](../04_tapeout_and_post_silicon/04_post_silicon_bringup.md)
+- [晶圆测试与 CP](../../FAB/wiki/03-wafer-test-and-cp/README.md)
+- [KGD 的筛选判据与残余风险](../../FAB/wiki/03-wafer-test-and-cp/kgd-known-good-die.md)
+- [成品终测](../../FAB/wiki/05-final-test-and-reliability/final-test-methodology.md)
 
-## 参考公开来源
-
-- [Synopsys TestMAX DFT](https://www.synopsys.com/implementation-and-signoff/test-automation/testmax-dft.html)
-- [Cadence Modus DFT Software Solution](https://www.cadence.com/en_US/home/tools/digital-design-and-signoff/test-automation/modus-dft-software.html)
-- [Siemens Tessent BoundaryScan](https://www.siemens.com/en-us/products/ic/tessent/test/boundaryscan/)
-- [Siemens Tessent Products](https://www.siemens.com/en-us/products/ic/tessent/offerings/)
+<span class="micro-legacy-anchor" id="参考公开来源"></span>
 
 ## 内容可信度说明
 
-- **公开信息（高可信）**：scan、MBIST、ATPG、boundary scan、DFT 工具类别和主要商业工具公开可查。
-- **行业惯例（中可信）**：DFT 需要早介入 RTL、clock/reset、memory wrapper、test mode、low-power 和后端流程；DFT coverage 与 ATE 成本、量产质量相关。
-- **经验性观察（中低可信）**：创业公司可以外包 DFT 实施但不能缺少内部 DFT owner；AI 芯片 SRAM 多，MBIST 风险尤其重要。
-- **不确定/需向资深工程师确认（低可信）**：具体 fault coverage 目标、pattern 数量、scan compression 策略、ATE 时间、OSAT 要求和 automotive/functional safety 约束需按产品确认。
+- **公开事实。** 扫描结构、ATPG 和多芯粒测试流程可参考所列工具文档与产业白皮书。
+- **行业做法。** DFT 交付物和生产测试工序以设计和产品目标为准。
+- **教学假设。** SRAM 的访问与电源条件用于说明设计和生产检查的边界。
+- **待项目核实。** 故障模型、覆盖目标、限值、引脚访问和测试合同。

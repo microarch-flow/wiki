@@ -1,6 +1,6 @@
 # 设备厂商版图
 
-上级:[产业地图](README.md)
+上级:[供应商与产业分工](README.md)
 相关:[材料供应链](materials-supply-chain.md), [TSV](../04-back-end-packaging/3d-routes/tsv-through-silicon-via.md), [Micro-bump vs Hybrid Bonding](../04-back-end-packaging/3d-routes/micro-bump-vs-hybrid-bonding.md)
 
 ## 这页在回答什么问题

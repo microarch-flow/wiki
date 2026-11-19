@@ -1,6 +1,6 @@
 # Molding 与 Underfill:机械保护层
 
-上级:[关键工艺组件](README.md)
+上级:[组件与连接](README.md)
 相关:[Chip-first vs Chip-last](../2.5d-routes/fan-out-chip-first-vs-chip-last.md), [3DIC 的热与应力挑战](../3d-routes/3dic-thermal-and-stress-challenges.md), [热、应力与 Warpage](../../06-cross-cutting-engineering/stress-warpage-cte.md)
 
 ## 这页在回答什么问题

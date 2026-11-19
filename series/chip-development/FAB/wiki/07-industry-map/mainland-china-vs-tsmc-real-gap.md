@@ -1,6 +1,6 @@
 # 大陆 vs 台积电:在 AI 封装上的真实差距
 
-上级:[产业地图](README.md)
+上级:[供应商与产业分工](README.md)
 相关:[大陆先进封装瓶颈](mainland-china-bottlenecks.md), [Foundry 版图](foundry-landscape-tsmc-intel-samsung.md), [从架构需求反推工艺与封装选型](../06-cross-cutting-engineering/from-architecture-to-process-selection.md)
 
 ## 这页在回答什么问题

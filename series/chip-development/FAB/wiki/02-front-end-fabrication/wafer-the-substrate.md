@@ -1,7 +1,7 @@
 # 一切的起点:wafer 是什么、怎么来的
 
-上级:[前道工艺](./README.md)
-相关:[一片 wafer 到一颗成品芯片的完整路径](../01-overview/from-wafer-to-product.md), [良率与缺陷密度:从工艺到经济的桥](../03-wafer-test-and-cp/yield-and-defect-density.md), [工艺节点演化与 PPA 取舍](./process-nodes-and-ppa-tradeoffs.md)
+上级:[晶圆制造](./README.md)
+相关:[一片 wafer 到一颗成品芯片的完整路径](../01-overview/from-wafer-to-product.md), [良率、缺陷密度与面积](../03-wafer-test-and-cp/yield-and-defect-density.md), [工艺节点演化与 PPA 取舍](./process-nodes-and-ppa-tradeoffs.md)
 
 ## 这页在回答什么问题
 

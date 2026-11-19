@@ -1,6 +1,6 @@
 # 器件演化:Planar -> FinFET -> GAAFET
 
-上级:[前道工艺](./README.md)
+上级:[晶圆制造](./README.md)
 相关:[掺杂与离子注入:让硅变成器件](./doping-and-ion-implantation.md), [工艺节点演化与 PPA 取舍](./process-nodes-and-ppa-tradeoffs.md), [Design Rule 和 PDK:架构师与工艺的接口](./design-rule-and-pdk.md)
 
 ## 这页在回答什么问题

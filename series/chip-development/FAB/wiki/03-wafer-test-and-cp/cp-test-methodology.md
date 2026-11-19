@@ -1,7 +1,7 @@
 # CP 测试的方法和典型流程
 
-上级:[中测:CP 阶段](./README.md)
-相关:[为什么必须在 wafer 阶段测试](./why-wafer-sort-exists.md), [测试覆盖率与成本的权衡](./test-cost-vs-coverage-tradeoff.md), [Final Test 的方法与流程](../05-final-test-and-reliability/final-test-methodology.md)
+上级:[晶圆筛测与 CP](./README.md)
+相关:[晶圆筛测为什么放在封装之前](./why-wafer-sort-exists.md), [测试覆盖率与成本的权衡](./test-cost-vs-coverage-tradeoff.md), [成品终测](../05-final-test-and-reliability/final-test-methodology.md)
 
 ## 这页在回答什么问题
 
@@ -34,7 +34,7 @@ wafer load
 | Limited functional | 覆盖关键工作模式 | 系统级逻辑错误 | wafer 环境下模式和速度受限 |
 | Speed/leakage bin | 做初步分档 | 慢 die、高漏电 die | 封装后热和电源条件不同 |
 
-CP 的覆盖率来自 DFT，而不是 tester 魔法。没有 scan chain、BIST、test mode、isolation 和可观测点，tester 无法直接看到内部复杂状态。
+可检测范围由测试结构、物理访问、向量、设备能力和执行条件共同确定。对复杂内部状态，需要设计扫描、自测或相应观测访问。CP 记录分档和复测条件，供后续组装选择及分析。 [可测性设计与制造测试](../../../process/02_frontend_design_and_verification/05_dft_introduction.md) · [FormFactor 晶圆测试实例](https://www.formfactor.com/applications/high-volume-test-on-wafer/logic-and-soc/)
 
 ## Probe 接触本身也是约束
 

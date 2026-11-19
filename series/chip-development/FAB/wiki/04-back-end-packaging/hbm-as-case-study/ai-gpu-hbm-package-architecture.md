@@ -1,6 +1,6 @@
 # AI GPU + HBM 封装的完整对象关系
 
-上级:[HBM:先进封装的标志性应用](README.md)
+上级:[HBM 制造与集成](README.md)
 相关:[CoWoS-S 简化制造对象流](../2.5d-routes/cowos-s-complete-process.md), [HBM stack 是怎么制造出来的](hbm-stack-manufacturing.md), [热路径管理](../../06-cross-cutting-engineering/thermal-path-and-management.md)
 
 ## 这页在回答什么问题

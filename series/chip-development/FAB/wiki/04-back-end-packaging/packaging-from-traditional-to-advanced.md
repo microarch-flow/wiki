@@ -1,6 +1,6 @@
 # 从传统封装到先进封装:演化逻辑
 
-上级:[后道封装](./README.md)
+上级:[封装结构与工艺](./README.md)
 相关:[先进封装分类框架:2D/2.5D/3D](./packaging-taxonomy.md), [摩尔定律放缓如何把封装推到前台](./why-advanced-packaging-now.md), [为什么工艺红利在让位于封装红利](../01-overview/why-process-and-packaging-matter-now.md)
 
 ## 这页在回答什么问题

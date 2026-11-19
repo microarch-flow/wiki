@@ -1,6 +1,6 @@
 # 工艺节点、封装路线、测试阶段的命名体系
 
-上级:[芯片制造与封测 Wiki 总览](./README.md)
+上级:[从晶圆到成品的总览](./README.md)
 相关:[前道与后道:产业分工和技术差异](./front-end-vs-back-end.md), [先进封装分类框架:2D/2.5D/3D](../04-back-end-packaging/packaging-taxonomy.md), [高频问题:最容易混淆的概念](../08-reference/high-frequency-questions.md)
 
 ## 这页在回答什么问题

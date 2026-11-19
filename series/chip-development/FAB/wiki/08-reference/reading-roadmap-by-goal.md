@@ -1,6 +1,6 @@
 # 按目标的学习路径
 
-上级:[参考资料](README.md)
+上级:[FAB 参考资料](README.md)
 相关:[学习路线](../01-overview/learning-roadmap.md), [高频问题](high-frequency-questions.md), [工艺与封装选型决策树](decision-tree-process-and-package.md)
 
 ## 这页在回答什么问题
@@ -13,15 +13,15 @@
 2. [从晶圆到产品](../01-overview/from-wafer-to-product.md)
 3. [分类框架](../01-overview/taxonomy.md)
 4. [前道与后道](../01-overview/front-end-vs-back-end.md)
-5. [后道封装](../04-back-end-packaging/README.md)
-6. [跨工艺共性问题](../06-cross-cutting-engineering/README.md)
+5. [封装结构与工艺](../04-back-end-packaging/README.md)
+6. [封装工程约束](../06-cross-cutting-engineering/README.md)
 
 读完这条路径，应能回答 wafer、die、package、front-end、back-end、2.5D、3DIC、test 和 reliability 的基本关系。
 
 ## 搞懂 AI/HPC + HBM 封装
 
 1. [为什么先进封装变重要](../01-overview/why-process-and-packaging-matter-now.md)
-2. [HBM 如何把产业逼向 2.5D 和 3D](../04-back-end-packaging/hbm-as-case-study/why-hbm-forces-2.5d-3d.md)
+2. [HBM 为什么常与高密度封装配合](../04-back-end-packaging/hbm-as-case-study/why-hbm-forces-2.5d-3d.md)
 3. [HBM stack 是怎么制造出来的](../04-back-end-packaging/hbm-as-case-study/hbm-stack-manufacturing.md)
 4. [AI GPU + HBM 封装对象关系](../04-back-end-packaging/hbm-as-case-study/ai-gpu-hbm-package-architecture.md)
 5. [CoWoS-S/R/L](../04-back-end-packaging/2.5d-routes/cowos-s-r-l-comparison.md)
@@ -58,7 +58,7 @@
 
 ## 看产业链
 
-1. [产业地图](../07-industry-map/README.md)
+1. [供应商与产业分工](../07-industry-map/README.md)
 2. [全球产业链全景图](../07-industry-map/industry-chain-overview.md)
 3. [Foundry 版图](../07-industry-map/foundry-landscape-tsmc-intel-samsung.md)
 4. [OSAT 版图](../07-industry-map/osat-landscape-ase-amkor-jcet-tongfu.md)

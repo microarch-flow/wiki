@@ -1,7 +1,7 @@
 # OSAT 版图:ASE/Amkor/JCET/通富/华天
 
-上级:[产业地图](README.md)
-相关:[全球产业链全景图](industry-chain-overview.md), [大陆先进封装瓶颈](mainland-china-bottlenecks.md), [终测与可靠性](../05-final-test-and-reliability/README.md)
+上级:[供应商与产业分工](README.md)
+相关:[全球产业链全景图](industry-chain-overview.md), [大陆先进封装瓶颈](mainland-china-bottlenecks.md), [成品终测与可靠性](../05-final-test-and-reliability/README.md)
 
 ## 这页在回答什么问题
 

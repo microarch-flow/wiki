@@ -1,6 +1,6 @@
 # 工艺与封装选型决策树
 
-上级:[参考资料](README.md)
+上级:[FAB 参考资料](README.md)
 相关:[从架构需求反推工艺与封装选型](../06-cross-cutting-engineering/from-architecture-to-process-selection.md), [封装分类](../04-back-end-packaging/packaging-taxonomy.md), [关键指标速查表](key-metrics-table.md)
 
 ## 这页在回答什么问题

@@ -1,6 +1,6 @@
 # RDL:截面结构与制造流程
 
-上级:[关键工艺组件](README.md)
+上级:[组件与连接](README.md)
 相关:[Fan-out RDL](../2.5d-routes/fan-out-rdl-overview.md), [Chip-first vs Chip-last](../2.5d-routes/fan-out-chip-first-vs-chip-last.md), [失效模式目录](../../06-cross-cutting-engineering/failure-modes-catalog.md)
 
 ## 这页在回答什么问题

@@ -1,7 +1,9 @@
-# 产业地图
+# 供应商与产业分工
 
-上级:[芯片制造与封测 Wiki 总览](../01-overview/README.md)
-相关:[封装分类](../04-back-end-packaging/packaging-taxonomy.md), [跨工艺共性问题](../06-cross-cutting-engineering/README.md), [关键指标表](../08-reference/key-metrics-table.md)
+<span class="micro-legacy-anchor" id="产业地图"></span>
+
+上级:[从晶圆到成品的总览](../01-overview/README.md)
+相关:[封装分类](../04-back-end-packaging/packaging-taxonomy.md), [封装工程约束](../06-cross-cutting-engineering/README.md), [关键指标表](../08-reference/key-metrics-table.md)
 
 ## 这页在回答什么问题
 
@@ -59,13 +61,15 @@ AI/HPC 先进封装不是单点外包问题，而是系统定义、先进逻辑�
 
 架构师评估封装路线时，也在评估产业链可得性。一个架构需要 HBM、CoWoS-like 2.5D、大尺寸 substrate 和高密度测试时，任何一个环节供给不足都会反向改变产品定义和上市节奏。
 
-## 本章正文
+<span class="micro-legacy-anchor" id="本章正文"></span>
 
-- [设备厂商版图](./equipment-vendors.md)
-- [代工厂版图:TSMC/Intel/Samsung](./foundry-landscape-tsmc-intel-samsung.md)
-- [全球产业链全景图](./industry-chain-overview.md)
-- [大陆先进封装:材料、基板、设备分别卡在哪](./mainland-china-bottlenecks.md)
-- [大陆 vs 台积电:在 AI 封装上的真实差距](./mainland-china-vs-tsmc-real-gap.md)
-- [材料供应链](./materials-supply-chain.md)
-- [OSAT 版图:ASE/Amkor/JCET/通富/华天](./osat-landscape-ase-amkor-jcet-tongfu.md)
-- [基板与载板供应](./substrate-and-carrier-supply.md)
+## 阅读顺序
+
+1. [产业链总览](industry-chain-overview.md)
+2. [代工与封装平台](foundry-landscape-tsmc-intel-samsung.md)
+3. [OSAT 平台](osat-landscape-ase-amkor-jcet-tongfu.md)
+4. [设备厂商](equipment-vendors.md)
+5. [材料供应](materials-supply-chain.md)
+6. [基板与载板](substrate-and-carrier-supply.md)
+7. [大陆先进封装的核查条件](mainland-china-bottlenecks.md)
+8. [如何比较供应商与路线](mainland-china-vs-tsmc-real-gap.md)

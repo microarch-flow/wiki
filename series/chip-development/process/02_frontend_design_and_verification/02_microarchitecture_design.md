@@ -50,7 +50,7 @@ AI 芯片通常被片上存储和数据搬运限制。微架构必须定义每�
 
 ## 仲裁、寄存器和软件契约
 
-仲裁器决定共享资源如何分配。简单 fixed priority 容易验证、面积小，但可能饿死低优先级请求。round-robin 更公平，但状态更多。QoS 和 deadline-aware 仲裁更接近系统需求，但验证复杂度明显增加。仲裁策略必须和性能模型一致，不要在 C model 中假设理想带宽，RTL 中才发现 DMA、compute、debug、firmware 都要争同一 NoC port。
+仲裁器决定共享资源如何分配。简单 fixed priority 容易验证、面积小，但可能饿死低优先级请求。轮询提供按策略轮转的机会。等待上限仍依赖请求持续有效、仲裁推进和下游服务。QoS 和 deadline-aware 仲裁更接近系统需求，但验证复杂度明显增加。仲裁策略必须和性能模型一致，不要在 C model 中假设理想带宽，RTL 中才发现 DMA、compute、debug、firmware 都要争同一 NoC port。
 
 寄存器不是后期随手加的 debug 接口，而是硬件和软件的 ABI。必须定义地址、字段、reset value、读写权限、write-one-to-clear、read side effect、保留位、错误码、中断、doorbell 和性能计数器。建议用 SystemRDL、IP-XACT、PeakRDL 或内部 schema 生成寄存器 RTL、C header、文档和验证模型。手写寄存器容易出现 RTL、软件头文件和文档不一致。
 
@@ -62,9 +62,9 @@ AI 芯片通常被片上存储和数据搬运限制。微架构必须定义每�
 
 ## 典型场景
 
-某 NPU tile 支持矩阵乘和 elementwise fusion。架构模型假设权重从 SRAM 连续读取，MAC 阵列每拍满载。微架构评审发现 SRAM macro 只有一读一写端口，而同一拍需要读权重、读 activation、写 partial sum。若强行实现，会导致复制 SRAM 或降低频率。
+**教学假设。** 某 NPU tile 支持矩阵乘和 elementwise fusion。架构模型假设权重从 SRAM 连续读取，MAC 阵列每拍满载。微架构评审发现 SRAM macro 只有一读一写端口，而同一拍需要读权重、读 activation、写 partial sum。一个读端口每次只能发出一项读操作。可选择复制或分 bank，也可增加发射间隔。降低时钟频率会改变每秒吞吐，对该端口每拍只接收一次读的条件没有直接作用。
 
-团队改成多 bank 结构，并在 scheduler 中加入 bank conflict 规避。C model 增加 bank-aware 模拟，验证计划增加随机 shape 和 bank conflict coverage。这个修改降低峰值宣传指标，但让 RTL、后端和真实 workload 性能更可信。
+团队改成多 bank 结构，并在 scheduler 中加入 bank conflict 规避。性能模型增加显式 bank 仲裁，验证计划增加随机 shape 和 bank conflict coverage。对照架构模型检查 bank 冲突、发射间隔和实际可实现频率。端口约束见[存储端口](../../../storage/02-sram/foundations/single-port-dual-port-multi-port.md)。
 
 ## 创业公司视角
 
@@ -75,9 +75,9 @@ AI 芯片通常被片上存储和数据搬运限制。微架构必须定义每�
 ## 后续阅读
 
 - [RTL 设计工程实践](./01_rtl_design_practices.md)
-- [前端验证方法学](./03_verification_methodology.md)
+- [功能验证](./03_verification_methodology.md)
 - [CDC 与 RDC](./06_cdc_and_rdc.md)
-- [前端签核标准](./08_signoff_criteria.md)
+- [前端交接评审](./08_signoff_criteria.md)
 
 ## 参考公开来源
 

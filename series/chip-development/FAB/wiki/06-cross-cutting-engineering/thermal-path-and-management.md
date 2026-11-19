@@ -1,7 +1,7 @@
 # 先进封装中的热路径与管理
 
-上级:[跨工艺共性问题](README.md)
-相关:[HBM:先进封装的标志性应用](../04-back-end-packaging/hbm-as-case-study/README.md), [3DIC 的热与应力挑战](../04-back-end-packaging/3d-routes/3dic-thermal-and-stress-challenges.md), [应力、Warpage、CTE 失配](stress-warpage-cte.md)
+上级:[封装工程约束](README.md)
+相关:[HBM 制造与集成](../04-back-end-packaging/hbm-as-case-study/README.md), [3DIC 的热与应力挑战](../04-back-end-packaging/3d-routes/3dic-thermal-and-stress-challenges.md), [应力、Warpage、CTE 失配](stress-warpage-cte.md)
 
 ## 这页在回答什么问题
 

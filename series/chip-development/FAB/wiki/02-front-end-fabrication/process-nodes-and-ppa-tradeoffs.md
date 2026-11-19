@@ -1,6 +1,6 @@
 # 工艺节点演化与 PPA 取舍
 
-上级:[前道工艺](./README.md)
+上级:[晶圆制造](./README.md)
 相关:[为什么工艺红利在让位于封装红利](../01-overview/why-process-and-packaging-matter-now.md), [器件演化:Planar -> FinFET -> GAAFET](./transistor-evolution-planar-finfet-gaa.md), [SRAM 工艺缩放挑战](../../../../storage/02-sram/foundations/sram-process-scaling-challenge.md)
 
 ## 这页在回答什么问题

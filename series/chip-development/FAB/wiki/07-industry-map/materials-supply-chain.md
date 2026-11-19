@@ -1,6 +1,6 @@
 # 材料供应链
 
-上级:[产业地图](README.md)
+上级:[供应商与产业分工](README.md)
 相关:[应力、Warpage、CTE 失配](../06-cross-cutting-engineering/stress-warpage-cte.md), [Molding 与 Underfill](../04-back-end-packaging/key-components/molding-and-underfill.md), [基板与载板供应](substrate-and-carrier-supply.md)
 
 ## 这页在回答什么问题

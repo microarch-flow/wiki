@@ -1,7 +1,9 @@
-# 参考资料
+# FAB 参考资料
 
-上级:[芯片制造与封测 Wiki 总览](../01-overview/README.md)
-相关:[学习路线](../01-overview/learning-roadmap.md), [从架构需求反推工艺与封装选型](../06-cross-cutting-engineering/from-architecture-to-process-selection.md), [产业地图](../07-industry-map/README.md)
+<span class="micro-legacy-anchor" id="参考资料"></span>
+
+上级:[从晶圆到成品的总览](../01-overview/README.md)
+相关:[学习路线](../01-overview/learning-roadmap.md), [从架构需求反推工艺与封装选型](../06-cross-cutting-engineering/from-architecture-to-process-selection.md), [供应商与产业分工](../07-industry-map/README.md)
 
 ## 这页在回答什么问题
 
@@ -41,10 +43,12 @@ learning goal -> roadmap
 
 架构师做路线判断时，不应只凭记忆使用术语。用参考层先统一词义、指标和决策树，再回到主体章节检查热、PI、SI、良率、测试和产业链约束。
 
-## 本章正文
+<span class="micro-legacy-anchor" id="本章正文"></span>
 
-- [工艺与封装选型决策树](./decision-tree-process-and-package.md)
-- [术语表](./glossary.md)
-- [高频问题:最容易混淆的概念](./high-frequency-questions.md)
-- [关键指标速查表](./key-metrics-table.md)
-- [按目标的学习路径](./reading-roadmap-by-goal.md)
+## 阅读顺序
+
+1. [FAB 术语表](glossary.md)
+2. [关键指标及单位](key-metrics-table.md)
+3. [常见概念区分](high-frequency-questions.md)
+4. [工艺与封装选型](decision-tree-process-and-package.md)
+5. [按目标阅读](reading-roadmap-by-goal.md)

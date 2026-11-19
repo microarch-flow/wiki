@@ -1,6 +1,6 @@
 # 掺杂与离子注入:让硅变成器件
 
-上级:[前道工艺](./README.md)
+上级:[晶圆制造](./README.md)
 相关:[前道工艺的整体节奏:FEOL/MOL/BEOL](./process-flow-overview.md), [器件演化:Planar -> FinFET -> GAAFET](./transistor-evolution-planar-finfet-gaa.md), [工艺节点演化与 PPA 取舍](./process-nodes-and-ppa-tradeoffs.md)
 
 ## 这页在回答什么问题

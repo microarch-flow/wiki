@@ -1,6 +1,6 @@
 # 前道工艺的整体节奏:FEOL/MOL/BEOL
 
-上级:[前道工艺](./README.md)
+上级:[晶圆制造](./README.md)
 相关:[前道与后道:产业分工和技术差异](../01-overview/front-end-vs-back-end.md), [光刻:把版图变成芯片的核心步骤](./photolithography-fundamentals.md), [BEOL 的金属互联:从 M0 到 redistribution](./interconnect-stack-beol.md)
 
 ## 这页在回答什么问题

@@ -1,108 +1,73 @@
-# 前端验证方法学
+# 功能验证怎样为规格提供证据
+
+<span class="micro-legacy-anchor" id="前端验证方法学"></span>
 
 ## 前置知识
 
-- 建议先读 [RTL 设计工程实践](./01_rtl_design_practices.md)。
-- 建议先读 [微架构设计](./02_microarchitecture_design.md)。
-- 建议理解 [UVM](../00_overview/05_glossary.md#uvm)、[Formal Verification](../00_overview/05_glossary.md#formal-verification)、[Emulation](../00_overview/05_glossary.md#emulation)、[Golden Model](../00_overview/05_glossary.md#golden-model)。
+先读[规格定义](../01_product_definition_and_architecture/02_spec_definition.md)与[微架构设计](02_microarchitecture_design.md)。
 
-## 验证不是“跑几个 test”
+## 验证目标
 
-芯片验证的目标是用可审计证据说明设计满足规格，并把剩余风险控制在可接受范围内。仿真通过几个典型 workload 只能说明 happy path 工作，不能说明 reset、异常、backpressure、并发、跨域、低功耗、非法配置和边界条件正确。
-
-验证计划应从规格出发，而不是从 RTL 出发。每条架构和微架构需求都要映射到 test、assertion、formal property、coverage point 或人工 review。没有映射的需求就是未验证需求。
+验证计划把需求编号映射到检查方法和判据。仿真可以比较已执行场景的预期和实际行为。形式验证在给定模型及假设下检查指定属性。用这些结果及未覆盖项说明需求被验证到什么程度。 [OpenTitan 验证方法](https://opentitan.org/book/doc/contributing/dv/methodology/index.html)
 
 ## 验证层次
 
-| 层次 | 目标 | 常用方法 |
-|---|---|---|
-| Block-level | 单模块功能和协议 | directed test、random test、assertion、formal |
-| Subsystem | 多模块交互 | UVM env、scoreboard、coverage、stress test |
-| SoC-level | 软件可见行为和系统集成 | C test、firmware test、VIP、emulation |
-| Gate-level | 综合后结构检查 | gate simulation、SDF、LEC、X 检查 |
-| Pre-silicon software | boot、driver、runtime | emulation、FPGA prototype、virtual platform |
-
-创业公司最容易低估 subsystem 验证。单个模块都正确，不代表 DMA、NoC、NPU、register block、interrupt 和 firmware 组合后正确。
+| 层次 | 验证重点 | 例子 |
+| --- | --- | --- |
+| 模块 | 局部数据、协议、错误和复位 | 缓冲区不能在空时读出有效数据 |
+| 子系统 | 并发、共享资源、跨域和错误传播 | DMA 受 SRAM 背压时，保持未接受的写请求 |
+| SoC | 软件可见行为和系统集成 | 启动、配置、搬运和中断闭环 |
+| 网表 | 指定实现的等价性或门级行为 | 比较综合前后行为，按风险进行门级仿真 |
 
 ## Golden Model 的边界
 
-[Golden Model](../00_overview/05_glossary.md#golden-model) 可以是 C/C++、Python、SystemC 或高层模型。它用于判断 RTL 输出是否符合预期。关键是 golden model 必须定义精度、舍入、异常、未定义行为和时序无关行为。
-
-对 AI 芯片，常见争议包括 INT8/FP16/BF16 的舍入和饱和规则，NaN、Inf、denormal、overflow 的处理，不同 tiling 顺序导致的累加误差，稀疏或动态 shape 的无效元素处理，以及非法配置下是报错、忽略还是行为未定义。如果 golden model 没定义这些，验证失败时会变成“RTL 错还是模型错”的争论。
+功能参考模型计算预期值。模型应定义舍入、饱和、异常、复位等适用行为。若它只以事务为单位，周期、背压及中断先后还需单独检查。参考模型与 RTL 若来自同一段逻辑或错误理解，二者可能一起出错。用规格中的独立手算例、边界用例或不同来源的参考结果交叉检查。
 
 ## UVM、Assertion 和 Formal
 
-[UVM](../00_overview/05_glossary.md#uvm) 是构建可复用 SystemVerilog 验证环境的方法学。典型组件包括 driver、monitor、sequencer、agent、scoreboard、coverage collector 和 virtual sequence。UVM 的价值在复杂协议、随机刺激、可复用环境和覆盖率收敛。
+UVM 用于组织可复用的验证环境。驱动器施加输入，监视器记录总线事务，计分板将观测和参考结果比较。复杂接口可以复用验证 IP。对于小模块，也可用更轻的驱动与检查方式。 [Accellera UVM](https://accellera.org/downloads/standards/uvm)
 
-UVM 不是质量保证本身。一个结构复杂但 test plan 很弱的 UVM 环境仍然会漏 bug。创业公司可以在小模块使用轻量 testbench、cocotb、Verilator 或 C++ harness，但在复杂 SoC 子系统、标准协议和可复用 VIP 上，成熟 UVM 环境仍有价值。
+断言表达协议或不变量，例如「写响应之前禁止产生完成」。形式工具可以发现反例，也可以在可证明范围内证明该属性。评审结果时记录假设、复位及初始状态、是否只检查有限步，以及属性的前提有没有被触发。证明特定断言不违反之后，继续确认已选择的属性覆盖产品需求。
 
-Assertion 用于把协议和不变量写成机器可检查规则。它可以在仿真中触发，也可以交给 [Formal Verification](../00_overview/05_glossary.md#formal-verification) 工具证明。适合 formal 的问题包括 FIFO 不溢出不读空、握手 payload 稳定、仲裁公平性、寄存器访问权限、死锁局部证明和协议状态机。Formal 不是万能证明器，大规模 datapath、复杂存储系统和完整 SoC 通常难以一次性证明。
+逻辑等价检查比较选定参考与实现。参考设计、功能模式、黑盒边界、初始值和未知值解释会影响结论。若改动包括重定时或功能 ECO，应为此选用合适的比较方法和参考版本。 [YosysHQ 等价与 X 传播](https://yosyshq.readthedocs.io/projects/eqy/en/latest/xprop.html)
 
 ## Coverage 和回归
 
-Coverage 分为 code coverage、functional coverage、assertion coverage 和 requirements coverage。Code coverage 高不代表功能验证充分，只说明代码被执行过。Functional coverage 才表达“我们关心的场景是否被覆盖”。
+代码覆盖记录实现结构的命中情况。功能覆盖记录计划中的场景或取值组合。一次命中需要配合检查器才能判断结果。回归报告应跟踪需求、覆盖缺口、真实失败、已知限制和评审结论。保存 RTL、参考模型、测试配置、工具版本及随机种子。
 
-对 AI 芯片，coverage 应覆盖 shape、tile size、stride、padding、precision、buffer 满空、backpressure、DMA 边界、中断、错误、timeout、reset during operation、多 master 并发访问、低功耗状态切换和软件配置寄存器组合。Coverage closure 不是追求 100% 数字，而是解释未覆盖点为什么可接受。
-
-回归系统要可复现：记录 RTL commit、test seed、工具版本、编译参数、模型版本和失败波形。随机测试发现的问题如果无法复现，会拖慢整个项目。
-
-## Emulation 和 FPGA Prototype
-
-[Emulation](../00_overview/05_glossary.md#emulation) 使用专用硬件加速大规模 RTL 运行，适合 SoC 级软件 bring-up、长场景、性能分析和复杂并发。常见商业平台包括 Cadence Palladium、Synopsys ZeBu、Siemens Veloce。FPGA prototype 成本可能较低，但映射、时钟、memory 和调试可见性会带来额外工作。
-
-Emulation 不能替代 block-level 验证。把没验证好的 RTL 放进 emulation，只会更快地遇到更难 debug 的 bug。
-
-## Agent 生成 RTL 的验证策略
-
-如果使用 agent 从 C model 或规格生成 RTL，应增加额外护栏：
-
-- 每次生成必须通过 lint、格式化、基本仿真和综合 smoke test。
-- 生成器输出必须带 traceability，说明哪条规格对应哪段 RTL。
-- 对接口协议自动生成 assertion。
-- 对算术行为使用 C/Python golden model 做 differential testing。
-- 对状态机和 FIFO 使用 formal。
-- 对 prompt 和 generator 版本做版本管理。
-- 禁止人工“临时修补”不回灌到生成源。
-
-否则项目会出现不可复现 RTL：某次生成能过，下一次生成破坏 corner case，没人知道差异来自 prompt、模型版本还是人工修改。
-
-## 角色、节奏、成本与接口
-
-验证的 owner 应是 DV lead，而不是 RTL designer 兼职“写几个 test”。Block 级验证由 DV engineer、RTL owner 和架构师共同闭环；subsystem/SoC 级还需要 firmware、driver、VIP、emulation 和系统软件参与。验证计划应在 RTL 大规模编码前启动，block 级回归通常随 RTL 每周滚动，subsystem/SoC regression 会持续到前端 signoff 前；复杂 AI SoC 的验证往往是前端最长路径之一。
-
-上游输入是 PRD、架构/微架构规格、C/golden model、寄存器模型、接口协议和 IP 文档。下游输出是 testbench、assertion、coverage、bug 数据库、回归报告、waiver、emulation bring-up 资产和 signoff 证据。成本包括 DV 人力、商业仿真/formal/emulation license、VIP、算力和回归维护。创业公司可以用 Verilator/cocotb/CI 做快速 smoke，但不能省 DV lead、需求覆盖、关键协议 assertion 和 bug triage 纪律。
+<span class="micro-legacy-anchor" id="验证不是跑几个-test"></span><span class="micro-legacy-anchor" id="创业公司视角"></span>
 
 ## 典型场景
 
-一个矩阵乘 block 在 directed test 中全部通过。随机测试开启 backpressure 后，scoreboard 发现偶发结果错位。波形显示输入 valid 保持，但内部 tile ID 在 stall 时前进了一拍。C model 没有 stall 概念，所以此前无法发现。
+**教学假设。** 沿用[规格中的 SRAM＋DMA](../01_product_definition_and_architecture/02_spec_definition.md#典型场景)。
 
-团队修复方法是把 tile ID 和 payload 绑定为同一 transaction，在 RTL 中所有 pipeline stage 使用 valid-ready skid buffer；补 assertion 检查 stall 时 payload 稳定；functional coverage 增加连续 stall、随机 stall、FIFO almost full、不同 tile size 组合。这个 bug 的价值不在于修一行代码，而是暴露验证计划缺少 backpressure 维度。
+| 需求 | 怎样触发 | 怎样检查 |
+| --- | --- | --- |
+| DMA-01 写回 | 改变输入数据、连续地址及背压长度 | 计分板比较 16 B 数据，检查其他地址保持 |
+| DMA-02 完成 | 延迟最后写响应，改变目的域时钟相位 | 检查完成的数量与顺序。用属性约束每笔事务最多一次 |
+| DMA-03 复位 | 在写入、等待回执和复位释放附近触发 | 检查取消或重新初始化后的行为，包括可能保留的已写数据 |
 
-## 创业公司视角
+可把「已经接收请求，但没有完成」分成两类。等待可以由下游背压合法造成。若环境保证时钟继续和下游最终响应，则应检查活性。覆盖项同时记录是否发生了等待、复位取消和恢复后的新事务。
 
-验证负责人是早期关键招聘。没有强 DV owner，自动生成 RTL 只会加速生成未验证代码。创业公司可以在工具上务实组合：开源 Verilator/cocotb 做快速 smoke，商业 simulator 做 signoff regression，formal 用在关键协议，emulation 外包或租用用于 SoC 软件 bring-up。
+## Emulation 和 FPGA Prototype
 
-不要把 coverage 数字当融资指标。真正有用的是 requirements coverage、关键风险列表、未关闭 bug 趋势、waiver 解释和硅后可调试能力。
+两类平台可用于长场景、软件验证和早期 bring-up。比较结果时注明时钟、外设、存储和可观测性的映射差异。平台上的通过记录对应它所运行的设计与配置。 [OpenTitan 顶层软件测试](https://opentitan.org/book/sw/device/tests/index.html)
+
+## Agent 生成 RTL 的验证策略
+
+对生成 RTL 同样追踪规格、生成器和输入版本。优先用独立的参考结果和属性审查危险边界。用同一个错误来源生成 RTL 和「预期结果」，会削弱对错误的检测能力。
 
 ## 后续阅读
 
-- [综合准备](./04_synthesis_preparation.md)
-- [CDC 与 RDC](./06_cdc_and_rdc.md)
-- [低功耗设计](./07_low_power_design.md)
-- [前端签核标准](./08_signoff_criteria.md)
+- [前端交接评审](08_signoff_criteria.md)
+- [综合准备需要哪些输入与检查](04_synthesis_preparation.md)
+- [可测性设计与制造测试](05_dft_introduction.md)
 
-## 参考公开来源
-
-- [IEEE 1800.2-2020 UVM 标准页面](https://standards.ieee.org/ieee/1800.2/7567/)
-- [Accellera Standards](https://accellera.com/downloads/standards)
-- [Accellera Portable Stimulus Working Group](https://accellera.org/activities/working-groups/portable-stimulus)
-- [Synopsys VC Formal](https://www.synopsys.com/verification/resources/datasheets/vc-formal.html)
-- [Cadence Xcelium](https://www.cadence.com/en_US/home/tools/system-design-and-verification/simulation-and-testbench-verification/xcelium-simulator.html)
-- [Synopsys VCS](https://www.synopsys.com/verification/simulation/vcs.html)
+<span class="micro-legacy-anchor" id="角色节奏成本与接口"></span><span class="micro-legacy-anchor" id="参考公开来源"></span>
 
 ## 内容可信度说明
 
-- **公开信息（高可信）**：UVM 是 IEEE 1800.2 标准；PSS、UVM、SystemC 等 Accellera 标准公开；商业仿真、formal、emulation 工具类别公开可查。
-- **行业惯例（中可信）**：block/subsystem/SoC 分层验证、scoreboard、coverage closure、assertion、formal、emulation 组合是主流 ASIC 验证实践。
-- **经验性观察（中低可信）**：AI 芯片 bug 常集中在 backpressure、DMA、buffer、shape、精度和并发；agent 生成 RTL 需要 traceability 和自动化回归护栏。
-- **不确定/需向资深工程师确认（低可信）**：具体 coverage 目标、formal 应用范围、emulation 投入时间、VIP 选择和 regression 规模需由项目复杂度决定。
+- **公开事实。** UVM、等价检查方法和 OpenTitan 验证材料可查阅。
+- **行业做法。** 需求映射、回归和覆盖评审的组合由项目验证计划决定。
+- **教学假设。** 表格中的 DMA 条款和检查场景属于示例。
+- **待项目核实。** 覆盖范围、形式假设、未关闭问题和采用的验证平台。

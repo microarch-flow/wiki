@@ -1,6 +1,6 @@
 # 为什么架构师必须懂工艺与封装
 
-上级:[芯片制造与封测 Wiki 总览](./README.md)
+上级:[从晶圆到成品的总览](./README.md)
 相关:[为什么工艺红利在让位于封装红利](./why-process-and-packaging-matter-now.md), [工艺节点演化与 PPA 取舍](../02-front-end-fabrication/process-nodes-and-ppa-tradeoffs.md), [从架构需求反推工艺与封装选型](../06-cross-cutting-engineering/from-architecture-to-process-selection.md)
 
 ## 这页在回答什么问题

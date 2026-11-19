@@ -1,7 +1,7 @@
 # PI、PDN、Decap:供电完整性
 
-上级:[跨工艺共性问题](README.md)
-相关:[后道封装](../04-back-end-packaging/README.md), [HBM 代际演化](../04-back-end-packaging/hbm-as-case-study/hbm-evolution-hbm2-hbm3-hbm4.md), [封装内的信号完整性](signal-integrity-in-package.md)
+上级:[封装工程约束](README.md)
+相关:[封装结构与工艺](../04-back-end-packaging/README.md), [HBM 代际演化](../04-back-end-packaging/hbm-as-case-study/hbm-evolution-hbm2-hbm3-hbm4.md), [封装内的信号完整性](signal-integrity-in-package.md)
 
 ## 这页在回答什么问题
 

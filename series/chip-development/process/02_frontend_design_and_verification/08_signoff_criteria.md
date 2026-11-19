@@ -1,104 +1,56 @@
-# 前端签核标准
+# 前端交接评审需要哪些证据
+
+<span class="micro-legacy-anchor" id="前端签核标准"></span>
 
 ## 前置知识
 
-- 建议先读本目录所有前序文件。
-- 建议先读 [里程碑与签核](../01_product_definition_and_architecture/06_milestones_and_signoffs.md)。
-- 建议理解 [Signoff](../00_overview/05_glossary.md#signoff)、[ECO](../00_overview/05_glossary.md#eco)、[Synthesis](../00_overview/05_glossary.md#synthesis)、[CDC](../00_overview/05_glossary.md#cdc)、[DFT](../00_overview/05_glossary.md#dft)。
+先从[功能验证](03_verification_methodology.md)和[综合准备需要哪些输入与检查](04_synthesis_preparation.md)理解证据的来源。
 
 ## Signoff 的含义
 
-[Signoff](../00_overview/05_glossary.md#signoff) 不是“没有 bug”，而是团队基于证据决定风险足够低，可以进入下一阶段。前端 signoff 的目的，是让后端物理设计接收一套稳定、可综合、可约束、可测、可验证的 RTL 和约束包。
-
-如果前端 signoff 只看“仿真回归通过”，后端会被迫处理本该前端解决的问题：约束缺失、clock/reset 不清、CDC waiver 无证据、DFT 插入失败、UPF 不一致、面积爆炸、关键路径不可修。
+本页的签核指设计基线的交接评审。评审对象是一套有版本的 RTL、约束、IP 视图和检查结果。交接结论声明下游可使用的范围、仍开放的问题，以及变更后的复验责任。物理签核和流片决策使用各自的交付对象。 [OpenTitan 硬件阶段](https://opentitan.org/book/doc/project_governance/development_stages.html)
 
 ## 前端 Signoff Checklist
 
-| 类别 | 最低证据 |
-|---|---|
-| 规格 | 架构/微架构规格冻结，变更记录清楚 |
-| RTL | lint clean 或 waiver 有 owner 和理由 |
-| 验证 | regression pass，coverage closure，有未关闭 bug 列表 |
-| Assertion/Formal | 关键协议和状态机有 assertion/formal 证据 |
-| CDC/RDC | 工具报告关闭，waiver 有结构和验证证据 |
-| 综合 | early synthesis 达到可接受 QoR，无严重 unconstrained path |
-| SDC | clock、generated clock、IO、exception 被 review |
-| DFT | scan/MBIST/test mode plan 通过 DFT review |
-| Low Power | UPF/power state/clock gating 检查通过 |
-| LEC | RTL-to-netlist LEC 流程可运行或风险明确 |
-| 软件接口 | register model、header、文档和 RTL 一致 |
-| 后端接口 | macro、floorplan 假设、timing budget、physical constraint 交付 |
-| 风险 | risk register 更新，waiver 和 residual risk 被接受 |
+| 审查项 | 评审时查看 |
+| --- | --- |
+| 规格和接口 | 版本、需求到测试的映射、寄存器表和软件标头 |
+| 功能 | 回归、属性、覆盖缺口、停用或延后功能的条件 |
+| CDC／RDC 与低功耗 | 域、跨域、复位、电源状态及评审过的例外 |
+| 综合及实现约束 | 顶层、参数、目标库、时钟和 I/O 时序，检查未约束端点 |
+| DFT | 测试模式、存储测试访问、设计规则检查及后续向量交接 |
+| 等价 | 参考与实现基线、模式与黑盒、已完成检查或计划 |
+| 发布风险 | 已知问题、验证欠项、负责人与下游接受条件 |
 
-不同公司会有更细模板，但这些类别不应缺失。
+OpenTitan 有公开的分阶段签核清单。内部项目可用自己的模板，按产品和阶段明确哪些项目必须关闭。 [OpenTitan 签核清单](https://opentitan.org/earlgrey_1.0.0/book/doc/project_governance/checklist/index.html)
 
 ## Bug 和 Waiver 管理
 
-进入前端 signoff 前，应冻结严重 bug。Bug 应按 severity 分类：功能错误、数据损坏、死锁、可恢复错误、性能问题、文档问题。对硬件来说，“低概率死锁”通常不是低优先级，因为硅后可能无法修复。
-
-Waiver 必须包含违反了哪条规则、为什么不是 bug、哪个规格或结构证明它安全、哪个测试/assertion/formal 或人工分析覆盖它、owner 和到期条件、如果后续 RTL 变化是否需要重新审查。没有证据的 waiver 应视为未关闭 bug。
+先区分真实缺陷、约束遗漏和已知工具限制。豁免应具体到报告项、设计版本、启用模式及证据，注明审批人和需要重新审核的变更。对真实缺陷，记录影响范围、缓解方案、剩余风险及接受人。
 
 ## 进入后端的交付包
 
-前端交给后端的不是单个 RTL tarball，而是一套 package：
-
-- RTL file list、版本 tag、编译 define、参数配置。
-- Top-level integration 说明。
-- SDC 初版和约束说明。
-- UPF/CPF 和 power state 说明。
-- DFT constraint、test mode、scan/MBIST plan。
-- Memory macro list、black box model、LEF/lib/db。
-- IP deliverable 和版本。
-- CDC/RDC/lint/verification/synthesis 报告。
-- Timing/area/power early estimate。
-- Known issue、waiver、risk register。
-- Register model、软件 header、firmware boot requirement。
-- ECO 流程和变更冻结规则。
-
-后端团队必须能复现前端 build。不可复现的交付包会让每个问题都变成环境争议。
-
-## 典型时长和节奏
-
-前端 signoff 不是最后一周完成的活动，而是 RTL 开发期间持续收敛。Block-level 可以每周或每两周设小 gate；subsystem-level 在功能集成后设较硬 gate；SoC-level signoff 通常需要多轮 regression、CDC/RDC、综合、DFT 和低功耗报告闭合。具体时长因项目规模差异很大，不应承诺固定数字。
-
-先进节点项目通常更早引入后端 feedback，因为频率、功耗、macro 和拥塞风险更高。成熟节点或小 test chip 可以轻量一些，但不能省掉基本静态检查和验证证据。
+交付带标记的版本、RTL 或综合网表的产生方式、约束、低功耗和测试意图、配套库与 IP 视图、报告及豁免记录。明确哪个团队负责重新产生结果。下游用同一版本、参数和库复现交接时至少运行一次基础检查。
 
 ## 与 ECO 和 Agent 工作流的关系
 
-[ECO](../00_overview/05_glossary.md#eco) 是后期工程修改。前端 signoff 后仍可能有 ECO，但应有变更控制。每个 ECO 要评估功能、验证、综合、LEC、STA、CDC/RDC、DFT、UPF 和软件影响。常见错误是把 signoff 后的 RTL 修改当作普通软件 patch。越靠近 tapeout，越要限制修改范围，并要求明确证据。
+签核后有工程修改时，列出影响范围，再运行相关的功能、等价、时序、物理和测试检查。生成式 RTL 还需记录生成源版本、参数和可重现的输出。若改动涉及规格或参考行为，先更新批准的参考版本及验收条件。
 
-如果 RTL 由 agent 或 generator 产生，signoff 还要增加生成源、prompt、模型版本、generator commit 可追溯；生成 RTL 与规格需求有映射；禁止 signoff 后手改生成结果而不回灌；生成器本身有 regression suite；对关键模板有人工审核和 formal/仿真证据；对随机生成差异有稳定性检查。否则你签核的是一次偶然输出，而不是可维护设计。
+<span class="micro-legacy-anchor" id="创业公司视角"></span>
 
 ## 典型场景
 
-项目准备交给后端。RTL regression 通过，但 CDC 报告有 300 个 waiver，很多写着“known safe”。综合报告有 50 条 unconstrained path，理由是“后端会处理”。DFT 还没插 scan，只是“预计没问题”。这种状态不应 signoff。
-
-正确处理方式是把 waiver 分类，删除无效 waiver；补 clock/reset 约束；对标准同步器建立 waiver 模板；对真实跨域 bug 修 RTL；让 DFT 跑一次 rule check；让综合和 STA owner review unconstrained path。可能会晚两周，但比后端进行一半发现结构性问题便宜得多。
-
-## 创业公司视角
-
-创业公司可以采用轻量 signoff，但不能采用口头 signoff。建议每个 gate 用一页 dashboard：版本、工具、报告路径、pass/fail、waiver 数量、严重 bug、风险接受人。创始人不需要看每条 timing path，但必须知道哪些风险被接受，为什么接受，后果是什么。
-
-如果资金不足以覆盖后端和一次合理 respin，前端 signoff 标准应更严格，而不是更宽松。因为你没有成本空间把前端遗漏留到硅后修。
+**教学假设。** DMA 功能回归通过，但跨域报告没有涵盖复位取消，工具还发现未约束的生成时钟。先查时钟关系和约束覆盖，补做取消时序的结构与功能检查。评审结果记录重新生成的报告版本与下游适用条件。
 
 ## 后续阅读
 
-- [后端物理设计总览](../03_backend_physical_design/README.md)
-- [静态时序分析](../03_backend_physical_design/05_static_timing_analysis.md)
-- [Tapeout 流程](../04_tapeout_and_post_silicon/01_tapeout_process.md)
-- [硅后调试](../04_tapeout_and_post_silicon/05_post_silicon_debug.md)
+- [物理设计与签核](../03_backend_physical_design/README.md)
+- [流片交接](../04_tapeout_and_post_silicon/01_tapeout_process.md)
 
-## 参考公开来源
-
-- [Synopsys PrimeTime](https://www.synopsys.com/implementation-and-signoff/signoff/primetime.html)
-- [Synopsys Formality](https://www.synopsys.com/implementation-and-signoff/signoff/formality-equivalence-checking.html)
-- [Cadence Conformal Equivalence Checker](https://www.cadence.com/ja_JP/home/tools/digital-design-and-signoff/logic-equivalence-checking/conformal-equivalence-checker.html)
-- [Synopsys VC LP](https://www.synopsys.com/verification/static-and-formal-verification/vc-lp.html)
-- [Accellera Standards](https://accellera.com/downloads/standards)
+<span class="micro-legacy-anchor" id="典型时长和节奏"></span><span class="micro-legacy-anchor" id="参考公开来源"></span>
 
 ## 内容可信度说明
 
-- **公开信息（高可信）**：STA、LEC、UPF、CDC、DFT、lint 等工具和标准类别公开可查；PrimeTime、Formality、Conformal、VC LP 等工具用途公开。
-- **行业惯例（中可信）**：前端 signoff package、waiver 管理、risk register、RTL freeze、ECO control、后端 handoff 是主流 ASIC 项目实践。
-- **经验性观察（中低可信）**：创业公司应使用轻量但硬约束的 dashboard；agent/generator 输出需要版本和生成源可追溯。
-- **不确定/需向资深工程师确认（低可信）**：具体 pass/fail 阈值、coverage 目标、waiver 审批层级、ECO 流程和后端接收标准需按团队和 foundry/EDA 流程确认。
+- **公开事实。** OpenTitan 的成熟度与交接条目提供可查看的项目示例。
+- **行业做法。** 清单是数字 ASIC 的交接示例。通过条件与责任划分依项目而定。
+- **待项目核实。** 签字权限、豁免政策、覆盖目标、IP 使用条件与流片前最终检查。

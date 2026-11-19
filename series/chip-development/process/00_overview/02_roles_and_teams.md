@@ -2,8 +2,8 @@
 
 ## 前置知识
 
-- 建议先读 [01_full_lifecycle.md](./01_full_lifecycle.md)。
-- 术语参考 [05_glossary.md](./05_glossary.md)。
+- 建议先读 [芯片开发生命周期](./01_full_lifecycle.md)。
+- 术语参考 [开发流程术语表](./05_glossary.md)。
 
 ## 为什么角色划分重要
 
@@ -53,7 +53,7 @@ DFT 必须早进入项目。如果等 RTL 完成后才补测试结构，可能�
 
 ## 后端物理设计团队
 
-后端团队负责把门级网表变成符合工艺规则、时序、电源完整性和可制造性的版图。角色包括 floorplan 工程师、placement/routing 工程师、STA 工程师、power integrity 工程师、physical verification 工程师、ECO 工程师。
+后端团队负责把门级网表变成在指定规则、时序和供电条件下完成验证的候选版图。角色包括 floorplan 工程师、placement/routing 工程师、STA 工程师、power integrity 工程师、physical verification 工程师、ECO 工程师。
 
 他们依赖前端提供干净 RTL、约束、macro list、clock/reset 结构和功耗意图。若架构阶段没有考虑 floorplan，例如大 SRAM macro 分布不合理，后端可能无法达到频率或功耗目标。
 
@@ -83,30 +83,19 @@ DFT 必须早进入项目。如果等 RTL 完成后才补测试结构，可能�
 
 ## 创业早期招聘优先级
 
-对快速迭代 AI 芯片创业公司，早期核心不是把所有岗位招满，而是保证关键判断不外包。建议优先拥有：
-
-- 一个能把 workload、软件和硬件连起来的系统/芯片架构负责人。
-- 一个真正做过 ASIC tapeout 的 RTL lead。
-- 一个强验证 lead，最好经历过 coverage closure 和硅后 bug。
-- 一个懂后端约束的 physical design advisor 或 part-time expert。
-- 一个能落地编译器/runtime 的软件负责人。
-- 一个懂 foundry/IP/EDA 商务的运营或顾问。
-
-可以较早外包的是部分后端执行、部分 IP 集成、封装设计、ATE 测试程序和部分验证组件。不能完全外包的是架构决策、规格控制、关键 RTL ownership、验证策略、signoff 判断和硅后问题归因。
-
-这里是总览层判断，详细招聘顺序、候选人画像和阶段性取舍会放到 [../07_for_software_background_founders/03_recruitment_priorities.md](../07_for_software_background_founders/03_recruitment_priorities.md)。
+关键风险由有能力复核的负责人接手。团队可用员工、顾问或服务商补齐执行能力。交接时明确谁提供可复现结果、谁接受。岗位顺序按[团队责任与招聘顺序](../07_for_software_background_founders/03_recruitment_priorities.md)中的项目风险方法确定。
 
 ## 典型协作场景
 
-架构团队决定 NPU 支持新的稀疏格式。RTL 团队认为控制逻辑复杂，验证团队指出 corner case 暴增，编译器团队说模型覆盖率不足，后端顾问提醒新增 metadata SRAM 会影响 floorplan。正确流程是开 design review，量化性能收益、面积功耗代价、验证成本和软件可用性，再决定是否进入本代芯片。
+**教学假设。** 架构团队决定 NPU 支持新的稀疏格式。RTL 团队认为控制逻辑复杂，验证团队指出 corner case 暴增，编译器团队说模型覆盖率不足，后端顾问提醒新增 metadata SRAM 会影响 floorplan。正确流程是开 design review，量化性能收益、面积功耗代价、验证成本和软件可用性，再决定是否进入本代芯片。
 
 错误流程是架构师直接改 spec，RTL 赶工实现，最后验证收不住，tapeout 前被迫砍功能或带风险出片。这个例子说明角色分工不是为了制造流程，而是为了让不同风险在正确时间暴露。
 
 ## 后续阅读
 
-- [03_cost_structure.md](./03_cost_structure.md)
-- [04_startup_vs_bigcompany.md](./04_startup_vs_bigcompany.md)
-- [../07_for_software_background_founders/03_recruitment_priorities.md](../07_for_software_background_founders/03_recruitment_priorities.md)
+- [芯片项目成本结构](./03_cost_structure.md)
+- [小团队怎样组织芯片项目](./04_startup_vs_bigcompany.md)
+- [团队责任与招聘顺序](../07_for_software_background_founders/03_recruitment_priorities.md)
 
 ## 参考公开来源
 

@@ -1,7 +1,7 @@
 # 测试覆盖率与成本的权衡
 
-上级:[中测:CP 阶段](./README.md)
-相关:[CP 测试的方法和典型流程](./cp-test-methodology.md), [KGD:HBM/3DIC 时代的必要前提](./kgd-known-good-die.md), [Final Test 的方法与流程](../05-final-test-and-reliability/final-test-methodology.md)
+上级:[晶圆筛测与 CP](./README.md)
+相关:[CP 测试的方法和典型流程](./cp-test-methodology.md), [KGD 的筛选判据与残余风险](./kgd-known-good-die.md), [成品终测](../05-final-test-and-reliability/final-test-methodology.md)
 
 ## 这页在回答什么问题
 

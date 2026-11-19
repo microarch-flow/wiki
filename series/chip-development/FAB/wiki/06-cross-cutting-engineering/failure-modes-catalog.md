@@ -1,6 +1,6 @@
 # 失效模式总览
 
-上级:[跨工艺共性问题](README.md)
+上级:[封装工程约束](README.md)
 相关:[失效分析的工程流程](../05-final-test-and-reliability/failure-analysis-flow.md), [应力、Warpage、CTE 失配](stress-warpage-cte.md), [RDL](../04-back-end-packaging/key-components/rdl-redistribution-layer.md)
 
 ## 这页在回答什么问题

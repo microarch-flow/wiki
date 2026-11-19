@@ -1,6 +1,6 @@
 # 全球产业链全景图
 
-上级:[产业地图](README.md)
+上级:[供应商与产业分工](README.md)
 相关:[材料供应链](materials-supply-chain.md), [设备厂商版图](equipment-vendors.md), [基板与载板供应](substrate-and-carrier-supply.md)
 
 ## 这页在回答什么问题

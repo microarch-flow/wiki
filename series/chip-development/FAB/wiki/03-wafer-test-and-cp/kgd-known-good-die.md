@@ -1,67 +1,38 @@
-# KGD:HBM/3DIC 时代的必要前提
+# KGD 的筛选判据与残余风险
 
-上级:[中测:CP 阶段](./README.md)
-相关:[CP 测试的方法和典型流程](./cp-test-methodology.md), [Wafer-to-Wafer vs Die-to-Wafer:工艺与良率](../04-back-end-packaging/3d-routes/w2w-vs-d2w.md), [HBM stack 是怎么制造出来的](../04-back-end-packaging/hbm-as-case-study/hbm-stack-manufacturing.md)
+<span class="micro-legacy-anchor" id="kgdhbm3dic-时代的必要前提"></span>
+
+上级：[晶圆筛测与 CP](README.md)
+相关：[CP 测试流程](cp-test-methodology.md) · [W2W 与 D2W](../04-back-end-packaging/3d-routes/w2w-vs-d2w.md) · [HBM 堆栈制造](../04-back-end-packaging/hbm-as-case-study/hbm-stack-manufacturing.md)
+
+<span class="micro-legacy-anchor" id="kgd-的真实含义"></span><span class="micro-legacy-anchor" id="为什么多-die-封装放大-kgd-价值"></span><span class="micro-legacy-anchor" id="d2w-为什么依赖-kgd"></span><span class="micro-legacy-anchor" id="kgd-的难点"></span>
 
 ## 这页在回答什么问题
 
-KGD 为什么在 HBM、D2W、3DIC 和多 chiplet 封装中变成必要前提。它不是“测过的 die”这么简单，而是一个关于测试覆盖率、残余风险和后续封装价值的工程承诺。
+多裸片组装为什么需要约定裸片的接收判据？组装前筛到的缺陷和只能在组装后测到的问题应怎样承接？
 
-## KGD 的真实含义
+## 什么是 KGD
 
-KGD，known-good die，指在进入后续高价值组装之前，已经通过足够测试并被认为适合继续投入的裸 die。这里的关键词是“足够”。不同产品的 KGD 标准不同：低成本单 die package 的封装前筛选可以较轻；高价值 HBM/3DIC package 的 KGD 需要更强的结构测试、存储测试、接口测试、binning 和风险管理。
+KGD（known-good die）指按规定的测试和分档结果，可接收进入后续工序的裸片。报告应注明对象、测试条件、通过项目、未检查范围和批次标识。通过品仍有残余缺陷风险。组装还可能产生新的连接或机械问题。 [OCP 芯粒测试流程](https://www.opencompute.org/documents/chiplet-integration-workflows-1-pdf)
 
-KGD 不是绝对无缺陷。它的含义是：在当前测试覆盖率和风险模型下，残余 defect 低到值得进入后续 assembly。
+## 为什么 KGD 对 2.5D/3D 重要
 
-## 为什么多 die 封装放大 KGD 价值
+组装时可能一次投入多颗裸片、堆栈和载体。若一颗坏片直到组装后才检出，可能损失已投入的其他良品及工序费用。用各对象在规定筛选条件下的真良比例估算，核对批次相关性和后续缺陷。详细分母与算例见[跨阶段良率与单位交付成本](../06-cross-cutting-engineering/yield-economics-across-stages.md)。
 
-多 die package 的有效良率近似受到每个组成对象良率的乘法影响：
+## W2W 和 D2W 对 KGD 的不同
 
-```text
-package success
-  ~= die_A_good
-     x die_B_good
-     x HBM_stack_good
-     x interposer/substrate_good
-     x assembly_success
-```
-
-上述乘法使用独立且口径一致的事件概率；若存在同批相关缺陷，应改用条件概率，不能无条件相乘。这里的 die 概率应是已通过筛测后的真良品概率，不能再次乘入同一 CP 通过率。对象越多、单个对象越贵、assembly 越不可逆，KGD 越重要。坏 die 漏进 package，不只是浪费自己，还会拖累其他 good die 和封装资源。
-
-## D2W 为什么依赖 KGD
-
-W2W 是 wafer-to-wafer，对规则、高良率、尺寸匹配结构有吞吐优势，但坏 die 可能在整片键合中被一起绑定。D2W 是 die-to-wafer，可以先切割和筛选 die，再把 KGD 贴到底层 wafer 上。D2W 的灵活性和良率优势来自 KGD；如果 KGD 不可靠，D2W 的经济性会明显下降。
-
-这解释了为什么 3DIC 不只是 bonding 技术问题。bonding 再强，如果进入 bonding 的 die 残余 defect 过高，stack 后也会变成昂贵的报废品。
+D2W 能挑选和贴装单颗已筛裸片。W2W 整片对准键合，需考虑可用的晶圆图、位置配对与坏点相关性。用实际制造路线评估测试、选择与报废范围。 [W2W 与 D2W](../04-back-end-packaging/3d-routes/w2w-vs-d2w.md)
 
 ## HBM 场景里的 KGD
 
-HBM stack 本身由多层 DRAM die、TSV、micro-bump 或其他连接、base die 和热机械结构组成。它进入 logic + HBM package 前，已经是一个高价值 3D memory component。HBM stack 的测试和筛选决定后续 2.5D package 的风险底线。
+裸片、已筛 HBM 堆栈和子装配体是不同的接收对象。每件对象有独立的识别、测试条件和残余风险。后段使用已筛堆栈的条件概率，避免再次计入内部裸片的同一次筛选。供应商举例列出了不同生产阶段的探针和访问方式，具体能力与器件和设备匹配。 [FormFactor 的 HBM 与 KGD 测试](https://www.formfactor.com/blog/2024/known-good-die-test-enables-advanced-packaging-high-bandwidth-memory/)
 
-`KGD` 的对象是 die：例如通过规定筛选的 compute die 或 DRAM die。堆叠完成并通过 stack-level 筛选的 HBM 是已筛 stack，不再是一颗 die；interposer module 是已测中间子装配件。记录每类对象的测试人口和残余缺陷，不能把已筛 stack 再乘一次内部 die 的原始筛选率。W2W 依靠 wafer map 和位置配对评估坏片，不要求逐颗挑选 KGD。
+## KGD 需要哪些条件
 
-## KGD 的难点
+在设计阶段明确需要的电性、逻辑、存储和接口测试。探针接触、电压、温度和设备速度限制可测范围。若晶圆阶段不能完整测试某条高速连接，可以通过片上 loopback 或 BIST 补一部分。用中间测试或终测覆盖组装后的实际互连，并记录剩余风险。
 
-| 难点 | 为什么难 | 后果 |
-| --- | --- | --- |
-| 覆盖率有限 | wafer 环境无法完全模拟封装后电/热/接口条件 | residual defect 进入 assembly |
-| 接口不可达 | D2D/HBM 接口封装前不完整 | 高速链路 defect 后移暴露 |
-| 测试时间昂贵 | 高覆盖率需要更多 tester time | 成本与产能压力 |
-| bin 匹配复杂 | 多 die package 需要速度/功耗/电压匹配 | SKU 和 assembly planning 复杂 |
-| 失效隔离困难 | stack 后内部节点不可见 | debug 和 yield learning 变慢 |
-
-## 常见误解
-
-常见误解是“KGD 等于 CP pass”。实际 CP pass 只是 KGD 的输入之一。KGD 还包含覆盖率定义、binning、repair 状态、接口测试、残余风险和后续封装价值判断。
-
-另一个误解是“用了 KGD 就解决多 die 良率”。KGD 降低坏 die 进入 assembly 的概率，但不能消除 bonding defect、interposer defect、substrate defect、warpage 和 package-level SI/PI 问题。
+<span class="micro-legacy-anchor" id="常见误解"></span><span class="micro-legacy-anchor" id="架构师启示"></span>
 
 ## 一句话理解
 
-KGD 是把 die 带入高价值封装前的风险承诺；封装越复杂、对象越贵，KGD 的覆盖率和可信度越关键。
-
-## 架构师启示
-
-如果我把一个大 SoC 拆成 6 个 chiplet，理论上每个 chiplet 前道良率会提高，但 KGD 管理会变成新成本。每个 chiplet 必须可测、可 bin、可追踪，D2D 接口必须有 wafer-level 或 pre-assembly 覆盖，否则封装阶段会成为 defect 放大器。
-
-一个具体决策例子：若两个 chiplet 之间需要极高带宽接口，架构师应优先选择支持 wafer-level loopback/BIST 的 D2D PHY，即使它有少量面积开销。这个开销可能比 package 后才发现坏 link 的报废成本低得多。
+KGD 记录裸片在指定条件下通过了什么，支持后续组装选择。封装后的成品仍需按规定判据检查。

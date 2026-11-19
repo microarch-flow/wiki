@@ -1,6 +1,6 @@
 # 基板与载板供应
 
-上级:[产业地图](README.md)
+上级:[供应商与产业分工](README.md)
 相关:[基板与载板](../04-back-end-packaging/key-components/substrate-and-carrier.md), [材料供应链](materials-supply-chain.md), [大陆先进封装瓶颈](mainland-china-bottlenecks.md)
 
 ## 这页在回答什么问题

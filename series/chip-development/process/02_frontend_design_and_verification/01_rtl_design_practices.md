@@ -60,7 +60,7 @@ FSM 必须回答：reset 后进入哪个状态；每个状态的输入条件和�
 
 AI 芯片前端大量 bug 来自接口协议，而不是算术单元。ready/valid 协议看似简单，但要明确：valid 什么时候保持，ready 什么时候可拉低，payload 在 valid 且未 handshake 时是否稳定，是否允许 bubble，是否允许组合 ready path，是否存在死锁环。
 
-建议为每类内部协议写小型规范和 assertion。例如：
+定义握手条件和采样边沿。这个属性假设发送方在没有握手时保持 valid 与载荷，两者在下一采样沿均可检查。绑定 assertion 后用于仿真或形式验证。
 
 ```systemverilog
 // 当 valid 拉高但尚未被 ready 接收时，payload 必须保持稳定。
@@ -68,6 +68,8 @@ property p_payload_stable;
   @(posedge clk) disable iff (!rst_n)
     valid && !ready |=> valid && $stable(payload);
 endproperty
+
+assert property (p_payload_stable);
 ```
 
 这类 assertion 比文档更难被误解。对 agent 生成 RTL，assertion 是必要护栏，因为它把“协议语义”从自然语言变成工具可检查条件。
@@ -89,9 +91,7 @@ endproperty
 
 ## Lint、工具分类和代码评审
 
-[Lint](../00_overview/05_glossary.md#lint) 不是美化工具，而是前端质量门。工具边界要分清：Verilator lint-only、Synopsys VC SpyGlass、Siemens Questa Lint、Verible 主要用于风格和静态结构检查；Synopsys VCS、Cadence Xcelium、Siemens Questa 主要用于仿真；Cadence JasperGold、Synopsys VC Formal 主要用于 formal；Synopsys Formality、Cadence Conformal 主要用于 LEC；Synopsys Design Compiler、Cadence Genus 主要用于综合。不要把“某个 EDA 套件里有很多 app”理解成一个工具能替代完整流程。
-
-代码评审重点不是“语法是否能编译”，而是 RTL 是否对应微架构规格；时钟、reset、enable、valid、ready 语义是否明确；是否存在组合环路、隐式 latch、X 乐观/悲观问题；位宽、符号、截断、饱和是否与规格一致；是否给验证留下可观察点和 assertion；是否能综合、scan、CDC/RDC 检查和后端实现。
+Lint 用于发现有风险的语法和结构。代码评审逐项对照规格，检查组合环路、隐式状态、reset、X、位宽、符号、饱和与协议。工具边界和交付见 [EDA 工具版图](../06_cross_cutting_topics/01_eda_tools_landscape.md)。
 
 ## 角色、节奏、成本与接口
 
@@ -101,9 +101,9 @@ RTL 的直接 owner 是 RTL designer 或 block owner，RTL lead 负责风格、�
 
 ## 典型场景
 
-团队用 agent 生成一个 DMA descriptor fetch 模块。仿真中单 descriptor 正常完成。代码评审发现 `desc_valid` 在 `desc_ready=0` 时会重新采样地址，导致 backpressure 下 descriptor payload 变化。Lint 又报出一个组合 always 块缺少默认赋值，综合可能推导锁存器。CDC 工具发现 completion pulse 从 DMA 时钟域直接进控制寄存器域。
+**教学假设。** 团队用 agent 生成一个 DMA descriptor fetch 模块。仿真中单 descriptor 正常完成。代码评审发现 `desc_valid` 在 `desc_ready=0` 时会重新采样地址，导致 backpressure 下 descriptor payload 变化。Lint 又报出一个组合 always 块缺少默认赋值，综合可能推导锁存器。CDC 工具发现 completion pulse 从 DMA 时钟域直接进控制寄存器域。
 
-修复不是简单“再生成一次”。团队应先写 descriptor 协议：payload 稳定规则、ready/valid 时序、跨域路径、reset 后状态、错误响应。然后补 assertion、directed test、random backpressure test 和 CDC waiver 说明。agent 可以参与改代码，但最终签核依据是工具报告和评审记录。
+修复不是简单“再生成一次”。团队应先写 descriptor 协议：payload 稳定规则、ready/valid 时序、跨域路径、reset 后状态、错误响应。然后补断言、定向与随机背压测试。修正跨域设计并复核约束。agent 可以参与改代码，但最终签核依据是工具报告和评审记录。
 
 ## 创业公司视角
 
@@ -114,8 +114,8 @@ RTL 的直接 owner 是 RTL designer 或 block owner，RTL lead 负责风格、�
 ## 后续阅读
 
 - [微架构设计](./02_microarchitecture_design.md)
-- [前端验证方法学](./03_verification_methodology.md)
-- [综合准备](./04_synthesis_preparation.md)
+- [功能验证](./03_verification_methodology.md)
+- [综合准备需要哪些输入与检查](./04_synthesis_preparation.md)
 - [软件背景人的前端陷阱](./09_software_engineer_pitfalls.md)
 
 ## 参考公开来源

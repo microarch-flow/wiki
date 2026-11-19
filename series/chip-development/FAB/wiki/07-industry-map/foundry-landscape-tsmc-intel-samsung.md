@@ -1,6 +1,6 @@
 # 代工厂版图:TSMC/Intel/Samsung
 
-上级:[产业地图](README.md)
+上级:[供应商与产业分工](README.md)
 相关:[全球产业链全景图](industry-chain-overview.md), [OSAT 版图](osat-landscape-ase-amkor-jcet-tongfu.md), [大陆 vs 台积电](mainland-china-vs-tsmc-real-gap.md)
 
 ## 这页在回答什么问题

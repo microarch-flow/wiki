@@ -1,6 +1,6 @@
 # HBM stack 是怎么制造出来的
 
-上级:[HBM:先进封装的标志性应用](README.md)
+上级:[HBM 制造与集成](README.md)
 相关:[TSV:贯穿硅基的纵向连接](../3d-routes/tsv-through-silicon-via.md), [Wafer-to-Wafer vs Die-to-Wafer](../3d-routes/w2w-vs-d2w.md), [KGD](../../03-wafer-test-and-cp/kgd-known-good-die.md)
 
 ## 这页在回答什么问题
