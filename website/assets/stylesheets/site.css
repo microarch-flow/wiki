@@ -482,7 +482,7 @@ body { background: var(--paper); }
   overflow-wrap: anywhere;
 }
 .chip-flow-step small {
-  font-size: .8em;
+  font-size: .875em;
   color: var(--ink);
 }
 .chip-flow-pair {
@@ -500,6 +500,44 @@ body { background: var(--paper); }
   padding: 0 .15rem;
   font-size: .8em;
   font-style: normal;
+}
+
+.md-typeset .fab-diagram-scroll {
+  max-inline-size: 100%;
+  margin-block: 1em;
+  overflow-x: auto;
+  overscroll-behavior-inline: contain;
+}
+.fab-diagram-inner {
+  inline-size: max-content;
+  min-inline-size: 100%;
+}
+.fab-diagram-inner > div.mermaid {
+  display: flex;
+  justify-content: center;
+}
+.md-typeset .fab-text-diagram pre > code {
+  font-size: .75rem;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+/* Keep axes and labels aligned in diagrams that depend on text columns. */
+.md-typeset .fab-diagram-aligned pre > code {
+  white-space: pre;
+  overflow-wrap: normal;
+}
+.md-typeset .fab-diagram-scroll:focus-visible,
+.md-typeset .fab-diagram-aligned pre > code:focus-visible {
+  outline: 2px solid var(--md-accent-fg-color);
+  outline-offset: -2px;
+}
+.md-typeset .fab-diagram-hint {
+  margin-block: 1em .3em;
+  color: var(--note-ink);
+  font-size: .7rem;
+}
+.md-typeset .fab-diagram-hint:not([hidden]) + .fab-diagram-scroll {
+  margin-block-start: 0;
 }
 
 .md-typeset .fab-industry-chain {

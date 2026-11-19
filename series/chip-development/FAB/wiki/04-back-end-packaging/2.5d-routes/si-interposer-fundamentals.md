@@ -25,7 +25,7 @@ flowchart TB
 
 HBM 的接口宽、距离短、信号数量多，对供电完整性和信号完整性要求高。传统 substrate 难以在相同面积内提供足够细的 routing 和足够稳定的互连环境。Si interposer 用硅工艺提供更高的线宽线距能力和更稳定的几何控制，因此适合连接 logic die 与多颗 HBM stack。
 
-```text
+``` {.text .fab-text-diagram .fab-diagram-aligned}
 logic die <==== very wide interface ====> HBM stack
               on silicon interposer
 ```

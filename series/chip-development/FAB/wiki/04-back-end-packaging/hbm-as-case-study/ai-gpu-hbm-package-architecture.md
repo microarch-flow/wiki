@@ -24,7 +24,7 @@ graph TD
 ## HBM stack 内部层级
 
 ```mermaid
-graph TD
+graph LR
     A[HBM stack] --> B[DRAM die layers]
     A --> C[TSV vertical paths]
     A --> D[base / interface die]
@@ -37,9 +37,9 @@ graph TD
 
 ```mermaid
 flowchart TB
-    A[logic wafer fabrication] --> B[logic die / KGD]
-    C[HBM wafer and stack process] --> D[已筛 HBM stack]
-    E[interposer or RDL platform] --> F[high-density integration platform]
+    A["logic wafer<br/>fabrication"] --> B[logic die / KGD]
+    C["HBM wafer and<br/>stack process"] --> D[已筛 HBM stack]
+    E["interposer or<br/>RDL platform"] --> F["high-density<br/>integration platform"]
     B --> G[Assembly-1]
     D --> G
     F --> G

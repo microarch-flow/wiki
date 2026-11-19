@@ -26,11 +26,11 @@
 flowchart TD
     A[记录面积、HBM、D2D、热、测试需求] --> B{是否需要高带宽 memory?}
     B -- 是 --> C[加入 HBM 接口和布局约束]
-    B -- 否 --> D[继续检查 D2D 密度、面积和异构需求]
-    C --> E[比较 interposer、RDL、bridge 和 3D 候选]
-    D --> K{单 die 可行且 I/O 压力不高?}
-    K -- 是 --> L[传统 flip-chip 与 substrate 候选]
-    K -- 否 --> M[传统 MCM、fan-out 与多 die 候选]
+    B -- 否 --> D["继续检查 D2D 密度、<br/>面积和异构需求"]
+    C --> E["比较 interposer、RDL、<br/>bridge 和 3D 候选"]
+    D --> K{"单 die 可行且<br/>I/O 压力不高?"}
+    K -- 是 --> L["传统 flip-chip<br/>与 substrate 候选"]
+    K -- 否 --> M["传统 MCM、fan-out<br/>与多 die 候选"]
     D --> E
     E --> G[复核热、PI、SI、测试、良率和供货]
     L --> G

@@ -58,5 +58,6 @@ extra_javascript:
   - assets/javascripts/ram-overview.js
   - assets/vendor/katex/katex.min.js
   - assets/javascripts/inference-math.js
+  - assets/javascripts/fab-diagrams.js
 extra:
   generator: false

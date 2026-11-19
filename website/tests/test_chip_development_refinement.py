@@ -25,6 +25,21 @@ class ChipDevelopmentRefinementTest(unittest.TestCase):
                 self.assertEqual([anchor for anchor in anchors if ids[anchor] != 1], [])
                 self.assertEqual(records[path.removesuffix("index.html")], 1)
 
+    def test_fab_diagrams_use_full_size_and_preserve_text_alignment(self):
+        warpage = "FAB/wiki/06-cross-cutting-engineering/stress-warpage-cte/"
+        html = (SITE / warpage / "index.html").read_text(encoding="utf-8")
+        self.assertIn('<div class="fab-diagram-scroll" data-top-down>', html)
+        self.assertIn("useMaxWidth: false", html)
+        self.assertIn('class="fab-text-diagram highlight"', html)
+
+        interposer = SITE / "FAB/wiki/04-back-end-packaging/2.5d-routes/si-interposer-fundamentals/index.html"
+        self.assertIn('class="fab-text-diagram fab-diagram-aligned highlight"', interposer.read_text(encoding="utf-8"))
+
+        index = json.loads((SITE / "search/search_index.json").read_text(encoding="utf-8"))
+        sections = [item for item in index["docs"] if item["location"].startswith(warpage + "#")]
+        self.assertTrue(sections)
+        self.assertFalse(any("useMaxWidth" in item["text"] for item in sections))
+
     def test_grouped_articles_have_no_source_only_ancestor(self):
         cases = {
             "series/chip-development/02_frontend_design_and_verification/05_dft_introduction/":

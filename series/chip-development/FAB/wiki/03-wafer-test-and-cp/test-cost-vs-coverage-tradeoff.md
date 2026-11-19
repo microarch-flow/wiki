@@ -11,7 +11,7 @@
 
 在一种常见策略中，随着测试成本增加，覆盖率的增量可能逐渐变小。前面的测试可抓住容易检测的故障；继续提高覆盖率可能需要更多 pattern、DFT、tester time 或更严格的条件。实际曲线取决于故障模型与测试顺序，不能假设所有产品都符合该形状。
 
-```text
+``` {.text .fab-text-diagram .fab-diagram-aligned}
 coverage
   ^
   |                        ________

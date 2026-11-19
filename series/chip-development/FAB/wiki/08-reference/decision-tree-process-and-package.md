@@ -11,20 +11,20 @@
 
 ```mermaid
 flowchart TD
-    A[记录单 die 面积良率和功耗] --> B[独立记录 HBM、D2D、尺寸和 I/O 需求]
-    B --> C{单 die 可行且 I/O 压力不高?}
-    C -- 是 --> D[传统 flip-chip 可列为候选]
-    C -- 否 --> E[考虑多 die 和异构集成]
-    B --> F{需要 HBM 或高密度 D2D?}
-    F -- 是 --> G[提出 Si interposer、RDL 或 bridge 候选]
-    F -- 否 --> H[比较传统 MCM、fan-out 和基板]
-    D --> I[复核热、PI、SI、面积、测试与供货]
+    A[记录单 die 面积良率和功耗] --> B["独立记录 HBM、D2D、<br/>尺寸和 I/O 需求"]
+    B --> C{"单 die 可行且<br/>I/O 压力不高?"}
+    C -- 是 --> D["传统 flip-chip<br/>可列为候选"]
+    C -- 否 --> E["考虑多 die<br/>和异构集成"]
+    B --> F{"需要 HBM 或<br/>高密度 D2D?"}
+    F -- 是 --> G["提出 Si interposer、<br/>RDL 或 bridge 候选"]
+    F -- 否 --> H["比较传统 MCM、<br/>fan-out 和基板"]
+    D --> I["复核热、PI、SI、面积、<br/>测试与供货"]
     E --> I
     G --> I
     H --> I
     I --> J{横向方案有合格候选?}
     J -- 是 --> K[详细设计与验证]
-    J -- 否 --> L[检查 3D 的键合、热和测试可行性]
+    J -- 否 --> L["检查 3D 的键合、<br/>热和测试可行性"]
     L --> M{3D 可行?}
     M -- 是 --> K
     M -- 否 --> N[调整规格或报告无可行方案]

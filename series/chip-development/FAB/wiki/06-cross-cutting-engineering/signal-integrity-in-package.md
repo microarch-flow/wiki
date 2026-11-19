@@ -11,7 +11,7 @@
 
 Signal Integrity 关注信号在目标频率、目标电压和目标误码率下能否稳定传输。封装互连越长、越密、越高速，寄生电阻、电容、电感、阻抗不连续、串扰和回流路径问题越重要。
 
-```text
+``` {.text .fab-text-diagram .fab-diagram-aligned}
 driver -> package interconnect -> receiver
           R / L / C / return path / crosstalk
 ```

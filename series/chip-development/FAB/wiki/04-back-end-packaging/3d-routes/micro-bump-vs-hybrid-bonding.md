@@ -11,8 +11,8 @@ Micro-bump 和 hybrid bonding 都用于高密度 die-to-die 连接，但它们�
 
 ```mermaid
 graph LR
-    A[Micro-bump] --> A1[metal bump / solder-like connection volume]
-    B[Hybrid bonding] --> B1[Cu-Cu plus dielectric direct bonding interface]
+    A[Micro-bump] --> A1["metal bump / solder-like<br/>connection volume"]
+    B[Hybrid bonding] --> B1["Cu-Cu plus dielectric<br/>direct bonding interface"]
 ```
 
 Micro-bump 通过微小金属凸点形成连接，并依赖 underfill 等材料提供机械支撑。Hybrid bonding 则通过 Cu-Cu 直接连接和介质层键合形成更短、更密的界面。

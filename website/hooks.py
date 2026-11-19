@@ -902,6 +902,8 @@ def on_nav(nav, config, files, **kwargs):
 
 def on_page_markdown(markdown, page, **kwargs):
     """Add website interactions while keeping Markdown usable on GitHub."""
+    if page.file.src_uri.startswith("FAB/wiki/"):
+        markdown = re.sub(r"^```text[ \t]*$", "``` {.text .fab-text-diagram}", markdown, flags=re.MULTILINE)
     if page.file.src_uri.startswith("reviews/"):
         # Keep the archived page reachable by URL without indexing it for readers.
         search = page.meta.get("search")
@@ -984,8 +986,22 @@ def on_page_content(html, page, **kwargs):
     return html
 
 
+def render_fab_flowchart(match):
+    # Use the intrinsic SVG dimensions so a wide graph stays legible inside the scroll region.
+    settings = "---\nconfig:\n  flowchart:\n    useMaxWidth: false\n    nodeSpacing: 28\n---\n"
+    top_down = ' data-top-down' if re.match(r"(?:flowchart|graph)[ \t]+(?:TB|TD)\b", match[2]) else ""
+    return (
+        f'<div class="fab-diagram-scroll"{top_down}><div class="fab-diagram-inner">'
+        f'{match[1]}{settings}{match[2]}{match[3]}</div></div>'
+    )
+
+
 def on_post_page(output, page, **kwargs):
     """Shorten configured sidebar labels and expose the current page accessibly."""
+    if page.file.src_uri.startswith("FAB/wiki/"):
+        # Apply display settings after searching has indexed the original content.
+        output = re.sub(r'(<pre class="mermaid"><code>)((?:flowchart|graph)[ \t].*?)(</code></pre>)',
+                        render_fab_flowchart, output, flags=re.DOTALL)
     if page.file.src_uri.startswith(("CPO/wiki/", "external/workload-wiki/")) and has_breadcrumbs(page):
         config = kwargs["config"]
         crumb = render_breadcrumbs(page, Path(config.docs_dir), config.extra.get("storage_sidebar_labels"))
