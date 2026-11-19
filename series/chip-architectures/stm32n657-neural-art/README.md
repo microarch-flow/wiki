@@ -14,7 +14,7 @@ STM32N657 内含 Arm Cortex-M55 和 ST Neural-ART NPU。NPU 由流处理单元�
 
 ![量化输入经过 NPU 前段，CPU 通过共享缓冲接收和写回中间结果，NPU 后段再读取计算。](assets/npu-cpu-path.svg)
 
-CPU 消费中间张量前要确认数据可见，NPU 继续读取前也要等待 CPU 完成。在支持的条件下，ST 工具链可以选择混合硬件与软件实现，也可使用整数或浮点软件实现。若软件路径需要浮点，工具链会按规则插入反量化和再量化。缺少可用实现时，编译会报错。应结合算子配置和编译报告判断映射结果。 [Neural-ART 回退与委派规则](https://stedgeai-dc.st.com/assets/embedded-docs/stneuralart_programming_model.html#fall-back-and-delegate-mechanism)
+CPU 消费中间张量前要确认数据可见，NPU 继续读取前也要等待 CPU 完成。在支持的条件下，ST 工具链可以选择混合硬件与软件实现，也可使用整数或浮点软件实现。若软件路径需要浮点，工具链会按规则插入反量化和再量化。缺少可用实现时，编译会报错。应结合算子配置和编译报告判断映射结果。 [Neural-ART 编程模型的回退与委派小节](https://stedgeai-dc.st.com/assets/embedded-docs/stneuralart_programming_model.html)
 
 ## 一个中间张量占多少内存
 

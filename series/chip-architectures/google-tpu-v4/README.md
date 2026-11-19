@@ -24,7 +24,7 @@ SparseCore 面向 embedding。索引决定读取表中的哪些行，表可能�
 
 当表分布到多颗芯片时，读取请求和向量结果可以经过芯片间互连（ICI）。查表可能形成跨节点的 all-to-all 流量，性能由访问热点、HBM 有效带宽、链路负载等共同决定。稠密训练中的参数集合通信也使用系统互连，但消息大小和通信模式可以不同。
 
-TPU v4 Pod 包含 4096 颗芯片。多立方体配置使用光路交换机（OCS）连接各个 4 × 4 × 4 立方体的边界链路，形成选定的拓扑。OCS 改变的是系统链路连接。一个具体任务的通信还由分片与拓扑映射决定。 [Google Cloud TPU v4 配置](https://docs.cloud.google.com/tpu/docs/v4#configurations) · [Google Cloud TPU 互连架构](https://docs.cloud.google.com/tpu/docs/system-architecture-tpu-vm)
+TPU v4 Pod 包含 4096 颗芯片。多立方体配置使用光路交换机（OCS）连接各个 4 × 4 × 4 立方体的边界链路，形成选定的拓扑。OCS 改变的是系统链路连接。一个具体任务的通信还由分片与拓扑映射决定。 [Google Cloud TPU v4 文档的 Configurations 小节](https://docs.cloud.google.com/tpu/docs/v4) · [Google Cloud TPU 互连架构](https://docs.cloud.google.com/tpu/docs/system-architecture-tpu-vm)
 
 ## 接下来怎么读
 
