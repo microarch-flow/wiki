@@ -28,6 +28,7 @@
 ## 端侧 NPU
 
 1. [STM32N657 Neural-ART](stm32n657-neural-art/README.md)。用量化视觉子图解释 NPU 与 CPU 的分工、缓冲占用和软件回退。
+2. [Eyeriss v2](eyeriss-v2/README.md)。端侧加速器研究设计。跟踪 PE 怎样直接读取压缩的激活和权重，再更新部分和。
 
 ## 神经形态加速器
 
@@ -41,6 +42,10 @@
 
 1. [IBM HERMES](ibm-hermes/README.md)。跟踪 PCM 阵列怎样形成部分和，数字单元怎样归并，以及测试板怎样转运层间激活。
 
+## 光子计算
+
+1. [MIT FICONN](mit-ficonn/README.md)。跟踪光场怎样连续经过三层网络，再核对元音分类的实机结果和片上光路时延。
+
 ## 按问题查阅
 
 - **矩阵计算怎样供数？** 先看 [H100 的双缓冲](nvidia-h100-sxm/README.md#双缓冲能重叠多少时间)，再看 [Inferentia2 的片上累加](AWS-NeuronCore/README.md#两段乘法共用一个累加缓冲)。
@@ -49,6 +54,7 @@
 - **谁决定何时计算和交换？** 比较 [Groq 的编译期安排](groq-tsp/README.md#一个编译期安排示例)、[Graphcore 的 BSP 屏障](Graphcore_IPU/README.md#两个-tile-如何交换中间结果) 和 [Cerebras 的 wavelet 触发](Cerebras/README.md#晶圆内的消息怎样启动计算)。
 - **数据就绪后，缓冲何时可以复用？** 先跟读 [Wormhole 的环形缓冲](tenstorrent-wormhole-n150s/README.md)，再看 [Maia 100 的命令依赖](microsoft-maia-100/README.md)。
 - **一帧图像在哪里推理？** 对照 [IMX500 的传感器内推理](sony-imx500/README.md)与 [STM32N657 的 NPU 算子放置](stm32n657-neural-art/README.md)。
+- **遇到零值能省掉哪些工作？** 对照 [Eyeriss v2 的压缩域取数](eyeriss-v2/README.md)和 [Cerebras 的稀疏消息](Cerebras/README.md#为什么稀疏权重可以少发消息)。
 - **工作集超出片上容量怎么办？** 看 [SN40L 的外存分层](SambaNova/README.md#从单-rdu-的三层存储到系统)、[CS 的外部权重流](Cerebras/README.md#外部系统怎样供给训练权重) 和 [端侧模型的内存预算](stm32n657-neural-art/README.md#一个中间张量占多少内存)。
 
 ## 原始资料
