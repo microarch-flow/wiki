@@ -3,6 +3,7 @@
 Run after `python website/prepare.py && mkdocs build`.
 """
 
+from collections import Counter
 from html import unescape
 import json
 from pathlib import Path
@@ -554,20 +555,69 @@ class GeneratedNavigationTests(unittest.TestCase):
                 labels = [unescape(x) for x in re.findall(r'<(?:a\s[^>]*|span(?:\s[^>]*)?)>(.*?)</(?:a|span)>', breadcrumb.group(1))]
                 self.assertEqual(labels, expected)
 
-    def test_chip_examples_have_one_series_and_exclude_source_archives(self):
-        directory = SITE / "series/chip-architectures"
-        pages = sorted(directory.rglob("index.html"))
-        self.assertEqual(len(pages), 7)
-        for page in pages:
-            if page == directory / "index.html":
-                continue
-            html = page.read_text(encoding="utf-8")
-            breadcrumb = BREADCRUMB.search(html)
-            self.assertIsNotNone(breadcrumb, str(page))
-            labels = [unescape(x) for x in re.findall(r'<(?:a\s[^>]*|span(?:\s[^>]*)?)>(.*?)</(?:a|span)>', breadcrumb.group(1))]
-            self.assertEqual(labels[1], "芯片架构实例", str(page))
+    def test_chip_examples_preserve_pages_anchors_and_search(self):
+        prefix = "series/chip-architectures/"
+        root = SITE.parents[1]
+        source = root / prefix
+        legacy = json.loads((root / "website/tests/fixtures/chip-architecture-legacy.json").read_text())["pages"]
+        pages = {
+            (entry.parent if entry.name == "README.md" else entry.with_suffix("")).relative_to(root).as_posix() + "/"
+            for entry in source.rglob("*.md")
+        }
+        self.assertLessEqual(set(legacy) | {prefix + product + "/" for product in (
+            "nvidia-h100-sxm", "google-tpu-v4", "groq-tsp", "stm32n657-neural-art",
+        )}, pages)
+        self.assertEqual({page.parent.relative_to(SITE).as_posix() + "/"
+                          for page in (SITE / prefix).rglob("index.html")}, pages)
+
+        index = json.loads((SITE / "search/search_index.json").read_text())["docs"]
+        indexed = Counter(unquote(entry["location"]) for entry in index
+                          if entry["location"].startswith(prefix) and "#" not in entry["location"])
+        self.assertEqual(indexed, Counter(pages))
+        for location in sorted(pages):
+            with self.subTest(location=location):
+                html = (SITE / location / "index.html").read_text()
+                article = re.search(r"<article\b[^>]*>(.*?)</article>", html, re.S)[1]
+                ids = Counter(re.findall(r'\s+id="([^"]+)"', article))
+                self.assertTrue(all(count == 1 for count in ids.values()), ids)
+                self.assertLessEqual(set(legacy.get(location, ())), set(ids))
+                self.assertIsNotNone(ACTIVE_LINK.search(html))
+                if location != prefix:
+                    breadcrumb = BREADCRUMB.search(html)[1]
+                    self.assertIn(">芯片架构实例</a>", breadcrumb)
+                    self.assertIn("/#", breadcrumb)
+                for href in re.findall(r'<a\s+href="([^"]+)"', article):
+                    uri = urlsplit(urljoin("https://example.test/" + location, unescape(href)))
+                    if uri.netloc != "example.test":
+                        continue
+                    target = SITE / unquote(uri.path.lstrip("/"))
+                    if target.is_dir():
+                        target /= "index.html"
+                    self.assertTrue(target.is_file(), href)
+                    if uri.fragment:
+                        self.assertIn(f'id="{unquote(uri.fragment)}"', target.read_text(), href)
+
+        directory = SITE / prefix
         excluded = {".pdf", ".png", ".jpg", ".jpeg", ".webp"}
         self.assertFalse([path for path in directory.rglob("*") if path.is_file() and path.suffix.lower() in excluded])
+
+    def test_chip_examples_sidebar_uses_guide_order_and_short_titles(self):
+        prefix = "series/chip-architectures/"
+        page = (SITE / prefix / "index.html").read_text()
+        article = re.search(r"<article\b[^>]*>(.*?)</article>", page, re.S)[1]
+        content = article[article.index('id="series-home-content"'):]
+        lists = re.findall(r"<ol>\s*(<li>\s*<a .*?)</ol>", content, re.S)
+        guide_entries = re.findall(r'<li>\s*<a href="([^"]+)">([^<]+)</a>', "".join(lists))
+        self.assertGreaterEqual(len(guide_entries), 10)
+        start = page.index('<div class="md-sidebar md-sidebar--primary"')
+        end = page.index('<div class="md-sidebar md-sidebar--secondary"', start)
+        sidebar_entries = re.findall(
+            r'<a\s+href="([^"]+)"[^>]*class="[^"]*md-nav__link[^"]*"[^>]*>\s*'
+            r'<span class="md-ellipsis">\s*([^<]+?)\s*</span>', page[start:end],
+        )
+        targets = {unquote(href) for href, _ in guide_entries}
+        self.assertEqual([(unquote(href), unescape(name)) for href, name in sidebar_entries if unquote(href) in targets],
+                         [(unquote(href), unescape(name)) for href, name in guide_entries])
 
     def test_cross_series_reading_routes(self):
         html = (SITE / "microarchitecture/index.html").read_text(encoding="utf-8")

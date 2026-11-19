@@ -33,7 +33,7 @@
     },
     {
       "title": "芯片架构实例",
-      "description": "按产品代际阅读芯片的计算、存储、互连与软件映射。",
+      "description": "从数据中心 GPU 和专用 AI 加速器到端侧 NPU，跟踪张量的搬运和执行。",
       "local": {
         "directory": "series/chip-architectures",
         "publish": "series/chip-architectures"

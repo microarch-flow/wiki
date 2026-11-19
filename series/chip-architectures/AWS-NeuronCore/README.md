@@ -1,138 +1,51 @@
-# AWS Inferentia2 / NeuronCore-v2
+# AWS Inferentia2 的 NeuronCore-v2 怎样搬运和累加张量
 
-> 本文主要讨论 Inferentia2 和 NeuronCore-v2。横向报告的 Trainium2 使用 NeuronCore-v3，规格不能直接互换。原稿中的经营判断属于分析，未在本次迁移中逐项核验。
+<div class="chip-legacy-anchors" aria-hidden="true"><span id="aws-inferentia2-neuroncore-v2"></span></div>
 
-一句话定位：**compiler-managed、software-managed SRAM 为中心的异构多引擎 AI tile**。和 Graphcore/Cerebras/SambaNova 那种"赌新颖架构范式"的初创不同，AWS 走的是另一条路——**架构相对保守（systolic + 向量/标量引擎 + scratchpad SRAM），真正的护城河是垂直整合（自研芯片 + Nitro + Graviton + 云）+ anchor 客户 + 成本**。NeuronCore-v2 同时用于推理芯片 Inferentia2 和训练芯片 Trainium1。
+Inferentia2 用独立的计算引擎和软件管理的片上存储执行神经网络。用一个分块矩阵乘可以看清分工。DMA 从 HBM 搬来输入，Tensor Engine 在片上累加，后处理引擎再消费结果。本文以一颗 Inferentia2 上的一个 NeuronCore-v2 为主。
 
-## 架构总览
-原稿基于公开资料区分 Inferentia2 芯片级视图与单个 NeuronCore-v2 的引擎、SBUF/PSUM 和数据流。跨核路径属于推断，不是官方实现图。
+<div class="chip-legacy-anchors" aria-hidden="true"><span id="架构总览"></span><span id="关键参数"></span></div>
 
-> **图示说明：**原稿的推导图区分 Inferentia2 芯片和 NeuronCore-v2。它将核间路径标为推断；官方资料未给出其完整片上互连实现。 [查看公开资料](https://awsdocs-neuron.readthedocs-hosted.com/en/v2.29.1/nki/guides/architecture/trainium_inferentia2_arch.html)。
+## 设备和单核资源
 
-> **图示说明：**Inferentia2 设备图展示两个 NeuronCore-v2、HBM 和片外连接。 [查看公开资料](https://awsdocs-neuron.readthedocs-hosted.com/en/v2.9.1/general/arch/neuron-hardware/inferentia2.html)。
+| 范围 | 资源 | 在本例中的职责 |
+| --- | --- | --- |
+| Inferentia2 设备 | 两个 NeuronCore-v2，32 GiB HBM，32 个 DMA 引擎 | HBM 存放设备数据，DMA 负责搬运。 |
+| 单个 NeuronCore-v2 | Tensor、Vector、Scalar、GpSimd 四种计算引擎 | 分别处理矩阵计算、向量运算、单元素运算和可编程操作。 |
+| 单个 NeuronCore-v2 | 24 MiB 的 SBUF，2 MiB 的 PSUM | SBUF 暂存输入和可复用的数据，PSUM 保存 Tensor Engine 的部分和。 |
 
-> **公开信息边界（重要）**：AWS 只公开到 **NKI（Neuron Kernel Interface）可见的片上层级**——engine、SBUF/PSUM、DMA、semaphore；**没有**公开到 NoC/router/packet/事务层。所以两个 NeuronCore-v2 之间的片上互连拓扑、core-to-core 是否绕 HBM、collective engine 微架构等，本文只能保守表述，不能脑补成 GPU NVLink 语义。
+同一设备的 HBM 带宽在 NKI v2.29.1 指南中写为 820 GB/s，在 Inferentia2 架构页 v2.31.1 写为 820 GiB/s。两个文档使用了不同单位，本文按来源记录。做定量模型时应先确定采用的带宽口径及实际测量边界。 [NKI v2.29.1 架构指南](https://awsdocs-neuron.readthedocs-hosted.com/en/v2.29.1/nki/guides/architecture/trainium_inferentia2_arch.html) · [Inferentia2 架构 v2.31.1](https://awsdocs-neuron.readthedocs-hosted.com/en/v2.31.1/about-neuron/arch/neuron-hardware/inferentia2.html)
 
-## 关键参数
+<div class="chip-legacy-anchors" aria-hidden="true"><span id="片上-memorysbuf-psum-是-2d软件管理"></span><span id="tensor-engine-数据流loadstationary-multiplymoving"></span></div>
 
-**Inferentia2 芯片级**
+## 两段乘法共用一个累加缓冲
 
-| 项 | 值 |
-|---|---|
-| Compute | 2 × NeuronCore-v2 |
-| HBM | 32 GiB，820 GiB/s（2 个 stack） |
-| 算力 | 380 INT8 TOPS / 190 FP16·BF16·cFP8·TF32 TFLOPS / 47.5 FP32 TFLOPS |
-| DMA | 32 个 DMA engine，约 1 TB/s，支持 inline 压缩/解压 |
-| Collective | 6 个 CC-Core；2 条 NeuronLink-v2（chip-to-chip collective） |
-| 实例 | 一个 Inf2 instance 最多 12 颗 Inferentia2 |
+SBUF 和 PSUM 各分成 128 个 partition。在 NKI 的片上张量布局中，partition 维指定并行分区，free 维表示每个分区内的元素。布局要满足所选指令的限制。矩阵乘法输入位于 SBUF，结果进入 PSUM。Tensor Engine 可在 PSUM 中以 FP32 继续累加。 [NKI 存储分区和 Tensor Engine 说明](https://awsdocs-neuron.readthedocs-hosted.com/en/v2.29.1/nki/guides/architecture/trainium_inferentia2_arch.html)
 
-**NeuronCore-v2（单 core）**
+取 BF16 输入 A 为 64 × 256、B 为 256 × 64。输出 C 为 64 × 64。将两份输入沿收缩维切成两组。每组的收缩维长度为 128。
 
-| 引擎 / 存储 | 规格 |
-|---|---|
-| Tensor Engine | 128×128 systolic array，~92 TFLOPS（BF16/FP16/TF32/cFP8）/ ~23 TFLOPS（FP32） |
-| Vector Engine | 128 lanes，reduce / 多输入 elementwise；每 32 partition 内可 32×32 transpose + shuffle |
-| Scalar Engine | 128 lanes，activation/nonlinear（每个 output 只依赖一个 input element） |
-| GPSIMD Engine | 8 个 512-bit 可编程处理器，跑 C code，custom op / 不规则算子 |
-| SBUF | 24 MiB，128 partitions × 192 KiB，主数据存储 |
-| PSUM | 2 MiB，128 partitions × 16 KiB，Tensor Engine 累加 buffer，FP32 |
+1. **搬入第一组。** DMA 将两份操作数放入 SBUF。把 A 的分块按转置布局存放，使两个输入都是 128 × 64，收缩维对应 partition 维。
+2. **形成第一组部分和。** Tensor Engine 用 LoadStationary 把 A 的分块装到阵列内部，再用 MultiplyMoving 读取 B 的分块。输出落在 PSUM 的 64 × 64 区域。
+3. **加上第二组。** 用同一输出坐标处理第二组输入，并累加到同一片 PSUM。两段完成后，C 的该分块才包含完整的收缩维。
+4. **消费结果。** 后处理引擎在依赖满足后消费部分和，完成转换或激活并写入 SBUF。需要返回设备内存时，再通过 DMA 写回 HBM。
 
-## 执行模型：多 sequencer、多指令流、显式同步
-NeuronCore-v2 不是"一个控制器驱动多个 FU"，也不是 GPU 的 SIMT warp scheduler。**四个 compute engine（Tensor/Vector/Scalar/GpSimd）各有自己的 sequencer，执行四条独立 instruction stream，异步并行**：
+NKI 的 `nc_matmul` 对应的数学形式是第一个输入转置后与第二个输入相乘。第一组要初始化这一块部分和，后续组累加时应使用相同的目标布局。实际内核还要处理尾块，并检查 SBUF 和 PSUM 容量及端口约束。 [NKI `nc_matmul` 接口](https://awsdocs-neuron.readthedocs-hosted.com/en/v2.29.1/nki/api/generated/nki.isa.nc_matmul.html)
 
-```text
-Neuron Compiler / NKI kernel
-  ↓ 为每个 engine 生成各自的 instruction stream
-Tensor seq → Tensor datapath
-Vector seq → Vector datapath
-Scalar seq → Scalar datapath
-GpSimd seq → 可编程 SIMD datapath
-  ↓ engine 间数据依赖
-hardware atomic semaphore（编译器自动插入同步）
-```
+<div class="chip-legacy-anchors" aria-hidden="true"><span id="执行模型多-sequencer多指令流显式同步"></span><span id="软件栈"></span><span id="aws-的下注和初创相反的一条路"></span></div>
 
-每条 instruction stream 里有两类指令：**control 指令**（sequencer 用私有 32-bit scalar register 做 scalar ALU、动态条件、地址计算、branch、触发 DMA）和 **data-path 指令**（engine 专用 datapath 操作 SBUF/PSUM 中的 tensor）。这更像一个**异构多引擎 dataflow-ish tile**，但不是静态 VLIW（没有统一 bundle issue）。
+## 引擎并行需要显式依赖
 
-> 注意：NeuronCore-v2 官方只有 **4 个引擎**（Tensor/Vector/Scalar/GpSimd），**没有独立的 "Sync Engine"**；触发 DMA、同步是每个引擎指令流里的 control 指令能力 + 硬件 atomic semaphore，真正的搬运由设备级 32 个 DMA engine 执行。
+各计算引擎有自己的指令流。编译器使用硬件信号量协调已知的数据依赖。以双缓冲为例，DMA 可以尝试提前搬下一组，同时 Tensor Engine 计算当前组。前提是两组有独立的输入缓冲，所需的内存端口允许重叠。未搬完的数据须等待就绪，仍被引擎读取的缓冲须等到可以复用。 [NKI 引擎、仲裁与同步说明](https://awsdocs-neuron.readthedocs-hosted.com/en/v2.29.1/nki/guides/architecture/trainium_inferentia2_arch.html)
 
-> **图示说明：**NeuronCore-v2 包含 Tensor、Vector、Scalar 和 GPSIMD 四类引擎，以及软件管理的片上存储。 [查看公开资料](https://awsdocs-neuron.readthedocs-hosted.com/en/v2.29.1/about-neuron/arch/neuron-hardware/neuron-core-v2.html)。
+<div class="chip-legacy-anchors" aria-hidden="true"><span id="多-core-多-chip-通信"></span><span id="芯片家族与迭代"></span><span id="战略定位与商业背景"></span></div>
 
-## 片上 memory：SBUF / PSUM 是 2D，软件管理
-两块 software-managed SRAM（**不是 cache**），都组织成 2D、各 128 partitions：
-- **SBUF**（24 MiB）：主数据存储，input/output/中间结果
-- **PSUM**（2 MiB）：Tensor Engine 的 landing/accumulation buffer，每 partition 8 banks，FP32 read-accumulate-write，**累加只能由 TensorE 控制**（VectorE/ScalarE 可读写 PSUM，TensorE 对 PSUM 只写）
+## 从单核扩展到多芯片
 
-关键心智模型——**P 维并行、F 维时间展开**：
-```text
-SBUF/PSUM tensor shape: [P, F]
-  P = partition 维（≤128）= 并行维（每周期跨 128 partition 读/算/写 128 元素）
-  F = free 维 = 时间/streaming 维
-```
-所以 NeuronCore 的 tile 不是普通 `[M,N]`，而是 `{partition_axis P≤128, free_axis F, buffer: SBUF|PSUM}`。
+Inferentia2 和第一代 Trainium 使用 NeuronCore-v2。横向报告的 Trainium2 使用 NeuronCore-v3，设备容量、SBUF 容量和 NeuronLink 代际应各自查规格。Inferentia2 的 NeuronLink-v2 用于设备间通信。公开 NKI 指南支持解释引擎和缓冲的编程行为，具体跨核拓扑及事务细节仍需实现资料。建模时若假定数据经 HBM 中转，应把它列为待验证的路径。 [Trainium2 NKI 指南](https://awsdocs-neuron.readthedocs-hosted.com/en/latest/nki/guides/architecture/trainium2_arch.html) · [原稿存档](https://github.com/microarch-flow/chip-architecture-wiki/blob/3086204c049a762eb59033f8141fba9e91f4c669/AWS-NeuronCore/README.md)
 
-> **图示说明：**数据访问沿 partition 维并行，并沿 free 维依次流经计算引擎。 [查看公开资料](https://awsdocs-neuron.readthedocs-hosted.com/en/v2.29.1/nki/guides/architecture/trainium_inferentia2_arch.html)。
+<div class="chip-legacy-anchors" aria-hidden="true"><span id="从中该获取的经验教训"></span><span id="与-graphcore-cerebras-sambanova-的对照"></span></div>
 
-**端口冲突约束**（编译器负责串行化，不是任意 crossbar）：VectorE 与 GPSIMD 不能并行访问 SBUF；VectorE 与 ScalarE 不能并行访问 PSUM。
+## 接下来怎么读
 
-## Tensor Engine 数据流：LoadStationary + MultiplyMoving
-NKI 的 `nc_matmul(stationary, moving)` 在硬件上不是简单 `x@y`，而是两类 ISA 指令：
-- **LoadStationary**：从 SBUF 读 `stationary[K,M]`，缓存进 Tensor Engine 内部
-- **MultiplyMoving**：从 SBUF 读 `moving[K,N]`，与已加载的 stationary 相乘，结果写 `output[M,N]` 到 PSUM
-
-> **图示说明：**矩阵乘法在数学视图中是 x[M,K] 与 y[K,N] 相乘；Tensor Engine 使用 stationary 和 moving 布局。 [查看公开资料](https://awsdocs-neuron.readthedocs-hosted.com/en/v2.29.1/nki/guides/architecture/trainium_inferentia2_arch.html)。
-
-K > 128 时用 **PSUM 近存累加**：多个 K-tile 连续累加进同一 PSUM bank，最后经 Vector/Scalar 做 post-op（bias/activation/cast）再写回 SBUF。这与 GPU tensor core 的 accumulator register file 不同——是**显式 PSUM SRAM accumulation**。
-
-> **图示说明：**Tensor Engine 从 SBUF 读取输入，并将结果写入 PSUM；图示说明的是 NeuronCore-v2。 [查看公开资料](https://awsdocs-neuron.readthedocs-hosted.com/en/v2.29.1/nki/guides/architecture/trainium_inferentia2_arch.html)。
-
-典型单 core 数据流总览：
-```text
-HBM --DMA--> SBUF --> Tensor/Vector/Scalar/GpSimd --> PSUM 或 SBUF --DMA--> HBM
-其中 HBM↔SBUF 走 DMA；PSUM↔SBUF 走 engine 指令
-```
-
-## 多 core / 多 chip 通信
-两个 NeuronCore-v2 **计算上基本独立、共享 device 级 HBM**，但**没有公开的 SBUF-to-SBUF 直连 datapath**。跨 core/chip 数据流应保守建模为经 **DMA / HBM / collective**：
-```text
-张量并行：Core 局部 partial → CC-Core / Collective Communication → reduce/gather → 写回 HBM/SBUF
-流水并行：Core0 输出 --DMA--> HBM --DMA--> Core1 SBUF（保守路径，不假设 SBUF 直达）
-跨 chip ：NeuronLink-v2 做 chip-to-chip collective
-```
-即"分布式 scratchpad + 共享 off-chip memory + 专用 collective engine"，**不是统一 cache hierarchy，也不要建模成普通 NoC router**。
-
-## 软件栈
-- **Neuron SDK**：编译器 + runtime + 框架集成（PyTorch/TensorFlow/JAX）
-- **Neuron Compiler**：把 graph 拆成 Tensor/Vector/Scalar/GpSimd/DMA 的多 engine 并行序列，自动插入 semaphore 同步、管理 SBUF/PSUM layout
-- **NKI（Neuron Kernel Interface）**：暴露"编译器可见的硬件约束"（tile shape、partition 维、SBUF/PSUM layout、PSUM 累加、DMA pattern、engine overlap），是反推 NeuronCore 微架构最有价值的入口——普通产品页只够建名词表
-
-## 芯片家族与迭代
-NeuronCore-v2 是 Inferentia2（推理）与 Trainium1（训练）共用的核心。AWS 自研芯片矩阵：
-
-| 线 | 用途 | 代表 |
-|---|---|---|
-| Inferentia | 推理 | Inferentia1（2019）→ **Inferentia2（2023，NeuronCore-v2）** |
-| Trainium | 训练 | Trainium1（2022，NeuronCore-v2）→ Trainium2（2024，约 4× Trn1）→ Trainium3（re:Invent 2025，3nm） |
-| Graviton | 通用 CPU（Arm） | Graviton1–4 |
-| Nitro | 虚拟化/IO offload + 安全 | 贯穿 EC2 |
-
-迭代逻辑：**沿同一 software-managed SRAM + 多引擎范式演进**，配合 NeuronLink 把多芯片组成大集群；不追求架构范式革命，而追求与云、与 anchor 客户深度协同优化。
-
-## 战略定位与商业背景
-- **2015 年收购 Annapurna Labs**（以色列芯片设计公司，约 $3.5 亿）——AWS 自研硅的起点，如今 Graviton/Nitro/Inferentia/Trainium 都出自这里
-- **垂直整合**：芯片 + Nitro（offload/安全）+ Graviton（CPU）+ EC2/云服务一体设计，目标是降本、降低对 Nvidia 的依赖、把性价比握在自己手里
-- **anchor 客户 Anthropic**：与 Annapurna **共同设计 Trainium**（几乎每日协作，用 Claude 训练负载反馈塑造下一代芯片）；**Project Rainier**（2025 年 10 月启用，印第安纳，近 50 万颗 Trainium2 专训 Claude）；Anthropic 承诺十年 **$1000 亿+**、最高 5GW，覆盖 Trainium2→Trainium4
-- 这与三家初创的处境形成鲜明对照：**AWS 不需要靠单颗芯片的架构惊艳去赢，它有现成的云需求、内部 workload 和巨型 anchor 客户来吸收产能并迭代**
-
-## 从中该获取的经验教训
-
-### AWS 的下注（和初创相反的一条路）
-- **架构保守，整合激进**：NeuronCore-v2 没有 wafer-scale、没有 CGRA reconfigurable fabric、没有 weight-streaming 之类的激进范式——就是 systolic + 向量/标量 + 可编程 SIMD fallback + 软件管理 SRAM。赌注不在硅片新颖度，而在**垂直整合 + 规模 + 客户绑定**
-- **GPSIMD 是务实的逃生舱**：8 个可编程 512-bit 处理器跑 C code，承接 mask/sampling/特殊 reshape/未来新算子——承认"硬连线覆盖不了所有 op"，保留通用兜底
-- **complexity 给编译器**：和三家初创一样，把多引擎调度/同步/SBUF-PSUM layout 全压给 Neuron Compiler；但 AWS 有持续的内部/客户 workload 来打磨这条 toolchain，迭代闭环比初创健康
-
-### 与 Graphcore / Cerebras / SambaNova 的对照
-- 四者都做"片上 SRAM + 编译器管理数据搬运 + 异构引擎"，但**护城河来源完全不同**：三家初创赌"架构领先 → 性能领先 → 赢客户"，结果普遍撞上软件生态 + workload 演化 + 商业兑现三重墙；AWS 反过来——**先有云 + 内部需求 + anchor 客户（Anthropic），再用够用且持续优化的芯片去填**
-- 启示：在 AI 加速器赛道，**"谁能稳定吸收产能并形成迭代闭环"可能比"谁的架构最优雅"更决定生死**。AWS 用 Annapurna + 云 + Anthropic 解决了初创最缺的两样东西——出货量和软件打磨的真实负载
-
----
-**来源与范围：**[Trainium/Inferentia2 NKI 架构指南](https://awsdocs-neuron.readthedocs-hosted.com/en/v2.29.1/nki/guides/architecture/trainium_inferentia2_arch.html)、[Inferentia2 架构](https://awsdocs-neuron.readthedocs-hosted.com/en/v2.9.1/general/arch/neuron-hardware/inferentia2.html)和 [NeuronCore-v2 架构](https://awsdocs-neuron.readthedocs-hosted.com/en/v2.29.1/about-neuron/arch/neuron-hardware/neuron-core-v2.html)。原稿的商业观察截至 2026-06；跨 core 路径仍是推断。
+- 查看 GPU 上的异步张量搬运、共享内存和缓冲回收。 [NVIDIA H100 SXM](../nvidia-h100-sxm/README.md)
+- 比较不同代际的设备参数、工作存储和编程接口。 [七款数据中心 AI 加速器对照](../云端推理芯片架构横向对比报告.md)

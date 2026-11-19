@@ -8,6 +8,7 @@ import re
 import sys
 from urllib.parse import quote, unquote, urljoin, urlsplit
 
+from markdown.extensions.toc import slugify_unicode
 from mkdocs.utils import get_relative_url
 from mkdocs.structure.pages import Page
 
@@ -27,6 +28,8 @@ from d2d_navigation import D2D_SUMMARY, d2d_topic_tree, read_d2d_sections  # noq
 
 
 COMMON_FOUNDATIONS = "共同基础"
+CHIP_ARCHITECTURES = "series/chip-architectures"
+CHIP_ARCHITECTURES_HOME = f"{CHIP_ARCHITECTURES}/README.md"
 
 TOPICS = (
     ("RAM", "RAM · 存储系统"),
@@ -525,6 +528,31 @@ def inference_tree(root, directory, labels):
     return result
 
 
+def chip_architecture_tree(root, directory, labels):
+    """Use the series guide's numbered lists as the product navigation."""
+    landing = directory / "README.md"
+    remaining = {path.relative_to(directory).as_posix() for path in directory.rglob("*.md") if path != landing}
+    groups = {}
+    group = None
+    for line in landing.read_text(encoding="utf-8").splitlines():
+        if line.startswith("## "):
+            group = line[3:].strip()
+            continue
+        item = re.match(r"^\d+\. \[([^\]]+)\]\(([^)]+)\)", line)
+        if not item:
+            continue
+        short, target = item.groups()
+        if not group or target not in remaining:
+            raise ValueError(f"Invalid or repeated chip architecture entry: {target}")
+        remaining.remove(target)
+        path = (directory / target).relative_to(root).as_posix()
+        groups.setdefault(group, []).append(path)
+        labels[path] = (short, title(root / path))
+    if remaining:
+        raise ValueError(f"Chip architecture guide omits articles: {sorted(remaining)}")
+    return [landing.relative_to(root).as_posix(), *({name: pages} for name, pages in groups.items())]
+
+
 def breadcrumb_ancestors(page):
     """Find ancestor sections and their landing pages, when available."""
     ancestors = []
@@ -592,6 +620,8 @@ def render_breadcrumbs(page, root, sidebar_labels=None):
     for label, index in breadcrumb_ancestors(page):
         if index is None:
             url = "/#common-foundations" if label == COMMON_FOUNDATIONS else None
+            if page.file.src_uri.startswith(f"{CHIP_ARCHITECTURES}/"):
+                url = f"{CHIP_ARCHITECTURES}/#{quote(slugify_unicode(label, '-'))}"
         else:
             path = index.file.src_uri
             if path == "README.md":
@@ -773,6 +803,8 @@ def on_config(config, **kwargs):
                 tree = development_tree(root, directory)
             elif entry["local"]["publish"] == "series/inference-runtime":
                 tree = inference_tree(root, directory, config.extra["storage_sidebar_labels"])
+            elif entry["local"]["publish"] == CHIP_ARCHITECTURES:
+                tree = chip_architecture_tree(root, directory, config.extra["storage_sidebar_labels"])
             else:
                 tree = make_tree(directory, root, ("README.md", "index.md"))
             config.nav.append({entry["title"]: tree})
@@ -788,12 +820,25 @@ class CoherenceChapterPage(Page):
         return True
 
 
+class ChipArchitectureArticle(Page):
+    """Keep product README pages visible as articles within a reading group."""
+
+    @property
+    def is_index(self):
+        return False
+
+
 def on_files(files, config, **kwargs):
     # MkDocs navigation reuses pre-created Page instances. Keep the File's name,
     # destination and canonical URL unchanged; only its navigation role differs.
     file = files.get_file_from_path("COHERENCE/wiki/cxl-host-memory.md")
     if file is not None:
         CoherenceChapterPage(None, file, config)
+    for file in files.documentation_pages():
+        path = file.src_uri
+        if (path.startswith(f"{CHIP_ARCHITECTURES}/") and path.endswith("/README.md")
+                and path != CHIP_ARCHITECTURES_HOME):
+            ChipArchitectureArticle(None, file, config)
     return files
 
 
@@ -801,7 +846,7 @@ def on_nav(nav, config, files, **kwargs):
     """Resolve source paths to generated URLs for sidebar labels."""
     labels = config.extra.get("storage_sidebar_labels", {})
     config.extra["storage_sidebar_urls"] = {
-        file.url: labels[path]
+        unquote(file.url).lstrip("/"): labels[path]
         for path in labels
         if (file := files.get_file_from_path(path)) is not None
     }

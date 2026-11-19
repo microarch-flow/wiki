@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="360" height="362" viewBox="0 0 360 362" role="img" aria-labelledby="title description">
+  <title id="title">STM32N657 的 NPU 与 CPU 通过共享缓冲交接张量</title>
+  <desc id="description">NPU 前段读取量化输入，写出中间缓冲。Cortex-M55 消费中间结果，交还下一段输入。NPU 后段在数据就绪后继续。</desc>
+  <defs>
+    <marker id="arrow" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto">
+      <path d="M0 0L7 3.5L0 7Z" fill="#397d6a"/>
+    </marker>
+  </defs>
+  <rect x="1" y="1" width="358" height="360" rx="12" fill="#eef3e8" stroke="#c4d2bd"/>
+  <g fill="#dcecd9" stroke="#5f8770">
+    <rect x="36" y="72" width="288" height="40" rx="7"/>
+    <rect x="36" y="304" width="288" height="40" rx="7"/>
+  </g>
+  <rect x="36" y="188" width="288" height="40" rx="7" fill="#f5e9d8" stroke="#ad835b"/>
+  <g fill="#f5f6ef" stroke="#95a995">
+    <rect x="36" y="14" width="288" height="40" rx="7"/>
+    <rect x="36" y="130" width="288" height="40" rx="7"/>
+    <rect x="36" y="246" width="288" height="40" rx="7"/>
+  </g>
+  <g stroke="#397d6a" stroke-width="2" marker-end="url(#arrow)">
+    <path d="M180 55V70"/>
+    <path d="M180 113V128"/>
+    <path d="M180 171V186"/>
+    <path d="M180 229V244"/>
+    <path d="M180 287V302"/>
+  </g>
+  <g font-family="sans-serif" font-size="16" fill="#193c34" text-anchor="middle">
+    <text x="180" y="40">量化输入缓冲</text>
+    <text x="180" y="98">NPU 执行前段</text>
+    <text x="180" y="156">共享中间缓冲</text>
+    <text x="180" y="214">Cortex-M55 执行软件算子</text>
+    <text x="180" y="272">下一段输入缓冲</text>
+    <text x="180" y="330">NPU 执行后段</text>
+  </g>
+</svg>

@@ -78,7 +78,8 @@ body { background: var(--paper); }
 /* Explanatory blocks in RAM articles are not source code. */
 .md-typeset .ram-calculation, .md-typeset .ram-event-sequence { margin: 1.1rem 0; padding: .85rem 1rem; border: 1px solid #cee0ce; border-left: .18rem solid var(--note-border); border-radius: .35rem; background: var(--note-surface); color: var(--note-ink); }
 .ram-calculation { display: flex; flex-direction: column; gap: .3rem; }
-.md-typeset .micro-legacy-anchor { display: block; height: 0; scroll-margin-top: 5rem; }
+.md-typeset .micro-legacy-anchor,
+.md-typeset .chip-legacy-anchors [id] { display: block; height: 0; scroll-margin-top: 5rem; }
 .md-typeset .micro-diagram { margin: 1.2rem 0; overflow-x: auto; text-align: left; }
 .md-typeset .micro-diagram img { display: block; min-width: 560px; width: 100%; }
 .md-typeset .micro-diagram figcaption { margin: .5rem 0; font-size: .75rem; color: var(--note-ink); }
