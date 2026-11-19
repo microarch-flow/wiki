@@ -11,19 +11,37 @@
 
 ## 产业链全景
 
-```mermaid
-flowchart LR
-    A[系统需求方] --> B[Fabless / IDM 架构定义]
-    B --> C[先进逻辑 Foundry]
-    B --> D[HBM / Memory]
-    B --> E[先进封装平台]
-    E --> F[Foundry packaging / OSAT]
-    F --> G[Substrate / carrier]
-    F --> H[Materials]
-    F --> I[Equipment]
-    B --> J[EDA / co-design / simulation]
-    F --> K[Test / reliability]
-```
+<figure class="fab-industry-chain" aria-labelledby="产业链全景">
+  <ul role="list">
+    <li>
+      <span class="fab-industry-node">系统需求方</span>
+      <ul role="list">
+        <li>
+          <span class="fab-industry-node">Fabless / IDM 架构定义</span>
+          <ul role="list">
+            <li><span class="fab-industry-node">先进逻辑代工</span></li>
+            <li><span class="fab-industry-node">HBM 与其他存储器</span></li>
+            <li><span class="fab-industry-node">EDA、协同设计与仿真</span></li>
+            <li>
+              <span class="fab-industry-node">先进封装平台</span>
+              <ul role="list">
+                <li>
+                  <span class="fab-industry-node">代工厂封装 / OSAT</span>
+                  <ul role="list">
+                    <li><span class="fab-industry-node">基板与载板</span></li>
+                    <li><span class="fab-industry-node">材料</span></li>
+                    <li><span class="fab-industry-node">设备</span></li>
+                    <li><span class="fab-industry-node">测试与可靠性</span></li>
+                  </ul>
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </li>
+      </ul>
+    </li>
+  </ul>
+</figure>
 
 AI/HPC 先进封装不是单点外包问题，而是系统定义、先进逻辑、HBM stack、2.5D/3D 封装平台、基板、材料、设备、仿真和测试一起闭合。
 
