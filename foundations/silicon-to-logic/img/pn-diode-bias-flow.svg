@@ -1,0 +1,92 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="520" height="448" viewBox="0 0 520 448" role="img" aria-labelledby="title desc">
+  <title id="title">同一个 PN 结正接和反接时的电子流向与耗尽区</title>
+  <desc id="desc">P 区在左，N 区在右。正接时，左边导线的电子从 P 端流向正极，右边导线的电子从负极流入 N 端。稳态耗尽区比接通前窄，多数电子从 N 流向 P，多数空穴从 P 流向 N。反接时，两条导线内的电子净流向都相反。稳态耗尽区比接通前宽，少数电子从 P 流向 N，少数空穴从 N 流向 P。</desc>
+  <style>
+    .panel { font: 21px system-ui, sans-serif; fill: #173d35; }
+    .heading { font-size: 24px; font-weight: 600; }
+    .centered { text-anchor: middle; }
+    .shell { fill: none; stroke: #6d8677; stroke-width: 2; }
+    .terminal { fill: #eef3e9; stroke: #6d8677; stroke-width: 2; }
+    .p-region { fill: #f2e5d1; }
+    .n-region { fill: #dceadc; }
+    .depleted-p { fill: #e6ccae; }
+    .depleted-n { fill: #bddbc9; }
+    .zero-edge { fill: none; stroke: #476c58; stroke-width: 2; stroke-dasharray: 5 4; }
+    .electron, .hole { fill: none; stroke-width: 2.8; stroke-linecap: round; stroke-linejoin: round; }
+    .electron { stroke: #09677b; }
+    .hole { stroke: #914a24; }
+  </style>
+  <rect x="1" y="1" width="518" height="446" rx="15" fill="#eef3e9" stroke="#cddccd"/>
+
+  <g id="forward" class="panel">
+    <text class="heading centered" x="260" y="37">正接 · 耗尽区收窄</text>
+    <g class="centered">
+      <text x="77" y="67">导线里的电子</text>
+      <text x="443" y="67">导线里的电子</text>
+    </g>
+    <rect class="p-region" x="110" y="77" width="150" height="43"/>
+    <rect class="n-region" x="260" y="77" width="150" height="43"/>
+    <rect class="depleted-p" x="216" y="77" width="44" height="43"/>
+    <rect class="depleted-n" x="260" y="77" width="44" height="43"/>
+    <rect class="shell" x="110" y="77" width="300" height="43"/>
+    <path class="shell" d="M260 77 V120 M48 98.5 H110 M410 98.5 H472"/>
+    <path class="zero-edge" d="M202 72 V125 M318 72 V125"/>
+    <circle class="terminal" cx="34" cy="98.5" r="14"/>
+    <circle class="terminal" cx="486" cy="98.5" r="14"/>
+    <g class="centered" dominant-baseline="central">
+      <text x="34" y="98.5">+</text>
+      <text x="486" y="98.5">−</text>
+      <text x="152" y="98.5">P 区</text>
+      <text x="368" y="98.5">N 区</text>
+      <text x="238" y="98.5">−</text>
+      <text x="282" y="98.5">+</text>
+    </g>
+    <path class="electron lead-left" d="M104 98.5 H53 M53 98.5 L63 93.5 M53 98.5 L63 103.5"/>
+    <path class="electron lead-right" d="M467 98.5 H416 M416 98.5 L426 93.5 M416 98.5 L426 103.5"/>
+    <text x="158" y="156" text-anchor="end">多数电子</text>
+    <path class="electron across-electrons" d="M349 149 H171 M171 149 L182 143 M171 149 L182 155"/>
+    <text x="158" y="188" text-anchor="end">多数空穴</text>
+    <path class="hole across-holes" d="M171 181 H349 M349 181 L338 175 M349 181 L338 187"/>
+  </g>
+
+  <path d="M28 208 H492" fill="none" stroke="#cddccd" stroke-width="1.5"/>
+
+  <g id="reverse" class="panel" transform="translate(0 200)">
+    <text class="heading centered" x="260" y="37">反接 · 耗尽区变宽</text>
+    <g class="centered">
+      <text x="77" y="67">导线里的电子</text>
+      <text x="443" y="67">导线里的电子</text>
+    </g>
+    <rect class="p-region" x="110" y="77" width="150" height="43"/>
+    <rect class="n-region" x="260" y="77" width="150" height="43"/>
+    <rect class="depleted-p" x="178" y="77" width="82" height="43"/>
+    <rect class="depleted-n" x="260" y="77" width="82" height="43"/>
+    <rect class="shell" x="110" y="77" width="300" height="43"/>
+    <path class="shell" d="M260 77 V120 M48 98.5 H110 M410 98.5 H472"/>
+    <path class="zero-edge" d="M202 72 V125 M318 72 V125"/>
+    <circle class="terminal" cx="34" cy="98.5" r="14"/>
+    <circle class="terminal" cx="486" cy="98.5" r="14"/>
+    <g class="centered" dominant-baseline="central">
+      <text x="34" y="98.5">−</text>
+      <text x="486" y="98.5">+</text>
+      <text x="143" y="98.5">P 区</text>
+      <text x="377" y="98.5">N 区</text>
+      <text x="229" y="98.5">−</text>
+      <text x="291" y="98.5">+</text>
+    </g>
+    <path class="electron lead-left" d="M53 98.5 H104 M104 98.5 L94 93.5 M104 98.5 L94 103.5"/>
+    <path class="electron lead-right" d="M416 98.5 H467 M467 98.5 L457 93.5 M467 98.5 L457 103.5"/>
+    <text x="158" y="156" text-anchor="end">少数电子</text>
+    <path class="electron across-electrons" d="M171 149 H349 M349 149 L338 143 M349 149 L338 155"/>
+    <text x="158" y="188" text-anchor="end">少数空穴</text>
+    <path class="hole across-holes" d="M349 181 H171 M171 181 L182 175 M171 181 L182 187"/>
+  </g>
+
+  <g class="panel" dominant-baseline="central">
+    <path class="zero-edge" d="M60 411 V432"/>
+    <text x="76" y="421">零偏压时的边界</text>
+    <rect class="depleted-p" x="294" y="414" width="12" height="14"/>
+    <rect class="depleted-n" x="306" y="414" width="12" height="14"/>
+    <text x="329" y="421">稳态耗尽区</text>
+  </g>
+</svg>

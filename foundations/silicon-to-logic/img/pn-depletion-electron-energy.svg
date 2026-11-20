@@ -1,0 +1,54 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="520" height="564" viewBox="0 0 520 564" role="img" aria-labelledby="title desc">
+  <title id="title">电子从 N 型体区进入耗尽区</title>
+  <desc id="desc">左侧为 P 型体区，右侧为 N 型体区。耗尽区内，固定负离子在左，固定正离子在右。内建电场朝左。虚线表示电子可以从右侧随热运动进入耗尽区，实线表示它受到向右的电场力。下方曲线共用横向位置。电子势能从右侧体区的零电子伏基准向左逐渐升高，结面比 N 型体区高约零点三六电子伏。图中结面电子浓度约为 N 型体区的百万分之一。</desc>
+  <rect x="1" y="1" width="518" height="562" rx="15" fill="#eef3e9" stroke="#cddccd"/>
+
+  <path d="M168 71 V61 H352 V71" fill="none" stroke="#6d8677" stroke-width="2"/>
+  <rect x="28" y="83" width="232" height="52" fill="#f2e5d1"/>
+  <rect x="260" y="83" width="232" height="52" fill="#dceadc"/>
+  <rect x="168" y="83" width="92" height="52" fill="#e6ccae"/>
+  <rect x="260" y="83" width="92" height="52" fill="#bddbc9"/>
+  <rect x="28" y="83" width="464" height="52" fill="none" stroke="#6d8677" stroke-width="2"/>
+  <path d="M260 83 V135" fill="none" stroke="#476c58" stroke-width="2" stroke-dasharray="5 5"/>
+
+  <g text-anchor="middle" font-family="system-ui, sans-serif" fill="#173d35" font-size="22">
+    <text x="260" y="44" font-weight="600">耗尽区</text>
+    <text x="98" y="117">P 型体区</text>
+    <text x="422" y="117">N 型体区</text>
+    <g font-family="sans-serif" font-weight="700" font-size="25">
+      <text x="187" y="117">−</text><text x="214" y="117">−</text><text x="241" y="117">−</text>
+      <text x="279" y="117">+</text><text x="306" y="117">+</text><text x="333" y="117">+</text>
+    </g>
+    <text x="199" y="161" font-size="21">固定负离子</text>
+    <text x="321" y="161" font-size="21">固定正离子</text>
+    <text x="260" y="210" font-size="21">内建电场</text>
+    <text x="392" y="237" font-size="21">热运动可进入</text>
+    <text x="381" y="315" font-size="21">电子受力向右</text>
+  </g>
+
+  <path d="M350 183 H170 M170 183 L181 176 M170 183 L181 190"
+        fill="none" stroke="#476c58" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M464 255 H322" fill="none" stroke="#09677b" stroke-width="2.5" stroke-dasharray="6 5"/>
+  <path d="M322 255 L333 249 M322 255 L333 261 M301 287 H461 M461 287 L450 280 M461 287 L450 294"
+        fill="none" stroke="#09677b" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M301 268 V285" fill="none" stroke="#6d8677" stroke-width="1.5"/>
+  <circle cx="301" cy="255" r="12" fill="#eef3e9" stroke="#09677b" stroke-width="2.5"/>
+  <path d="M296 255 H306" fill="none" stroke="#09677b" stroke-width="2.3" stroke-linecap="round"/>
+
+  <path d="M168 362 V487 M260 362 V487 M352 413 V487 M28 487 H492"
+        fill="none" stroke="#8ca79a" stroke-width="1.4"/>
+  <path d="M28 368 H168 Q214 368 260 419 Q306 470 352 470 H492"
+        fill="none" stroke="#09677b" stroke-width="3.2" stroke-linecap="round"/>
+  <circle cx="260" cy="419" r="4.4" fill="#09677b"/>
+
+  <g font-family="system-ui, sans-serif" fill="#173d35" font-size="21">
+    <text x="28" y="347" font-size="22" font-weight="600">电子势能</text>
+    <text x="277" y="399">+0.36 eV</text>
+    <text x="422" y="457" text-anchor="middle">0 eV</text>
+    <text x="260" y="514" text-anchor="middle">结面</text>
+    <text x="492" y="514" text-anchor="end">位置</text>
+    <text x="28" y="542">电子浓度</text>
+    <text x="260" y="542" text-anchor="middle">约 10¹⁰ cm⁻³</text>
+    <text x="422" y="542" text-anchor="middle">约 10¹⁶ cm⁻³</text>
+  </g>
+</svg>
