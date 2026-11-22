@@ -12,7 +12,7 @@
 
 访问晶体管受 wordline 控制。行激活前，位线被预充到参考电压附近；打开 wordline 后，单元电容与位线电容共享电荷。位线电压只产生很小的偏移，sense amplifier 判断偏移方向并放大，再通过仍打开的访问晶体管恢复单元。**破坏性读出**指共享电荷改变了单元原状态；不是说每次读取都会把电荷全部抽走。
 
-字线如何控制访问管的导电沟道，见 [MOSFET 与沟道电流](../../../../foundations/silicon-to-logic/README.md#mosfet-如何用栅极电压控制沟道电流)。下面的共享电荷算例使用[线性电容的电荷与电压关系 Q = CV](../../../../foundations/silicon-to-logic/README.md#用电压电流电阻和电容描述一个节点)。
+字线如何控制访问管的导电沟道，见 [MOSFET 与沟道电流](../../../semiconductor-foundations/silicon-to-logic/README.md#mosfet-如何用栅极电压控制沟道电流)。下面的共享电荷算例使用[线性电容的电荷与电压关系 Q = CV](../../../semiconductor-foundations/silicon-to-logic/README.md#用电压电流电阻和电容描述一个节点)。
 
 例如，假设理想电容 `Ccell = 30 fF`、`Cbitline = 300 fF`，位线预充 `0.5 V`，单元分别从 `1 V` 和 `0 V` 开始。忽略寄生与损耗，共享后的电压为：
 

@@ -17,7 +17,7 @@
 
 一种无符号 p 位乘 q 位的实现可生成 `p×q` 个单 bit 部分积，并按位权分列。full adder 接收同一位权的三个 bit，输出一个同位的 `sum` 和一个高一位的 `carry`，满足 `a+b+cin = sum + 2×carry`。
 
-与门和其他基本逻辑的晶体管实现见 [CMOS 反相器与逻辑门](../../../foundations/silicon-to-logic/README.md#cmos-门怎样用充放电实现逻辑运算)。
+与门和其他基本逻辑的晶体管实现见 [CMOS 反相器与逻辑门](../../semiconductor-foundations/silicon-to-logic/README.md#cmos-门怎样用充放电实现逻辑运算)。
 
 Wallace 或 Dadda 压缩树通常使用 carry-save 形式把各列部分积归约为**两行**，再由末级 carry-propagate adder（CPA）得到最终结果。若把累加器一起加入，也要记录其位宽、符号扩展、截断与溢出策略。压缩器数量取决于列高度、半加器、调度和最终结果位宽；不能把 full adder 数视为恒等于 `p×q`。
 

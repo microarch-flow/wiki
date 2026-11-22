@@ -6,7 +6,7 @@
 
 <p class="ram-problem-lede">一个 6T SRAM cell 用六个晶体管保存 1 bit。四个晶体管构成两个交叉耦合的反相器，维持内部状态；另外两个晶体管受字线控制，将内部节点接到位线，用于读写。</p>
 
-单个反相器的结构和上拉、下拉过程见 [CMOS 反相器与逻辑门](../../../../foundations/silicon-to-logic/README.md#cmos-门怎样用充放电实现逻辑运算)。
+单个反相器的结构和上拉、下拉过程见 [CMOS 反相器与逻辑门](../../../semiconductor-foundations/silicon-to-logic/README.md#cmos-门怎样用充放电实现逻辑运算)。
 
 理解它的关键是区分两个过程：**读操作希望观察状态而不改变它；写操作则要让外部驱动足以改变原状态。**两者使用同一对访问晶体管，因此会形成设计权衡。
 

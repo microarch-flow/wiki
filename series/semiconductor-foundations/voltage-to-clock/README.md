@@ -1,14 +1,16 @@
 # 从电容充电到时钟边沿
 
+上级：[半导体基础](../README.md)
+
 ## 电压升到指定值要多久
 
-[![理想 RC 充电曲线。电容电压从 0 V 开始上升，约 69.3 ps 时到达 0.4 V，随后逐渐接近 0.8 V。](../../series/microarchitecture/02-pipeline/img/electrical-timing-rc.svg)](../../series/microarchitecture/02-pipeline/img/electrical-timing-rc.svg)
+[![理想 RC 充电曲线。电容电压从 0 V 开始上升，约 69.3 ps 时到达 0.4 V，随后逐渐接近 0.8 V。](../../microarchitecture/02-pipeline/img/electrical-timing-rc.svg)](../../microarchitecture/02-pipeline/img/electrical-timing-rc.svg)
 
 图中，0.8 V 的电源通过 2 kΩ 电阻给 50 fF 电容充电。电容一端接到 0 V，图中画的是另一端相对它的电压。沿着 0.4 V 的虚线找到圆点，再向下读时间轴，就能看到电压达到 0.4 V 用了约 **69.3 ps（皮秒）**。
 
 为什么曲线先陡后缓？刚接通时，电容电压为 0 V，电阻两端相差 0.8 V。随着电容电压上升，这个压差变小。同一个电阻上，压差越小，电流越小。连接电阻的极板积累电荷的速度也随之变慢，电压升得更慢。
 
-电容越大，把电压提高同样的幅度就需要越多电荷。这个理想电路的时间常数是 **τ = R·C**，也就是电阻值乘以电容值。图中的 τ 为 100 ps，用来描述电压变化的快慢。见[电路与时序基础的 RC 算例](../../series/microarchitecture/02-pipeline/electrical-timing-foundations.md#2-用-rc-模型观察电压怎样上升)及 [MIT 6.002 的一阶电路讲义](https://ocw.mit.edu/courses/6-002-circuits-and-electronics-spring-2007/resources/6002_l12/)。
+电容越大，把电压提高同样的幅度就需要越多电荷。这个理想电路的时间常数是 **τ = R·C**，也就是电阻值乘以电容值。图中的 τ 为 100 ps，用来描述电压变化的快慢。见[电路与时序基础的 RC 算例](../../microarchitecture/02-pipeline/electrical-timing-foundations.md#2-用-rc-模型观察电压怎样上升)及 [MIT 6.002 的一阶电路讲义](https://ocw.mit.edu/courses/6-002-circuits-and-electronics-spring-2007/resources/6002_l12/)。
 
 图中的 0.4 V 是用来读时间的参考值。现在让电路在电压到达指定值时切换输出。输出由低变高是**上升沿**，由高变低是**下降沿**。怎样让电路自己产生下一个边沿？
 
@@ -39,4 +41,4 @@
 
 以一个上升沿触发的 D 寄存器为例。D 端接收数据，CLK 端接收时钟，Q 端输出保存的值。CLK 到达上升沿时，寄存器采样 D。为了可靠采样，D 要在边沿前稳定一段时间，称为**建立时间**。边沿后还要保持一段时间，称为**保持时间**。采到的值在边沿后经一段传播延迟出现在 Q 端。见 [MIT 6.004 的寄存器与时序讲义](https://ocw.mit.edu/courses/6-004-computation-structures-spring-2017/pages/c5/c5s1/)。
 
-设两个寄存器由同一个时钟驱动。一个寄存器在这拍发出数据，另一个在下一拍采样。数据要经过组合逻辑。留给它的时间够吗？见[电路与时序基础的寄存器路径算例](../../series/microarchitecture/02-pipeline/electrical-timing-foundations.md#4-算一条路径需要多长的时钟周期)。
+设两个寄存器由同一个时钟驱动。一个寄存器在这拍发出数据，另一个在下一拍采样。数据要经过组合逻辑。留给它的时间够吗？见[电路与时序基础的寄存器路径算例](../../microarchitecture/02-pipeline/electrical-timing-foundations.md#4-算一条路径需要多长的时钟周期)。

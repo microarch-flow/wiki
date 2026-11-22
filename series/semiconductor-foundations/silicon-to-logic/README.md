@@ -1,5 +1,7 @@
 # 从硅到门电路
 
+上级：[半导体基础](../README.md)
+
 <div id="阅读顺序"></div>
 
 ## 硅晶体 {#从硅的四个价电子理解-p-型和-n-型掺杂}
@@ -200,7 +202,7 @@ N 区深处的电子仍可以向左补位。这会把一份电子缺额从结面
 
 例如，Nexperia 2N7002 在结温 25 °C、V<sub>DS</sub> = V<sub>GS</sub>、I<sub>D</sub> = 0.25 mA 时，测得的栅源阈值规格范围为 1.0–2.5 V。同为 25 °C，导通电阻最大值 5.3 Ω 对应 V<sub>GS</sub> = 4.5 V 和 I<sub>D</sub> = 75 mA。前一个测试定义小电流门限，后一个测试才给出指定负载和栅驱动下的导通电阻。见 [Nexperia 2N7002，Rev. 7，表 7 与图 5–7](https://assets.nexperia.com/documents/data-sheet/2N7002.pdf#page=5)。
 
-实际器件还要考虑亚阈值电流、体偏置改变阈值、源漏与体区之间的 PN 结、寄生电容及短沟道效应。上面的一阶式适合解释趋势。预测特定工艺中的电流和延迟，要使用对应的器件模型与工作条件。器件结构演化见 [FAB 的 Planar、FinFET 与 GAAFET](../../series/chip-development/FAB/wiki/02-front-end-fabrication/transistor-evolution-planar-finfet-gaa.md)。
+实际器件还要考虑亚阈值电流、体偏置改变阈值、源漏与体区之间的 PN 结、寄生电容及短沟道效应。上面的一阶式适合解释趋势。预测特定工艺中的电流和延迟，要使用对应的器件模型与工作条件。器件结构演化见 [FAB 的 Planar、FinFET 与 GAAFET](../../chip-development/FAB/wiki/02-front-end-fabrication/transistor-evolution-planar-finfet-gaa.md)。
 
 ## CMOS 反相器与逻辑门 {#cmos-门怎样用充放电实现逻辑运算}
 
@@ -226,7 +228,7 @@ N 区深处的电子仍可以向左补位。这会把一份电子缺额从结面
 <div id="用电压电流电阻和电容描述一个节点"></div>
 <div id="电容把电流换算成电压变化"></div>
 
-对图中接地的线性负载电容，输出节点一侧的电荷 **Q = C<sub>L</sub>·V<sub>out</sub>**。忽略其他电流路径，按基尔霍夫电流定律（KCL），流入电容的净电流为上拉电流 I<sub>P</sub> 减去下拉电流 I<sub>N</sub>。净电流为正时，输出节点一侧的电荷增加，电压升高。净电流为负时，电荷减少，电压降低。电压变化所需的时间见[电路与时序基础](../../series/microarchitecture/02-pipeline/electrical-timing-foundations.md)。
+对图中接地的线性负载电容，输出节点一侧的电荷 **Q = C<sub>L</sub>·V<sub>out</sub>**。忽略其他电流路径，按基尔霍夫电流定律（KCL），流入电容的净电流为上拉电流 I<sub>P</sub> 减去下拉电流 I<sub>N</sub>。净电流为正时，输出节点一侧的电荷增加，电压升高。净电流为负时，电荷减少，电压降低。电压变化所需的时间见[电路与时序基础](../../microarchitecture/02-pipeline/electrical-timing-foundations.md)。
 
 ### 用串联和并联推导 NAND 与 NOR
 
@@ -271,7 +273,9 @@ N 区深处的电子仍可以向左补位。这会把一份电子缺额从结面
 
 ## 用到哪里
 
-- **时序。** 从输出节点充放电继续算到寄存器的采样边沿。见[电路与时序基础](../../series/microarchitecture/02-pipeline/electrical-timing-foundations.md)。
-- **运算。** 从基本逻辑门进入部分积和累加电路。见[从部分积到 MAC](../../series/microarchitecture/01-datapath/multiply-accumulate-from-gates.md)。
-- **存储。** 从两个反相器维持状态，读到访问管怎样连接存储节点与位线。见 [6T SRAM cell](../../series/storage/02-sram/foundations/6t-cell-bistable-storage.md)和 [1T1C DRAM](../../series/storage/03-dram/foundations/1t1c-cell-destructive-read.md)。
-- **前道工艺。** 从材料特性进入掺杂、注入和栅极结构。见[掺杂与离子注入](../../series/chip-development/FAB/wiki/02-front-end-fabrication/doping-and-ion-implantation.md)和[器件演化](../../series/chip-development/FAB/wiki/02-front-end-fabrication/transistor-evolution-planar-finfet-gaa.md)。
+下一篇[从电容充电到时钟边沿](../voltage-to-clock/README.md)从输出节点的充放电讲起，看电压越过门限需要多久。
+
+- **时序。** 从输出节点充放电继续算到寄存器的采样边沿。见[电路与时序基础](../../microarchitecture/02-pipeline/electrical-timing-foundations.md)。
+- **运算。** 从基本逻辑门进入部分积和累加电路。见[从部分积到 MAC](../../microarchitecture/01-datapath/multiply-accumulate-from-gates.md)。
+- **存储。** 从两个反相器维持状态，读到访问管怎样连接存储节点与位线。见 [6T SRAM cell](../../storage/02-sram/foundations/6t-cell-bistable-storage.md)和 [1T1C DRAM](../../storage/03-dram/foundations/1t1c-cell-destructive-read.md)。
+- **前道工艺。** 从材料特性进入掺杂、注入和栅极结构。见[掺杂与离子注入](../../chip-development/FAB/wiki/02-front-end-fabrication/doping-and-ion-implantation.md)和[器件演化](../../chip-development/FAB/wiki/02-front-end-fabrication/transistor-evolution-planar-finfet-gaa.md)。

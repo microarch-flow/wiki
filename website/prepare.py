@@ -377,20 +377,6 @@ def stage_site(root=ROOT, build_root=None, registry=None, source_root=None, layo
         _copy_storage(docs, published, storage_mappings, layout_data["storage"]["aliases"], root, storage_roots)
         _copy_microarchitecture(root, docs, published, layout_data["microarchitecture"], article, images)
 
-        for index in sorted((root / "foundations").glob("*/README.md")):
-            source = source_directory(root, index.parent.relative_to(root).as_posix())
-            target = docs / "foundations" / source.name
-            copy_source(source, target, public_only=True)
-            published.add_tree(source, target)
-
-        silicon_to_logic = docs / "foundations/silicon-to-logic"
-        if (silicon_to_logic / "README.md").is_file():
-            template = (root / "website/foundation-section-redirect.html").read_text(encoding="utf-8")
-            for slug, anchor in SILICON_TO_LOGIC_LEGACY_SECTIONS.items():
-                redirect = silicon_to_logic / slug / "index.html"
-                redirect.parent.mkdir()
-                redirect.write_text(template.replace("__SECTION__", anchor), encoding="utf-8")
-
         # Keep the published URLs stable when the review sources move.
         _assert_no_symlinks(reviews)
         shutil.copytree(reviews, docs / "reviews")
@@ -448,6 +434,14 @@ def stage_site(root=ROOT, build_root=None, registry=None, source_root=None, layo
             selected = source_directory(checkout, source["directory"])
             copy_source(selected, docs / "external" / slug)
             print(f"Staged series {item['title']} from {source['repository']}:{source['directory']}")
+
+        silicon_to_logic = docs / "foundations/silicon-to-logic"
+        if (silicon_to_logic / "README.md").is_file():
+            template = (root / "website/foundation-section-redirect.html").read_text(encoding="utf-8")
+            for slug, anchor in SILICON_TO_LOGIC_LEGACY_SECTIONS.items():
+                redirect = silicon_to_logic / slug / "index.html"
+                redirect.parent.mkdir()
+                redirect.write_text(template.replace("__SECTION__", anchor), encoding="utf-8")
 
         published.rewrite()
         validate_output_paths(docs)

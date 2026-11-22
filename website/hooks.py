@@ -27,7 +27,6 @@ from noc_navigation import NOC_SUMMARY, noc_topic_tree, read_noc_sections  # noq
 from d2d_navigation import D2D_SUMMARY, d2d_topic_tree, read_d2d_sections  # noqa: E402
 
 
-COMMON_FOUNDATIONS = "共同基础"
 CHIP_ARCHITECTURES = "series/chip-architectures"
 CHIP_ARCHITECTURES_HOME = f"{CHIP_ARCHITECTURES}/README.md"
 
@@ -52,33 +51,37 @@ TOPICS = (
 # Illustrations belong to series landing pages; article sources remain usable
 # outside the site and retain their original headings and links.
 SERIES_COVERS = {
+    "foundations/README.md": (
+        "foundations/silicon-to-logic/img/silicon-bonds.svg", "半导体基础 / 系列首页", "硅晶体中的共价键",
+        "平面示意中，中心硅原子与四个近邻各共享一对电子。实际的四条键沿四面体方向分布。", "",
+    ),
     "microarchitecture.md": (
-        "microarchitecture.svg", "微架构 / 系列首页", "执行、搬运、同步与资源",
+        "assets/images/series-covers/microarchitecture.svg", "微架构 / 系列首页", "执行、搬运、同步与资源",
         "计算、存储、互连与外部存储构成芯片的数据路径。", "",
     ),
     "storage.md": (
-        "storage.svg", "存储系统 / 系列首页", "计算、缓存、控制器与 DRAM",
+        "assets/images/series-covers/storage.svg", "存储系统 / 系列首页", "计算、缓存、控制器与 DRAM",
         "计算请求经过 cache 和控制器访问 DRAM，数据沿路径返回。", "",
     ),
     "interconnect.md": (
-        "interconnect.svg", "芯片与系统互连 / 系列首页", "端点、片上网络与链路",
+        "assets/images/series-covers/interconnect.svg", "芯片与系统互连 / 系列首页", "端点、片上网络与链路",
         "请求从一个端点经过片上互连与链路，到达另一个端点。", "",
     ),
     "external/workload-wiki/README.md": (
-        "workload.svg", "算法与模型 / 系列首页", "输入、模型、输出与计算需求",
+        "assets/images/series-covers/workload.svg", "算法与模型 / 系列首页", "输入、模型、输出与计算需求",
         "输入经过模型得到输出，并可进一步分析计算和数据需求。", "",
     ),
     "series/inference-runtime/README.md": (
-        "inference.svg", "推理运行时 / 系列首页", "请求、调度、Prefill、Decode 与 KV cache",
+        "assets/images/series-covers/inference.svg", "推理运行时 / 系列首页", "请求、调度、Prefill、Decode 与 KV cache",
         "推理请求经过调度、预填充和解码，执行时使用 KV cache。",
         "从推理阶段、请求调度和 KV cache 出发，理解模型如何提供服务。",
     ),
     "series/chip-architectures/README.md": (
-        "architectures.svg", "芯片架构实例 / 系列首页", "计算、存储和互连的不同组织",
+        "assets/images/series-covers/architectures.svg", "芯片架构实例 / 系列首页", "计算、存储和互连的不同组织",
         "三个抽象示意展示计算阵列、片上存储与互连的不同组织。", "",
     ),
     "series/chip-development/README.md": (
-        "development.svg", "芯片开发与实现 / 系列首页", "定义、设计、验证、制造与测试",
+        "assets/images/series-covers/development.svg", "芯片开发与实现 / 系列首页", "定义、设计、验证、制造与测试",
         "芯片开发从产品定义、设计和验证，延伸到制造、测试和交付。", "",
     ),
 }
@@ -95,8 +98,8 @@ def render_series_cover(html, page, docs):
     asset, label, caption, alt, fallback = cover
     heading, lead = match.group(1), match.group(2)
     intro = lead or (f"<p>{escape(fallback)}</p>" if fallback else "")
-    source = get_relative_url(f"assets/images/series-covers/{asset}", page.url)
-    version = sha256((docs / "assets" / "images" / "series-covers" / asset).read_bytes()).hexdigest()[:12]
+    source = get_relative_url(asset, page.url)
+    version = sha256((docs / asset).read_bytes()).hexdigest()[:12]
     source = f"{source}?v={version}"
     return (
         '<section class="series-cover">'
@@ -146,19 +149,15 @@ def read_series(root, registry=None):
 
 
 def render_series(entries):
-    """Render public links; the empty future tile is presentational only."""
-    cards = []
-    for index, entry in enumerate(entries, 1):
-        cards.append(
-            '<a class="portal-series-card" href="{}">'
-            '<span class="portal-card-number">SERIES / {:02d}</span>'
-            '<span class="portal-card-arrow" aria-hidden="true">↗</span>'
-            '<h3>{}</h3><p>{}</p><span class="portal-card-link">进入系列 →</span></a>'.format(
-                escape(entry["href"], quote=True), index,
-                escape(entry["title"]), escape(entry["description"]),
-            )
+    """Use the registered series as the homepage reading list."""
+    items = []
+    for entry in entries:
+        items.append(
+            f'<li><a class="portal-series-card" href="{escape(entry["href"], quote=True)}">'
+            f'<strong>{escape(entry["title"])}</strong>'
+            f'<span>{escape(entry["description"])}</span></a></li>'
         )
-    return "\n".join(cards)
+    return '<ul class="portal-series-grid" id="common-foundations-heading">\n' + "\n".join(items) + "\n</ul>"
 
 
 def title(path):
@@ -665,7 +664,7 @@ def render_breadcrumbs(page, root, sidebar_labels=None):
                       *(name for name, _, _ in RESOURCE_SECTIONS)}
     for label, index in breadcrumb_ancestors(page):
         if index is None:
-            url = "/#common-foundations" if label == COMMON_FOUNDATIONS else None
+            url = None
             if page.file.src_uri.startswith(f"{CHIP_ARCHITECTURES}/"):
                 url = f"{CHIP_ARCHITECTURES}/#{quote(slugify_unicode(label, '-'))}"
         else:
@@ -802,14 +801,6 @@ def on_config(config, **kwargs):
             config.extra["storage_sidebar_labels"][path] = (short, title(root / path))
     micro_topics, micro_labels = micro_navigation(root)
     config.extra["storage_sidebar_labels"].update(micro_labels)
-    home = "README.md"
-    foundations = root / "foundations"
-    if foundations.is_dir():
-        home = [home, {COMMON_FOUNDATIONS: make_tree(foundations, root)}]
-        for directory in sorted(foundations.glob("*/")):
-            for name, short in reading_items(directory):
-                path = directory / name
-                config.extra["storage_sidebar_labels"][path.relative_to(root).as_posix()] = (short, title(path))
     storage_topics = grouped_original_topics(root, STORAGE)
     storage_resources = storage_resources_tree(root)
     validate_storage_navigation(root, [*storage_topics, *storage_resources])
@@ -827,19 +818,21 @@ def on_config(config, **kwargs):
             else:
                 paths.append(asset)
         setattr(config, setting, paths)
-    config.nav = [
-        {"首页": home},
-        {"微架构": [
+    built_in_sections = {
+        "microarchitecture.md": {"微架构": [
             {"微架构首页": "microarchitecture.md"},
             {"精选文章": "articles.md"},
             {"互动图解": "visuals.md"},
             *micro_topics,
         ]},
-        {STORAGE: [{"系列首页": "storage.md"}, *storage_topics, *storage_resources]},
-        {INTERCONNECT: [{"系列首页": "interconnect.md"}, *grouped_original_topics(root, INTERCONNECT)]},
-    ]
+        "storage.md": {STORAGE: [{"系列首页": "storage.md"}, *storage_topics, *storage_resources]},
+        "interconnect.md": {INTERCONNECT: [{"系列首页": "interconnect.md"}, *grouped_original_topics(root, INTERCONNECT)]},
+    }
+    config.nav = [{"首页": "README.md"}]
     for entry in series:
-        if entry["source"]:
+        if entry["target"] in built_in_sections:
+            config.nav.append(built_in_sections.pop(entry["target"]))
+        elif entry["source"]:
             directory = root / "external" / entry["source"]["slug"]
             config.nav.append({entry["title"]: make_tree(directory, root, ("README.md", "index.md"))})
         elif entry["local"]:
@@ -853,8 +846,10 @@ def on_config(config, **kwargs):
             elif entry["local"]["publish"] == CHIP_ARCHITECTURES:
                 tree = chip_architecture_tree(root, directory, config.extra["storage_sidebar_labels"])
             else:
-                tree = make_tree(directory, root, ("README.md", "index.md"))
+                tree = make_tree(directory, root, ("README.md", "index.md"), order_subdirs=True)
             config.nav.append({entry["title"]: tree})
+    # A registry may list only a subset of the built-in sections on its homepage.
+    config.nav.extend(built_in_sections.values())
     validate_unique_navigation(config.nav)
     return config
 
@@ -914,7 +909,6 @@ def on_page_markdown(markdown, page, **kwargs):
                                              kwargs["config"].extra.get("noc_legacy_pages", set()))
     if page.file.src_uri == "README.md":
         config = kwargs["config"]
-        markdown = markdown.replace("__SITE_NAME__", escape(config.site_name))
         markdown = markdown.replace("<!-- site-series -->", render_series(read_series(Path(config.docs_dir))))
 
     if page.file.src_uri == "RAM/wiki/01-overview/README.md":

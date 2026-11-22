@@ -37,22 +37,36 @@ def page_url(relative):
 
 
 class GeneratedNavigationTests(unittest.TestCase):
-    def test_common_foundations_entry_precedes_series(self):
+    def test_home_introduces_semiconductor_series_and_its_two_articles(self):
         home = (SITE / "index.html").read_text(encoding="utf-8")
-        start = home.index('id="common-foundations"')
-        end = home.index('id="series"')
-        self.assertLess(start, end)
+        body = re.search(r'<article\b[^>]*>(.*?)</article>', home, re.DOTALL).group(1)
+        self.assertLess(body.index("第一个字出现之前"), body.index('id="series"'))
+        self.assertIn('id="common-foundations"', body)
+        self.assertIn('id="common-foundations-heading"', body)
+        directory = re.search(r'<ul class="portal-series-grid"[^>]*>(.*?)</ul>', body, re.DOTALL).group(1)
+        cards = re.findall(r'<a class="portal-series-card" href="([^"]+)">', directory)
         tabs = re.search(r'<nav class="md-tabs"[^>]*>(.*?)</nav>', home, re.DOTALL).group(1)
-        self.assertNotIn('href="series/"', tabs)
-        topic = "foundations/silicon-to-logic/"
-        self.assertIn(f'href="{topic}"', home[start:end])
-        article = Path(topic) / "index.html"
-        html = (SITE / article).read_text(encoding="utf-8")
-        breadcrumb = BREADCRUMB.search(html).group(1)
-        labels = re.findall(r"<(?:a|span)\b[^>]*>([^<]+)</(?:a|span)>", breadcrumb)
-        self.assertEqual(labels, ["首页", "共同基础", "从硅到门电路"])
-        link = re.search(r'<a href="([^"]+)">共同基础</a>', breadcrumb).group(1)
-        self.assertEqual(urljoin(page_url(article), link), "https://example.test/#common-foundations")
+        tab_links = re.findall(r'<a\s+href="([^"]+)"', tabs)
+        self.assertEqual(cards.count("foundations/"), 1)
+        self.assertEqual(tab_links.count("foundations/"), 1)
+        self.assertEqual([href for href in tab_links if href in cards],
+                         [href for href in cards if href in tab_links])
+
+        guide = (SITE / "foundations/index.html").read_text(encoding="utf-8")
+        reading = guide[guide.index('id="阅读顺序"'):]
+        articles = [("silicon-to-logic", "从硅到门电路"), ("voltage-to-clock", "从电容充电到时钟边沿")]
+        self.assertEqual(re.findall(r'<li><a href="([^"]+)">', reading)[:2],
+                         [f"{slug}/" for slug, _ in articles])
+        for slug, title in articles:
+            with self.subTest(article=slug):
+                self.assertNotIn(f'href="foundations/{slug}/"', body)
+                article = Path(f"foundations/{slug}/index.html")
+                html = (SITE / article).read_text(encoding="utf-8")
+                breadcrumb = BREADCRUMB.search(html).group(1)
+                labels = re.findall(r"<(?:a|span)\b[^>]*>([^<]+)</(?:a|span)>", breadcrumb)
+                self.assertEqual(labels, ["首页", "半导体基础", title])
+                link = re.search(r'<a href="([^"]+)">半导体基础</a>', breadcrumb).group(1)
+                self.assertEqual(urljoin(page_url(article), link), "https://example.test/foundations/")
 
     def test_silicon_to_logic_sections_and_legacy_routes(self):
         topic = "foundations/silicon-to-logic/"
@@ -350,7 +364,7 @@ class GeneratedNavigationTests(unittest.TestCase):
 
     def test_series_covers_have_accessible_images_and_working_links(self):
         pages = (
-            "storage/index.html", "interconnect/index.html", "external/workload-wiki/index.html",
+            "foundations/index.html", "storage/index.html", "interconnect/index.html", "external/workload-wiki/index.html",
             "series/inference-runtime/index.html", "series/chip-architectures/index.html",
             "series/chip-development/index.html",
         )

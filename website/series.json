@@ -1,8 +1,31 @@
 {
   "series": [
     {
+      "title": "半导体基础",
+      "description": "一块硅怎样做成门电路？门电路的输出又要多久才能交给下一级？",
+      "local": {
+        "directory": "series/semiconductor-foundations",
+        "publish": "foundations"
+      }
+    },
+    {
+      "title": "微架构",
+      "description": "两个矩阵相乘时，阵列里的乘加单元按什么顺序开始工作？为什么有的还在等？",
+      "page": "microarchitecture.md"
+    },
+    {
+      "title": "存储系统",
+      "description": "SRAM 和 DRAM 各自怎样存住一个比特？几笔读请求同时到达，控制器先处理哪一笔？",
+      "page": "storage.md"
+    },
+    {
+      "title": "芯片与系统互连",
+      "description": "两笔请求争用同一个出口时，谁先走？跟着一块数据，从片上网络读到服务器之间的通信。",
+      "page": "interconnect.md"
+    },
+    {
       "title": "算法与模型（Workload Wiki）",
-      "description": "从基础组件到感知、自动驾驶、机器人和世界模型，并按需延伸到芯片工作负载。",
+      "description": "语言模型逐步生成回答，扩散模型逐步生成图像。每一步需要算什么、搬什么？",
       "local": {
         "directory": "series/workload",
         "publish": "external/workload-wiki"
@@ -10,30 +33,15 @@
     },
     {
       "title": "推理运行时",
-      "description": "从请求路径、模型执行与状态管理，到调度、解码、分布式服务和性能验证。",
+      "description": "一份回答刚生成一半，又来了一个长问题。推理引擎怎样安排下一轮计算？",
       "local": {
         "directory": "series/inference-runtime",
         "publish": "series/inference-runtime"
       }
     },
     {
-      "title": "微架构",
-      "description": "从运算与流水线到指令控制、并行执行和异步资源协作。",
-      "page": "microarchitecture.md"
-    },
-    {
-      "title": "存储系统",
-      "description": "从 SRAM、DRAM 与闪存，到控制器、缓存和数据放置。",
-      "page": "storage.md"
-    },
-    {
-      "title": "芯片与系统互连",
-      "description": "从片上事务和网络，到 PCIe、SerDes 与光互连。",
-      "page": "interconnect.md"
-    },
-    {
       "title": "芯片架构实例",
-      "description": "从数据中心 GPU 和专用 AI 加速器到端侧 NPU，跟踪张量的搬运和执行。",
+      "description": "看 H100 怎样在计算时准备下一块数据，再看 TPU v4 怎样分工处理矩阵乘法和查表。",
       "local": {
         "directory": "series/chip-architectures",
         "publish": "series/chip-architectures"
@@ -41,7 +49,7 @@
     },
     {
       "title": "芯片开发与实现",
-      "description": "从产品定义、设计验证到晶圆、封装、测试和量产。",
+      "description": "架构图怎样变成硅片？跟着一颗芯片走过设计、制造和测试，再看首批样片怎样走向量产。",
       "local": {
         "directory": "series/chip-development/process",
         "publish": "series/chip-development"

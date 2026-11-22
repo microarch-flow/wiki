@@ -1,56 +1,31 @@
 ---
 title: 首页
+description: 从一次 AI 回答的等待说起，沿着计算、数据和时间，读懂从模型到硅片的八个系列。
 hide:
   - navigation
   - toc
 ---
 
-<div class="portal-page">
-  <section class="portal-hero">
-    <div class="portal-hero-copy">
-      <p class="eyebrow"><span></span> A SPACE FOR IDEAS</p>
-      <h1>__SITE_NAME__<br><em>从问题出发，<br class="mobile-break">持续深入。</em></h1>
-      <p class="portal-description">记录值得反复思考的问题，整理从基础原理到工程实践的技术文章。</p>
-      <a class="portal-button" href="#series">浏览所有系列 <span aria-hidden="true">↘</span></a>
-      <p class="portal-caption">READ <i></i> THINK <i></i> BUILD</p>
-    </div>
-    <div class="portal-art" aria-hidden="true">
-      <div class="portal-art-grid"></div>
-      <div class="portal-sheet back"><span>03</span><i></i><i></i></div>
-      <div class="portal-sheet middle"><span>02</span><i></i><i></i><i></i></div>
-      <div class="portal-sheet front"><span>01 / NOTES</span><div class="portal-sheet-mark"><b></b><b></b><b></b><b></b></div><i></i><i></i><i></i><small>COLLECT · CONNECT · EXPLORE</small></div>
-      <span class="portal-art-label">A COLLECTION OF IDEAS</span>
-    </div>
-  </section>
+<div class="portal-page" markdown="1">
 
-  <section class="portal-foundations" id="common-foundations" aria-labelledby="common-foundations-heading">
-    <div class="portal-section-heading"><h2 id="common-foundations-heading">共同基础</h2></div>
-    <div class="portal-foundations-grid">
-      <a class="portal-foundation-card" href="foundations/silicon-to-logic/">
-        <div>
-          <h3>从硅到门电路</h3>
-          <p>从硅晶格、掺杂和晶体管读到 CMOS 门电路，接上时序、存储与前道工艺。</p>
-        </div>
-        <span class="portal-foundation-arrow" aria-hidden="true">→</span>
-      </a>
-      <a class="portal-foundation-card" href="foundations/voltage-to-clock/">
-        <div>
-          <h3>从电容充电到时钟边沿</h3>
-          <p>沿着波形看比较器怎样反复翻转、晶振怎样定频，以及寄存器怎样按边沿采样。</p>
-        </div>
-        <span class="portal-foundation-arrow" aria-hidden="true">→</span>
-      </a>
-    </div>
-  </section>
+# 第一个字出现之前
 
-  <section class="portal-series" id="series">
-    <div class="portal-section-heading"><div><p class="section-number">THE COLLECTION / 01</p><h2>探索系列</h2></div><p>从一个主题进入，<br>沿着问题继续深入。</p></div>
-    <div class="portal-series-grid">
-      <!-- site-series -->
-      <div class="portal-future-card"><span class="portal-future-icon" aria-hidden="true">＋</span><div><h3>更多系列</h3><p>新的主题将在这里逐步汇集。</p></div></div>
-    </div>
-  </section>
+你向 AI 提了一个问题，屏幕上的光标还在闪。第一个字出现之前，模型要做哪些计算？这些计算落到芯片上，时间又花在哪里？
 
-  <section class="portal-note"><span class="section-number">OPEN NOTEBOOK / 02</span><p>理解一个问题，可以从一篇文章开始。<br>不同主题之间，也会慢慢建立联系。</p></section>
-  <div class="home-footer"><span>__SITE_NAME__</span><span>READ · THINK · BUILD</span></div>
+我曾在芯片公司做架构，也做过 AI 编译器和模型部署。部署模型时，我关心怎样让它在手头的芯片上跑快一点。参与开发芯片模拟器时，我可以在芯片造出来之前比较几种设计，看哪一种更适合这个模型。
+
+每逢模型跑得比预期慢，我会先问三件事。**要算多少？要搬多少数据？谁在等谁？** 假设一个计算单元已经算完了手里的数据，下一块权重却还在从显存送来的路上。再添一个乘法器，眼前这段等待也不会缩短。如果提前搬，能少等多久？可以动手算一遍。[H100 的双缓冲算例](series/chip-architectures/nvidia-h100-sxm/README.md#双缓冲能重叠多少时间)
+
+这就是我整理这份 Wiki 的起点。我把工作中遇到的问题、为弄懂它们翻过的资料和算过的例子放在一起。希望你也能顺着一次等待，从软件追到电路，再回过头来解释屏幕前看到的现象。
+
+## 从哪里读起 {#series}
+
+如果你第一次接触芯片，可以从两个硅原子之间的一条共价键读起，再看门电路怎样组成乘加单元。如果你正在部署模型，可以先读「算法与模型」和「推理运行时」。等你发现某一步在等数据，再翻到「存储系统」和「芯片与系统互连」。
+
+<nav aria-label="Wiki 系列" id="common-foundations">
+<!-- site-series -->
+</nav>
+
+这份笔记还会一边学、一边补。文中附有我用到的公开资料。哪里理解得不对，欢迎指出来。
+
 </div>
