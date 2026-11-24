@@ -2,7 +2,7 @@
   "series": [
     {
       "title": "半导体基础",
-      "description": "一块硅怎样做成门电路？门电路的输出又要多久才能交给下一级？",
+      "description": "一只逻辑门怎样工作？从硅里的电荷读到时钟、功耗和时序，再看电路怎样做成芯片。",
       "local": {
         "directory": "series/semiconductor-foundations",
         "publish": "foundations"

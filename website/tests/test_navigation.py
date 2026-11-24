@@ -37,7 +37,7 @@ def page_url(relative):
 
 
 class GeneratedNavigationTests(unittest.TestCase):
-    def test_home_introduces_semiconductor_series_and_its_two_articles(self):
+    def test_semiconductor_series_guide_lists_all_articles(self):
         home = (SITE / "index.html").read_text(encoding="utf-8")
         body = re.search(r'<article\b[^>]*>(.*?)</article>', home, re.DOTALL).group(1)
         self.assertLess(body.index("第一个字出现之前"), body.index('id="series"'))
@@ -53,18 +53,28 @@ class GeneratedNavigationTests(unittest.TestCase):
                          [href for href in cards if href in tab_links])
 
         guide = (SITE / "foundations/index.html").read_text(encoding="utf-8")
-        reading = guide[guide.index('id="阅读顺序"'):]
-        articles = [("silicon-to-logic", "从硅到门电路"), ("voltage-to-clock", "从电容充电到时钟边沿")]
-        self.assertEqual(re.findall(r'<li><a href="([^"]+)">', reading)[:2],
-                         [f"{slug}/" for slug, _ in articles])
-        for slug, title in articles:
+        reading = guide.split('id="阅读顺序"', 1)[1].split("</ol>", 1)[0]
+        entries = re.findall(r'<li><a href="([^"/]+)/">([^<]+)</a>', reading)
+        slugs = [slug for slug, _ in entries]
+        source = Path(__file__).resolve().parents[2] / "series/semiconductor-foundations"
+        titles = {page.parent.name: page.read_text(encoding="utf-8").splitlines()[0].removeprefix("# ")
+                  for page in source.glob("*/README.md")}
+        self.assertEqual(slugs[:2], ["silicon-to-logic", "voltage-to-clock"])
+        self.assertCountEqual(slugs, titles.keys())
+        for slug, short in entries:
             with self.subTest(article=slug):
                 self.assertNotIn(f'href="foundations/{slug}/"', body)
                 article = Path(f"foundations/{slug}/index.html")
                 html = (SITE / article).read_text(encoding="utf-8")
+                active = re.search(r'<a\s+href="\./"[^>]*class="[^"]*md-nav__link--active[^"]*"([^>]*)>'
+                                   r'\s*<span class="md-ellipsis">(.*?)</span>', html, re.DOTALL)
+                self.assertIsNotNone(active)
+                self.assertEqual(unescape(active.group(2).strip()), unescape(short))
+                if unescape(short) != titles[slug]:
+                    self.assertIn(f'title="{titles[slug]}"', unescape(active.group(1)))
                 breadcrumb = BREADCRUMB.search(html).group(1)
                 labels = re.findall(r"<(?:a|span)\b[^>]*>([^<]+)</(?:a|span)>", breadcrumb)
-                self.assertEqual(labels, ["首页", "半导体基础", title])
+                self.assertEqual(labels, ["首页", "半导体基础", titles[slug]])
                 link = re.search(r'<a href="([^"]+)">半导体基础</a>', breadcrumb).group(1)
                 self.assertEqual(urljoin(page_url(article), link), "https://example.test/foundations/")
 

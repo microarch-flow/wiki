@@ -42,3 +42,5 @@
 以一个上升沿触发的 D 寄存器为例。D 端接收数据，CLK 端接收时钟，Q 端输出保存的值。CLK 到达上升沿时，寄存器采样 D。为了可靠采样，D 要在边沿前稳定一段时间，称为**建立时间**。边沿后还要保持一段时间，称为**保持时间**。采到的值在边沿后经一段传播延迟出现在 Q 端。见 [MIT 6.004 的寄存器与时序讲义](https://ocw.mit.edu/courses/6-004-computation-structures-spring-2017/pages/c5/c5s1/)。
 
 设两个寄存器由同一个时钟驱动。一个寄存器在这拍发出数据，另一个在下一拍采样。数据要经过组合逻辑。留给它的时间够吗？见[电路与时序基础的寄存器路径算例](../../microarchitecture/02-pipeline/electrical-timing-foundations.md#4-算一条路径需要多长的时钟周期)。
+
+想追问晶体两端的微小扰动怎样成为可用时钟，可以沿[石英振荡器的 Pierce 回路](../quartz-oscillator/README.md)看起振和整形。若要把 25 MHz 的参考变成 50 MHz，再看[二分频触发器](../latch-and-divider/README.md)与[PLL 的闭合回路](../integer-pll/README.md)。

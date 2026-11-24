@@ -774,9 +774,10 @@ def on_config(config, **kwargs):
             for filename, short in reading_items(chapter):
                 path = chapter / filename
                 config.extra["storage_sidebar_labels"][path.relative_to(root).as_posix()] = (short, title(path))
-    # CPO reading lists may also contain immediate child-section indexes.
+    # Both series link to immediate child indexes in their numbered reading lists.
     cpo_root = root / "CPO" / "wiki"
-    for index in sorted(cpo_root.rglob("README.md")):
+    indexes = [*sorted(cpo_root.rglob("README.md")), *(root / "foundations").glob("README.md")]
+    for index in indexes:
         if index.parent == cpo_root:
             continue
         metadata = re.search(r"^<!--\s*nav-title:\s*(.+?)\s*-->\s*$", index.read_text(encoding="utf-8"), re.MULTILINE)

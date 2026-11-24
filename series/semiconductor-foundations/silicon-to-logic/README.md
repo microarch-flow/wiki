@@ -275,6 +275,8 @@ N 区深处的电子仍可以向左补位。这会把一份电子缺额从结面
 
 下一篇[从电容充电到时钟边沿](../voltage-to-clock/README.md)从输出节点的充放电讲起，看电压越过门限需要多久。
 
+也可以从这个反相器向里或向外追一步。向里看[栅极怎样控制硅表面的电荷](../bands-to-channel/README.md)，向外看[一组节点的翻转怎样累加成芯片功耗](../switching-energy-and-power/README.md)。
+
 - **时序。** 从输出节点充放电继续算到寄存器的采样边沿。见[电路与时序基础](../../microarchitecture/02-pipeline/electrical-timing-foundations.md)。
 - **运算。** 从基本逻辑门进入部分积和累加电路。见[从部分积到 MAC](../../microarchitecture/01-datapath/multiply-accumulate-from-gates.md)。
 - **存储。** 从两个反相器维持状态，读到访问管怎样连接存储节点与位线。见 [6T SRAM cell](../../storage/02-sram/foundations/6t-cell-bistable-storage.md)和 [1T1C DRAM](../../storage/03-dram/foundations/1t1c-cell-destructive-read.md)。
