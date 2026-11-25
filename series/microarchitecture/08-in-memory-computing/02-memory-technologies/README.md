@@ -31,10 +31,10 @@ HBM base die、interposer、package-side logic 或 memory module 旁 compute 按
 
 1. [SRAM 原本一次读出一个字，怎样让阵列参与计算？](./sram-cim-foundation.md)　跟踪同一列的两位，改变其中一位，看看输出怎样从 0 变为 1。
 2. [位线上的电压，怎样变成可累加的数字部分和？](./sram-cim-deep-dive.md)　跟踪正负两组位线电压，看看电压差怎样变成数字部分和。
-3. [ReRAM 作为计算元件](./reram-as-compute-element.md)：CIM；analog / mixed-signal；电导阵列可执行 MVM；非理想性与写入成本需核查。
-4. [ReRAM-CIM 深入](./reram-cim-deep-dive.md)
-5. [把乘加器放在 DRAM bank 旁，一条命令怎样算起来？](./dram-pim-foundation.md)：PIM；independent digital processing；重点是 memory die/bank 内 processing，不是 array-native CIM。
-6. [多组 bank 各算出部分和，谁把它们合成最后的答案？](./dram-pim-deep-dive.md)
+3. [把乘加器放在 DRAM bank 旁，一条命令怎样算起来？](./dram-pim-foundation.md)：PIM；independent digital processing；重点是 memory die/bank 内 processing，不是 array-native CIM。
+4. [多组 bank 各算出部分和，谁把它们合成最后的答案？](./dram-pim-deep-dive.md)
+5. [一格 ReRAM 怎样存下权重，两行电流又怎样算出点积？](./reram-as-compute-element.md)　把两个权重写成电导，沿两行算到同一列的 4.6 µA。
+6. [理想列电流应该是 4.6 µA，为什么实际读数会偏？](./reram-cim-deep-dive.md)　从理想电流出发，找出误差在哪一段进入读数。
 7. [Flash CIM](./flash-cim-niche.md)：CIM；analog / mixed-signal；需结合权重更新、校准与部署条件评估。
 8. [PCM 和 MRAM 作为 CIM 介质](./pcm-mram-for-cim.md)：CIM 研究分支；取决于 device；PCM 偏 analog multi-level，MRAM 更偏 binary/digital-like。
 9. [存储计算路线速查](./memory-tech-comparison-matrix.md)
