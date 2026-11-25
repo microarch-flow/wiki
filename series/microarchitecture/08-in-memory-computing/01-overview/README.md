@@ -12,7 +12,7 @@
 
 ## 本章先钉住两件事
 
-第一件事是物理机制与术语口径。[位置与命名](./cim-pim-nmc-taxonomy.md)统一记录计算在哪里、阵列是否参与求值，并说明本专题的窄义分类与文献广义 PIM 的区别。分类依据是可核实的位置和路径，不是名称是否符合本文用词。
+第一件事是物理机制与术语口径。[跟着同一个点积走三条路](./cim-pim-nmc-taxonomy.md)，可以逐项核对乘法在哪里发生、谁保存部分和，最后对照文献使用的术语。分类依据是可核实的位置和路径，不是名称是否符合本文用词。
 
 第二件事是两条正交主线。[两条正交主线](./two-axes-memory-and-paradigm.md) 把横轴定义为 memory technology，把纵轴定义为 compute paradigm。横轴回答“权重和计算依附在哪类 memory 物理对象上”，纵轴回答“乘加到底以 analog、digital 还是 mixed-signal 方式发生”。这两个问题不能互相替代。
 
@@ -22,7 +22,7 @@
 ## 阅读顺序
 
 1. [Memory Wall 与 Von Neumann Bottleneck](./problem-statement.md)
-2. [CIM、PIM、NMC 的位置与口径](./cim-pim-nmc-taxonomy.md)
+2. [同一个点积，挪到存储旁边或阵列里面怎么算？](./cim-pim-nmc-taxonomy.md)
 3. [两条正交主线](./two-axes-memory-and-paradigm.md)
 4. [早期 PIM 原型未规模采用与 AI 时代的新机会](./why-cim-now-and-why-not-before.md)
 5. [CIM 整体分类体系](./taxonomy.md)

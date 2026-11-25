@@ -100,6 +100,8 @@ RISC-V 向量扩展的加宽整数乘加给出了具体契约。两个等宽输�
 <details markdown="1">
 <summary>随数据路径继续读</summary>
 
+还用 2、3 和 4、5 这四个数，如果让存着权重的阵列参与运算，乘积 8 和 15 还会在哪里出现？[同一个点积，挪到存储旁边或阵列里面怎么算？](../08-in-memory-computing/01-overview/cim-pim-nmc-taxonomy.md)
+
 从这个点积出发，位宽和路径选择见[数值格式与运算数据通路](../01-datapath/README.md)，相邻两级如何交接见[流水线与时序](../02-pipeline/README.md)。当许多指令都要占用乘法器，控制问题可以沿[指令执行](../03-instruction-execution/README.md)和[并行执行](../04-parallel-execution/README.md)继续追。真实处理器 BOOM 区分取指、发射、执行、写回和提交等职责，其中若干职责可以合在同一物理流水级。[BOOM 流水线文档](https://docs.boom-core.org/en/latest/sections/intro-overview/boom-pipeline.html)
 
 从单端口例子往上游走，读请求可以由 [DMA](../05-dma/README.md) 展开和执行。[任务控制](../06-task-control/README.md)再把搬运、计算、写回和缓冲释放排进同一日程。存储和互联系列展开 cache、DRAM 控制器与协议，计算一侧跟踪请求由哪个端口发出、响应何时可见、顺序如何保持，以及下游来不及接收时怎样反压上游。

@@ -26,7 +26,7 @@ title: "计算微架构：执行、数据通路与资源协作"
 | [DMA 与异步数据搬运](./05-dma/README.md) | 搬运任务如何展开、执行和完成 | [从描述符到缓冲区回收的四篇首读](./05-dma/README.md#dma-first-reads)，另有系统集成、建模与案例 |
 | [任务控制、同步与资源管理](./06-task-control/README.md) | 多个引擎如何协作，buffer 何时能复用 | DMA、计算、写回的事件与所有权 |
 | [处理单元与片上组织](./07-chip-organization/README.md) | 同一块矩阵怎样分给不同执行资源 | CPU、GPU、NPU 的执行过程与跨单元分块 |
-| [存内与近存计算](./08-in-memory-computing/README.md) | 把计算移近或放入存储路径会改变什么 | CIM、PIM、NMC 的物理机制与系统边界 |
+| [存内与近存计算](./08-in-memory-computing/README.md) | 把计算移近或放入存储路径会改变什么 | [用同一个点积比较三条数据路径](./08-in-memory-computing/01-overview/cim-pim-nmc-taxonomy.md)，再查介质、阵列与系统案例 |
 | [功耗管理与实现权衡](./09-power-implementation/README.md) | 执行方式如何影响能量与实现成本 | 频率、功率、任务能量、FPGA/ASIC |
 
 [分析方法与查阅练习](./reading-and-reference/README.md)提供指标定义、建模建议、自测和跨专题路线。分支预测、乱序窗口、LSU/TLB、CDC 电路和电源状态管理还未形成完整专题；现有导读会指出相应边界。

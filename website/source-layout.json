@@ -611,6 +611,10 @@
         "target": "CIM/wiki/01-overview/cim-pim-nmc-taxonomy.md"
       },
       {
+        "source": "series/microarchitecture/08-in-memory-computing/01-overview/img/cim-dot-paths.svg",
+        "target": "CIM/wiki/01-overview/img/cim-dot-paths.svg"
+      },
+      {
         "source": "series/microarchitecture/08-in-memory-computing/01-overview/learning-roadmap.md",
         "target": "CIM/wiki/01-overview/learning-roadmap.md"
       },

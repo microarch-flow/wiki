@@ -1,0 +1,89 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 464" role="img" aria-labelledby="title desc">
+  <title id="title">两对无符号数逐位相与，按位权合成 23</title>
+  <desc id="desc">两项输入为 2 和 3，权重为 4 和 5。输入低位平面为 0、1，高位平面为 1、1。分别同三个权重位平面逐项相与，得到的掩码按两元素数 1。低位对应三个计数 1、0、1，按权重相加为 5。高位对应 2、0、1，按权重相加为 9。考虑输入位权，5 加 2 乘 9 等于 23。阵列按列独立求 AND，数 1 和移位相加是教学模型另设的数字外围。</desc>
+  <style>
+    text { font-family: system-ui, "Noto Sans CJK SC", "PingFang SC", sans-serif; fill: #173b32; }
+    .title { font-size: 24px; font-weight: 700; }
+    .sub { font-size: 17px; fill: #3b5b4f; }
+    .head { font-size: 18px; font-weight: 650; }
+    .group { font-size: 17px; text-anchor: middle; }
+    .bit { font-size: 21px; text-anchor: middle; font-weight: 650; }
+    .count { font-size: 20px; text-anchor: middle; font-weight: 680; fill: #71451f; }
+    .math { font-size: 18px; text-anchor: middle; font-weight: 650; }
+    .result { font-size: 24px; font-weight: 680; text-anchor: middle; }
+  </style>
+  <rect width="720" height="464" rx="14" fill="#f2f5ed"/>
+  <text x="19" y="36" class="title">两个输入位平面，分别与三个权重位平面做 AND</text>
+  <text x="19" y="66" class="sub">每对小格从左到右对应元素 0、1。每一行只取权重的同一个二进制位。</text>
+  <rect x="15" y="88" width="187" height="267" rx="9" fill="#e9eee4" stroke="#b2c5b5"/>
+  <rect x="210" y="88" width="242" height="267" rx="9" fill="#f9fbf5" stroke="#a9bead"/>
+  <rect x="461" y="88" width="243" height="267" rx="9" fill="#f9fbf5" stroke="#a9bead"/>
+  <text x="29" y="118" class="head">权重 W = (4, 5)</text>
+  <text x="331" y="118" class="head" text-anchor="middle">输入低位 X₀ = (0, 1)</text>
+  <text x="582" y="118" class="head" text-anchor="middle">输入高位 X₁ = (1, 1)</text>
+  <text x="107" y="149" class="group">位权　　存储位</text>
+  <text x="271" y="149" class="group">相与结果</text><text x="387" y="149" class="group">数 1</text>
+  <text x="522" y="149" class="group">相与结果</text><text x="638" y="149" class="group">数 1</text>
+  <text x="32" y="193" class="head">W₂ · 4</text>
+  <rect x="117" y="169" width="31" height="35" rx="4" fill="#cfe1cd" stroke="#809b85"/>
+  <text x="132.5" y="194" class="bit">1</text>
+  <rect x="152" y="169" width="31" height="35" rx="4" fill="#cfe1cd" stroke="#809b85"/>
+  <text x="167.5" y="194" class="bit">1</text>
+  <rect x="239" y="169" width="31" height="35" rx="4" fill="#f6f8f1" stroke="#809b85"/>
+  <text x="254.5" y="194" class="bit">0</text>
+  <rect x="274" y="169" width="31" height="35" rx="4" fill="#cfe1cd" stroke="#809b85"/>
+  <text x="289.5" y="194" class="bit">1</text>
+  <path d="M319 187h24m-6-5 6 5-6 5" fill="none" stroke="#697871" stroke-width="1.8" stroke-linejoin="round"/>
+  <circle cx="387" cy="187" r="17" fill="#f4e5cc" stroke="#ad8e61"/>
+  <text x="387" y="194" class="count">1</text>
+  <rect x="490" y="169" width="31" height="35" rx="4" fill="#cfe1cd" stroke="#809b85"/>
+  <text x="505.5" y="194" class="bit">1</text>
+  <rect x="525" y="169" width="31" height="35" rx="4" fill="#cfe1cd" stroke="#809b85"/>
+  <text x="540.5" y="194" class="bit">1</text>
+  <path d="M570 187h24m-6-5 6 5-6 5" fill="none" stroke="#697871" stroke-width="1.8" stroke-linejoin="round"/>
+  <circle cx="638" cy="187" r="17" fill="#f4e5cc" stroke="#ad8e61"/>
+  <text x="638" y="194" class="count">2</text>
+  <text x="32" y="257" class="head">W₁ · 2</text>
+  <rect x="117" y="233" width="31" height="35" rx="4" fill="#f6f8f1" stroke="#809b85"/>
+  <text x="132.5" y="258" class="bit">0</text>
+  <rect x="152" y="233" width="31" height="35" rx="4" fill="#f6f8f1" stroke="#809b85"/>
+  <text x="167.5" y="258" class="bit">0</text>
+  <rect x="239" y="233" width="31" height="35" rx="4" fill="#f6f8f1" stroke="#809b85"/>
+  <text x="254.5" y="258" class="bit">0</text>
+  <rect x="274" y="233" width="31" height="35" rx="4" fill="#f6f8f1" stroke="#809b85"/>
+  <text x="289.5" y="258" class="bit">0</text>
+  <path d="M319 251h24m-6-5 6 5-6 5" fill="none" stroke="#697871" stroke-width="1.8" stroke-linejoin="round"/>
+  <circle cx="387" cy="251" r="17" fill="#f4e5cc" stroke="#ad8e61"/>
+  <text x="387" y="258" class="count">0</text>
+  <rect x="490" y="233" width="31" height="35" rx="4" fill="#f6f8f1" stroke="#809b85"/>
+  <text x="505.5" y="258" class="bit">0</text>
+  <rect x="525" y="233" width="31" height="35" rx="4" fill="#f6f8f1" stroke="#809b85"/>
+  <text x="540.5" y="258" class="bit">0</text>
+  <path d="M570 251h24m-6-5 6 5-6 5" fill="none" stroke="#697871" stroke-width="1.8" stroke-linejoin="round"/>
+  <circle cx="638" cy="251" r="17" fill="#f4e5cc" stroke="#ad8e61"/>
+  <text x="638" y="258" class="count">0</text>
+  <text x="32" y="321" class="head">W₀ · 1</text>
+  <rect x="117" y="297" width="31" height="35" rx="4" fill="#f6f8f1" stroke="#809b85"/>
+  <text x="132.5" y="322" class="bit">0</text>
+  <rect x="152" y="297" width="31" height="35" rx="4" fill="#cfe1cd" stroke="#809b85"/>
+  <text x="167.5" y="322" class="bit">1</text>
+  <rect x="239" y="297" width="31" height="35" rx="4" fill="#f6f8f1" stroke="#809b85"/>
+  <text x="254.5" y="322" class="bit">0</text>
+  <rect x="274" y="297" width="31" height="35" rx="4" fill="#cfe1cd" stroke="#809b85"/>
+  <text x="289.5" y="322" class="bit">1</text>
+  <path d="M319 315h24m-6-5 6 5-6 5" fill="none" stroke="#697871" stroke-width="1.8" stroke-linejoin="round"/>
+  <circle cx="387" cy="315" r="17" fill="#f4e5cc" stroke="#ad8e61"/>
+  <text x="387" y="322" class="count">1</text>
+  <rect x="490" y="297" width="31" height="35" rx="4" fill="#f6f8f1" stroke="#809b85"/>
+  <text x="505.5" y="322" class="bit">0</text>
+  <rect x="525" y="297" width="31" height="35" rx="4" fill="#cfe1cd" stroke="#809b85"/>
+  <text x="540.5" y="322" class="bit">1</text>
+  <path d="M570 315h24m-6-5 6 5-6 5" fill="none" stroke="#697871" stroke-width="1.8" stroke-linejoin="round"/>
+  <circle cx="638" cy="315" r="17" fill="#f4e5cc" stroke="#ad8e61"/>
+  <text x="638" y="322" class="count">1</text>
+  <text x="29" y="385" class="head">按权重位权合并</text>
+  <text x="331" y="385" class="math">1×4 + 0×2 + 1×1 = 5</text>
+  <text x="582" y="385" class="math">2×4 + 0×2 + 1×1 = 9</text>
+  <rect x="15" y="405" width="689" height="46" rx="7" fill="#dfead9"/>
+  <text x="360" y="436" class="result">按输入位权合并　 5 × 1 + 9 × 2 = 23</text>
+</svg>

@@ -10,7 +10,7 @@
 1. [AI 加速器里的 DMA](./ai-accelerator-dma.md)
 2. [CPU / GPU / NPU 系统中的 DMA 分工](./cpu-gpu-npu-comparison.md)
 3. [嵌入式多媒体与存储/网络路径](./embedded-storage-network.md)
-4. [HBM 到 Tile 的数据供给链](./hbm-to-tile-data-supply-chain.md)
+4. [从 HBM 到计算阵列，一块数据什么时候才算就绪？](./hbm-to-tile-data-supply-chain.md)
 5. [AXI DMA 案例卡](./axi-dma-case-card.md)
 6. [PCIe NIC DMA 案例卡](./pcie-nic-dma-case-card.md)
 7. [NVMe / 存储路径中的 DMA](./nvme-storage-dma-case-card.md)
