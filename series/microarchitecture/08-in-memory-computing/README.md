@@ -28,6 +28,8 @@
 
 如果两个子阵列同时算完、却共用一只 ADC，第二份结果在哪里等？沿着[两份模拟部分和的读出](./03-compute-paradigms/mixed-signal-cim.md#signal-handoff)看它们怎样先后变成 8 和 15，再用[相同的输出要求](./03-compute-paradigms/analog-vs-digital-tradeoff-map.md#same-dot-product)对比能量和延迟。
 
+再把这两份样本放进一颗计算宏。沿着[一条命令的驱动、转换和交付](./04-circuit-and-macro/cim-macro-primitives.md#follow-one-command)找结果在哪里等待，再用[保持样本与参考电压的逐次比较](./04-circuit-and-macro/adc-dac-sa-in-cim.md#sample-to-code)复算它的数字码。
+
 <span class="micro-legacy-anchor" id="十章地图"></span>
 
 ## 阅读顺序

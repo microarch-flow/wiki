@@ -1,48 +1,64 @@
-# ADC/DAC/Sense Amp：Analog CIM 的咽喉
+# 比较器每次只判一位，ADC 怎样把 16 mV 和 30 mV 读成 8 和 15？
 
-上级：[电路、外围与计算宏](./README.md)
-相关：[Analog CIM 基础](../03-compute-paradigms/analog-cim-fundamentals.md), [Peripheral Overhead](./peripheral-overhead.md), [ReRAM-CIM 深入](../02-memory-technologies/reram-cim-deep-dive.md)
+<span class="micro-legacy-anchor" id="adcdacsense-ampanalog-cim-的咽喉"></span>
+<span class="micro-legacy-anchor" id="这页在回答什么问题"></span>
 
-## 这页在回答什么问题
+一次读窗结束，两份部分和还分别停在两只电容上。A 相对复位点改变了 16 mV，B 改变了 30 mV。数字累加器要的是 8 和 15。多路选择器先接 A，比较器只能回答“比参考高还是低”。第一次应该拿什么电压来比？为什么还要把 A 稳稳地留在输入端，直到最后一次判决？[沿上一条命令追到宏的输出](./cim-macro-primitives.md#follow-one-command) · [两份模拟部分和的来源](../03-compute-paradigms/mixed-signal-cim.md#signal-handoff)
 
-为什么很多 analog CIM 的理想能效到 macro 后会缩水？因为阵列输出不是可直接交给数字系统的结果，需要输入驱动和某种读出或转换路径。其结构因实现而异。模拟读出可能经 ADC 转换；数字 CIM 可能使用 sense amplifier 判决。SA 和 ADC 不一定串接，reference、校准和 sample/hold 也需按实际电路核算。
+## 样本的电压是谁产生的，又该在什么时候截住？ {#三类电路的职责}
 
-## 三类电路的职责
+本例用两个子阵列分别算 2 × 4 与 3 × 5。数字输入 2、3 通过行驱动器得到 40、60 mV 的读激励；预先写好的两个权重分别是 40、50 µS。假定小信号读区内电导线性，前端在读窗中维持所需列电位，则两支路分别给出 **1.6 µA 和 3.0 µA**。输入端可以用数模转换器（DAC）选择电压幅度，也可以固定幅度，改用脉宽、等权脉冲的个数，或把输入位平面逐次送入。后三种做法把部分编码开销移到时间、驱动和控制上。[模拟 CIM 的输入和列信号](../03-compute-paradigms/analog-cim-fundamentals.md)
 
-DAC 或 input driver 把数字输入变成模拟激励。它可以是电压幅度、脉宽、脉冲次数或多周期 bit-serial 控制；位宽越高，输入端开销越难隐藏。
+读窗打开前，每个积分器把自己的 1 pF 反馈电容复位到已知参考。驱动建立后同时积分 10 ns，A 收到 1.6 µA × 10 ns = 16 fC，B 收到 30 fC。电荷除以各自的 1 pF，于是得到 **16 mV 和 30 mV 的变化量**，都按相对复位点的正幅值记账。窗口结束时隔离各自的样本，让积分停止。过早采样会少积一段电荷；若到 ADC 空闲才切断一直导通的 B，B 又会多积一段。B 的样本应在自己的读窗结束时确定，轮到它时再转换。多路选择器和 ADC 的采样网络还要有时间建立，才能开始比较。
 
-Sense amplifier 把小电压或小电流差放大并判决。对 SRAM digital CIM，它可能服务于 bitwise 结果；对 SRAM mixed-signal CIM，它可能面对 charge/current accumulation 的小 margin；有些实现将读出放大级置于 ADC 前；其他实现直接由 ADC 或其比较器完成相应判决。应以具体电路为准。
+这里有三个容易混淆的量：行上的读电平决定单元电流，积分器的复位电平给电压变化量规定零点，转换器参考决定 ADC 码之间的刻度。它们可以共用一部分参考电路，职责各不相同。权重的编程、写后验证以及设置这些偏置若要耗能，也应分清是换权重时付一次，还是每个读窗都要供给。[从单元两端核对读电压](../02-memory-technologies/reram-cim-deep-dive.md)
 
-ADC 把 array 输出的电流、电压或电荷转成数字 partial sum。ADC 精度与参考电路、噪声、面积、能耗和吞吐相关；比较次数与功耗如何变化取决于 ADC 架构。不能在没有具体设计和统计边界时为面积或能耗指定通用比例。
+## 用四次判决，怎样缩小到唯一的码？ {#sample-to-code}
 
-## 三条 Paradigm 的差异
+沿用理想 4 位无符号传递曲线：码 0 对应 0 mV，码 1 对应 2 mV，依次到码 15 对应 30 mV。样本除以 **2 mV/码**，舍入到最近的整数；若正好在两个码正中间，就取较高码。低于码 0、超过码 15 的结果钳在端点。由此，进入码 1 的下边界是 1 mV，进入码 8 是 15 mV，进入码 15 是 29 mV。理想曲线上低于 1 mV 都报 0，从 29 mV 往上都报 15；所以 30 mV 落入最高码本来就是正确结果；仅凭码 15 无法判断是否过量程。超出器件允许输入范围时，真实芯片的行为还须按规格核查。
 
-Analog CIM 对 ADC/DAC 最敏感。ReRAM/Flash 的 array-native MVM 必须靠量化进入数字系统，ADC 位数、共享方式和采样率直接决定有效精度与吞吐。
+用逐次逼近（SAR）的思路做一个教学转换器。比较器每次问“样本是否**大于或等于**当前门槛”，控制器据此保留一半候选码并换一个参考。初始候选为 0…15，要区分低八码与高八码，门槛应放在码 7 的代表值 14 mV 和码 8 的代表值 16 mV 之间，也就是 **15 mV**。如果拿 16 mV 当分界，15.5 mV 就会错误地留在低半边。这张表中的参考是按本例舍入规则设计的，不是把某一商用 SAR 的 DAC 标称刻度直接搬来。[逐次逼近 ADC 中的采样、比较器与试探 DAC](https://www.analog.com/en/resources/technical-articles/2022/07/16/07/42/successive-approximation-registers-sar-and-flash-adcs.html)
 
-Digital CIM 可以避免完整 ADC，但不能避免 sense path 和 local logic。它的代价转移到 SA 稳定性、popcount tree、bit-serial cycles、shift-add accumulator 和 routing。
+| 第几次判决 | A 保持 16 mV，比较后留下哪些码 | B 保持 30 mV，比较后留下哪些码 |
+| --- | --- | --- |
+| 1，定最高位 | 16 ≥ 15，留下 8…15，首位 **1** | 30 ≥ 15，留下 8…15，首位 **1** |
+| 2 | 16 < 23，留下 8…11，下一位 **0** | 30 ≥ 23，留下 12…15，下一位 **1** |
+| 3 | 16 < 19，留下 8…9，下一位 **0** | 30 ≥ 27，留下 14…15，下一位 **1** |
+| 4，定最低位 | 16 < 17，只剩码 **8（1000）** | 30 ≥ 29，只剩码 **15（1111）** |
 
-Mixed-signal CIM 的核心设计点是边界：更晚 ADC 化可以保留 analog 并行，但 calibration 和 noise 更难；更早 SA/comparator 判决可以提高可控性，但会损失 analog 局部累加收益。
+每列从上往下读是一份样本的四个决定。实际安排先把 A 送入共享 ADC，保留 A 的码并关联到本次输出，再送 B。A 的码先存着，B 的码随后到达。两份码都到齐且零点、尺度相同，数字端才可扩展位宽后相加。**8 + 15 = 23（10111）**，这个结果至少要 5 位。若连累加器也只留 4 位，无符号回绕会得到 7，饱和则得到 15，两种结果都错。等待中的 B 可以由本地保持电容保存；已接收的 A 在最后一次判决前要由 ADC 内部或外部的保持路径维持稳定。四次判决是这只教学转换器内部的步骤。上一篇让 A 在宏时钟的 E2 到 E3 之间完成转换，取的是宏接口上的一拍。若要用逐次逼近电路实现那个假设，四次参考建立与比较、锁存等过程必须能放进这段时间；若放不下，就得延后 E3 的完成事件。
 
-## ADC 共享不是免费午餐
+## 门槛一起偏高，累加器为什么会收到 21？
 
-每列 ADC 吞吐高，但面积和功耗重。多列共享 ADC 可降面积，却引入 multiplexing、sample/hold、时序排队和带宽瓶颈。分时 ADC 对低吞吐 edge inference 可能可接受，对高利用率 NPU tile 可能让 array 空转。
+设积分器和权重都正确，唯一变化是转换时**每个判决门槛都上移了 1.2 mV**。进入码 8 的门槛从 15 升到 16.2 mV，A 的 16 mV 现在落入码 7。进入码 15 的门槛从 29 升到 30.2 mV，B 的 30 mV 也只到码 14。数字端收到的是 **7 + 14 = 21**。两次出现同方向误差，是因为重复使用了同一套偏移门槛。这个例子假设的是等幅偏移；若参考幅度改变使码间距伸缩，属于增益变化，要重新计算各个门槛。若只有等候的 B 在保持期间下垂而 A 正常，则要查保持时间和漏电，不能凭一份偏小的和便指认 ADC。将已知电压直接送到待测转换器、扫描跳码位置，再与积分结束时及转换开始前的样本对照，才有条件区分这些原因。
 
-假设八个独立样本由两个 ADC 处理，每个 ADC 每轮转换一个样本，且每个样本能均衡路由，则需要四轮，共八次转换；四个 ADC 均衡分配则需两轮，仍为八次转换。若固定连接使四个样本都只能去 ADC 0，即使有四个 ADC 也要四轮。若 ADC 可流水化，转换 latency 可以大于启动间隔（II），完成时间应按排队和两者计算，而不能简单把轮数乘以 latency。若在转换前有实际模拟合并，先按合并后的独立样本数重新计数。详见[参数字典](../05-architecture-and-system/cim-modeling-parameter-schema.md#adc-样本转换次数与共享)。
+**分辨率、准确度和有效位数各回答不同的问题。** 这只 ADC 的分辨率仍为 4 位，共 16 个码，理想码间距 2 mV。零点偏移、实际增益、非线性、参考噪声和采样误差都会改变判决的准确程度。有效位数（ENOB）通常依据给定采样率、输入正弦频率和幅度下测得的信噪失真比来描述动态表现；一次直流输入读错一个码，不能据此算出 ENOB，宏的点积准确率也须另测。提高标称位数后，参考、噪声和建立时间若没有相应改进，新增码数未必成为可用精度。[ADC 动态性能与 ENOB 的测试口径](https://www.analog.com/en/resources/technical-articles/how-to-calculate-enob-for-adc-dynamic-performance-measurement.html)
 
-[ISAAC 论文](https://users.cs.utah.edu/~rajeev/pubs/isca16-old.pdf)给出 sample/hold 配合共享 ADC 的架构实例。其采样率、交叠和能耗属于具体设计点，不是通用常数。
+<span class="micro-legacy-anchor" id="与-ram-sense-path-的关系"></span>
 
-因此读论文时不能只记录 ADC bit 数，还要记录 ADC 架构、列共享比、sample rate、是否包含 reference、是否包含 input DAC、是否包含数字校正和 calibration memory。
+## 感放读一个布尔值，也要接这么一套 ADC 吗？ {#三条-paradigm-的差异}
 
-## 与 RAM Sense Path 的关系
+普通 SRAM 和 DRAM 读出时，感测放大器（sense amplifier，SA）可以放大很小的位线电压或电流差，配合判决、锁存或恢复电路，可靠读出原有存储位。数字 SRAM-CIM 若让两行共同影响位线，经过一个设计好的参考门槛就可能判出一个布尔函数。后面可以对许多离散位做 popcount、移位和累加，关键代价是感测裕量、局部加法树、位串行周期和路由。两行或多行参与同一次感测时，要重新检查判决窗口与读扰动。[SRAM 的读写时序](../../../storage/02-sram/foundations/read-write-cycle-timing.md) · [DRAM 行列译码与感测恢复](../../../storage/03-dram/foundations/row-column-decode-sense-amplify.md)
 
-传统 SRAM/DRAM sense path 追求可靠读出；CIM sense path 还要承载 partial sum 或 bitwise 判决。RAM wiki 中的 [read/write timing](../../../storage/02-sram/foundations/read-write-cycle-timing.md) 和 [row-column decode sense amplify](../../../storage/03-dram/foundations/row-column-decode-sense-amplify.md) 是理解这条路径的基础，但 CIM 会进一步牺牲一部分 margin 来换取局部计算。
+若希望保留刚才的模拟部分和，只问一次“高于 15 mV 吗”，16 和 30 mV 都只会给出“是”。要恢复不同幅值，就要更多判决信息。ReRAM、Flash 的阵列原生模拟乘加可经 ADC 进入数字系统，SRAM 也可把电荷或电流累加后再转换。某些前端先放大、积分或将电流转成电压，再交给 ADC；另一些直接由 ADC 的比较器或电流读出电路作出判决。**SA 和 ADC 不必串接。** 在局部尽早形成逻辑位，可以把误差限制在感测判决处，却要另付数字归约的代价；晚一点再数字化可以保留模拟并行，但模拟量程、噪声和校准预算会随之改变。
 
-DRAM/HBM/GDDR-PIM 中也有 PHY、sense path 和模拟接口，但那不是本页讨论的 analog CIM ADC 问题。PIM 的关键是 memory die/bank 侧的独立 compute unit、command/dataflow 和 host offload；HBM base die、interposer 或 package-side logic 上的 compute 属于 NMC 边界，不应拿来和 CIM column ADC 直接比较。
+IBM 的 **HERMES** 提供了一个不同于上表的实物例子。其 64 核 PCM 芯片用读脉冲宽度编码输入，每核有 256 个单元行，每个输出行配一只时域电流 ADC。校准过的电流镜驱动电流控制振荡器（CCO），转换电路利用振荡的时间信息给出数字结果；片上还存有用于修正 ADC 偏置、增益和非线性的配置。这条路径直接处理阵列输出电流。上表中依次试 15、23、19、17 mV 的四次判决是教学电压转换器的过程。[HERMES 的 PWM、时域 ADC 与校准，第 3 页](https://arxiv.org/pdf/2212.02872#page=3) · [HERMES 核的 CCO 转换器](https://research.ibm.com/publications/hermes-core-a-159-topsmmlesssupgreater2lesssupgreaterpcm-on-14-nm-cmos-in-memory-compute-core-using-300-pslsb-linearized-cco-based-adcs)
 
-## 一句话理解
+DRAM/HBM/GDDR-PIM 同样需要感放、PHY 和模拟接口；若权重常规读出后才送 bank 旁独立数字单元乘加，应跟踪指令、寄存器及主机卸载路径。放到 HBM base die、中介层或封装侧的独立计算单元则属于本系列的近存计算边界。这些位置不说明阵列在输出一个需要列 ADC 量化的点积。
 
-ADC/DAC/SA 是 analog 与 mixed-signal CIM 的咽喉：它们决定阵列物理并行能留下多少，而不是只负责把结果“读出来”。
+<span class="micro-legacy-anchor" id="adc-共享不是免费午餐"></span>
 
-## 研究启示
+## 八个样本分给几只 ADC，最后一个要等多久？ {#shared-adc-schedule}
 
-研究应从 “array-only energy” 转向 “conversion-aware macro”。必须报告 ADC/DAC/SA 的位宽、架构、共享比、能耗、面积、时序和校准策略；产业上，可部署方案更倾向低比特 ADC、强数字校正和可测试的 mixed-signal 边界。
+先假设八份独立样本已同时保持好，每只 ADC 每轮只接收一份，每份只转换一次，结果出口无阻塞。均衡分给两只 ADC，每只分到四份，需**四轮发起、八次转换**；分给四只则每只两份，需**两轮发起、仍是八次转换**。如果选路固定，其中四份只能送 ADC 0，其余四份可在其余三只之间摊开，最忙的 ADC 0 仍需四轮。暂时空闲的转换器没有电路把这四份样本送来，便帮不上忙。若改动实际电路，在转换前先把多个部分和正确模拟合并，才需要重新数独立样本数和新量程。
+
+再给共享资源一个时钟。与前面的四步教学 SAR 分开，假设这里用可流水的 ADC，启动间隔 II 为 1 拍，从接收到交付数字码的延迟 L 为 3 拍。以第一批被接收的上升沿为 t = 0，上一批在转换也能接下一个。两只均衡时，各自在 t = 0、1、2、3 接收，最后两份于 **t = 6** 就绪；四只均衡时，在 t = 0、1 接收，最后四份于 **t = 4** 就绪。有四份绑在 ADC 0 时，最后一份又到 **t = 6**。只要这批样本一开始都就绪、无阻塞，最后一只忙碌的 ADC 分到 N 份时，末次完成时刻为 **(N − 1) × II + L**；多路选择器的建立、输入到达和输出写回若另占时隙，还得计入。
+
+共享读出节省转换器面积，却增加多路选择、保持与等待。低吞吐边缘推理可以允许更长的等待，连续供数的 NPU tile 若来不及取走上一轮样本，就要增加保持槽位或让阵列停下来。ISAAC 架构论文画出了先保持多列结果、再依次送共享 ADC、最后移位累加的工作流。论文中的转换速率和流水重叠对应其设计配置。[ISAAC 原论文](https://users.cs.utah.edu/~rajeev/pubs/isca16-old.pdf) · [作者存档，图 1b 与共享配置](https://svivek.com/research/publications/shafiee2016isaac.pdf) · [参数字典中的样本数、转换数与共享](../05-architecture-and-system/cim-modeling-parameter-schema.md#adc-样本转换次数与共享)
+
+<span class="micro-legacy-anchor" id="一句话理解"></span>
+<span class="micro-legacy-anchor" id="研究启示"></span>
+
+核算这个宏时，可以用“交付一个正确的 23”作边界。按实际实现计入输入驱动或多位 DAC、偏置和参考、采样保持、感放或 ADC、控制和数字合并；把复用率、采样率、首结果延迟与持续吞吐列清。若权重需重新编程、偏置需校准或补偿系数需存储，将这些开销按发生频率计入。一只低位宽 ADC 配数字校正在某些实物中可行，面积与能量能否低于多位转换，要连同校准、测试和输出精度一起验证。[宏的外围开销](./peripheral-overhead.md) · [电路、外围与计算宏](./README.md)
+
+如果保持电路与 ADC 不动，只把输入 3 从“一档 60 mV 电压”改成“三个等权脉冲”，哪些时隙和哪些数字归约需要跟着改变？[下一篇：数据怎样编码后送进阵列](./data-encoding-strategies.md)

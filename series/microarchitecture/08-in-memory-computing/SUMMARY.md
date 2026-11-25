@@ -41,8 +41,8 @@
 ## 04 Circuit and Macro — 电路与宏
 
 - [章导读](./04-circuit-and-macro/README.md)
-- [CIM Macro 的基本原语：Array、Driver、Sense、Accumulator](./04-circuit-and-macro/cim-macro-primitives.md)
-- [ADC/DAC/Sense Amp：Analog CIM 的咽喉](./04-circuit-and-macro/adc-dac-sa-in-cim.md)
+- [一条点积命令进了 CIM 宏，结果在哪一拍才算交付？](./04-circuit-and-macro/cim-macro-primitives.md)
+- [比较器每次只判一位，ADC 怎样把 16 mV 和 30 mV 读成 8 和 15？](./04-circuit-and-macro/adc-dac-sa-in-cim.md)
 - [数据编码：Bit-Serial、Binary、Unary、Stochastic](./04-circuit-and-macro/data-encoding-strategies.md)
 - [精度与量化在电路层的实现约束](./04-circuit-and-macro/precision-and-quantization-at-circuit.md)
 - [非理想性总览：Noise、Mismatch、Variation、Retention](./04-circuit-and-macro/non-idealities-and-error-sources.md)

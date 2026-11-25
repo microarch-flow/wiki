@@ -30,7 +30,7 @@
 如果目标是服务 archax 或类似架构探索工具链，先从系统收益衰减和可建模变量读起：
 
 1. [问题定义](./problem-statement.md)
-2. [Macro 原语](../04-circuit-and-macro/cim-macro-primitives.md)
+2. [一条点积命令进了 CIM 宏，结果在哪一拍才算交付？](../04-circuit-and-macro/cim-macro-primitives.md)
 3. [Peripheral 开销](../04-circuit-and-macro/peripheral-overhead.md)
 4. [从 Macro 到 System](../05-architecture-and-system/from-macro-to-system.md)
 5. [Dataflow Mapping](../05-architecture-and-system/dataflow-mapping-on-cim.md)
@@ -46,7 +46,7 @@
 
 1. [CIM/PIM/NMC taxonomy](./cim-pim-nmc-taxonomy.md)
 2. [同样算出 23，模拟和数字存内计算怎样公平比较？](../03-compute-paradigms/analog-vs-digital-tradeoff-map.md#same-dot-product)
-3. [ADC/DAC/SA in CIM](../04-circuit-and-macro/adc-dac-sa-in-cim.md)
+3. [比较器每次只判一位，ADC 怎样把 16 mV 和 30 mV 读成 8 和 15？](../04-circuit-and-macro/adc-dac-sa-in-cim.md)
 4. [Non-Idealities and Error Sources](../04-circuit-and-macro/non-idealities-and-error-sources.md)
 5. [Metrics Glossary](../09-research-frontier/metrics-glossary.md)
 6. [Paper Review Template](../09-research-frontier/paper-review-template.md)

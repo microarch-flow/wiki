@@ -22,7 +22,7 @@
 1. [SRAM-CIM 基础](../02-memory-technologies/sram-cim-foundation.md)
 2. [一格 ReRAM 怎样存下权重，两行电流又怎样算出点积？](../02-memory-technologies/reram-as-compute-element.md)
 3. [把输入拆成两个位平面，模拟阵列怎样算出 23？](../03-compute-paradigms/analog-cim-fundamentals.md)
-4. [ADC/DAC/SA](../04-circuit-and-macro/adc-dac-sa-in-cim.md)
+4. [比较器每次只判一位，ADC 怎样把 16 mV 和 30 mV 读成 8 和 15？](../04-circuit-and-macro/adc-dac-sa-in-cim.md)
 5. [非理想性与误差源](../04-circuit-and-macro/non-idealities-and-error-sources.md)
 
 读完应能回答：论文指标属于哪一层，ADC/非理想性/外围是否被计入，结果能否外推到系统。
