@@ -10,7 +10,7 @@
 2. [MOS 管与沟道电流](bands-to-channel/README.md)。在同一只 NMOS 上分两次调电压。先看栅极隔着绝缘层怎样让硅表面出现电子，再看源漏之间有压差时电子怎样流动。
 3. [从 MOS 管到逻辑门](cmos-logic-gates/README.md)。先给单只 NMOS 的输出端接一只电容，再加上一只 PMOS。沿着充放电路径读出反相器的输出，接着用串联和并联推导 NAND 与 NOR。
 4. [从反相器到锁存器与触发器](latch-and-divider/README.md)。从一对存着 1 的反相器出发，断开反馈、写入 0，再接回反馈。把两级锁存器放到同一条时钟轴上，跟踪哪一级能改写、哪一级保存旧值，最后逐沿推导二分频。
-5. [晶体管的小信号放大](transistor-amplifier/README.md)。给栅极叠加 5 mV，沿着漏电流和负载电阻算出输出电压。
+5. [晶体管的小信号放大](transistor-amplifier/README.md)。把一只 NMOS 的栅压升高 5 mV，先看输出节点上的电荷怎样变化，再读出约 25 mV 的反向电压变化。换回 PMOS，看看反相器怎样在石英振荡电路里放大微小扰动。
 6. [石英振荡器的起振与稳幅](quartz-oscillator/README.md)。沿 Pierce 回路辨认选频、起振、稳幅与整形。
 7. [PLL 怎样实现二倍频](integer-pll/README.md)。以 25 MHz 为参考，从 40 MHz 的初始振荡出发，看反馈怎样把输出调到 50 MHz。
 8. [扇出、布线与门延迟](fanout-and-wire-delay/README.md)。分别改变负载电容和导线电阻，看远端电压何时越过门限。

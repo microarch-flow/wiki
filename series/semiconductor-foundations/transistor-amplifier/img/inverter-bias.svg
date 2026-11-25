@@ -1,0 +1,47 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="480" height="584" viewBox="0 0 480 584" xml:lang="zh-CN" role="img" aria-labelledby="title desc">
+  <title id="title">反馈电阻怎样给未缓冲 CMOS 反相器设定直流工作点</title>
+  <desc id="desc">PMOS 在上，NMOS 在下，两管的公共栅节点 G 与公共漏节点 Y 通过大电阻 Rf 相连。直流栅电流近似为零、输入无其他直流驱动时，电阻压降近似为零。反相器的传输曲线与 Y 和 G 电压相等的虚线相交，交点给出偏置。曲线和交点只示意 CMOS 反相器的典型形状。</desc>
+  <rect x="1" y="1" width="478" height="582" rx="14" fill="#f7f6ef" stroke="#c6cec2"/>
+  <g font-family="Noto Sans CJK SC, Microsoft YaHei, sans-serif">
+    <text x="20.00" y="35.00" font-size="23" text-anchor="start" fill="#203c37" font-weight="650">大电阻接回输入，栅压会停在哪？</text>
+    <text x="20.00" y="63.00" font-size="17" text-anchor="start" fill="#52665d" font-weight="400">直流等效图 · 输入没有其他直流驱动</text>
+    <text x="240.00" y="96.00" font-size="17" text-anchor="middle" fill="#203c37" font-weight="650">VDD</text>
+    <path d="M228 103h24 M240 103v9" fill="none" stroke="#203c37" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M240 112h-9v32h9v16" fill="none" stroke="#203c37" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M222 114v28" fill="none" stroke="#203c37" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"/>
+    <circle cx="216.00" cy="128.00" r="5" fill="#f7f6ef" stroke="#203c37" stroke-width="1.5"/>
+    <path d="M240 160v15h-9v32h9v12" fill="none" stroke="#203c37" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M222 177v28" fill="none" stroke="#203c37" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M228 219h24 M232 224h16 M236 229h8" fill="none" stroke="#203c37" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M211 128h-40v63h51 M171 160h-91" fill="none" stroke="#203c37" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M240 160H400" fill="none" stroke="#203c37" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"/>
+    <circle cx="171.00" cy="160.00" r="3.4" fill="#203c37"/>
+    <circle cx="240.00" cy="160.00" r="3.4" fill="#203c37"/>
+    <circle cx="106.00" cy="160.00" r="3.4" fill="#203c37"/>
+    <circle cx="370.00" cy="160.00" r="3.4" fill="#203c37"/>
+    <text x="71.00" y="166.00" font-size="19" text-anchor="end" fill="#203c37" font-weight="650">G</text>
+    <text x="409.00" y="166.00" font-size="19" text-anchor="start" fill="#203c37" font-weight="650">Y</text>
+    <text x="267.00" y="134.00" font-size="17" text-anchor="start" fill="#52665d" font-weight="400">PMOS</text>
+    <text x="267.00" y="198.00" font-size="17" text-anchor="start" fill="#52665d" font-weight="400">NMOS</text>
+    <path d="M106 164v87h92 M283 251h87v-87" fill="none" stroke="#9b4c28" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"/>
+    <rect x="198.00" y="238.00" width="85.00" height="26.00" fill="#f7f6ef" stroke="#9b4c28" stroke-width="2"/>
+    <text x="240.00" y="258.00" font-size="17" text-anchor="middle" fill="#9b4c28" font-weight="650">Rf</text>
+    <path d="M20 279H460" fill="none" stroke="#c6cec2" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"/>
+    <text x="20.00" y="308.00" font-size="20" text-anchor="start" fill="#203c37" font-weight="650">反相器的直流传输曲线（示意）</text>
+    <text x="20.00" y="337.00" font-size="17" text-anchor="start" fill="#52665d" font-weight="400">输出电压 Y</text>
+    <path d="M82 355V487H432" fill="none" stroke="#52665d" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    <text x="72.00" y="361.00" font-size="16" text-anchor="end" fill="#52665d" font-weight="400">VDD</text>
+    <text x="72.00" y="493.00" font-size="16" text-anchor="end" fill="#52665d" font-weight="400">0</text>
+    <text x="82.00" y="510.00" font-size="16" text-anchor="middle" fill="#52665d" font-weight="400">0</text>
+    <text x="431.00" y="510.00" font-size="16" text-anchor="middle" fill="#52665d" font-weight="400">VDD</text>
+    <path d="M82 487L431 355" fill="none" stroke="#9b4c28" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="7 5"/>
+    <path d="M82.00,355.00 L85.49,355.00 L88.98,355.01 L92.47,355.01 L95.96,355.02 L99.45,355.02 L102.94,355.03 L106.43,355.04 L109.92,355.05 L113.41,355.06 L116.90,355.07 L120.39,355.09 L123.88,355.11 L127.37,355.13 L130.86,355.15 L134.35,355.18 L137.84,355.22 L141.33,355.26 L144.82,355.31 L148.31,355.36 L151.80,355.43 L155.29,355.51 L158.78,355.60 L162.27,355.71 L165.76,355.83 L169.25,355.98 L172.74,356.15 L176.23,356.35 L179.72,356.58 L183.21,356.86 L186.70,357.18 L190.19,357.55 L193.68,357.99 L197.17,358.50 L200.66,359.09 L204.15,359.77 L207.64,360.57 L211.13,361.49 L214.62,362.56 L218.11,363.78 L221.60,365.19 L225.09,366.80 L228.58,368.64 L232.07,370.73 L235.56,373.09 L239.05,375.74 L242.54,378.69 L246.03,381.97 L249.52,385.57 L253.01,389.49 L256.50,393.72 L259.99,398.24 L263.48,403.02 L266.97,408.01 L270.46,413.15 L273.95,418.40 L277.44,423.69 L280.93,428.93 L284.42,434.08 L287.91,439.07 L291.40,443.85 L294.89,448.37 L298.38,452.60 L301.87,456.52 L305.36,460.12 L308.85,463.40 L312.34,466.35 L315.83,469.00 L319.32,471.36 L322.81,473.44 L326.30,475.28 L329.79,476.90 L333.28,478.31 L336.77,479.53 L340.26,480.60 L343.75,481.52 L347.24,482.32 L350.73,483.00 L354.22,483.59 L357.71,484.10 L361.20,484.54 L364.69,484.91 L368.18,485.23 L371.67,485.50 L375.16,485.74 L378.65,485.94 L382.14,486.11 L385.63,486.26 L389.12,486.38 L392.61,486.49 L396.10,486.58 L399.59,486.66 L403.08,486.72 L406.57,486.78 L410.06,486.83 L413.55,486.87 L417.04,486.90 L420.53,486.93 L424.02,486.96 L427.51,486.98 L431.00,487.00" fill="none" stroke="#09677b" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"/>
+    <circle cx="271.83" cy="415.20" r="5" fill="#203c37" stroke="#f7f6ef" stroke-width="1.5"/>
+    <path d="M277.83 415.20h19" fill="none" stroke="#52665d" stroke-width="1.15" stroke-linecap="round" stroke-linejoin="round"/>
+    <text x="301.83" y="421.20" font-size="17" text-anchor="start" fill="#203c37" font-weight="650">偏置点</text>
+    <text x="344.00" y="363.00" font-size="17" text-anchor="start" fill="#9b4c28" font-weight="400">Y = G</text>
+    <text x="312.00" y="535.00" font-size="17" text-anchor="middle" fill="#52665d" font-weight="400">输入栅压 G</text>
+    <path d="M20 545H460" fill="none" stroke="#c6cec2" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"/>
+    <text x="20.00" y="570.00" font-size="17" text-anchor="start" fill="#203c37" font-weight="400">栅电流近似为零，Rf 上的直流压降也接近零。</text>
+  </g>
+</svg>

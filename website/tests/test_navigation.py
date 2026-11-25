@@ -181,6 +181,8 @@ class GeneratedNavigationTests(unittest.TestCase):
             ("cmos-logic-gates", "bands-to-channel/experiments.html", "gates"),
             ("latch-and-divider", "latch-and-divider/experiment.html", "write"),
             ("latch-and-divider", "latch-and-divider/experiment.html", "edge"),
+            ("transistor-amplifier", "transistor-amplifier/experiment.html", "gain"),
+            ("transistor-amplifier", "transistor-amplifier/experiment.html", "step"),
         )
         for slug, filename, fragment in panels:
             with self.subTest(article=slug, panel=fragment):

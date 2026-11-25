@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="480" height="508" viewBox="0 0 480 508" role="img" aria-labelledby="title description">
+  <title id="title">刚抬高栅压，多出的电流先由谁提供？</title>
+  <desc id="description">栅压从 0.600 V 跳到 0.605 V。输出电容 10 fF 在最初一瞬间保持 0.700 V。电阻仍向节点送入 100 µA，NMOS 抽走约 105 µA，电容放电补足约 5 µA。随后输出电压向约 0.675 V 下降，一半变化用时约 34.7 ps。最终电阻供电增加到与 NMOS 漏电流相等。</desc>
+  <rect x="1" y="1" width="478" height="506" rx="15" fill="#f7f6ef" stroke="#c9d3c7"/>
+  <g font-family="system-ui, 'Noto Sans CJK SC', 'Microsoft YaHei', sans-serif">
+    <text x="20" y="36" font-size="23" text-anchor="start" fill="#203c37" font-weight="700">栅压刚升高，多出的电流从哪来？</text>
+    <text x="20" y="65" font-size="18" text-anchor="start" fill="#526861" font-weight="400">栅压从 0.600 V 跳到 0.605 V。</text>
+    <text x="20" y="100" font-size="20" text-anchor="start" fill="#203c37" font-weight="650">刚跳变时</text>
+    <text x="20" y="131" font-size="17" text-anchor="start" fill="#526861" font-weight="400">电源经电阻</text>
+    <text x="20" y="160" font-size="20" text-anchor="start" fill="#9b4c28" font-weight="650">100 µA</text>
+    <path d="M25 183H154" fill="none" stroke="#9b4c28" stroke-width="3.2" stroke-linejoin="round" stroke-linecap="round"/>
+    <polygon points="154,183 144,178 144,188" fill="#9b4c28"/>
+    <circle cx="161" cy="183" r="5.3" fill="#203c37"/>
+    <text x="161" y="165" font-size="20" text-anchor="middle" fill="#203c37" font-weight="650">Y</text>
+    <path d="M166 183H248" fill="none" stroke="#09677b" stroke-width="3.2" stroke-linejoin="round" stroke-linecap="round"/>
+    <polygon points="166,183 176,178 176,188" fill="#09677b"/>
+    <text x="262" y="160" font-size="17" text-anchor="start" fill="#526861" font-weight="400">电容放电</text>
+    <text x="262" y="188" font-size="20" text-anchor="start" fill="#09677b" font-weight="650">约 5 µA</text>
+    <path d="M161 189V232" fill="none" stroke="#203c37" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>
+    <polygon points="161,234 156,224 166,224" fill="#203c37"/>
+    <text x="175" y="218" font-size="19" text-anchor="start" fill="#203c37" font-weight="650">约 105 µA</text>
+    <text x="161" y="258" font-size="18" text-anchor="middle" fill="#203c37" font-weight="550">流入 NMOS</text>
+    <path d="M20 274H460" fill="none" stroke="#c9d3c7" stroke-width="1.2" stroke-linejoin="round" stroke-linecap="round"/>
+    <text x="20" y="304" font-size="20" text-anchor="start" fill="#203c37" font-weight="650">接着读输出电压（V）</text>
+    <path d="M85 320V403H445" fill="none" stroke="#526861" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round"/>
+    <path d="M85 394H445" fill="none" stroke="#c9d3c7" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round" stroke-dasharray="4 5"/>
+    <text x="77" y="334" font-size="17" text-anchor="end" fill="#526861" font-weight="400">0.700</text>
+    <text x="77" y="399" font-size="16" text-anchor="end" fill="#526861" font-weight="400">≈0.675</text>
+    <path d="M85.00 328.00 L86.80 329.31 L88.60 330.59 L90.40 331.84 L92.20 333.07 L94.00 334.28 L95.80 335.46 L97.60 336.62 L99.40 337.76 L101.20 338.87 L103.00 339.96 L104.80 341.03 L106.60 342.08 L108.40 343.11 L110.20 344.12 L112.00 345.11 L113.80 346.07 L115.60 347.02 L117.40 347.95 L119.20 348.87 L121.00 349.76 L122.80 350.63 L124.60 351.49 L126.40 352.34 L128.20 353.16 L130.00 353.97 L131.80 354.76 L133.60 355.54 L135.40 356.30 L137.20 357.05 L139.00 357.78 L140.80 358.50 L142.60 359.20 L144.40 359.89 L146.20 360.56 L148.00 361.23 L149.80 361.87 L151.60 362.51 L153.40 363.13 L155.20 363.75 L157.00 364.34 L158.80 364.93 L160.60 365.51 L162.40 366.07 L164.20 366.62 L166.00 367.17 L167.80 367.70 L169.60 368.22 L171.40 368.73 L173.20 369.23 L175.00 369.72 L176.80 370.20 L178.60 370.67 L180.40 371.13 L182.20 371.59 L184.00 372.03 L185.80 372.47 L187.60 372.89 L189.40 373.31 L191.20 373.72 L193.00 374.12 L194.80 374.51 L196.60 374.90 L198.40 375.28 L200.20 375.65 L202.00 376.01 L203.80 376.37 L205.60 376.72 L207.40 377.06 L209.20 377.40 L211.00 377.72 L212.80 378.05 L214.60 378.36 L216.40 378.67 L218.20 378.98 L220.00 379.27 L221.80 379.57 L223.60 379.85 L225.40 380.13 L227.20 380.41 L229.00 380.67 L230.80 380.94 L232.60 381.20 L234.40 381.45 L236.20 381.70 L238.00 381.94 L239.80 382.18 L241.60 382.42 L243.40 382.65 L245.20 382.87 L247.00 383.09 L248.80 383.31 L250.60 383.52 L252.40 383.73 L254.20 383.93 L256.00 384.13 L257.80 384.32 L259.60 384.52 L261.40 384.70 L263.20 384.89 L265.00 385.07 L266.80 385.24 L268.60 385.42 L270.40 385.59 L272.20 385.75 L274.00 385.92 L275.80 386.08 L277.60 386.23 L279.40 386.39 L281.20 386.54 L283.00 386.69 L284.80 386.83 L286.60 386.97 L288.40 387.11 L290.20 387.25 L292.00 387.38 L293.80 387.51 L295.60 387.64 L297.40 387.77 L299.20 387.89 L301.00 388.01 L302.80 388.13 L304.60 388.25 L306.40 388.36 L308.20 388.47 L310.00 388.58 L311.80 388.69 L313.60 388.79 L315.40 388.90 L317.20 389.00 L319.00 389.10 L320.80 389.20 L322.60 389.29 L324.40 389.38 L326.20 389.47 L328.00 389.56 L329.80 389.65 L331.60 389.74 L333.40 389.82 L335.20 389.91 L337.00 389.99 L338.80 390.07 L340.60 390.14 L342.40 390.22 L344.20 390.30 L346.00 390.37 L347.80 390.44 L349.60 390.51 L351.40 390.58 L353.20 390.65 L355.00 390.71 L356.80 390.78 L358.60 390.84 L360.40 390.91 L362.20 390.97 L364.00 391.03 L365.80 391.09 L367.60 391.14 L369.40 391.20 L371.20 391.26 L373.00 391.31 L374.80 391.36 L376.60 391.42 L378.40 391.47 L380.20 391.52 L382.00 391.57 L383.80 391.61 L385.60 391.66 L387.40 391.71 L389.20 391.75 L391.00 391.80 L392.80 391.84 L394.60 391.88 L396.40 391.93 L398.20 391.97 L400.00 392.01 L401.80 392.05 L403.60 392.09 L405.40 392.12 L407.20 392.16 L409.00 392.20 L410.80 392.23 L412.60 392.27 L414.40 392.30 L416.20 392.34 L418.00 392.37 L419.80 392.40 L421.60 392.43 L423.40 392.46 L425.20 392.49 L427.00 392.52 L428.80 392.55 L430.60 392.58 L432.40 392.61 L434.20 392.64 L436.00 392.66 L437.80 392.69 L439.60 392.72 L441.40 392.74 L443.20 392.77 L445.00 392.79" fill="none" stroke="#09677b" stroke-width="3.4" stroke-linejoin="round" stroke-linecap="round"/>
+    <path d="M147.38 361.00V403" fill="none" stroke="#526861" stroke-width="1.4" stroke-linejoin="round" stroke-linecap="round" stroke-dasharray="3 4"/>
+    <circle cx="147.38324625039508" cy="361.0" r="4.7" fill="#09677b"/>
+    <text x="165" y="348" font-size="17" text-anchor="start" fill="#09677b" font-weight="650">降到半程</text>
+    <text x="85" y="429" font-size="16" text-anchor="middle" fill="#526861" font-weight="400">0</text>
+    <text x="147.38" y="429" font-size="17" text-anchor="middle" fill="#09677b" font-weight="650">34.7</text>
+    <text x="265" y="429" font-size="16" text-anchor="middle" fill="#526861" font-weight="400">100</text>
+    <text x="445" y="429" font-size="16" text-anchor="middle" fill="#526861" font-weight="400">200</text>
+    <text x="448" y="456" font-size="16" text-anchor="end" fill="#526861" font-weight="400">时间（ps）</text>
+    <path d="M20 467H460" fill="none" stroke="#c9d3c7" stroke-width="1.2" stroke-linejoin="round" stroke-linecap="round"/>
+    <text x="20" y="494" font-size="18" text-anchor="start" fill="#203c37" font-weight="600">最终电阻供电增至约 105 µA，电容停止放电。</text>
+  </g>
+</svg>
