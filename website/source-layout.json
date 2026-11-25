@@ -785,6 +785,10 @@
         "target": "CIM/wiki/04-circuit-and-macro/cim-macro-primitives.md"
       },
       {
+        "source": "series/microarchitecture/08-in-memory-computing/04-circuit-and-macro/img/cim-input-encoding.svg",
+        "target": "CIM/wiki/04-circuit-and-macro/img/cim-input-encoding.svg"
+      },
+      {
         "source": "series/microarchitecture/08-in-memory-computing/04-circuit-and-macro/data-encoding-strategies.md",
         "target": "CIM/wiki/04-circuit-and-macro/data-encoding-strategies.md"
       },

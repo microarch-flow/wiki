@@ -1,50 +1,86 @@
-# 数据编码：Bit-Serial、Binary、Unary、Stochastic
+# 输入都是 3，行驱动器该加多高的电压、开多久？
 
-上级：[电路、外围与计算宏](./README.md)
-相关：[Digital CIM 深入](../03-compute-paradigms/digital-cim-deep-dive.md), [Precision and Quantization](./precision-and-quantization-at-circuit.md), [Software: Quantization for CIM](../06-software-stack/quantization-for-cim.md)
+<span class="micro-legacy-anchor" id="数据编码bit-serialbinaryunarystochastic"></span>
+<span class="micro-legacy-anchor" id="这页在回答什么问题"></span>
 
-## 这页在回答什么问题
+在输入寄存器里写下无符号整数 3，用示波器看接收它的那一行。可能看见一个 60 mV 的短脉冲，也可能看见一个 20 mV 的长脉冲。还有一种实现，先给 20 mV，停一下，再给同样的 20 mV。最后一种明明只有两个脉冲，为什么仍能表示 3？
 
-同样标称 INT4 或 INT8，为什么不同 CIM macro 的面积、周期、能耗和误差完全不同？因为数据编码决定输入如何进入 array、权重如何放进 cell、partial sum 如何形成，以及外围要补多少账。
+让这一行乘权重 5，另一行用输入 2 乘权重 4。每次都求 `2×4＋3×5`。保持两格的权重、列端电路和读出刻度不变，只改输入怎么送，以及读出以后怎么合并。这样可以逐项核对，代表「3」的三份贡献究竟藏在哪里。
 
-## 数值表示与时间展开
+<span class="micro-legacy-anchor" id="数值表示与时间展开"></span>
 
-Binary、unary 和 stochastic 描述表示方式；bit-serial 描述时间展开，两轴可以组合。Binary encoding 用少量 bit 表达数值，密度高，适合 digital CIM 和 SRAM bit-serial 路线。若采用位串行实现，多比特乘法可逐 bit-plane 展开并执行移位累加，累加器还须覆盖所需范围。位并行乘法器可以并行生成部分积并用压缩树归约；同一二进制编码不要求逐拍展开或显式 shift-add。
+## 把 3 变成 60 mV，一次读能算出多少？ {#encode-one-input}
 
-Unary encoding 用多个相同权重的单位表示数值，例如无符号整数 x 使用 x 个单位脉冲，线性和鲁棒性好，适合某些 analog 或 stochastic 方案。代价是面积、周期或脉冲数增加，难以支撑高精度大模型。
+两行接到同一列。第一格的电导为 40 µS，第二格为 50 µS，每 10 µS 代表一个权重单位。假定所用读压范围内单元近似线性，列端由读出电路维持在 0 V，忽略线阻、漏电与切换瞬态。积分器复位到已知参考，再用 **1 pF** 反馈电容收集列电流。以下取相对复位点的电压变化幅值。[两行怎样合成一股列电流](../02-memory-technologies/reram-as-compute-element.md#ideal-column-current)
 
-Bit-serial 将多位 activation 或 weight 拆成多个 bit plane，按实现分拍送入阵列；只有硬件实际减少循环和活动时降低位宽才节省对应周期和能耗。
+先定一个三种读法共用的单位。给代表权重 1 的 10 µS 单元施加 **20 mV**，就有 `20 mV×10 µS＝0.2 µA`。让电流持续 **10 ns**，能收 `0.2 µA×10 ns＝2 fC` 的电荷，在 1 pF 上产生 **2 mV** 变化。本例理想 5 位无符号 ADC 的零点就是复位参考，步长为 2 mV/码，按最近整数转换并限于 0 至 31。这样，**每积到 2 fC，读出就多一个码**。选择 5 位是为了直接读下本题的 23。若承诺支持任意两个两位无符号输入与两个三位无符号权重，完整点积最大是 `3×7＋3×7＝42`，同刻度一次读全列需要至少 6 位。反过来，单独读一个输入位平面，最大只有 `1×7＋1×7＝14`，4 位就能覆盖该窗，最终数字累加器仍需容下 42。
 
-Stochastic encoding 用 bitstream 中 1 的概率表达数值。两个独立 Bernoulli 流分别以 p、q 为 1 时，按位 AND 的期望为 pq；若共享完全相同且 p=q=0.5 的流，AND 的期望为 0.5 而非 0.25。估计误差还依流长和相关性变化，流长增加会增加周期或并行资源。它在研究中有价值，产品化受吞吐、随机源和验证成本限制。
+先把所有输入都限制在同一个 10 ns 的有效读窗，用**幅度**区分大小。数模转换器（DAC）或等效行驱动器给第一行 40 mV、第二行 60 mV。第一行电流为 1.6 µA，第二行为 3.0 µA。两股电流汇入列端，`4.6 µA×10 ns＝46 fC`，电压变化为 46 mV，ADC 一次报出 **23**。第二行之所以贡献 15，是因为它的电压是单位读压的三倍。代价也落在这里：驱动器必须能给出多个可分辨的电压，单元与读出前端在最高读压时仍要近似线性。
 
-## 三条 Paradigm 的编码差异
+## 如果行只能开到 20 mV，把输入 3 放到哪里？ {#equal-weight-windows}
 
-Analog CIM 的编码要把数字输入变成电压、脉宽、脉冲次数或电流，并把权重映射成 conductance、threshold 或 charge state。ReRAM/Flash 适合 multi-level 或 differential encoding，但 write-verify、drift 和 device variation 会限制可用状态数。
+保持第二行 20 mV，单元 50 µS，现在它打开时只给 **1.0 µA**。要收回原来的 30 fC，让它打开 30 ns 就行。第一行打开时给 0.8 µA，持续 20 ns 便收回 16 fC。两行同时开始，积分器直到最后才读出一次。沿时间看，列端经历三个等长的时段。
 
-Digital CIM 的编码以 bit plane、binary/ternary、XNOR-popcount 和 bit-serial 为主。SRAM 最自然，因为 cell 保存离散 bit，local logic 处理离散 partial sum。它的关键问题是多周期展开后，是否仍比外部 MAC 更省。
+| 有效积分时段 | 输入 2 所在行 | 输入 3 所在行 | 列电流 | 本段增加的电荷 |
+| --- | ---: | ---: | ---: | ---: |
+| 头 10 ns | 20 mV | 20 mV | 1.8 µA | 18 fC |
+| 中间 10 ns | 20 mV | 20 mV | 1.8 µA | 18 fC |
+| 末 10 ns | 0 mV | 20 mV | 1.0 µA | 10 fC |
 
-Mixed-signal CIM 常把输入或权重的一侧离散化，另一侧保留 analog 局部并行。例如输入 bit-serial，阵列内 charge/current accumulation，输出经低比特 ADC 后数字累加。这个路线的难点是把编码、ADC range 和 accumulator 宽度统一设计。
+收满 `18＋18＋10＝46 fC`，还是码 23。**脉宽编码**把行连续打开所需的时长。也可以改成**等权脉冲计数**：在三个位置分别发 10 ns 的单位脉冲，第一行发两个，第二行发三个。即便脉冲之间留空，只要各脉冲有效面积相同、空档关闭积分门并保持此前的电荷（或让两行回到 0 mV，使理想净电流为零）、各单位之间不复位，总电荷仍为 46 fC。逐个脉冲的意义相等，这种用几个相同单位表示数值的方式叫一元编码（unary）。它降低了区分多档幅度的要求，但要求单位脉冲的面积可重复；两位无符号数最多需三个单位，八位则最多需 255 个。若用空间并排放这些单位，开销便转成更多器件和连线。
 
-## 编码和 Memory Technology 的错配
+**三个等权时段，要转三次吗？** 前面一次复位，末尾只转换一次。如果硬件在每个 10 ns 末都先保持、转换，再复位，下一个时段重新计量，它会依次给出码 **9、9、5**。数字端直接相加也能得到 23，但这次需要三次转换。增加了几次驱动、几次积分和几次转换，是三个可分别核对的问题。真实的 IBM HERMES 使用脉宽调制读脉冲驱动 PCM 阵列，并用时间域电流 ADC 读出；这里的 20 mV、10 ns、1 pF 和三段排程是为同尺度比较所设。[HERMES 原论文的输入与转换电路](https://arxiv.org/pdf/2212.02872#page=3)
 
-ReRAM/Flash 如果只按纯 binary digital 方式使用，会放弃 multi-level state 和 current summation 的核心优势。SRAM 如果追求高精度 analog multi-level weight，则需要多 cell、多周期或高精度外围，容易失去 CMOS 工程优势。DRAM/HBM/GDDR-PIM 的数据格式由 PIM instruction、bank/channel 粒度和 memory command 决定，不属于本页 CIM macro 编码主线；相关背景可连接 RAM wiki 的 [HBM stacked wide-IO](../../../storage/03-dram/protocols/hbm-stacked-wide-io.md) 和 [DRAM row/column/sense path](../../../storage/03-dram/foundations/row-column-decode-sense-amplify.md)。若这些格式通过 host-visible command 或 memory-mapped interface 暴露，还需要按 BUS wiki 的 [interconnect components](../../../interconnect/BUS/04-microarchitecture-integration/interconnect-components.md) 评估接口成本。
+## 同样只发 20 mV，为什么两个脉冲就能表示 3？ {#two-binary-planes}
 
-PCM 可以表达多级 resistance，但 drift、write-verify 和温度敏感性会让编码状态随时间变差。MRAM 更接近 binary reliable storage；若 read/sense path 参与比较或局部归约，可以做 digital-like CIM，但不适合作为 ReRAM 式 multi-level analog 编码主线。
+把输入 2 和 3 写成二进制 `10₂` 和 `11₂`，先送两行的低位，再送高位。每个读窗都单独复位、积分 10 ns、保持并转换。读第几位由控制器记录，权重 4、5 始终留在原来的两个单元。
 
-## 读论文时的记录模板
+| 送入的位平面 | 两行的开关（1 表示 20 mV） | 列电流 | 收到的电荷及码 | 进入数字和的贡献 |
+| --- | --- | ---: | --- | ---: |
+| 低位，位权 1 | (0, 1) | 1.0 µA | 10 fC → 5 | 5 |
+| 高位，位权 2 | (1, 1) | 1.8 µA | 18 fC → 9 | 18 |
 
-| 字段 | 要问的问题 |
+对输入 3 所在的第二行，**两个脉冲本身完全一样**。第一窗它贡献码 5，第二窗它还是贡献码 5，但后一窗是高位，数字端要给这份 5 乘 2。合起来便是 `5＋2×5＝15`。对整列也是同样的规则：`5＋2×9＝23`。要是像等权脉冲那样一路积分到末尾，只能读到 `(10＋18) fC÷2 fC＝14`；两个平面的身份已经丢了，末端也就无从只给高位乘 2。[逐位面跟踪模拟列读出](../03-compute-paradigms/analog-cim-fundamentals.md#two-input-planes)
+
+<figure class="micro-diagram" tabindex="0" aria-label="同一列分别按电压幅度、等权时长与二进制位平面编码输入" markdown="1">
+
+![输入 3 在幅度编码中对应 60 mV，在时长编码中对应 20 mV 持续 30 ns，在位平面编码中对应先后两个 20 mV、10 ns 的窗。前两种末尾一次读得 23；位平面得到码 5、9 后数字移加得 23。](./img/cim-input-encoding.svg)
+
+<figcaption>前两种在模拟端收齐 46 fC，末尾各读一次。第三种每个平面独立读，最终的 23 保存在数字累加器中。各窗只标有效积分时间，未计驱动建立、复位、保持和转换的时间。</figcaption>
+</figure>
+
+二进制规定**各位的权重**，位串行（bit-serial）规定**这些位何时送到**。同一二进制数也可把所有位并行送入不同的逻辑通路，由压缩树同时归约部分积。减小标称位宽，只有在控制器真的少发位平面，或门控电路使相应部件停止活动时，才会减少相应周期或能耗。就看低位窗的 `(0,1)`：第一行可以不驱动，第二行仍要产生 5，共享 ADC 也照常工作。[数字阵列怎样排位平面](../03-compute-paradigms/digital-cim-deep-dive.md)
+
+## 线上同样传 0 和 1，数它们就能做乘法吗？ {#random-stream}
+
+等权脉冲事先就能确定发几个。**随机编码**（stochastic encoding）则约定一个位置上出现 1 的概率代表数值，用一段流中 1 的比例估计它。取两个在 0 至 1 之间的数 `p、q`，每个位置的两个输入位若相互独立，AND 只有两者同时为 1 时才报 1，概率就是 `p×q`。例如两个数都是 0.5，输出为 1 的期望比例是 0.25。若把**同一条流**接到 AND 的两个端口，输出逐位复现输入，期望比例却是 0.5。
+
+有限长度的随机流读出来会有波动，还要检查相关性。延长流或增加并行通路可以换取更多样本，同时要计入时延、随机源、面积和验证成本。不能把前面三个确定的脉冲当作对概率的三次采样，两种编码对「数 1」有不同的约定。[Alaghi 和 Hayes，图 1 的单极性 AND 乘法与相关输入](https://homes.cs.washington.edu/~armin/ICCD_2013.pdf#page=1) · [Gaines 的随机计算表示](https://gaines.library.uvic.ca/pdf/SJCC67.pdf)
+
+<span class="micro-legacy-anchor" id="三条-paradigm-的编码差异"></span>
+<span class="micro-legacy-anchor" id="编码和-memory-technology-的错配"></span>
+
+## 输入解释清楚了，权重的符号和零点又放在哪里？ {#weight-and-zero-point}
+
+刚才的 23 有两个前提：输入是**无符号**两位数，每格又能用一个可分辨的多级电导保存完整权重。只把输入改按**两位二补码**解释，`10₂` 就是 −2，`11₂` 就是 −1。位线读出的低位码 5、高位码 9 都不变；最高位的单位变成 −2，数字端要算 `5−2×9＝−13`。它恰好等于 `(−2)×4＋(−1)×5`。输出要有容纳负数的格式，5 位无符号 ADC 仍可读这里两个非负的局部码。
+
+物理单元的最小电导也可能大于零。设一格的实际电导为 `10 µS＋权重×10 µS`。同样的权重 4、5 现在要写成 50、60 µS。沿第一种幅度读法，40、60 mV 合起来产生 **5.6 µA**，10 ns 后读到码 **28**。两个单元共有的那档基线也在导电：`(40 mV＋60 mV)×10 µS＝1.0 µA`，对应码 5。减去它才是 `28−5＝23`。若输入换了，两行电压之和也会变，不能永远减同一个常数。另一种是给一个权重配一正一负两条支路，用两者电导之差代表有符号权重。此时两边各自的电流、失配和读出量程都要检查，即便差值为零也可能两边都在耗电。[软件量化中的比例因子与零点](../06-software-stack/quantization-for-cim.md)
+
+介质直接影响哪种编码划算。ReRAM、Flash 能用多级状态或差分支路，能否分清相邻权重要看编程校验、器件差异及保持。PCM 还要考虑电导漂移和温度。若每格只读一个二进制位再搬出去计算，多级状态和列电流求和的能力就没有被用上。普通 SRAM 一格保存一位，要让权重表示二值、三值或更高精度，可组合多个单元、分次读、或复制若干单位单元；也可在读通路执行 XNOR、计数和移位。对 SRAM 追求高分辨率模拟量，需要另查局部电荷或电流读出及外围精度。MRAM 常从二态感测出发，能否做局部比较或归约取决于读通路。用离散输入驱动模拟求和再做数字移加，便是这些编码在同一混合信号宏中配合的例子。[各存储介质的读出条件](../02-memory-technologies/memory-tech-comparison-matrix.md)
+
+若论文写的是 DRAM、HBM 或 GDDR 的 bank 旁处理单元，要查看其指令支持什么操作数格式、一次对哪个 bank 或通道发出什么命令。主机可见的命令和内存映射接口还要花费传输与控制资源，这些问题可以沿接口继续查。[HBM 堆叠宽接口](../../../storage/03-dram/protocols/hbm-stacked-wide-io.md) · [DRAM 行列选择与感测](../../../storage/03-dram/foundations/row-column-decode-sense-amplify.md) · [系统互联的接口组件](../../../interconnect/BUS/04-microarchitecture-integration/interconnect-components.md)
+
+<span class="micro-legacy-anchor" id="读论文时的记录模板"></span>
+<span class="micro-legacy-anchor" id="一句话理解"></span>
+<span class="micro-legacy-anchor" id="研究启示"></span>
+
+## 论文写「支持 INT8」，还缺哪几项才能复算？ {#read-a-format-claim}
+
+| 要追踪的对象 | 应能从设计里找出的答案 |
 | --- | --- |
-| activation encoding | bit-serial、bit-parallel、pulse-width 还是 voltage-level |
-| weight encoding | binary、ternary、multi-level、differential 还是 replicated |
-| partial sum | 在 bitline、SA 后、local accumulator 还是 tile 级形成 |
-| signed value | 用 differential cell、offset、two's complement 还是后处理 |
-| zero / sparsity | 是否真的跳过能耗，还是只跳过数字累加 |
+| 激活值和权重 | 输入的一单位改变幅度、脉宽、脉冲数还是位位置？权重是一格多级、二值或三值组合、差分对，还是复制的单位单元？ |
+| 时间和部分和 | 哪些项同时驱动，何时保持、复位和转换？每次转换的码代表一个完整点积、一个位平面，还是一块阵列的局部结果？ |
+| 位宽、符号与零点 | ADC、感放、宏内累加器及跨块归约各须容下多大范围？谁处理符号、基线和比例因子？ |
+| 零值和实际成本 | 遇到零时，哪些行驱动、读窗、转换或数字加法真的取消？校准用什么参数，编译器能否按这套约定映射多个层？ |
 
-## 一句话理解
-
-数据编码不是格式细节，而是 CIM macro 把模型数值翻译成电路行为的合同；它决定周期、面积、误差和外围开销。
-
-## 研究启示
-
-研究应同时报告模型量化格式和电路编码格式，不能用 “INT8 support” 掩盖 bit-serial 周期、multi-cell weight、ADC range 和 partial sum 宽度。产业实现更偏低比特、可校准、可编译映射的编码，而不是只在单层网络上有效的精巧表示。
+接下来固定编码，只让一次读出的码差一格。落在低位窗和高位窗，对最终点积的影响会相同吗？[继续追踪一个最低有效位的误差](./precision-and-quantization-at-circuit.md#trace-one-lsb) · [精度与量化](./precision-and-quantization-at-circuit.md) · [返回电路、外围与计算宏](./README.md)

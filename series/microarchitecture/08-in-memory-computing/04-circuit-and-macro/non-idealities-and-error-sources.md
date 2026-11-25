@@ -30,6 +30,8 @@
 <figcaption>与模拟求值深入篇共用此图。两次转换采用相同刻度。最终误差由两次判决及各自的位权共同决定。</figcaption>
 </figure>
 
+若把同一个点积按两个输入项拆开，两份码就有相同的位权，各偏一码还可能在求和时抵消。诊断前先弄清这两份码分别代表什么。[比较等权部分和与不同位权的误差](./precision-and-quantization-at-circuit.md#trace-one-lsb)
+
 ## 三条 Paradigm 的误差形态
 
 Analog CIM 把误差放进数值路径本身。ReRAM/Flash 的 conductance 或 threshold 不稳定会直接变成 MAC 误差；SRAM charge/current-domain 路线会受 PVT、leakage、bitline mismatch 和 sense margin 影响。

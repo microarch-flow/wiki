@@ -1,0 +1,47 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 700 583" role="img" aria-labelledby="title desc">
+  <title id="title">输入二和三的幅度、时长与位平面编码</title>
+  <desc id="desc">同一列的两行权重分别为四和五，以四十和五十微西门子保存。每个有效窗十纳秒，积分电容一皮法，理想五位 ADC 每码二毫伏。幅度编码用四十、六十毫伏驱动两行一个窗口，列电流四点六微安，累积四十六飞库仑，读码二十三。时长编码的开通电压均为二十毫伏，两行同起，第一行开两个窗，第二行开三个。三窗列电流一点八、一点八、一点零微安，各积十八、十八、十飞库仑，窗间不复位，末尾一次转换得二十三。位平面编码的低位输入为零、一，高位输入为一、一。两个窗口分别复位积分并转换，电荷十和十八飞库仑，产生码五和九，数字端计算五加二乘九等于二十三。</desc>
+  <style>
+    text{font-family:system-ui,"Noto Sans CJK SC","PingFang SC",sans-serif;fill:#173c32}
+    .title{font-size:24px;font-weight:680}.heading{font-size:21px;font-weight:660}
+    .label{font-size:19px;font-weight:630}.copy{font-size:18px;fill:#3b5c4f}.mid{text-anchor:middle}
+    .bar{fill:#dfebdc;stroke:#9eb69e}.box{fill:#fafbf6;stroke:#afc2b1}
+  </style>
+  <rect width="700" height="583" rx="14" fill="#f2f5ed"/>
+  <text x="18" y="34" class="title">第二行的输入 3，体现在电压、时长，还是位权里？</text>
+  <text x="18" y="65" class="copy">两行输入为 (2, 3)，同一列的权重电导为 (40, 50) µS，每个有效窗都是 10 ns。</text>
+  <text x="18" y="93" class="copy">三种读法都用 1 pF 电容、理想 5 位 ADC。每积 2 fC，电压增量为 2 mV，对应 1 码。</text>
+
+  <rect x="16" y="110" width="668" height="121" rx="8" class="box"/>
+  <text x="30" y="140" class="heading">幅度编码 · 只开一个窗</text>
+  <text x="30" y="175" class="copy">第一行</text><text x="30" y="209" class="copy">第二行</text>
+  <rect x="110" y="153" width="144" height="29" rx="3" class="bar"/><rect x="110" y="187" width="216" height="29" rx="3" class="bar"/>
+  <text x="182" y="175" class="label mid">40 mV</text><text x="218" y="209" class="label mid">60 mV</text>
+  <path d="M365 125V216" stroke="#ced9cc"/>
+  <text x="384" y="149" class="copy">4.6 µA × 10 ns = 46 fC</text>
+  <text x="384" y="181" class="copy">一次积分，电压增量 46 mV</text>
+  <text x="384" y="213" class="label">转换一次 → 码 23</text>
+
+  <rect x="16" y="244" width="668" height="135" rx="8" class="box"/>
+  <text x="30" y="274" class="heading">时长编码 · 开通时均为 20 mV</text>
+  <text x="30" y="311" class="copy">第一行</text><text x="30" y="345" class="copy">第二行</text>
+  <rect x="110" y="289" width="152" height="29" rx="3" class="bar"/><rect x="262" y="289" width="76" height="29" fill="#edf0e9" stroke="#bac5b7"/>
+  <rect x="110" y="323" width="228" height="29" rx="3" class="bar"/>
+  <text x="186" y="311" class="label mid">开 20 ns</text><text x="300" y="311" class="copy mid">关</text>
+  <text x="224" y="345" class="label mid">开 30 ns</text>
+  <path d="M365 260V365" stroke="#ced9cc"/>
+  <text x="384" y="279" class="copy">三窗列电流 1.8、1.8、1.0 µA</text>
+  <text x="384" y="314" class="copy">电荷 18 + 18 + 10 = 46 fC</text>
+  <text x="384" y="350" class="label">窗间不复位，末尾读码 23</text>
+
+  <rect x="16" y="392" width="668" height="167" rx="8" class="box"/>
+  <text x="30" y="422" class="heading">位平面编码 · 低位和高位分窗读</text>
+  <text x="30" y="457" class="copy">两行的低位 (0, 1)，高位 (1, 1)。</text>
+  <text x="30" y="492" class="copy">位为 1 加 20 mV，位为 0 加 0 V。</text>
+  <text x="30" y="532" class="label">两窗分别复位、积分、转换</text>
+  <path d="M365 408V543" stroke="#ced9cc"/>
+  <text x="384" y="453" class="copy">低位 1.0 µA → 10 fC → 码 5</text>
+  <text x="384" y="488" class="copy">高位 1.8 µA → 18 fC → 码 9</text>
+  <rect x="377" y="504" width="296" height="39" rx="5" fill="#e2ecdf"/>
+  <text x="525" y="531" class="label mid">数字移加 5 + 2 × 9 = 23</text>
+</svg>

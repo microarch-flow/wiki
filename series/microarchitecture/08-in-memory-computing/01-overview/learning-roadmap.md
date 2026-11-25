@@ -40,6 +40,8 @@
 
 这条路径不要求把 CIM 立即建成完整模型。更现实的目标是分清哪些细节是 Resource、Topology、Interaction、Capability 层面的状态变量，哪些可以在早期架构探索中折叠成能耗、延迟、精度损失或利用率参数。
 
+给点积建立周期和精度模型时，先按[输入编码](../04-circuit-and-macro/data-encoding-strategies.md#encode-one-input)数清有几个驱动时隙、要转换几次。若要比较不同实现的输出精度，再用[一个码宽与转换器的量程](../04-circuit-and-macro/precision-and-quantization-at-circuit.md#trace-one-lsb)检查局部读数差一档会改变什么，超量程后能否靠更宽的累加器补救。
+
 ## 论文阅读路径
 
 如果目标是读 CIM 论文，推荐先建立指标和非理想性口径：

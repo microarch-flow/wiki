@@ -24,8 +24,8 @@ CIM 的定义要求计算发生在 cell 内或紧邻 array path。第 04 章只�
 
 1. [一条点积命令进了 CIM 宏，结果在哪一拍才算交付？](./cim-macro-primitives.md)　跟一条命令经过驱动、采样、转换和累加，区分结果算出与下一级收下的时刻。
 2. [比较器每次只判一位，ADC 怎样把 16 mV 和 30 mV 读成 8 和 15？](./adc-dac-sa-in-cim.md)　沿四次阈值比较，把保持的两个样本分别读成 8 和 15，再检查这两份码何时能相加。
-3. [数据编码](./data-encoding-strategies.md)：模型数值如何变成电路输入和权重状态；analog multi-level、digital bit-plane、mixed-signal 边界。
-4. [精度与量化在电路层的实现约束](./precision-and-quantization-at-circuit.md)：nominal bit 与 effective precision 为什么不同；analog 受噪声/ADC，digital 受 accumulator，mixed-signal 受校正。
+3. [输入都是 3，行驱动器该加多高的电压、开多久？](./data-encoding-strategies.md)　同样的输入 3，比较改变行电压、改变通电时长以及分开读两个二进制位时，列端分别要读几次。
+4. [同样算 23，为什么局部读数只差一码，输出却可能差 2？](./precision-and-quantization-at-circuit.md)　低、高位平面各多读一码，分别会把 23 改成多少？再看超量程后能否靠更宽的累加器补救。
 5. [非理想性总览](./non-idealities-and-error-sources.md)：误差如何从 device 传到模型 accuracy；analog/mixed-signal 是数值误差，digital 更像离散故障和时序问题。
 6. [Peripheral 开销](./peripheral-overhead.md)：为什么外围常吞掉 array 收益；三条路线的成本主项不同，统计口径必须统一。
 7. [Macro 设计的决策框架](./macro-design-tradeoff-framework.md)：如何从 workload 反推 macro 参数；analog/digital/mixed-signal 的选择条件不同。
