@@ -6,7 +6,7 @@
 
 ## 推荐阅读顺序
 
-1. [一次跨桥读取：设备已经收到请求，主机为什么还在等？](./pcie-vs-axi-noc-boundary.md)
+1. [一次跨桥读取](./pcie-vs-axi-noc-boundary.md)
 2. [NIC 的 RX 与 TX](./nic-dma-case-card.md)
 3. [NVMe 队列与数据路径](./nvme-queue-data-path-case-card.md)
 4. [GPU 主机链路瓶颈](./gpu-accelerator-host-link.md)

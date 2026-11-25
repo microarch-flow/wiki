@@ -74,7 +74,7 @@ title: "PCIe 知识地图"
 
 [章节导读](06-workloads-case-studies/README.md)
 
-- [一次跨桥读取：设备已经收到请求，主机为什么还在等？](06-workloads-case-studies/pcie-vs-axi-noc-boundary.md)
+- [一次跨桥读取](06-workloads-case-studies/pcie-vs-axi-noc-boundary.md)
 
 - [NIC 的 RX 与 TX](06-workloads-case-studies/nic-dma-case-card.md)
 
