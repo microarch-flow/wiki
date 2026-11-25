@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 620 258" role="img" aria-labelledby="title desc">
+  <title id="title">I0、I1 与 I2 的数据依赖</title>
+  <desc id="desc">I0 在边沿 1 算出新 r1 等于 5。I1 若能从旁路取值，边沿 1 可发射；经寄存器文件则边沿 2 可发射。I2 加 7 与 8，两个源寄存器与前两条无关。</desc>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+      <path d="M0 0 L10 5 L0 10 Z" fill="#326451"/>
+    </marker>
+  </defs>
+  <rect x="1" y="1" width="618" height="256" rx="14" fill="#f2f5ed" stroke="#ccd8c8"/>
+  <g fill="none" stroke="#326451" stroke-width="2" marker-end="url(#arrow)">
+    <path d="M146 92 H470"/>
+    <path d="M146 111 H175 V146 H215"/>
+    <path d="M399 146 H443 V111 H470"/>
+  </g>
+  <g fill="#dceade" stroke="#648574" stroke-width="1.5">
+    <rect x="15" y="66" width="131" height="68" rx="8"/>
+    <rect x="472" y="66" width="133" height="68" rx="8"/>
+  </g>
+  <rect x="217" y="126" width="182" height="40" rx="6" fill="#f8edda" stroke="#a38b65" stroke-width="1.4"/>
+  <rect x="15" y="192" width="590" height="49" rx="7" fill="#e5ebe2" stroke="#718372" stroke-dasharray="4 3"/>
+  <g fill="#1c4133" text-anchor="middle" font-family="system-ui,'Noto Sans CJK SC',sans-serif">
+    <text x="310" y="35" font-size="19" font-weight="650">I1 在等哪个值？</text>
+    <g font-size="16" font-weight="650">
+      <text x="80" y="92">I0 · 加法器</text>
+      <text x="538" y="92">I1 · 乘法器</text>
+      <text x="307" y="79">旁路 · 边沿 1 可用</text>
+    </g>
+    <g font-size="15">
+      <text x="80" y="118">2 + 3 = 5</text>
+      <text x="538" y="118">新 r1 × 4</text>
+      <text x="308" y="151">寄存器文件 · 边沿 2 可读</text>
+      <text x="310" y="222">I2 · 加法器　　7 + 8 = 15　　两个操作数在边沿 0 已就绪</text>
+    </g>
+  </g>
+</svg>

@@ -51,4 +51,4 @@ Store 的地址已算出，不等于数据已写进 cache；获准提交，也�
 
 追踪一条指令时，至少分别记录进入队列、发射、结果就绪、写回和提交。遇到慢指令，再记录阻塞原因：操作数未就绪、单元繁忙、队列满、访存未返回，还是更老指令尚未提交。
 
-下一篇[数据依赖、旁路与发射](./dependencies-bypass-issue.md)把其中的“何时可以开始执行”展开。[BOOM 流水线文档](https://docs.boom-core.org/en/latest/sections/intro-overview/boom-pipeline.html)提供一个具体乱序实现的职责划分；本文的 I0/I1 例子用于解释机制，不规定产品时序。
+要把“何时可以开始执行”落实到具体拍号，可以回看[三条指令的发射日程](./dependencies-bypass-issue.md)。[BOOM 流水线文档](https://docs.boom-core.org/en/latest/sections/intro-overview/boom-pipeline.html)提供一个具体乱序实现的职责划分；本文的 I0/I1 例子用于解释机制，不规定产品时序。

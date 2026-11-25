@@ -4,9 +4,16 @@ title: "计算微架构：执行、数据通路与资源协作"
 
 # 计算微架构：执行、数据通路与资源协作
 
-<span id="微架构执行数据通路与资源协作" aria-hidden="true"></span>微架构把软件要求变成可执行的资源、状态和时序。本系列从运算与流水线出发，连接指令控制、并行阵列、异步搬运和任务同步，再比较资源组织、存内计算与功耗取舍。
+<span id="微架构执行数据通路与资源协作" aria-hidden="true"></span>给芯片一段计算，谁来算，先得到的数放在哪里，下一项工作要等到哪一拍？从一个点积开始，逐拍跟踪数据和指令，再把同样的问题带到计算阵列和整块任务。
 
-第一次阅读，可从[微架构在决定什么](./00-overview/microarchitecture-decisions.md)开始。各专题按机制组织；CPU、GPU、NPU 是组合这些机制的不同实例。
+## 从一个点积到整块矩阵：六个问题 {#first-reads}
+
+1. [芯片怎样算出一个点积？](./00-overview/microarchitecture-decisions.md)　用一个乘法器算出 `2×4 + 3×5`，再换成两个，看看哪一拍能省下来。
+2. [第一份结果还没出来，下一份能开始吗？](./02-pipeline/pipeline-register-insertion.md)　跟着几组输入走过三级流水线，比较独立运算和依赖前一次结果的运算。
+3. [第二条指令在等，第三条能先执行吗？](./03-instruction-execution/dependencies-bypass-issue.md)　逐拍看三条指令的操作数何时到齐、执行端口由谁使用，以及结果何时提交。
+4. **多个单元怎样分工？** 先读《[十个独立的加法，怎样分给几条执行通道？](./04-parallel-execution/simd-vector-simt.md)》，数出最后一组有几条通道在工作。再读《[四个乘加单元，为什么两拍算不完八次乘加？](./04-parallel-execution/why-systolic-array.md)》，看看最右下角何时凑齐两个操作数。
+5. [第一块还在算，第二块能开始搬吗？](./06-task-control/dma-compute-writeback.md)　跟着两块数据从搬入走到写回，看两块缓冲共用一个端口时，哪一步必须等。
+6. [同一块矩阵，CPU、GPU 和 NPU 怎样算？](./07-chip-organization/cpu-vs-gpu-core-area.md)　把同一份工作交给三种处理器，对照谁发起运算、操作数怎样到达、部分和留在哪里。
 
 ## 专题地图 {#topics}
 
@@ -18,7 +25,7 @@ title: "计算微架构：执行、数据通路与资源协作"
 | [并行执行与计算阵列](./04-parallel-execution/README.md) | 工作如何分配到通道与 PE | SIMD、向量、SIMT、systolic 与 dataflow |
 | [DMA 与异步数据搬运](./05-dma/README.md) | 搬运任务如何展开、执行和完成 | 九章：语义、引擎、编程、集成、建模与案例 |
 | [任务控制、同步与资源管理](./06-task-control/README.md) | 多个引擎如何协作，buffer 何时能复用 | DMA、计算、写回的事件与所有权 |
-| [处理单元与片上组织](./07-chip-organization/README.md) | 控制、计算、存储和互连如何分组 | CPU/GPU、GPU/TPU 的不同层级 |
+| [处理单元与片上组织](./07-chip-organization/README.md) | 同一块矩阵怎样分给不同执行资源 | CPU、GPU、NPU 的执行过程与跨单元分块 |
 | [存内与近存计算](./08-in-memory-computing/README.md) | 把计算移近或放入存储路径会改变什么 | CIM、PIM、NMC 的物理机制与系统边界 |
 | [功耗管理与实现权衡](./09-power-implementation/README.md) | 执行方式如何影响能量与实现成本 | 频率、功率、任务能量、FPGA/ASIC |
 
@@ -26,8 +33,8 @@ title: "计算微架构：执行、数据通路与资源协作"
 
 ## 按处理器类型阅读
 
-- **CPU 路线**：[指令生命周期](./03-instruction-execution/instruction-lifecycle.md) → [依赖与发射](./03-instruction-execution/dependencies-bypass-issue.md) → [流水线与时序](./02-pipeline/README.md) → [CPU/GPU 资源组织](./07-chip-organization/cpu-vs-gpu-core-area.md)。
-- **GPU 路线**：[SIMD、向量与 SIMT](./04-parallel-execution/simd-vector-simt.md) → [CPU/GPU 资源组织](./07-chip-organization/cpu-vs-gpu-core-area.md) → [局部矩阵资源与片上组织](./07-chip-organization/gpu-as-tiled-tpu.md) → [GPU Copy Engine](./05-dma/07-workloads-case-studies/gpu-copy-engine-case-card.md)。
+- **CPU 路线**：[第三条指令能先执行吗](./03-instruction-execution/dependencies-bypass-issue.md) → [从取指到提交](./03-instruction-execution/instruction-lifecycle.md) → [流水线与时序](./02-pipeline/README.md) → [三种处理器怎样算同一块矩阵](./07-chip-organization/cpu-vs-gpu-core-area.md)。
+- **GPU 路线**：[十个加法怎样分给执行通道](./04-parallel-execution/simd-vector-simt.md) → [三种处理器怎样算同一块矩阵](./07-chip-organization/cpu-vs-gpu-core-area.md) → [矩阵分给两个单元时的数据传递](./07-chip-organization/gpu-as-tiled-tpu.md) → [GPU Copy Engine](./05-dma/07-workloads-case-studies/gpu-copy-engine-case-card.md)。
 - **NPU 路线**：[运算数据通路](./01-datapath/README.md) → [阵列逐拍示例](./04-parallel-execution/why-systolic-array.md) → [数据流](./04-parallel-execution/dataflow-taxonomy.md) → [跨引擎协作](./06-task-control/dma-compute-writeback.md)。
 
 <section class="reading-section" id="on-chip-data-supply" markdown="1">

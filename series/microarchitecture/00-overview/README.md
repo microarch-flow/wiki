@@ -1,9 +1,9 @@
 # 计算微架构系列导读
 
-<span id="微架构系列导读" aria-hidden="true"></span>从软件语义到执行资源，先明确本系列的问题边界。
+<span id="微架构系列导读" aria-hidden="true"></span>从纸上写得下的一个点积出发，看芯片里的乘法器、加法器和寄存器怎样分工。
 
 ## 阅读顺序
 
-1. [微架构在决定什么](./microarchitecture-decisions.md)：通过同一个点积的两种实现，区分语义、资源日程和时序约束。
+1. [芯片怎样算出一个点积](./microarchitecture-decisions.md)　逐拍算出两个乘积，再找到把它们加起来的那一拍。
 
-专题地图及 CPU、GPU、NPU 路线见[系列首页](../README.md)。
+接着读[第一份结果还没出来，下一份能开始吗？](../02-pipeline/pipeline-register-insertion.md)　专题地图及 CPU、GPU、NPU 路线见[系列首页](../README.md#topics)。
