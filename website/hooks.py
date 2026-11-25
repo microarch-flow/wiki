@@ -303,6 +303,9 @@ def topic_tree(root, name):
     return items
 
 
+SCALEUP_PEER_REDIRECT = "SCALEUP/wiki/04-software-and-collectives/peer-access-setup.md"
+ORIGINAL_TOPIC_REDIRECTS = STORAGE_LEGACY_PAGES | {SCALEUP_PEER_REDIRECT}
+
 COHERENCE_MSI_REDIRECT = "COHERENCE/wiki/02-protocols/msi-transactions.md"
 COHERENCE_CHAPTERS = (
     ("01-foundations", "01-foundations/README.md"),
@@ -470,7 +473,7 @@ def grouped_original_topics(root, series):
             elif series == INTERCONNECT and group == "共封装光学（CPO）" and name == "CPO":
                 tree = cpo_topic_tree(root, group)
             else:
-                tree = owned_topic_tree(root, name, series, group, exclude=STORAGE_LEGACY_PAGES)
+                tree = owned_topic_tree(root, name, series, group, exclude=ORIGINAL_TOPIC_REDIRECTS)
             if tree:
                 if series == STORAGE:
                     entries.extend(compact_storage_sections(tree))

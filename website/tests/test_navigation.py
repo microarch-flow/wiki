@@ -16,7 +16,8 @@ from urllib.parse import unquote, urljoin, urlsplit
 
 SITE = Path(__file__).resolve().parents[2] / ".site-build" / "site"
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
-from hooks import COHERENCE_MSI_REDIRECT, CPO_SECTIONS, grouped_original_topics, make_tree, storage_resources_tree  # noqa: E402
+from hooks import (COHERENCE_MSI_REDIRECT, CPO_SECTIONS, ORIGINAL_TOPIC_REDIRECTS,
+                   grouped_original_topics, make_tree, storage_resources_tree)  # noqa: E402
 from ownership import GROUPS, INTERCONNECT, STORAGE, owner  # noqa: E402
 from prepare import (FOUNDATION_COMPANIONS, FOUNDATION_MERGED_ARTICLES, FOUNDATION_SPLIT_ARTICLES,
                      SILICON_TO_LOGIC_LEGACY_SECTIONS)  # noqa: E402
@@ -1356,7 +1357,7 @@ class GeneratedNavigationTests(unittest.TestCase):
             *(SITE / "foundations/silicon-to-logic" / slug / "index.html" for slug in SILICON_TO_LOGIC_LEGACY_SECTIONS),
         }
         unlisted = UNLISTED_LANDING_PAGES | {
-            (Path(path).with_suffix("") / "index.html").as_posix() for path in {*STORAGE_LEGACY_PAGES, D2D_READ_REDIRECT, COHERENCE_MSI_REDIRECT}
+            (Path(path).with_suffix("") / "index.html").as_posix() for path in {*ORIGINAL_TOPIC_REDIRECTS, D2D_READ_REDIRECT, COHERENCE_MSI_REDIRECT}
         }
         pages = sorted(p for p in SITE.rglob("*.html") if p.name != "404.html" and p not in standalone_pages)
         self.assertGreater(len(pages), 1)

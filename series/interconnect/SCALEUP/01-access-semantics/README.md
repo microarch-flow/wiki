@@ -9,7 +9,7 @@
 ## 阅读顺序
 
 1. [对象与通信域](objects-and-domains.md)
-2. [地址、映射与权限](address-mapping-and-permissions.md)
+2. [对端缓冲区的访问与同步](address-mapping-and-permissions.md)
 3. [操作、排序与完成](operations-ordering-and-completion.md)
 
 返回[专题导读](../README.md)，选择机制、系统或任务分析路线。

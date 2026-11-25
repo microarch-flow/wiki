@@ -12,7 +12,9 @@ ROOT = Path(__file__).resolve().parents[2]
 SITE = ROOT / ".site-build/site"
 SOURCE = ROOT / "series/interconnect/SCALEUP"
 sys.path.insert(0, str(ROOT / "website"))
-from hooks import reading_items  # noqa: E402
+from hooks import SCALEUP_PEER_REDIRECT, reading_items  # noqa: E402
+
+PEER_ACCESS_OLD_URL = SCALEUP_PEER_REDIRECT.removesuffix(".md") + "/"
 
 
 def location(source):
@@ -40,11 +42,12 @@ class ScaleupNavigationTests(unittest.TestCase):
     def test_reading_lists_cover_all_articles(self):
         chapters = sorted(p for p in SOURCE.iterdir() if (p / "README.md").is_file())
         self.assertEqual(len(chapters), 6)
-        self.assertEqual([len(reading_items(p)) for p in chapters], [3, 4, 4, 4, 5, 3])
+        self.assertEqual([len(reading_items(p)) for p in chapters], [3, 4, 4, 3, 5, 3])
         for chapter in chapters:
             items = reading_items(chapter)
             actual = [filename for filename, _ in items]
-            expected = {p.name for p in chapter.glob("*.md") if p.name != "README.md"}
+            expected = {p.name for p in chapter.glob("*.md")
+                        if p.name != "README.md" and location(p) != PEER_ACCESS_OLD_URL}
             self.assertEqual(set(actual), expected, chapter.name)
             self.assertEqual(len(actual), len(expected))
             self.assertIn(f"]({chapter.name}/README.md)", (SOURCE / "README.md").read_text())
@@ -59,6 +62,9 @@ class ScaleupNavigationTests(unittest.TestCase):
             loc = location(source)
             page = (SITE / loc / "index.html").read_text()
             with self.subTest(page=loc):
+                if loc == PEER_ACCESS_OLD_URL:
+                    self.assertFalse(any(target.startswith(loc) for target in indexed))
+                    continue
                 self.assertIn(loc, indexed)
                 full = re.search(r"^# (.+)$", source.read_text(), re.M)[1]
                 # Chinese tokenization inserts zero-width word separators.
@@ -86,6 +92,24 @@ class ScaleupNavigationTests(unittest.TestCase):
                 self.assertIn(short, unescape(link[1]))
                 positions.append(link.start())
             self.assertEqual(positions, sorted(positions), chapter.name)
+
+    def test_peer_api_bookmarks_land_on_the_matching_sections(self):
+        page = (SITE / PEER_ACCESS_OLD_URL / "index.html").read_text()
+        menu = re.search(r'<div [^>]*data-article-redirect[^>]*>(.*?)</div>', page, re.S)
+        self.assertIsNotNone(menu)
+        links = re.findall(r'<li><span id="([^"]+)"></span>\s*<a href="([^"]+)">', menu[1])
+        expected = {
+            "cuda-与-hip-对端访问先查询能力再建立有效路径": "",
+            "建立-a-访问-b-的方向": "peer-access",
+            "访问成功以后仍需验证什么": "ready",
+            "内核访问与搬运引擎不是同一实验": "copy",
+        }
+        self.assertEqual([key for key, _ in links], list(expected))
+        canonical = "/SCALEUP/wiki/01-access-semantics/address-mapping-and-permissions/"
+        for key, href in links:
+            target = urlsplit(urljoin("https://example.test/" + PEER_ACCESS_OLD_URL, unescape(href)))
+            self.assertEqual((target.path, target.fragment), (canonical, expected[key]))
+            self.assertEqual(page.count(f'id="{key}"'), 1)
 
     def test_legacy_ids_are_unique_and_local_article_links_resolve(self):
         fixture = json.loads((ROOT / "website/tests/fixtures/interconnect-legacy-anchors.json").read_text())

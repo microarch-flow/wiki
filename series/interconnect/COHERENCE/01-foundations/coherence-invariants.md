@@ -74,4 +74,4 @@ A 收到探查后停止以 M 身份继续写，交出含 `x=1` 的整行。交�
 
 本例把 B 的新读排在 A 写入之后；若它在 B 处理失效前已经按协议完成，读到 0 完全合理。如果改成 A 先写数据、再写位于另一行的标志，B 看见标志后能否安全地读数据，就需要说明内存顺序和软件同步。涉及不同地址时，可以从[两行数据的顺序与原子性](coherence-consistency-atomicity.md)接着读。
 
-想把教学消息换成真实接口，可以沿 [CHI 的读取与写权限](../03-chi/chi-read-and-ownership.md)分别找请求、探查和数据；想看设备内存怎样进入主机地址空间，可以沿 [CXL Type 3 的地址转换](../04-cxl/cxl-type3-address-path.md)跟踪地址。系列下一篇把发起方和目标换成两张 GPU：A 凭什么能读 GPU B 的缓冲区，B 又要等到什么时候才能复用它？[加速器互连的对端地址与访问权限](../../SCALEUP/01-access-semantics/address-mapping-and-permissions.md)
+想把教学消息换成真实接口，可以沿 [CHI 的读取与写权限](../03-chi/chi-read-and-ownership.md)分别找请求、探查和数据；想看设备内存怎样进入主机地址空间，可以沿 [CXL Type 3 的地址转换](../04-cxl/cxl-type3-address-path.md)跟踪地址。系列下一篇把发起方和目标换成两张 GPU：A 凭什么能读 GPU B 的缓冲区，B 又要等到什么时候才能复用它？[GPU A 能访问 GPU B 的地址，什么时候才能读？](../../SCALEUP/01-access-semantics/address-mapping-and-permissions.md)

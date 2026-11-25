@@ -1,0 +1,59 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="360" height="463" viewBox="0 0 360 463" role="img" aria-labelledby="title desc" xml:lang="zh-CN">
+  <title id="title">GPU A 读取 GPU B 缓冲区的两条完成依赖</title>
+  <desc id="desc">A 已获准访问 B 的 4 KiB 缓冲区。时间从上向下。B 把第 4 个 uint32 元素 pB[3] 从 7 改为 42。第一条箭头表示 A 等待 B 写完，再由内核读取该元素，把 42 写入 A 本地结果 outA。第二条箭头表示 B 等待 A 的末次使用完成，再在下一轮把同一位置覆写为 99。两条箭头均表示执行顺序。释放还需停止新提交并等所有使用者完成。</desc>
+  <defs>
+    <marker id="green-arrow" markerWidth="6" markerHeight="8" refX="5" refY="4" orient="auto">
+      <path d="M0 0 6 4 0 8Z" fill="#27705b"/>
+    </marker>
+    <marker id="blue-arrow" markerWidth="6" markerHeight="8" refX="5" refY="4" orient="auto">
+      <path d="M0 0 6 4 0 8Z" fill="#305c86"/>
+    </marker>
+  </defs>
+  <style>
+    text { font: 16px system-ui, "Noto Sans CJK SC", sans-serif; text-anchor: middle; fill: #21394a; }
+    .header, .event { font-size: 18px; font-weight: 650; }
+    .detail { font-size: 16px; }
+    .field { font: 17px ui-monospace, "DejaVu Sans Mono", monospace; }
+    .lane { fill: none; stroke: #a6b2b0; stroke-width: 1.4; stroke-dasharray: 4 4; }
+    .read, .reuse { fill: none; stroke-width: 2.5; stroke-linecap: round; }
+    .read { stroke: #27705b; marker-end: url(#green-arrow); }
+    .reuse { stroke: #305c86; marker-end: url(#blue-arrow); }
+    .read-label { fill: #185b48; font-weight: 650; }
+    .reuse-label { fill: #244e75; font-weight: 650; }
+  </style>
+
+  <rect x="1" y="1" width="358" height="461" rx="12" fill="#fafbf8" stroke="#cad1cd"/>
+  <text x="180" y="29">A 已获准访问 B 的 4 KiB 缓冲区</text>
+  <text x="180" y="53" class="detail">时间向下，横向箭头表示等待关系</text>
+  <path d="M14 67H346" stroke="#cad1cd"/>
+
+  <rect x="12" y="78" width="158" height="35" rx="6" fill="#e3eeea"/>
+  <text class="header" x="91" y="101">GPU B 的队列</text>
+  <rect x="190" y="78" width="158" height="35" rx="6" fill="#e3edf4"/>
+  <text class="header" x="269" y="101">GPU A 的队列</text>
+  <path class="lane" d="M91 114V407 M269 114V407"/>
+
+  <rect x="12" y="126" width="158" height="58" rx="6" fill="#eef5f1" stroke="#89aba0"/>
+  <text class="event" x="91" y="149">1. 把 7 改为 42</text>
+  <text class="field" x="91" y="174">pB[3] = 42</text>
+
+  <text class="read-label" x="180" y="202">B 的写入已完成</text>
+  <circle cx="91" cy="212" r="3.3" fill="#27705b"/>
+  <path class="read" d="M91 212H268"/>
+
+  <rect x="190" y="227" width="158" height="77" rx="6" fill="#eef3f8" stroke="#8da9c1"/>
+  <text class="event" x="269" y="249">2. 内核读对端</text>
+  <text class="detail" x="269" y="271">从 pB[3] 取 42</text>
+  <text class="detail" x="269" y="293">写入本地 outA</text>
+
+  <text class="reuse-label" x="180" y="324">A 的末次使用已完成</text>
+  <circle cx="269" cy="334" r="3.3" fill="#305c86"/>
+  <path class="reuse" d="M269 334H92"/>
+
+  <rect x="12" y="349" width="158" height="58" rx="6" fill="#eef5f1" stroke="#89aba0"/>
+  <text class="event" x="91" y="372">3. 下一轮覆写</text>
+  <text class="field" x="91" y="397">pB[3] = 99</text>
+
+  <path d="M14 422H346" stroke="#cad1cd"/>
+  <text class="detail" x="180" y="447">释放前，还须停止新提交并等所有使用者完成</text>
+</svg>
