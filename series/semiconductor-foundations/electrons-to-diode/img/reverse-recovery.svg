@@ -1,0 +1,34 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="460" height="382" viewBox="0 0 460 382" role="img" aria-labelledby="title desc" xml:lang="zh-CN">
+  <title id="title">从正向导通切到限流反向驱动</title>
+  <desc id="desc">两行使用同一时间轴，正电流从 P 端流向 N 端，电压取 P 端减 N 端。黄色条从电流过零延伸到电压过零；其间已有储存载流子被抽走，电流为负，二极管两端电压仍正。其后电流逐渐减小至反向漏电。示意曲线不指定时间与幅值。</desc>
+  <rect x="1" y="1" width="458" height="380" rx="14" fill="#f7f6ef" stroke="#cdd5cb"/>
+  <g font-family="system-ui,'Noto Sans CJK SC',sans-serif" fill="#203c37" font-size="18">
+    <text x="21" y="35" font-size="23" font-weight="650">从正向导通切到反向驱动</text>
+    <text x="21" y="62" fill="#597069">限流换向，定性波形</text>
+
+    <rect x="144" y="88" width="94" height="209" fill="#f3e0ad" fill-opacity=".85"/>
+    <path d="M144 88v209m94-209v209" fill="none" stroke="#b99655" stroke-dasharray="4 4"/>
+    <g fill="none" stroke="#6b8179" stroke-width="1.4">
+      <path d="M56 177V92m-4 7 4-7 4 7M56 137h364"/>
+      <path d="M56 294V210m-4 7 4-7 4 7M56 249h364"/>
+      <path d="M56 306h366m-7-4 7 4-7 4"/>
+    </g>
+    <g text-anchor="end" fill="#597069">
+      <text x="49" y="143">0</text>
+      <text x="49" y="255">0</text>
+    </g>
+    <text x="20" y="86" font-weight="650">电流</text>
+    <text x="20" y="203" font-weight="650">电压</text>
+
+    <path d="M57 105h63l24 32 23 31q4 6 12 6h39q10 0 17-2c20-22 38-30 62-32q17-1 36-1h85" fill="none" stroke="#09677b" stroke-linejoin="round" stroke-linecap="round" stroke-width="3.7"/>
+    <circle cx="144" cy="137" r="4.3" fill="#09677b"/>
+    <text x="290" y="112" fill="#09677b">反向漏电</text>
+    <path d="M358 116l17 17" fill="none" stroke="#09677b" stroke-width="1.5"/>
+    <path d="M57 217h67q19 4 40 5c32 1 46 2 57 10q9 6 17 17c11 18 25 29 42 32q10 2 24 2h115" fill="none" stroke="#9b4c28" stroke-linejoin="round" stroke-linecap="round" stroke-width="3.7"/>
+    <circle cx="238" cy="249" r="4.3" fill="#9b4c28"/>
+    <text x="377" y="332" fill="#597069">时间</text>
+
+    <rect x="22" y="347" width="15" height="15" fill="#f3e0ad" stroke="#b99655"/>
+    <text x="47" y="361">电流已反向，二极管电压仍为正。</text>
+  </g>
+</svg>

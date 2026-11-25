@@ -1,0 +1,50 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="460" height="416" viewBox="0 0 460 416" role="img" aria-labelledby="title desc">
+  <title id="title">欧姆接触处，电子进出时硅侧的态怎样改变占据</title>
+  <desc id="desc">金属在左，硅在右，蓝色箭头标一次净电子交换的方向。N 型的主要通路是导带，送入一个电子使一个空导带态被占据，取走则使它空出。P 型的主要通路是价带，送入一个电子填上一个空穴，取走则留下一个空穴。每行单独比较同一硅侧态的前后占据，适用于接触附近以多数载流子导电的低注入情形。</desc>
+  <defs>
+    <marker id="arrow" markerUnits="userSpaceOnUse" markerWidth="12" markerHeight="14" refX="9" refY="7" orient="auto">
+      <path d="M1 1 10 7 1 13" fill="none" stroke="#09677b" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+    </marker>
+    <g id="occupied"><circle r="8" fill="#09677b"/><path d="M-3.5 0h7" stroke="#fff" stroke-width="1.7"/></g>
+    <circle id="empty" r="8" fill="#f7f6ef" stroke="#597069" stroke-width="2"/>
+    <circle id="hole" r="8" fill="#f7f6ef" stroke="#9b4c28" stroke-width="2.8"/>
+    <path id="then" d="M-8 0H7m-4-4 4 4-4 4" fill="none" stroke="#597069" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>
+  </defs>
+  <rect x="1" y="1" width="458" height="414" rx="15" fill="#f7f6ef" stroke="#d3dacf"/>
+  <g font-family="system-ui, 'Noto Sans CJK SC', sans-serif" fill="#203c37" font-size="18">
+    <text x="19" y="34" font-size="23" font-weight="650">欧姆接触处的电子交换</text>
+    <text x="50" y="71" text-anchor="middle">金属</text>
+    <text x="123" y="71" text-anchor="middle">硅</text>
+    <text x="226" y="71" text-anchor="middle">交换前后</text>
+    <text x="368" y="71" text-anchor="middle">硅侧的变化</text>
+    <g>
+      <rect x="16" y="82" width="428" height="134" rx="9" fill="#eaf1eb"/>
+      <path d="M16 116h428" stroke="#ccd9d1"/>
+      <path d="M16 117h75v98H25q-9 0-9-9z" fill="#dbe0da"/>
+      <path d="M91 117v98" stroke="#738279" stroke-width="2"/>
+      <text x="29" y="106" font-weight="650">N 型硅 · 导带</text>
+      <path d="M136 191H43" fill="none" stroke="#09677b" stroke-width="3.2" marker-end="url(#arrow)"/>
+      <path d="M43 143h93" fill="none" stroke="#09677b" stroke-width="3.2" marker-end="url(#arrow)"/>
+      <use href="#empty" x="193" y="143"/><use href="#then" x="225" y="143"/><use href="#occupied" x="258" y="143"/>
+      <use href="#occupied" x="193" y="191"/><use href="#then" x="225" y="191"/><use href="#empty" x="258" y="191"/>
+      <text x="368" y="149" text-anchor="middle">补进导带电子</text>
+      <text x="368" y="197" text-anchor="middle">取走导带电子</text>
+    </g>
+    <g>
+      <rect x="16" y="226" width="428" height="134" rx="9" fill="#f1ece2"/>
+      <path d="M16 260h428" stroke="#dfd3c2"/>
+      <path d="M16 261h75v98H25q-9 0-9-9z" fill="#dbe0da"/>
+      <path d="M91 261v98" stroke="#738279" stroke-width="2"/>
+      <text x="29" y="250" font-weight="650">P 型硅 · 价带</text>
+      <path d="M43 287h93" fill="none" stroke="#09677b" stroke-width="3.2" marker-end="url(#arrow)"/>
+      <path d="M136 335H43" fill="none" stroke="#09677b" stroke-width="3.2" marker-end="url(#arrow)"/>
+      <use href="#hole" x="193" y="287"/><use href="#then" x="225" y="287"/><use href="#occupied" x="258" y="287"/>
+      <use href="#occupied" x="193" y="335"/><use href="#then" x="225" y="335"/><use href="#hole" x="258" y="335"/>
+      <text x="368" y="293" text-anchor="middle">填上一个空穴</text>
+      <text x="368" y="341" text-anchor="middle">留下一个空穴</text>
+    </g>
+    <use href="#occupied" x="36" y="388"/><text x="52" y="394">已占据</text>
+    <use href="#empty" x="164" y="388"/><text x="180" y="394">空导带态</text>
+    <use href="#hole" x="315" y="388"/><text x="331" y="394">空价带态</text>
+  </g>
+</svg>

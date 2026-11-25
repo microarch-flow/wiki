@@ -1,0 +1,47 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="460" height="400" viewBox="0 0 460 400" role="img" aria-labelledby="title desc" xml:lang="zh-CN">
+  <title id="title">施主和受主各电离一次，哪份电荷可以移动？</title>
+  <desc id="desc">纵向向上为能量升高，能级间距仅作示意。上图磷施主上的电子可以热激发到导带，留下固定正施主。下图价带电子可以占据硼的受主能级，形成固定负受主，价带留下可移动的空穴。每次电离的电荷净变化均为零。</desc>
+  <defs>
+    <marker id="up-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="3.5" markerHeight="3.5" orient="auto">
+      <path d="M0 0 10 5 0 10 2 5Z" fill="#09677b"/>
+    </marker>
+    <g id="electron"><circle r="9" fill="#09677b"/><path d="M-4 0H4" stroke="white" stroke-width="2"/></g>
+    <g id="hole"><circle r="9" fill="#f7f6ef" stroke="#9b4c28" stroke-width="2.4"/><path d="M-4 0H4M0-4V4" stroke="#9b4c28" stroke-width="1.8"/></g>
+  </defs>
+  <rect x="1" y="1" width="458" height="398" rx="15" fill="#f7f6ef" stroke="#c9d3c7"/>
+  <g font-family="system-ui, 'Noto Sans CJK SC', sans-serif" fill="#203c37" font-size="19">
+    <text x="26" y="34" fill="#597069" font-size="18">能量向上增加</text>
+    <text x="271" y="34" fill="#597069" font-size="18">一次电离的结果</text>
+
+    <text x="26" y="77" font-size="22" font-weight="650">N 型 · 磷施主</text>
+    <rect x="26" y="96" width="205" height="34" fill="#e2eeee"/>
+    <path d="M26 130H231" fill="none" stroke="#597069" stroke-width="2"/>
+    <text x="37" y="120">导带</text>
+    <path d="M75 168H209" fill="none" stroke="#597069" stroke-width="1.8" stroke-dasharray="5 3"/>
+    <text x="38" y="190" font-size="18">施主能级</text>
+    <use href="#electron" x="171" y="168"/>
+    <path d="M171 155V116" fill="none" stroke="#09677b" stroke-width="3" marker-end="url(#up-arrow)"/>
+
+    <use href="#electron" x="274" y="116"/>
+    <text x="293" y="123">可移动的电子</text>
+    <rect x="264" y="149" width="20" height="20" rx="2" fill="#e9e9dc" stroke="#597069" stroke-width="2"/>
+    <path d="M269 159H279M274 154V164" stroke="#203c37" stroke-width="2"/>
+    <text x="293" y="166">固定的正施主</text>
+
+    <path d="M25 209H435" stroke="#c9d3c7" stroke-width="1.5"/>
+    <text x="26" y="246" font-size="22" font-weight="650">P 型 · 硼受主</text>
+    <text x="38" y="279" font-size="18">受主能级</text>
+    <path d="M75 291H209" fill="none" stroke="#597069" stroke-width="1.8" stroke-dasharray="5 3"/>
+    <rect x="26" y="334" width="205" height="38" fill="#efdfcf"/>
+    <path d="M26 334H231" fill="none" stroke="#597069" stroke-width="2"/>
+    <text x="37" y="360">价带</text>
+    <use href="#electron" x="171" y="350"/>
+    <path d="M171 337V294" fill="none" stroke="#09677b" stroke-width="3" marker-end="url(#up-arrow)"/>
+
+    <rect x="264" y="282" width="20" height="20" rx="2" fill="#e9e9dc" stroke="#597069" stroke-width="2"/>
+    <path d="M269 292H279" stroke="#203c37" stroke-width="2"/>
+    <text x="293" y="299">固定的负受主</text>
+    <use href="#hole" x="274" y="350"/>
+    <text x="293" y="357">可移动的空穴</text>
+  </g>
+</svg>

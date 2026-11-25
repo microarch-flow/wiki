@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="460" height="340" viewBox="0 0 460 340" role="img" aria-labelledby="title desc" xml:lang="zh-CN">
+  <title id="title">一个电子在硅中移动，然后在另一处复合</title>
+  <desc id="desc">均匀硅的能带随位置保持平坦。青色圆点沿水平方向从甲处移到乙处，两处都占据导带态。在乙处，向下的虚线表示电子释放能量并占据一个价带空态。竖直方向是能量，未表示电子在材料中向下移动。</desc>
+  <defs>
+    <marker id="teal-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="3.5" markerHeight="3.5" orient="auto">
+      <path d="M0 0 10 5 0 10 2 5Z" fill="#09677b"/>
+    </marker>
+    <g id="electron">
+      <circle r="10" fill="#09677b"/>
+      <path d="M-4.5 0H4.5" stroke="#fff" stroke-width="2"/>
+    </g>
+  </defs>
+  <rect x="1" y="1" width="458" height="338" rx="15" fill="#f7f6ef" stroke="#c9d3c7"/>
+  <g font-family="system-ui, 'Noto Sans CJK SC', sans-serif" font-size="19" fill="#203c37">
+    <text x="22" y="32" font-weight="650">电子能量</text>
+    <path d="M47 264V48m-5 9 5-9 5 9" stroke="#597069" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M63 64H433V133H63Z" fill="#e2eeee"/>
+    <path d="M63 216H433V266H63Z" fill="#efdfcf"/>
+    <path d="M63 133H433M63 216H433" stroke="#597069" stroke-width="1.8"/>
+    <text x="73" y="122" font-size="18">导带</text>
+    <text x="73" y="248" font-size="18">价带</text>
+    <text x="73" y="180" font-size="18" fill="#597069">禁带</text>
+
+    <text x="228" y="87" text-anchor="middle" font-weight="600">带内移动</text>
+    <use href="#electron" x="140" y="109"/>
+    <path d="M156 109H284" stroke="#09677b" fill="none" stroke-width="3.3" marker-end="url(#teal-arrow)"/>
+    <use href="#electron" x="307" y="109"/>
+    <path d="M307 124V225" stroke="#09677b" fill="none" stroke-width="3" stroke-dasharray="5 4" marker-end="url(#teal-arrow)"/>
+    <text x="320" y="163" font-weight="600">复合</text>
+    <text x="320" y="190" font-size="18">释放能量</text>
+    <circle cx="307" cy="236" r="9" fill="#f7f6ef" stroke="#9b4c28" stroke-width="3"/>
+    <text x="323" y="243" fill="#854020" font-size="18">价带空态</text>
+
+    <path d="M140 135V273M307 250V273" fill="none" stroke="#95a69a" stroke-width="1.5" stroke-dasharray="3 4"/>
+    <path d="M63 276H435m-8-5 8 5-8 5" fill="none" stroke="#597069" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+    <g text-anchor="middle"><text x="140" y="302">甲处</text><text x="307" y="302">乙处</text></g>
+    <text x="435" y="323" text-anchor="end" font-size="18">硅中位置 x</text>
+  </g>
+</svg>
