@@ -18,7 +18,7 @@
 5. [把乘加器放在 DRAM bank 旁，一条命令怎样算起来？](../02-memory-technologies/dram-pim-foundation.md)
 6. [一格 ReRAM 怎样存下权重，两行电流又怎样算出点积？](../02-memory-technologies/reram-as-compute-element.md)
 7. [把输入拆成两个位平面，模拟阵列怎样算出 23？](../03-compute-paradigms/analog-cim-fundamentals.md)
-8. [Digital CIM 基础](../03-compute-paradigms/digital-cim-fundamentals.md)
+8. [阵列每列只输出一位，怎样靠计数算出 2×4 + 3×5？](../03-compute-paradigms/digital-cim-fundamentals.md)　需要核算拍数时，接着看[六组位平面怎样排进读出通路](../03-compute-paradigms/digital-cim-deep-dive.md#schedule-six-pairs)。
 9. [Paradigm × Memory Crossmap](../03-compute-paradigms/paradigm-memory-crossmap.md)
 
 这条路径的目标是先建立分类直觉：看到一个对象时，先判计算位置和 memory technology；若阵列参与计算，再判断 CIM 的求值与转换范式；若是独立 PIM/NMC 单元，则查执行单元、局部存储和接口。

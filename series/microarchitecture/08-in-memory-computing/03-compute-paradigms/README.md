@@ -27,8 +27,8 @@
 
 1. [把输入拆成两个位平面，模拟阵列怎样算出 23？](./analog-cim-fundamentals.md)　先读低位平面，再读高位平面，按各自的位权合并两次转换的结果。
 2. [同一个输入反复读，怎样找出部分和里的误差？](./analog-cim-deep-dive.md)　先把同一个输入读几遍，再换一组输入，检查哪些误差能由这两种观测区分。
-3. [Digital CIM 基础](./digital-cim-fundamentals.md)：bitwise、bit-serial、popcount、local digital accumulation；SRAM-CIM、部分 MRAM read/sense-path compute；面积、布线、周期展开、是否真正进入 array path。
-4. [Digital CIM 深入](./digital-cim-deep-dive.md)
+3. [阵列每列只输出一位，怎样靠计数算出 2×4 + 3×5？](./digital-cim-fundamentals.md)　从两列的按位与数出有几个 1，再按输入位和权重位的位置累加。
+4. [六组位平面要算几拍，换成负数又怎样累加？](./digital-cim-deep-dive.md)　先排出六组位平面占用的计算资源，再给补码的符号位带上负权。
 5. [Mixed-Signal CIM](./mixed-signal-cim.md)：array 内 analog/charge/current 计算，外围数字转换与校正；SRAM、ReRAM、Flash；边界复杂，外围开销容易被低估。
 6. [Analog vs Digital](./analog-vs-digital-tradeoff-map.md)
 7. [存储介质与求值方式的交叉检查](./paradigm-memory-crossmap.md)

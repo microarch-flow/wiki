@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 700 488" role="img" aria-labelledby="title desc">
+  <title id="title">两个元素逐位与、计数，再按位权合并</title>
+  <desc id="desc">两项无符号点积，输入为二和三，权重为四和五。每个位平面都按元素零、元素一排列。输入低位 X0 为 (0,1)，高位 X1 为 (1,1)。权重低中高位 W0、W1、W2 分别为 (0,1)、(0,0)、(1,1)。每格的两个逻辑位是逐元素与的结果，箭头后是其中一的个数。两行计数分别为 (1,0,1) 和 (1,0,2)。按权重位的 1、2、4 合并得到 5、9，最后再按输入低高位合并得到 5 加 2 乘 9 等于 23。</desc>
+  <style>
+    text{font-family:system-ui,"Noto Sans CJK SC","PingFang SC",sans-serif;fill:#173c32}
+    .title{font-size:24px;font-weight:680}.heading{font-size:21px;font-weight:660}
+    .label{font-size:19px;font-weight:630}.copy{font-size:18px;fill:#3b5c4f}
+    .mid{text-anchor:middle}.val{font-size:20px;font-weight:630;text-anchor:middle}
+  </style>
+  <rect width="700" height="488" rx="14" fill="#f2f5ed"/>
+  <text x="18" y="34" class="title">一格里明明只有布尔值，计数 2 从哪里来？</text>
+  <text x="18" y="66" class="copy">无符号输入 x = (2, 3)，权重 w = (4, 5)。每对括号里先写元素 0，再写元素 1。</text>
+  <text x="18" y="95" class="copy">同一格内的两个元素各做一次 AND，箭头右侧是结果里 1 的个数。</text>
+
+  <rect x="16" y="113" width="668" height="208" rx="9" fill="#fafbf6" stroke="#afc2b1"/>
+  <rect x="26" y="123" width="648" height="61" rx="4" fill="#e2ecdf"/>
+  <text x="39" y="148" class="label">权重位平面</text>
+  <g class="label mid">
+    <text x="260" y="148">W0 · 位权 1</text><text x="421" y="148">W1 · 位权 2</text><text x="584" y="148">W2 · 位权 4</text>
+  </g>
+  <g class="copy mid">
+    <text x="260" y="174">(0, 1)</text><text x="421" y="174">(0, 0)</text><text x="584" y="174">(1, 1)</text>
+  </g>
+  <text x="38" y="221" class="label">X0 · 输入低位</text><text x="38" y="247" class="copy">(0, 1)</text>
+  <text x="38" y="283" class="label">X1 · 输入高位</text><text x="38" y="309" class="copy">(1, 1)</text>
+  <path d="M27 256H673" fill="none" stroke="#ced9cc"/>
+  <rect x="514" y="266" width="142" height="45" rx="6" fill="#e2ecdf" stroke="#9cb49e"/>
+  <g class="val">
+    <text x="260" y="234">(0, 1) → 1</text><text x="421" y="234">(0, 0) → 0</text><text x="584" y="234">(0, 1) → 1</text>
+    <text x="260" y="296">(0, 1) → 1</text><text x="421" y="296">(0, 0) → 0</text><text x="584" y="296">(1, 1) → 2</text>
+  </g>
+
+  <text x="18" y="356" class="heading">先按三个权重位的位权合并</text>
+  <text x="18" y="389" class="copy">X0 得 1 + 2 × 0 + 4 × 1 = 5</text>
+  <text x="360" y="389" class="copy">X1 得 1 + 2 × 0 + 4 × 2 = 9</text>
+  <rect x="16" y="414" width="668" height="53" rx="7" fill="#e2ecdf" stroke="#abbfac"/>
+  <text x="33" y="448" class="heading">再按输入位的位权合并</text>
+  <text x="386" y="448" class="heading">5 + 2 × 9 = 23</text>
+</svg>

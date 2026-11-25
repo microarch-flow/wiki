@@ -1,0 +1,48 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 700 544" role="img" aria-labelledby="title desc">
+  <title id="title">六对位平面的单路与三路发起安排</title>
+  <desc id="desc">按顺序让 X0、X1 各扫一次 W0、W1、W2。单路在六个窗口各发起一对位平面；每对将两个元素逐位与，局部计数为 1、0、1、1、0、2，按输入和权重的位权移位后贡献 1、0、4、2、0、16，按此顺序纳入的数学前缀和为 1、1、5、7、7、23。三个独立的位平面对通路分别处理 W0、W1、W2，窗口一同时发起 X0 对这三者，窗口二同时发起 X1 对这三者。零权重平面也会发起。本图只计任务发起，未给出结果就绪周期或写回时序。</desc>
+  <style>
+    text{font-family:system-ui,"Noto Sans CJK SC","PingFang SC",sans-serif;fill:#173c32}
+    .title{font-size:24px;font-weight:680}.heading{font-size:21px;font-weight:660}
+    .label{font-size:19px;font-weight:630}.copy{font-size:18px;fill:#3b5c4f}
+    .mid{text-anchor:middle}.val{font-size:19px;font-weight:630;text-anchor:middle}
+  </style>
+  <rect width="700" height="544" rx="14" fill="#f2f5ed"/>
+  <text x="18" y="34" class="title">同样六对位平面，需要几个发起窗口？</text>
+  <text x="18" y="65" class="copy">每对按元素做两次 AND，数出两个结果里有几个 1，再按两个位平面的位权移位。</text>
+
+  <rect x="16" y="82" width="668" height="218" rx="9" fill="#fafbf6" stroke="#afc2b1"/>
+  <text x="30" y="113" class="heading">一条通路，每窗发起一对</text>
+  <rect x="27" y="125" width="646" height="31" rx="4" fill="#e2ecdf"/>
+  <g class="label">
+    <text x="37" y="148">发起窗</text><text x="37" y="180">位平面对</text>
+  </g>
+  <g class="copy">
+    <text x="37" y="212">局部计数</text><text x="37" y="244">移位后贡献</text><text x="37" y="278">依次纳入的和</text>
+  </g>
+  <g class="val">
+    <text x="207" y="148">1</text><text x="292" y="148">2</text><text x="377" y="148">3</text><text x="462" y="148">4</text><text x="547" y="148">5</text><text x="632" y="148">6</text>
+  </g>
+  <g class="copy mid">
+    <text x="207" y="180">X0·W0</text><text x="292" y="180">X0·W1</text><text x="377" y="180">X0·W2</text><text x="462" y="180">X1·W0</text><text x="547" y="180">X1·W1</text><text x="632" y="180">X1·W2</text>
+    <text x="207" y="212">1</text><text x="292" y="212">0</text><text x="377" y="212">1</text><text x="462" y="212">1</text><text x="547" y="212">0</text><text x="632" y="212">2</text>
+    <text x="207" y="244">+1</text><text x="292" y="244">+0</text><text x="377" y="244">+4</text><text x="462" y="244">+2</text><text x="547" y="244">+0</text><text x="632" y="244">+16</text>
+  </g>
+  <path d="M27 253H673" fill="none" stroke="#ced9cc"/>
+  <g class="val">
+    <text x="207" y="278">1</text><text x="292" y="278">1</text><text x="377" y="278">5</text><text x="462" y="278">7</text><text x="547" y="278">7</text><text x="632" y="278">23</text>
+  </g>
+
+  <rect x="16" y="315" width="668" height="146" rx="9" fill="#fafbf6" stroke="#afc2b1"/>
+  <text x="30" y="346" class="heading">三条独立通路，同一窗可发起三对</text>
+  <rect x="27" y="356" width="646" height="30" rx="4" fill="#e2ecdf"/>
+  <text x="37" y="379" class="label">发起窗</text>
+  <g class="label mid"><text x="234" y="379">通路 0 · W0</text><text x="407" y="379">通路 1 · W1</text><text x="580" y="379">通路 2 · W2</text></g>
+  <text x="37" y="414" class="label">1 · X0</text><text x="37" y="446" class="label">2 · X1</text>
+  <g class="copy mid">
+    <text x="234" y="414">X0·W0</text><text x="407" y="414">X0·W1</text><text x="580" y="414">X0·W2</text>
+    <text x="234" y="446">X1·W0</text><text x="407" y="446">X1·W1</text><text x="580" y="446">X1·W2</text>
+  </g>
+  <text x="18" y="496" class="copy">零平面 W1 照常发起。单路表中按贡献顺序求和，结果何时就绪取决于通路时延。</text>
+  <text x="18" y="525" class="copy">本例只数发起窗口，启动、归并和写回另计。</text>
+</svg>
