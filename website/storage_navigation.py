@@ -44,6 +44,7 @@ MEMORY_SECTIONS = (
         ("SRAM 与 DRAM 的分化", "RAM/wiki/01-overview/sram-dram-divergence.md"),
     )),
     ("访问路径与数据管理", "02-access-paths", (
+        ("Cache 怎样判断命中", "RAM/wiki/07-system-architecture/cache-hit-lookup.md"),
         ("Cache miss 的处理", "RAM/wiki/07-system-architecture/cache-dram-coordination.md"),
         ("Cache 与 scratchpad", "COMPUTE/wiki/06-memory-discipline/cache-vs-scratchpad.md"),
         ("SRAM bank 与 DRAM 行状态", "RAM/wiki/07-system-architecture/sram-vs-dram-access-pattern.md"),

@@ -86,6 +86,11 @@
       },
       {
         "kind": "file",
+        "source": "series/storage/01-memory-hierarchy/02-access-paths/cache-hit-lookup.md",
+        "target": "RAM/wiki/07-system-architecture/cache-hit-lookup.md"
+      },
+      {
+        "kind": "file",
         "source": "series/storage/01-memory-hierarchy/02-access-paths/cache-dram-coordination.md",
         "target": "RAM/wiki/07-system-architecture/cache-dram-coordination.md"
       },

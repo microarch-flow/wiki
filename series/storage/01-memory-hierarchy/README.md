@@ -68,7 +68,7 @@ RAM 是 random-access memory，通常译为随机存取存储器：它允许根�
 | 内存控制器 | 下游读取请求 | 根据地址映射、资源状态和时序条件安排 DRAM 访问。 |
 | DRAM | 控制器发出的命令 | 按当前 bank 状态与协议条件服务读取，返回所需数据。 |
 
-完整的 64 B cache line 回到 cache 后，处理器取得其中的 4 B `A[0]`。接下来读取 `A[1]`：它位于同一条仍有效的 cache line，因此可以在 cache 命中，不需要再次为这次读取访问 DRAM。
+完整的 64 B cache line 回到 cache 后，处理器取得其中的 4 B `A[0]`。接下来读取 `A[1]`：它位于同一条仍有效的 cache line，因此可以在 cache 命中，不需要再次为这次读取访问 DRAM。硬件怎样确认这条缓存行还在，并从中选出所需的 4 B？见 [Cache 怎样判断命中](./02-access-paths/cache-hit-lookup.md)。
 
 第一次跨层搬运带回了相邻数据，第二次读取使用了其中的一部分。这是**空间局部性**的一种利用方式。如果后续再读取仍然有效的 `A[0]`，则体现了对同一数据的时间复用。块大小、访问顺序和数据是否留在本地都会影响收益，详见[局部性与数据搬运](./01-system-basics/locality-working-set-data-movement.md)。
 
@@ -91,7 +91,7 @@ RAM 是 random-access memory，通常译为随机存取存储器：它允许根�
 本专题按四类问题组织文章：
 
 - **系统基础**：从[存储系统为何难设计](./01-system-basics/problem-statement.md)、[RAM 分类与命名](./01-system-basics/taxonomy.md)和[存储层次与系统角色](./01-system-basics/memory-hierarchy-as-system.md)建立共同概念。
-- **访问路径与数据管理**：沿着下面的阅读路线，依次看缺失请求、数据放置、访问冲突和跨节点路径。
+- **访问路径与数据管理**：沿着下面的阅读路线，依次看命中判断、缺失请求、数据放置、访问冲突和跨节点路径。
 - **性能分析与瓶颈**：从[带宽与延迟](./03-performance/bandwidth-vs-latency-fundamental.md)开始，再按下面的阅读路线分析流量和性能限制。
 - **[NPU 数据路径与存储组织](./04-npu-case/README.md)**：依次分析存储层次、数据复用、缓冲时序和片上带宽。
 
@@ -101,12 +101,13 @@ RAM 是 random-access memory，通常译为随机存取存储器：它允许根�
 
 这一类文章从“数据在哪里”走到“请求怎样得到数据”。先假设读者已了解存储层次、局部性和 SRAM/DRAM 的基本区别；不在这里重复器件内部结构。
 
-1. [Cache miss 的处理](./02-access-paths/cache-dram-coordination.md)：本层 miss 后，请求怎样被跟踪、合并、向下传递并完成？重点是一次请求的生命周期，不把每次 miss 都当成 DRAM 事务。
-2. [Cache 与 scratchpad](./02-access-paths/cache-vs-scratchpad.md)：数据由谁安排进入本地，什么时候可读、可覆盖？比较自动副本管理与显式放置，不重复展开 cache 的 miss 流程。
-3. [SRAM bank 与 DRAM 行状态](./02-access-paths/sram-vs-dram-access-pattern.md)：请求映射到资源后，怎样造成 bank 冲突、行复用或行切换？用访问序列看机制，而不再比较存储单元。
-4. [多通道与 NUMA](./02-access-paths/numa-multi-channel-multi-socket.md)：路径扩到多个通道和节点后，地址、页面和线程放在哪里，怎样改变实际访问路径？
+1. [Cache 怎样判断命中](./02-access-paths/cache-hit-lookup.md)：沿着上面的数组例子，看缓存怎样找到候选位置、认出所需的行，再取出 `A[1]`。
+2. [Cache miss 的处理](./02-access-paths/cache-dram-coordination.md)：本层 miss 后，请求怎样被跟踪、合并、向下传递并完成？重点是一次请求的生命周期，不把每次 miss 都当成 DRAM 事务。
+3. [Cache 与 scratchpad](./02-access-paths/cache-vs-scratchpad.md)：数据由谁安排进入本地，什么时候可读、可覆盖？比较自动副本管理与显式放置，不重复展开 cache 的 miss 流程。
+4. [SRAM bank 与 DRAM 行状态](./02-access-paths/sram-vs-dram-access-pattern.md)：请求映射到资源后，怎样造成 bank 冲突、行复用或行切换？用访问序列看机制，而不再比较存储单元。
+5. [多通道与 NUMA](./02-access-paths/numa-multi-channel-multi-socket.md)：路径扩到多个通道和节点后，地址、页面和线程放在哪里，怎样改变实际访问路径？
 
-这四篇覆盖本专题的主要系统问题，但不代替专门的协议和编程模型说明。需要安排显式搬运时，转到 [DMA 的地址、描述符与 burst](../../microarchitecture/05-dma/02-fundamentals/address-descriptor-burst.md)及 [DMA 同步与一致性](../../microarchitecture/05-dma/04-programming-model/synchronization-errors.md)；需要追踪物理地址落到哪个 channel、bank 和 row 时，转到[地址映射](../04-dram-controller/address-mapping-channel-rank-bank-row-col.md)。路径清楚后，再进入“性能分析与瓶颈”，区分访问响应时间、程序等待和有效带宽。
+需要安排显式搬运时，转到 [DMA 的地址、描述符与 burst](../../microarchitecture/05-dma/02-fundamentals/address-descriptor-burst.md)及 [DMA 同步与一致性](../../microarchitecture/05-dma/04-programming-model/synchronization-errors.md)；需要追踪物理地址落到哪个 channel、bank 和 row 时，转到[地址映射](../04-dram-controller/address-mapping-channel-rank-bank-row-col.md)。路径清楚后，再进入“性能分析与瓶颈”，区分访问响应时间、程序等待和有效带宽。
 
 ### 性能分析与瓶颈：按什么顺序读？
 
