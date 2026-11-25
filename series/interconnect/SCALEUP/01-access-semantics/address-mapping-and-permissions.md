@@ -23,11 +23,11 @@ GPU B 上有一个数组，上一轮在第四个元素里留下了 7。这一轮
 
 <div class="bus-read-trace" markdown="1">
 
-| 想确认什么 | CUDA | HIP |
-| --- | --- | --- |
-| A 有能力访问 B 吗？ | `cudaDeviceCanAccessPeer(&ok, A, B)` | `hipDeviceCanAccessPeer(&ok, A, B)` |
-| 由哪一端启用？ | `cudaSetDevice(A)` | `hipSetDevice(A)` |
-| 给当前设备启用访问 B 的路径 | `cudaDeviceEnablePeerAccess(B, 0)` | `hipDeviceEnablePeerAccess(B, 0)` |
+| 步骤 | CUDA 和 HIP 的对应调用 |
+| --- | --- |
+| 查 A→B | `cudaDeviceCanAccessPeer(&ok, A, B)`<br>`hipDeviceCanAccessPeer(&ok, A, B)` |
+| 选设备 A | `cudaSetDevice(A)`<br>`hipSetDevice(A)` |
+| 启用访问 | `cudaDeviceEnablePeerAccess(B, 0)`<br>`hipDeviceEnablePeerAccess(B, 0)` |
 
 </div>
 
