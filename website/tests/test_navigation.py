@@ -20,6 +20,7 @@ from hooks import CPO_SECTIONS, grouped_original_topics, make_tree, storage_reso
 from ownership import GROUPS, INTERCONNECT, STORAGE, owner  # noqa: E402
 from prepare import (FOUNDATION_COMPANIONS, FOUNDATION_MERGED_ARTICLES, FOUNDATION_SPLIT_ARTICLES,
                      SILICON_TO_LOGIC_LEGACY_SECTIONS)  # noqa: E402
+from d2d_navigation import D2D_READ_REDIRECT  # noqa: E402
 from storage_navigation import (STORAGE_LEGACY_PAGES, INTEGRATION_AFTER, INTEGRATION_HOME, INTEGRATION_PACKAGING,
                                 MEMORY_HOME, MEMORY_SECTIONS, RESOURCE_HOME, RESOURCE_SECTIONS,
                                 SYSTEM_SELECTION)  # noqa: E402
@@ -355,10 +356,9 @@ class GeneratedNavigationTests(unittest.TestCase):
             {"01 芯粒与连接基础": [
                 "D2D/wiki/01-foundations/what-is-a-chiplet.md",
                 "D2D/wiki/01-foundations/in-package-connections.md",
-                "D2D/wiki/01-foundations/cross-die-communication.md",
+                "D2D/wiki/ucie-pcie-read.md",
             ]},
             {"02 接口与案例": [
-                "D2D/wiki/ucie-pcie-read.md",
                 "D2D/wiki/02-interfaces/ucie-1-1-link-bring-up.md",
                 "D2D/wiki/02-interfaces/ucie-3d.md",
                 "D2D/wiki/02-interfaces/ucie-memory.md",
@@ -441,7 +441,6 @@ class GeneratedNavigationTests(unittest.TestCase):
             "D2D/wiki/SUMMARY/": "封装内芯粒互连",
             "D2D/wiki/01-foundations/what-is-a-chiplet/": "封装内芯粒互连",
             "D2D/wiki/01-foundations/in-package-connections/": "封装内芯粒互连",
-            "D2D/wiki/01-foundations/cross-die-communication/": "封装内芯粒互连",
             "D2D/wiki/ucie-pcie-read/": "封装内芯粒互连",
             "D2D/wiki/02-interfaces/ucie-1-1-link-bring-up/": "封装内芯粒互连",
             "D2D/wiki/02-interfaces/ucie-3d/": "封装内芯粒互连",
@@ -481,9 +480,9 @@ class GeneratedNavigationTests(unittest.TestCase):
                 self.assertIsNotNone(ACTIVE_LINK.search(html))
 
         ucie = (SITE / "D2D/wiki/ucie-pcie-read/index.html").read_text(encoding="utf-8")
-        self.assertIn('title="UCIe 1.1 如何承载一次 PCIe 读取？"', ucie)
-        self.assertIn("<title>UCIe 1.1 如何承载一次 PCIe 读取？ - 从硅到系统</title>", ucie)
-        self.assertRegex(ucie, r'<span class="md-ellipsis">\s*UCIe 1\.1 读取案例\s*</span>')
+        self.assertIn('title="一次跨芯粒的寄存器读，什么时候才算完成？"', ucie)
+        self.assertIn("<title>一次跨芯粒的寄存器读，什么时候才算完成？ - 从硅到系统</title>", ucie)
+        self.assertRegex(ucie, r'<span class="md-ellipsis">\s*跨芯粒寄存器读\s*</span>')
 
         bow = (SITE / "D2D/wiki/bow-phy/index.html").read_text(encoding="utf-8")
         self.assertIn('title="BoW PHY 2.0：数据怎样通过并行线路跨越芯粒？"', bow)
@@ -1339,7 +1338,7 @@ class GeneratedNavigationTests(unittest.TestCase):
             *(SITE / "foundations/silicon-to-logic" / slug / "index.html" for slug in SILICON_TO_LOGIC_LEGACY_SECTIONS),
         }
         unlisted = UNLISTED_LANDING_PAGES | {
-            (Path(path).with_suffix("") / "index.html").as_posix() for path in STORAGE_LEGACY_PAGES
+            (Path(path).with_suffix("") / "index.html").as_posix() for path in {*STORAGE_LEGACY_PAGES, D2D_READ_REDIRECT}
         }
         pages = sorted(p for p in SITE.rglob("*.html") if p.name != "404.html" and p not in standalone_pages)
         self.assertGreater(len(pages), 1)

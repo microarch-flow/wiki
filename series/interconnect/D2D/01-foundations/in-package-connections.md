@@ -38,7 +38,7 @@
 
 ## 接下来怎么读
 
-- [一次跨芯粒通信](./cross-die-communication.md)：看请求和响应怎样使用这些连接。
+- [跨芯粒寄存器读](../ucie-pcie-read.md#read-path)：看请求和响应怎样使用这些连接。
 - [BoW PHY 2.0](../bow-phy.md)：看一种物理接口怎样安排数据线和时钟。
 - [UCIe-3D 垂直连接](../02-interfaces/ucie-3d.md)：看上下堆叠时的一种接口与时钟路径。
 - [封装局部硅桥](../../../chip-development/FAB/wiki/04-back-end-packaging/2.5d-routes/embedded-bridge-emib-and-cowos-l.md)：进一步理解桥与中介层的结构取舍。

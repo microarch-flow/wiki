@@ -45,7 +45,7 @@ AMD 还描述了部分 **GMI-Wide** 型号。例如，EPYC 9334 的每颗 CCD �
 ## 接下来怎么读
 
 - [芯粒是什么](../01-foundations/what-is-a-chiplet.md)：回看计算与 I/O 功能为什么可以拆分。
-- [一次跨芯粒通信](../01-foundations/cross-die-communication.md)：理解请求和返回需要经过的共同边界。
+- [跨芯粒寄存器读](../ucie-pcie-read.md#read-path)：理解请求和返回需要经过的共同边界。
 - [跨芯粒读取的有效性能](../03-system-design/effective-bandwidth-and-latency.md)：区分连接带宽与实际吞吐。
 - [Stratix 10 TX 产品案例](./stratix-10-tx.md)：比较 FPGA 核心与收发器 tile 的划分。
 - [AMD MI300A 产品案例](./amd-mi300a.md)：比较 CPU、GPU 和 HBM 在同一封装中的组合。

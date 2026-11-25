@@ -4,13 +4,15 @@
 
 把两颗芯粒放进同一封装，并不意味着它们已经能交换数据。封装需要提供连接通道；两端还需要兼容的物理接口、承载方式和上层协议。Die-to-die（D2D）描述裸片之间的连接，不指定唯一标准或电路结构。本文关注封装内的 D2D。
 
+第一次读这个专题，可以跟着一笔寄存器读走一个来回。接收端已经采到信号时，请求可能还在目标寄存器前排队。[《一次跨芯粒的寄存器读，什么时候才算完成？》](./ucie-pcie-read.md)
+
 ## 芯粒怎样在封装内连接
 
 以电互连为例，发送端的物理接口（PHY）产生信号；信号经过焊盘、凸点和封装内布线等结构，到达另一颗芯粒的接收端 PHY。布线可以经过封装基板、中介层或局部硅桥；上下堆叠的裸片也可以经过连接界面通信。具体路径取决于封装结构。
 
 封装通道负责连接，不会自动定义消息的含义。两端还要按共同支持的规则组织和接收数据，系统才能完成所需的读取、写入或其他操作。
 
-如果刚接触这些概念，可从[芯粒是什么](./01-foundations/what-is-a-chiplet.md)开始，再看[封装内连接](./01-foundations/in-package-connections.md)和[一次跨芯粒通信](./01-foundations/cross-die-communication.md)。
+想先看清两颗裸片在封装中的位置，可读[芯粒是什么](./01-foundations/what-is-a-chiplet.md)和[封装内的连接剖面](./01-foundations/in-package-connections.md)。
 
 ## 先区分四个问题
 
@@ -27,7 +29,7 @@
 
 ## 以 UCIe 为例
 
-[UCIe 联盟](https://www.uciexpress.org/specifications)将 UCIe 定义为封装级互连规范，覆盖 D2D 物理层、协议和软件等内容。假设两颗芯粒支持相容的 UCIe 1.1 和 PCIe 承载配置，一次 PCIe 读取可以经 UCIe 到达对端，再由对端返回 Completion。链路收到请求不代表读取已经成功；完整过程见 [UCIe 1.1 读取案例](./ucie-pcie-read.md)。
+[UCIe 联盟](https://www.uciexpress.org/specifications)将 UCIe 定义为封装级互连规范，覆盖 D2D 物理层、协议和软件等内容。假设两颗芯粒支持相容的 UCIe 1.1 和 PCIe 承载配置，一次 PCIe 读取可以经 UCIe 到达对端，再由对端返回 Completion。链路收到请求不代表读取已经成功。沿图上的同一组编号，可以分别找到信号的采样点和事务的完成点。[UCIe 1.1 怎样承载这笔读](./ucie-pcie-read.md#ucie-pcie)
 
 UCIe 继续演进。[UCIe.mem 存储访问](./02-interfaces/ucie-memory.md)说明 4.0 介绍的计算芯粒与内存逻辑 die 连接；[UCIe 2.0 测试访问与管理](./03-system-design/ucie-dfx-test-access.md)说明可选管理架构中的测试入口。现有读取文章仍以 1.1 为例，不能把新版本的功能直接套入该案例。
 
@@ -37,7 +39,7 @@ UCIe 继续演进。[UCIe.mem 存储访问](./02-interfaces/ucie-memory.md)说�
 
 | 入口 | 本专题关注的职责 |
 | --- | --- |
-| [UCIe 1.1 读取案例](./ucie-pcie-read.md) | 在选定配置下，用 UCIe 承载 PCIe 请求和 Completion。 |
+| [UCIe 1.1 承载 PCIe](./ucie-pcie-read.md#ucie-pcie) | 在选定配置下，用 UCIe 承载 PCIe 请求和 Completion。 |
 | [UCIe-3D 垂直连接](./02-interfaces/ucie-3d.md) | 通过堆叠界面的物理接口传递数据；上层仍需配合。 |
 | [UCIe.mem 存储访问](./02-interfaces/ucie-memory.md) | 在 UCIe 4.0 中组织计算芯粒与内存逻辑 die 之间的内存请求和响应。 |
 | [BoW PHY 2.0](./bow-phy.md) | 定义数据线、随路时钟等物理接口；上层事务规则需要另行确定。 |
@@ -52,7 +54,7 @@ UCIe 继续演进。[UCIe.mem 存储访问](./02-interfaces/ucie-memory.md)说�
 
 ## 按问题选读
 
-- **初识芯粒互连**：从[芯粒是什么](./01-foundations/what-is-a-chiplet.md)开始，依次看[芯粒怎样在封装内连接](./01-foundations/in-package-connections.md)和[一次跨芯粒通信](./01-foundations/cross-die-communication.md)，再选择 [UCIe 1.1 读取案例](./ucie-pcie-read.md)或 [BoW.Flexi 读取案例](./bow-flexi.md)。
+- **初识芯粒互连**。先看[封装内的连接剖面](./01-foundations/in-package-connections.md)，再跟着[一次寄存器读](./ucie-pcie-read.md)分清接收信号、接收请求、返回数据三个环节。想比较另一种接口，可以继续看 [BoW.Flexi 怎样承载 AHB 读取](./bow-flexi.md)。
 - **启动和故障定位**：先看[芯粒互操作与启动](./03-system-design/interoperability-and-bring-up.md)，再用 [UCIe 1.1 链路启动与训练](./02-interfaces/ucie-1-1-link-bring-up.md)了解具体流程。需要排查时，继续阅读[链路测试与故障定位](./03-system-design/link-testing-and-diagnosis.md)；如需了解管理测试入口，可选读 [UCIe 2.0 测试访问与管理](./03-system-design/ucie-dfx-test-access.md)。
 - **性能和系统设计**：依次阅读[跨芯粒流控与前进条件](./03-system-design/flow-control-and-forward-progress.md)、[跨芯粒读取的有效性能](./03-system-design/effective-bandwidth-and-latency.md)和[多芯粒拓扑与数据放置](./03-system-design/multi-chiplet-topology.md)，再用 [AMD MI300A 产品案例](./04-product-cases/amd-mi300a.md)了解一个公开的系统实例。
 
@@ -60,28 +62,27 @@ UCIe 继续演进。[UCIe.mem 存储访问](./02-interfaces/ucie-memory.md)说�
 
 1. [芯粒是什么](./01-foundations/what-is-a-chiplet.md)：区分裸片、芯粒和封装。
 2. [芯粒怎样在封装内连接](./01-foundations/in-package-connections.md)：认识中介层、硅桥和堆叠连接。
-3. [一次跨芯粒通信](./01-foundations/cross-die-communication.md)：沿请求和返回路径区分接口与通道。
-4. [UCIe 1.1 读取案例](./ucie-pcie-read.md)：PCIe 请求怎样跨 die 并返回结果。
-5. [UCIe 1.1 链路启动与训练](./02-interfaces/ucie-1-1-link-bring-up.md)：边带、主带和 Adapter 怎样逐步就绪。
-6. [UCIe-3D 垂直连接](./02-interfaces/ucie-3d.md)：堆叠芯粒怎样通过垂直接口交换数据。
-7. [UCIe.mem 存储访问](./02-interfaces/ucie-memory.md)：计算芯粒怎样经内存逻辑 die 访问内存。
-8. [BoW PHY 2.0](./bow-phy.md)：数据、时钟和 slice 怎样组成封装内连接。
-9. [BoW PHY 2.0 坏线重映射](./02-interfaces/bow-phy-redundancy.md)：支持冗余的 slice 怎样用备用线绕过缺陷。
-10. [BoW 存储接口](./02-interfaces/bow-memory.md)：控制器芯粒和存储芯粒怎样使用 BoW 连接。
-11. [BoW.Flexi 读取案例](./bow-flexi.md)：AHB 读取怎样封包、跨芯粒并返回。
-12. [AIB 2.0](./02-interfaces/aib-2.md)：另一种并行物理接口怎样传递数据。
-13. [OIF 112G XSR+](./02-interfaces/oif-cei-112g-xsr-plus.md)：高速串行电接口怎样经过封装内通道。
-14. [AMBA CHI C2C](./02-interfaces/chi-c2c.md)：一致性消息怎样组织并跨芯粒传输。
-15. [芯粒互操作与启动](./03-system-design/interoperability-and-bring-up.md)：从设计匹配到链路和系统就绪。
-16. [跨芯粒流控与前进条件](./03-system-design/flow-control-and-forward-progress.md)：请求、snoop 和数据怎样取得发送授权。
-17. [跨芯粒链路错误检测与重放](./03-system-design/link-reliability.md)：数据传输出错后怎样检测和尝试恢复。
-18. [跨芯粒读取的有效性能](./03-system-design/effective-bandwidth-and-latency.md)：线路速率、在途窗口和目标服务怎样限制吞吐。
-19. [多芯粒拓扑与数据放置](./03-system-design/multi-chiplet-topology.md)：多个芯粒之间的连接与数据位置怎样改变链路流量。
-20. [链路测试与故障定位](./03-system-design/link-testing-and-diagnosis.md)：按测试路径判断覆盖范围和故障线索。
-21. [UCIe 2.0 测试访问与管理](./03-system-design/ucie-dfx-test-access.md)：管理端怎样访问封装内芯粒的测试逻辑。
-22. [Stratix 10 TX 产品案例](./04-product-cases/stratix-10-tx.md)：FPGA 核心怎样与收发器 tile 配合。
-23. [AMD EPYC 9004 产品案例](./04-product-cases/amd-epyc-9004-gmi.md)：计算芯粒怎样经 I/O die 访问系统。
-24. [AMD MI300A 产品案例](./04-product-cases/amd-mi300a.md)：CPU、GPU 和 HBM 怎样在同一封装协作。
+3. [跨芯粒寄存器读](./ucie-pcie-read.md)。跟着一笔 32 位读走过封装通道，再看 UCIe 1.1 怎样把同一笔 PCIe 请求和返回送到对端。
+4. [UCIe 1.1 链路启动与训练](./02-interfaces/ucie-1-1-link-bring-up.md)：边带、主带和 Adapter 怎样逐步就绪。
+5. [UCIe-3D 垂直连接](./02-interfaces/ucie-3d.md)：堆叠芯粒怎样通过垂直接口交换数据。
+6. [UCIe.mem 存储访问](./02-interfaces/ucie-memory.md)：计算芯粒怎样经内存逻辑 die 访问内存。
+7. [BoW PHY 2.0](./bow-phy.md)：数据、时钟和 slice 怎样组成封装内连接。
+8. [BoW PHY 2.0 坏线重映射](./02-interfaces/bow-phy-redundancy.md)：支持冗余的 slice 怎样用备用线绕过缺陷。
+9. [BoW 存储接口](./02-interfaces/bow-memory.md)：控制器芯粒和存储芯粒怎样使用 BoW 连接。
+10. [BoW.Flexi 读取案例](./bow-flexi.md)：AHB 读取怎样封包、跨芯粒并返回。
+11. [AIB 2.0](./02-interfaces/aib-2.md)：另一种并行物理接口怎样传递数据。
+12. [OIF 112G XSR+](./02-interfaces/oif-cei-112g-xsr-plus.md)：高速串行电接口怎样经过封装内通道。
+13. [AMBA CHI C2C](./02-interfaces/chi-c2c.md)：一致性消息怎样组织并跨芯粒传输。
+14. [芯粒互操作与启动](./03-system-design/interoperability-and-bring-up.md)：从设计匹配到链路和系统就绪。
+15. [跨芯粒流控与前进条件](./03-system-design/flow-control-and-forward-progress.md)：请求、snoop 和数据怎样取得发送授权。
+16. [跨芯粒链路错误检测与重放](./03-system-design/link-reliability.md)：数据传输出错后怎样检测和尝试恢复。
+17. [跨芯粒读取的有效性能](./03-system-design/effective-bandwidth-and-latency.md)：线路速率、在途窗口和目标服务怎样限制吞吐。
+18. [多芯粒拓扑与数据放置](./03-system-design/multi-chiplet-topology.md)：多个芯粒之间的连接与数据位置怎样改变链路流量。
+19. [链路测试与故障定位](./03-system-design/link-testing-and-diagnosis.md)：按测试路径判断覆盖范围和故障线索。
+20. [UCIe 2.0 测试访问与管理](./03-system-design/ucie-dfx-test-access.md)：管理端怎样访问封装内芯粒的测试逻辑。
+21. [Stratix 10 TX 产品案例](./04-product-cases/stratix-10-tx.md)：FPGA 核心怎样与收发器 tile 配合。
+22. [AMD EPYC 9004 产品案例](./04-product-cases/amd-epyc-9004-gmi.md)：计算芯粒怎样经 I/O die 访问系统。
+23. [AMD MI300A 产品案例](./04-product-cases/amd-mi300a.md)：CPU、GPU 和 HBM 怎样在同一封装协作。
 
 也可以按问题查看[知识地图](./SUMMARY.md)。
 

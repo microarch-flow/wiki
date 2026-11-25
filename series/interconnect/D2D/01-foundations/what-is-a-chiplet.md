@@ -30,5 +30,5 @@
 ## 接下来怎么读
 
 - [芯粒怎样在封装内连接](./in-package-connections.md)：看数据线如何经过凸点、布线结构或键合界面。
-- [一次跨芯粒通信](./cross-die-communication.md)：从一次读取理解接口、通道和返回结果的分工。
+- [跨芯粒寄存器读](../ucie-pcie-read.md#read-path)：从一次读取理解接口、通道和返回结果的分工。
 - [AMD EPYC 9004 产品案例](../04-product-cases/amd-epyc-9004-gmi.md)：看另一代 EPYC 的计算芯粒与 I/O die 怎样连接。
