@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>沿着一条线测量上升沿</title>
+  <title>测量一个上升沿的时间与能量</title>
   <style>
     :root { color-scheme: light; --ink: #203c37; --muted: #496059; --teal: #09677b; --rust: #a34620; --line: #bccbbf; --paper: #fbfaf4; }
     * { box-sizing: border-box; }
@@ -51,7 +51,7 @@
 </head>
 <body>
   <nav aria-label="实验导航"><a href="#load">改变扇出</a><a href="#wire">移动探头</a><a href="./">返回正文</a></nav>
-  <h1>沿着一条线测量上升沿</h1>
+  <h1>测量一个上升沿的时间与能量</h1>
   <noscript><p>当前展示初始状态。启用 JavaScript 可以调整负载、移动游标和切换布线。</p><style>.controls {display:none;}</style></noscript>
 
   <section id="load" aria-labelledby="load-title">
@@ -63,6 +63,17 @@
       <div><label for="load-time">观察时刻　<output for="load-time" id="load-time-label">10 ps</output></label>
         <input type="range" min="0" max="80" step="1" value="10" id="load-time"></div>
     </div>
+    <details id="load-energy">
+      <summary>到游标时刻，电源给出的能量去了哪里？</summary>
+      <p>从 0 V 开始充电。下表累计到<a href="#load">上方游标</a>选定的时刻，当前为 <strong id="energy-state">8 fF，10 ps</strong>。</p>
+      <table aria-label="截至游标时刻的能量"><tbody>
+        <tr><th scope="row">电源已提供</th><td id="energy-source">3.65 fJ</td></tr>
+        <tr><th scope="row">电容中已储存</th><td id="energy-stored">1.30 fJ</td></tr>
+        <tr><th scope="row">上拉路径已耗散</th><td id="energy-heat">2.35 fJ</td></tr>
+      </tbody></table>
+      <p>设游标处的输出电压为 Y。电源以恒定的 0.8 V 送出电荷 CY，提供的能量为 0.8 V × CY。电容储存 ½CY²，其余能量在上拉电阻中转化为热。这里仅计算给负载充电的这条路径。</p>
+      <p>选八个输入时，总电容为 22 fF。等输出升到接近 0.8 V，电源累计提供的能量趋近 14.08 fJ，电容储能和上拉耗散各趋近 7.04 fJ。</p>
+    </details>
     <figure>
       <svg class="chart" viewBox="0 0 450 238" role="img" aria-labelledby="load-plot-title load-desc">
         <title id="load-plot-title">负载电压随时间上升</title>
@@ -143,7 +154,7 @@
       <p>三个实验都以理想开关接通上拉为 0 ps，忽略输入边沿时间、漏电和门的其他内部效应。电容与电阻取固定值。门内延迟和布线延迟的实际分界还取决于时序报告选取的引脚与门限。</p>
     </details>
   </section>
-  <footer><a href="./">返回扇出、布线与门延迟正文</a></footer>
+  <footer><a href="./">返回正文</a></footer>
   <script>
     'use strict';
     const get = id => document.getElementById(id);
@@ -199,6 +210,13 @@
       put('load-current', ((supply - voltage) * 1000).toFixed(1) + ' µA');
       put('load-half', ps(half));
       put('load-rise', ps(tau * Math.log(9)));
+      // Capacitance in fF and voltage in V give energy in fJ.
+      const sourceEnergy = cap * supply * voltage;
+      const storedEnergy = cap * voltage * voltage / 2;
+      put('energy-state', cap + ' fF，' + time + ' ps');
+      put('energy-source', sourceEnergy.toFixed(2) + ' fJ');
+      put('energy-stored', storedEnergy.toFixed(2) + ' fJ');
+      put('energy-heat', (sourceEnergy - storedEnergy).toFixed(2) + ' fJ');
     }
 
     const wireNotes = {
@@ -253,6 +271,11 @@
       put('wire-lag', ps(farHalf - nearHalf));
     }
 
+    function openLinkedEnergy() {
+      if (location.hash === '#load-energy') get('load-energy').open = true;
+    }
+    addEventListener('hashchange', openLinkedEnergy);
+    openLinkedEnergy();
     attr('base-wave', 'd', wave(t => charged(t, 8)));
     get('fanout').addEventListener('input', renderLoad);
     get('load-time').addEventListener('input', renderLoad);

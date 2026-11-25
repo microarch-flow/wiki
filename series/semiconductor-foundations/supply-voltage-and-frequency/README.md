@@ -14,7 +14,7 @@
 
 ## 固定活动量，先算节省的能量
 
-沿用 50 fF 的全摆幅负载，假设只有供电改变。节点每次从 0 充到电源电压时，电源给出的能量由 50 fF × (0.8 V)² = **32 fJ**，降到 50 fF × (0.7 V)² = **24.5 fJ**。一次充电少取约 **23.4%** 的能量。如果每秒上升次数也相同，这部分平均功率按相同比例下降。整颗芯片还包括漏电、内部功耗以及其他电源域，必须按它们各自的边界计量。[MIT 的 CMOS 延迟与功耗](https://ocw.mit.edu/courses/6-012-microelectronic-devices-and-circuits-fall-2009/resources/mit6_012f09_lec16_scaling/)
+沿用[上一篇两段程序中的 50 fF 节点](../fanout-and-wire-delay/README.md#activity)，让它在两个电压下都作全摆幅翻转。节点每次从 0 充到电源电压时，电源给出的能量由 50 fF × (0.8 V)² = **32 fJ**，降到 50 fF × (0.7 V)² = **24.5 fJ**。一次充电少取约 **23.4%** 的能量。如果每秒上升次数也相同，这部分平均功率按相同比例下降。整颗芯片还包括漏电、内部功耗以及其他电源域，必须按它们各自的边界计量。[MIT 的 CMOS 延迟与功耗](https://ocw.mit.edu/courses/6-012-microelectronic-devices-and-circuits-fall-2009/resources/mit6_012f09_lec16_scaling/)
 
 ## 再看数据能否及时送到下一级
 

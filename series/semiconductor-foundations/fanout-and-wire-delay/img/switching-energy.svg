@@ -1,0 +1,44 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="480" height="445" viewBox="0 0 480 445" role="img" aria-labelledby="title description">
+  <title id="title">输出充电再放电，电源交付的 14.08 fJ 去了哪里？</title>
+  <desc id="description">恒定 0.8 V 电源驱动初始为零的 22 fF 负载，只计理想满摆幅充放电。上拉充电完成后，电源交付的 14.08 fJ 平分为 PMOS 的 7.04 fJ 热耗和电容电场的 7.04 fJ 储能。下拉放电时电源新供能为零，电容释放的 7.04 fJ 在 NMOS 中耗散。最后两管各耗散 7.04 fJ，电容储能回到零。</desc>
+  <style>
+    text { font-family: system-ui, 'Noto Sans CJK SC', 'Microsoft YaHei', sans-serif; fill: #203c37; }
+    .heading { font-size: 23px; font-weight: 700; }
+    .step { font-size: 20px; font-weight: 650; }
+    .note { font-size: 17px; fill: #526861; }
+    .label { font-size: 18px; font-weight: 650; text-anchor: middle; }
+    .heat { fill: #81421e; }
+    .stored { fill: #095b6a; }
+  </style>
+  <rect x="1" y="1" width="478" height="443" rx="15" fill="#f7f6ef" stroke="#c4d0c4"/>
+
+  <text x="20" y="35" class="heading">输出回到低电平，能量去了哪里？</text>
+  <text x="20" y="64" class="note">电源保持 0.8 V，负载为 22 fF，忽略漏电和短路电流。</text>
+
+  <rect x="20" y="82" width="440" height="40" rx="5" fill="#dce7da" stroke="#8ba38e"/>
+  <text x="240" y="109" class="label">这次充电，电源交付 14.08 fJ</text>
+
+  <text x="20" y="157" class="step">上拉充电</text>
+  <text x="460" y="157" text-anchor="end" class="note">输出从 0 V 升到 0.8 V</text>
+  <rect x="20" y="168" width="220" height="63" fill="#f2dfcd"/>
+  <rect x="240" y="168" width="220" height="63" fill="#d7e9e9"/>
+  <path d="M240 168V231" stroke="#f7f6ef" stroke-width="2"/>
+  <text x="130" y="192" class="label heat">PMOS 发热</text>
+  <text x="130" y="219" class="label heat">7.04 fJ</text>
+  <text x="350" y="192" class="label stored">电容中储存</text>
+  <text x="350" y="219" class="label stored">7.04 fJ</text>
+
+  <text x="20" y="270" class="step">下拉放电</text>
+  <text x="460" y="270" text-anchor="end" class="note">输出从 0.8 V 降回 0 V</text>
+  <rect x="20" y="281" width="220" height="63" fill="#f2dfcd"/>
+  <rect x="240" y="281" width="220" height="63" fill="#f2dfcd"/>
+  <path d="M240 281V344" stroke="#f7f6ef" stroke-width="2"/>
+  <text x="130" y="305" class="label heat">上拉时已发热</text>
+  <text x="130" y="332" class="label heat">7.04 fJ</text>
+  <text x="350" y="305" class="label heat">电容储能在 NMOS 耗散</text>
+  <text x="350" y="332" class="label heat">7.04 fJ</text>
+
+  <path d="M20 366H460" stroke="#c4d0c4"/>
+  <text x="20" y="391" class="step">放电时电源新供能为 0 fJ。</text>
+  <text x="20" y="421" class="note">电容储能回到零，两只管子共耗散 14.08 fJ。</text>
+</svg>

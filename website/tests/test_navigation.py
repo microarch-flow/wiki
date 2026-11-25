@@ -93,10 +93,10 @@ class GeneratedNavigationTests(unittest.TestCase):
         slugs = [slug for slug, _ in entries]
         source = Path(__file__).resolve().parents[2] / "series/semiconductor-foundations"
         titles = {page.parent.name: page.read_text(encoding="utf-8").splitlines()[0].removeprefix("# ")
-                  for page in source.glob("*/README.md")}
-        self.assertEqual(slugs[:8], ["electrons-to-diode", "bands-to-channel", "cmos-logic-gates",
+                  for page in source.glob("*/README.md") if page.parent.name != "switching-energy-and-power"}
+        self.assertEqual(slugs[:9], ["electrons-to-diode", "bands-to-channel", "cmos-logic-gates",
                                      "latch-and-divider", "transistor-amplifier", "quartz-oscillator", "integer-pll",
-                                     "fanout-and-wire-delay"])
+                                     "fanout-and-wire-delay", "supply-voltage-and-frequency"])
         self.assertEqual(entries[0][1], "从电子到二极管")
         archive = guide.split('id="历史导读"', 1)[1].split("</ul>", 1)[0]
         old_entries = re.findall(r'<li><a href="([^"/]+)/">([^<]+)</a>', archive)
@@ -119,6 +119,29 @@ class GeneratedNavigationTests(unittest.TestCase):
                 self.assertEqual(labels, ["首页", "半导体与电路基础", titles[slug]])
                 link = re.search(r'<a href="([^"]+)">半导体与电路基础</a>', breadcrumb).group(1)
                 self.assertEqual(urljoin(page_url(article), link), "https://example.test/foundations/")
+
+    def test_merged_switching_energy_old_links_and_search(self):
+        old_url = "foundations/switching-energy-and-power/"
+        new_url = "foundations/fanout-and-wire-delay/"
+        old = (SITE / old_url / "index.html").read_text(encoding="utf-8")
+        new = (SITE / new_url / "index.html").read_text(encoding="utf-8")
+        guide = (SITE / "foundations/index.html").read_text(encoding="utf-8")
+        self.assertNotIn("switching-energy-and-power/", guide)
+        old_sections = ("一次翻转从电源取多少能量", "将-1000-个节点放在同一个观察窗口", "还有哪些电流流过电源")
+        old_title = "同样的频率为什么跑不同任务时芯片功耗不同"
+        for fragment in (old_title, *old_sections):
+            with self.subTest(legacy_anchor=fragment):
+                self.assertEqual(old.count(f'id="{fragment}"'), 1)
+                self.assertEqual(new.count(f'id="{fragment}"'), 1)
+        for fragment in ("energy", *old_sections):
+            self.assertIn(f'href="../fanout-and-wire-delay/#{fragment}"', old)
+        self.assertEqual(new.count('id="energy"'), 1)
+        self.assertIn('location.hash || "#energy"', old)
+        self.assertIn('location.replace("../fanout-and-wire-delay/"', old)
+        search = json.loads((SITE / "search/search_index.json").read_text(encoding="utf-8"))
+        locations = [entry["location"] for entry in search["docs"]]
+        self.assertEqual(locations.count(new_url), 1)
+        self.assertFalse(any(url.startswith(old_url) for url in locations))
 
     def test_silicon_to_logic_sections_and_legacy_routes(self):
         topic = "foundations/silicon-to-logic/"
@@ -1093,6 +1116,7 @@ class GeneratedNavigationTests(unittest.TestCase):
         self.assertTrue(SITE.is_dir(), "Build the site before running this test")
         standalone_pages = {
             SITE / "series/index.html",
+            SITE / "foundations/switching-energy-and-power/index.html",
             *(SITE / "foundations" / companion for companion in FOUNDATION_COMPANIONS),
             *(SITE / "foundations/silicon-to-logic" / slug / "index.html" for slug in SILICON_TO_LOGIC_LEGACY_SECTIONS),
         }

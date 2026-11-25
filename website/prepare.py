@@ -424,6 +424,12 @@ def stage_site(root=ROOT, build_root=None, registry=None, source_root=None, layo
                     destination = docs / local["publish"]
                     copy_source(selected, destination, public_only=True)
                     if local["directory"] == "series/semiconductor-foundations":
+                        legacy = Path("switching-energy-and-power/README.md")
+                        if (destination / legacy).is_file():
+                            redirect = legacy.with_name("index.html")
+                            (destination / legacy).unlink()
+                            shutil.copy2(selected / redirect, destination / redirect)
+                            published.add(selected / legacy, destination / redirect, rewrite_page=False)
                         for companion in FOUNDATION_COMPANIONS:
                             if (destination / companion.parent / "README.md").is_file():
                                 shutil.copy2(selected / companion, destination / companion)

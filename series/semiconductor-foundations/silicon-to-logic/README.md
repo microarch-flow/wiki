@@ -4,7 +4,7 @@
 
 <div id="阅读顺序"></div>
 
-一个输入电压怎样决定电路输出 0 还是 1？从[电子到二极管](../electrons-to-diode/README.md)出发，有两条路可走。想看反向偏置的结怎样收集另一端注入的电子，可以先读下面的 [BJT](#三极管怎样放大电流并作为开关)。想弄清数字门怎样翻转，可以直接从 [MOS 的栅极与沟道](../bands-to-channel/README.md)读到 [CMOS 反相器](../cmos-logic-gates/README.md#inverter)，跟着输出节点上的电荷算一次翻转要花多少[时间](../fanout-and-wire-delay/README.md)和[能量](../switching-energy-and-power/README.md)。
+一个输入电压怎样决定电路输出 0 还是 1？从[电子到二极管](../electrons-to-diode/README.md)出发，有两条路可走。想看反向偏置的结怎样收集另一端注入的电子，可以先读下面的 [BJT](#三极管怎样放大电流并作为开关)。想弄清数字门怎样翻转，可以直接从 [MOS 的栅极与沟道](../bands-to-channel/README.md)读到 [CMOS 反相器](../cmos-logic-gates/README.md#inverter)，跟着输出节点上的电荷算一次翻转要花多少[时间](../fanout-and-wire-delay/README.md#load)和[能量](../fanout-and-wire-delay/README.md#energy)。
 
 从门电路继续，还可以追一拍时钟的来路。先看[放大级](../transistor-amplifier/README.md)怎样补回[石英振荡回路](../quartz-oscillator/README.md)的损耗，再看[触发器怎样采样和二分频](../latch-and-divider/README.md)，以及 [PLL 怎样利用分频反馈倍频](../integer-pll/README.md)。芯片能用多快的时钟，还受[本地供电压降](../ir-drop-and-decoupling/README.md)以及[工艺、电压、温度对路径延迟的影响](../pvt-and-path-delay/README.md)约束。
 
@@ -93,7 +93,7 @@ MOSFET 的栅极与硅之间隔着绝缘层。栅极能改变硅表面的电子�
 
 想把一个上升沿画到时间轴上，可从[电容充电到时钟边沿](../voltage-to-clock/README.md)算出输出电压越过门限需要多久。想在一块硅片上找回输入、输出和两根电源线，可以对照[反相器的实物剖面与封装](../inverter-to-package/README.md)。
 
-也可以从这个反相器向里或向外追一步。向里看[栅极怎样控制硅表面的电荷](../bands-to-channel/README.md)，向外看[一组节点的翻转怎样累加成芯片功耗](../switching-energy-and-power/README.md)。
+也可以从这个反相器向里或向外追一步。向里看[栅极怎样控制硅表面的电荷](../bands-to-channel/README.md)，向外看[一组节点的翻转怎样累加成芯片功耗](../fanout-and-wire-delay/README.md#activity)。
 
 - **时序。** 从输出节点充放电继续算到寄存器的采样边沿。见[电路与时序基础](../../microarchitecture/02-pipeline/electrical-timing-foundations.md)。
 - **运算。** 从基本逻辑门进入部分积和累加电路。见[从部分积到 MAC](../../microarchitecture/01-datapath/multiply-accumulate-from-gates.md)。
