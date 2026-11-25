@@ -6,7 +6,9 @@
 
 主机要从加速卡的片上内存（SRAM）读回数值 42。假设卡内的桥把 PCIe 请求转换为 AXI 读，再经片上网络送往 SRAM。卡边已经收到请求，这时 42 到了哪里？从系列第一课[《一次跨桥读取：设备已经收到请求，主机为什么还在等？》](PCIE/wiki/06-workloads-case-studies/pcie-vs-axi-noc-boundary.md)跟着这笔读走一个来回。
 
-想把桥交出地址的那一刻放大到逐拍看，接着读[《地址已经收下，数据为什么还没回来？》](BUS/wiki/02-fundamentals/transaction-address-data-response.md)。如果目标在另一颗芯粒上，可以转到[封装内芯粒互连](D2D/wiki/README.md)；想看电信号如何通过通道，再读[高速电链路](SERDES/wiki/README.md)。
+想把桥交出地址的那一刻放大到逐拍看，接着读[《地址已经收下，数据为什么还没回来？》](BUS/wiki/02-fundamentals/transaction-address-data-response.md)。要沿着这笔读追进卡内，看地址如何到达 SRAM、42 如何回到桥，读[《一次读取怎样变成 NoC 里的请求包和返回包？》](NOC/wiki/05-system-integration/ni-network-interface-design.md)。
+
+如果目标在另一颗芯粒上，可以转到[封装内芯粒互连](D2D/wiki/README.md)；想看电信号如何通过通道，再读[高速电链路](SERDES/wiki/README.md)。
 
 ## 从问题选择专题
 
