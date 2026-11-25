@@ -1,3 +1,18 @@
+// A historical article link can refer to a particular heading. The matching
+// list item also supplies a working link when JavaScript is unavailable.
+(() => {
+  const links = document.querySelector('[data-storage-redirect]');
+  if (!links) return;
+  let destination = links.querySelector('a');
+  try {
+    const fragment = document.getElementById(decodeURIComponent(window.location.hash.slice(1)));
+    if (links.contains(fragment)) destination = fragment.closest('li').querySelector('a');
+  } catch (error) {
+    if (!(error instanceof URIError)) throw error;
+  }
+  if (destination) window.location.replace(destination.href);
+})();
+
 (() => {
   const sidebar = document.querySelector('.md-sidebar--primary');
   if (!sidebar) return;

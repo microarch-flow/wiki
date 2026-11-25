@@ -19,7 +19,7 @@ from sources import load_series, series_landing  # noqa: E402
 from ownership import GROUPS, MICRO, STORAGE, INTERCONNECT, DEVELOPMENT, owner, development_owner  # noqa: E402
 from inference import navigation as inference_navigation  # noqa: E402
 from workload import navigation as workload_navigation  # noqa: E402
-from storage_navigation import (INTEGRATION_AFTER, INTEGRATION_HOME, INTEGRATION_PACKAGING,
+from storage_navigation import (DRAM_LEGACY_PAGES, INTEGRATION_AFTER, INTEGRATION_HOME, INTEGRATION_PACKAGING,
                                 INTEGRATION_TOPIC, MEMORY_HOME, MEMORY_SECTIONS, MEMORY_TOPIC,
                                 RESOURCE_HOME, RESOURCE_SECTIONS, STORAGE_RESOURCES, SYSTEM_SELECTION)  # noqa: E402
 from microarchitecture_navigation import micro_navigation  # noqa: E402
@@ -468,7 +468,7 @@ def grouped_original_topics(root, series):
             elif series == INTERCONNECT and group == "共封装光学（CPO）" and name == "CPO":
                 tree = cpo_topic_tree(root, group)
             else:
-                tree = owned_topic_tree(root, name, series, group)
+                tree = owned_topic_tree(root, name, series, group, exclude=DRAM_LEGACY_PAGES)
             if tree:
                 if series == STORAGE:
                     entries.extend(compact_storage_sections(tree))
@@ -743,6 +743,7 @@ def validate_storage_navigation(root, entries):
             path = root / name / filename
             if path.is_file():
                 expected.add(path.relative_to(root).as_posix())
+    expected.difference_update(DRAM_LEGACY_PAGES)
     if assigned != expected:
         raise ValueError(f"Storage navigation does not cover pages: missing={sorted(expected - assigned)}, extra={sorted(assigned - expected)}")
 

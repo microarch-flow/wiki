@@ -16,17 +16,15 @@
 
 ## 阅读顺序
 
-1. [1T1C 单元与读出恢复](./1t1c-cell-destructive-read.md)
-2. [行列解码与读出放大](./row-column-decode-sense-amplify.md)
-3. [Row buffer 与行状态](./row-buffer-as-cache.md)
-4. [Bank 与并行性](./bank-organization-parallelism.md)
-5. [Channel、rank 与 chip](./channel-rank-chip-hierarchy.md)
-6. [Bank group、prefetch 与 burst](./bank-group-prefetch-burst.md)
-7. [刷新机制与代价](./refresh-the-fundamental-cost.md)
-8. [DRAM 可靠性与错误保护](./dram-reliability-retention-rowhammer-ecc.md)
-9. [DRAM 工艺与堆叠](./dram-process-stacking-trends.md)
+1. [只读几个字节，DRAM 为什么先打开一整行？](./1t1c-cell-destructive-read.md)
+2. [Bank 与并行性](./bank-organization-parallelism.md)
+3. [Channel、rank 与 chip](./channel-rank-chip-hierarchy.md)
+4. [Bank group、prefetch 与 burst](./bank-group-prefetch-burst.md)
+5. [刷新机制与代价](./refresh-the-fundamental-cost.md)
+6. [DRAM 可靠性与错误保护](./dram-reliability-retention-rowhammer-ecc.md)
+7. [DRAM 工艺与堆叠](./dram-process-stacking-trends.md)
 
-若已了解阵列，只想查可靠性，可以从第 7、8 篇开始。想理解命令和接口，可从第 6 篇转到[命令与接口导读](../protocols/README.md)。
+第一篇跟着同一次读取，从一颗电容走到行缓冲和数据引脚。想查某一步，可以直接看[电荷共享](./1t1c-cell-destructive-read.md#charge-sharing)、[列选择](./1t1c-cell-destructive-read.md#column-select)或[行命中与行冲突](./1t1c-cell-destructive-read.md#row-state)。研究数据保持时，可接着读[刷新机制](./refresh-the-fundamental-cost.md)和[错误保护](./dram-reliability-retention-rowhammer-ecc.md)。要理解接口传输，可从 [prefetch 与 burst](./bank-group-prefetch-burst.md)转到[命令与接口导读](../protocols/README.md)。
 
 ## 一句话理解
 

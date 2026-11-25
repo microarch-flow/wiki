@@ -2,7 +2,7 @@
 
 上级：<span id="actrdwrpredram-命令集为什么长这样"></span>[DRAM 命令与接口](./README.md)
 
-相关：[Row buffer 与行状态](../foundations/row-buffer-as-cache.md) · [时序参数](./timing-parameters-trcd-trp-tras.md)
+相关：[Row buffer 与行状态](../foundations/1t1c-cell-destructive-read.md#row-state) · [时序参数](./timing-parameters-trcd-trp-tras.md)
 
 ## 这页在回答什么问题
 

@@ -2,7 +2,7 @@
 
 上级：<span id="bank-为什么是-dram-并行性的最小单位"></span>[DRAM 单元与阵列](./README.md)
 
-相关：[Row buffer 与行状态](./row-buffer-as-cache.md) · [控制器与性能](../../04-dram-controller/why-mc-is-the-real-bottleneck.md)
+相关：[Row buffer 与行状态](./1t1c-cell-destructive-read.md#row-state) · [控制器与性能](../../04-dram-controller/why-mc-is-the-real-bottleneck.md)
 
 ## 这页在回答什么问题
 

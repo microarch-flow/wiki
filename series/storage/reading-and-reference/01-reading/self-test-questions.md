@@ -99,10 +99,10 @@
    [参考正文](../../03-dram/foundations/1t1c-cell-destructive-read.md)
 
 22. [T] 如果一个 DRAM bank 当前打开 row A，而请求目标是 row B，你如何从物理访问路径推导出 PRE、ACT、RD/WR 的必要顺序？
-   [参考正文](../../03-dram/foundations/row-column-decode-sense-amplify.md)
+   [参考正文](../../03-dram/foundations/1t1c-cell-destructive-read.md#row-state)
 
 23. [J] 在仿真中把 row buffer 建成 set-associative cache 会引入哪些错误假设，为什么更合理的抽象是 per-bank open-row state？
-   [参考正文](../../03-dram/foundations/row-buffer-as-cache.md)
+   [参考正文](../../03-dram/foundations/1t1c-cell-destructive-read.md#model)
 
 24. [F] 常见 DRAM bank 为何是控制器可见的重要并行调度单位？它维护哪些状态，又与其他 bank 共享哪些资源？更细粒度并行能力为何要以具体器件为准？
    [参考正文](../../03-dram/foundations/bank-organization-parallelism.md)

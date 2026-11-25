@@ -2,7 +2,7 @@
 
 上级：<span id="opencloseadaptive-page-policy-的权衡"></span>[DRAM 控制器与请求调度](./README.md)
 
-相关：[命令调度与 FR-FCFS](./command-scheduling-fr-fcfs.md) · [Row buffer 与行状态](../03-dram/foundations/row-buffer-as-cache.md) · [SRAM bank 与 DRAM 行状态](../01-memory-hierarchy/02-access-paths/sram-vs-dram-access-pattern.md)
+相关：[命令调度与 FR-FCFS](./command-scheduling-fr-fcfs.md) · [Row buffer 与行状态](../03-dram/foundations/1t1c-cell-destructive-read.md#row-state) · [SRAM bank 与 DRAM 行状态](../01-memory-hierarchy/02-access-paths/sram-vs-dram-access-pattern.md)
 
 ## 这页在回答什么问题
 
@@ -16,7 +16,7 @@ Open、close、adaptive page policy 讨论的是：一次列访问后，控制�
 - **Close-page** 倾向尽早安排预充；若在下一笔异行请求到来前完成部分或全部预充，可以隐藏相应等待。若后续又访问原行，则需要重新激活。
 - **Adaptive page policy** 根据队列、近期行为或其他可用信息作选择。具体预测范围与误判代价由实现决定，不保证始终优于固定策略。
 
-保留行只提供复用机会；列命令、共享 DQ 和上游队列仍可能阻塞后续请求。对应机制见 [DRAM 行状态](../03-dram/foundations/row-buffer-as-cache.md)。
+保留行只提供复用机会；列命令、共享 DQ 和上游队列仍可能阻塞后续请求。对应机制见 [DRAM 行状态](../03-dram/foundations/1t1c-cell-destructive-read.md#row-state)。
 
 ### 观察到达时间
 
