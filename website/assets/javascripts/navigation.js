@@ -1,7 +1,7 @@
 // A historical article link can refer to a particular heading. The matching
 // list item also supplies a working link when JavaScript is unavailable.
 (() => {
-  const links = document.querySelector('[data-storage-redirect]');
+  const links = document.querySelector('[data-article-redirect], [data-storage-redirect]');
   if (!links) return;
   let destination = links.querySelector('a');
   try {

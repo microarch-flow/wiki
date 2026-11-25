@@ -2,17 +2,16 @@
 
 上级：[封装内芯粒互连](./README.md)
 
-先认识芯粒、封装连接和一次通信，再阅读具体接口案例。
+从芯粒和封装连接读起。基础部分的寄存器读用同一幅图讲通用路径和 UCIe 1.1 承载 PCIe 的过程，后面的接口和案例可按需要选读。
 
 ## 01 芯粒与连接基础 {#foundations}
 
 - [芯粒是什么](./01-foundations/what-is-a-chiplet.md)
 - [芯粒怎样在封装内连接](./01-foundations/in-package-connections.md)
-- [一次跨芯粒通信](./01-foundations/cross-die-communication.md)
+- [跨芯粒寄存器读](./ucie-pcie-read.md)
 
 ## 02 接口与案例 {#interfaces}
 
-- [UCIe 1.1 读取案例](./ucie-pcie-read.md)
 - [UCIe 1.1 链路启动与训练](./02-interfaces/ucie-1-1-link-bring-up.md)
 - [UCIe-3D 垂直连接](./02-interfaces/ucie-3d.md)
 - [UCIe.mem 存储访问](./02-interfaces/ucie-memory.md)

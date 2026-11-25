@@ -51,8 +51,7 @@
 
 **沿一条路径理解启动**
 
-- [一次跨芯粒通信](../01-foundations/cross-die-communication.md)：先看一笔读取经过哪些职责边界。
-- [UCIe 1.1 读取案例](../ucie-pcie-read.md)：区分 UCIe 承载、PCIe Completion 和访问结果。
+- [跨芯粒寄存器读](../ucie-pcie-read.md)。沿一笔读区分封装通道、UCIe 承载与 PCIe Completion。
 - [UCIe 1.1 链路启动与训练](../02-interfaces/ucie-1-1-link-bring-up.md)：看指定版本中边带、主带和 Adapter 的启动阶段。
 - [SerDes：初始化与校准](../../SERDES/06-link-operation/initialization-calibration.md)：深入理解物理链路的初始化和校准。
 

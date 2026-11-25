@@ -14,7 +14,7 @@
 
 1. [片上事务与总线（BUS）](BUS/wiki/README.md)：IP 怎样发出事务、接收响应，并处理顺序与背压？
 2. [片上网络（NoC）](NOC/wiki/README.md)：数据怎样经过路由器、缓冲和链路？[两笔读能同时通过吗？](NOC/wiki/01-overview/bus-vs-noc-vs-crossbar.md)
-3. [封装内芯粒互连](D2D/wiki/README.md)：不同 die 怎样建立连接，并交付上层协议的数据？
+3. [封装内芯粒互连](D2D/wiki/README.md)：[一次跨芯粒的寄存器读，什么时候才算完成？](D2D/wiki/ucie-pcie-read.md)
 4. [系统 I/O 互连（PCIe）](PCIE/wiki/README.md)：[主机第一次读卡上的寄存器，地址是怎么来的？](PCIE/wiki/03-configuration-enumeration-addressing/config-space-bar-capability.md)
 5. [一致性与内存互连](COHERENCE/wiki/README.md)：多个参与者怎样维护缓存副本，或访问设备连接的内存？
 6. [加速器互连](SCALEUP/wiki/README.md)：多个加速器怎样访问资源、组织通信，并满足任务性能目标？

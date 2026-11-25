@@ -68,9 +68,8 @@ ECC 是可选项。启用时，链路层为数据包加入纠错信息；规范�
 
 ## 接下来怎么读
 
-- [一次跨芯粒通信](./01-foundations/cross-die-communication.md)：先区分接口、封装通道和读取完成。
 - [BoW PHY 2.0](./bow-phy.md)：看另一种 BoW 物理接口怎样组织数据线和随路时钟。
-- [UCIe 1.1 读取案例](./ucie-pcie-read.md)：看 PCIe 请求与 Completion 怎样通过 UCIe 跨芯粒传递。
+- [跨芯粒寄存器读](./ucie-pcie-read.md)。沿同一条路径看物理通道，再看 PCIe 的请求与 Completion 如何由 UCIe 1.1 承载。
 - [NoC：跨 die 网关与排队](../NOC/06-ai-noc-specifics/chiplet-and-die-to-die-interconnect.md)：继续分析请求进入网关后的缓冲和回压。
 
 本文的 AHB 桥和包长计算参考规范附录 A。1.0.0 文本的第 1 章称附录仅供参考、属于非规范性内容；附录 D 的表 D.2 又将附录 A 列为规范性定义。因此，本文将 AHB 桥作为参考示例，附录的规范地位仍需向 OCP 核实。该版本第 8 章也说明完整的一致性定义留待后续修订；实际互通仍需核对采用的规范版本、配置和器件资料。[BoW.Flexi 1.0.0，第 1、8 章及附录 D](https://www.opencompute.org/wp-content/uploads/2026/10/bow-flexi_1p0_final.pdf)

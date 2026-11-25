@@ -1,72 +1,77 @@
-# UCIe 1.1 如何承载一次 PCIe 读取？
+# 一次跨芯粒的寄存器读，什么时候才算完成？
 
-上级：[02 接口与案例](./SUMMARY.md#interfaces)
+上级：[01 芯粒与连接基础](./SUMMARY.md#foundations)
 
-一次跨芯粒读取同时依赖上层事务、D2D 承载和封装内信号通道。本文以 UCIe 1.1 承载 PCIe 为例，说明两端需要准备什么，以及请求、数据和完成状态怎样通过这些边界。
+<div id="ucie-11-如何承载一次-pcie-读取" class="pcie-legacy-anchor"></div>
+<div id="先约定一次读取" class="pcie-legacy-anchor"></div>
 
-## 先约定一次读取
+假设你能在封装里放两个探针。一个看芯粒 B 的接收电路，另一个看芯粒 A 上发起读的模块。第一个探针已经看到请求穿过两颗裸片之间的连线，第二个却显示“仍在等数据”。这段时间，硬件在等谁？
 
-下面是**构造案例**，不是产品实测。假设芯粒 A 有 PCIe Root Complex，芯粒 B 有 PCIe Endpoint。双方支持 UCIe 1.1 和相互兼容的 PCIe 承载配置，链路已经就绪，B 的设备地址窗口也已配置。
+沿用[上一篇的 BAR 寻址方法](../PCIE/03-configuration-enumeration-addressing/config-space-bar-capability.md)。这次把发起方放在芯粒 A，把目标放在同一封装的芯粒 B。假设地址窗口已经配好，基址为 `0x8000_0000`，B 的设备手册把一个 32 位寄存器放在窗口内偏移 `0x1000`。所以 A 要读的地址是 **`0x8000_1000`**。为把前后两次观察对上，设这个寄存器在整个例子中一直保存 **`0x1234_5678`**。地址、数值和后面的时刻都是教学设定。
 
-A 要从地址 `0x8000_1000` 读取一个 4 字节对齐的 32 位寄存器。假设 B 的桥将该访问映射到本地寄存器，再用 AXI 和片上网络访问它。寄存器此时返回 `0x1234_5678`。
+## 一笔读，两次穿过封装 {#read-path}
 
-这是一个具体系统的假设：UCIe 不要求每颗芯粒都包含 PCIe Endpoint、AXI 桥或 NoC。PCIe Root Complex 发起读取、Endpoint 返回 Completion with Data 的基本关系，可参见 [PCI-SIG 的事务示例](https://pcisig.com/sites/default/files/files/PCI_Express_Basics_Background.pdf)。
+<div id="请求经过哪些职责边界" class="pcie-legacy-anchor"></div>
 
-## 请求经过哪些职责边界
+先只看图中的六个编号。沿去程找出 B 什么时候**知道有人要读**，再沿回程找出 A 什么时候**知道读到了什么**。图中标出的 PCIe 和 UCIe 名称，是下一节给这些位置选择的一种具体实现。
 
-| 环节 | 输入、处理与输出 |
-| --- | --- |
-| A 的 PCIe 请求方 | 发起 Memory Read，保存匹配返回所需的状态，并交付 PCIe 读取请求。 |
-| A 的 UCIe 适配器与 PHY | 按双方选定的承载格式组织数据，再由 PHY 发出经过封装通道的信号。 |
-| B 的 PHY、适配器与 PCIe 端点 | 接收信号，还原并交付所承载的请求，送往 B 内部的目标。 |
-| B 的桥、NoC 与寄存器 | 桥转换请求，经 NoC 访问寄存器，取得数据和访问状态。 |
+[![同一封装中，① A 发读，② B 的接收电路采样，③ B 接下完整请求，④ 寄存器给出数据，⑤ B 发回结果，⑥ A 匹配并交付。去程和回程共用两颗芯粒的接口。](assets/read-across-dies.svg)](assets/read-across-dies.svg)
 
-返回方向再经过 B 的 PCIe 逻辑、两端 UCIe 接口，最终交给 A。UCIe 接口负责跨 die 承载；PCIe 定义本例的请求与 Completion 语义。不能把封装内 UCIe PHY 当作板级 PCIe 电链路的同义词。
+**① A 发出读请求。** A 已经知道目标地址、要读 4 个字节，却还不知道这 4 个字节的值。发起方留下一项记录，表示“这笔读还欠我一个结果”。去程需要传过去的是读操作、地址和匹配请求所需的信息。此时即使 B 的寄存器里早就存着那个数，A 也拿不到它。
 
-## 链路就绪前要确定什么
+**② B 的物理接口采到信号。** 看一条数据线。A 的物理接口（PHY）驱动焊盘，信号经凸点和本例选用的封装布线到达 B 的接收器。B 在约定的采样时刻判出这条线上承载的位。实际接口可同时使用多条线，连续传送多个节拍。采到其中一组位时，硬件手里可能只有请求的一部分。图上把这个可观察的采样时刻记作②。[封装剖面和实际连线路径](./01-foundations/in-package-connections.md)
 
-仅有封装连接线还不够。系统需要确认两端接口及封装通道能够配合，并完成所选接口要求的初始化与训练。两端还要有共同支持的协议和传输格式，才能把期望的上层数据交给对方。
+**③ B 接下完整的读请求。** 接收侧按约定的传输格式把信息还原出来，交给能理解读操作的协议逻辑。现在 B 知道有人要读哪个地址、需要多少数据，也有地方保存这笔待处理的请求。把它接进队列就可以完成这一步。即使这时去程线路已空闲，请求仍可能排在 B 内部。
 
-[UCIe 联盟的早期问答](https://www.uciexpress.org/post/introduction-to-ucie-webinar-q-a-recap)说明，链路初始化涉及宽度、频率和协议支持等工作参数；边带可用于训练等管理功能。[UCIe 1.1 对 streaming flit 的说明](https://www.uciexpress.org/post/ucie-1-1-provides-streaming-protocol-solution-for-error-detection-and-replay)也指出，flit 格式在链路初始化时协商。
+**④ B 的目标寄存器给出数据。** 本例中，B 的桥把窗口内的偏移 `0x1000` 译到本地寄存器读口。等片内通路接纳这笔读，寄存器的值经读数据通路回到桥，桥才有可返回的 4 字节。B 可以用片上网络（NoC）连接桥和寄存器，也可以用更简单的本地总线。决定③和④之间要等多久的是这段实际通路。
 
-这些是应检查的条件，不是一张完整状态机。具体状态顺序、字段、可选能力及失败处理，应以采用的规范版本和实现为准。联盟说明 1.1 向后兼容 1.0；这不表示任意两颗声称支持 UCIe 的芯粒都支持同一协议、格式或物理配置。[UCIe 规范入口](https://www.uciexpress.org/specifications)
+**⑤ B 发回结果，⑥ A 收齐并交付。** B 把成功状态、与请求对应的标识、数据送上回程。A 的接收侧收回这些信息，发起端把它们与①留下的记录匹配，检查状态，收齐 4 字节，才把 `0x1234_5678` 交给最初要读数的模块。若你在统计这笔读的端到端延迟，起点取①，终点就该取⑥。只测到④，会漏掉返回方向的传输和交付。
 
-## 一次请求怎样完成
+## 在同一张图上换成 UCIe 1.1 和 PCIe {#ucie-pcie}
 
-1. **A 发起请求。** A 的 PCIe 请求方发送对 `0x8000_1000` 的 4 字节 Memory Read，并保留请求身份和在途状态。A 的 UCIe 接口按选定模式将请求送往 B。
-2. **B 执行读取。** B 的 UCIe 接口将请求交给 PCIe 端点。在本例中，端点通过桥发起 AXI 读，NoC 将其送至寄存器。若桥已接纳请求，但 NoC 注入队列暂时不能接收，请求就在桥内等待；有限缓冲可能进一步影响后续请求，具体回压路径取决于实现。
-3. **B 返回结果。** 假设寄存器成功返回 `0x1234_5678`，B 的 PCIe 逻辑形成带数据的 Completion，经 UCIe 返回 A。
-4. **A 完成读取。** A 按事务身份匹配 Completion，检查状态并收齐请求的 4 字节，然后向发起者交付结果。在这之前，请求已到达 B 并不等于读取成功。
+<div id="一次请求怎样完成" class="pcie-legacy-anchor"></div>
 
-若返回错误状态，A 按系统和协议的错误处理路径报告失败。若等待超时，A 不能仅凭超时就断定远端请求已被取消；迟到响应和在途状态如何处理，取决于实现和适用协议。PCIe Memory Read 的成功 Completion 需要返回数据；PCI-SIG 对无数据却标为成功的情况给出了[说明](https://pcisig.com/section-2311-if-end-point-returns-completion-cpl-no-data-and-successful-completion-status-memory)。
+现在给图里的接口选定配置。A 内有 PCIe 根复合体（Root Complex），B 内有 PCIe 端点（Endpoint）。我们选择 **UCIe 1.1 的 68 B flit 格式承载 PCIe non-Flit Mode**，并假设两端已启用适配器重试。这里有两个层次的名字：PCIe 规定“读这 4 字节”以及“怎样回答”，UCIe 规定这段封装内链路怎样把双方约定的信息送过去。可以沿原图做三次核对。[UCIe 联盟 Hot Chips 教程，幻灯片 28、37](https://hc2023.hotchips.org/assets/program/tutorials/ucie/UCIe%20Protocol.pdf)
 
-## 链路确认不等于事务完成
+- **从①到②，4 字节和 68 字节分别量什么？** PCIe 发出的 Memory Read 请求包（MRd）带有目标地址。它的 Length 字段填 1，单位是双字（DW），表示要读 4 字节。寄存器值要等回程的完成包才会出现。PCIe 协议层和本地的 D2D 适配器通过 FDI 接口交换协议信息。在选定的格式中，适配器把 64 字节协议信息与 2 字节头、2 字节校验码（CRC）组织为一个 68 字节传输单元，称为 *flit*，经本地 RDI 接口交给 PHY。PHY 才驱动封装连线，B 用随路时钟在合适的时刻采样。4 字节是所求寄存器的宽度，68 字节是这一层的传输单位。单凭这两个数字算不出每读一次会独占多少个 flit。[UCIe 1.1 规范，第 2.1.3、3.3.2 和 5.5 节](https://tmng-al.uspto.gov/resting2/api/casedoc/cms/case/99231699/tmdocument/20250612064611159321SPE0011.pdf)
+- **从②到④，哪块硬件认识寄存器？** B 的 PHY 恢复收到的数据，适配器检查并交付协议信息。B 的 PCIe 端点接下 MRd，这才是③。本例中端点背后的桥接着发起片内 AXI 读，经 NoC 到达寄存器，得到④的数值。换一种片内连接，UCIe 的收发接口仍然可以相同。若适配器检测到可重试的传输错误，可以先在这段链路上重放；链路对某个 flit 的确认，只能说明它在这一跳的接收进度。[UCIe 联盟对适配器校验与重放的说明](https://www.uciexpress.org/post/ucie-1-1-provides-streaming-protocol-solution-for-error-detection-and-replay)
+- **从⑤到⑥，A 怎样认出自己的答案？** B 的端点发出 PCIe 带数据的完成包（Completion with Data，CplD）。假设 A 给这笔读分配了 Tag `0x05`，完成包带回原请求者的标识（Requester ID）和这个 Tag。A 据此找到①留下的记录，检查成功状态并接收对应的 4 字节。链路层即使早已确认收到去程的 flit，也无法替 B 的寄存器给出这个数。[PCI-SIG 的 Programmed I/O 读取示例](https://pcisig.com/sites/default/files/files/01_01_PCI_Express_Basics_%26_Background_FROZEN.pdf) · [完成包中的 Requester ID 和 Tag](https://docs.amd.com/r/3.3-English/pg346-cpm-pcie/Completer-Completion-Descriptor-Format)
 
-如果所选 UCIe 模式提供链路级确认和重放，接收端对链路数据的确认只说明该链路上的交付进度。此时 B 内部仍可能排队，寄存器也可能返回错误。A 必须等待并检查本次 PCIe Completion，才能判断读取结果。
+## 只让 B 的片内入口晚开放，谁会晚三个时隙？ {#return-wait}
 
-可靠性机制要按模式判断。UCIe 联盟说明：1.1 的 streaming flit 可以使用 D2D 适配器的 CRC 检测和重放；Raw Mode 绕过包括这些机制在内的多项 UCIe 功能。使用 Raw Mode 时，需要由系统按需求在其他位置提供可靠性机制，或明确接受相应后果。这并不表示本例中的 PCIe 承载模式是 Raw Mode。[UCIe 1.1 模式说明](https://www.uciexpress.org/post/ucie-1-1-provides-streaming-protocol-solution-for-error-detection-and-replay)
+<div id="链路确认不等于事务完成" class="pcie-legacy-anchor"></div>
 
-## 接下来怎么读
+设 B 的桥可以暂存一个已接纳的请求。第一次读时，片内入口空闲。第二次做同样的实验，只让另一笔本地访问多占用这个入口三个时隙；B 的桥仍有空位，后面各段的服务时间也保持相同。用同一把外部时间尺记录两次实验，时隙只用来比较先后和差值，两颗芯粒可以有各自的时钟。
 
-**理解本例的启动与完成**
+<div class="bus-read-trace" markdown="1">
 
-- [一次跨芯粒通信](./01-foundations/cross-die-communication.md)：先区分接口、封装通道和读取完成。
-- [UCIe 1.1 链路启动与训练](./02-interfaces/ucie-1-1-link-bring-up.md)：看本例开始前，边带、主带和 Adapter 怎样就绪。
-- [芯粒互操作与启动](./03-system-design/interoperability-and-bring-up.md)：区分接口匹配、链路就绪和目标功能就绪。
-- [跨芯粒链路错误检测与重放](./03-system-design/link-reliability.md)：看启用重放的链路怎样检测错误并尝试恢复。
-- [跨芯粒读取的有效性能](./03-system-design/effective-bandwidth-and-latency.md)：看事务窗口和目标服务怎样约束吞吐。
-- [PCIe：事务与 Completion](../PCIE/02-link-transaction-basics/tlp-dllp-completion-basics.md)：区分链路控制、事务 Completion 和软件命令完成。
+| 观察到的事件 | 入口空闲 | 片内多等三个时隙 |
+| --- | ---: | ---: |
+| ① A 发出读 | 0 | 0 |
+| ② B 的 PHY 采到请求的一组位 | 2 | 2 |
+| ③ B 接下完整请求 | 3 | 3 |
+| ④ 寄存器给出数据 | 5 | 8 |
+| ⑤ B 发出带数据的返回 | 6 | 9 |
+| ⑥ A 匹配并交付 | 9 | 12 |
 
-**比较其他接口**
+</div>
 
-- [UCIe-3D 垂直连接](./02-interfaces/ucie-3d.md)：比较堆叠芯粒的另一种接口路径。
-- [UCIe.mem 存储访问](./02-interfaces/ucie-memory.md)：比较 UCIe 4.0 的另一种内存访问路径。
-- [BoW PHY 2.0](./bow-phy.md)：从数据线、随路时钟和 slice 看另一种封装内物理接口。
-- [BoW.Flexi 读取案例](./bow-flexi.md)：从 AHB 桥和数据包看另一种跨芯粒读取路径。
-- [AMBA CHI C2C](./02-interfaces/chi-c2c.md)：看一致性消息怎样组织并使用相容的承载接口。
+在第二次实验的时隙 6，B 的协议端已经接下读请求，寄存器还没给出数值，回程也就没有这笔读的 CplD 可以发送。到时隙 9，两次实验的探针会看到完全不同的事：第一次的 A 已经拿到数据，第二次的 B 才刚发出返回。即使把去程的 PHY 做得更快，也不能直接消掉这三个片内等待时隙。另一种情形是让**返回方向**排队，那样④可以准时发生，A 仍会晚拿到结果。[跨 die 网关的排队与回压](../NOC/06-ai-noc-specifics/chiplet-and-die-to-die-interconnect.md)
 
-**深入系统和物理路径**
+如果 B 的目标报告访问失败，B 的端点可以按适用情况形成错误完成，A 检查到错误后结束或上报这笔访问。若 A 只观察到超时，它所知道的是在期限内没有收到预期的完成，仅凭这个现象无法断定 B 是否执行了那次读。[PCIe 事务与 Completion](../PCIE/02-link-transaction-basics/tlp-dllp-completion-basics.md) · [PCI-SIG 对成功 Memory Read 返回数据的说明](https://pcisig.com/section-2311-if-end-point-returns-completion-cpl-no-data-and-successful-completion-status-memory)
 
-- [NoC：跨 die 网关与排队](../NOC/06-ai-noc-specifics/chiplet-and-die-to-die-interconnect.md)：继续分析网关、有限缓冲和回压。
-- [SerDes：封装内接口的物理取舍](../SERDES/08-system-applications/chiplet-and-d2d.md)：分析宽度、每线速率和封装通道。
-- [HBM 的堆叠与封装内互连](../../storage/06-system-integration/packaging/hbm-2.5d-3d-tsv.md)：比较 HBM 堆栈内部连接与计算侧接口。
+## 上电后，什么时候才具备发出①的条件？ {#ready}
+
+<div id="链路就绪前要确定什么" class="pcie-legacy-anchor"></div>
+
+先看芯粒和封装是否配套。发送焊盘要能经过实际布线接到对应的接收端，双方的电气条件、时钟和数据线配置也要兼容。再看启动：本例的 UCIe 接口需要完成复位、边带初始化和主带训练，适配器还要确定共同支持的协议及格式。满足这些条件后，两端有了运送协议信息的通路。[UCIe 1.1 启动与训练](./02-interfaces/ucie-1-1-link-bring-up.md) · [芯粒互操作与启动](./03-system-design/interoperability-and-bring-up.md)
+
+最后看业务地址。即使主带已经训练好，如果 B 的设备窗口尚未配置，A 也不能按本例从 `0x8000_1000` 取得这个寄存器的值。反过来，读到正确的设备标识，也不能代替检查请求经过的地址窗口。上一篇的[设备识别成功、寄存器仍然读不到](../PCIE/03-configuration-enumeration-addressing/config-space-bar-capability.md#只改一个桥窗口主机还能看见这张卡吗)就是这个区别。
+
+## 沿哪条问题继续读？ {#next}
+
+<div id="接下来怎么读" class="pcie-legacy-anchor"></div>
+
+- **想看更多读同时在途。** 性能篇把传输对象换成每笔 64 B，分别计算线路速率、A 的在途窗口和 B 的服务能力；链路可靠性篇讲校验、重放与 Raw Mode 的区别。UCIe 1.1 的 streaming flit 和 Raw Mode 各有适用条件，本例采用的是前文选定的 PCIe 承载格式。[跨芯粒读取的有效性能](./03-system-design/effective-bandwidth-and-latency.md) · [链路错误检测与重放](./03-system-design/link-reliability.md)
+- **想换一种接口或封装。** 可以把图里的收发接口换成 BoW，沿另一套协议走一遍，或者换成堆叠结构，观察通道怎样变化。不同版本的 UCIe 支持范围也可分开查阅。[BoW PHY](./bow-phy.md) · [BoW.Flexi 的 AHB 读](./bow-flexi.md) · [CHI C2C](./02-interfaces/chi-c2c.md) · [UCIe-3D](./02-interfaces/ucie-3d.md) · [UCIe.mem](./02-interfaces/ucie-memory.md) · [封装内电接口](../SERDES/08-system-applications/chiplet-and-d2d.md) · [HBM 的堆叠和封装](../../storage/06-system-integration/packaging/hbm-2.5d-3d-tsv.md)
+- **接着读系列主线。** 这次读的是一个值固定的设备寄存器。如果改读一份可缓存的数据，A 和 B 原先都读到 0，后来 A 把它写成 1，B 下一次从谁手里取得 1？这个问题引出缓存一致性。[一致性与内存互连](../COHERENCE/01-foundations/coherence-invariants.md)

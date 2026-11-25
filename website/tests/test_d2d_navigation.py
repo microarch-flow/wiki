@@ -14,7 +14,7 @@ from urllib.parse import unquote, urljoin
 
 SITE = Path(__file__).resolve().parents[2] / ".site-build" / "site"
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
-from d2d_navigation import D2D_HOME, D2D_SUMMARY, d2d_topic_tree, read_d2d_sections  # noqa: E402
+from d2d_navigation import D2D_HOME, D2D_READ_REDIRECT, D2D_SUMMARY, d2d_topic_tree, read_d2d_sections  # noqa: E402
 
 
 def pages(item):
@@ -39,8 +39,9 @@ class D2dNavigationTests(unittest.TestCase):
         topic = d2d_topic_tree(docs)
         expected = {path.relative_to(docs).as_posix() for path in (docs / "D2D/wiki").rglob("*.md")}
         actual = pages(topic)
-        self.assertEqual(set(actual), expected)
-        self.assertEqual(len(actual), len(expected))
+        self.assertNotIn(D2D_READ_REDIRECT, actual)
+        self.assertEqual(set(actual), expected - {D2D_READ_REDIRECT})
+        self.assertEqual(len(actual), len(set(actual)))
         self.assertEqual(actual[:2], [D2D_HOME, D2D_SUMMARY])
         home = (docs / D2D_HOME).read_text(encoding="utf-8")
         reading = re.search(r"^## 阅读顺序\s*\n(.*?)(?=^## |\Z)", home, re.MULTILINE | re.DOTALL)
@@ -73,6 +74,31 @@ class D2dNavigationTests(unittest.TestCase):
                     self.assertEqual(urljoin(current, unescape(active.group(1))), current)
                     self.assertIn(page + "/", locations)
                     self.assertIn(label, html)
+
+    def test_merged_intro_preserves_old_section_links(self):
+        page = Path(D2D_READ_REDIRECT).with_suffix("")
+        old = (SITE / page / "index.html").read_text(encoding="utf-8")
+        landing = re.search(r'<div [^>]*data-article-redirect[^>]*>(.*?)</div>', old, re.DOTALL)
+        self.assertIsNotNone(landing)
+        expected = {
+            "一次跨芯粒通信怎样完成": "", "先约定一个读取": "先约定一次读取",
+            "请求经过哪些边界": "read-path", "怎样判断已经完成": "return-wait",
+            "为什么连接线接通还不够": "ready", "接下来怎么读": "next",
+        }
+        canonical = "https://example.test/D2D/wiki/ucie-pcie-read/"
+        base = f"https://example.test/{page}/"
+        new = (SITE / "D2D/wiki/ucie-pcie-read/index.html").read_text(encoding="utf-8")
+        first = re.search(r'<a href="([^"]+)">', landing.group(1))
+        self.assertEqual(urljoin(base, first.group(1)), canonical)
+        routes = dict(re.findall(r'<li><span id="([^"]+)"></span>\s*<a href="([^"]+)">', landing.group(1)))
+        self.assertEqual(routes.keys(), expected.keys())
+        for old_id, target_id in expected.items():
+            self.assertEqual(old.count(f'id="{old_id}"'), 1)
+            if target_id:
+                self.assertEqual(new.count(f'id="{target_id}"'), 1)
+            self.assertEqual(unquote(urljoin(base, routes[old_id])), canonical + ("#" + target_id if target_id else ""))
+        index = json.loads((SITE / "search/search_index.json").read_text(encoding="utf-8"))
+        self.assertFalse(any(entry["location"].startswith(f"{page}/") for entry in index["docs"]))
 
     def test_unassigned_or_duplicate_article_fails(self):
         with tempfile.TemporaryDirectory() as tmp:

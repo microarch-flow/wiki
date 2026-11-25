@@ -8,6 +8,7 @@ from urllib.parse import unquote, urlsplit
 
 D2D_HOME = "D2D/wiki/README.md"
 D2D_SUMMARY = "D2D/wiki/SUMMARY.md"
+D2D_READ_REDIRECT = "D2D/wiki/01-foundations/cross-die-communication.md"
 
 
 def read_d2d_sections(root):
@@ -51,7 +52,7 @@ def read_d2d_sections(root):
     if not sections or any(not pages for _, _, pages in sections):
         raise ValueError("D2D navigation sections must not be empty")
     expected = {path.relative_to(root).as_posix() for path in (root / "D2D/wiki").rglob("*.md")}
-    expected -= {D2D_HOME, D2D_SUMMARY}
+    expected -= {D2D_HOME, D2D_SUMMARY, D2D_READ_REDIRECT}
     if seen_pages != expected:
         raise ValueError(f"D2D navigation does not cover pages: missing={sorted(expected - seen_pages)}, extra={sorted(seen_pages - expected)}")
     return sections

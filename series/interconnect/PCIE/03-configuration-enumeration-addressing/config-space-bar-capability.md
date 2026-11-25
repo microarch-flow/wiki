@@ -81,4 +81,4 @@ Type 0 头为 BAR 留了六个 32 位槽。一个 64 位 Memory BAR 的低、高
 
 到这里可以把方向调过来想。主机读版本号，卡是被访问的目标，地址落在它的 BAR 内。卡主动搬运主机缓冲区时，它成了请求者，要使用平台为该缓冲区建立的 DMA 地址和权限。NVMe 更能看清这两种方向：主机可以通过 BAR 写门铃，控制器再发起 DMA 去取提交队列里的命令。这是两笔不同的访问。[配置、BAR 与 DMA 的地址视角](mmio-config-dma-address-view.md) · [设备如何发起 DMA](../04-data-path-dma-interrupts/device-dma-read-write-flow.md) · [NVMe 队列与数据路径](../06-workloads-case-studies/nvme-queue-data-path-case-card.md)
 
-如果把 PCIe 的两端从主板和插卡移到同一封装里的两颗裸片，读请求和返回数据还要经过哪些接口？下一篇沿[一次封装内的 UCIe/PCIe 读取](../../D2D/ucie-pcie-read.md)继续。
+如果把发起方和目标寄存器分别放到同一封装里的两颗裸片上，接收端采到了信号，发起方还要等哪几步才能拿到 4 个字节？下一篇跟踪[一次跨芯粒的寄存器读](../../D2D/ucie-pcie-read.md)。

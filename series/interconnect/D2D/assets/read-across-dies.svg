@@ -1,0 +1,72 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="360" height="482" viewBox="0 0 360 482" role="img" aria-labelledby="title desc" xml:lang="zh-CN">
+  <title id="title">一笔跨芯粒寄存器读的去程与回程</title>
+  <desc id="desc">教学示意。裸片 A 的 PCIe 请求方①发出对 0x8000_1000 的读。沿左列向下，数据经 A 的 D2D 适配器、PHY 和封装主带抵达 B。②B 的接收 PHY 采样，经过适配器，③B 的协议端接下完整的读请求。④本例中，B 通过本地桥和片内互连取到寄存器值 0x1234_5678。沿右列向上，⑤B 的 PCIe 端点发出带数据的完成包，经 UCIe 1.1 返回。⑥A 匹配返回并收齐 4 字节，才向发起者交付结果。</desc>
+  <defs>
+    <marker id="request-tip" markerWidth="6" markerHeight="6" refX="5" refY="3" viewBox="0 0 6 6" orient="auto"><path d="M0 0 6 3 0 6Z" fill="#315f88"/></marker>
+    <marker id="reply-tip" markerWidth="6" markerHeight="6" refX="5" refY="3" viewBox="0 0 6 6" orient="auto"><path d="M0 0 6 3 0 6Z" fill="#28715a"/></marker>
+  </defs>
+  <style>
+    text { text-anchor: middle; font-family: system-ui, "Noto Sans CJK SC", sans-serif; fill: #243b4b; }
+    .die { fill: #f2f5f3; stroke: #9badab; stroke-width: 1.4; }
+    .name { font-size: 19px; font-weight: 650; }
+    .event { font-size: 17px; font-weight: 650; }
+    .small { font-size: 16px; }
+    .value { font: 17px ui-monospace, "DejaVu Sans Mono", monospace; }
+    .request-text { fill: #27547e; }
+    .reply-text { fill: #185c47; }
+    .request-box { fill: #e3edf7; }
+    .reply-box { fill: #def0e6; }
+    .request, .reply { fill: none; stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; }
+    .request { stroke: #315f88; marker-end: url(#request-tip); }
+    .reply { stroke: #28715a; marker-end: url(#reply-tip); }
+  </style>
+
+  <rect x="1" y="1" width="358" height="480" rx="13" fill="#fafbf8" stroke="#c4cdca"/>
+  <rect class="die" x="8" y="8" width="344" height="150" rx="10"/>
+  <text class="name" x="180" y="33">裸片 A · PCIe 请求方</text>
+
+  <rect class="request-box" x="16" y="42" width="160" height="70" rx="6"/>
+  <text class="event request-text" x="96" y="64">① 发出读请求</text>
+  <text class="small" x="96" y="85">PCIe Memory Read</text>
+  <text class="value" x="96" y="104">0x8000_1000</text>
+  <rect class="reply-box" x="184" y="42" width="160" height="70" rx="6"/>
+  <text class="event reply-text" x="264" y="64">⑥ 向发起者交付</text>
+  <text class="small" x="264" y="85">匹配原请求</text>
+  <text class="small" x="264" y="105">收齐 4 字节</text>
+
+  <rect x="16" y="127" width="328" height="25" rx="5" fill="#e2e8e5"/>
+  <text class="small" x="180" y="145">D2D 适配器与 PHY</text>
+  <path class="request" d="M58 113v17"/>
+  <path class="reply" d="M302 130v-16"/>
+
+  <text class="small" x="180" y="182">封装内布线</text>
+  <text class="small" x="180" y="204">UCIe 1.1 主带</text>
+
+  <rect class="die" x="8" y="217" width="344" height="257" rx="10"/>
+  <text class="name" x="180" y="242">裸片 B · PCIe 端点</text>
+  <path class="request" d="M58 151v99"/>
+  <path class="reply" d="M302 251V153"/>
+
+  <rect class="request-box" x="16" y="253" width="160" height="57" rx="6"/>
+  <text class="event request-text" x="96" y="275">② 接收 PHY 采样</text>
+  <text class="small" x="96" y="298">经适配器向上交付</text>
+  <rect class="reply-box" x="184" y="253" width="160" height="57" rx="6"/>
+  <text class="event reply-text" x="264" y="275">适配器与发送 PHY</text>
+  <text class="small" x="264" y="298">沿主带送回 A</text>
+
+  <path class="request" d="M96 311v14"/>
+  <path class="reply" d="M264 325v-13"/>
+  <rect class="request-box" x="16" y="328" width="160" height="52" rx="6"/>
+  <text class="event request-text" x="96" y="349">③ 端点接下请求</text>
+  <text class="small" x="96" y="370">完整请求可暂存</text>
+  <rect class="reply-box" x="184" y="328" width="160" height="52" rx="6"/>
+  <text class="event reply-text" x="264" y="349">⑤ 返回读取结果</text>
+  <text class="small" x="264" y="370">带数据的 CplD</text>
+
+  <path class="request" d="M96 381v15"/>
+  <path class="reply" d="M264 396v-14"/>
+  <rect x="16" y="399" width="328" height="67" rx="7" fill="#eeeadc" stroke="#c9b989"/>
+  <text class="small" x="180" y="418">本例经桥和片内互连访问</text>
+  <text class="event" x="180" y="439">④ 目标寄存器给出数据</text>
+  <text class="value" x="180" y="459">0x1234_5678</text>
+</svg>
