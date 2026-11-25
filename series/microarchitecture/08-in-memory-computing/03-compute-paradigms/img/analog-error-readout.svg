@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 700 561" role="img" aria-labelledby="title desc">
+  <title id="title">第二行电导增加后，两次读数各跨过一个 ADC 阈值</title>
+  <desc id="desc">设第一行权重保持四，只把第二行等效权重从五调到五点六，对应其电导从五十改为五十六微西门子。输入和列端参考不变。两拍分别转换，ADC 按每码零点二微安舍入到最近的整数。低位读原为一微安、码五，现在一点一二微安，归一值五点六，超过一点一零微安阈值，读成码六。高位读原为一点八微安、码九，现在一点九二微安，归一值九点六，超过一点九零微安阈值，读成码十。数字端由五加二乘九等于二十三，变为六加二乘十等于二十六。图示理想转换器的局部阶跃。</desc>
+  <style>
+    text{font-family:system-ui,"Noto Sans CJK SC","PingFang SC",sans-serif;fill:#173c32}
+    .title{font-size:24px;font-weight:680}.heading{font-size:21px;font-weight:660}
+    .label{font-size:19px;font-weight:630}.copy{font-size:18px;fill:#3b5c4f}.mid{text-anchor:middle}
+    .step{fill:none;stroke:#58836b;stroke-width:2.6;stroke-linejoin:round}
+    .threshold{fill:none;stroke:#946444;stroke-width:1.7;stroke-dasharray:4 4}.ref{fill:#805236}
+  </style>
+  <rect width="700" height="561" rx="14" fill="#f2f5ed"/>
+  <text x="18" y="34" class="title">只改第二个权重，为什么两次读码都变了？</text>
+  <text x="18" y="66" class="copy">第一行保持 40 µS，第二行从 50 变到 56 µS（权重 5 → 5.6）。读压和列端参考不变。</text>
+  <text x="18" y="96" class="copy">横轴为列电流，括号中是按 0.20 µA/单位换算的连续值。ADC 舍入到最近整数。</text>
+
+  <rect x="16" y="111" width="668" height="153" rx="8" fill="#fafbf6" stroke="#afc2b1"/>
+  <text x="30" y="141" class="heading">低位读 · 只有第二行开通</text>
+  <text x="32" y="184" class="label">码 6</text><text x="32" y="218" class="label">码 5</text>
+  <path class="step" d="M100 212H390V178H639"/>
+  <path class="threshold" d="M390 154V238"/>
+  <circle cx="180" cy="212" r="5" fill="#fafbf6" stroke="#38694e" stroke-width="2.5"/>
+  <path d="M432 171l7 7-7 7-7-7Z" fill="#38694e"/>
+  <text x="446" y="168" class="label">现 1.12 µA (5.6)</text>
+  <text x="180" y="248" class="copy mid">原 1.00 µA (5.0)</text>
+  <text x="405" y="248" class="copy ref">阈值 1.10 µA (5.5)</text>
+
+  <rect x="16" y="279" width="668" height="153" rx="8" fill="#fafbf6" stroke="#afc2b1"/>
+  <text x="30" y="309" class="heading">高位读 · 两行都开通</text>
+  <text x="32" y="352" class="label">码 10</text><text x="32" y="386" class="label">码 9</text>
+  <path class="step" d="M100 380H390V346H639"/>
+  <path class="threshold" d="M390 322V406"/>
+  <circle cx="180" cy="380" r="5" fill="#fafbf6" stroke="#38694e" stroke-width="2.5"/>
+  <path d="M432 339l7 7-7 7-7-7Z" fill="#38694e"/>
+  <text x="446" y="336" class="label">现 1.92 µA (9.6)</text>
+  <text x="180" y="416" class="copy mid">原 1.80 µA (9.0)</text>
+  <text x="405" y="416" class="copy ref">阈值 1.90 µA (9.5)</text>
+
+  <text x="18" y="471" class="copy">每次都跨过了一个阈值。低位码多 1，高位码也多 1。</text>
+  <rect x="16" y="488" width="668" height="53" rx="7" fill="#e2ecdf" stroke="#abbfac"/>
+  <text x="32" y="522" class="heading">数字合并</text>
+  <text x="175" y="522" class="label">原 5 + 2 × 9 = 23</text>
+  <text x="410" y="522" class="label">现 6 + 2 × 10 = 26</text>
+</svg>

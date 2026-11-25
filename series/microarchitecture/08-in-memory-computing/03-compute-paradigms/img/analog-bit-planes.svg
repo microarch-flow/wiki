@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 700 456" role="img" aria-labelledby="title desc">
+  <title id="title">两次读不同的输入位，再用数字位权组成点积</title>
+  <desc id="desc">输入依次为二和三，二进制为一零和一一。两行权重四和五保持为多级电导四十和五十微西门子。每次只看一个输入位，位为一时施加二十毫伏，位为零时施加零伏。低位读两行电流为零和一微安，列电流一微安，经 ADC 得码五。高位读为零点八和一微安，列电流一点八微安，经 ADC 得码九。两次独立转换的步长均为每码零点二微安，数字端算五加二乘九等于二十三。</desc>
+  <style>
+    text{font-family:system-ui,"Noto Sans CJK SC","PingFang SC",sans-serif;fill:#173c32}
+    .title{font-size:24px;font-weight:680}.heading{font-size:21px;font-weight:660}
+    .label{font-size:19px;font-weight:630}.copy{font-size:18px;fill:#3b5c4f}.mid{text-anchor:middle}
+  </style>
+  <rect width="700" height="456" rx="14" fill="#f2f5ed"/>
+  <text x="18" y="34" class="title">输入拆成两位以后，乘 2 发生在哪里？</text>
+  <text x="18" y="66" class="copy">第一行输入 2（二进制 10），第二行输入 3（二进制 11）。</text>
+  <text x="18" y="95" class="copy">权重固定为 4 和 5，每单位为 10 µS。输入位为 1 时施加 20 mV，为 0 时施加 0 V。</text>
+
+  <rect x="16" y="115" width="326" height="207" rx="9" fill="#fafbf6" stroke="#afc2b1"/>
+  <rect x="358" y="115" width="326" height="207" rx="9" fill="#fafbf6" stroke="#afc2b1"/>
+  <text x="32" y="149" class="heading">低位读 · 两行的位为 (0, 1)</text>
+  <text x="374" y="149" class="heading">高位读 · 两行的位为 (1, 1)</text>
+  <g class="copy">
+    <text x="32" y="187">第一行　0 V × 40 µS = 0 µA</text>
+    <text x="32" y="219">第二行　20 mV × 50 µS = 1.0 µA</text>
+    <text x="374" y="187">第一行　20 mV × 40 µS = 0.8 µA</text>
+    <text x="374" y="219">第二行　20 mV × 50 µS = 1.0 µA</text>
+  </g>
+  <path d="M31 238H327 M373 238H669" fill="none" stroke="#c7d5c6"/>
+  <text x="32" y="266" class="label">列电流为 1.0 µA</text>
+  <text x="374" y="266" class="label">列电流为 1.8 µA</text>
+  <rect x="31" y="277" width="296" height="33" rx="4" fill="#e2ecdf"/>
+  <rect x="373" y="277" width="296" height="33" rx="4" fill="#e2ecdf"/>
+  <text x="179" y="301" class="label mid">本次 ADC 读码 5</text>
+  <text x="521" y="301" class="label mid">本次 ADC 读码 9</text>
+  <text x="18" y="354" class="copy">每拍单独量化该拍的列电流，转换步长为 0.20 µA/码。</text>
+  <rect x="16" y="371" width="668" height="63" rx="7" fill="#e2ecdf" stroke="#abbfac"/>
+  <text x="35" y="410" class="heading">数字端按位权合并</text>
+  <text x="316" y="410" class="heading">低位 5 + 2 × 高位 9 = 23</text>
+</svg>

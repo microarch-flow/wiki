@@ -715,6 +715,14 @@
         "target": "CIM/wiki/03-compute-paradigms/analog-cim-deep-dive.md"
       },
       {
+        "source": "series/microarchitecture/08-in-memory-computing/03-compute-paradigms/img/analog-bit-planes.svg",
+        "target": "CIM/wiki/03-compute-paradigms/img/analog-bit-planes.svg"
+      },
+      {
+        "source": "series/microarchitecture/08-in-memory-computing/03-compute-paradigms/img/analog-error-readout.svg",
+        "target": "CIM/wiki/03-compute-paradigms/img/analog-error-readout.svg"
+      },
+      {
         "source": "series/microarchitecture/08-in-memory-computing/03-compute-paradigms/analog-cim-fundamentals.md",
         "target": "CIM/wiki/03-compute-paradigms/analog-cim-fundamentals.md"
       },

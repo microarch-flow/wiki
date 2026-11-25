@@ -21,6 +21,8 @@
 
 权重还可以写进 Flash 的阈值。[跟着三拍读出一次点积](./02-memory-technologies/flash-cim-niche.md#three-read-windows)后，可以分别检查[同一列的两只 PCM 单元过一段时间会读出多少电流](./02-memory-technologies/pcm-mram-for-cim.md#pcm-drift)，以及[MRAM 怎样从两行磁态得到一个逻辑结果](./02-memory-technologies/pcm-mram-for-cim.md#mram-two-rows)。
 
+读完各类介质，再跟一次完整读出。在[两次位平面读出怎样合成 23](./03-compute-paradigms/analog-cim-fundamentals.md#two-input-planes)里，先找阵列交给转换器的部分和；接着[重复测量同一输入](./03-compute-paradigms/analog-cim-deep-dive.md#repeat-read)，判断偏差从哪一步进入。
+
 
 <span class="micro-legacy-anchor" id="十章地图"></span>
 
