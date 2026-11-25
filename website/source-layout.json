@@ -1010,6 +1010,18 @@
         "target": "COMPUTE/wiki/03-systolic-array/img/systolic-2x2.svg"
       },
       {
+        "source": "series/microarchitecture/04-parallel-execution/img/systolic-four-cycles.svg",
+        "target": "COMPUTE/wiki/03-systolic-array/img/systolic-four-cycles.svg"
+      },
+      {
+        "source": "series/microarchitecture/06-task-control/img/two-tiles-port-timeline.svg",
+        "target": "microarchitecture/06-task-control/img/two-tiles-port-timeline.svg"
+      },
+      {
+        "source": "series/microarchitecture/07-chip-organization/img/compute-control-boundaries.svg",
+        "target": "COMPUTE/wiki/07-chip-organization/img/compute-control-boundaries.svg"
+      },
+      {
         "source": "series/microarchitecture/04-parallel-execution/simd-vector-simt.md",
         "target": "COMPUTE/wiki/03-systolic-array/simd-vector-simt.md"
       },

@@ -93,14 +93,27 @@ class MicroarchitecturePublicationTests(unittest.TestCase):
         content = home.split('id="series-home-content"', 1)[1]
         reading = re.search(r'<h2 id="first-reads">.*?</h2>\s*<ol>(.*?)</ol>', content, re.DOTALL)
         self.assertIsNotNone(reading)
-        paths = [urlsplit(urljoin("/microarchitecture/", href)).path.strip("/") for href
-                 in re.findall(r'<li><a href="([^"]+)">', reading.group(1))]
-        sources = [
-            "00-overview/microarchitecture-decisions.md",
-            "02-pipeline/pipeline-register-insertion.md",
-            "03-instruction-execution/dependencies-bypass-issue.md",
+        questions = [
+            ["00-overview/microarchitecture-decisions.md"],
+            ["02-pipeline/pipeline-register-insertion.md"],
+            ["03-instruction-execution/dependencies-bypass-issue.md"],
+            ["04-parallel-execution/simd-vector-simt.md", "04-parallel-execution/why-systolic-array.md"],
+            ["06-task-control/dma-compute-writeback.md"],
+            ["07-chip-organization/cpu-vs-gpu-core-area.md"],
         ]
-        self.assertEqual(paths, [html_path(self.mapping[source]).parent.as_posix() for source in sources])
+        items = re.findall(r'<li>(.*?)</li>', reading.group(1), re.DOTALL)
+        self.assertEqual(len(items), len(questions))
+        for item, sources in zip(items, questions):
+            links = re.findall(r'<a href="([^"]+)">', item)
+            paths = [urlsplit(urljoin("/microarchitecture/", href)).path.strip("/") for href in links]
+            self.assertEqual(paths, [html_path(self.mapping[source]).parent.as_posix() for source in sources])
+
+        sequence = [html_path(self.mapping[source]) for question in questions for source in question]
+        for current, following in zip(sequence, sequence[1:]):
+            body = Article((SITE / current).read_text())
+            base = "/" + current.parent.as_posix() + "/"
+            targets = {urlsplit(urljoin(base, href)).path.rstrip("/") for href in body.links}
+            self.assertIn("/" + following.parent.as_posix(), targets, current)
 
     def test_first_read_anchors_added_after_the_legacy_snapshot(self):
         anchors = {
@@ -112,6 +125,19 @@ class MicroarchitecturePublicationTests(unittest.TestCase):
                 "数据依赖旁路与发射", "先把依赖和冲突分开", "一个明示时序的例子", "旁路需要哪些硬件和判断",
                 "就绪不等于获准执行", "延迟启动间隔与依赖距离",
             },
+            "04-parallel-execution/simd-vector-simt.md": {
+                "simd向量与-simt工作如何分配到执行通道", "三种表达方式", "十个元素如何映射",
+                "活动掩码与控制分歧", "物理通道数如何进入吞吐估算", "与矩阵阵列的关系",
+            },
+            "04-parallel-execution/why-systolic-array.md": {
+                "一个-22-矩阵的逐拍例子", "计算结束与结果排空", "插入一拍供数停顿",
+                "流量时间和实现成本分别统计", "与-cim-的边界", "资料与模型范围",
+            },
+            "06-task-control/dma-compute-writeback.md": {
+                "dma计算与写回如何协作", "先定义事件与所有权", "两个-tile-的具体日程",
+                "同样两个-buffer为何仍可能无法重叠", "完成记录可见性与错误", "从日程走向实现",
+            },
+            "07-chip-organization/cpu-vs-gpu-core-area.md": {"控制机制与比较层级"},
         }
         for source, expected in anchors.items():
             with self.subTest(article=source):

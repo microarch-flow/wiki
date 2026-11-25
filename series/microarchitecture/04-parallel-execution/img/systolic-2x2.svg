@@ -1,21 +1,27 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 680 330" role="img" aria-labelledby="title desc">
-  <title id="title">2×2 output-stationary 阵列</title>
-  <desc id="desc">A 从左向右传递，B 从上向下传递。四个 PE 分别保存 C00、C01、C10、C11 的部分和。入口按行列编号错位，邻近传递各需一拍。</desc>
-  <defs><marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10Z" fill="#427971"/></marker></defs>
-  <rect width="680" height="330" rx="16" fill="#edf2ed"/>
-  <g fill="none" stroke="#427971" stroke-width="2.5" marker-end="url(#arrow)">
-    <path d="M75 135H235M365 135H445M75 260H235M365 260H445"/>
-    <path d="M300 55V100M510 55V100M300 170V225M510 170V225"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 660 320" role="img" aria-labelledby="title desc">
+  <title id="title">四个输出、四个乘加单元</title>
+  <desc id="desc">左侧两行分别送 A 的 1、2 和 3、4，第二行晚一拍启动。顶部两列分别送 B 的 5、7 和 6、8，第二列也晚一拍启动。A 在阵列中向右传，B 向下传，相邻传递各需一拍。各单元只累加自己负责的输出。</desc>
+  <defs>
+    <marker id="a-tip" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto" markerUnits="userSpaceOnUse"><path d="M0 0L8 4L0 8Z" fill="#256448"/></marker>
+    <marker id="b-tip" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto" markerUnits="userSpaceOnUse"><path d="M0 0L8 4L0 8Z" fill="#895c31"/></marker>
+  </defs>
+  <rect x="1" y="1" width="658" height="318" rx="12" fill="#f3f5ed" stroke="#cad7c7"/>
+  <g fill="none" stroke="#256448" stroke-width="2.5" marker-end="url(#a-tip)">
+    <path d="M179 124H231"/><path d="M369 124H465"/>
+    <path d="M179 250H231"/><path d="M369 250H465"/>
   </g>
-  <g fill="#e0eae2" stroke="#718e85" stroke-width="1.5">
-    <rect x="240" y="100" width="125" height="70" rx="10"/><rect x="450" y="100" width="125" height="70" rx="10"/>
-    <rect x="240" y="225" width="125" height="70" rx="10"/><rect x="450" y="225" width="125" height="70" rx="10"/>
+  <g fill="none" stroke="#895c31" stroke-width="2.5" marker-end="url(#b-tip)">
+    <path d="M301 63V86"/><path d="M535 63V86"/>
+    <path d="M301 165V212"/><path d="M535 165V212"/>
   </g>
-  <g fill="#243a34" font-family="system-ui,sans-serif" font-size="18" text-anchor="middle">
-    <text x="302" y="128">PE00</text><text x="302" y="153">保存 C00</text><text x="512" y="128">PE01</text><text x="512" y="153">保存 C01</text>
-    <text x="302" y="253">PE10</text><text x="302" y="278">保存 C10</text><text x="512" y="253">PE11</text><text x="512" y="278">保存 C11</text>
-    <text x="300" y="37">B 第 0 列</text><text x="510" y="37">B 第 1 列</text>
-    <text x="133" y="117">A 第 0 行</text><text x="133" y="242">A 第 1 行</text>
-    <text x="405" y="124" font-size="15">1 拍</text><text x="328" y="205" font-size="15">1 拍</text>
+  <g fill="#e3ece1" stroke="#739280" stroke-width="1.5">
+    <rect x="233" y="88" width="136" height="72" rx="8"/><rect x="467" y="88" width="136" height="72" rx="8"/>
+    <rect x="233" y="214" width="136" height="72" rx="8"/><rect x="467" y="214" width="136" height="72" rx="8"/>
+  </g>
+  <g font-family="system-ui,'Noto Sans CJK SC',sans-serif" text-anchor="middle" fill="#203e2d">
+    <g font-size="18" font-weight="650"><text x="301" y="118">PE00</text><text x="535" y="118">PE01</text><text x="301" y="244">PE10</text><text x="535" y="244">PE11</text></g>
+    <g font-size="16"><text x="301" y="143">累加 C00</text><text x="535" y="143">累加 C01</text><text x="301" y="269">累加 C10</text><text x="535" y="269">累加 C11</text></g>
+    <g font-size="16" fill="#256448"><text x="101" y="121">A 第 0 行：1，2</text><text x="101" y="145">第 0 拍起</text><text x="101" y="247">A 第 1 行：3，4</text><text x="101" y="271">第 1 拍起</text><text x="417" y="113">一拍</text></g>
+    <g font-size="16" fill="#79532d"><text x="301" y="30">B 第 0 列：5，7</text><text x="301" y="51">第 0 拍起</text><text x="535" y="30">B 第 1 列：6，8</text><text x="535" y="51">第 1 拍起</text><text x="326" y="193">一拍</text></g>
   </g>
 </svg>
