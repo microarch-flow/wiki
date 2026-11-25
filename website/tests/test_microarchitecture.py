@@ -115,6 +115,31 @@ class MicroarchitecturePublicationTests(unittest.TestCase):
             targets = {urlsplit(urljoin(base, href)).path.rstrip("/") for href in body.links}
             self.assertIn("/" + following.parent.as_posix(), targets, current)
 
+    def test_dma_reading_path_returns_to_the_two_tile_example(self):
+        sources = [
+            "05-dma/02-fundamentals/address-descriptor-burst.md",
+            "05-dma/03-dma-microarchitecture/multidimensional-stride-dma.md",
+            "05-dma/03-dma-microarchitecture/scheduling-outstanding.md",
+            "05-dma/04-programming-model/queues-doorbells-completions.md",
+        ]
+        entry = html_path(self.mapping["05-dma/README.md"])
+        text = (SITE / entry).read_text()
+        reading = re.search(r'<h3 id="dma-first-reads">.*?</h3>\s*<ol>(.*?)</ol>', text, re.DOTALL)
+        self.assertIsNotNone(reading)
+        entry_url = "/" + entry.parent.as_posix() + "/"
+        hrefs = re.findall(r'<li><a href="([^"]+)">', reading.group(1))
+        sequence = [html_path(self.mapping[source]) for source in sources]
+        self.assertEqual([urljoin(entry_url, href).rstrip("/") for href in hrefs],
+                         ["/" + page.parent.as_posix() for page in sequence])
+
+        tiles = html_path(self.mapping["06-task-control/dma-compute-writeback.md"])
+        cycle = [tiles, *sequence, tiles]
+        for page, following in zip(cycle, cycle[1:]):
+            content = Article((SITE / page).read_text())
+            base = "/" + page.parent.as_posix() + "/"
+            targets = {urlsplit(urljoin(base, href)).path.rstrip("/") for href in content.links}
+            self.assertIn("/" + following.parent.as_posix(), targets, page)
+
     def test_first_read_anchors_added_after_the_legacy_snapshot(self):
         anchors = {
             "00-overview/microarchitecture-decisions.md": {

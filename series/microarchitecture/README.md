@@ -23,7 +23,7 @@ title: "计算微架构：执行、数据通路与资源协作"
 | [流水线、时序与时钟域](./02-pipeline/README.md) | 数据何时采样，何时推进或等待 | 电路基础、setup/hold、流水级、依赖、反压 |
 | [指令执行与处理器控制](./03-instruction-execution/README.md) | 指令何时可执行，结果何时成为正式状态 | 指令生命周期、数据依赖、旁路与发射 |
 | [并行执行与计算阵列](./04-parallel-execution/README.md) | 工作如何分配到通道与 PE | SIMD、向量、SIMT、systolic 与 dataflow |
-| [DMA 与异步数据搬运](./05-dma/README.md) | 搬运任务如何展开、执行和完成 | 九章：语义、引擎、编程、集成、建模与案例 |
+| [DMA 与异步数据搬运](./05-dma/README.md) | 搬运任务如何展开、执行和完成 | [从描述符到缓冲区回收的四篇首读](./05-dma/README.md#dma-first-reads)，另有系统集成、建模与案例 |
 | [任务控制、同步与资源管理](./06-task-control/README.md) | 多个引擎如何协作，buffer 何时能复用 | DMA、计算、写回的事件与所有权 |
 | [处理单元与片上组织](./07-chip-organization/README.md) | 同一块矩阵怎样分给不同执行资源 | CPU、GPU、NPU 的执行过程与跨单元分块 |
 | [存内与近存计算](./08-in-memory-computing/README.md) | 把计算移近或放入存储路径会改变什么 | CIM、PIM、NMC 的物理机制与系统边界 |

@@ -1,77 +1,81 @@
-# 调度、Outstanding 与回包组织
+# 后发的 DMA 请求先回来，数据怎样放回正确的位置？
 
-上级：[03 DMA 引擎微架构](./README.md)
+<span class="micro-legacy-anchor" id="调度outstanding-与回包组织"></span>
 
-相关：[DMA 与 NoC](../05-system-integration/dma-and-noc.md)、[指标、瓶颈与实验设计](../06-performance-modeling/metrics-bottlenecks.md)、[BUS：AXI Channel、ID 与 Outstanding](../../../interconnect/BUS/03-on-chip-protocol-families/axi-channel-id-outstanding.md)
+上级：[DMA 引擎微架构](./README.md)
 
-## 这页在回答什么问题
+<span class="micro-legacy-anchor" id="这页在回答什么问题"></span>
 
-为什么很多 DMA 的上限不是由理论带宽决定，而是由 request 注入节奏、outstanding 窗口和回包组织方式决定；以及为什么“把请求尽量发满”经常不是正确策略。
+[上一篇的二维 DMA](./multidimensional-stride-dma.md)要搬三行数据，每行 4 字节，目的行首相隔 6 字节。现在源端先送回来 4 个字节，接口上还带着一个编号 5。目的 SRAM 的起始地址是 `0x2000`。这 4 个字节该写在 `0x2000`，还是 `0x2006`？如果看都不看编号、从起始地址顺着写，可能把第二行填到第一行的位置。决定这笔数据去向的那条记录，早在读请求离开 DMA 时就要留下。
 
-## Outstanding 不是越大越好，而是用来换 latency hiding
+## 发出一笔读请求时，要记住什么？ {#outstanding-不是越大越好而是用来换-latency-hiding}
 
-`outstanding` 指的是已经发出、但尚未完成闭环的 in-flight 事务数。它存在的根本原因很直接：memory 和互连都有非零 latency，如果 DMA 每等一笔回完再发下一笔，就会一直在空等。于是 DMA 用 outstanding 窗口把多个未完成事务挂在系统里，用空间和状态复杂度去换 latency hiding。
+沿用三行的地址。源行首相隔 8 字节，目的行首相隔 6 字节。假定源端是一个 AXI4 读接口，每行用一笔请求、一个 4 字节的数据节拍（beat）搬完。目的端是本地 SRAM，可以把返回的四个字节写到表中指定的字节位置；对目的端只记整行写入完成的时刻。源、目的地址各自跨过的填充字节都不搬。
 
-可以把 outstanding 想成餐馆里同时发出去、还没回桌的点菜单数。发得太少，后厨一闲下来前台就断单；发得太多，出餐口和传菜口会挤成一团。这个类比的边界是：真实 DMA 的“菜单”并不是独立同质项，事务还有 read/write 区别、地址相关性、返回路径耦合和 completion 闭环，所以不能拿它推出简单的线性规律。
+| 本地子请求 | 源行首 | 读请求携带的 ARID | 目的行首（相对基址的偏移） |
+| --- | --- | --- | --- |
+| R0 · 第 0 行 | `0x1000` | 3 | `0x2000`（+0） |
+| R1 · 第 1 行 | `0x1008` | 5 | `0x2006`（+6） |
+| R2 · 第 2 行 | `0x1010` | 3 | `0x200C`（+12） |
 
-## 真正的难点是 request 和 response 必须一起看
+DMA 先在读地址通道上发出 R0。地址完成握手，源端接下请求，数据稍后才会回来。DMA 在本地记下：ID 3 的下一笔返回属于哪个描述符、哪一行、要写到哪里。在地址已被接纳、最后一拍读数据还没被 DMA 接收的这段时间，R0 占一个**在途读事务**（outstanding）名额。本文只在这个 AXI 读接口上数它。
 
-很多分析只盯 request injection，这往往不够。不同协议的请求、数据、响应和资源释放形成不同的偏序；不能把它们画成通用的 `request → response → data_commit → completion → slot_release`。
+等 R0 的时候，DMA 可以再发 R1。它也存下一条记录，这次 ID 是 5，目标偏移是 +6。两笔读就能同时在途；如果只有一个名额，第二笔即使源地址早已算好，也要等第一笔返回才可发出。这才是增加在途数能够隐藏一部分等待时间的原因。
 
-AXI4 读：AR 握手后返回 R beat。每个成功接收的 beat 可以分别写入目标或 response buffer；最后一个 R beat 不必早于之前 beat 的落位。AXI4 写：AW 与 W 可先后或交错握手；AW 和最后 W beat 均被接收后才允许生成 B。部分写数据可在 B 前处理。B 完成该接口的写响应，不单独保证 DRAM 落位或 CPU cache 可见。
+## 编号 5 先回来，为什么越过第一行也能写对？ {#回包组织为什么经常比发包更难}
 
-PCIe Memory Read 等待一个或多个带数据的 Completion；posted Memory Write 不返回对应的事务 Completion。链路 ACK、发送缓存释放、目标可见性和 DMA completion 是不同事件。DMA 的完成条件由设备契约指定，不能凭一个协议响应推定所有数据可供 CPU 使用。
+看 DMA 接收到的那拍数据。返回的 ID 叫 RID，这次 RID = 5。用它查本地记录，找到 R1，再从 R1 的记录取出目的偏移 +6。这四个字节将写在 `0x2006` 到 `0x2009`。`0x2000` 到 `0x2003` 给尚未返回的 R0 留着，行间的 `0x2004` 和 `0x2005` 也保持原值。**编号选中本地记录，记录给出目的地址。** 不能拿编号 5 当成字节偏移。
 
-例如 AXI 读的 R beat 0 已写入 SRAM，但 beat 1 仍在返回；response buffer 可因 beat 0 消费而释放一个槽，读 outstanding 通常要等最后 R beat 握手才释放。completion queue 和 descriptor 槽则由各自契约释放。具体事件和偏序见 [模型数据结构与事件规范](../06-performance-modeling/model-schema.md#规范事件与偏序canonical-event-taxonomy)。
+为什么 R0 和 R2 可以都用编号 3？在同一个 AXI4 读接口上，不同 ID 的读响应可以换序；同一 ID 的读事务，其数据须按请求发出的顺序交给请求方。因此 DMA 可以为 ID 3 保存一个按发出顺序排列的小队列。若 R2 发出时 R0 还在途，队头是 R0，后面是 R2。第一次接完整笔 RID = 3 的数据，交给 R0 并移走队头；下一笔才属于 R2。一笔含多个 beat 时，在这一笔的最后一个 beat 接收前，队头始终指着同一请求。具体芯片也可以限制每个 ID 同时只有一笔在途。[Arm AMBA AXI4 规范，A5.2 读数据顺序](https://developer.arm.com/-/media/Arm%20Developer%20Community/PDF/IHI0022H_amba_axi_protocol_spec.pdf#page=81) · [AXI 通道、ID 和在途事务](../../../interconnect/BUS/03-on-chip-protocol-families/axi-channel-id-outstanding.md)
 
-## 调度器至少在决定三件事
+## 回包已收到，为什么第三笔还不能发？ {#真正的难点是-request-和-response-必须一起看}
 
-DMA 调度不是“先来先服务”这么简单。只要系统有多任务、多通道、多方向流量，调度器至少要决定三件事：
+让这台 DMA 最多有两笔 AXI 读在途，本地另有两个各能装 4 字节的返回槽。它采用一种保守安排：每次发读前，先在本地为将来的回包预留一个槽。有空槽可分配，就有一份**信用**（credit）。数据回来，把预留的槽从“等数据”改成“装着数据”；直到 SRAM 已经收下这一行，槽才重新可分配。这是本机的容量管理办法，AXI4 读接口本身用 VALID/READY 握手。
 
-- 先发谁：不同 queue、channel、priority 如何仲裁
-- 发多猛：outstanding 窗口和信用控制怎么设
-- 何时收敛：什么时候主动节流，避免把 return path 或目的端打爆
+按下表的边沿走一遍。记的是该沿事件处理后的状态。目的写端口这次在 t = 3、7、8 接纳一整行，其他时候服务别的工作。新释放的槽从下一沿起可用于发新请求。所有响应都成功，本例把行写完定义为本地阵列可以读到它。
 
-常见策略包括 round-robin、fixed priority、age-based、credit throttle、token bucket。它们没有普适最优解，只有针对不同系统目标的 trade-off。延迟敏感控制流希望尽快通过，高吞吐 bulk DMA 希望尽量维持 steady-state，AI 供数系统则常常希望 refill 和 writeback 都别压死关键 response。
+| 边沿 | 这一沿发生了什么？ | 尚在途、已为它留槽 | 已回、占槽待写 | 空闲信用 | 已落入目的 SRAM |
+| --- | --- | --- | --- | ---: | --- |
+| 0 | 发 R0，ID 3 | R0 | — | 1 | — |
+| 1 | 发 R1，ID 5 | R0、R1 | — | 0 | — |
+| 2 | RID 5 回来，收下 R1 | R0 | R1 | 0 | — |
+| 3 | 把 R1 写到 +6 | R0 | — | 1 | 第 1 行 |
+| 4 | 发 R2，ID 3 | R0、R2 | — | 0 | 第 1 行 |
+| 5 | 第一个 RID 3 回来，收下 R0 | R2 | R0 | 0 | 第 1 行 |
+| 6 | 第二个 RID 3 回来，收下 R2 | — | R0、R2 | 0 | 第 1 行 |
+| 7 | 把 R0 写到 +0 | — | R2 | 1 | 第 0、1 行 |
+| 8 | 把 R2 写到 +12 | — | — | 2 | 三行全部可读 |
 
-## 回包组织为什么经常比发包更难
+停在 **t = 2**。R1 只有一个 beat，这一拍有 RLAST，表示它是该笔读事务的最后一个数据节拍。该拍握手后，R1 就归还了 AXI 读名额。为什么 R2 仍要等？第一个返回槽已许给 R0，第二个正存着 R1。如果再接一笔读，硬件拿不出承诺给它的存放位置。把任一行里的“已预留、已占用、空闲”三项相加，总数都应为 2。t = 3 归还的是 R1 的**返回槽**，和 t = 2 归还的**在途读名额**是两样东西。
 
-如果系统只支持严格顺序返回，DMA 设计会简单很多，但吞吐往往也会被拖低。只要系统允许 ID、多 bank 并发、乱序返回或多源 response 混合，DMA 就必须显式组织回包：
+再停在 **t = 6**。所有源端读都已返回，目的 SRAM 却只有第 1 行是新的。若这时发出“整个块可读”的成功通知，阵列可能读到第 0、2 行的旧值。直到 t = 8 才能按本例约定宣布本地三行就绪。描述符槽能否复用、软件何时看见完成记录、消费者何时用完这块 SRAM，各有自己的条件。
 
-- 哪个 response 属于哪个 descriptor 或 subrequest
-- 数据何时算真正落位
-- 部分完成能不能提前推进
-- completion 是否必须保持某种顺序可见
+## 如果每笔有两个 beat，先回的一半能做什么？ {#常见误解}
 
-这就是为什么很多 DMA 引擎里会长出 `reorder buffer`、`completion table`、`inflight scoreboard`。它们做的事并不华丽，但没有这些状态，DMA 既打不满带宽，也很难保证正确 completion。
+把一笔读改为分两拍返回。在某个边沿，同一笔读的 beat 0 已经写到 SRAM，beat 1 还在返回。如果缓冲按 beat 分配，beat 0 消费后可以腾出一个槽；AXI 读名额仍要等带 RLAST 的最后一个 beat 完成握手。哪些字节一到就能用，取决于下游能否按片段消费。上一笔成功也不能掩盖下一笔的错误：遇到错误响应，要按接口收束或排空在途工作，本次描述符不得照常报成功。
 
-## 什么时候会看到“平均不错、尾巴很差”
+在这个三行例子里，各行的目的地址没有重叠，SRAM 接受指定地址写入。因此可以让第 1 行先落位，只用状态表（inflight scoreboard）追踪每个在途请求，再用完成表（completion table）汇总哪些行已写完。若消费者只能依次从流接口收第 0、1、2 行，就要留住先回的第 1 行，等第 0 行来后按序交付。这才给**重排缓冲区**（reorder buffer）一个具体用途。若软件接口还要求多个描述符按提交顺序报告完成，数据写入顺序和完成记录的发布顺序也可以分别管理。
 
-如果系统表现为平均带宽不低，但 completion 尾延迟很差、热点周期性出现、偶发 pipeline 断供，优先怀疑 DMA 的调度和回包组织，而不是先怀疑链路规格不够。典型原因包括：
+## 能把读请求的时间线套在写请求上吗？
 
-- outstanding 太小，隐藏不了外部 memory latency
-- outstanding 太大，return path 周期性堆积
-- writeback/completion 路径与 bulk data 共用瓶颈端口
-- 优先级策略让关键小流量长期被 bulk 流压住
+在 AXI4 写接口上，地址走 AW，写数据走 W，二者可以先后或同时握手。从设备接受了写地址和最后一拍写数据后，才能给出本事务的 B 响应；有些数据在 B 之前就已处理。B 握手证明该接口的写响应已交接，至于数据是否已落到 DRAM 器件、CPU 是否能经自己的 cache 读到，得看目标系统的可见性约定。[Arm AXI4 写响应依赖，A3.3](https://developer.arm.com/-/media/Arm%20Developer%20Community/PDF/IHI0022H_amba_axi_protocol_spec.pdf#page=46)
 
-这些现象和 [RAM wiki 的 row locality / controller policy](../../../storage/04-dram-controller/command-scheduling-fr-fcfs.md) 会形成直接耦合。DMA 看到的是“为什么回得慢”，DRAM controller 看到的是“为什么这些请求被这样排”。
+再换成 PCIe。一次成功的 Memory Read 可以收到一个或多个带数据的 Completion；posted Memory Write 没有与该写请求一一对应的事务层 Completion。链路 ACK 只确认相邻链路那一跳的接收。本地发送缓冲释放、远端数据可见、设备向软件报 DMA 完成，要各自找证据。[Intel PCIe DMA 参考设计中的读写事务](https://cdrdv2-public.intel.com/666800/an708-683390-666800.pdf) · [模型数据结构与事件规范](../06-performance-modeling/model-schema.md#规范事件与偏序canonical-event-taxonomy)
 
-## 常见误解
+## 有一个空槽，先把它给谁？ {#调度器至少在决定三件事}
 
-常见误解：`outstanding 窗口越大越好`。实际上超过系统能消化的点后，只会把排队和尾延迟后移。
+假设 t = 3 归还一个槽，这时不仅有 R2，还排着另一通道的补数请求。调度器先筛掉地址未就绪、在途名额或返回空间不足的候选，再决定把这一次发射机会给谁。轮转（round-robin）按通道轮换，固定优先级（fixed priority）可以照顾紧急补数，按等待时长选择（age-based）则会提高老请求的机会。即便某个队列一直有活可发，也可以按剩余信用限制它（credit throttle），或用令牌桶（token bucket）限制一段时间内的注入速率。选择取决于要保护的是阵列补数时限、批量读带宽，还是写回和完成通知能否取得公共端口。
 
-常见误解：`DMA 性能瓶颈在发不出去`。实际上很多系统真正卡在 response return、destination ejection 或 completion release。
+<span class="micro-legacy-anchor" id="一句话理解"></span>
 
-常见误解：`乱序返回只是协议细节`。实际上它直接决定 DMA 是否需要 reorder/completion 组织结构。
+## 平均带宽不错，最慢的几笔在等什么？ {#什么时候会看到平均不错尾巴很差}
 
-## 一句话理解
+可以先看四个量，而不用一开始就改窗口。记录 AXI 在途数 `outstanding_count`、最老未返回请求的年龄 `oldest_inflight_age`、已经装入返回队列的数据量 `response_queue_occupancy`，以及已完成却还没能发布或回收的积压 `completion_backlog`，最后一个量要注明统计到哪个环节。
 
-DMA 的性能不是把请求尽量发满，而是把 `发请求、收回包、写完成、释放资源` 组织成能持续前进的并发形状。
+比如 t = 6，在途读数已归零、返回槽却全满，很容易判断当前瓶颈在目的端，而继续放宽读窗口也不会让 SRAM 多一个写口。另一种情形是返回槽经常空、读窗口经常满且老请求越等越久，这时才值得检查远端服务延迟和在途容量。DRAM 的行命中与控制器策略会改变返回节奏，NoC 争用也可能让某个返回长期等不到；若高优先级 bulk 流总能先走，单个补数或完成通知也可能被长期压住。结合计数器和时间线，可以区分注入不足、回包堆积、写回争用与完成积压。[DMA 与 NoC](../05-system-integration/dma-and-noc.md) · [DRAM 控制器为何优先服务某些请求](../../../storage/04-dram-controller/command-scheduling-fr-fcfs.md) · [指标、瓶颈与实验设计](../06-performance-modeling/metrics-bottlenecks.md)
 
-## 建模启示
+## 模拟器要把「完成」记在哪个边沿？ {#建模启示}
 
-这一页是性能模型的核心。event-driven 仿真里至少应显式追踪 `outstanding_count`、`oldest_inflight_age`、`response_queue_occupancy`、`completion_backlog` 四类状态。
+回看表中 t = 2、3、8：同一笔返回可以先结束源端事务，再释放返回槽，整条描述符又到更晚才完成。事件模型应记录描述符受理、对应协议的请求和数据握手、目标写入生效（data commit）、DMA 完成，以及每次释放的是哪种资源（`resource_kind`）。建模 posted write 时无需虚构一次 `response_arrive`。若要研究尾延迟、软件超时或停滞，还须追踪完成记录何时对软件可见、是否需要 cache 同步、消费者何时真正可用。只在合并这些事件不会改变所测依赖、容量或可见性时，才可以用一个延迟代替细节。
 
-至少记录 descriptor 受理、按协议区分的请求与数据握手、目标域的 data commit、DMA completion，以及带 `resource_kind` 的独立资源释放事件。posted write 不产生 read-style completion，不能把 `response_arrive` 设为每个子事务的必经事件。
-
-模型可以按目标折叠事件，但必须先证明折叠不会改变所关心的依赖和可见性。要分析 tail latency、软件 timeout 或 hang，就需要分别记录设备承诺的传输完成点、completion 可见点、所需 cache 同步和 consumer-ready；这些边界是否存在严格顺序取决于设备与软件契约。
+在 t = 8，本地阵列已经能读这三行。若软件是从主机提交这条描述符的，它究竟看到了什么，才敢把队列里的位置交给下一条任务？[下一篇：DMA 已经取走描述符，软件现在能复用缓冲区吗？](../04-programming-model/queues-doorbells-completions.md)

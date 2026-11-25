@@ -8,7 +8,7 @@
 ## 阅读顺序
 
 1. [传输对象与基本语义](./transfer-basics.md)
-2. [地址、描述符与 Burst](./address-descriptor-burst.md)
+2. [一条 DMA 描述符，为什么会变成多笔读写请求？](./address-descriptor-burst.md)
 3. [缓存一致性、IOMMU 与地址空间](./consistency-cache-coherency.md)
 4. [Non-Coherent vs Coherent DMA](./noncoherent-vs-coherent-dma.md)
 

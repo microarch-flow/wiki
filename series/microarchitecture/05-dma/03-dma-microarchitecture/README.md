@@ -8,9 +8,9 @@
 ## 阅读顺序
 
 1. [DMA 引擎的组成](./engine-components.md)
-2. [调度、Outstanding 与回包组织](./scheduling-outstanding.md)
-3. [多通道、虚拟化与隔离](./channels-virtualization.md)
-4. [多维 DMA 与 Stride 地址生成](./multidimensional-stride-dma.md)
+2. [矩阵每行隔着一段空隙，DMA 怎样只搬有效数据？](./multidimensional-stride-dma.md)
+3. [后发的 DMA 请求先回来，数据怎样放回正确的位置？](./scheduling-outstanding.md)
+4. [多通道、虚拟化与隔离](./channels-virtualization.md)
 
 ## 本章输出物
 

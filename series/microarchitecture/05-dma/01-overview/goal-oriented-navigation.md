@@ -2,7 +2,7 @@
 
 上级：[01 概览与问题定义](./README.md)
 
-相关：[学习路线图](./learning-roadmap.md)、[知识地图](../SUMMARY.md)
+相关：[学习路线图](./learning-roadmap.md)、[知识地图](../SUMMARY.md)。如果你只想弄懂一次搬运怎样从提交走到回收，可以[从专题首页连读四篇](../README.md#dma-first-reads)。
 
 ## 这页在回答什么问题
 

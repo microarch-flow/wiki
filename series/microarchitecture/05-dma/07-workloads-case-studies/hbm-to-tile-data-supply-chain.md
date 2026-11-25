@@ -61,6 +61,8 @@ HBM latency、NoC return path、SRAM bank、tile buffer ready、writeback 回压
 
 在 AI 芯片里，HBM 到 tile 的供给链能否稳定运行，往往不取决于单点峰值，而取决于 DMA 是否把整条链路的节拍组织对了。
 
+在这条链上可以分别数三件事。DMA 针对分块发出哪些地址，看[按行生成地址](../03-dma-microarchitecture/multidimensional-stride-dma.md)。同样的步长在源端 DRAM 是否命中已打开的行、在目的 SRAM 是否争用一个 bank，看[两种存储的访问模式](../../../storage/01-memory-hierarchy/02-access-paths/sram-vs-dram-access-pattern.md)。读写共享控制器时，还要把两种流量加在同一资源上；每块的字节数和该资源每拍能服务多少，可以对照[片上带宽预算](../../../storage/01-memory-hierarchy/04-npu-case/on-chip-bandwidth-budget.md)。三个问题共同决定数据何时能交给阵列。
+
 ## 建模启示
 
 这页最适合显式建一条多 stage pipeline，并用 `consumer_ready` 而不是只用 `transfer_done` 驱动阶段推进。

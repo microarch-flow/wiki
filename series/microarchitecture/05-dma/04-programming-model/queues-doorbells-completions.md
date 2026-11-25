@@ -1,100 +1,77 @@
-# 队列、Doorbell 与 Completion
+# DMA 已经取走描述符，软件现在能复用缓冲区吗？
 
-上级：[04 软件栈与编程模型](./README.md)
+<span class="micro-legacy-anchor" id="队列doorbell-与-completion"></span>
+<span class="micro-legacy-anchor" id="这页在回答什么问题"></span>
 
-相关：[软件栈与编程模型](./software-stack.md)、[同步、一致性与常见错误](./synchronization-errors.md)、[PCIE：队列、Doorbell、Completion 与 MSI-X](../../../interconnect/PCIE/04-data-path-dma-interrupts/queues-doorbells-completions-msix.md)
+上级：[软件栈与编程模型](./README.md)
 
-## 这页在回答什么问题
+[上一篇](../03-dma-microarchitecture/scheduling-outstanding.md)跟着 DMA 的请求和回包，判断哪些事务还在途。现在走回 CPU 一侧。软件把一条接收命令写进提交队列的 **0 号槽**：让设备把一批数据写进内存中的 **B0**。调试时看见设备已经读走了这条命令。CPU 想把下一条命令写入原槽，同时把 B0 交给计算程序。这两个动作，哪一个已经可以做？
 
-为什么现代 DMA 的软件接口通常都围绕 queue、doorbell 和 completion 组织；以及这三个对象如何共同决定吞吐、正确性和软件可见时序。
+先看 CPU 实际写下了什么。0 号槽里是一条**描述符**，保存命令编号、B0 的设备地址、长度等信息。B0 是地址指向的另一块内存，真正的数据要写到那里。即使设备已经把地址抄到自己内部，它也完全可能刚刚开始向这个地址写数据。下文把这条命令编号记作 **17**，始终分开追踪槽 0 和 B0。[描述符、地址与传输长度](../02-fundamentals/address-descriptor-burst.md)
 
-## Queue 解决的是批量提交，而不是只是“排队”
+## 写好槽 0，为什么还要通知设备？ {#doorbell-解决的是何时值得让硬件开始看}
 
-寄存器 DMA 的最大问题之一，是每笔任务都要单独配置、单独启动、单独等待。只要任务频率提高，这条路径很快就会让 CPU 成为瓶颈。queue 的设计动机，就是让软件把一批任务先放进可复用容器里，再由 DMA 持续消费。于是软件和硬件的关系从“逐笔对话”变成“维护共享任务池”。
+<span class="micro-legacy-anchor" id="queue-解决的是批量提交而不是只是排队"></span>
 
-queue 的真正价值不在“有个数组能存 descriptor”，而在于它把提交开销摊薄，并允许 DMA 在硬件侧形成 steady-state。代价是软件现在必须维护 producer/consumer 边界、队列深度、槽位复用和 completion 回收。
+假设软件准备连续提交三条命令。它可以逐笔写设备寄存器来配置和启动。也可以把三份描述符写进内存里的提交队列（Submission Queue，SQ），一次性公布新的队尾。这样一次通知可摊给三笔任务。只要队列中持续有就绪任务、设备也有可用资源，它便能接着取下一笔。软件要持续记住写到哪里、哪些槽已经可以回收。
 
-## Doorbell 解决的是“何时值得让硬件开始看”
+这个公布过程有先后。先准备好设备可用的缓冲区，还要写齐槽里的地址、长度和编号。按接口要求让描述符及有关的输入数据对设备可见，再发布有效位或队尾。**门铃（doorbell）**常是一次对设备寄存器的写入，告诉设备去检查新提交的范围。有的接口直接用这一次写入公布新队尾，有的把共享内存中的发布标志和通知分开。设备可能也会主动查看队列。敲过门铃，软件能证明的是完成了自己的提交动作。设备何时真正读槽、接单和搬数，还要看设备的状态。
 
-有了 queue 之后，DMA 仍然需要知道“哪里有新任务可取”。doorbell 就是这个通知机制。它最常见的形式是一次 MMIO write、寄存器更新或某种事件触发。名字不重要，关键是它定义了硬件开始观察 queue 的时刻。
+为什么不能把最后两步颠倒？假设这是刚回收的槽 0，里面还留着旧命令的地址。若设备先观察到新队尾，却还没看到新地址，就可能把本次数据送入上一笔命令的缓冲区。即使描述符使用一致性 DMA 内存，也要按平台和设备规则保证字段、所有权标志和门铃之间的顺序。Linux 的 DMA 内存屏障用于规定相应共享内存访问的顺序。MMIO 门铃还要用满足顺序要求的 I/O 访问接口。[Linux DMA 映射指南](https://docs.kernel.org/core-api/dma-api-howto.html) · [Linux 内存屏障，DMA 与 MMIO](https://docs.kernel.org/core-api/wrappers/memory-barriers.html) · [驱动与运行时怎样提交任务](./software-stack.md)
 
-把 doorbell 想成前台按铃通知后厨“新单已经可以取了”比较合适。这个类比的边界也很重要：铃声只代表“去看任务池”，不代表任务内容一定已经安全摆好。因此在真实系统里，doorbell 前通常还需要保证 descriptor、payload 和相关元数据已经对 DMA 可见。否则就是典型的“铃响了，但菜单还没写完”。
+## 假如设备读完描述符，后来还会再碰槽 0 吗？ {#completion-解决的是软件世界何时可以继续}
 
-## Completion 解决的是软件世界何时可以继续
+在设备内部探针上看到「已经取走」，仍然答不出这个问题。试着只改设备和驱动约定的接口，看同一次取描述符会得到怎样不同的结论。
 
-queue 和 doorbell 解决的是提交侧；设备报告的消费、完成和所有权状态决定回收侧。软件需要根据具体接口判断何时可以：
+**甲接口：另有可观察的消费确认，设备承诺不再访问旧槽。** 设备先把命令 17 的参数完整保存在内部，之后通过接口公布：槽 0 的空间已归还，完成状态将写在别处。驱动观察到这次确认并遵守回收顺序后，就能把槽 0 纳入可用空间。命令 17 的编号与 B0 的对应关系仍须保留，可以放在按命令编号查找的在途记录中。否则等到完成返回，槽里即使已是另一条命令，驱动该把哪块缓冲区交出去？
 
-- 复用 queue entry
-- 回收或复用 buffer
-- 唤醒下游消费者
-- 统计错误并推进状态机
+真实的例子是 NVMe 的内存提交队列。完成队列项中的 SQHD 字段报告相应 SQ 的头指针，用于判断哪些提交槽已被消费、可以复用。该项还以队列号和命令号标识本次真正完成的命令。一份报告可以同时携带这两条消息。头指针跨过的其他命令可能仍在执行。[NVMe 1.1b，完成队列项图 26、27](https://nvmexpress.org/wp-content/uploads/NVM-Express-1_1b-1.pdf#page=57)
 
-completion record、event queue item 或 status bit 表示状态；interrupt 和 polling 是发现状态的方法，可以用于同一个 completion record。中断只是服务提示，软件仍须检查有效状态和具体命令。
+**乙接口：设备稍后还会把状态写回原描述符。** 想象软件在 DMA 取走命令 17 后马上把槽 0 改成了命令 23。旧命令收尾时，设备把「已完成」写回槽 0。软件此刻看到的是一份属于 23 的地址和一位属于 17 的状态，甚至会把 23 的缓冲区提前交给消费者。在 AMD AXI DMA 的普通 Scatter/Gather 接收路径中，设备把实际传输字节数和完成位写回描述符。软件按该协议检查状态，再处理和重新分配描述符。重新交给设备前还须正确初始化状态。它与上面的 NVMe 接口各有自己的队列规则。[AMD AXI DMA Scatter/Gather 模式](https://docs.amd.com/r/en-US/pg021_axi_dma/Scatter/Gather-Mode) · [S2MM_STATUS 的 Cmplt 与传输字节数字段](https://docs.amd.com/r/en-US/pg021_axi_dma/S2MM_STATUS-S2MM-Status)
 
-## 必须把三种“完成”区分开
+还有的接口既不报告提前消费，也不回写旧槽。即使硬件设计者知道内部已经复制完，驱动可依赖的仍是文档规定的释放条件，例如一个明确归还资源的命令完成记录。单凭估算「大约过了几拍」不能安全回收。
 
-这一页最关键的主定义是把下面三种状态拆开：
+## 有四个槽，为什么确认槽 0 后先写槽 3？ {#一个简化流程图}
 
-- `descriptor consumed`
-- `transfer visible`
-- `software completion event`
+把**甲接口**放进一个教学环形队列，槽号依次是 0、1、2、3，再回到 0。为区分满和空，始终保留一个空槽，所以一次最多占三个。用 `prod` 指向软件下一次写入的位置，用 `reclaim` 指向最老、尚未确认可回收的位置。两者相等为空。若 `(prod + 1) % 4 == reclaim`，则已满。此处回收按槽顺序推进，设备另有完成队列。
 
-不同 DMA IP 文档里，`completion` 可能偏向其中任何一种。NIC/NVMe 常把 host 软件可见的完成队列项叫 completion；某些 AXI DMA 文档则可能把 descriptor 消耗或最后一笔 data write 完成直接叫 done。设备取走 descriptor 不自动意味着软件可覆盖它：只有接口提供消费确认并明确允许复用时，才可提前回收该 descriptor/SQ 槽；若设备还会回写该槽，就要等契约规定的安全边界。命令的数据 buffer 则须等相关传输完成并完成所有权与可见性交接，即使 descriptor 槽已回收也不能提前复用。参见 [NVMe 命令提交与完成流程](https://nvmexpress.org/wp-content/uploads/NVM-Express-1_1b-1.pdf)和 [AMD AXI DMA 的 descriptor 状态](https://docs.amd.com/r/en-US/pg021_axi_dma/Scatter/Gather-Mode)。
+| 软件观察到什么 | prod | reclaim | 此刻能做什么 |
+| --- | ---: | ---: | --- |
+| 队列初始为空 | 0 | 0 | 可以从槽 0 开始提交。 |
+| 已向槽 0、1、2 写入三条命令。槽 0 存的是命令 17 | 3 | 0 | 已满。写槽 3 会占掉用来区分满、空的最后一个位置。 |
+| 设备已按契约归还槽 0，驱动读到确认 | 3 | 1 | 多了一个可提交名额。B0 仍归命令 17 使用。 |
+| 新命令写入槽 3，队尾回到 0 | 0 | 1 | 又满了。虽已走到槽 0，仍需至少再回收槽 1，才能继续写。 |
 
-## Interrupt、polling 和 completion record 的 trade-off
+指针走完一圈，表示共享队列空间在循环使用。命令 17 是否成功、B0 中有多少字节有效，没有一个能从 `prod = 0` 推出来。其他协议可以额外记录回卷次数或 phase 位来区分两圈，容量和判满规则要随之重算。这张四槽表不代表上述两种产品接口的全部实现。
 
-interrupt 的优点是软件空闲时几乎零轮询成本，缺点是高频小任务下开销和抖动都可能很大。polling 的优点是延迟可控、避免中断风暴，缺点是会消耗 CPU 时间并可能制造 cache 干扰。completion record 或 event queue 则更适合高吞吐系统，因为它们把“完成信息”本身结构化了，软件可以批量消费。
+## 0 号槽归还了，怎样证明 B0 可以读取？ {#必须把三种完成区分开}
 
-因此没有一种发现方式天然最好。低频控制路径常用 interrupt；高速系统可批量轮询 completion queue，也可通过合并中断唤醒后批量消费同一队列。polling/interrupt 是发现方式，批量消费及 interrupt moderation 是可分别配置的策略；混合系统也可在轮询和中断之间切换。
+<span class="micro-legacy-anchor" id="常见误解"></span>
 
-## 一个简化流程图
+再看甲接口。假设命令 17 要把 128 B 接收到 B0，设备已写入前 64 B，后 64 B 还在路上。现在 CPU 即使能从前半看到新字节，若把整块交给下游，后半仍可能是上一轮留下的内容。这里约定消费者一次读取完整的 128 B。若产品支持分段交付，每段都要有自己明确的长度和完成凭据。
 
-```text
-CPU/runtime:
-  fill descriptor(s)
-  -> make visible
-  -> ring doorbell
+| 要追踪的边界 | 在这条命令上应当问什么 |
+| --- | --- |
+| 描述符消费（`descriptor consumed`） | 哪个槽的旧描述符不再被设备读取或回写？软件通过什么确认得知？ |
+| 传输在目标域可见（`transfer visible`） | 对哪个观察者、哪个字节范围，命令的写入已经完成？目标侧已能接收和 CPU 可以读取之间还缺什么交接？ |
+| 软件发现完成（`software completion event`） | 设备把哪条命令的成功、错误及有效长度写到了哪里？驱动何时观察并消费了它？ |
 
-DMA engine:
-  fetch descriptor
-  -> 按接口契约报告 descriptor 消费（若允许，可提前回收槽位）
-  -> execute transfer
-  -> record completion
+继续约定：设备只有在自己的全部目标写入已达到接口规定的完成点后，才发布命令 17 的完成记录。驱动按协议读取有效状态，检查命令编号、成功状态及返回长度。若底层接口允许错误或短传输，就按该契约处理已经有效的范围。本例消费者所需的 128 B 不齐时，不能宣布整块就绪。设备还有未排空的访问时，也要按停止或恢复协议处理，再把原缓冲重新分配。
 
-CPU/runtime:
-  poll / interrupt
-  -> consume completion
-  -> 按命令完成和所有权契约回收 data buffer
-```
+即使拿到成功记录，还要问：**现在准备读 B0 的是谁？** 假设是 Linux 驱动里的 CPU，B0 使用方向为 `DMA_FROM_DEVICE` 的 streaming 映射，并准备保留此映射供多次使用。驱动先让设备完成本次写入，再按 DMA API 调用 `dma_sync_single_for_cpu()`，随后才读 B0。CPU 使用结束，再按该映射的交接要求把它交回设备。若用 coherent 映射，通常省去了显式缓存维护，但检查完成、读状态的顺序以及谁有权覆盖 B0 都仍然重要。更换成另一颗计算引擎消费，还须检查该引擎所在的可见域。[Linux 的 DMA 映射与同步示例](../02-fundamentals/noncoherent-vs-coherent-dma.md) · [Linux DMA 映射指南的多次使用同一区域示例](https://docs.kernel.org/core-api/dma-api-howto.html)
 
-这个流程图故意把 `make visible` 单独列出来，因为它正是很多人省略后出 bug 的那一步。若接口没有提前回收 descriptor 的保证，就应等接口规定的后续状态，不得仅凭 fetch 推断。
+## 靠中断得知完成，和自己轮询，有什么区别？ {#interruptpolling-和-completion-record-的-trade-off}
 
-## 常见误解
+在上述甲接口中，设备把结果写进完成队列（Completion Queue，CQ）。此时有了**完成记录**。CPU 可以轮询 CQ 的有效位或 phase 位，也可以等中断到来，再批量读取同一队列。其他设备可能使用事件队列、状态寄存器或描述符状态位。无论怎样发现记录，都要把记录关联到正确的命令、检查状态，并归还已处理的 CQ 空间。一次中断可以提示多条完成，一条迟来的通知也可能在轮询已经处理完之后才到。对于命令 17 的 B0，只能交付一次。[PCIe 端点的队列、门铃、完成与 MSI-X](../../../interconnect/PCIE/04-data-path-dma-interrupts/queues-doorbells-completions-msix.md)
 
-常见误解：`doorbell 就是 start`。实际上 doorbell 更准确地说是“硬件现在可以去看任务池”，它依赖前面的可见性已经成立。
+若完成很少，等中断可以让 CPU 把轮询时间用于别处。若许多小命令接连完成，每次都触发一次中断会增加处理开销和抖动。驱动可以定期或持续轮询，以 CPU 时间、缓存访问换取更短的发现间隔，也可以在忙时轮询、空闲时重新启用中断。把若干次完成合并成一次中断能减少唤醒，而最早完成的那条命令可能多等一会儿。批量回收、通知频率和 CQ 容量各自可以影响 B0 何时真正回到可用池。
 
-常见误解：`completion 就是数据搬完`。实际上 completion 可能指 descriptor 已消费、数据已写回或软件已收到事件中的任意一层。
+## 三个可用槽经常占满，该加深哪个队列？ {#建模启示}
 
-常见误解：`queue 深度越大越好`。实际上 queue 过深但 completion 回收跟不上时，只会把积压和尾延迟后移。
+<span class="micro-legacy-anchor" id="一句话理解"></span>
 
-## 一句话理解
+先观察压力落在哪里。若设备已经能持续搬运，却有许多完成记录等软件回收，增大提交队列只会让更多任务积压。若是提交空间太小、软件只差一小批任务就能保持设备不断供，加深队列才可能增加吞吐。比较两次运行时，分别跟踪提交队列填充量 `queue_fill_level`、门铃是否待处理 `doorbell_pending`、完成队列深度 `completion_queue_depth` 和软件回收速度 `software_reclaim_rate`，并看尾部任务从提交到缓冲可复用等了多久。
 
-queue、doorbell 和 completion 共同定义了 DMA 的软件时序边界，没有这三者的清晰契约，就很难得到既正确又高吞吐的系统。
+在事件模型里，SQ 单独记容量、软件生产位置、设备消费位置、软件已确认回收位置和所用回卷标志（`sq_capacity, sq_prod, sq_device_cons, sq_reclaim, sq_phase`）。CQ 则记 `cq_capacity, cq_device_prod, cq_software_cons, cq_phase`。另用 `slot_owners`、`data_buffer_owners` 分开记录槽位和数据缓冲的所有者。只有在目标是平均吞吐、且已验证通知与回收不会限制槽位或缓冲复用时，才适合把它们折叠成固定开销。要追查偶发旧数据、中断合并或小块压力，就得保留具体事件和命令编号。
 
-## 建模启示
-
-这页适合把软件前端和硬件后端之间的共享队列显式建出来。event-driven 仿真里，至少应显式表示 `queue_fill_level`、`doorbell_pending`、`completion_queue_depth` 和 `software_reclaim_rate`。
-
-例如 4 槽 submission ring 保留一个空槽，最大可用容量为 3；producer 和已安全回收的 descriptor 索引均按 4 取模，`(prod+1)%4==reclaim` 表示满。初始两者为 0；软件写槽 0、1、2 后 `prod=3`，队列满。设备按契约取走槽 0 并允许 descriptor 复用，软件将 `reclaim=1`，即可再写槽 3、令 `prod=0`；此时再次满。槽号回卷不表示数据 buffer 可复用：buffer 仍须等相应命令完成及所有权/可见性交接。另一方案使用 phase/wrap 位以区分满空，不能仅看 `prod==cons`。
-
-一个模型应把 submission 和 completion 的生产/消费、容量与 phase 分开；下图只是状态草图：
-
-```text
-DMAQueue {
-  sq_capacity; sq_prod; sq_device_cons; sq_reclaim; sq_phase
-  cq_capacity; cq_device_prod; cq_software_cons; cq_phase
-  slot_owners; data_buffer_owners
-}
-```
-
-如果只关心平均吞吐，且已经证明通知和 completion 回收不会限制任务槽或 buffer 复用，可以将其等效成固定开销；如果关心正确性、interrupt moderation 或小包/小 tile 高频压力，就必须显式保留这些索引和事件顺序。
+把 B0 交给真正的计算引擎时，谁来发 `input_ready`？等到计算结束，输入缓冲和待写回的输出又分别在哪一拍可覆盖？可以把刚才的「谁最后还会碰它」沿着整条任务继续问下去。[搬运、计算与写回之间的依赖和缓冲复用](../../06-task-control/dma-compute-writeback.md) · [同步、缓存可见性与常见错误深读](./synchronization-errors.md)

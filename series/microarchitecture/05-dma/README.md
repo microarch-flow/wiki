@@ -5,7 +5,7 @@
 <span class="micro-legacy-anchor" id="维护原则"></span>
 
 
-DMA 把搬运任务展开为地址、事务和完成事件。理解它需要同时检查数据路径、并发容量、可见性和资源回收。
+把一块数据从内存搬进阵列输入槽，软件交给 DMA 一项任务。顺着这块数据，可以看到引擎怎样算地址、限制同时在途的数据量，最后通知下一位使用者。
 
 
 <span class="micro-legacy-anchor" id="dashboard"></span>
@@ -16,7 +16,16 @@ DMA 把搬运任务展开为地址、事务和完成事件。理解它需要同�
 
 ## 从哪里开始
 
-第一次学习，按[基础学习顺序](./01-overview/learning-roadmap.md)建立前置知识。已有具体工程问题，使用[按目标导航](./01-overview/goal-oriented-navigation.md)。全部文章索引见[知识地图](./SUMMARY.md)。
+如果你从[两个分块的搬入、计算与写回](../06-task-control/dma-compute-writeback.md)读到这里，先把视线停在图里的「搬入」方框。里面的引擎要等到哪一步，才敢告诉阵列整块可读？
+
+### 沿一项 DMA 搬运读四篇 {#dma-first-reads}
+
+1. [一条 DMA 描述符，为什么会变成多笔读写请求？](./02-fundamentals/address-descriptor-burst.md)　跟一笔跨越 4 KiB 边界的 32 B 复制，数出读请求、写请求和数据拍。
+2. [矩阵每行隔着一段空隙，DMA 怎样只搬有效数据？](./03-dma-microarchitecture/multidimensional-stride-dma.md)　把同样的搬运换成三行，跟踪哪几个字节要复制，哪几个填充字节要原样保留。
+3. [后发的 DMA 请求先回来，数据怎样放回正确的位置？](./03-dma-microarchitecture/scheduling-outstanding.md)　让后一行先返回，看引擎把数据放进哪个槽，以及下一个请求何时能发出。
+4. [DMA 已经取走描述符，软件现在能复用缓冲区吗？](./04-programming-model/queues-doorbells-completions.md)　把四槽提交队列填满再回卷，分别找出描述符槽和数据缓冲能交还给软件的时刻。
+
+想先弄清设备地址、缓存一致性，可以按[基础学习顺序](./01-overview/learning-roadmap.md)补前置。要选择 IP、分析端口压力或定位超时，可以从[按目标导航](./01-overview/goal-oriented-navigation.md)跳到对应的案例与查阅资料。全部文章按章节列在[知识地图](./SUMMARY.md)。
 
 
 <span class="micro-legacy-anchor" id="工作台"></span>
@@ -38,4 +47,4 @@ DMA 把搬运任务展开为地址、事务和完成事件。理解它需要同�
 
 ## 与任务控制的边界
 
-DMA 专题负责一项搬运如何提交、推进、通知和回收。[DMA、计算与写回如何协作](../06-task-control/dma-compute-writeback.md)负责多个引擎之间的依赖与 buffer 所有权。存储器件与互连协议分别由存储、互连系列展开；此处保留影响搬运的接口条件。
+DMA 专题负责一项搬运如何提交、推进、通知和回收。[第一块还在算，第二块能开始搬吗？](../06-task-control/dma-compute-writeback.md)负责多个引擎之间的依赖与 buffer 所有权。存储器件与互连协议分别由存储、互连系列展开；此处保留影响搬运的接口条件。

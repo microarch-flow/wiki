@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 674 324" role="img" aria-labelledby="title desc">
+  <title id="title">同样的四个数据拍在源端与目的端的事务分组</title>
+  <desc id="desc">从左到右是任务偏移 0 至 31，每列 8 字节。源端在第三列到达 0x1000，所以必须分为两笔各两拍的读。在目的端，四列的地址从 0x2000 到 0x201F，图示为一笔四拍写。</desc>
+  <style>
+    text { fill: #173e34; font-family: system-ui, "Noto Sans CJK SC", "PingFang SC", sans-serif; }
+    .heading { font-size: 23px; font-weight: 680; }
+    .label { font-size: 18px; font-weight: 650; }
+    .group { font-size: 17px; font-weight: 650; text-anchor: middle; }
+    .addr { font-family: ui-monospace, Menlo, Consolas, monospace; font-size: 21px; text-anchor: middle; fill: #19372f; }
+    .offset { font-size: 18px; text-anchor: middle; fill: #324e43; }
+    .rule { stroke: #a0b4a8; stroke-width: 1; }
+  </style>
+  <rect width="674" height="324" rx="14" fill="#f2f5ed"/>
+  <text x="19" y="34" class="heading">32 字节，每列对应 8 字节</text>
+  <text x="18" y="82" class="label">任务偏移</text>
+  <g class="offset">
+    <text x="174" y="82">0～7</text><text x="310" y="82">8～15</text>
+    <text x="446" y="82">16～23</text><text x="582" y="82">24～31</text>
+  </g>
+  <path class="rule" d="M107 92H649"/>
+  <text x="18" y="151" class="label">源读</text>
+  <rect x="106" y="107" width="268" height="82" rx="9" fill="#e0ece0" stroke="#66927f" stroke-width="1.7"/>
+  <rect x="382" y="107" width="268" height="82" rx="9" fill="#f3ead3" stroke="#aa8551" stroke-width="1.7"/>
+  <text x="240" y="135" class="group">第一笔 AR · 两拍 R</text>
+  <text x="516" y="135" class="group">第二笔 AR · 两拍 R</text>
+  <path d="M242 146V179 M514 146V179" class="rule"/>
+  <g class="addr">
+    <text x="174" y="172">0x0FF0</text><text x="310" y="172">0x0FF8</text>
+    <text x="446" y="172">0x1000</text><text x="582" y="172">0x1008</text>
+  </g>
+  <path d="M378 202V97" fill="none" stroke="#985937" stroke-width="2" stroke-dasharray="4 4"/>
+  <text x="386" y="211" font-size="16" style="fill:#814a2c">源侧 4 KiB 边界</text>
+  <text x="18" y="269" class="label">目的写</text>
+  <rect x="106" y="226" width="544" height="80" rx="9" fill="#e1ede7" stroke="#588471" stroke-width="1.7"/>
+  <text x="378" y="254" class="group">一笔 AW · 四拍 W · 一笔 B 响应</text>
+  <path d="M242 263V295 M378 263V295 M514 263V295" class="rule"/>
+  <g class="addr">
+    <text x="174" y="289">0x2000</text><text x="310" y="289">0x2008</text>
+    <text x="446" y="289">0x2010</text><text x="582" y="289">0x2018</text>
+  </g>
+</svg>
