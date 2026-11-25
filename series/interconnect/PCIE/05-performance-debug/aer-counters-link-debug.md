@@ -19,12 +19,16 @@ AER（Advanced Error Reporting）扩展 PCIe 的错误记录和报告能力。�
 
 ## 常见观测点
 
+<div class="bus-read-trace" markdown="1">
+
 | 观察点 | 记录内容 | 注意事项 |
 | --- | --- | --- |
 | 目标 Function 及每跳端口 | BDF、LnkCap/LnkSta、速率和宽度 | 端点能力不能替代沿途实际状态 |
 | AER 状态与日志 | 错误类型、源身份、可用头部日志、时间 | 掩码和日志限速会影响可见数量 |
 | 设备或控制器计数器 | replay、信用等待、吞吐、请求状态 | 定义、清零方式和方向依实现 |
 | 驱动与平台 | 命令超时、IOMMU fault、恢复动作 | 对齐时间线，保留恢复前证据 |
+
+</div>
 
 <div id="调试时先分三层" class="pcie-legacy-anchor"></div>
 
@@ -38,13 +42,44 @@ AER（Advanced Error Reporting）扩展 PCIe 的错误记录和报告能力。�
 
 ## 从只读记录开始
 
-在 Linux 上可用以下命令收集拓扑与解码后的配置状态，具体输出依权限和 pciutils 版本变化：
+假设要检查一块挂在 PCIe Switch 下的加速卡。下面的地址、能力和状态都是**教学构造**，输出按 pciutils 的格式删节。先在 Linux 上读拓扑，再读同一条链路两端的配置空间。这两步都只读。不同 pciutils 版本的标签可能有差异，权限也会影响能看到哪些字段。[lspci 手册](https://man7.org/linux/man-pages/man8/lspci.8.html)
 
-```sh
-lspci -t
-lspci -s 0000:03:00.0 -vv
+```text
+$ lspci -t
+-[0000:00]---01.0-[01-03]----00.0-[02-03]----01.0-[03]----00.0
 ```
 
-BDF 只是示例，使用目标设备及其上游端口。清状态、写配置、强制重训练和复位会改变证据与设备状态，不属于这两个只读步骤。
+从左往右读，`[0000:00]` 是域 0000 的根总线 00。方括号前的 `01.0` 是这条总线上的设备号和功能号，合起来就是根端口 `0000:00:01.0`。它后面的 `[01-03]` 表示桥后可达的总线号范围，紧接着的 `00.0` 位于这段范围的首条总线 01。照此再读两次，就能找到末跳的两端。
 
-事务错误的判别见 [UR、CA 与 Timeout](common-failures-ur-ca-timeout.md)；速率问题见[链路降速案例](../06-workloads-case-studies/link-downgrade-case-card.md)。
+<div class="bus-read-trace" markdown="1">
+
+| 树中的位置 | 完整地址 | 在本例中的角色 |
+| --- | --- | --- |
+| 根总线上的 `01.0` | `0000:00:01.0` | 根端口，接到 Switch |
+| `[01-03]` 后的 `00.0` | `0000:01:00.0` | Switch 上行端口，面向根端口 |
+| `[02-03]` 后的 `01.0` | `0000:02:01.0` | Switch 下行端口，直接接卡 |
+| `[03]` 后的 `00.0` | `0000:03:00.0` | 卡上的端点 Function |
+
+</div>
+
+树给出了父子关系，速率和宽度要从端口的配置空间读取。为了解卡所在的这一跳，用 `-s` 分别选中最后两个地址，用 `-vv` 查看详细字段。以下仅保留与本例有关的行，省略号表示删节。
+
+```text
+$ lspci -D -s 0000:02:01.0 -vv
+        Capabilities: [40] Express (v2) Downstream Port (Slot-), ...
+                LnkCap: Port #1, Speed 16GT/s, Width x8, ...
+                LnkSta: Speed 8GT/s, Width x4
+
+$ lspci -D -s 0000:03:00.0 -vv
+        Region 0: Memory at 80000000 (32-bit, non-prefetchable) [size=64K]
+        Capabilities: [80] Express (v2) Endpoint, ...
+                LnkCap: Port #0, Speed 16GT/s, Width x8, ...
+                LnkSta: Speed 8GT/s (downgraded), Width x4 (downgraded)
+```
+
+- `Downstream Port` 和 `Endpoint` 确认了两份记录各来自哪一端。`Express (v2)` 中的版本号属于这组能力寄存器，链路代际要从速率字段读。
+- `LnkCap` 表示本端支持的最高速率和最大宽度。两端各报 16 GT/s、x8，即每条 lane 最高每秒 160 亿次传输，最多 8 条 lane。
+- `LnkSta` 表示读取时已协商的状态。两端都显示 8 GT/s、x4，因此卡到 Switch 的这一跳此时以 Gen3 x4 工作。pciutils 可能只在端点旁标出 `(downgraded)`，两行中的数值仍然一致。[pciutils 链路字段解码](https://github.com/pciutils/pciutils/blob/master/ls-caps.c)
+- `Region 0` 是卡的 BAR0。本例假设 CPU 侧资源地址与 PCI 总线地址数值相同，窗口从 `0x80000000` 起共 64 KiB，使用 32 位内存 BAR，标记为不可预取。这个窗口告诉驱动去哪里访问寄存器，窗口大小与链路宽度分别描述两件事。
+
+这张快照只能确定末跳当时的状态。要判断是否曾以 Gen4 x8 运行、是否影响业务，还需要平台配置、历史状态和同一负载下的对照，见[链路降速案例的带宽计算与对照](../06-workloads-case-studies/link-downgrade-case-card.md#一个构造例子)。写配置、清状态或触发重训练之前，应先保存这份快照和对应时间的日志。事务错误的判别见 [UR、CA 与 Timeout](common-failures-ur-ca-timeout.md)。

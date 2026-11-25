@@ -38,9 +38,9 @@ title: "PCIe 知识地图"
 
 [章节导读](03-configuration-enumeration-addressing/README.md)
 
-- [配置空间与 BAR](03-configuration-enumeration-addressing/config-space-bar-capability.md)
+- [第一次寄存器读与 BAR](03-configuration-enumeration-addressing/config-space-bar-capability.md)
 
-- [枚举与资源分配](03-configuration-enumeration-addressing/enumeration-bus-number-resource-allocation.md)
+- [桥的总线号与地址窗口](03-configuration-enumeration-addressing/enumeration-bus-number-resource-allocation.md)
 
 - [配置、BAR 与 DMA 地址](03-configuration-enumeration-addressing/mmio-config-dma-address-view.md)
 

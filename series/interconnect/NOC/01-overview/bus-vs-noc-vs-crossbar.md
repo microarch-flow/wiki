@@ -92,4 +92,4 @@ A 仍然读 X，B 也改读 X。共享总线仍每拍只能给出一个地址。
 
 需要计算某笔读的延迟时，再为每一跳加入流水时间、队列深度、下游是否就绪和仲裁状态，单独记录“请求注入、目标收下、数据返回、发起者接走”。即便两个方案的目标接收率相同，第一笔延迟、最后一笔等待和物理实现的时钟频率都可能不同。还想追到路由器内部哪一拍挑输出、哪一拍过交换开关，可以接着读[路由器流水线](../02-router-microarchitecture/router-pipeline-stages.md)或对照 [gem5 Garnet 的周期模型](https://www.gem5.org/documentation/general_docs/ruby/garnet-2/)。
 
-回到系列开头，桥发出的片内地址还有一个上游来源：主机怎么知道加速卡在那里，又怎么找到要读的窗口？这一段沿 [PCIe 配置空间与 BAR](../../PCIE/03-configuration-enumeration-addressing/config-space-bar-capability.md)继续。
+桥发出的片内地址还有一个上游来源。刚上电时，主机甚至还不知道这张卡在哪个总线上，它后来怎样给卡分到一个能读的地址？下一篇沿着同一张加速卡追到主机一侧。[《主机第一次读卡上的寄存器，地址是怎么来的？》](../../PCIE/03-configuration-enumeration-addressing/config-space-bar-capability.md)

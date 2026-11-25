@@ -20,7 +20,7 @@ title: "按目标学习 PCIe"
 
 ## 实现驱动或设备数据路径
 
-先读[配置与 BAR](../03-configuration-enumeration-addressing/config-space-bar-capability.md)、[地址视角](../03-configuration-enumeration-addressing/mmio-config-dma-address-view.md)和[缓冲区可见性](../04-data-path-dma-interrupts/host-memory-pinned-buffer-visibility.md)，再读[DMA 读写](../04-data-path-dma-interrupts/device-dma-read-write-flow.md)与[队列通知](../04-data-path-dma-interrupts/queues-doorbells-completions-msix.md)。
+先读[第一次寄存器读与 BAR](../03-configuration-enumeration-addressing/config-space-bar-capability.md)、[地址视角](../03-configuration-enumeration-addressing/mmio-config-dma-address-view.md)和[缓冲区可见性](../04-data-path-dma-interrupts/host-memory-pinned-buffer-visibility.md)，再读[DMA 读写](../04-data-path-dma-interrupts/device-dma-read-write-flow.md)与[队列通知](../04-data-path-dma-interrupts/queues-doorbells-completions-msix.md)。
 
 目标是为每个描述符地址说明映射来源，并明确何时可以复用缓冲区。
 

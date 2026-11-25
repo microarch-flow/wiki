@@ -1,0 +1,53 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="360" height="391" viewBox="0 0 360 391" role="img" aria-labelledby="title description" xml:lang="zh-CN">
+  <title id="title">同一张卡的配置读与内存读</title>
+  <desc id="description">左侧按 BDF 找到 Function 0000:03:00.0，读取配置空间偏移 0x10 的 BAR0。这个已配置的 32 位 BAR 给出基址 0x8000_0000。右侧，一笔去往 0x8000_0100 的内存读通过沿途桥的地址窗口，在同一 Function 命中 BAR0。减去基址得到偏移 0x100，访问卡上的版本寄存器。</desc>
+  <defs>
+    <marker id="blue-tip" markerWidth="6" markerHeight="6" refX="5" refY="3" viewBox="0 0 6 6" orient="auto"><path d="M0 0 6 3 0 6Z" fill="#365b80"/></marker>
+    <marker id="green-tip" markerWidth="6" markerHeight="6" refX="5" refY="3" viewBox="0 0 6 6" orient="auto"><path d="M0 0 6 3 0 6Z" fill="#277158"/></marker>
+  </defs>
+  <style>
+    text { text-anchor: middle; fill: #22384b; font-family: system-ui, "Noto Sans CJK SC", sans-serif; }
+    .label { font-size: 18px; font-weight: 650; }
+    .detail { font-size: 16px; }
+    .number { font: 16px ui-monospace, "DejaVu Sans Mono", monospace; }
+    .cfg-text { fill: #264f75; }
+    .mem-text { fill: #146046; }
+    .cfg { stroke: #365b80; stroke-width: 2; fill: none; marker-end: url(#blue-tip); }
+    .mem { stroke: #277158; stroke-width: 2; stroke-dasharray: 6 3; fill: none; marker-end: url(#green-tip); }
+  </style>
+  <rect x="1" y="1" width="358" height="389" rx="13" fill="#f7f9f8" stroke="#b8c8c7"/>
+  <rect x="10" y="11" width="164" height="82" rx="8" fill="#e7eff7"/>
+  <rect x="186" y="11" width="164" height="82" rx="8" fill="#e4f1e9"/>
+  <text class="label cfg-text" x="92" y="34">配置读</text>
+  <text class="number cfg-text" x="92" y="60">0000:03:00.0</text>
+  <text class="detail" x="92" y="82">配置偏移 0x10</text>
+  <text class="label mem-text" x="268" y="34">内存读（MMIO）</text>
+  <text class="detail" x="268" y="59">PCIe 总线地址</text>
+  <text class="number mem-text" x="268" y="82">0x8000_0100</text>
+
+  <path class="cfg" d="M92 94v17"/>
+  <path class="mem" d="M268 94v17"/>
+  <rect x="10" y="116" width="164" height="49" rx="7" fill="#edf2f6" stroke="#b1c2d2"/>
+  <rect x="186" y="116" width="164" height="49" rx="7" fill="#edf4ef" stroke="#a9c7b9"/>
+  <text class="detail cfg-text" x="92" y="136">沿途桥检查总线号</text>
+  <text class="detail" x="92" y="156">03 在下游范围内</text>
+  <text class="detail mem-text" x="268" y="136">沿途桥检查地址</text>
+  <text class="detail" x="268" y="156">内存窗口覆盖请求</text>
+
+  <path class="cfg" d="M92 166v16"/>
+  <path class="mem" d="M268 166v16"/>
+  <rect x="8" y="186" width="344" height="135" rx="10" fill="#f5f6f2" stroke="#8fa39b" stroke-width="1.5"/>
+  <text class="label" x="180" y="210">同一个 Function　0000:03:00.0</text>
+  <rect x="15" y="221" width="155" height="92" rx="7" fill="#e7eff7"/>
+  <rect x="190" y="221" width="155" height="92" rx="7" fill="#e4f1e9"/>
+  <text class="detail cfg-text" x="92" y="243">配置空间 · 偏移 0x10</text>
+  <text class="label" x="92" y="267">BAR0 寄存器</text>
+  <text class="detail" x="92" y="291">窗口基址</text>
+  <text class="number cfg-text" x="92" y="308">0x8000_0000</text>
+  <text class="detail mem-text" x="268" y="243">BAR0 命中</text>
+  <text class="label" x="268" y="267">版本寄存器</text>
+  <text class="detail" x="268" y="294">窗口内偏移 0x100</text>
+
+  <text class="detail" x="180" y="349">总线地址减去 BAR 基址，得到窗口内偏移</text>
+  <text class="number mem-text" x="180" y="375">0x8000_0100 − 0x8000_0000 = 0x100</text>
+</svg>

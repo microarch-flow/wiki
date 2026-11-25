@@ -26,6 +26,8 @@ title: "一次跨桥读取：设备已经收到请求，主机为什么还在等
 
 先减去窗口起点，得到偏移 `0x120`；再加上片内基址，得到 `0x4000_0120`。硬件可以用地址比较和位拼接实现这组映射。这里写成加减法，是为了让我们能用手算出两边指向的是同一处。本例中的窗口已配置，访问对齐且合法。驱动使用的 CPU 虚拟地址由操作系统另行映射。[AMD PG194 的 PCIe 与 AXI 地址映射示例](https://docs.amd.com/r/en-US/pg194-axi-bridge-pcie-gen3/Address-Translation) · [Linux 的 PCI 设备资源访问](https://docs.kernel.org/PCI/pci.html)
 
+如果这张卡刚上电，主机怎样先找到它、再把这 64 KiB 分给它？窗口建立的过程见[《主机第一次读卡上的寄存器，地址是怎么来的？》](../03-configuration-enumeration-addressing/config-space-bar-capability.md)。
+
 <div id="axi-更常解决什么" class="pcie-legacy-anchor"></div>
 
 ## 桥把地址交出去时，谁接住了它？
