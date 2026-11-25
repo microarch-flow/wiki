@@ -4,6 +4,8 @@
 
 主机从加速卡的 SRAM 读 4 个字节时，桥先把地址交给片上网络。站在桥旁的接口上，哪一拍能看到地址被收下，哪一拍才能接到数值 42？从[《地址已经收下，数据为什么还没回来？》](./02-fundamentals/transaction-address-data-response.md)开始，对照同一笔读的地址与数据。
 
+接着看写入。桥要往 SRAM 写四拍数据。第四拍被接走时，桥已经知道这次写成功了吗？在[《一次 AXI 写入，地址、数据和响应分别在哪一拍交付？》](./03-on-chip-protocol-families/axi-five-channels-handshake.md)里，沿着同一个接口找出答案。
+
 多笔请求同时到来时，再看[仲裁、顺序性与背压](./02-fundamentals/arbitration-ordering-backpressure.md)怎样决定谁先走。要回到卡外看主机何时取得结果，可读[《一次跨桥读取》](../PCIE/06-workloads-case-studies/pcie-vs-axi-noc-boundary.md)。
 
 <span id="dashboard"></span>
@@ -26,7 +28,7 @@
 | 理解位宽、时钟和 burst 为什么重要 | [位宽、时钟、Burst 与延迟](./02-fundamentals/width-clock-burst-latency.md) |
 | 快速分清 AXI / AHB / APB | [AXI / AHB / APB 对照](./03-on-chip-protocol-families/axi-ahb-apb-comparison.md) |
 | 深入理解 AXI 为什么复杂 | [AXI Channel、ID 与 Outstanding](./03-on-chip-protocol-families/axi-channel-id-outstanding.md) |
-| 先把 AXI 五通道握手看懂 | [AXI 五通道与 VALID/READY](./03-on-chip-protocol-families/axi-five-channels-handshake.md) |
+| 用 VALID 和 READY 找出每次交接 | [一次 AXI 写入，地址、数据和响应分别在哪一拍交付？](./03-on-chip-protocol-families/axi-five-channels-handshake.md) |
 | 细看 burst / 对齐 / 边界问题 | [AXI Burst、对齐与边界](./03-on-chip-protocol-families/axi-burst-alignment-boundary.md) |
 | 看窄传输和 WSTRB 怎么影响实现 | [AXI Narrow Transfer 与 WSTRB](./03-on-chip-protocol-families/axi-narrow-transfer-wstrb.md) |
 | 调试 response / decode / slave error | [AXI Response 与错误路径](./03-on-chip-protocol-families/axi-response-error-path.md) |
@@ -75,20 +77,21 @@
 ### 路线 1：第一次学 BUS
 
 1. [地址已经收下，数据为什么还没回来？](./02-fundamentals/transaction-address-data-response.md)
-2. [BUS 在解决什么问题](./01-overview/problem-statement.md)
-3. [BUS 分类框架](./01-overview/taxonomy.md)
-4. [BUS vs NoC vs Point-to-Point](./02-fundamentals/bus-vs-noc-vs-point-to-point.md)
-5. [学习路线图](./01-overview/learning-roadmap.md)
-6. [按目标学习 BUS](./01-overview/goal-oriented-navigation.md)
+2. [一次 AXI 写入，地址、数据和响应分别在哪一拍交付？](./03-on-chip-protocol-families/axi-five-channels-handshake.md)
+3. [BUS 在解决什么问题](./01-overview/problem-statement.md)
+4. [BUS 分类框架](./01-overview/taxonomy.md)
+5. [BUS vs NoC vs Point-to-Point](./02-fundamentals/bus-vs-noc-vs-point-to-point.md)
+6. [学习路线图](./01-overview/learning-roadmap.md)
+7. [按目标学习 BUS](./01-overview/goal-oriented-navigation.md)
 
 ### 路线 2：想把片上总线协议学透
 
 1. [地址已经收下，数据为什么还没回来？](./02-fundamentals/transaction-address-data-response.md)
-2. [仲裁、顺序性与 Backpressure](./02-fundamentals/arbitration-ordering-backpressure.md)
-3. [位宽、时钟、Burst 与延迟](./02-fundamentals/width-clock-burst-latency.md)
-4. [AXI / AHB / APB 对照](./03-on-chip-protocol-families/axi-ahb-apb-comparison.md)
-5. [AXI Channel、ID 与 Outstanding](./03-on-chip-protocol-families/axi-channel-id-outstanding.md)
-6. [AXI 五通道与 VALID/READY](./03-on-chip-protocol-families/axi-five-channels-handshake.md)
+2. [一次 AXI 写入，地址、数据和响应分别在哪一拍交付？](./03-on-chip-protocol-families/axi-five-channels-handshake.md)
+3. [仲裁、顺序性与 Backpressure](./02-fundamentals/arbitration-ordering-backpressure.md)
+4. [位宽、时钟、Burst 与延迟](./02-fundamentals/width-clock-burst-latency.md)
+5. [AXI / AHB / APB 对照](./03-on-chip-protocol-families/axi-ahb-apb-comparison.md)
+6. [AXI Channel、ID 与 Outstanding](./03-on-chip-protocol-families/axi-channel-id-outstanding.md)
 7. [AXI Burst、对齐与边界](./03-on-chip-protocol-families/axi-burst-alignment-boundary.md)
 8. [AXI Narrow Transfer 与 WSTRB](./03-on-chip-protocol-families/axi-narrow-transfer-wstrb.md)
 9. [AXI Response 与错误路径](./03-on-chip-protocol-families/axi-response-error-path.md)
@@ -137,7 +140,7 @@
 - [微架构与系统集成](./04-microarchitecture-integration/README.md)
 - [典型系统与案例](./06-scenarios-case-studies/README.md)
 - [AXI Channel、ID 与 Outstanding](./03-on-chip-protocol-families/axi-channel-id-outstanding.md)
-- [AXI 五通道与 VALID/READY](./03-on-chip-protocol-families/axi-five-channels-handshake.md)
+- [一次 AXI 写入，地址、数据和响应分别在哪一拍交付？](./03-on-chip-protocol-families/axi-five-channels-handshake.md)
 - [AXI Burst、对齐与边界](./03-on-chip-protocol-families/axi-burst-alignment-boundary.md)
 - [MMIO、Cache 与 Interrupt 视角](./04-microarchitecture-integration/mmio-cache-interrupt-view.md)
 - [IOMMU、SMMU 与 DMA 寻址](./04-microarchitecture-integration/iommu-smmu-dma-addressing.md)

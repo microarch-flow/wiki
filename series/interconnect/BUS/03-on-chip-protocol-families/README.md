@@ -12,9 +12,9 @@
 
 ## 本章阅读顺序
 
-1. [AXI / AHB / APB 对照](./axi-ahb-apb-comparison.md)
-2. [AXI Channel、ID 与 Outstanding](./axi-channel-id-outstanding.md)
-3. [AXI 五通道与 VALID/READY](./axi-five-channels-handshake.md)
+1. [一次 AXI 写入，地址、数据和响应分别在哪一拍交付？](./axi-five-channels-handshake.md)
+2. [AXI / AHB / APB 对照](./axi-ahb-apb-comparison.md)
+3. [AXI Channel、ID 与 Outstanding](./axi-channel-id-outstanding.md)
 4. [AXI Burst、对齐与边界](./axi-burst-alignment-boundary.md)
 5. [AXI Narrow Transfer 与 WSTRB](./axi-narrow-transfer-wstrb.md)
 6. [AXI Response 与错误路径](./axi-response-error-path.md)
@@ -23,7 +23,7 @@
 9. [Coherent Bus vs Non-Coherent Bus](./coherent-bus-vs-noncoherent-bus.md)
 10. [TileLink 概览](./tilelink-overview.md)
 
-这个顺序先建立协议复杂度坐标，再深入 AXI 的 channel、ID、burst、WSTRB 和 response，随后回到低复杂度协议、分层组织、一致性边界和 TileLink 这类参数化框架。
+先跟着一笔写看清地址、数据和响应怎样交接，再比较 AXI、AHB 和 APB 的交接方式。想知道桥怎样认出每笔返回，可以接着读 ID 和在途请求。想弄清一次写改了哪些字节，可以读突发传输和字节选通。后半章回到低速外设、分层互连、一致性与 TileLink。
 
 ## 本章核心判断
 

@@ -1,110 +1,96 @@
-# AXI 五通道与 VALID/READY
+# 一次 AXI 写入，地址、数据和响应分别在哪一拍交付？
 
-上级：[03 片上总线协议族](./README.md)
+上级：[片上总线协议族](./README.md)
 
-相关：[AXI Channel、ID 与 Outstanding](./axi-channel-id-outstanding.md)、[地址、数据、响应与事务语义](../02-fundamentals/transaction-address-data-response.md)、[仲裁、顺序性与 Backpressure](../02-fundamentals/arbitration-ordering-backpressure.md)、[AXI Response 与错误路径](./axi-response-error-path.md)
+<span id="axi-五通道与-validready"></span><span id="这页在回答什么问题"></span>
+[上一篇](../02-fundamentals/transaction-address-data-response.md)里，桥从加速卡的 SRAM 读到 42。现在把方向调过来。桥要从同一个片内地址 `0x4000_0120` 开始，依次写入 42、43、44、45。还是站在桥旁，只看桥与片上网络入口之间的 32 位 AXI4 接口。
 
-## 这页在回答什么问题
+假设你在波形里看到入口收下了 45。四个数都交出去了，桥现在能向等结果的逻辑报告“写成功”吗？要回答它，得找出三件事各自发生在哪一个时钟沿：入口收下地址，入口收下最后一个数，桥收下这笔写的结果。
 
-AXI 的五个 channel 和 `VALID/READY` 握手到底在定义什么，为什么一次 channel handshake 不等于整笔 transaction 完成。
+## 为什么报一次地址，就能连写四个数？
 
-## 五个 channel 对应事务生命周期
+<span id="五个-channel-对应事务生命周期"></span>
+桥先要说清楚“从哪里开始，准备怎样写”。它在 **AW**（写地址通道）上给出起始地址和三个属性：`AWLEN=3`，表示整笔共有 3 + 1 = 4 拍数据；`AWSIZE=2`，表示每拍 2² = 4 字节；`AWBURST=INCR`，表示地址递增。这样，把起点加 4 三次，就能算出后面三个地址。这种一次约定、分几拍送数据的访问称为**突发**（burst）。
 
-想象一个高效运转的大餐厅，把服务流程拆成五条独立的传送带——点单、送菜到厨房、厨房回执、取菜、上菜给客人——每条传送带都可以独立运转、独立排队。AXI 就是这样把一次访问拆成五条可独立握手的流：
+<div class="bus-read-trace" markdown="1">
 
-| Channel | 方向 | 语义 | 在生命周期里的作用 |
-|---|---|---|---|
-| `AW` | master -> slave | 写地址和写属性 | 建立写事务上下文 |
-| `W` | master -> slave | 写数据、byte strobe、last | 消耗写数据通路 |
-| `B` | slave -> master | 写响应 | 闭合写事务 |
-| `AR` | master -> slave | 读地址和读属性 | 建立读事务上下文 |
-| `R` | slave -> master | 读数据、读响应、last | 返回读 payload 并闭合读事务 |
+| W 上交付的次序 | 对应的字节地址 | 32 位数据 | 末拍标志 `WLAST` |
+| --- | --- | ---: | :---: |
+| 第一个数 | `0x4000_0120` | 42 | 0 |
+| 第二个数 | `0x4000_0124` | 43 | 0 |
+| 第三个数 | `0x4000_0128` | 44 | 0 |
+| 第四个数 | `0x4000_012C` | 45 | 1 |
 
-这五条流不是平行的五个“字段组”，而是把 02 章的地址、数据、响应生命周期显式化。地址阶段回答“这笔事务要去哪、按什么规则处理”；数据阶段回答“payload 如何逐 beat 传输”；响应阶段回答“事务以什么状态结束”。
+</div>
 
-拆分的收益是局部并行：读写可以同时进行，写地址和写数据可以不同节奏到达，读数据可以在地址请求之后延迟返回。代价是每个实现都要维护跨 channel 的状态：`AW` 和 `W` 如何配对，`B` 何时允许返回，`AR` 和 `R` 如何匹配，last beat 何时释放 outstanding。
+表中第二列是接收端依据 AW 和已收拍数推出来的地址。桥在 **W**（写数据通道）上只须逐拍摆出数据、字节选通和末拍标志。本例四个字节都要写，所以每拍的 `WSTRB` 都是二进制 `1111`。如果第三个数没被收下，接收端的拍号就得停在那里，否则它会把 44 放错位置。
 
-容易误解：五通道只是 AXI 的信号命名。实际上，五通道定义的是事务生命周期的分段和资源占用边界。
+还有一件事只有接收端知道：这次写有没有出错？写数据一路从桥流向入口，结果则要从入口回到桥，因此结果单独走 **B**（写响应通道）。普通 AXI4 写突发无论有几拍数据，整笔只回一个写响应。对照上篇的读通道就很好记了：读用 **AR** 送地址、用 **R** 带回数据和状态；写用 **AW** 送地址、用 **W** 送数据、用 **B** 带回状态。这就是 AXI 的五个通道。
 
-## VALID/READY 定义的是局部交付
+## 逐沿看一次四拍写入 {#写事务由-awwb-三段闭合}
 
-VALID/READY 握手就像**双方伸手的交接仪式**：递东西的人举起手说”我准备好了”（VALID），接东西的人也伸出手说”我能接”（READY），只有两只手同时伸出的那一刻，东西才算交出去。
+<span id="validready-定义的是局部交付"></span>
+只数时钟**上升沿**。每条通道都有自己的一对信号，发送方用 `VALID` 表示“这组内容有效”，接收方用 `READY` 表示“我有位置收”。在某个沿两者都为 1，这条通道才交付一次。AW 和 W 由桥发送，B 则由入口发送。在下面这段构造波形里，桥一直愿意接写响应。每格按“有效／就绪”的顺序记录；破折号表示该通道此沿没有有效内容。
 
-这个规则只完成当前通道的一次交付。`AWVALID && AWREADY` 表示 slave 接收写地址；`WVALID && WREADY` 表示 master 的一个写数据 beat 被接收；`BVALID && BREADY` 表示 master 接收 slave 的写响应，接口写事务才闭合。
+<div class="bus-read-trace" markdown="1">
 
-同步接口在时钟上升沿采样。只有该上升沿 `VALID=1` 且 `READY=1`，才传输一个 beat。发送方一旦拉高 `VALID`，在握手前必须保持 `VALID` 和该通道的全部 payload 稳定；包括地址属性、数据、strobe、ID、response 和 last 等适用信号。接收方可以先拉高或拉低 `READY`。复位规则另行处理。
+| 上升沿 | AW 地址 | W 数据 | B 响应 |
+| ---: | --- | --- | --- |
+| 0 | **1／1** 起点和属性 | — | — |
+| 1 | — | **1／1** 收下 42 | — |
+| 2 | — | **1／1** 收下 43 | — |
+| 3 | — | **1／0** 保持 44 | — |
+| 4 | — | **1／1** 收下 44 | — |
+| 5 | — | **1／1** 收下 45，`WLAST=1` | — |
+| 6 | — | — | **1／1** 桥收下 `OKAY` |
 
-发送方不能以接收方先拉高本通道 `READY` 为前提才拉高 `VALID`。接收方则可以等待看到 `VALID` 再拉高 `READY`，也可以提前拉高。这是避免握手死锁的依赖规则；发送方仍可因自身数据或协议依赖未准备好而暂不发送。
+</div>
 
-反例：发送方内部已有待发 beat，但错误地等 `READY=1` 才发 `VALID`；接收方合法地等 `VALID=1` 才给 `READY`。双方都会保持 0，握手永远不发生。正确实现由发送方独立提出 `VALID`，接收方再按容量决定 `READY`。
+**第 0 沿，入口知道要写哪里。** 地址和属性已经交付，所以桥下一周期可以撤下它们。入口得记住起点、拍数和每拍大小；此时它手里连第一个 42 都还没有。
 
-| 上升沿 | VALID | READY | payload | 结果 |
-|---:|---:|---:|---|---|
-| 0 | 1 | 0 | A | stall，保持 A |
-| 1 | 1 | 0 | A | stall，仍保持 A |
-| 2 | 1 | 1 | A | 传输 A；之后才可换下一 beat |
-| 3 | 1 | 1 | B | 传输 B |
+**第 3 和第 4 沿都能看见 44，为什么只写一次？** 第 3 沿入口给出 `WREADY=0`。可以设想它用来暂存数据的位置正满。桥必须继续保持 `WVALID=1`，连同 44、`WSTRB` 和 `WLAST=0` 一起保持。直到第 4 沿双方都为 1，入口才收下第三个数。若桥在第 3 沿之后擅自换成 45，入口会漏掉 44。这种接收方因没位置而让发送方暂停的现象叫**回压**。
 
-两个信号在上升沿之间同时为高，不构成额外传输。依据：[Arm IHI 0022H](https://developer.arm.com/-/media/Arm%20Developer%20Community/PDF/IHI0022H_amba_axi_protocol_spec.pdf?hash=6325311012DDADF238C35A6C0FD734E520754F82&la=en&revision=71bd7c57-2ed7-487b-bc3e-68c4ab56fa5f)，channel handshake 规则。
+**第 5 沿，入口收齐数据；第 6 沿，桥知道结果。** 第 5 沿被采到的是 `WVALID && WREADY && WLAST`。如果只有 `WLAST=1` 而 `WREADY=0`，45 仍留在桥侧。AXI4 要求入口既收过这笔写的 AW，又收过带 `WLAST` 的最后一个 W，才可以给出 `BVALID`。本例假设入口此时已能给出成功状态 `BRESP=OKAY`，桥也已经就绪，因此最早在第 6 沿收下。入口若还得等下游处理，响应可以更晚才出现。握手只说明桥收到了结果；若同一个沿收到 `SLVERR`，桥知道的就是这笔写返回了错误。[Arm AXI4 规范 A3.3，写响应依赖](https://developer.arm.com/-/media/Arm%20Developer%20Community/PDF/IHI0022H_amba_axi_protocol_spec.pdf?hash=6325311012DDADF238C35A6C0FD734E520754F82&la=en&revision=71bd7c57-2ed7-487b-bc3e-68c4ab56fa5f#page=46) · [写响应与错误路径](./axi-response-error-path.md)
 
-VALID/READY 的设计交易很明确。它给每条流提供局部弹性，接收方可以在 buffer 满、内部状态不足、下游阻塞时拉低 `READY`；发送方可以在没有新数据时拉低 `VALID`。但这种局部弹性也会制造跨 channel 脱节，迫使实现者增加 FIFO、计数器、skid buffer 和关联状态。
+## 只让桥晚两拍接响应，会改变哪一次交接？
 
-容易误解：`READY` 应该保持为 1。实际上，保持 `READY=1` 只是降低气泡的实现目标；协议允许接收方用 `READY=0` 表达 backpressure。
+<span id="一句话理解"></span>
+保持第 0 至第 5 沿完全相同，入口也按时给出 `OKAY`。只改一件事：桥的响应槽暂时没有空位，所以在第 6、7 沿给出 `BREADY=0`，到第 8 沿才拉高。
 
-## 写事务由 AW/W/B 三段闭合
+<div class="bus-read-trace" markdown="1">
 
-写事务最容易暴露“五通道不是原子事务”的事实。写地址和写数据在不同 channel 上传输，写响应又沿反方向返回。一个实现可以先收到 `AW`，再接收多个 `W` beat；也可能先暂存部分 `W` beat，再等待对应 `AW` 上下文。协议允许这些流解耦，但实现必须保证提交数据和生成 `B` response 时，地址、属性、数据 beat 和 strobe 都已被正确关联。
+| 上升沿 | `BVALID` | `BREADY` | 这笔写的结果在哪里？ |
+| ---: | :---: | :---: | --- |
+| 6 | 1 | 0 | 入口已摆出 `OKAY`，桥还没收。 |
+| 7 | 1 | 0 | 同一份响应仍由入口保持，状态和事务标识保持原值。 |
+| 8 | 1 | 1 | 桥收下这一份响应，可以释放相应的在途记录。 |
 
-下面是一个 4-beat 写 burst 的构造时序：
+</div>
 
-| Cycle | `AW` | `W` | `B` | 事务状态 |
-|---:|---|---|---|---|
-| 0 | `AWVALID && AWREADY` | - | - | 写地址和属性进入系统 |
-| 1 | - | `W beat0` handshake | - | 写数据开始占用 data path |
-| 2 | - | `W beat1` handshake | - | burst 继续 |
-| 3 | - | `WVALID=1, WREADY=0`，beat2 保持稳定 | - | 写地址已接收，但事务未完成 |
-| 4 | - | `W beat2` handshake | - | backpressure 解除 |
-| 5 | - | `W beat3 && WLAST` | - | payload 到齐，slave 可以闭合写语义 |
-| 6 | - | - | `BVALID && BREADY` | 写 response 被消费，事务完成 |
+从地址握手量到桥接到响应，延迟由 6 个周期变成 8 个周期。四个数的交付时刻一个都没变，入口也没有重写这四个数。若只读“写一共用了 8 个周期”，很容易把新增的两拍算到 SRAM 头上。波形却能帮你分清楚：`BVALID=0` 表示桥旁还没有有效响应；`BVALID=1、BREADY=0` 表示响应已经摆好，正等桥接走。
 
-这张表里，cycle 0 不是“写完成”，cycle 5 也不一定是 master 可见的完成；对 master 来说，AXI 写事务要等 `B` response 被消费后才闭环。`B` 的具体完成点取决于访问属性及系统路径；它本身不保证数据已写入 DRAM，也不自动保证对 CPU cache 可见。若 `BREADY=0`，slave 或 interconnect 的 response buffer 可能被占住，并反压新的写事务。
+这里还藏着一条防止死锁的规则。假如入口手里已经有响应，却坚持等 `BREADY=1` 才给 `BVALID`，而桥打算见到 `BVALID=1` 再让出槽位，两边就会一直等。AXI 允许接收方等有效内容出现再给 `READY`，要求发送方在内容和协议前提都准备好时独立提出 `VALID`。这个规则同样适用于 AW 和 W。`READY` 可以提前给出，单独看到它为 1 只说明接收方就绪。
 
-容易误解：`AW` handshaked 之后，后续只是数据搬运。实际上，写事务的完成语义在 `B` channel；没有 `B`，master 无法释放对应 outstanding 状态。
+回到开头的问题：桥在第 5 沿只知道“最后一个数已交给入口”。基准波形里，它在第 6 沿收到 `OKAY`；修改后的波形里，要到第 8 沿。即使收到 `OKAY`，还能从桥旁推断出多远，要看访问属性和系统约定。允许缓冲的写入可以由中间节点先应答。要判断数据何时写进最终存储阵列，或另一个带缓存的处理器何时能观察到新值，还需要知道下游何时提交以及系统采用的一致性机制。[Arm AXI4 规范 A4.4，内存类型与写响应来源](https://developer.arm.com/-/media/Arm%20Developer%20Community/PDF/IHI0022H_amba_axi_protocol_spec.pdf?hash=6325311012DDADF238C35A6C0FD734E520754F82&la=en&revision=71bd7c57-2ed7-487b-bc3e-68c4ab56fa5f#page=70)
 
-## 读事务由 AR/R 两段闭合
+## 如果 42 比地址先到，入口怎么知道该写哪里？
 
-读事务没有单独的 read response channel，因为读数据和读状态都在 `R` channel 返回。`AR` handshake 建立读请求，后续一个或多个 `R` beat 返回 payload 和 response；burst 读要等最后一个 `R` beat 才能释放整笔事务。
+第 0 沿先收地址是这个例子的选择。AW 和 W 各有一对握手信号，两者也可以同沿交付，甚至 W 先交付。假设桥同时摆出地址和 42，入口的地址队列暂时满了，数据缓冲却有空位。这时 `AWREADY=0、WREADY=1`，入口可以先收下 42，把它留在缓冲里。等地址真正交付，它才有足够的信息判断这份数据应送往哪里。另一个没有这种缓冲的入口，可以暂缓给出 `WREADY`。代价是地址被堵住期间，数据通路也可能空着。
 
-这带来两个建模重点。第一，`ARREADY=1` 不代表读数据会很快返回，slave、memory controller、bridge 和返回路径都可能引入等待。第二，`RREADY=0` 不只是 master 端的小停顿；如果返回数据无法被消费，slave 或 interconnect 的 response buffer 可能满，进一步限制新的 `AR` 接收。
+若桥接连发两笔写，先来的 42 会不会配给第二笔地址？在同一个 AXI4 接口上，W 没有独立的事务标识 `WID`。桥须按写地址的发出顺序发送各笔写的数据，送完第一笔的最后一拍才能在 W 上传第二笔的数据。入口可以按这个顺序配对。地址和响应则带有 `AWID` 和 `BID`，桥据此找到对应的一组在途写；同一个 ID 也能有多笔在途，这些写的响应要保持顺序。[ID、在途事务与顺序](./axi-channel-id-outstanding.md) · [AXI 协议检查规则](https://docs.amd.com/r/en-US/pg267-axi-vip/AXI-Protocol-Checks-and-Descriptions)
 
-对读路径，`R` channel 是性能和正确性的共同边界。性能上，它决定返回带宽和 tail latency；功能上，它承载 data、response、ID 和 last beat。漏掉其中任何一个，模型都会把“请求已接收”和“数据已完成”混成一件事。
+## 一条响应堵住，为什么后面的地址也会停？
 
-容易误解：读事务只要看 `AR` channel。实际上，`AR` 是请求入口，`R` 才是读事务 completion 的可见路径。
+<span id="通道解耦会重新形成依赖"></span>
+设入口只有一个写响应槽，并且每接一笔新写都要先给它预留响应位置。前一笔在第 6、7 沿仍占着这个槽。即使下一笔的地址和第一个数已经准备好，入口也会因无法预留位置而压低 `AWREADY`。沿着波形往回找，你看到的停顿在 AW，最初没能完成的交接却在 B。若实现另有可用响应槽，它就可能继续收地址，直到这些槽也被占满。多一个槽能吸收一段短暂停顿；桥若长期不接响应，有限的槽最终都会用完。
 
-## 通道解耦会重新形成依赖
-
-AXI 的五条传送带设计上是独立的，但在真实餐厅里，它们会因为**资源有限**重新耦合。点单传送带太快、厨房的灶台不够用（`AW` 接太多而 `W` buffer 不够），厨房会爆单；客人的菜太多端不走（`R` path 回不来），新点的菜就没地方放；客人不签账单（`B` 被 master 堵住），服务员就没法清桌接新客人。
-
-这些依赖不是系统设计失败，而是**任何有限资源系统的必然结果**——就像五条传送带速度可以不同，但餐厅的桌子、灶台和服务员总是有限的。优秀的 AXI 实现会明确每条 channel 的接收能力和释放条件；糟糕的实现会在点单成功后才发现厨房已经做不过来了。
-
-调试 AXI hang 时，应该沿五条 channel 分开看：
-
-- `AW` 是否接收过多写地址，超过 `W/B` 能闭合的能力。
-- `W` 是否缺 beat、缺 `WLAST`，或被下游 `WREADY=0` 阻塞。
-- `B` 是否生成但 master 不消费，导致写路径无法释放。
-- `AR` 是否被 outstanding slot、slave request slot 或 ordering rule 限制。
-- `R` 是否被返回 FIFO、master `RREADY` 或 last beat 缺失卡住。
-
-## 一句话理解
-
-AXI 五通道把 transaction 拆成可局部握手的地址、数据和响应流；`VALID/READY` 只完成当前 channel 的一次交付，整笔事务必须靠跨 channel 状态重新闭合。
+<span id="读事务由-arr-两段闭合"></span>
+排查一笔挂起的写，可以先找到 **AW 是否握手**，再只数 `WVALID && WREADY` 的沿，核对拍数和 `WLAST`。两项都已满足，就看 B 是尚未给出响应，还是给出后一直无人接。读方向也能这样找：若 AR 迟迟没被接，查入口的请求槽、在途上限和顺序约束；若 AR 已收，就要去 R 看数据、状态和最后一拍。一旦 `RREADY=0`，返回缓冲也可能占满，并逐步反压新的读请求。[回看一笔读的八个时钟沿](../02-fundamentals/transaction-address-data-response.md#盯住八个时钟沿42-在哪里)
 
 ## 建模启示
 
-建模 AXI 时，五个 channel 不能合并成一个“bus busy”状态。每个 channel 至少要有独立的 ready/valid、queue depth、service time、backpressure source 和已传 beat 计数。写路径要关联 `AW/W/B`，读路径要关联 `AR/R`。
+复现第一张波形，只需给监视器一份写地址记录、一个已收数据拍计数器和一份待接收的响应。第 0 沿存下起点和属性；第 1、2、4、5 沿各加一；第 3 沿检查 44 及控制位保持原值。第四个数握手时核对 `WLAST`，地址也已收下，才允许出现响应。桥侧的在途数在 AW 握手时加一，在 B 握手时减一。若实现允许 W 先到，还要先记录已接收的无地址数据，等对应的 AW 到达再配对。
 
-性能模型可以把具体信号编码折叠掉，但必须保留 channel 之间的依赖：`AW` 接收是否占用写事务 slot，`W` beat 是否耗尽 data buffer，`B` 是否释放写 outstanding，`AR` 是否占用读 outstanding，最后一个 `R` beat 是否释放读事务。
+只估算吞吐与延迟时，可以省去 42 到 45 的具体位值。按通道记录握手时刻、队列容量、服务时间和被谁挡住，区分“响应生成”和“响应被接收”，模型就能复现刚才多出来的两个周期。若要检查写入结果，还得按推导出的地址和 `WSTRB` 逐字节更新目标模型，核对 `AWLEN` 与 `WLAST`、`AWID` 与 `BID`、返回状态及同 ID 的顺序。读侧对应地记录 `ARID`、`RID`、每拍 `RRESP` 和最后一次 `RVALID && RREADY && RLAST`。
 
-功能模型还要检查闭合条件：`WLAST` 是否和 burst 长度一致，`WSTRB` 是否匹配窄写语义，`B/RRESP` 是否返回正确错误类别，`RID/BID` 是否匹配原请求，`R last` 是否准确标记读 burst 结束。
-
-最危险的简化是把 `VALID && READY` 解释成整笔事务完成。它只说明当前 channel 当前 beat 交付成功；transaction 是否完成，要看地址、数据、响应、ID、last beat 和 response consumption 是否都已经闭合。
+现在只有桥在写。若另一台 DMA 也要在同一个时钟沿使用通向 SRAM 的出口，谁拿到这一拍，另一笔又停在哪里？这个问题进入下一篇的[仲裁、顺序与回压](../02-fundamentals/arbitration-ordering-backpressure.md)。
