@@ -94,8 +94,9 @@ class GeneratedNavigationTests(unittest.TestCase):
         source = Path(__file__).resolve().parents[2] / "series/semiconductor-foundations"
         titles = {page.parent.name: page.read_text(encoding="utf-8").splitlines()[0].removeprefix("# ")
                   for page in source.glob("*/README.md")}
-        self.assertEqual(slugs[:7], ["electrons-to-diode", "bands-to-channel", "cmos-logic-gates",
-                                     "latch-and-divider", "transistor-amplifier", "quartz-oscillator", "integer-pll"])
+        self.assertEqual(slugs[:8], ["electrons-to-diode", "bands-to-channel", "cmos-logic-gates",
+                                     "latch-and-divider", "transistor-amplifier", "quartz-oscillator", "integer-pll",
+                                     "fanout-and-wire-delay"])
         self.assertEqual(entries[0][1], "从电子到二极管")
         archive = guide.split('id="历史导读"', 1)[1].split("</ul>", 1)[0]
         old_entries = re.findall(r'<li><a href="([^"/]+)/">([^<]+)</a>', archive)
@@ -191,6 +192,8 @@ class GeneratedNavigationTests(unittest.TestCase):
             ("quartz-oscillator", "quartz-oscillator/experiment.html", "startup"),
             ("integer-pll", "integer-pll/experiment.html", "edges"),
             ("integer-pll", "integer-pll/experiment.html", "correction"),
+            ("fanout-and-wire-delay", "fanout-and-wire-delay/experiment.html", "load"),
+            ("fanout-and-wire-delay", "fanout-and-wire-delay/experiment.html", "wire"),
         )
         for slug, filename, fragment in panels:
             with self.subTest(article=slug, panel=fragment):

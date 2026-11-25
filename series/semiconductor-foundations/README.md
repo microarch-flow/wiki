@@ -13,7 +13,7 @@
 5. [晶体管的小信号放大](transistor-amplifier/README.md)。把一只 NMOS 的栅压升高 5 mV，先看输出节点上的电荷怎样变化，再读出约 25 mV 的反向电压变化。换回 PMOS，看看反相器怎样在石英振荡电路里放大微小扰动。
 6. [石英振荡器的起振与稳幅](quartz-oscillator/README.md)。先看晶片上五个位置各自怎样运动，再沿电极和放大器追踪一次微小扰动。最后在同一条时间轴上观察模拟振动与相隔 40 ns 的数字上升沿。
 7. [PLL 怎样实现二倍频](integer-pll/README.md)。在两个 25 MHz 参考上升沿之间，找出 50 MHz 输出多出来的那个沿。把反馈沿推迟 3 ns，跟踪这段时间差怎样变成电荷、控制电压和振荡速度的变化。
-8. [扇出、布线与门延迟](fanout-and-wire-delay/README.md)。分别改变负载电容和导线电阻，看远端电压何时越过门限。
+8. [扇出、布线与门延迟](fanout-and-wire-delay/README.md)。把同一个反相器从驱动一个输入改为驱动八个，观察输出升到 0.4 V 要多久。再沿同一根线移动探针，分别量出门延迟、线延迟和上升时间。
 9. [翻转能量与芯片功耗](switching-energy-and-power/README.md)。从单次翻转的能量，算到一组节点的平均功率，比较相同频率下的不同任务。
 10. [降压与时钟频率](supply-voltage-and-frequency/README.md)。先算降压节省的能量，再看数据路径还能否在一拍内完成。
 11. [IR drop 与本地去耦](ir-drop-and-decoupling/README.md)。沿供电和回流路径算电阻压降，再看同时翻转时去耦电容怎样供电。
