@@ -1,0 +1,69 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="480" height="496" viewBox="0 0 480 496" role="img" aria-labelledby="title desc">
+  <title id="title">开行选中许多单元，列访问只连接所选数据</title>
+  <desc id="desc">示例显示两行四列，开行后编号为 1 的行中有四个单元，分别由四路感测放大器锁存和恢复。本次列选择只将编号为 2 的列连接到 I/O。读时数据从感测侧到 I/O，写时由 I/O 向感测侧驱动，再写入选中单元。每列代表一条简化的数据路径。</desc>
+  <style>
+    text { font-family: "Noto Sans CJK SC", "Microsoft YaHei", sans-serif; fill: #21493f }
+    .name { font-size: 18px; font-weight: 650 }
+    .muted { fill: #49665d; font-size: 18px }
+    .cell { fill: #edf2eb; stroke: #b9cbbd; stroke-width: 1.5 }
+    .open { fill: #dcece1; stroke: #76a58a; stroke-width: 1.5 }
+    .path { fill: none; stroke: #7fa090; stroke-width: 2.5 }
+    .selected { fill: none; stroke: #246953; stroke-width: 4 }
+    .bit { font-size: 21px; font-weight: 700; text-anchor: middle }
+  </style>
+  <defs>
+    <marker id="read" markerWidth="7" markerHeight="7" refX="5.7" refY="3.5" orient="auto" markerUnits="userSpaceOnUse">
+      <path d="M0 0L7 3.5L0 7Z" fill="#246953"/>
+    </marker>
+    <marker id="write" markerWidth="7" markerHeight="7" refX="5.7" refY="3.5" orient="auto" markerUnits="userSpaceOnUse">
+      <path d="M0 0L7 3.5L0 7Z" fill="#94562f"/>
+    </marker>
+  </defs>
+  <rect x="1" y="1" width="478" height="494" rx="16" fill="#f5f8f3" stroke="#d1dfd4"/>
+  <text x="24" y="40" font-size="25" font-weight="700">一整行打开，一部分送到 I/O</text>
+  <g class="muted" text-anchor="middle">
+    <text x="161" y="80">列 0</text><text x="238" y="80">列 1</text>
+    <text x="315" y="80">列 2</text><text x="392" y="80">列 3</text>
+  </g>
+  <text x="36" y="118" class="muted">行 0</text>
+  <g class="cell">
+    <rect x="140" y="96" width="42" height="26" rx="5"/><rect x="217" y="96" width="42" height="26" rx="5"/>
+    <rect x="294" y="96" width="42" height="26" rx="5"/><rect x="371" y="96" width="42" height="26" rx="5"/>
+  </g>
+  <rect x="23" y="142" width="432" height="44" rx="7" fill="#e4efe3"/>
+  <text x="36" y="171" class="name">选中行 1</text>
+  <g class="open">
+    <rect x="140" y="150" width="42" height="28" rx="5"/><rect x="217" y="150" width="42" height="28" rx="5"/>
+    <rect x="294" y="150" width="42" height="28" rx="5"/><rect x="371" y="150" width="42" height="28" rx="5"/>
+  </g>
+  <g class="bit">
+    <text x="161" y="172">1</text><text x="238" y="172">0</text><text x="315" y="172">1</text><text x="392" y="172">0</text>
+  </g>
+
+  <!-- Abstract data paths; each vertical line represents a local differential path. -->
+  <g class="path">
+    <path d="M161 179V223 M238 179V223 M315 179V223 M392 179V223"/>
+    <path d="M161 259V282 M238 259V282 M392 259V282"/>
+  </g>
+  <text x="23" y="247" class="name">感测放大器</text>
+  <g class="open">
+    <rect x="134" y="223" width="54" height="36" rx="6"/><rect x="211" y="223" width="54" height="36" rx="6"/>
+    <rect x="288" y="223" width="54" height="36" rx="6"/><rect x="365" y="223" width="54" height="36" rx="6"/>
+  </g>
+  <g class="bit">
+    <text x="161" y="249">1</text><text x="238" y="249">0</text><text x="315" y="249">1</text><text x="392" y="249">0</text>
+  </g>
+  <path class="selected" d="M315 259V282"/>
+  <rect x="25" y="282" width="430" height="43" rx="7" fill="#e2ede4" stroke="#a5bfae"/>
+  <text x="240" y="310" text-anchor="middle" class="name">列选择：本次接通列 2</text>
+
+  <path d="M235 326V375" stroke="#246953" stroke-width="3.5" fill="none" marker-end="url(#read)"/>
+  <path d="M250 377V329" stroke="#94562f" stroke-width="3.5" fill="none" marker-end="url(#write)"/>
+  <text x="219" y="359" text-anchor="end" class="name">读出</text>
+  <text x="266" y="359" class="name" style="fill:#834b2d">写入</text>
+  <rect x="165" y="380" width="150" height="36" rx="7" fill="#e2ede4" stroke="#a5bfae"/>
+  <text x="240" y="406" text-anchor="middle" font-size="21" font-weight="700">I/O</text>
+
+  <text x="24" y="452" class="muted">小图把每路画成 1 bit。实际列命令可以</text>
+  <text x="24" y="477" class="muted">并行选取多路数据，再经接口分拍传输。</text>
+</svg>

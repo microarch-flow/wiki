@@ -19,7 +19,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from hooks import CPO_SECTIONS, grouped_original_topics, make_tree, storage_resources_tree  # noqa: E402
 from ownership import GROUPS, INTERCONNECT, STORAGE, owner  # noqa: E402
 from prepare import FOUNDATION_COMPANIONS, SILICON_TO_LOGIC_LEGACY_SECTIONS  # noqa: E402
-from storage_navigation import (INTEGRATION_AFTER, INTEGRATION_HOME, INTEGRATION_PACKAGING,
+from storage_navigation import (DRAM_LEGACY_PAGES, INTEGRATION_AFTER, INTEGRATION_HOME, INTEGRATION_PACKAGING,
                                 MEMORY_HOME, MEMORY_SECTIONS, RESOURCE_HOME, RESOURCE_SECTIONS,
                                 SYSTEM_SELECTION)  # noqa: E402
 
@@ -519,7 +519,7 @@ class GeneratedNavigationTests(unittest.TestCase):
                 if path.is_file():
                     expected.add(path.relative_to(docs).as_posix())
         self.assertEqual(len(assigned), len(set(assigned)))
-        self.assertEqual(set(assigned), expected)
+        self.assertEqual(set(assigned), expected - DRAM_LEGACY_PAGES)
         memory = topics[0]["存储层级与数据路径"]
         self.assertEqual(memory[0], {"专题首页": MEMORY_HOME})
         self.assertEqual([next(iter(item)) for item in memory[1:]], [name for name, _, _ in MEMORY_SECTIONS])
@@ -899,6 +899,47 @@ class GeneratedNavigationTests(unittest.TestCase):
         for href, label in links:
             self.assertEqual(names.get(urljoin(page_url(relative), unescape(href))), unescape(label))
 
+    def test_merged_dram_article_and_legacy_deep_links(self):
+        chapter = Path("RAM/wiki/04-dram-foundations")
+        canonical = chapter / "1t1c-cell-destructive-read" / "index.html"
+        html = (SITE / canonical).read_text(encoding="utf-8")
+        article = re.search(r"<article\b.*?</article>", html, re.DOTALL).group()
+        ids = re.findall(r'\bid="([^"]+)"', article)
+        for fragment in (
+            "1t1c-dram电荷保存与读出恢复", "1t1c-cell一颗电容为什么改变了一切", "这页在回答什么问题",
+            "电容存储与破坏性读出", "电容密度与保存电荷", "电荷泄漏与读出限制", "一句话理解", "建模启示",
+            "charge-sharing", "sense-restore", "column-select", "write", "row-state", "access-granularity", "model",
+        ):
+            self.assertEqual(ids.count(fragment), 1, fragment)
+
+        expected = {
+            "row-column-decode-sense-amplify": ("dram-行列解码感测恢复与列选择", {
+                "行列解码与读出放大为什么-dram-必须先开行": "sense-restore",
+                "这页在回答什么问题": "access-granularity", "位线感测整行恢复与列选择": "sense-restore",
+                "位线电荷共享与整行感测": "charge-sharing", "行选通与列选择": "column-select",
+                "一句话理解": "access-granularity", "建模启示": "model",
+            }),
+            "row-buffer-as-cache": ("row-buffer-与-dram-行状态", {
+                "row-bufferdram-内部的小-cache": "row-state", "这页在回答什么问题": "sense-restore",
+                "打开行的工作副本": "row-state", "一句话理解": "row-state", "建模启示": "model",
+            }),
+        }
+        index = json.loads((SITE / "search/search_index.json").read_text(encoding="utf-8"))
+        locations = {entry["location"].partition("#")[0] for entry in index["docs"]}
+        self.assertIn(canonical.parent.as_posix() + "/", locations)
+        for slug, (old_title, fragments) in expected.items():
+            with self.subTest(slug=slug):
+                path = chapter / slug / "index.html"
+                legacy = (SITE / path).read_text(encoding="utf-8")
+                self.assertIn(f'id="{old_title}"', legacy)
+                self.assertNotIn(path.parent.as_posix() + "/", locations)
+                fallback = re.search(r'<div [^>]*data-storage-redirect[^>]*>(.*?)</div>', legacy, re.DOTALL)
+                self.assertIsNotNone(fallback)
+                routes = dict(re.findall(r'<span id="([^"]+)"></span>\s*<a href="([^"]+)"', fallback.group(1)))
+                self.assertEqual(set(routes), set(fragments))
+                for old, new in fragments.items():
+                    self.assertEqual(urljoin(page_url(path), routes[old]), page_url(canonical) + "#" + new)
+
     def test_cache_scratchpad_comparison_keeps_legacy_entry(self):
         main = Path("COMPUTE/wiki/06-memory-discipline/cache-vs-scratchpad/index.html")
         legacy = Path("RAM/wiki/03-sram-applications/scratchpad-vs-cache/index.html")
@@ -1007,6 +1048,9 @@ class GeneratedNavigationTests(unittest.TestCase):
             *(SITE / "foundations" / companion for companion in FOUNDATION_COMPANIONS),
             *(SITE / "foundations/silicon-to-logic" / slug / "index.html" for slug in SILICON_TO_LOGIC_LEGACY_SECTIONS),
         }
+        unlisted = UNLISTED_LANDING_PAGES | {
+            (Path(path).with_suffix("") / "index.html").as_posix() for path in DRAM_LEGACY_PAGES
+        }
         pages = sorted(p for p in SITE.rglob("*.html") if p.name != "404.html" and p not in standalone_pages)
         self.assertGreater(len(pages), 1)
         errors = []
@@ -1017,7 +1061,7 @@ class GeneratedNavigationTests(unittest.TestCase):
             end = html.find('<div class="md-sidebar md-sidebar--secondary"', start)
             primary = html[start:end] if start >= 0 and end >= 0 else ""
             active = list(ACTIVE_LINK.finditer(primary))
-            if relative.as_posix() in UNLISTED_LANDING_PAGES:
+            if relative.as_posix() in unlisted:
                 if active:
                     errors.append(f"{relative}: unlisted page has an active sidebar link")
             elif relative.parts[0] != "reviews":

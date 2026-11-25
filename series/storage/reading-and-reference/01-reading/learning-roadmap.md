@@ -41,7 +41,7 @@
 
 ## 3. 想建立 DRAM 命令模型：从行状态到调度
 
-1. 先读[1T1C 存储单元](../../03-dram/foundations/1t1c-cell-destructive-read.md)和 [Row buffer](../../03-dram/foundations/row-buffer-as-cache.md)，理解开行、感测和已打开行的作用。
+1. 先读[只读几个字节，DRAM 为什么先打开一整行？](../../03-dram/foundations/1t1c-cell-destructive-read.md)，跟着同一次访问，从电容读出走到行缓冲，再对照同一 bank 的[行命中与行冲突](../../03-dram/foundations/1t1c-cell-destructive-read.md#row-state)。
 2. 再读 [DRAM 命令集](../../03-dram/protocols/commands-act-rd-wr-pre.md)和 [DRAM 时序参数](../../03-dram/protocols/timing-parameters-trcd-trp-tras.md)，确认命令、参考边沿和模式条件。
 3. 在控制器章节，先看[地址映射](../../04-dram-controller/address-mapping-channel-rank-bank-row-col.md)，再看[命令调度与 FR-FCFS](../../04-dram-controller/command-scheduling-fr-fcfs.md)和[刷新调度](../../04-dram-controller/refresh-management-distributed-postponed.md)。这个顺序先说明请求落在哪里，再讨论何时服务。
 4. 用[控制器仿真建模](../../04-dram-controller/mc-modeling-for-simulation.md)和 [DRAM 时序速查](../02-reference/timing-parameter-cheatsheet.md)检查模型状态、时序与参数来源。

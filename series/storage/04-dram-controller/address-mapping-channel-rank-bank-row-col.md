@@ -2,7 +2,7 @@
 
 上级：<span id="地址映射物理地址到-channelrankbankrowcol-的拆分艺术"></span>[DRAM 控制器与请求调度](./README.md)
 
-相关：[控制器：从请求到响应](./why-mc-is-the-real-bottleneck.md) · [多通道与 NUMA](../01-memory-hierarchy/02-access-paths/numa-multi-channel-multi-socket.md) · [行缓冲](../03-dram/foundations/row-buffer-as-cache.md)
+相关：[控制器：从请求到响应](./why-mc-is-the-real-bottleneck.md) · [多通道与 NUMA](../01-memory-hierarchy/02-access-paths/numa-multi-channel-multi-socket.md) · [行缓冲](../03-dram/foundations/1t1c-cell-destructive-read.md#row-state)
 
 ## 这页在回答什么问题
 

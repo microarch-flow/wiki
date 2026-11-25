@@ -1,29 +1,20 @@
+---
+search:
+  exclude: true
+---
+
 # DRAM 行列解码：感测、恢复与列选择
 
-上级：<span id="行列解码与读出放大为什么-dram-必须先开行"></span>[DRAM 单元与阵列](./README.md)
+这篇文章已并入[《只读几个字节，DRAM 为什么先打开一整行？》](./1t1c-cell-destructive-read.md)。原小节对应以下段落。
 
-相关：[1T1C 单元](./1t1c-cell-destructive-read.md) · [DRAM 命令](../protocols/commands-act-rd-wr-pre.md)
+<div markdown="1" data-storage-redirect="true">
 
-## 这页在回答什么问题
+- <span id="行列解码与读出放大为什么-dram-必须先开行"></span>[开行怎样引发感测和恢复](./1t1c-cell-destructive-read.md#sense-restore)
+- <span id="这页在回答什么问题"></span>[读几个字节为什么要先选一行](./1t1c-cell-destructive-read.md#access-granularity)
+- <span id="位线感测整行恢复与列选择"></span>[位线感测与整行恢复](./1t1c-cell-destructive-read.md#sense-restore)
+- <span id="位线电荷共享与整行感测"></span>[存储电容与位线怎样共享电荷](./1t1c-cell-destructive-read.md#charge-sharing)
+- <span id="行选通与列选择"></span>[列选择怎样取出其中一部分](./1t1c-cell-destructive-read.md#column-select)
+- <span id="一句话理解"></span>[一次内部开行与一次外部传输的大小](./1t1c-cell-destructive-read.md#access-granularity)
+- <span id="建模启示"></span>[模型需要记录哪些状态](./1t1c-cell-destructive-read.md#model)
 
-为什么常见 DRAM 先选择行，再访问列？本页区分内部阵列动作和外部接口；其他封装或控制器可以把这些动作隐藏起来。
-
-## 位线感测、整行恢复与列选择
-
-行地址选择 wordline，使所选行的单元接入各自位线。sense amplifier 放大位线上的微弱差异，并恢复被扰动的单元状态。列选择电路再从已经感测的行中选择数据，连接到内部数据通路和 I/O。写入则通过列路径改变选定位置，并由阵列完成恢复。
-
-## 位线电荷共享与整行感测
-
-在简化的开行模型里，一次激活使所选行对应的多个 sense amplifier 工作。感测和恢复并不一定要全部结束后才允许列访问；允许时刻由目标器件的时序规定。对于带 additive latency 的 DDR4，还要区分外部列命令采样沿和内部列操作沿，见[时序参数](../protocols/timing-parameters-trcd-trp-tras.md)。
-
-## 行选通与列选择
-
-假设一行有 16 个内部列位置，而一次列选择只连接其中 4 个：一个打开的行可以经过多次列选择服务不同位置。这个例子只说明粒度，不代表某个产品的行宽、burst 或引脚数。共享外围电路可降低每 bit 的开销，同时让访问依赖行状态和共享路径。
-
-## 一句话理解
-
-常见 DRAM 的行激活建立可用的行数据，列选择再把其中一部分送往数据通路。
-
-## 建模启示
-
-分别记录行状态与列操作时序；不要把行宽当成单次外部传输大小，也不要把恢复完成时刻等同于首数据返回时刻。
+</div>

@@ -1,5 +1,11 @@
 """Stable published pages and source-aligned groups for storage navigation."""
 
+# These two published URLs lead into sections of the merged DRAM article.
+DRAM_LEGACY_PAGES = {
+    "RAM/wiki/04-dram-foundations/row-column-decode-sense-amplify.md",
+    "RAM/wiki/04-dram-foundations/row-buffer-as-cache.md",
+}
+
 MEMORY_TOPIC = "存储层级与数据路径"
 STORAGE_RESOURCES = "查阅与练习"
 RESOURCE_HOME = "RAM/wiki/reading-and-reference/README.md"
