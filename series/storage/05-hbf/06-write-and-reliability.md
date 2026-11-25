@@ -8,15 +8,15 @@
 
 ## 常见 SSD 的 FTL 做什么
 
-普通块设备接口通常让 host 使用逻辑块地址。SSD 中的 Flash Translation Layer（FTL）维护逻辑地址到物理位置的映射，并配合垃圾回收、坏块管理、错误纠正和磨损均衡。不同 SSD 的具体功能、缓存和恢复保证仍不同。
+普通块接口 SSD 让主机读写逻辑块地址。主机更新 A 时，控制器可以先把新 A 写到空闲页，再更新闪存转换层（FTL）的映射。旧块中的 B 此刻可以留在原处。等控制器选中旧块回收，才需要先搬走仍有效的 B，再擦除整个块。这些额外的编程和擦除会消耗内部带宽和擦写寿命。[SSD 怎样更新映射](./02-nand-foundations.md#ftl) · [回收旧块时谁来搬 B](./02-nand-foundations.md#gc)
 
-例如，覆盖一个逻辑地址时，控制器可能把新数据写到其他空闲位置并更新映射。之后回收旧 block 时，它可能先搬走仍有效的数据，再擦除 block。这个过程为 host 提供便利，但会占用内部带宽和擦写寿命。背景见 [Western Digital Flash 101](https://documents.sandisk.com/content/dam/asset-library/en_us/assets/public/western-digital/collateral/white-paper/white-paper-sandisk-flash101-management.pdf)。
+SSD 控制器还要协调坏块管理、纠错和磨损均衡。各产品的缓存与故障恢复保证不同。[Western Digital Flash 101](https://documents.sandisk.com/content/dam/asset-library/en_us/assets/public/western-digital/collateral/white-paper/white-paper-sandisk-flash101-management.pdf)
 
 ## OCP v0.7 的 HBF 写入约束
 
-HBF 不是没有控制器。v0.7 让 base die 执行内部管理，同时让 host 参与更明确的数据布局和可靠性处理。对 **NAND 区域**，规范第 5.4 节描述了下列要点：
+OCP HBF v0.7 把数据聚合和块擦除交给 base die，主机要按接口规定安排写入顺序和数据保护。下面的约束适用于 **NAND 区域**。
 
-1. base die 将写数据收集到 4 KiB 的 core-die 写入粒度。收到该逻辑单元的第一个 64 B 写入后，host 必须在配置的时间限制内发送其余数据；超时会返回错误，规范的软件指南要求重新发送完整 4 KiB。
+1. base die 将写数据收集到 4 KiB 的 core-die 写入粒度。收到该逻辑单元的第一个 64 B 写入后，其余数据必须在主机配置的时限内到达 base die。超时后，该逻辑单元已发出的写请求会收到错误响应。若主机选择重试，可以重新发送完整 4 KiB。
 2. 规范对 channel 局部地址和 NAND block 内的 4 KiB 写入顺序施加约束。软件不能假定任意小范围都能像 SRAM 一样直接覆盖。
 3. 写入某 NAND block 的 page 0 时，规范描述设备自动擦除该 block。系统必须先处理其中仍有效的数据，避免覆盖造成数据丢失。
 4. NAND 写响应在数据写入 core die 之后完成。这个接口完成条件不能单独证明应用级事务、断电恢复或跨设备持久性。
@@ -25,7 +25,7 @@ HBF 不是没有控制器。v0.7 让 base die 执行内部管理，同时让 hos
 
 具体命令、地址计算、错误及产品扩展，以 [OCP v0.7 第 5.4–5.7 节](https://www.opencompute.org/documents/ocp-hbf-architecture-specification-v0-7-0-final-pdf/)和目标产品为准。可选 SRAM scratchpad 的写入粒度和断电行为不同，不能与 NAND 区域混为一谈。
 
-例如，假设一个 block 的 page 0 和 page 1 分别含旧数据 A、B，host 需要更新 A 并保留 B：
+沿用 SSD 主文的 A、B，现在换成 HBF 的同块重写。假设这个 block 中要保留的数据只有 page 0 的 A 和 page 1 的 B。主机要把新 A 写回**这个块的 page 0**。在 SSD 的异地更新例子中，旧块可以等到回收时再处理。在这次 HBF 操作中，page 0 的写请求就会触发擦除。主机要在发这笔请求前先为 B 找好去处。[对照 SSD 中 A 更新后、旧块回收前的映射](./02-nand-foundations.md#gc)
 
 1. 在发起 page 0 写入之前，host 先在其他位置保护仍需保留的 B，并准备好新 A。若要求断电后恢复，还须确保发生擦除前存在满足该恢复要求的有效副本。
 2. 按目标设备的地址与写入规则，从 page 0 开始写入新 A。设备收到 page 0 写入时自动擦除该 block；host 在时间限制内送齐该 4 KiB，并检查写入响应。
@@ -48,7 +48,7 @@ NAND 非易失，但电荷保持、温度、P/E 磨损和读干扰会影响数�
 
 OCP v0.7 的软件指南要求按产品可靠性条件安排数据刷新，并讨论按保持时间或读次数触发。文档给出通常 24–48 小时的示例表述，但具体保持时间、触发阈值和操作方法是产品相关参数，不能把该区间视为所有 HBF 的保证。刷新若与工作负载共享 die 或通路，也会影响可用带宽和延迟。[OCP v0.7，第 11.5 节](https://www.opencompute.org/documents/ocp-hbf-architecture-specification-v0-7-0-final-pdf/)
 
-同一规范第 9 节列出 **85 °C 通电保持 24 小时**的指标，并提醒断电后的保持不能按通电条件推断。第 11.5 节要求产品给出通电和断电时的保持条件。这里的指标和示例都不是对任何具体产品长期断电保存的证明。规范还建议不要对同一 die 同时发出刷新和读取，以免影响读取延迟。
+同一规范第 9 节列出 **85 °C 通电保持 24 小时**的指标，并提醒断电后的保持不能按通电条件推断。第 11.5 节要求产品给出通电和断电时的保持条件。这里的指标和示例都不是对任何具体产品长期断电保存的证明。若把刷新穿插在正常负载中，规范要求主机避免同时向同一 die 发出刷新和读取命令，以免增加读延迟。[OCP v0.7，第 11.5 节](https://www.opencompute.org/documents/ocp-hbf-architecture-specification-v0-7-0-final-pdf/#page=118)
 
 ## ECC、错误和恢复
 

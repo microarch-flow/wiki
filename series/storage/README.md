@@ -44,7 +44,7 @@
 | **SRAM 器件与应用**　几个晶体管怎样保住一个 bit？怎样把许多 bit 组织成可以寻址的阵列？ | [SRAM 基础](./02-sram/foundations/README.md) · [SRAM 应用](./02-sram/applications/README.md) |
 | **DRAM 器件与接口**　为什么要开行？芯片内部怎样把数据送到引脚？ | [DRAM 单元与阵列](./03-dram/foundations/README.md) · [DRAM 命令与接口](./03-dram/protocols/README.md) · [HBM 接口](./03-dram/protocols/hbm-stacked-wide-io.md) |
 | **DRAM 控制器与请求调度**　几笔读写同时排队，下一条命令该发给谁？ | [控制器导读](./04-dram-controller/README.md) · [命令调度](./04-dram-controller/command-scheduling-fr-fcfs.md) |
-| **HBF 高带宽闪存**　NAND 怎样保存数据？为什么更新一页还要考虑整块的擦除？HBF 怎样把数据交给主机？ | [NAND 阵列基础](./05-hbf/02-nand-foundations.md) · [SSD 的异地写入与回收](./05-hbf/06-write-and-reliability.md) · [HBF 专题导读](./05-hbf/README.md) |
+| **HBF 高带宽闪存**　NAND 按块擦除，SSD 更新 A 页后，为什么同一块里的 B 页还能读？换成 HBF，主机又要负责什么？ | [SSD 怎样在 NAND 中更新一页](./05-hbf/02-nand-foundations.md) · [HBF 写入与可靠性](./05-hbf/06-write-and-reliability.md) · [HBF 专题导读](./05-hbf/README.md) |
 | **存储系统集成与选型**　同样的推理任务，需要多少外存带宽？怎样权衡封装、容量与成本？ | [专题导读](./06-system-integration/README.md) · [封装与集成](./06-system-integration/packaging/README.md) · [HBM 与 LPDDR 选型](./06-system-integration/hbm-vs-lpddr-for-npu.md) · [CXL 与近存计算](./06-system-integration/future-packaging-cxl-near-memory.md) |
 
 想动手算一算，可从[查阅与练习](./reading-and-reference/README.md)挑一道题。需要逐章翻原来的笔记，可沿用[原 RAM 阅读路线](./reading-and-reference/01-reading/README.md)。跨到其他系列时，[芯片制造与封装](../chip-development/FAB/wiki/README.md)解释这些器件怎样做出来，[DMA 双缓冲](../microarchitecture/05-dma/04-programming-model/tiling-double-buffering.md)接着解释数据搬入时计算能否继续。

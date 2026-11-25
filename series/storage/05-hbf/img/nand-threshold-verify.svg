@@ -1,0 +1,62 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="460" height="563" viewBox="0 0 460 563" role="img" aria-labelledby="title desc">
+  <title id="title">2-bit MLC 的四种阈值状态与一次 P2 编程校验</title>
+  <desc id="desc">上图是同一批单元的阈值分布示意，E、P1、P2、P3 为阈值从低到高的四种状态，三个读取参考分别落在相邻分布的间隙。本图不指定比特编码，也无实测刻度。下图改为跟踪一个目标为 P2 的单元。字线施加编程脉冲后，校验操作用目标的校验门限 Vverify 判断 Vth 是否达到要求。未达到则继续施加脉冲；本例中再一次脉冲后校验通过，随后抑制该单元继续编程。校验只需判定相对门限的位置，不需要测得精确 Vth。</desc>
+  <style>
+    text { font-family: system-ui, "Noto Sans CJK SC", "Microsoft YaHei", sans-serif; fill: #203c37 }
+    .head { font-size: 21px; font-weight: 680 }
+    .note { font-size: 17px; fill: #455d52 }
+    .label { font-size: 18px; font-weight: 630 }
+    .state { font-size: 18px; font-weight: 680; text-anchor: middle }
+    .read { fill: #225d6b }
+    .prog { fill: #80502f }
+    .verify { fill: #365f46 }
+  </style>
+  <rect x="1" y="1" width="458" height="561" rx="15" fill="#f7f6ef" stroke="#d3dacf"/>
+  <text x="18" y="36" class="head">读一批 2-bit MLC 单元：四种阈值状态</text>
+  <text x="18" y="65" class="note">每个 cell 当下只有一个 Vth，许多 cell 形成分布。</text>
+  <text x="18" y="97" class="note">相对数量</text>
+  <path d="M44 205V106m-4 6 4-6 4 6 M44 205H437m-6-4 6 4-6 4" fill="none" stroke="#6c8273" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+  <!-- Qualitative shapes. No encoding, measured density, or voltage scale is assumed. -->
+  <g stroke-width="1.7">
+    <path d="M49 204C61 203 63 196 69 178S81 130 91 127C105 125 110 162 116 183S125 201 134 204Z" fill="#d5e3de" stroke="#729185"/>
+    <path d="M145 204C157 203 162 182 167 159S178 125 185 126C197 125 202 158 208 180S217 201 227 204Z" fill="#dde7d9" stroke="#80967a"/>
+    <path d="M238 204C250 203 253 184 259 160S269 127 277 125C289 123 295 161 301 182S309 202 319 204Z" fill="#f0ddc0" stroke="#ac8050"/>
+    <path d="M330 204C343 202 346 185 352 160S364 127 372 127C385 127 388 159 395 180S405 202 418 204Z" fill="#dce8e1" stroke="#769685"/>
+  </g>
+  <g class="state">
+    <text x="91" y="117">E</text><text x="185" y="117">P1</text>
+    <text x="277" y="117" class="prog">P2</text><text x="372" y="117">P3</text>
+  </g>
+  <path d="M139.5 145v64 M232.5 145v64 M324.5 145v64" fill="none" stroke="#2e6c78" stroke-width="2" stroke-dasharray="4 4"/>
+  <g class="state read">
+    <text x="139.5" y="228">R1</text><text x="232.5" y="228">R2</text><text x="324.5" y="228">R3</text>
+  </g>
+  <text x="437" y="229" text-anchor="end" class="label">Vth →</text>
+  <text x="18" y="260" class="note">R1、R2、R3 是读取参考。横轴无实测刻度。</text>
+
+  <path d="M17 281H443" stroke="#c6d2c6"/>
+  <text x="18" y="314" class="head">写一个 cell：目标是 P2</text>
+  <text x="18" y="343" class="note">先向字线施加编程脉冲 Vpgm，再换用 P2 的</text>
+  <text x="18" y="366" class="note">校验门限 Vverify，判断 cell 的 Vth 是否达标。</text>
+
+  <rect x="16" y="389" width="99" height="48" rx="6" fill="#efe4d3" stroke="#c5ac89"/>
+  <rect x="16" y="453" width="99" height="48" rx="6" fill="#efe4d3" stroke="#c5ac89"/>
+  <g text-anchor="middle" class="label prog">
+    <text x="65" y="420">本轮脉冲</text>
+    <text x="65" y="484">下一脉冲</text>
+  </g>
+  <g fill="none" stroke="#6b826d" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M116 413h19m-5-4 5 4-5 4 M116 477h19m-5-4 5 4-5 4"/>
+  </g>
+  <g class="label">
+    <text x="143" y="420">Vth &lt; Vverify</text>
+    <text x="143" y="484">Vth ≥ Vverify</text>
+  </g>
+  <g font-size="17" font-weight="620" class="verify">
+    <text x="290" y="409">未过，继续编程</text>
+    <text x="290" y="475">通过，后续抑制</text>
+    <text x="290" y="496">这个 cell 编程</text>
+  </g>
+  <text x="18" y="527" class="note">校验只判定是否跨过门限。每轮 Vth 的增量可变，</text>
+  <text x="18" y="550" class="note">实际可能需要多轮脉冲。</text>
+</svg>
