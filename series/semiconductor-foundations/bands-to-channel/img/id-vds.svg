@@ -1,0 +1,34 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="480" height="412" viewBox="0 0 480 412" role="img" aria-labelledby="title desc" xml:lang="zh-CN">
+<title id="title">固定栅压时的长沟道 NMOS 理想输出特性</title>
+<desc id="desc">长沟道教学模型，k 为 200 微安每平方伏，栅过驱动 0.5 伏。漏压在 0、0.1、0.5 和 0.8 伏时电流分别为 0、9、25、25 微安。饱和段取定值，忽略沟道长度调制和速度饱和等效应。</desc>
+<defs><marker id="aE" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="3.3" markerHeight="3.3" orient="auto"><path d="M0 0L9 5L0 10Z" fill="#09677b" stroke="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></marker><marker id="aH" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="3.3" markerHeight="3.3" orient="auto"><path d="M0 0L9 5L0 10Z" fill="#9b4c28" stroke="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></marker><marker id="aI" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="3.3" markerHeight="3.3" orient="auto"><path d="M0 0L9 5L0 10Z" fill="#203c37" stroke="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></marker><g id="e"><circle cx="0" cy="0" r="6.2" fill="#09677b" stroke="none" stroke-width="2.4"/><path d="M-2.8 0H2.8" fill="none" stroke="#fff" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></g><g id="h"><circle cx="0" cy="0" r="6" fill="#f7f6ef" stroke="#9b4c28" stroke-width="2.4"/><path d="M-2.7 0h5.4M0 -2.7v5.4" fill="none" stroke="#9b4c28" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></g><g id="accept"><rect x="-5.8" y="-5.8" width="11.6" height="11.6" rx="1" fill="#ede8dc" stroke="#6a7467"/><path d="M-3.1 0h6.2" fill="none" stroke="#203c37" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></g></defs>
+<rect x="1" y="1" width="478" height="410" rx="15" fill="#f7f6ef" stroke="#c9d3c7"/>
+<g font-family="system-ui, Noto Sans CJK SC, Microsoft YaHei, sans-serif">
+<text x="20" y="34" font-size="23" text-anchor="start" fill="#203c37" font-weight="700">给漏端升压，电流怎样变化？</text>
+<text x="20" y="62" font-size="18" text-anchor="start" fill="#526861">栅压 0.8 V，阈值 0.3 V，源端与体端接地。</text>
+<text x="22" y="101" font-size="19" text-anchor="start" fill="#203c37" font-weight="700">漏极电流（μA）</text>
+<rect x="279.3529411764706" y="125" width="155.6470588235294" height="173" rx="0" fill="#e8ede2" stroke="none"/>
+<path d="M57 124V298H435" fill="none" stroke="#526861" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M57 251.2H435" fill="none" stroke="#adbcb1" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="4 5"/>
+<text x="49" y="257.2" font-size="18" text-anchor="end" fill="#526861">9</text>
+<path d="M57 168.0H435" fill="none" stroke="#adbcb1" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="4 5"/>
+<text x="49" y="174.0" font-size="18" text-anchor="end" fill="#526861">25</text>
+<text x="48" y="303" font-size="18" text-anchor="end" fill="#526861">0</text>
+<path d="M57.00 298.00 L60.78 293.62 L64.56 289.31 L68.34 285.08 L72.12 280.92 L75.90 276.84 L79.68 272.83 L83.46 268.90 L87.24 265.04 L91.02 261.26 L94.80 257.56 L98.58 253.93 L102.36 250.37 L106.14 246.89 L109.92 243.48 L113.70 240.15 L117.48 236.90 L121.26 233.72 L125.04 230.61 L128.82 227.58 L132.60 224.63 L136.38 221.75 L140.16 218.94 L143.94 216.21 L147.72 213.56 L151.50 210.98 L155.28 208.48 L159.06 206.05 L162.84 203.69 L166.62 201.42 L170.40 199.21 L174.18 197.08 L177.96 195.03 L181.74 193.05 L185.52 191.15 L189.30 189.32 L193.08 187.57 L196.86 185.89 L200.64 184.29 L204.42 182.76 L208.20 181.31 L211.98 179.94 L215.76 178.63 L219.54 177.41 L223.32 176.26 L227.10 175.18 L230.88 174.18 L234.66 173.25 L238.44 172.40 L242.22 171.63 L246.00 170.93 L249.78 170.30 L253.56 169.75 L257.34 169.27 L261.12 168.87 L264.90 168.55 L268.68 168.30 L272.46 168.12 L276.24 168.03 L280.02 168.00 L283.80 168.00 L287.58 168.00 L291.36 168.00 L295.14 168.00 L298.92 168.00 L302.70 168.00 L306.48 168.00 L310.26 168.00 L314.04 168.00 L317.82 168.00 L321.60 168.00 L325.38 168.00 L329.16 168.00 L332.94 168.00 L336.72 168.00 L340.50 168.00 L344.28 168.00 L348.06 168.00 L351.84 168.00 L355.62 168.00 L359.40 168.00 L363.18 168.00 L366.96 168.00 L370.74 168.00 L374.52 168.00 L378.30 168.00 L382.08 168.00 L385.86 168.00 L389.64 168.00 L393.42 168.00 L397.20 168.00 L400.98 168.00 L404.76 168.00 L408.54 168.00 L412.32 168.00 L416.10 168.00 L419.88 168.00 L423.66 168.00 L427.44 168.00 L431.22 168.00 L435.00 168.00" fill="none" stroke="#09677b" stroke-width="3.3" stroke-linecap="round" stroke-linejoin="round"/>
+<circle cx="57.0" cy="298.0" r="4.6" fill="#09677b" stroke="none" stroke-width="2.4"/>
+<text x="57.0" y="323" font-size="18" text-anchor="middle" fill="#526861">0</text>
+<path d="M101.47 298V251.20" fill="none" stroke="#9fafa3" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="3 4"/>
+<circle cx="101.47" cy="251.2" r="4.6" fill="#09677b" stroke="none" stroke-width="2.4"/>
+<text x="101.47058823529412" y="323" font-size="18" text-anchor="middle" fill="#526861">0.1</text>
+<path d="M279.35 298V168.00" fill="none" stroke="#9fafa3" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="3 4"/>
+<circle cx="279.35" cy="168.0" r="4.6" fill="#09677b" stroke="none" stroke-width="2.4"/>
+<text x="279.3529411764706" y="323" font-size="18" text-anchor="middle" fill="#526861">0.5</text>
+<path d="M412.76 298V168.00" fill="none" stroke="#9fafa3" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="3 4"/>
+<circle cx="412.76" cy="168.0" r="4.6" fill="#09677b" stroke="none" stroke-width="2.4"/>
+<text x="412.764705882353" y="323" font-size="18" text-anchor="middle" fill="#526861">0.8</text>
+<text x="347" y="150" font-size="18" text-anchor="middle" fill="#526861">理想饱和区</text>
+<text x="432" y="353" font-size="18" text-anchor="end" fill="#203c37">漏源电压（V）</text>
+<path d="M20 367H460" fill="none" stroke="#cdd6cb" stroke-width="1.1" stroke-linecap="round" stroke-linejoin="round"/>
+<text x="20" y="396" font-size="18" text-anchor="start" fill="#526861">k = 200 μA/V²；忽略沟道长度调制。</text>
+</g>
+</svg>

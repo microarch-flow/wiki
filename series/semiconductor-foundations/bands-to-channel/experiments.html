@@ -1,0 +1,170 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>从一条沟道到一个逻辑门 · 两个电路实验</title>
+<style>
+:root{color-scheme:light;--ink:#203c37;--muted:#4f665e;--teal:#09677b;--rust:#913f23;--rule:#cad5cc;--paper:#fbfaf4;--fill:#eef3eb}
+*{box-sizing:border-box}
+html{background:var(--paper);color:var(--ink);font:17px/1.6 system-ui,"Noto Sans CJK SC",sans-serif}
+body{max-width:820px;margin:0 auto;padding:1.3rem clamp(.8rem,4vw,2.1rem) 3rem}
+a{color:var(--teal);text-underline-offset:.2em}
+nav{display:flex;flex-wrap:wrap;gap:.35rem 1.1rem;border-bottom:1px solid var(--rule);padding-bottom:.65rem}
+h1{font-size:clamp(1.6rem,5vw,2.3rem);line-height:1.25}
+h2{font-size:clamp(1.3rem,4vw,1.65rem);line-height:1.4;margin:0}
+section{margin:2rem 0;scroll-margin-top:1rem}
+section+section{border-top:1px solid var(--rule);padding-top:1.4rem}
+p{margin:.65rem 0}
+form{display:grid;gap:.6rem;background:var(--fill);border:1px solid var(--rule);border-radius:12px;padding:.85rem}
+label{display:flex;gap:.6rem;align-items:center;flex-wrap:wrap}
+select,button{font:inherit;color:var(--ink);background:var(--paper);border:1px solid #748b80;border-radius:6px;padding:.23rem .55rem}
+select{max-width:100%}
+input[type=range]{width:min(100%,18rem);accent-color:var(--teal);margin:0}
+button{cursor:pointer;min-width:4rem}
+button[aria-pressed=true]{color:white;background:var(--teal)}
+button:focus-visible,select:focus-visible,input:focus-visible,a:focus-visible{outline:3px solid var(--rust);outline-offset:2px}
+.switches{display:flex;gap:.5rem;flex-wrap:wrap}
+.plot{display:block;width:min(100%,520px);height:auto;margin:.65rem auto;color:var(--ink)}
+.plot text{font:18px system-ui,sans-serif;fill:var(--ink)}
+.caption{color:var(--muted);font-size:.93em}
+table{width:100%;max-width:30rem;border-collapse:collapse}
+td,th{text-align:right;padding:.3em;border-bottom:1px solid var(--rule);font-variant-numeric:tabular-nums}
+td:first-child,th:first-child{text-align:left}
+output,strong{font-weight:680}
+svg .wire{fill:none;stroke:#839489;stroke-width:2.5}
+svg .powered{stroke:var(--teal);stroke-width:4}
+</style>
+</head>
+<body>
+<nav aria-label="实验导航"><a href="#channel">沟道电势</a><a href="#gates">CMOS 通路</a></nav>
+<h1>从一条沟道到一个逻辑门</h1>
+<noscript>交互实验需要 JavaScript。两篇正文都附有静态图和算例。</noscript>
+<section id="channel">
+<h2>沿着源极到漏极量五次电压</h2>
+<p>把源极和体端接地。栅压固定，改变漏压，观察沟道上的五个等距位置 A 至 E。比较前后两段：是 A 到 B 的电位差更大，还是 D 到 E 的更大？</p>
+<form onsubmit="return false">
+<label>器件算例 <select id="model"><option value="discussion">栅压 1.2 V，阈值 0.4 V</option><option value="article">栅压 0.8 V，阈值 0.3 V</option></select></label>
+<label for="bias">漏压 <output id="vdLabel" for="bias">0.40 V</output></label><input id="bias" type="range" min="0" max="80" value="40" step="1" aria-label="漏源电压，步进 0.01 V">
+</form>
+<svg class="plot" id="profile" viewBox="0 0 460 208" role="img" aria-labelledby="profileTitle profileDesc">
+<title id="profileTitle">沟道电位随源漏间位置的变化</title><desc id="profileDesc">五个等距取样点的位置固定，漏压由滑块改变。下表给出各点读数。</desc>
+<text x="12" y="23">沟道电位 V(x)［V］</text>
+<path d="M57 42V164H429" class="wire"/><path d="M57 42H429" class="wire" stroke-dasharray="2 7" opacity=".45"/>
+<text x="48" y="48" text-anchor="end" id="axisTop">0.8</text><text x="48" y="169" text-anchor="end">0</text>
+<path id="curve" fill="none" stroke="#09677b" stroke-width="3.5"/><g id="samples"></g>
+</svg>
+<table><thead><tr><th>位置</th><th>沟道电位</th><th>栅相对当地沟道</th></tr></thead><tbody id="points"></tbody></table>
+<p aria-live="polite" id="mosReading"></p>
+<p class="caption">采用长沟道、强反型渐变沟道模型，k = 200 µA/V²，忽略体效应、迁移率变化和沟道长度调制。曲线由恒定的稳态漏电流求得。滑块上限取漏端刚开始夹断处，模型在端点附近只给出趋势。最后一列再减去阈值，就是当地过驱动。</p>
+<a href="./">回到 MOS 管正文</a>
+</section>
+<section id="gates">
+<h2>哪一条支路能一直走到 OUT？</h2>
+<p>把栅极输入 A、B 各设为 0 或 1。从输出 OUT（正文中的 Y）出发，看哪条支路能一直走到电源或地。切换门类型后，相同的 A、B 会怎样改变输出？</p>
+<form onsubmit="return false">
+<label>门类型 <select id="gate"><option value="nand">与非门 NAND</option><option value="nor">或非门 NOR</option></select></label>
+<div class="switches"><button type="button" id="a" aria-pressed="false">A = 0</button><button type="button" id="b" aria-pressed="false">B = 0</button></div>
+</form>
+<svg class="plot" id="network" viewBox="0 0 460 346" role="img" aria-labelledby="netTitle netDesc"><title id="netTitle">互补上拉与下拉网络的开关等效图</title><desc id="netDesc">粗蓝线表示完整通到 OUT 的路径。斜开的线表示断开的晶体管，两个输入都分别控制一只 PMOS 和一只 NMOS。</desc><g id="branches"></g></svg>
+<p aria-live="polite" id="gateReading"></p>
+<p class="caption">图中各管按理想开关表示，PA 和 NA 分别是输入 A 控制的 PMOS 和 NMOS。蓝色粗线表示完整通路。同一端口电压稳定后，纯电容负载的充放电电流趋近于零。这里的通路表示输出可以由哪根电源线维持。</p>
+<a href="../cmos-logic-gates/">回到门电路正文</a>
+</section>
+<script>
+'use strict';
+const el = id => document.getElementById(id);
+const settings = {discussion:{gate:1.2,threshold:.4,initial:40},article:{gate:.8,threshold:.3,initial:10}};
+const names = ['A','B','C','D','E'];
+function svgElement(tag,attrs,label) {
+  const node=document.createElementNS('http://www.w3.org/2000/svg',tag);
+  for(const [key,value] of Object.entries(attrs)) node.setAttribute(key,value);
+  if(label!==undefined) node.textContent=label;
+  return node;
+}
+function drawChannel(reset) {
+  const model=settings[el('model').value], overdrive=model.gate-model.threshold;
+  const slider=el('bias');
+  slider.max=Math.round(100*overdrive);
+  if(reset) slider.value=model.initial;
+  const vd=Number(slider.value)/100;
+  const shape=vd*(2*overdrive-vd);
+  function potential(x) {
+    if(x===1) return vd;
+    return overdrive-Math.sqrt(Math.max(0,overdrive*overdrive-shape*x));
+  }
+  const px=x=>57+372*x, py=v=>164-122*v/overdrive;
+  el('vdLabel').value=vd.toFixed(2)+' V';
+  slider.setAttribute('aria-valuetext',vd.toFixed(2)+' 伏');
+  el('axisTop').textContent=overdrive.toFixed(1);
+  const path=[];
+  for(let i=0;i<=100;i++) {
+    const x=i/100;
+    path.push((i?'L':'M')+px(x).toFixed(2)+' '+py(potential(x)).toFixed(2));
+  }
+  el('curve').setAttribute('d',path.join(' '));
+  const points=el('points'),samples=el('samples');
+  points.replaceChildren(); samples.replaceChildren();
+  names.forEach((name,i)=>{
+    const x=i/4, v=potential(x), row=points.insertRow();
+    const position=i===0?'A · 源端':i===4?'E · 漏端':name;
+    for(const text of [position,v.toFixed(3)+' V',(model.gate-v).toFixed(3)+' V']) row.insertCell().textContent=text;
+    samples.append(svgElement('circle',{cx:px(x),cy:py(v),r:4.5,fill:'#09677b'}),svgElement('text',{x:px(x),y:192,'text-anchor':'middle'},name));
+  });
+  const current=100*shape;
+  const local=overdrive-vd;
+  el('mosReading').textContent='漏电流 '+current.toFixed(2)+' µA。'+(vd===0?'整条沟道等势，已有反型电荷，源漏间净电流为零。':local<1e-7?'漏端过驱动降至零，达到理想模型的夹断起点。':'从源端走向漏端，当地过驱动由 '+overdrive.toFixed(2)+' V 降至 '+local.toFixed(2)+' V。');
+}
+el('model').addEventListener('change',()=>drawChannel(true));
+el('bias').addEventListener('input',()=>drawChannel(false));
+drawChannel(true);
+
+const inputs={A:false,B:false};
+function drawGate() {
+  const nand=el('gate').value==='nand';
+  const high=nand?!(inputs.A&&inputs.B):!(inputs.A||inputs.B);
+  const canvas=el('branches'); canvas.replaceChildren();
+  const line=(d,on)=>canvas.append(svgElement('path',{d,class:on?'wire powered':'wire','stroke-linecap':'round','stroke-linejoin':'round'}));
+  const label=(x,y,text,anchor='middle')=>canvas.append(svgElement('text',{x,y,'text-anchor':anchor},text));
+  function toggleSymbol(x,y,closed,active) {
+    line('M'+x+' '+(y-10)+' L'+(closed?x:x+13)+' '+(y+10),active);
+    for(const cy of [y-10,y+10])canvas.append(svgElement('circle',{cx:x,cy,r:3,fill:active?'#09677b':'#64786d'}));
+  }
+  function half(isP,top,bottom,parallel) {
+    const closed=[isP?!inputs.A:inputs.A,isP?!inputs.B:inputs.B];
+    const active=isP?high:!high;
+    const left=94,right=326,mid=210,arm=15;
+    const ys=parallel?[(top+bottom)/2,(top+bottom)/2]:[top+(bottom-top)*.28,top+(bottom-top)*.72];
+    if(parallel) {
+      line('M'+mid+' '+top+'V'+(top+arm),active);
+      line('M'+mid+' '+(bottom-arm)+'V'+bottom,active);
+    }
+    for(let i=0;i<2;i++) {
+      const x=parallel?[left,right][i]:mid,y=ys[i],lit=active&&closed[i];
+      if(parallel) {
+        line('M'+mid+' '+(top+arm)+'H'+x+'V'+(y-10),lit);
+        line('M'+x+' '+(y+10)+'V'+(bottom-arm)+'H'+mid,lit);
+      } else {
+        const a=i?(top+bottom)/2:top, b=i?bottom:(top+bottom)/2;
+        line('M'+x+' '+a+'V'+(y-10),lit);line('M'+x+' '+(y+10)+'V'+b,lit);
+      }
+      toggleSymbol(x,y,closed[i],lit);
+      label(x+(x===right?-12:17),y+5,(isP?'P':'N')+['A','B'][i]+' '+(closed[i]?'通':'断'),x===right?'end':'start');
+    }
+  }
+  label(210,24,'VDD');half(true,36,168,nand);half(false,168,302,!nand);label(210,328,'GND');
+  line('M210 168H347',true);canvas.append(svgElement('circle',{cx:210,cy:168,r:4.5,fill:'#09677b'}));label(356,174,'OUT = '+Number(high),'start');
+  for(const key of ['A','B']) {
+    const btn=el(key.toLowerCase());btn.textContent=key+' = '+Number(inputs[key]);btn.setAttribute('aria-pressed',String(inputs[key]));
+  }
+  const rail=high?'VDD':'GND';
+  const connected=['A','B'].filter(k=>high?!inputs[k]:inputs[k]).map(k=>(high?'P':'N')+k);
+  const relation=(high&&nand)||(!high&&!nand)?'并联':'串联';
+  el('gateReading').textContent=(nand?'NAND':'NOR')+'，A = '+Number(inputs.A)+'、B = '+Number(inputs.B)+'。'+(high?'上拉':'下拉')+'网络为'+relation+'，'+connected.join('、')+'导通，完整路径把 OUT 接到 '+rail+'，稳定后读 '+Number(high)+'。';
+}
+for(const key of ['A','B']) el(key.toLowerCase()).addEventListener('click',()=>{inputs[key]=!inputs[key];drawGate()});
+el('gate').addEventListener('change',drawGate);
+drawGate();
+</script>
+</body>
+</html>

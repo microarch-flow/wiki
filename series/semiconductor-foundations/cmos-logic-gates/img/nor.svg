@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="480" height="433" viewBox="0 0 480 433" xml:lang="zh-CN" role="img" aria-labelledby="title desc">
+  <title id="title">两输入或非门的串联上拉与并联下拉</title>
+  <desc id="desc">标有 A 的两只管共享同一输入，标有 B 的两只管共享另一个输入。上半是 PMOS，下半是 NMOS。A 为高、B 为低时，输出经并联支路中 A 控制的 NMOS 接地，串联上拉被 A 控制的 PMOS 切断。箭头标出导通路径。</desc>
+  <defs><marker id="teal" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="3.2" markerHeight="3.2" orient="auto"><path d="M0 0 9 5 0 10Z" fill="#09677b"/></marker><marker id="rust" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="3.2" markerHeight="3.2" orient="auto"><path d="M0 0 9 5 0 10Z" fill="#9b4c28"/></marker><marker id="gray" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="3.2" markerHeight="3.2" orient="auto"><path d="M0 0 9 5 0 10Z" fill="#536860"/></marker></defs>
+  <rect x="1" y="1" width="478" height="431" rx="14" fill="#f7f6ef" stroke="#c6cec2"/>
+  <g font-family="system-ui, &apos;Noto Sans CJK SC&apos;, sans-serif">
+    <text x="22" y="34" text-anchor="start" font-size="22" fill="#203c37" font-weight="650">NOR 或非门 · 取 A = 1，B = 0</text>
+    <text x="231" y="68" text-anchor="middle" font-size="19" fill="#203c37" font-weight="400">VDD</text>
+    <line x1="219" y1="76" x2="243" y2="76" stroke="#203c37" stroke-width="2.6" stroke-linecap="round"/>
+    <line x1="231" y1="76" x2="231" y2="83" stroke="#203c37" stroke-width="2.6" stroke-linecap="round"/>
+    <path d="M231 83h-12v42h12" fill="none" stroke="#536860" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"/><line x1="212" y1="88" x2="212" y2="120" stroke="#203c37" stroke-width="2.7" stroke-linecap="round"/><line x1="182" y1="104" x2="201" y2="104" stroke="#203c37" stroke-width="2.6" stroke-linecap="round"/><circle cx="206" cy="104" r="5" fill="#f7f6ef" stroke="#203c37" stroke-width="2"/><line x1="211" y1="104" x2="212" y2="104" stroke="#203c37" stroke-width="2.6" stroke-linecap="round"/>
+    <text x="176" y="110" text-anchor="end" font-size="19" fill="#203c37" font-weight="400">A</text>
+    <line x1="231" y1="125" x2="231" y2="142" stroke="#203c37" stroke-width="2.6" stroke-linecap="round"/>
+    <path d="M231 142h-12v42h12" fill="none" stroke="#9b4c28" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"/><line x1="212" y1="147" x2="212" y2="179" stroke="#203c37" stroke-width="2.7" stroke-linecap="round"/><line x1="182" y1="163" x2="201" y2="163" stroke="#203c37" stroke-width="2.6" stroke-linecap="round"/><circle cx="206" cy="163" r="5" fill="#f7f6ef" stroke="#203c37" stroke-width="2"/><line x1="211" y1="163" x2="212" y2="163" stroke="#203c37" stroke-width="2.6" stroke-linecap="round"/>
+    <text x="176" y="169" text-anchor="end" font-size="19" fill="#203c37" font-weight="400">B</text>
+    <line x1="231" y1="184" x2="231" y2="208" stroke="#203c37" stroke-width="2.6" stroke-linecap="round"/>
+    <line x1="231" y1="208" x2="231" y2="232" stroke="#203c37" stroke-width="2.6" stroke-linecap="round"/>
+    <line x1="134" y1="232" x2="330" y2="232" stroke="#203c37" stroke-width="2.6" stroke-linecap="round"/>
+    <circle cx="231" cy="232" r="3.5" fill="#203c37" stroke="none" stroke-width="2"/>
+    <line x1="134" y1="232" x2="134" y2="248" stroke="#09677b" stroke-width="2.6" stroke-linecap="round"/>
+    <line x1="330" y1="232" x2="330" y2="248" stroke="#536860" stroke-width="2.6" stroke-linecap="round"/>
+    <path d="M134 248h-12v42h12" fill="none" stroke="#09677b" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"/><line x1="115" y1="253" x2="115" y2="285" stroke="#203c37" stroke-width="2.7" stroke-linecap="round"/><line x1="85" y1="269" x2="115" y2="269" stroke="#203c37" stroke-width="2.6" stroke-linecap="round"/>
+    <text x="79" y="275" text-anchor="end" font-size="19" fill="#203c37" font-weight="400">A</text>
+    <path d="M330 248h-12v42h12" fill="none" stroke="#536860" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"/><line x1="311" y1="253" x2="311" y2="285" stroke="#203c37" stroke-width="2.7" stroke-linecap="round"/><line x1="281" y1="269" x2="311" y2="269" stroke="#203c37" stroke-width="2.6" stroke-linecap="round"/>
+    <text x="275" y="275" text-anchor="end" font-size="19" fill="#203c37" font-weight="400">B</text>
+    <line x1="134" y1="290" x2="134" y2="324" stroke="#09677b" stroke-width="2.6" stroke-linecap="round"/>
+    <line x1="330" y1="290" x2="330" y2="324" stroke="#536860" stroke-width="2.6" stroke-linecap="round"/>
+    <line x1="134" y1="324" x2="330" y2="324" stroke="#203c37" stroke-width="2.6" stroke-linecap="round"/>
+    <circle cx="231" cy="324" r="3.5" fill="#203c37" stroke="none" stroke-width="2"/>
+    <line x1="231" y1="324" x2="231" y2="345" stroke="#203c37" stroke-width="2.6" stroke-linecap="round"/>
+    <line x1="219" y1="345" x2="243" y2="345" stroke="#203c37" stroke-width="2.6" stroke-linecap="round"/><line x1="223" y1="350" x2="239" y2="350" stroke="#203c37" stroke-width="2.6" stroke-linecap="round"/><line x1="228" y1="355" x2="234" y2="355" stroke="#203c37" stroke-width="2.6" stroke-linecap="round"/>
+    <path d="M146 248L146 290" stroke="#09677b" stroke-width="3" fill="none" marker-end="url(#teal)"/>
+    <text x="24" y="384" text-anchor="start" font-size="19" fill="#09677b" font-weight="650">A 控制的 NMOS 接通下拉，Y = 0。</text>
+    <text x="24" y="413" text-anchor="start" font-size="18" fill="#203c37" font-weight="400">串联上拉在 A 控制的 PMOS 处断开。</text>
+    <circle cx="231" cy="208" r="4.5" fill="#203c37" stroke="none" stroke-width="2"/>
+    <line x1="231" y1="208" x2="387" y2="208" stroke="#09677b" stroke-width="2.6" stroke-linecap="round"/>
+    <text x="398" y="214" text-anchor="start" font-size="20" fill="#203c37" font-weight="650">Y</text>
+  </g>
+</svg>
