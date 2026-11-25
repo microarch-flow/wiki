@@ -412,8 +412,13 @@ def stage_site(root=ROOT, build_root=None, registry=None, source_root=None, layo
                 elif local["publish"] == "series/inference-runtime":
                     stage_inference(selected, docs / local["publish"], published)
                 else:
-                    copy_source(selected, docs / local["publish"], public_only=True)
-                    published.add_tree(selected, docs / local["publish"])
+                    destination = docs / local["publish"]
+                    copy_source(selected, destination, public_only=True)
+                    if local["directory"] == "series/semiconductor-foundations":
+                        companion = Path("electrons-to-diode/interactive.html")
+                        if (destination / companion.parent / "README.md").is_file():
+                            shutil.copy2(selected / companion, destination / companion)
+                    published.add_tree(selected, destination)
                 print(f"Staged series {item['title']} from local {local['directory']}")
                 continue
             if "source" not in item:
