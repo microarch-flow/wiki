@@ -33,7 +33,7 @@ X 倾向于将相邻 line 留在同一行；Y 更早在 bank 之间交错。
 
 两种映射使用的地址位均被保留。在此序列中，所有目标行都是 0。X 第一次打开 bank 0，后续 7 次命中；Y 的四个 bank 各先打开一次，再各命中一次。Y 提供更多 bank 并行机会，但两种方案谁更快，还取决于请求到达时间、CA/DQ 共享和命令时序。
 
-后续[命令调度](./command-scheduling-fr-fcfs.md)和[行策略](./page-policy-open-close-adaptive.md)沿用映射 X 的地址：完成 0—7 后，bank 0 保留打开的 row 0。接下来访问 line 1 或 2 仍指向 bank 0、row 0；访问 line 32 则指向 bank 0、row 1。后两篇分别改变这些请求的到达时间或未来选择，不假定整段访问一开始都在队列中。
+下一篇沿用映射 X。完成 0—7 后，bank 0 保留打开的 row 0。接下来访问 line 1 或 2 仍指向 bank 0、row 0；访问 line 32 则指向 bank 0、row 1。让这些请求在不同时刻到达，就可以分别观察[控制器先服务哪一笔](./command-scheduling-fr-fcfs.md#queue-choice)，以及在下一笔到达前[保留行还是预充](./command-scheduling-fr-fcfs.md#page-policy)。
 
 ### 映射需要满足什么条件？
 
