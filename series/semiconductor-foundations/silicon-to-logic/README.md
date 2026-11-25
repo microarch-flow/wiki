@@ -4,7 +4,7 @@
 
 <div id="阅读顺序"></div>
 
-一个输入电压怎样决定电路输出 0 还是 1？从[电子到二极管](../electrons-to-diode/README.md)出发，有两条路可走。想看反向偏置的结怎样收集另一端注入的电子，可以先读下面的 [BJT](#三极管怎样放大电流并作为开关)。想弄清数字门怎样翻转，可以直接从 [MOS 的栅极与沟道](../bands-to-channel/README.md)读到 [CMOS 反相器](#cmos-门怎样用充放电实现逻辑运算)，跟着输出节点上的电荷算一次翻转要花多少[时间](../fanout-and-wire-delay/README.md)和[能量](../switching-energy-and-power/README.md)。
+一个输入电压怎样决定电路输出 0 还是 1？从[电子到二极管](../electrons-to-diode/README.md)出发，有两条路可走。想看反向偏置的结怎样收集另一端注入的电子，可以先读下面的 [BJT](#三极管怎样放大电流并作为开关)。想弄清数字门怎样翻转，可以直接从 [MOS 的栅极与沟道](../bands-to-channel/README.md)读到 [CMOS 反相器](../cmos-logic-gates/README.md#inverter)，跟着输出节点上的电荷算一次翻转要花多少[时间](../fanout-and-wire-delay/README.md)和[能量](../switching-energy-and-power/README.md)。
 
 从门电路继续，还可以追一拍时钟的来路。先看[放大级](../transistor-amplifier/README.md)怎样补回[石英振荡回路](../quartz-oscillator/README.md)的损耗，再看[触发器怎样采样和二分频](../latch-and-divider/README.md)，以及 [PLL 怎样利用分频反馈倍频](../integer-pll/README.md)。芯片能用多快的时钟，还受[本地供电压降](../ir-drop-and-decoupling/README.md)以及[工艺、电压、温度对路径延迟的影响](../pvt-and-path-delay/README.md)约束。
 
@@ -71,120 +71,21 @@
 
 ## MOSFET 与沟道电流 {#mosfet-如何用栅极电压控制沟道电流}
 
-在常见的硅 MOSFET 中，掺杂形成源区和漏区。MOSFET 的全称是金属–氧化物–半导体场效应晶体管。栅极隔着介质建立电场，改变硅表面的载流子浓度。当源区与漏区之间形成导电沟道时，源、漏两端的压差可以驱动电流。
+MOSFET 的栅极与硅之间隔着绝缘层。栅极能改变硅表面的电子分布，形成连接源、漏的沟道。在同一只平面 NMOS 上，把栅压和漏压分开调，就能看清电荷从哪里来，又沿哪条路走。[MOS 管怎样隔着绝缘层控制电流？](../bands-to-channel/README.md)
 
-<details markdown="1">
-<summary>从沟道的形成读到漏极电流与器件规格</summary>
-
-### 用平面 NMOS 观察沟道怎样形成
-
-以增强型平面 NMOS 为例。器件有栅极 G、源极 S、漏极 D 和体端 B。两个重掺杂 N 型区形成源区和漏区，位于 P 型体区中。栅极和硅之间由薄的介质隔开。对本例，令体端与源极同电位，漏极电位略高于源极。
-
-逐步提高栅极电压时，栅极电场先从硅表面排开部分空穴，形成耗尽区。电场进一步增强时，电子在表面聚集。表面从以空穴为主变为以电子为主，称为**反型**。在强反型且漏源电压较小时，电子沟道将源区和漏区连起来。
-
-[![平面增强型 NMOS 的两种状态。低栅源电压下源区和漏区由 P 型体区隔开。较高的栅源电压在栅介质下方形成反型沟道，电子沿沟道由源区移向漏区。](./img/nmos-channel.svg)](./img/nmos-channel.svg)
-
-*截面为教学示意。两幅图均以源极为参考，省略体端接触和边缘电场。下图假设漏源电压较小，强反型沟道延伸至漏区。*
-
-定义 V<sub>GS</sub> = V<sub>G</sub> − V<sub>S</sub>，V<sub>DS</sub> = V<sub>D</sub> − V<sub>S</sub>。在上述 NMOS 方向下，电子从源极移向漏极，常规漏极电流 I<sub>D</sub> 从漏极流向源极。PMOS 使用空穴沟道，常用正值 V<sub>SG</sub> = V<sub>S</sub> − V<sub>G</sub> 表示栅驱动。提高 V<sub>SG</sub> 会增强 PMOS 的沟道导电能力。见 [MIT 6.004 的 MOSFET 结构与端口特性](https://ocw.mit.edu/courses/6-004-computation-structures-spring-2017/pages/c3/c3s1/)。
-
-### 漏极电流随端电压怎样变化
-
-用一个长沟道 NMOS 的一阶模型。设体端与源极相连，V<sub>DS</sub> ≥ 0，温度固定。模型沿沟道采用恒定的迁移率和阈值，忽略亚阈值电流、沟道长度调制和串联电阻。以 V<sub>TN</sub> 表示 NMOS 阈值，V<sub>ov</sub> = V<sub>GS</sub> − V<sub>TN</sub> 表示过驱动电压。系数 k = μ<sub>n</sub>C<sub>ox</sub>W/L，C<sub>ox</sub> 是单位面积栅介质电容，W 和 L 是沟道宽度和长度。
-
-| 模型工作区 | 条件 | 漏极电流 I<sub>D</sub> |
-| --- | --- | --- |
-| 截止 | V<sub>ov</sub> ≤ 0 | 近似为零。 |
-| 线性区 | V<sub>ov</sub> > 0 且 0 ≤ V<sub>DS</sub> < V<sub>ov</sub> | k(V<sub>ov</sub>V<sub>DS</sub> − V<sub>DS</sub><sup>2</sup>/2)。 |
-| 饱和区 | V<sub>ov</sub> > 0 且 V<sub>DS</sub> ≥ V<sub>ov</sub> | kV<sub>ov</sub><sup>2</sup>/2。 |
-
-在线性区靠近 V<sub>DS</sub> = 0 的范围，沟道近似一个电阻，约为 1/(kV<sub>ov</sub>)。这个区间适合用来分析低压降开关的稳态导通。
-
-当 V<sub>DS</sub> 增至 V<sub>ov</sub>，漏端的强反型沟道开始**夹断**。源端仍向沟道供应电子，电子穿过漏端的高电场区被收集。理想模型中的 I<sub>D</sub> 由栅源电压决定。实际饱和区的 I<sub>D</sub> 也可随 V<sub>DS</sub> 增加。见 [MIT 6.012 的长沟道 MOSFET 大信号模型](https://ocw.mit.edu/courses/6-012-microelectronic-devices-and-circuits-fall-2009/resources/mit6_012f09_lec11/)。
-
-例如，取 V<sub>TN</sub> = 0.3 V、V<sub>GS</sub> = 0.8 V、k = 200 µA/V²，得到 V<sub>ov</sub> = 0.5 V。在 V<sub>DS</sub> = 0.1 V 时，模型得到 I<sub>D</sub> = **9 µA**。在 V<sub>DS</sub> = 0.5 V 或 0.8 V 时，理想饱和电流均为 **25 µA**。这些数值来自指定模型和假设。
-
-### 看规格时，先看测量条件
-
-- **转移特性**固定 V<sub>DS</sub> 等条件，扫描 V<sub>GS</sub>，观察 I<sub>D</sub>。某个工作点的跨导 g<sub>m</sub> 是固定其他端电压时 I<sub>D</sub> 对 V<sub>GS</sub> 的局部斜率，单位为西门子（S）。
-- **输出特性**对多个固定的 V<sub>GS</sub>，分别扫描 V<sub>DS</sub>，得到一组 I<sub>D</sub> 曲线。用作低损耗开关时，关注规定栅驱动和温度下的导通电阻 R<sub>DS(on)</sub>。
-- **输入电容与栅电荷**描述驱动电路在切换时需要转移的电荷。绝缘栅极的稳态漏电通常很小。每次改变栅极电压，驱动电路仍需提供瞬态电流。
-
-例如，Nexperia 2N7002 在结温 25 °C、V<sub>DS</sub> = V<sub>GS</sub>、I<sub>D</sub> = 0.25 mA 时，测得的栅源阈值规格范围为 1.0–2.5 V。同为 25 °C，导通电阻最大值 5.3 Ω 对应 V<sub>GS</sub> = 4.5 V 和 I<sub>D</sub> = 75 mA。前一个测试定义小电流门限，后一个测试才给出指定负载和栅驱动下的导通电阻。见 [Nexperia 2N7002，Rev. 7，表 7 与图 5–7](https://assets.nexperia.com/documents/data-sheet/2N7002.pdf#page=5)。
-
-实际器件还要考虑亚阈值电流、体偏置改变阈值、源漏与体区之间的 PN 结、寄生电容及短沟道效应。上面的一阶式适合解释趋势。预测特定工艺中的电流和延迟，要使用对应的器件模型与工作条件。器件结构演化见 [FAB 的 Planar、FinFET 与 GAAFET](../../chip-development/FAB/wiki/02-front-end-fabrication/transistor-evolution-planar-finfet-gaa.md)。
-
-</details>
+- <span id="用平面-nmos-观察沟道怎样形成"></span>**先只调栅压。** 源、漏同电势，沟道里可以已有电子，稳态源漏净电流仍为零。[看绝缘栅下的耗尽和反型](../bands-to-channel/README.md#隔着绝缘层加电压)
+- <span id="漏极电流随端电压怎样变化"></span>**再只调漏压。** 整条金属栅极接同一根引线，沿着沟道，栅极相对于当地沟道的电压却在变化。跟着电子从[源端走向漏端](../bands-to-channel/README.md#channel-voltage)，再看[漏端夹断后电流怎样延续](../bands-to-channel/README.md#pinch-off)。
+- <span id="看规格时先看测量条件"></span>**读电流要带上测试条件。** 用一个小电流定义的阈值与规定负载下的导通电阻，要分别查对应的栅压、漏压和温度。对照[一只器件的阈值与导通电阻测试条件](../bands-to-channel/README.md#specs)。
 
 ## CMOS 反相器与逻辑门 {#cmos-门怎样用充放电实现逻辑运算}
 
-把 PMOS 和 NMOS 接到同一个输出节点，可以控制这个节点的充放电。静态 CMOS 门用 PMOS 建成**上拉网络**，用 NMOS 建成**下拉网络**。分析门的输出时，先判断哪条路径会接通，再判断节点电压会怎样变化。
+一只接地的 NMOS 可以给输出放电。它关断后，谁把已经放掉的电荷补回来？把 PMOS 的源极接到电源，共用一个输入，电路就有了另一条充电路径。[两只 MOS 管怎样组成一个逻辑门？](../cmos-logic-gates/README.md)
 
-<details markdown="1">
-<summary>沿上拉和下拉路径推导反相器、NAND 与 NOR，再算一次翻转的能量</summary>
-
-### 用两只管构成反相器
-
-反相器的 PMOS 源极接 V<sub>DD</sub>，NMOS 源极接 GND。两个栅极接输入，两个漏极接输出。在常见体硅 CMOS 中，这两个器件的体端分别接 V<sub>DD</sub> 和 GND。以下过程假设供电和输入满足器件的正常工作条件，输出接等效电容负载 C<sub>L</sub>。
-
-[![CMOS 反相器。输入接两只晶体管的栅极，输出是两只管共用的漏极节点。PMOS 把输出接到电源，NMOS 把输出接到地，负载电容从输出接到地。](./img/cmos-inverter.svg)](./img/cmos-inverter.svg)
-
-*黑点表示电气连接。图中的 C<sub>L</sub> 代表下一级输入和连线等效到输出节点的电容，体端连接见正文。*
-
-| 输入 | 管子状态 | 稳态输出 |
-| --- | --- | --- |
-| 0 | PMOS 导通，NMOS 截止。 | 1 |
-| 1 | PMOS 截止，NMOS 导通。 | 0 |
-
-稳定后，逻辑 1 的电压接近 V<sub>DD</sub>，逻辑 0 的电压接近 GND。
-
-输入设置两只管子的栅极电压。输入从高变低时，电荷从 V<sub>DD</sub> 经 PMOS 流入输出节点。输入从低变高时，输出节点通过 NMOS 向 GND 放电。
-
-<div id="用电压电流电阻和电容描述一个节点"></div>
-<div id="电容把电流换算成电压变化"></div>
-
-对图中接地的线性负载电容，输出节点一侧的电荷 **Q = C<sub>L</sub>·V<sub>out</sub>**。忽略其他电流路径，按基尔霍夫电流定律（KCL），流入电容的净电流为上拉电流 I<sub>P</sub> 减去下拉电流 I<sub>N</sub>。净电流为正时，输出节点一侧的电荷增加，电压升高。净电流为负时，电荷减少，电压降低。电压变化所需的时间见[电路与时序基础](../../microarchitecture/02-pipeline/electrical-timing-foundations.md)。
-
-### 用串联和并联推导 NAND 与 NOR
-
-对于两输入静态 CMOS 门，A 和 B 各控制一只 PMOS 和一只 NMOS。串联支路要求每个开关都导通，并联支路只需有一个支路导通。
-
-| 门 | 上拉和下拉的接法 | 输出何时为 0 |
-| --- | --- | --- |
-| NAND（与非） | PMOS 并联，NMOS 串联。 | A 和 B 都为 1。 |
-| NOR（或非） | PMOS 串联，NMOS 并联。 | A 和 B 至少有一个为 1。 |
-
-以 A = 1、B = 0 为例。NAND 的 B 控制管关断了串联下拉，B 同时使一个并联上拉支路导通，输出为 1。对同样输入，NOR 的 A 控制管打开一个并联下拉支路，同时断开串联上拉，输出为 0。
-
-| 输入 (A, B) | NAND | NOR |
-| --- | --- | --- |
-| (0, 0) | 1 | 1 |
-| (0, 1) | 1 | 0 |
-| (1, 0) | 1 | 0 |
-| (1, 1) | 0 | 0 |
-
-在 NAND 或 NOR 后再接一级反相器，就分别得到 AND 或 OR。分析这条路径时，要计入两级的负载与传播延迟。见 [MIT 6.004 的互补网络和组合门](https://ocw.mit.edu/courses/6-004-computation-structures-spring-2017/pages/c3/c3s1/)。
-
-### 电压落在哪个范围，逻辑值才有效
-
-缓慢扫描输入电压并等待输出稳定，可以得到反相器的电压传输曲线。输入接近两个电源轨时，输出分别接近相反的电源轨。中间过渡区可能出现两只管同时导通，输出由两边的电流平衡决定。
-
-| 电平参数 | 在规定的供电、温度和负载条件下 |
-| --- | --- |
-| V<sub>IL</sub>、V<sub>IH</sub> | 接收端保证识别为低电平的最高输入电压，以及保证识别为高电平的最低输入电压。两者之间的逻辑结果无保证。 |
-| V<sub>OL</sub>、V<sub>OH</sub> | 驱动端输出低电平时的最高保证电压，以及输出高电平时的最低保证电压。 |
-
-一对兼容的驱动端和接收端应有正的直流噪声容限。低电平容限为 V<sub>IL</sub> − V<sub>OL</sub>，高电平容限为 V<sub>OH</sub> − V<sub>IH</sub>。例如，若本例的低电平输出上限为 0.10 V，接收低电平上限为 0.25 V，低电平容限为 **0.15 V**。该值只描述所选端口条件下的静态余量。
-
-器件的 V<sub>TN</sub> 用于描述单个 NMOS 的导电。门电路的直流翻转点可用传输曲线上 V<sub>in</sub> = V<sub>out</sub> 的点定义。传播延迟则按约定的输入和输出参考门限计量。分析时应分别取相应的器件参数、接口电平和时序库门限。见 [MIT 6.004 的数字抽象与电平规范](https://ocw.mit.edu/courses/6-004-computation-structures-spring-2017/pages/c2/c2s1/)。
-
-### 翻转消耗的能量来自哪里
-
-在理想全摆幅的充放电模型中，输出每次从 0 V 升至 V<sub>DD</sub>，电源向 C<sub>L</sub> 送入 C<sub>L</sub>V<sub>DD</sub> 的电荷，提供能量 C<sub>L</sub>V<sub>DD</sub><sup>2</sup>。其中一半暂存在电容里，一半在上拉路径耗散。随后放电时，存下的能量在下拉路径耗散。
-
-设 f 是每秒的周期数，α 是每周期平均发生的 **0 → 1** 次数，则该节点平均负载切换功率为 P<sub>sw</sub> = αfC<sub>L</sub>V<sub>DD</sub><sup>2</sup>。例如，反相器负载为 50 fF，供电为 0.8 V。电源每次全摆幅充电提供 **32 fJ**。若 f = 1 GHz，平均每四周期发生一次上升，则 P<sub>sw</sub> = **8 µW**。实际门还会消耗两管同时导通时的短路能量、内部节点翻转能量和漏电功率。见 [MIT 6.012 的 CMOS 延迟与功耗](https://ocw.mit.edu/courses/6-012-microelectronic-devices-and-circuits-fall-2009/resources/mit6_012f09_lec16_scaling/)。
-
-</details>
+- <span id="用两只管构成反相器"></span>**接好两只管。** 在输入高、低两种情况下分别沿导通路径走一遍，推出[反相器的输出](../cmos-logic-gates/README.md#inverter)。
+- <span id="用电压电流电阻和电容描述一个节点"></span><span id="电容把电流换算成电压变化"></span>**跟着电荷走。** 流入输出节点的净电流改变负载电荷。给定电容，再用 Q = CV 换算成[输出电压随时间的变化](../cmos-logic-gates/README.md#edge)。
+- <span id="用串联和并联推导-nand-与-nor"></span>**增加第二个输入。** 在四组输入下，逐一查通向电源与地的路径，由此得到[NAND 与 NOR 的真值表](../cmos-logic-gates/README.md#nand-nor)。
+- <span id="电压落在哪个范围逻辑值才有效"></span>**连接下一级。** 测到输出端处于某个电压，后面的门会把它读成几？用[输入和输出的电压范围](../cmos-logic-gates/README.md#levels)检验两级之间的噪声裕量。
+- <span id="翻转消耗的能量来自哪里"></span>**算一次充放电。** 分清电源提供、负载暂存和导通路径耗散的能量。见[一次翻转的能量](../cmos-logic-gates/README.md#energy)。
 
 <div id="接下来怎么读"></div>
 

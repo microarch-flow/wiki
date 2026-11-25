@@ -18,7 +18,7 @@ SITE = Path(__file__).resolve().parents[2] / ".site-build" / "site"
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from hooks import CPO_SECTIONS, grouped_original_topics, make_tree, storage_resources_tree  # noqa: E402
 from ownership import GROUPS, INTERCONNECT, STORAGE, owner  # noqa: E402
-from prepare import SILICON_TO_LOGIC_LEGACY_SECTIONS  # noqa: E402
+from prepare import FOUNDATION_COMPANIONS, SILICON_TO_LOGIC_LEGACY_SECTIONS  # noqa: E402
 from storage_navigation import (INTEGRATION_AFTER, INTEGRATION_HOME, INTEGRATION_PACKAGING,
                                 MEMORY_HOME, MEMORY_SECTIONS, RESOURCE_HOME, RESOURCE_SECTIONS,
                                 SYSTEM_SELECTION)  # noqa: E402
@@ -93,7 +93,8 @@ class GeneratedNavigationTests(unittest.TestCase):
         source = Path(__file__).resolve().parents[2] / "series/semiconductor-foundations"
         titles = {page.parent.name: page.read_text(encoding="utf-8").splitlines()[0].removeprefix("# ")
                   for page in source.glob("*/README.md")}
-        self.assertEqual(slugs[:3], ["electrons-to-diode", "silicon-to-logic", "voltage-to-clock"])
+        self.assertEqual(slugs[:5], ["electrons-to-diode", "bands-to-channel", "cmos-logic-gates",
+                                     "silicon-to-logic", "voltage-to-clock"])
         self.assertEqual(entries[0][1], "从电子到二极管")
         self.assertCountEqual(slugs, titles.keys())
         for slug, short in entries:
@@ -127,6 +128,13 @@ class GeneratedNavigationTests(unittest.TestCase):
         for anchor in baseline["fragments"]:
             self.assertEqual(ids[anchor], 1, anchor)
         self.assertIn('href="../electrons-to-diode/"', article)
+        for slug in ("bands-to-channel", "cmos-logic-gates"):
+            with self.subTest(flagship=slug):
+                links = re.findall(rf'href="\.\./{slug}/#([^"]+)"', article)
+                self.assertTrue(links)
+                target = (SITE / "foundations" / slug / "index.html").read_text(encoding="utf-8")
+                target_ids = set(re.findall(r'\bid="([^"]+)"', target))
+                self.assertTrue({unquote(unescape(fragment)) for fragment in links} <= target_ids)
         for slug, anchor in old_routes.items():
             with self.subTest(legacy_route=slug):
                 redirect = (SITE / topic / slug / "index.html").read_text(encoding="utf-8")
@@ -165,6 +173,17 @@ class GeneratedNavigationTests(unittest.TestCase):
                 name = unescape(re.sub(r"<[^>]*>", "", label)).strip()
                 self.assertTrue(name)
                 self.assertNotIn(name, ("这里", "点击这里", "interactive.html"))
+
+    def test_mos_and_cmos_articles_open_their_shared_experiments(self):
+        companion = Path("foundations/bands-to-channel/experiments.html")
+        html = (SITE / companion).read_text(encoding="utf-8")
+        for slug, fragment in (("bands-to-channel", "channel"), ("cmos-logic-gates", "gates")):
+            with self.subTest(article=slug):
+                page = Path("foundations") / slug / "index.html"
+                article = (SITE / page).read_text(encoding="utf-8").split("<article", 1)[1].split("</article>", 1)[0]
+                targets = {urljoin(page_url(page), unescape(href)) for href in re.findall(r'href="([^"]+)"', article)}
+                self.assertIn(f"https://example.test/{companion}#{fragment}", targets)
+                self.assertEqual(html.count(f'id="{fragment}"'), 1)
 
     def test_series_redirect_targets_homepage_section(self):
         redirect = (SITE / "series/index.html").read_text(encoding="utf-8")
@@ -974,10 +993,11 @@ class GeneratedNavigationTests(unittest.TestCase):
 
     def test_current_navigation_and_breadcrumb_links(self):
         self.assertTrue(SITE.is_dir(), "Build the site before running this test")
-        standalone_pages = {SITE / "series/index.html", SITE / "foundations/electrons-to-diode/interactive.html", *(
-            SITE / "foundations/silicon-to-logic" / slug / "index.html"
-            for slug in SILICON_TO_LOGIC_LEGACY_SECTIONS
-        )}
+        standalone_pages = {
+            SITE / "series/index.html",
+            *(SITE / "foundations" / companion for companion in FOUNDATION_COMPANIONS),
+            *(SITE / "foundations/silicon-to-logic" / slug / "index.html" for slug in SILICON_TO_LOGIC_LEGACY_SECTIONS),
+        }
         pages = sorted(p for p in SITE.rglob("*.html") if p.name != "404.html" and p not in standalone_pages)
         self.assertGreater(len(pages), 1)
         errors = []

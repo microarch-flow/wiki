@@ -25,6 +25,7 @@ SOURCE_TOPICS = tuple(name for name in TOPICS if name not in {"RAM", "HBF", "COM
 INTERCONNECT_TOPICS = frozenset({"BUS", "NOC", "D2D", "PCIE", "COHERENCE",
                                 "SCALEUP", "NETWORK", "SERDES", "CPO"})
 BUS_LEGACY_INDEX = "docs/archive/interconnect/BUS/README.md"
+FOUNDATION_COMPANIONS = (Path("electrons-to-diode/interactive.html"), Path("bands-to-channel/experiments.html"))
 SILICON_TO_LOGIC_LEGACY_SECTIONS = {
     "circuit-quantities": "用电压电流电阻和电容描述一个节点",
     "silicon-and-doping": "从硅的四个价电子理解-p-型和-n-型掺杂",
@@ -415,9 +416,9 @@ def stage_site(root=ROOT, build_root=None, registry=None, source_root=None, layo
                     destination = docs / local["publish"]
                     copy_source(selected, destination, public_only=True)
                     if local["directory"] == "series/semiconductor-foundations":
-                        companion = Path("electrons-to-diode/interactive.html")
-                        if (destination / companion.parent / "README.md").is_file():
-                            shutil.copy2(selected / companion, destination / companion)
+                        for companion in FOUNDATION_COMPANIONS:
+                            if (destination / companion.parent / "README.md").is_file():
+                                shutil.copy2(selected / companion, destination / companion)
                     published.add_tree(selected, destination)
                 print(f"Staged series {item['title']} from local {local['directory']}")
                 continue

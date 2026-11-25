@@ -1,0 +1,58 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="480" height="399" viewBox="0 0 480 399" xml:lang="zh-CN" role="img" aria-labelledby="title desc">
+  <title id="title">CMOS 反相器输出充、放电路径</title>
+  <desc id="desc">每幅图中上管 PMOS 接电源，下管 NMOS 接地，共漏端 Y 接负载电容。两个栅极同接 A。输入变低时 PMOS 向电容充电；输入变高时 NMOS 将已充电的输出向地放电。</desc>
+  <defs><marker id="teal" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="3.2" markerHeight="3.2" orient="auto"><path d="M0 0 9 5 0 10Z" fill="#09677b"/></marker><marker id="rust" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="3.2" markerHeight="3.2" orient="auto"><path d="M0 0 9 5 0 10Z" fill="#9b4c28"/></marker><marker id="gray" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="3.2" markerHeight="3.2" orient="auto"><path d="M0 0 9 5 0 10Z" fill="#536860"/></marker></defs>
+  <rect x="1" y="1" width="478" height="397" rx="14" fill="#f7f6ef" stroke="#c6cec2"/>
+  <g font-family="system-ui, &apos;Noto Sans CJK SC&apos;, sans-serif">
+    <text x="22" y="33" text-anchor="start" font-size="23" fill="#203c37" font-weight="650">同一个输入控制两条通路</text>
+    <line x1="240" y1="50" x2="240" y2="349" stroke="#c6cec2" stroke-width="1.3" stroke-linecap="round"/>
+    <text x="119" y="71" text-anchor="middle" font-size="20" fill="#203c37" font-weight="650">A 变低，Y 上升</text>
+    <text x="115" y="99" text-anchor="middle" font-size="18" fill="#203c37" font-weight="400">VDD</text>
+    <line x1="105" y1="107" x2="125" y2="107" stroke="#203c37" stroke-width="2.6" stroke-linecap="round"/>
+    <line x1="115" y1="107" x2="115" y2="119" stroke="#9b4c28" stroke-width="2.6" stroke-linecap="round"/>
+    <path d="M115 119h-12v42h12" fill="none" stroke="#9b4c28" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"/><line x1="96" y1="124" x2="96" y2="156" stroke="#203c37" stroke-width="2.7" stroke-linecap="round"/><line x1="66" y1="140" x2="85" y2="140" stroke="#203c37" stroke-width="2.6" stroke-linecap="round"/><circle cx="90" cy="140" r="5" fill="#f7f6ef" stroke="#203c37" stroke-width="2"/><line x1="95" y1="140" x2="96" y2="140" stroke="#203c37" stroke-width="2.6" stroke-linecap="round"/>
+    <line x1="115" y1="161" x2="115" y2="187" stroke="#9b4c28" stroke-width="2.6" stroke-linecap="round"/>
+    <line x1="115" y1="187" x2="115" y2="208" stroke="#536860" stroke-width="2.6" stroke-linecap="round"/>
+    <path d="M115 208h-12v42h12" fill="none" stroke="#536860" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"/><line x1="96" y1="213" x2="96" y2="245" stroke="#203c37" stroke-width="2.7" stroke-linecap="round"/><line x1="66" y1="229" x2="96" y2="229" stroke="#203c37" stroke-width="2.6" stroke-linecap="round"/>
+    <line x1="115" y1="250" x2="115" y2="273" stroke="#536860" stroke-width="2.6" stroke-linecap="round"/>
+    <line x1="103" y1="273" x2="127" y2="273" stroke="#203c37" stroke-width="2.6" stroke-linecap="round"/><line x1="107" y1="278" x2="123" y2="278" stroke="#203c37" stroke-width="2.6" stroke-linecap="round"/><line x1="112" y1="283" x2="118" y2="283" stroke="#203c37" stroke-width="2.6" stroke-linecap="round"/>
+    <path d="M66 140H40V229H66" fill="none" stroke="#203c37" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>
+    <line x1="24" y1="187" x2="40" y2="187" stroke="#203c37" stroke-width="2.6" stroke-linecap="round"/>
+    <circle cx="40" cy="187" r="3" fill="#203c37" stroke="none" stroke-width="2"/>
+    <text x="30" y="178" text-anchor="end" font-size="18" fill="#203c37" font-weight="400">A</text>
+    <line x1="115" y1="187" x2="187" y2="187" stroke="#9b4c28" stroke-width="2.6" stroke-linecap="round"/>
+    <circle cx="115" cy="187" r="4" fill="#203c37" stroke="none" stroke-width="2"/>
+    <text x="187" y="178" text-anchor="middle" font-size="18" fill="#203c37" font-weight="400">Y</text>
+    <line x1="187" y1="187" x2="187" y2="225" stroke="#9b4c28" stroke-width="2.6" stroke-linecap="round"/><line x1="173" y1="225" x2="201" y2="225" stroke="#9b4c28" stroke-width="2.6" stroke-linecap="round"/><line x1="173" y1="235" x2="201" y2="235" stroke="#203c37" stroke-width="2.6" stroke-linecap="round"/><line x1="187" y1="235" x2="187" y2="273" stroke="#203c37" stroke-width="2.6" stroke-linecap="round"/>
+    <line x1="175" y1="273" x2="199" y2="273" stroke="#203c37" stroke-width="2.6" stroke-linecap="round"/><line x1="179" y1="278" x2="195" y2="278" stroke="#203c37" stroke-width="2.6" stroke-linecap="round"/><line x1="184" y1="283" x2="190" y2="283" stroke="#203c37" stroke-width="2.6" stroke-linecap="round"/>
+    <text x="205" y="243" text-anchor="start" font-size="18" fill="#203c37" font-weight="400">C<tspan dy="4" font-size="15">L</tspan></text>
+    <path d="M128 198L180 198" stroke="#9b4c28" stroke-width="3" fill="none" marker-end="url(#rust)"/>
+    <text x="119" y="310" text-anchor="middle" font-size="18" fill="#9b4c28" font-weight="650">PMOS 通 · NMOS 断</text>
+    <text x="119" y="339" text-anchor="middle" font-size="18" fill="#203c37" font-weight="400">VDD 为电容充电</text>
+    <text x="353" y="71" text-anchor="middle" font-size="20" fill="#203c37" font-weight="650">A 变高，Y 下降</text>
+    <text x="349" y="99" text-anchor="middle" font-size="18" fill="#203c37" font-weight="400">VDD</text>
+    <line x1="339" y1="107" x2="359" y2="107" stroke="#203c37" stroke-width="2.6" stroke-linecap="round"/>
+    <line x1="349" y1="107" x2="349" y2="119" stroke="#536860" stroke-width="2.6" stroke-linecap="round"/>
+    <path d="M349 119h-12v42h12" fill="none" stroke="#536860" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"/><line x1="330" y1="124" x2="330" y2="156" stroke="#203c37" stroke-width="2.7" stroke-linecap="round"/><line x1="300" y1="140" x2="319" y2="140" stroke="#203c37" stroke-width="2.6" stroke-linecap="round"/><circle cx="324" cy="140" r="5" fill="#f7f6ef" stroke="#203c37" stroke-width="2"/><line x1="329" y1="140" x2="330" y2="140" stroke="#203c37" stroke-width="2.6" stroke-linecap="round"/>
+    <line x1="349" y1="161" x2="349" y2="187" stroke="#536860" stroke-width="2.6" stroke-linecap="round"/>
+    <line x1="349" y1="187" x2="349" y2="208" stroke="#09677b" stroke-width="2.6" stroke-linecap="round"/>
+    <path d="M349 208h-12v42h12" fill="none" stroke="#09677b" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"/><line x1="330" y1="213" x2="330" y2="245" stroke="#203c37" stroke-width="2.7" stroke-linecap="round"/><line x1="300" y1="229" x2="330" y2="229" stroke="#203c37" stroke-width="2.6" stroke-linecap="round"/>
+    <line x1="349" y1="250" x2="349" y2="273" stroke="#09677b" stroke-width="2.6" stroke-linecap="round"/>
+    <line x1="337" y1="273" x2="361" y2="273" stroke="#203c37" stroke-width="2.6" stroke-linecap="round"/><line x1="341" y1="278" x2="357" y2="278" stroke="#203c37" stroke-width="2.6" stroke-linecap="round"/><line x1="346" y1="283" x2="352" y2="283" stroke="#203c37" stroke-width="2.6" stroke-linecap="round"/>
+    <path d="M300 140H274V229H300" fill="none" stroke="#203c37" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>
+    <line x1="258" y1="187" x2="274" y2="187" stroke="#203c37" stroke-width="2.6" stroke-linecap="round"/>
+    <circle cx="274" cy="187" r="3" fill="#203c37" stroke="none" stroke-width="2"/>
+    <text x="264" y="178" text-anchor="end" font-size="18" fill="#203c37" font-weight="400">A</text>
+    <line x1="349" y1="187" x2="421" y2="187" stroke="#09677b" stroke-width="2.6" stroke-linecap="round"/>
+    <circle cx="349" cy="187" r="4" fill="#203c37" stroke="none" stroke-width="2"/>
+    <text x="421" y="178" text-anchor="middle" font-size="18" fill="#203c37" font-weight="400">Y</text>
+    <line x1="421" y1="187" x2="421" y2="225" stroke="#09677b" stroke-width="2.6" stroke-linecap="round"/><line x1="407" y1="225" x2="435" y2="225" stroke="#09677b" stroke-width="2.6" stroke-linecap="round"/><line x1="407" y1="235" x2="435" y2="235" stroke="#203c37" stroke-width="2.6" stroke-linecap="round"/><line x1="421" y1="235" x2="421" y2="273" stroke="#203c37" stroke-width="2.6" stroke-linecap="round"/>
+    <line x1="409" y1="273" x2="433" y2="273" stroke="#203c37" stroke-width="2.6" stroke-linecap="round"/><line x1="413" y1="278" x2="429" y2="278" stroke="#203c37" stroke-width="2.6" stroke-linecap="round"/><line x1="418" y1="283" x2="424" y2="283" stroke="#203c37" stroke-width="2.6" stroke-linecap="round"/>
+    <text x="439" y="243" text-anchor="start" font-size="18" fill="#203c37" font-weight="400">C<tspan dy="4" font-size="15">L</tspan></text>
+    <path d="M414 198L361 198" stroke="#09677b" stroke-width="3" fill="none" marker-end="url(#teal)"/>
+    <text x="353" y="310" text-anchor="middle" font-size="18" fill="#09677b" font-weight="650">PMOS 断 · NMOS 通</text>
+    <text x="353" y="339" text-anchor="middle" font-size="18" fill="#203c37" font-weight="400">电容经 NMOS 放电</text>
+    <line x1="22" y1="354" x2="458" y2="354" stroke="#c6cec2" stroke-width="1.3" stroke-linecap="round"/>
+    <text x="23" y="383" text-anchor="start" font-size="18" fill="#536860" font-weight="400">箭头为输出翻转期间上极板支路的常规电流。</text>
+  </g>
+</svg>
