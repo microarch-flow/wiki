@@ -21,6 +21,14 @@ graph TD
 
 这张图的关键是不要把 GPU die、HBM die、HBM stack、interposer、substrate 混成一个层级。AI GPU package 是多个高价值对象的系统集成。
 
+## 同一个封装里，信号在哪一层横着走，又在哪里竖着走？ {#hbm-section}
+
+[![GPU 裸片与 HBM 堆栈并排接在硅中介层上。棕线在中介层里横向连接两者，在 HBM 内向上连接基底裸片与多层 DRAM。](../../../../../semiconductor-foundations/inverter-to-package/img/gpu-hbm-section.png)](../../../../../semiconductor-foundations/inverter-to-package/img/gpu-hbm-section.png)
+
+从 GPU 裸片底部的一个信号凸点出发，沿棕线向下进入**硅中介层**，再向右走到 HBM 底部。GPU 和 HBM 并排安装，交换信号的密集走线由中介层提供。图中这种把并排裸片连起来的方式称为 **2.5D 集成**，可以在台积电的 CoWoS-S 剖面里找到相同的层次。[台积电的 CoWoS-S 硅中介层](https://3dfabric.tsmc.com/english/dedicatedFoundry/technology/cowos.htm)
+
+再沿棕线往上，从 HBM 的基底裸片走向目标 DRAM 层。层间连接跨过两片裸片之间的界面，**硅通孔（TSV）**穿过硅，把垂直方向上的这段路径接通。这一段属于 **3D 堆叠**。棕线只标识走线所在的层次，实际信号还要经过接口电路；层数和厚度也都按示意绘制。继续向下看，中介层下方才是把电源和外部信号引向电路板的封装基板。[HBM 堆栈的制造与互连](hbm-stack-manufacturing.md) · [比较硅中介层、局部硅桥与 3D 键合](../README.md)
+
 ## HBM stack 内部层级
 
 ```mermaid

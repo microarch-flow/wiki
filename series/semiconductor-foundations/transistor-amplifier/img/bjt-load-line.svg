@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="448" height="397" viewBox="0 0 448 397" role="img" aria-labelledby="title desc">
+  <title id="title">NPN 共射级的集电极负载线</title>
+  <desc id="desc">发射极接地，集电极经 1 千欧电阻接 3.3 伏。横轴为集电极电压，纵轴为集电极电流。负载线从 0 伏、3.3 毫安连到 3.3 伏、0 毫安。两种基极驱动对应线上的不同位置：放大示例在 2.30 伏、1.0 毫安，饱和示例在 0.20 伏、3.1 毫安。</desc>
+  <rect x="1" y="1" width="446" height="395" rx="15" fill="#f7f6ef" stroke="#c9d3c7"/>
+  <g font-family="system-ui, 'Noto Sans CJK SC', 'Microsoft YaHei', sans-serif" fill="#203c37">
+    <text x="19" y="33" font-size="23" font-weight="700">基极驱动变了，工作点移到哪里？</text>
+    <text x="19" y="60" font-size="17" fill="#526861">电源 3.3 V，集电极电阻 1 kΩ，发射极接地。</text>
+    <text x="19" y="88" font-size="16">集电极电流 I<tspan font-size="12" dy="3">C</tspan><tspan dy="-3">（mA）</tspan></text>
+    <g transform="translate(0 12)">
+    <g fill="none" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M58 98V268H405" stroke="#526861" stroke-width="1.7"/>
+      <path d="M53 103H58 M53 168H58 M53 218H58 M53 268H58 M58 268v5 M158 268v5 M258 268v5 M388 268v5" stroke="#526861" stroke-width="1.4"/>
+      <path d="M58 218H288V268" stroke="#b6c6bd" stroke-width="1.4" stroke-dasharray="4 4"/>
+      <path d="M58 103L388 268" stroke="#9b4c28" stroke-width="3.3"/>
+      <path d="M82 111L98 102H118" stroke="#09677b" stroke-width="1.7"/>
+      <path d="M291 213L308 187H323" stroke="#28634d" stroke-width="1.7"/>
+    </g>
+    <g fill="#526861" font-size="16" text-anchor="end">
+      <text x="48" y="109">3.3</text><text x="48" y="174">2</text>
+      <text x="48" y="224">1</text><text x="48" y="274">0</text>
+    </g>
+    <g fill="#526861" font-size="16" text-anchor="middle">
+      <text x="58" y="291">0</text><text x="158" y="291">1</text>
+      <text x="258" y="291">2</text><text x="388" y="291">3.3</text>
+    </g>
+    <text x="405" y="314" font-size="16" text-anchor="end">集电极电压 V<tspan font-size="12" dy="3">C</tspan><tspan dy="-3">（V）</tspan></text>
+    <path d="M78 106.8l6.2 6.2-6.2 6.2-6.2-6.2z" fill="#09677b" stroke="#f7f6ef" stroke-width="1.4"/>
+    <circle cx="288" cy="218" r="5.9" fill="#28634d" stroke="#f7f6ef" stroke-width="1.4"/>
+    <g fill="#09677b">
+      <text x="124" y="107" font-size="18" font-weight="650">饱和示例</text>
+      <text x="124" y="130" font-size="16">0.20 V，3.1 mA</text>
+    </g>
+    <g fill="#28634d">
+      <text x="328" y="192" font-size="18" font-weight="650">放大区 A</text>
+      <text x="320" y="221" font-size="16">2.30 V，1 mA</text>
+    </g>
+    <path d="M18 327H430" stroke="#c9d3c7" stroke-width="1.2"/>
+    <text x="19" y="350" font-size="17">直线上每一点都满足电阻两端的压降。</text>
+    <text x="19" y="375" font-size="17">给定基极驱动后，还要满足三极管的电流关系。</text>
+    </g>
+  </g>
+</svg>

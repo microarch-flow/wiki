@@ -2,7 +2,7 @@
 
 上级：[SRAM 基础](./README.md)
 
-相关：[SRAM 宏接口与读写语义](./sram-macro-interface-and-semantics.md) · [先进工艺与 SRAM](./sram-process-scaling-challenge.md) · [SRAM 漏电与低功耗](./sram-power-leakage-retention.md)
+相关：[SRAM 宏接口与读写时序](./read-write-cycle-timing.md#macro-pins) · [先进工艺与 SRAM](./sram-process-scaling-challenge.md) · [SRAM 漏电与低功耗](./sram-power-leakage-retention.md)
 
 <p class="ram-problem-lede">SRAM 可靠性不仅取决于 cell 是否能保存数据。系统还需要知道数据何时有效、怎样检测和处理错误，以及测试与修复会占用哪些资源。</p>
 
@@ -35,7 +35,7 @@ Scrubbing 是一种可选的后台检查与修复策略：定期读取受保护�
 
 一个典型的系统流程是：确认供电和控制器可用；按设备规定的方式初始化受保护区域，使数据和校验位匹配；等待初始化完成；再允许依赖这些内容的访问。ECC 开关与初始化的具体先后顺序依赖设备，不能套用统一流程。[TI 的初始化说明](https://www.ti.com/lit/an/spna126/spna126.pdf)给出了软件与硬件两种设备特定方法。
 
-部分写入还要检查 ECC 粒度。若控制器必须先读取完整码字、合并部分数据并重算校验位，未初始化的旧码字可能在读改写时触发错误。以 [TMS470M eSRAM 手册](https://www.ti.com/lit/ug/spnu495c/spnu495c.pdf)为例，该器件启用 64-bit ECC 时，小于该粒度的写入涉及读改写。并发更新还需要覆盖整个实际读改写粒度的保护，见 [SRAM 宏接口](./sram-macro-interface-and-semantics.md)。
+部分写入还要检查 ECC 粒度。若控制器必须先读取完整码字、合并部分数据并重算校验位，未初始化的旧码字可能在读改写时触发错误。以 [TMS470M eSRAM 手册](https://www.ti.com/lit/ug/spnu495c/spnu495c.pdf)为例，该器件启用 64-bit ECC 时，小于该粒度的写入涉及读改写。并发更新还需要覆盖整个实际读改写粒度的保护，见 [部分写入与读改写](./read-write-cycle-timing.md#read-modify-write)。
 
 退出保持模式时，也要确认数据和校验位是否均被保持，以及何时允许访问。若只恢复供电而内容没有保证，就需要重新初始化或装载。
 

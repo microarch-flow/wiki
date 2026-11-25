@@ -18,11 +18,13 @@ SITE = Path(__file__).resolve().parents[2] / ".site-build" / "site"
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from hooks import CPO_SECTIONS, grouped_original_topics, make_tree, storage_resources_tree  # noqa: E402
 from ownership import GROUPS, INTERCONNECT, STORAGE, owner  # noqa: E402
-from prepare import FOUNDATION_COMPANIONS, FOUNDATION_MERGED_ARTICLES, SILICON_TO_LOGIC_LEGACY_SECTIONS  # noqa: E402
+from prepare import (FOUNDATION_COMPANIONS, FOUNDATION_MERGED_ARTICLES, FOUNDATION_SPLIT_ARTICLES,
+                     SILICON_TO_LOGIC_LEGACY_SECTIONS)  # noqa: E402
 from storage_navigation import (STORAGE_LEGACY_PAGES, INTEGRATION_AFTER, INTEGRATION_HOME, INTEGRATION_PACKAGING,
                                 MEMORY_HOME, MEMORY_SECTIONS, RESOURCE_HOME, RESOURCE_SECTIONS,
                                 SYSTEM_SELECTION)  # noqa: E402
 
+SHARED_PATHS_DIAGRAM = Path("NOC/wiki/01-overview/img/shared-paths.html")
 UNLISTED_LANDING_PAGES = {"articles/index.html", "visuals/index.html"}
 LANDING_PAGES = {
     "index.html", "microarchitecture/index.html",
@@ -89,32 +91,30 @@ class GeneratedNavigationTests(unittest.TestCase):
         body = re.search(r'<article\b[^>]*>(.*?)</article>', home, re.DOTALL).group(1)
         guide = (SITE / "foundations/index.html").read_text(encoding="utf-8")
         guide_body = re.search(r'<article\b[^>]*>(.*?)</article>', guide, re.DOTALL).group(1)
-        expected = {
-            "阅读顺序": ["electrons-to-diode", "bands-to-channel", "cmos-logic-gates", "latch-and-divider",
-                      "transistor-amplifier", "quartz-oscillator", "integer-pll", "fanout-and-wire-delay",
-                      "supply-voltage-and-frequency", "pvt-and-path-delay"],
-            "延伸阅读": ["inverter-to-package", "silicon-to-logic"],
-            "历史导读": ["voltage-to-clock"],
-        }
-        entries = []
-        for group, slugs in expected.items():
-            section = guide_body.split(f'id="{group}"', 1)[1].split("<h2 ", 1)[0]
-            tag = "ol" if group == "阅读顺序" else "ul"
-            listing = re.search(rf"<{tag}>(.*?)</{tag}>", section, re.DOTALL).group(1)
-            links = re.findall(r'<li><a href="([^"/]+)/(?:#[^"]+)?">([^<]+)</a>', listing)
-            self.assertEqual([slug for slug, _ in links], slugs)
-            entries.extend((slug, short, group) for slug, short in links)
+        expected = ["electrons-to-diode", "bands-to-channel", "cmos-logic-gates", "latch-and-divider",
+                    "transistor-amplifier", "quartz-oscillator", "integer-pll", "fanout-and-wire-delay",
+                    "supply-voltage-and-frequency", "pvt-and-path-delay"]
+        section = guide_body.split('id="阅读顺序"', 1)[1].split("<h2 ", 1)[0]
+        listing = re.search(r"<ol>(.*?)</ol>", section, re.DOTALL).group(1)
+        entries = re.findall(r'<li><a href="([^"/]+)/">([^<]+)</a>', listing)
+        self.assertEqual([slug for slug, _ in entries], expected)
         self.assertEqual(entries[0][1], "从电子到二极管")
         source = Path(__file__).resolve().parents[2] / "series/semiconductor-foundations"
+        redirects = set(FOUNDATION_MERGED_ARTICLES) | set(FOUNDATION_SPLIT_ARTICLES)
         titles = {page.parent.name: page.read_text(encoding="utf-8").splitlines()[0].removeprefix("# ")
-                  for page in source.glob("*/README.md") if page.parent.name not in FOUNDATION_MERGED_ARTICLES}
-        slugs = [slug for slug, _, _ in entries]
-        self.assertCountEqual(slugs, titles)
+                  for page in source.glob("*/README.md") if page.parent.name not in redirects}
+        self.assertCountEqual(expected, titles)
         primary = guide.split('<div class="md-sidebar md-sidebar--primary"', 1)[1].split(
             '<div class="md-sidebar md-sidebar--secondary"', 1)[0]
         nav_links = re.findall(r'<a\s+href="([^"/?#]+)/"[^>]*>', primary)
-        self.assertEqual([slug for slug in nav_links if slug in titles], slugs)
-        for slug, short, group in entries:
+        self.assertEqual([slug for slug in nav_links if slug in titles], expected)
+        for old_slug in ("inverter-to-package", "silicon-to-logic", "voltage-to-clock"):
+            self.assertNotIn(old_slug, nav_links)
+            self.assertNotRegex(guide_body, rf'href="{old_slug}/')
+        foundation_nav = primary.split('href="electrons-to-diode/"', 1)[1].split('data-md-level="1"', 1)[0]
+        for old_group in ("延伸阅读", "历史导读"):
+            self.assertNotRegex(foundation_nav, rf'<span class="md-ellipsis">\s*{old_group}\s*</span>')
+        for slug, short in entries:
             with self.subTest(article=slug):
                 self.assertNotIn(f'href="foundations/{slug}/"', body)
                 article = Path(f"foundations/{slug}/index.html")
@@ -127,13 +127,10 @@ class GeneratedNavigationTests(unittest.TestCase):
                     self.assertIn(f'title="{titles[slug]}"', unescape(active.group(1)))
                 breadcrumb = BREADCRUMB.search(html).group(1)
                 labels = re.findall(r"<(?:a|span)\b[^>]*>([^<]+)</(?:a|span)>", breadcrumb)
-                groups = [] if group == "阅读顺序" else [group]
-                self.assertEqual(labels, ["首页", "半导体与电路基础", *groups, titles[slug]])
+                self.assertEqual(labels, ["首页", "半导体与电路基础", titles[slug]])
                 links = {label: unquote(urljoin(page_url(article), href))
                          for href, label in re.findall(r'<a href="([^"]+)">([^<]+)</a>', breadcrumb)}
                 self.assertEqual(links["半导体与电路基础"], "https://example.test/foundations/")
-                if groups:
-                    self.assertEqual(links[group], f"https://example.test/foundations/#{group}")
 
     def test_merged_foundations_old_links_and_search(self):
         guide = (SITE / "foundations/index.html").read_text(encoding="utf-8")
@@ -190,47 +187,108 @@ class GeneratedNavigationTests(unittest.TestCase):
                 with self.subTest(article=slug, anchor=anchor):
                     self.assertEqual(article.count(f'id="{anchor}"'), 1)
 
-    def test_silicon_to_logic_sections_and_legacy_routes(self):
-        topic = "foundations/silicon-to-logic/"
-        page = (SITE / topic / "index.html").read_text(encoding="utf-8")
-        article = re.search(r'<article\b[^>]*>(.*?)</article>', page, re.DOTALL).group(1)
+    def test_split_foundations_bookmarks_link_to_indexed_sections(self):
         baseline = json.loads((Path(__file__).parent / "fixtures/silicon-to-logic-legacy.json").read_text(encoding="utf-8"))
-        old_routes = baseline["redirects"]
-        self.assertEqual(re.findall(r'<h2 id="([^"]+)">', article), [
-            old_routes["silicon-and-doping"], "p-型与-n-型掺杂", old_routes["pn-junction"],
-            old_routes["bipolar-transistor"], old_routes["mosfet"], old_routes["cmos-logic"], "用到哪里",
-        ])
-        ids = Counter(re.findall(r'\bid="([^"]+)"', article))
-        for anchor in baseline["fragments"]:
-            self.assertEqual(ids[anchor], 1, anchor)
-        self.assertIn('href="../electrons-to-diode/"', article)
-        for slug in ("bands-to-channel", "cmos-logic-gates"):
-            with self.subTest(flagship=slug):
-                links = re.findall(rf'href="\.\./{slug}/#([^"]+)"', article)
-                self.assertTrue(links)
-                target = (SITE / "foundations" / slug / "index.html").read_text(encoding="utf-8")
-                target_ids = set(re.findall(r'\bid="([^"]+)"', target))
-                self.assertTrue({unquote(unescape(fragment)) for fragment in links} <= target_ids)
-        for slug, anchor in old_routes.items():
-            with self.subTest(legacy_route=slug):
-                redirect = (SITE / topic / slug / "index.html").read_text(encoding="utf-8")
-                self.assertIn(f'content="0; url=../#{anchor}"', redirect)
-                self.assertIn(f'href="../#{anchor}"', redirect)
         index = json.loads((SITE / "search/search_index.json").read_text(encoding="utf-8"))
-        pages = [entry["location"] for entry in index["docs"]
-                 if entry["location"].startswith(topic) and "#" not in entry["location"]]
-        self.assertEqual(pages, [topic])
+        locations = Counter(entry["location"] for entry in index["docs"])
+        source_anchors = {
+            "silicon-to-logic": baseline["fragments"],
+            "inverter-to-package": ["电路图上的反相器在真实芯片里长什么样", "在硅片上找回电路图的四根线",
+                                    "从一片晶圆追到板上的一颗芯片", "同一个-gpu-封装里哪段横着走哪段竖着走"],
+            "voltage-to-clock": ["从电容充电到时钟边沿", "电压升到指定值要多久", "比较器怎样让翻转重复",
+                                 "石英晶振怎样定频", "时钟边沿怎样触发采样"],
+        }
+        defaults = {
+            "silicon-to-logic": "foundations/electrons-to-diode/#bjt",
+            "inverter-to-package": "foundations/cmos-logic-gates/#physical-inverter",
+            "voltage-to-clock": "foundations/fanout-and-wire-delay/#rc-half",
+        }
+        routes = [(slug, slug, default) for slug, default in defaults.items()]
+        routes.extend((f"silicon-to-logic/{child}", "silicon-to-logic", None) for child in baseline["redirects"])
+        anchors_by_page = {}
+        targets = {}
+        for path, guide, default in routes:
+            with self.subTest(route=path):
+                relative = Path("foundations") / path / "index.html"
+                html = (SITE / relative).read_text(encoding="utf-8")
+
+                def resolved(href):
+                    url = urlsplit(urljoin(page_url(relative), unescape(href)))
+                    self.assertEqual(url.netloc, "example.test")
+                    return unquote(url.path.lstrip("/") + "#" + url.fragment)
+
+                self.assertIn('name="robots" content="noindex"', html)
+                self.assertFalse(any(location.startswith(relative.parent.as_posix() + "/") for location in locations))
+                # All fallbacks must work with JavaScript disabled, including an old section on a nested URL.
+                fallback = {}
+                for item in re.findall(r"<li\b[^>]*>.*?</li>", html, re.DOTALL):
+                    href = re.search(r'<a\b[^>]*href="([^"]+)"', item).group(1)
+                    target = resolved(href)
+                    for anchor in re.findall(r'\bid="([^"]+)"', item):
+                        self.assertNotIn(anchor, fallback)
+                        fallback[anchor] = target
+                self.assertEqual(set(source_anchors[guide]), set(fallback))
+                default_link = re.search(r'<a\b(?=[^>]*id="default-target")[^>]*href="([^"]+)"', html).group(1)
+                if default is None:
+                    default = targets[guide][baseline["redirects"][path.split("/")[-1]]]
+                    self.assertEqual(fallback, targets[guide])
+                self.assertEqual(resolved(default_link), default)
+                canonical = re.search(r'<link rel="canonical" href="([^"]+)"', html).group(1)
+                self.assertEqual(resolved(canonical).split("#")[0], default.split("#")[0])
+                targets[path] = fallback
+                for target in {default, *fallback.values()}:
+                    page, fragment = target.split("#", 1)
+                    self.assertEqual(locations[page], 1, target)
+                    if fragment:
+                        if page not in anchors_by_page:
+                            text = (SITE / page / "index.html").read_text(encoding="utf-8")
+                            article = re.search(r"<article\b[^>]*>(.*?)</article>", text, re.DOTALL).group(1)
+                            anchors_by_page[page] = Counter(re.findall(r'\bid="([^"]+)"', article))
+                        self.assertEqual(anchors_by_page[page][fragment], 1, target)
+        for section, page in {
+            "三极管怎样放大电流并作为开关": "electrons-to-diode/#bjt",
+            "用负载检查一次开关状态": "transistor-amplifier/#bjt-load",
+            "反接时充稳后只剩少量漏电": "electrons-to-diode/#reverse",
+            "用串联和并联推导-nand-与-nor": "cmos-logic-gates/#nand-nor",
+        }.items():
+            self.assertEqual(targets["silicon-to-logic"][section], "foundations/" + page)
+        self.assertEqual(targets["inverter-to-package"]["从一片晶圆追到板上的一颗芯片"],
+                         "foundations/supply-voltage-and-frequency/#board-to-die")
+        self.assertEqual(targets["inverter-to-package"]["同一个-gpu-封装里哪段横着走哪段竖着走"],
+                         "FAB/wiki/04-back-end-packaging/hbm-as-case-study/ai-gpu-hbm-package-architecture/#hbm-section")
+        for section, page in {"电压升到指定值要多久": "fanout-and-wire-delay/#rc-half",
+                              "比较器怎样让翻转重复": "quartz-oscillator/#rc",
+                              "石英晶振怎样定频": "quartz-oscillator/#mode",
+                              "时钟边沿怎样触发采样": "latch-and-divider/#edge"}.items():
+            self.assertEqual(targets["voltage-to-clock"][section], "foundations/" + page)
+
+    def test_split_foundations_figures_render_in_their_receiving_articles(self):
+        figures = {
+            "foundations/electrons-to-diode/": "foundations/silicon-to-logic/img/npn-injection.svg",
+            "foundations/transistor-amplifier/": "foundations/transistor-amplifier/img/bjt-load-line.svg",
+            "foundations/cmos-logic-gates/": "foundations/inverter-to-package/img/planar-inverter.png",
+            "foundations/fanout-and-wire-delay/": "img/electrical-timing-rc.svg",
+            "FAB/wiki/04-back-end-packaging/hbm-as-case-study/ai-gpu-hbm-package-architecture/":
+                "foundations/inverter-to-package/img/gpu-hbm-section.png",
+        }
+        for page, figure in figures.items():
+            with self.subTest(page=page):
+                path = Path(page) / "index.html"
+                html = (SITE / path).read_text(encoding="utf-8")
+                article = re.search(r"<article\b[^>]*>(.*?)</article>", html, re.DOTALL).group(1)
+                images = re.findall(r'<img\b[^>]*src="([^"]+)"', article)
+                self.assertIn("https://example.test/" + figure, [urljoin(page_url(path), src) for src in images])
+                self.assertTrue((SITE / figure).is_file())
 
     def test_electrons_to_diode_article_search_and_interactive_links(self):
         topic = "foundations/electrons-to-diode/"
         page = (SITE / topic / "index.html").read_text(encoding="utf-8")
         article = re.search(r'<article\b[^>]*>(.*?)</article>', page, re.DOTALL).group(1)
-        self.assertRegex(article, r'href="\.\./silicon-to-logic/(?:#[^"]*)?"')
-        old_guide = (SITE / "foundations/silicon-to-logic/index.html").read_text(encoding="utf-8")
-        onward_links = re.findall(r'href="\.\./electrons-to-diode/#([^"]+)"', old_guide)
-        self.assertTrue(onward_links)
-        native_ids = set(re.findall(r'\bid="([^"]+)"', article))
-        self.assertTrue({unquote(unescape(fragment)) for fragment in onward_links} <= native_ids)
+        self.assertEqual(article.count('id="bjt"'), 1)
+        self.assertIn('href="../transistor-amplifier/#bjt-load"', article)
+        amplifier = (SITE / "foundations/transistor-amplifier/index.html").read_text(encoding="utf-8")
+        self.assertEqual(amplifier.count('id="bjt-load"'), 1)
+        self.assertIn('href="../electrons-to-diode/#bjt"', amplifier)
         index = json.loads((SITE / "search/search_index.json").read_text(encoding="utf-8"))
         entries = [entry for entry in index["docs"] if entry["location"].startswith(topic)]
         self.assertEqual([entry["location"] for entry in entries if "#" not in entry["location"]], [topic])
@@ -1230,11 +1288,27 @@ class GeneratedNavigationTests(unittest.TestCase):
                       {entry["location"] for entry in index["docs"]})
         self.assertFalse(any(entry["location"].startswith("reviews/") for entry in index["docs"]))
 
+    def test_noc_comparison_links_to_its_interactive_diagram(self):
+        page = Path("NOC/wiki/01-overview/bus-vs-noc-vs-crossbar/index.html")
+        body = (SITE / page).read_text(encoding="utf-8").split("<article", 1)[1].split("</article>", 1)[0]
+        diagram_url = f"https://example.test/{SHARED_PATHS_DIAGRAM.as_posix()}"
+        for pattern in (r'<iframe\b[^>]*\bsrc="([^"]+)"', r'<a\b[^>]*\bhref="([^"]+)"'):
+            targets = {urljoin(page_url(page), unescape(ref)) for ref in re.findall(pattern, body)}
+            self.assertIn(diagram_url, targets)
+
+        diagram = (SITE / SHARED_PATHS_DIAGRAM).read_text(encoding="utf-8")
+        controls = re.findall(r'<input type="radio" name="([^"]+)" value="([^"]+)"', diagram)
+        self.assertCountEqual(controls, [
+            ("structure", "bus"), ("structure", "crossbar"), ("structure", "mesh"),
+            ("target", "x"), ("target", "y"),
+        ])
+
     def test_current_navigation_and_breadcrumb_links(self):
         self.assertTrue(SITE.is_dir(), "Build the site before running this test")
         standalone_pages = {
+            SITE / SHARED_PATHS_DIAGRAM,
             SITE / "series/index.html",
-            *(SITE / "foundations" / slug / "index.html" for slug in FOUNDATION_MERGED_ARTICLES),
+            *(SITE / "foundations" / slug / "index.html" for slug in (*FOUNDATION_MERGED_ARTICLES, *FOUNDATION_SPLIT_ARTICLES)),
             *(SITE / "foundations" / companion for companion in FOUNDATION_COMPANIONS),
             *(SITE / "foundations/silicon-to-logic" / slug / "index.html" for slug in SILICON_TO_LOGIC_LEGACY_SECTIONS),
         }

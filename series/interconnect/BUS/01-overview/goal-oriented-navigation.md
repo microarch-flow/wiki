@@ -22,7 +22,7 @@
 
 1. [BUS 在解决什么问题](./problem-statement.md)
 2. [BUS 分类框架](./taxonomy.md)
-3. [BUS vs NoC vs Point-to-Point](../02-fundamentals/bus-vs-noc-vs-point-to-point.md)
+3. [点到点专线怎样增加仲裁与匹配](../02-fundamentals/bus-vs-noc-vs-point-to-point.md)，接着[比较两笔读经过的三种连接结构](../../NOC/01-overview/bus-vs-noc-vs-crossbar.md)
 4. [地址、数据、响应与事务语义](../02-fundamentals/transaction-address-data-response.md)
 5. [MCU / SoC / AI 芯片中的 BUS 对照](../06-scenarios-case-studies/mcu-soc-ai-bus-comparison.md)
 

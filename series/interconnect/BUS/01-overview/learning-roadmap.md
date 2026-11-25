@@ -20,7 +20,7 @@
 
 起点是 [BUS 在解决什么问题](./problem-statement.md) 和 [BUS 分类框架](./taxonomy.md)。这两页不是前言，而是后面所有判断的**坐标系**——就像出远门前先打开地图确认东南西北，而不是一上来就研究某条街的门牌号。
 
-接着读 [BUS vs NoC vs Point-to-Point](../02-fundamentals/bus-vs-noc-vs-point-to-point.md)。这一步的目标是建立边界判断：什么时候专车接送够用（point-to-point），什么时候需要公交系统（BUS），什么时候城市大到必须修地铁网络（NoC）。
+接着看[一条点到点专线](../02-fundamentals/bus-vs-noc-vs-point-to-point.md)怎样在增加请求者后引入仲裁和返回匹配。要比较连接结构，再沿[桥和 DMA 同时发出的两笔读](../../NOC/01-overview/bus-vs-noc-vs-crossbar.md)找到共享总线、交叉开关和多跳 NoC 中各自争用的资源。
 
 第一轮不要急着读 TileLink、coherent interconnect 或完整 DDR/IOMMU 路径。它们很重要，但就像你还没学会开车就去研究赛车调校——会把问题从”BUS 在组织什么”提前拉到”某类高级系统如何扩展 BUS 语义”，容易打散主线。
 
@@ -60,7 +60,7 @@ Burst、WSTRB、response error、AHB/APB 深化、TileLink、coherence 都应放
 
 1. [BUS 在解决什么问题](./problem-statement.md)
 2. [BUS 分类框架](./taxonomy.md)
-3. [BUS vs NoC vs Point-to-Point](../02-fundamentals/bus-vs-noc-vs-point-to-point.md)
+3. [一条点到点专线，什么时候需要仲裁和事务标识？](../02-fundamentals/bus-vs-noc-vs-point-to-point.md)
 4. [地址、数据、响应与事务语义](../02-fundamentals/transaction-address-data-response.md)
 5. [仲裁、顺序性与 Backpressure](../02-fundamentals/arbitration-ordering-backpressure.md)
 6. [AXI / AHB / APB 对照](../03-on-chip-protocol-families/axi-ahb-apb-comparison.md)

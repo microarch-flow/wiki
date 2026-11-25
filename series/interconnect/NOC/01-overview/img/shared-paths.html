@@ -1,0 +1,188 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>两笔读的路径与共享资源</title>
+  <style>
+    :root {
+      color-scheme: light dark;
+      --ink: #243a47; --muted: #4b616e; --surface: #f6f8f7; --line: #c5d0d2;
+      --button: #fff; --selected: #284f61; --selected-ink: #fff; --focus: #1373a3;
+      --bridge: #215986; --dma: #18664f; --shared: #994421;
+      --idle: #aab8bf; --box: #edf2f3; --node: #fff; --rule: #d6dfe0;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --ink: #e3edf1; --muted: #b9cbd2; --surface: #1d2930; --line: #51636a;
+        --button: #27373f; --selected: #c6e1ec; --selected-ink: #193542; --focus: #85d2ff;
+        --bridge: #9bccff; --dma: #88dbc0; --shared: #ffaa81;
+        --idle: #667780; --box: #24333b; --node: #1c282f; --rule: #45585f;
+      }
+    }
+    * { box-sizing: border-box; }
+    body { margin: 0; color: var(--ink); font: 16px/1.5 system-ui, "Noto Sans CJK SC", sans-serif; }
+    main {
+      max-width: 620px; margin: 0 auto; padding: 12px 14px; background: var(--surface);
+      border: 1px solid var(--line); border-radius: 12px;
+    }
+    fieldset { margin: 0 0 9px; padding: 0; min-width: 0; border: 0; }
+    legend { padding: 0; margin-bottom: 3px; font-size: 14px; font-weight: 700; }
+    .choices { display: flex; flex-wrap: wrap; gap: 4px; }
+    label { position: relative; cursor: pointer; }
+    label input { position: absolute; width: 1px; height: 1px; margin: 0; clip-path: inset(50%); }
+    label span {
+      display: block; padding: 5px 10px; border: 1px solid var(--line); border-radius: 6px;
+      background: var(--button); font-size: 14px; line-height: 1.4;
+    }
+    input:checked + span { border-color: var(--selected); color: var(--selected-ink); background: var(--selected); }
+    input:focus-visible + span { outline: 3px solid var(--focus); outline-offset: 1px; }
+    figure { margin: 0; }
+    svg { display: block; width: 100%; max-width: 396px; height: auto; margin: 0 auto; }
+    text { fill: var(--ink); text-anchor: middle; font: 600 17px system-ui, "Noto Sans CJK SC", sans-serif; }
+    svg .tag { fill: var(--shared); font-size: 16px; }
+    .block { fill: var(--box); stroke: var(--line); stroke-width: 1.3; }
+    .node { fill: var(--node); stroke: var(--idle); stroke-width: 1.3; }
+    .route { fill: none; stroke-linejoin: round; }
+    .idle { stroke: var(--idle); stroke-width: 1.5; }
+    .bridge { stroke: var(--bridge); stroke-width: 3; marker-end: url(#bridge-tip); }
+    .dma { stroke: var(--dma); stroke-width: 3; stroke-dasharray: 6 4; marker-end: url(#dma-tip); }
+    .shared { stroke: var(--shared); stroke-width: 5; marker-end: url(#shared-tip); }
+    .panel, .to-x, .to-y { display: none; }
+    [data-structure="bus"] #bus, [data-structure="crossbar"] #crossbar,
+    [data-structure="mesh"] #mesh, [data-target="x"] .to-x, [data-target="y"] .to-y { display: inline; }
+    figcaption { padding-top: 8px; border-top: 1px solid var(--rule); }
+    #rate { font-size: 17px; }
+    #detail { margin: 3px 0 0; color: var(--muted); font-size: 14px; }
+    @media (max-width: 350px) {
+      main { padding: 9px 10px; }
+      label span { padding: 6px 7px; font-size: 13px; }
+    }
+    @media (forced-colors: active) {
+      input:checked + span { outline: 2px solid Highlight; }
+      svg { forced-color-adjust: none; }
+    }
+  </style>
+</head>
+<body>
+<main data-structure="bus" data-target="y">
+  <form aria-label="选择连接结构与 DMA 目的端">
+    <fieldset>
+      <legend>连接结构</legend>
+      <div class="choices">
+        <label><input type="radio" name="structure" value="bus" checked><span>共享总线</span></label>
+        <label><input type="radio" name="structure" value="crossbar"><span>4×4 交叉开关</span></label>
+        <label><input type="radio" name="structure" value="mesh"><span>2×2 网格</span></label>
+      </div>
+    </fieldset>
+    <fieldset>
+      <legend>DMA 读哪块 SRAM？</legend>
+      <div class="choices">
+        <label><input type="radio" name="target" value="y" checked><span>Y，与桥不同</span></label>
+        <label><input type="radio" name="target" value="x"><span>X，与桥相同</span></label>
+      </div>
+    </fieldset>
+  </form>
+  <figure>
+    <svg viewBox="0 0 360 209" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="drawing-title drawing-desc">
+      <title id="drawing-title">共享总线上的两笔读</title>
+      <desc id="drawing-desc">桥 A 读 X，DMA B 读 Y。两笔请求都要使用同一段总线，同一拍只能放行一笔。</desc>
+      <defs>
+        <marker id="bridge-tip" markerWidth="4" markerHeight="4" refX="6" refY="4" viewBox="0 0 8 8" orient="auto"><path d="M0 0 8 4 0 8Z" fill="var(--bridge)"/></marker>
+        <marker id="dma-tip" markerWidth="4" markerHeight="4" refX="6" refY="4" viewBox="0 0 8 8" orient="auto"><path d="M0 0 8 4 0 8Z" fill="var(--dma)"/></marker>
+        <marker id="shared-tip" markerWidth="3" markerHeight="3" refX="6" refY="4" viewBox="0 0 8 8" orient="auto"><path d="M0 0 8 4 0 8Z" fill="var(--shared)"/></marker>
+        <g id="endpoints">
+          <rect x="29" y="7" width="98" height="32" rx="7" class="node"/><text text-anchor="middle" x="78" y="29">桥 A</text>
+          <rect x="233" y="7" width="98" height="32" rx="7" class="node"/><text text-anchor="middle" x="282" y="29">DMA B</text>
+          <rect x="22" y="172" width="112" height="32" rx="7" class="node"/><text text-anchor="middle" x="78" y="194">SRAM X</text>
+          <rect x="226" y="172" width="112" height="32" rx="7" class="node"/><text text-anchor="middle" x="282" y="194">SRAM Y</text>
+        </g>
+      </defs>
+      <g id="bus" class="panel">
+        <use href="#endpoints"/>
+        <path d="M78 39 V52 L174 76" class="route bridge"/>
+        <path d="M282 39 V52 L186 76" class="route dma"/>
+        <path d="M180 78 V124" class="route shared"/>
+        <text x="233" y="106" class="tag">共享段</text>
+        <path d="M180 128 L282 146 V167" class="route idle"/>
+        <g class="to-y">
+          <path d="M180 128 L78 146 V167" class="route bridge"/>
+          <path d="M180 128 L282 146 V167" class="route dma"/>
+        </g>
+        <path d="M180 128 L78 146 V167" class="route shared to-x"/>
+      </g>
+      <g id="crossbar" class="panel">
+        <use href="#endpoints"/>
+        <rect x="37" y="58" width="286" height="78" rx="9" class="block"/>
+        <path d="M78 39 V58 M282 39 V58 M78 136 V168 M282 136 V168" class="route idle"/>
+        <path d="M78 58 V136 M282 58 V136 M78 58 L282 136 M282 58 L78 136" class="route idle"/>
+        <path d="M78 39 V133" class="route bridge"/>
+        <path d="M282 39 V58 L78 134" class="route dma to-x"/>
+        <g class="to-y">
+          <path d="M282 39 V168" class="route dma"/>
+          <path d="M78 136 V168" class="route bridge"/>
+        </g>
+        <g class="to-x">
+          <path d="M78 136 V167" class="route shared"/>
+          <text x="142" y="160" class="tag">X 出口</text>
+        </g>
+      </g>
+      <g id="mesh" class="panel">
+        <use href="#endpoints"/>
+        <path d="M127 23 H233 M78 39 V102 M282 39 V102 M111 120 H249 M78 136 V169 M282 136 V169" class="route idle"/>
+        <path d="M78 39 V100" class="route bridge"/>
+        <path d="M282 39 V100" class="route dma"/>
+        <rect x="28" y="103" width="100" height="32" rx="7" class="node"/><text x="78" y="125">路由器 X</text>
+        <rect x="232" y="103" width="100" height="32" rx="7" class="node"/><text x="282" y="125">路由器 Y</text>
+        <g class="to-y">
+          <path d="M78 136 V167" class="route bridge"/>
+          <path d="M282 136 V167" class="route dma"/>
+        </g>
+        <g class="to-x">
+          <path d="M231 119 H131" class="route dma"/>
+          <path d="M78 136 V167" class="route shared"/>
+          <text x="153" y="158" class="tag">本地出口</text>
+        </g>
+      </g>
+    </svg>
+    <figcaption aria-live="polite" aria-atomic="true">
+      <strong id="rate">目标入口合计 1 笔/拍</strong>
+      <p id="detail">两笔请求都要使用同一段总线，同一拍只能放行一笔。</p>
+    </figcaption>
+  </figure>
+  <noscript>启用 JavaScript 可切换结构和目的端。</noscript>
+</main>
+<script>
+  const panel = document.querySelector('main');
+  const controls = document.querySelector('form');
+  const structures = { bus: '共享总线', crossbar: '交叉开关', mesh: '网格' };
+  const results = {
+    bus: {
+      y: [1, '两笔请求都要使用同一段总线，同一拍只能放行一笔。'],
+      x: [1, '两笔请求先争共享段，又要用 X 的入口。两处每拍都至多放行一笔。']
+    },
+    crossbar: {
+      y: [2, 'A 连 X，B 连 Y。两个输入和两个输出互不争用。图中仅画出本次涉及的端口。'],
+      x: [1, '两路输入都要连 X，X 的输出每拍只能选一路，Y 的出口空闲。图中仅画出本次涉及的端口。']
+    },
+    mesh: {
+      y: [2, 'A→X 和 B→Y 各用一条纵向链路，分别从 X、Y 的本地出口交付。'],
+      x: [1, 'A→X 与 B→Y→X 经过不同的有向链路，在 X 路由器汇合，共用一个本地出口。']
+    }
+  };
+  function update() {
+    const structure = controls.elements.structure.value;
+    const target = controls.elements.target.value;
+    const [rate, detail] = results[structure][target];
+    panel.dataset.structure = structure;
+    panel.dataset.target = target;
+    document.getElementById('drawing-title').textContent = structures[structure] + '上的两笔读';
+    document.getElementById('drawing-desc').textContent = '桥 A 读 X，DMA B 读 ' + target.toUpperCase() + '。' + detail;
+    document.getElementById('rate').textContent = '目标入口合计 ' + rate + ' 笔/拍';
+    document.getElementById('detail').textContent = detail;
+  }
+  controls.addEventListener('change', update);
+  update();
+</script>
+</body>
+</html>
