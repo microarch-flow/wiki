@@ -29,7 +29,7 @@ title: "学习路线图：从设备发现到性能解释"
 
 ## 阶段 3：让设备获得可用的地址与缓冲区
 
-按[配置与枚举章](../03-configuration-enumeration-addressing/README.md)阅读，再读[缓冲区、映射与可见性](../04-data-path-dma-interrupts/host-memory-pinned-buffer-visibility.md)。
+从[主机第一次读卡上寄存器](../03-configuration-enumeration-addressing/config-space-bar-capability.md)入手，沿[配置与枚举章](../03-configuration-enumeration-addressing/README.md)核对桥窗口和地址映射。接着读[缓冲区、映射与可见性](../04-data-path-dma-interrupts/host-memory-pinned-buffer-visibility.md)，把方向换成设备访问主机。
 
 检查：给同一块主机缓冲区分别标出 CPU 指针、物理地址和 DMA 地址。说明为什么不能把 CPU 指针直接写入普通 DMA 描述符。
 
