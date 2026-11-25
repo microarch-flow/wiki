@@ -6,7 +6,7 @@
 
 接着看写入。桥要往 SRAM 写四拍数据。第四拍被接走时，桥已经知道这次写成功了吗？在[《一次 AXI 写入，地址、数据和响应分别在哪一拍交付？》](./03-on-chip-protocol-families/axi-five-channels-handshake.md)里，沿着同一个接口找出答案。
 
-如果桥和 DMA 同时向通往 SRAM 的那一个出口送地址，这一拍谁能通过？出口暂时不接收时，被选中的请求又停在哪里？第三篇[《两个模块同时访问同一目标，谁先走？》](./02-fundamentals/arbitration-ordering-backpressure.md)把两笔请求放在同一张时序表里。要回到卡外看主机何时取得结果，可读[《一次跨桥读取》](../PCIE/06-workloads-case-studies/pcie-vs-axi-noc-boundary.md)。
+如果桥和 DMA 同时向通往 SRAM 的那一个出口送地址，这一拍谁能通过？出口暂时不接收时，被选中的请求又停在哪里？第三篇[《两个模块同时访问同一目标，谁先走？》](./02-fundamentals/arbitration-ordering-backpressure.md)把两笔请求放在同一张时序表里。把 DMA 的那笔读改送另一块 SRAM，两条路还会在哪里相遇？接着读[《两笔读能同时通过吗？从共享总线、交叉开关到多跳 NoC》](../NOC/01-overview/bus-vs-noc-vs-crossbar.md)。要回到卡外看主机何时取得结果，可读[《一次跨桥读取》](../PCIE/06-workloads-case-studies/pcie-vs-axi-noc-boundary.md)。
 
 <span id="dashboard"></span>
 
@@ -22,7 +22,7 @@
 | 5 分钟复习整套 BUS 主线 | [BUS 一页版总览](./07-reference/bus-one-page.md) |
 | 第一次系统学习 BUS | [学习路线图](./01-overview/learning-roadmap.md) |
 | 按你的目标选最短阅读路径 | [按目标学习 BUS](./01-overview/goal-oriented-navigation.md) |
-| 先把 BUS、NoC、点到点链路分清 | [BUS vs NoC vs Point-to-Point](./02-fundamentals/bus-vs-noc-vs-point-to-point.md) |
+| 判断一条点到点专线何时需要仲裁和事务标识 | [一条点到点专线，什么时候需要仲裁和事务标识？](./02-fundamentals/bus-vs-noc-vs-point-to-point.md) |
 | 先搞懂 transaction 基本对象 | [地址已经收下，数据为什么还没回来？](./02-fundamentals/transaction-address-data-response.md) |
 | 区分等待仲裁和等待目标接收 | [两个模块同时访问同一目标，谁先走？](./02-fundamentals/arbitration-ordering-backpressure.md) |
 | 理解位宽、时钟和 burst 为什么重要 | [位宽、时钟、Burst 与延迟](./02-fundamentals/width-clock-burst-latency.md) |
@@ -81,7 +81,7 @@
 3. [两个模块同时访问同一目标，谁先走？](./02-fundamentals/arbitration-ordering-backpressure.md)
 4. [BUS 在解决什么问题](./01-overview/problem-statement.md)
 5. [BUS 分类框架](./01-overview/taxonomy.md)
-6. [BUS vs NoC vs Point-to-Point](./02-fundamentals/bus-vs-noc-vs-point-to-point.md)
+6. [一条点到点专线，什么时候需要仲裁和事务标识？](./02-fundamentals/bus-vs-noc-vs-point-to-point.md)
 7. [学习路线图](./01-overview/learning-roadmap.md)
 8. [按目标学习 BUS](./01-overview/goal-oriented-navigation.md)
 
@@ -103,7 +103,7 @@
 
 ### 路线 3：想从系统与实现角度建立判断
 
-1. [BUS vs NoC vs Point-to-Point](./02-fundamentals/bus-vs-noc-vs-point-to-point.md)
+1. [一条点到点专线，什么时候需要仲裁和事务标识？](./02-fundamentals/bus-vs-noc-vs-point-to-point.md)
 2. [互连组件与数据路径分解](./04-microarchitecture-integration/interconnect-components.md)
 3. [Bridge、CDC 与 Width Adapter](./04-microarchitecture-integration/bridge-cdc-width-adaptation.md)
 4. [Shared Bus、Bus Matrix 与 Crossbar](./04-microarchitecture-integration/shared-bus-bus-matrix-crossbar.md)

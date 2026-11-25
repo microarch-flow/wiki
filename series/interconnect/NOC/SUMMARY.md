@@ -7,7 +7,7 @@
 先明确网络要解决的问题，再区分协议、连接结构和网络组织。
 
 - [NoC 在解决什么问题](./01-overview/problem-statement.md)
-- [共享总线、Crossbar 与 NoC](./01-overview/bus-vs-noc-vs-crossbar.md)
+- [两笔读能同时通过吗？三种连接结构](./01-overview/bus-vs-noc-vs-crossbar.md)
 - [设计维度与工作负载](./01-overview/taxonomy.md)
 - [学习与建模路线](./01-overview/learning-roadmap.md)
 
