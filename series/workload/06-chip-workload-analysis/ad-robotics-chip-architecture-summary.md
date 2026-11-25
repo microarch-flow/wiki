@@ -44,4 +44,4 @@ Resource、Topology、Interaction、Capability 可作为组织实验说明的维
 
 区分解析估算、模拟结果、软件内核测量和真实系统测量。模拟结果只能在建模假设成立时解释系统；单次成功也不证明全局最优或所有场景满足截止时间。
 
-本页收束实验设计。具体硬件机制留给[微架构](../../microarchitecture/README.md)、[存储](../../storage/README.md)和[互连](../../interconnect/README.md)系列，避免在算法文章中重复讲解。
+本页收束实验设计。具体硬件机制留给[计算微架构](../../microarchitecture/README.md)、[存储系统](../../storage/README.md)和[芯片与系统互连](../../interconnect/README.md)系列，避免在算法文章中重复讲解。

@@ -2,13 +2,13 @@
 
 Wiki 与博客的共同写作和设计要求见 [Wiki 与博客设计规则](../docs/wiki-blog-design-rules.md)。
 
-本网站使用 MkDocs Material。首页汇集技术系列。主仓原有十一域的文章按微架构、存储系统、芯片与系统互连、芯片开发与实现分配主导航；FAB 与芯片开发流程在同一系列。“算法与模型（Workload Wiki）”的维护位置是本仓库的 `series/workload/`。`website/prepare.py` 将正文复制到 `.site-build/docs/`，然后 MkDocs 生成静态网站。导航按专题、章节和文章展开，当前页面高亮显示。文章开头的面包屑根据同一导航层级生成；已有上级页面可以点击，没有首页的分组显示为文本。
+本网站使用 MkDocs Material。首页汇集技术系列。主仓原有十一域的文章按计算微架构、存储系统、芯片与系统互连、芯片开发与实现分配主导航；FAB 与芯片开发流程在同一系列。“算法与模型”的维护位置是本仓库的 `series/workload/`。`website/prepare.py` 将正文复制到 `.site-build/docs/`，然后 MkDocs 生成静态网站。导航按专题、章节和文章展开，当前页面高亮显示。文章开头的面包屑根据同一导航层级生成；已有上级页面可以点击，没有首页的分组显示为文本。
 
 导航由 `website/hooks.py` 根据目录与 Markdown 标题生成。章节首页中，如果“阅读顺序”或“接下来怎么读”包含指向同一目录文章的编号列表，导航优先使用该顺序；未列出的文章按文件名排序。网站构建时，如果文章开头的“上级”链接与面包屑中的上级页面相同，会在网页中省略该行；不同的链接和原始 Markdown 均保留。
 
 `website/ownership.py` 指定原有文章和芯片开发流程文章的主系列和主专题。按更具体的文件规则处理 HBM、FAB 良率等例外。文章可以从多个导读链接，但只能在主导航出现一次；构建会拒绝重复的主导航条目。新增文章时，检查其路径是否落在正确的规则内，并核对面包屑与阅读链接。
 
-「半导体基础」的导读、文章和配图位于 `series/semiconductor-foundations/`。系列导读中的编号列表决定正文阅读顺序和侧栏短标题。该系列沿用 `foundations/` 发布路径，文章仍可通过原网址和小节锚点访问。`website/prepare.py` 为《从硅到门电路》的六个历史小节地址生成跳转。
+「半导体与电路基础」的导读、文章和配图位于 `series/semiconductor-foundations/`。系列导读中的编号列表决定正文阅读顺序和侧栏短标题。该系列沿用 `foundations/` 发布路径，文章仍可通过原网址和小节锚点访问。`website/prepare.py` 为《从硅到门电路》的六个历史小节地址生成跳转。
 
 Workload 的十二个专题及七条源码移动映射维护在 `website/workload.py`。专题导读的“阅读顺序”编号链接决定侧栏正文顺序与短标题。“历史入口”下的编号链接单独形成可展开的子目录，七个兼容页从搜索排除。构建检查遗漏、重复、越界和目标存在性。源码按当前专题组织，已移动的文章继续使用历史公开路径，新旧源码引用均映射到同一页面。新增正文须加入对应导读，标题调整时保留旧锚点。
 
@@ -68,7 +68,7 @@ NoC 的十个阅读分组、文章短标题和顺序维护在 `series/interconne
 
 ## 可选：增加来自其他仓库的技术系列
 
-网站使用 `website/series.json` 配置系列。若以后确需从其他仓库构建，可以在 `series` 数组中添加一个对象，例如：
+网站使用 `website/series.json` 配置系列。系列可以用 `group` 填写所属阅读问题；省略此字段的系列仍可从首页进入。若以后确需从其他仓库构建，可以在 `series` 数组中添加一个对象，例如：
 
 ```json
 {
@@ -83,7 +83,7 @@ NoC 的十个阅读分组、文章短标题和顺序维护在 `series/interconne
 }
 ```
 
-这是配置格式示例，不代表已接入该仓库。`repository` 使用 GitHub 的 `owner/repository` 格式。`ref` 可以是分支、标签或完整提交 SHA；使用分支时，每次构建读取该分支当前版本，构建日志会记录实际取得的提交。`directory` 是相对于仓库根目录的目录。`slug` 是系列的稳定标识，只能使用小写英文字母、数字和连字符，不能与其他系列重复。系列标题不能重复，也不能使用现有导航名称“首页”“系列”或“微架构”。
+这是配置格式示例，不代表已接入该仓库。`repository` 使用 GitHub 的 `owner/repository` 格式。`ref` 可以是分支、标签或完整提交 SHA；使用分支时，每次构建读取该分支当前版本，构建日志会记录实际取得的提交。`directory` 是相对于仓库根目录的目录。`slug` 是系列的稳定标识，只能使用小写英文字母、数字和连字符，不能与其他系列重复。系列标题不能重复。外仓系列的保留名称有“首页”“系列”“计算微架构”及旧称“微架构”。
 
 构建时，`website/prepare.py` 获取指定版本，只将所选目录复制到临时构建目录。网站在首页和系列目录生成入口，并把文章加入统一导航、面包屑和搜索索引。其他仓库不需要单独发布 GitHub Pages。文章位于 `external/<slug>/` 下；**修改 slug 会改变该系列的 URL**。现有 Wiki 文章的路径不变。
 
@@ -158,8 +158,8 @@ mkdocs build
 ## 内容和图解
 
 - 系列正文位于 `series/`。`wiki.old/`、`task.md`、`seed/` 和 `docs/archive/` 不在网站构建范围内。
-- 首页序章维护在 `website/home.md`。「从哪里读起」按 `website/series.json` 的顺序生成各系列入口。旧地址 `/series/` 通过 `website/series-redirect.html` 跳转到首页的 `#series`。微架构系列首页维护在 `series/microarchitecture/README.md`，存储系统系列首页维护在 `series/storage/README.md`。精选文章列表维护在 `website/articles.md`，互动图解维护在 `website/visuals.md`，图形与脚本位于 `website/assets/`。精选文章直接引用现有正文，后续可逐篇修改原文。
-- 各系列首页的封面由 `website/hooks.py` 结合标题、导语和配图生成。该文件指定配图的发布路径、替代文字和图注。「半导体基础」复用首篇文章的硅共价键图，其余封面图位于 `website/assets/images/series-covers/`。
+- 首页序章维护在 `website/home.md`。「从哪里读起」使用 `website/series.json` 中的 `group` 按阅读问题排列系列入口。问题和各组内的系列均按配置中首次出现的顺序排列。旧地址 `/series/` 通过 `website/series-redirect.html` 跳转到首页的 `#series`。计算微架构系列首页维护在 `series/microarchitecture/README.md`，存储系统系列首页维护在 `series/storage/README.md`。精选文章列表维护在 `website/articles.md`，互动图解维护在 `website/visuals.md`，图形与脚本位于 `website/assets/`。精选文章直接引用现有正文，后续可逐篇修改原文。
+- 各系列首页的封面由 `website/hooks.py` 结合标题、导语和配图生成。该文件指定配图的发布路径、替代文字和图注。「半导体与电路基础」复用首篇文章的硅共价键图，其余封面图位于 `website/assets/images/series-covers/`。
 - DRAM 图解只表示一次显式 PRE 读流程的逻辑阶段，不给出周期数或替代器件规格。
 - 双缓冲图解假设搬运和计算各占一个周期，且资源访问不冲突。它不代表实际设备的实测性能。
 - 电路与时序文章维护在 `series/microarchitecture/02-pipeline/electrical-timing-foundations.md`，原理图位于其相邻的 `img/`。暂存后仍使用原根文章和 `img/` 路径。公式区和路径卡片使用文中的 HTML 及 `site.css` 样式；构建时 `website/hooks.py` 只为该页添加阅读布局容器。公式不依赖外部脚本。

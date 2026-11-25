@@ -43,7 +43,7 @@
 
 报告输入输出分布、并发、质量过滤、精度、设备数量和通信布局。容量、通信和排队可以限制规模扩展；云端不代表资源无限，也不代表所有模型必须云部署。
 
-服务调度归于[推理与运行时](../../inference-runtime/README.md)，芯片互连机制归于[芯片与系统互连](../../interconnect/README.md)。本页负责把作业目标连接到可测资源。
+服务调度归于[推理运行时](../../inference-runtime/README.md)，芯片互连机制归于[芯片与系统互连](../../interconnect/README.md)。本页负责把作业目标连接到可测资源。
 
 <span id="参考来源" class="workload-legacy-anchor"></span>
 

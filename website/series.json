@@ -1,7 +1,8 @@
 {
   "series": [
     {
-      "title": "半导体基础",
+      "group": "硬件怎样工作？",
+      "title": "半导体与电路基础",
       "description": "一只逻辑门怎样工作？从硅里的电荷读到时钟、功耗和时序，再看电路怎样做成芯片。",
       "local": {
         "directory": "series/semiconductor-foundations",
@@ -9,29 +10,34 @@
       }
     },
     {
-      "title": "微架构",
+      "group": "硬件怎样工作？",
+      "title": "计算微架构",
       "description": "两个矩阵相乘时，阵列里的乘加单元按什么顺序开始工作？为什么有的还在等？",
       "page": "microarchitecture.md"
     },
     {
+      "group": "硬件怎样工作？",
       "title": "存储系统",
       "description": "SRAM 和 DRAM 各自怎样存住一个比特？几笔读请求同时到达，控制器先处理哪一笔？",
       "page": "storage.md"
     },
     {
+      "group": "硬件怎样工作？",
       "title": "芯片与系统互连",
       "description": "两笔请求争用同一个出口时，谁先走？跟着一块数据，从片上网络读到服务器之间的通信。",
       "page": "interconnect.md"
     },
     {
-      "title": "算法与模型（Workload Wiki）",
-      "description": "语言模型逐步生成回答，扩散模型逐步生成图像。每一步需要算什么、搬什么？",
+      "group": "模型怎样计算，一次推理怎样跑起来？",
+      "title": "算法与模型",
+      "description": "语言模型逐步生成回答，扩散模型逐步生成图像。每一步要做多少计算、搬多少数据？",
       "local": {
         "directory": "series/workload",
         "publish": "external/workload-wiki"
       }
     },
     {
+      "group": "模型怎样计算，一次推理怎样跑起来？",
       "title": "推理运行时",
       "description": "一份回答刚生成一半，又来了一个长问题。推理引擎怎样安排下一轮计算？",
       "local": {
@@ -40,6 +46,7 @@
       }
     },
     {
+      "group": "一颗真实芯片怎样设计、实现和交付？",
       "title": "芯片架构实例",
       "description": "看 H100 怎样在计算时准备下一块数据，再看 TPU v4 怎样分工处理矩阵乘法和查表。",
       "local": {
@@ -48,6 +55,7 @@
       }
     },
     {
+      "group": "一颗真实芯片怎样设计、实现和交付？",
       "title": "芯片开发与实现",
       "description": "架构图怎样变成硅片？跟着一颗芯片走过设计、制造和测试，再看首批样片怎样走向量产。",
       "local": {

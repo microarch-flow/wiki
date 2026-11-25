@@ -37,21 +37,55 @@ def page_url(relative):
 
 
 class GeneratedNavigationTests(unittest.TestCase):
-    def test_semiconductor_series_guide_lists_all_articles(self):
+    def test_homepage_series_are_grouped_by_reader_question(self):
         home = (SITE / "index.html").read_text(encoding="utf-8")
         body = re.search(r'<article\b[^>]*>(.*?)</article>', home, re.DOTALL).group(1)
         self.assertLess(body.index("第一个字出现之前"), body.index('id="series"'))
-        self.assertIn('id="common-foundations"', body)
-        self.assertIn('id="common-foundations-heading"', body)
-        directory = re.search(r'<ul class="portal-series-grid"[^>]*>(.*?)</ul>', body, re.DOTALL).group(1)
-        cards = re.findall(r'<a class="portal-series-card" href="([^"]+)">', directory)
+        directory = re.search(r'<nav\b[^>]*id="common-foundations"[^>]*>(.*?)</nav>', body, re.DOTALL).group(1)
+        self.assertIn('id="common-foundations-heading"', directory)
+        expected_groups = [
+            ("硬件怎样工作？", [
+                ("foundations/", "半导体与电路基础"), ("microarchitecture/", "计算微架构"),
+                ("storage/", "存储系统"), ("interconnect/", "芯片与系统互连"),
+            ]),
+            ("模型怎样计算，一次推理怎样跑起来？", [
+                ("external/workload-wiki/", "算法与模型"), ("series/inference-runtime/", "推理运行时"),
+            ]),
+            ("一颗真实芯片怎样设计、实现和交付？", [
+                ("series/chip-architectures/", "芯片架构实例"), ("series/chip-development/", "芯片开发与实现"),
+            ]),
+        ]
+        sections = re.findall(r'<section\b([^>]*)>(.*?)</section>', directory, re.DOTALL)
+        self.assertEqual(len(sections), len(expected_groups))
+        card_pattern = r'<a class="portal-series-card" href="([^"]+)">\s*<strong>([^<]+)</strong>'
+        for (attrs, contents), (question, expected_cards) in zip(sections, expected_groups):
+            with self.subTest(question=question):
+                heading = re.search(r'<h3\b[^>]*id="([^"]+)"[^>]*>([^<]+)', contents)
+                self.assertIsNotNone(heading)
+                self.assertEqual(heading.group(2).strip(), question)
+                self.assertIn(f'aria-labelledby="{heading.group(1)}"', attrs)
+                self.assertEqual(directory.count(f'id="{heading.group(1)}"'), 1)
+                self.assertEqual(re.findall(card_pattern, contents), expected_cards)
+        cards = [card for _, group in expected_groups for card in group]
+        self.assertEqual(re.findall(card_pattern, directory), cards)
         tabs = re.search(r'<nav class="md-tabs"[^>]*>(.*?)</nav>', home, re.DOTALL).group(1)
         tab_links = re.findall(r'<a\s+href="([^"]+)"', tabs)
-        self.assertEqual(cards.count("foundations/"), 1)
-        self.assertEqual(tab_links.count("foundations/"), 1)
-        self.assertEqual([href for href in tab_links if href in cards],
-                         [href for href in cards if href in tab_links])
+        card_links = [href for href, _ in cards]
+        self.assertEqual([href for href in tab_links if href in card_links], card_links)
 
+    def test_renamed_guides_keep_their_published_anchors(self):
+        for guide, anchor in [
+            ("foundations", "半导体基础"),
+            ("microarchitecture", "微架构执行数据通路与资源协作"),
+            ("microarchitecture/00-overview", "微架构系列导读"),
+        ]:
+            with self.subTest(guide=guide):
+                page = (SITE / guide / "index.html").read_text(encoding="utf-8")
+                self.assertEqual(page.count(f'id="{anchor}"'), 1)
+
+    def test_semiconductor_series_guide_lists_all_articles(self):
+        home = (SITE / "index.html").read_text(encoding="utf-8")
+        body = re.search(r'<article\b[^>]*>(.*?)</article>', home, re.DOTALL).group(1)
         guide = (SITE / "foundations/index.html").read_text(encoding="utf-8")
         reading = guide.split('id="阅读顺序"', 1)[1].split("</ol>", 1)[0]
         entries = re.findall(r'<li><a href="([^"/]+)/">([^<]+)</a>', reading)
@@ -74,8 +108,8 @@ class GeneratedNavigationTests(unittest.TestCase):
                     self.assertIn(f'title="{titles[slug]}"', unescape(active.group(1)))
                 breadcrumb = BREADCRUMB.search(html).group(1)
                 labels = re.findall(r"<(?:a|span)\b[^>]*>([^<]+)</(?:a|span)>", breadcrumb)
-                self.assertEqual(labels, ["首页", "半导体基础", titles[slug]])
-                link = re.search(r'<a href="([^"]+)">半导体基础</a>', breadcrumb).group(1)
+                self.assertEqual(labels, ["首页", "半导体与电路基础", titles[slug]])
+                link = re.search(r'<a href="([^"]+)">半导体与电路基础</a>', breadcrumb).group(1)
                 self.assertEqual(urljoin(page_url(article), link), "https://example.test/foundations/")
 
     def test_silicon_to_logic_sections_and_legacy_routes(self):
@@ -673,8 +707,8 @@ class GeneratedNavigationTests(unittest.TestCase):
             "RAM/wiki/09-ai-chip-memory-architecture/hbm-vs-lpddr-for-npu/index.html": ("存储系统", "存储系统集成与选型"),
             "NOC/wiki/02-router-microarchitecture/credit-based-flow-control/index.html": ("芯片与系统互连", "片上网络（NoC）"),
             "SERDES/wiki/06-link-operation/pcie-training-case/index.html": ("芯片与系统互连", "高速电链路（SerDes）"),
-            "DMA/wiki/04-programming-model/tiling-double-buffering/index.html": ("微架构", "DMA 与异步数据搬运"),
-            "external/workload-wiki/01-foundation-model-components/contrastive-learning/index.html": ("算法与模型（Workload Wiki）", "表示学习与训练目标"),
+            "DMA/wiki/04-programming-model/tiling-double-buffering/index.html": ("计算微架构", "DMA 与异步数据搬运"),
+            "external/workload-wiki/01-foundation-model-components/contrastive-learning/index.html": ("算法与模型", "表示学习与训练目标"),
             "series/chip-development/02_frontend_design_and_verification/05_dft_introduction/index.html": ("芯片开发与实现", "可测性设计、晶圆筛测与终测"),
             "FAB/wiki/03-wafer-test-and-cp/index.html": ("芯片开发与实现", "可测性设计、晶圆筛测与终测"),
             "series/chip-development/04_tapeout_and_post_silicon/03_packaging/index.html": ("芯片开发与实现", "封装与多芯粒集成"),
@@ -866,7 +900,7 @@ class GeneratedNavigationTests(unittest.TestCase):
                 "完整论文卡", "完整卡：CPO status, challenges, and solutions",
             ],
             "electrical-timing-foundations/index.html": [
-                "首页", "微架构", "流水线、时序与时钟域", "从电荷到芯片时序：一条可手算的路径",
+                "首页", "计算微架构", "流水线、时序与时钟域", "从电荷到芯片时序：一条可手算的路径",
             ],
             "SERDES/wiki/05-signaling-and-metrics/ber-confidence-and-fec/index.html": [
                 "首页", "芯片与系统互连", "高速电链路（SerDes）", "05 信号与指标",

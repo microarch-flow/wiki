@@ -32,6 +32,8 @@ def load_series(registry):
         if name.strip() in titles:
             raise ValueError(f"Duplicate series title: {name.strip()}")
         titles.add(name.strip())
+        if "group" in item and (not isinstance(item["group"], str) or not item["group"].strip()):
+            raise ValueError(f"Series {name!r} needs a non-empty group label when specified")
         kinds = [kind for kind in ("page", "url", "source", "local") if kind in item]
         if len(kinds) != 1:
             raise ValueError("Each series needs exactly one of page, url, source, or local")
@@ -54,7 +56,7 @@ def load_series(registry):
             continue
 
         source = item["source"]
-        if name.strip() in {"首页", "系列", "微架构"}:
+        if name.strip() in {"首页", "系列", "微架构", "计算微架构"}:
             raise ValueError(f"Source series title conflicts with an existing navigation label: {name.strip()}")
         if not isinstance(source, dict) or set(source) != {"slug", "repository", "ref", "directory"}:
             raise ValueError(f"Series {name!r} needs source slug, repository, ref, and directory")

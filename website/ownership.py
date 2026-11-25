@@ -4,7 +4,7 @@ from storage_navigation import INTEGRATION_HOME, INTEGRATION_TOPIC, RESOURCE_HOM
 
 from microarchitecture_navigation import MICRO_TOPICS
 
-MICRO = "微架构"
+MICRO = "计算微架构"
 STORAGE = "存储系统"
 INTERCONNECT = "芯片与系统互连"
 DEVELOPMENT = "芯片开发与实现"

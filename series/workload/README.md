@@ -44,6 +44,6 @@
 
 ## 与整个 Wiki 的边界
 
-硬件执行结构归于[微架构](../microarchitecture/README.md)，容量与存储路径归于[存储系统](../storage/README.md)，通信机制归于[芯片与系统互连](../interconnect/README.md)，缓存与服务调度归于[推理与运行时](../inference-runtime/README.md)。本系列通过工作负载连接这些主题，不重复编写硬件百科。
+硬件执行结构归于[计算微架构](../microarchitecture/README.md)，容量与存储路径归于[存储系统](../storage/README.md)，通信机制归于[芯片与系统互连](../interconnect/README.md)，缓存与服务调度归于[推理运行时](../inference-runtime/README.md)。本系列通过工作负载连接这些主题，不重复编写硬件百科。
 
 正文中的论文测量附带版本与条件；构造例标明假设；性能推论需要测量支持。新增内容以补足理解链条为准，不预设空的音频、推荐或图学习栏目。历史公开路径继续保留，当前职责以本文地图与侧栏为准。
