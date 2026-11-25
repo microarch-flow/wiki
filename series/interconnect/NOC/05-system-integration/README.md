@@ -10,8 +10,8 @@
 
 <span id="这一章的主线"></span><span id="本章其余正文"></span>
 
-1. [BUS 与 NoC 的系统边界](./noc-vs-bus-revisited.md)：一次任务经过哪些控制、网络和完成边界。
-2. [网络接口 NI](./ni-network-interface-design.md)：端点接口与网络消息怎样转换。
+1. [一次读取怎样变成 NoC 里的请求包和返回包？](./ni-network-interface-design.md) 跟着一次读，观察两端的网络接口如何封包、接包，再把结果交给等待它的桥。
+2. [BUS 与 NoC 的系统边界](./noc-vs-bus-revisited.md) 沿一次任务区分控制、网络和完成边界。
 3. [地址映射与路由表](./address-map-and-routing-table.md)：地址怎样选择端点和路径。
 4. [事务拆分、顺序与完成](./transaction-ordering-and-completion.md)：分片、匹配和响应怎样保持接口语义。
 5. [Tile 与 NoC 的接口](../06-ai-noc-specifics/tile-architecture-and-noc.md)：计算与本地存储怎样影响注入和接收。

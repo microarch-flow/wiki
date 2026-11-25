@@ -1,0 +1,63 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="360" height="402" viewBox="0 0 360 402" role="img" aria-labelledby="ni-title ni-description" xml:lang="zh-CN">
+  <title id="ni-title">一次 SRAM 读的请求包与返回包</title>
+  <desc id="ni-description">左侧实线向下表示请求，右侧虚线向上表示返回。桥用 AXI ID 3 读地址 0x4000_0120。源 NI S 分配标签 7 并记录它对应 ID 3。请求包发往目标 NI T，携带回送节点 S、标签 7 和偏移 0x120。目标 NI 从 SRAM 取出 42，返回包带着标签 7、数据 42 和成功状态发往 S。路由器按包里的目的节点转发；源 NI 查表后向桥交付 RID 3 和 42。</desc>
+  <defs>
+    <marker id="request-tip" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="5" markerHeight="5" orient="auto">
+      <path d="M0 0 8 4 0 8Z" fill="#23567b"/>
+    </marker>
+    <marker id="response-tip" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="5" markerHeight="5" orient="auto">
+      <path d="M0 0 8 4 0 8Z" fill="#14674f"/>
+    </marker>
+  </defs>
+  <style>
+    text { font-family: system-ui, "Noto Sans CJK SC", sans-serif; text-anchor: middle; fill: #20384b; }
+    .label { font-size: 18px; font-weight: 680; }
+    .detail { font-size: 16px; }
+    .request { fill: #1e5277; }
+    .response { fill: #145d49; }
+    .there { fill: none; stroke: #23567b; stroke-width: 2.7; marker-end: url(#request-tip); }
+    .back { fill: none; stroke: #14674f; stroke-width: 2.7; stroke-dasharray: 5 3; marker-end: url(#response-tip); }
+  </style>
+  <rect x="1" y="1" width="358" height="400" rx="13" fill="#f7f9f8" stroke="#c0cecf"/>
+
+  <rect x="12" y="10" width="336" height="56" rx="8" fill="#edf1f3" stroke="#a8bbc2"/>
+  <text class="label" x="180" y="32">桥</text>
+  <text class="detail request" x="93" y="55">读 0x4000_0120</text>
+  <text class="detail response" x="267" y="55">收下 42</text>
+  <path class="there" d="M34 66 V98"/>
+  <path class="back" d="M326 100 V68"/>
+  <text class="detail request" x="95" y="88">ARID = 3</text>
+  <text class="detail response" x="267" y="88">RID = 3</text>
+
+  <rect x="12" y="101" width="336" height="56" rx="8" fill="#e6edf2" stroke="#98afbf"/>
+  <text class="label" x="180" y="123">源 NI S</text>
+  <text class="detail" x="180" y="147">在途表　标签 7 → 本地 AXI ID 3</text>
+
+  <rect x="34" y="161" width="143" height="85" rx="7" fill="#e9f2f8"/>
+  <rect x="183" y="161" width="143" height="85" rx="7" fill="#e4f2ec"/>
+  <path class="there" d="M20 157 V248"/>
+  <path class="back" d="M340 250 V159"/>
+  <text class="label request" x="105" y="181">读请求包</text>
+  <text class="detail request" x="105" y="202">目的 T　回送 S</text>
+  <text class="detail request" x="105" y="222">标签 7</text>
+  <text class="detail request" x="105" y="241">读偏移 0x120</text>
+  <text class="label response" x="254" y="181">读返回包</text>
+  <text class="detail response" x="254" y="202">目的 S　标签 7</text>
+  <text class="detail response" x="254" y="222">数据 42</text>
+  <text class="detail response" x="254" y="241">状态成功</text>
+
+  <rect x="12" y="251" width="336" height="36" rx="7" fill="#f0eee7" stroke="#b7af98"/>
+  <text class="detail" x="180" y="275">路由器按目的节点选择出口</text>
+  <path class="there" d="M20 287 V306"/>
+  <path class="back" d="M340 308 V289"/>
+
+  <rect x="12" y="309" width="336" height="35" rx="8" fill="#e6edf2" stroke="#98afbf"/>
+  <text class="label" x="180" y="332">目标 NI T</text>
+  <path class="there" d="M34 344 V367"/>
+  <path class="back" d="M326 369 V346"/>
+  <text class="detail request" x="95" y="362">发起读取</text>
+  <text class="detail response" x="267" y="362">取回 42</text>
+
+  <rect x="12" y="370" width="336" height="25" rx="7" fill="#edf1f3" stroke="#a8bbc2"/>
+  <text class="detail" x="180" y="388">SRAM　偏移 0x120 处的字为 42</text>
+</svg>
