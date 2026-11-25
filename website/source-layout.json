@@ -752,6 +752,10 @@
         "target": "CIM/wiki/03-compute-paradigms/digital-cim-fundamentals.md"
       },
       {
+        "source": "series/microarchitecture/08-in-memory-computing/03-compute-paradigms/img/mixed-signal-handoff.svg",
+        "target": "CIM/wiki/03-compute-paradigms/img/mixed-signal-handoff.svg"
+      },
+      {
         "source": "series/microarchitecture/08-in-memory-computing/03-compute-paradigms/mixed-signal-cim.md",
         "target": "CIM/wiki/03-compute-paradigms/mixed-signal-cim.md"
       },

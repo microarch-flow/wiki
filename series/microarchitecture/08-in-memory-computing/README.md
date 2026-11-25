@@ -26,6 +26,8 @@
 同一个点积也可以在数字读出路径上计算。先看[两列的按位与怎样变成可累加的计数](./03-compute-paradigms/digital-cim-fundamentals.md#and-and-count)，再看[六组位平面怎样排进有限的读出通路](./03-compute-paradigms/digital-cim-deep-dive.md#schedule-six-pairs)。
 
 
+如果两个子阵列同时算完、却共用一只 ADC，第二份结果在哪里等？沿着[两份模拟部分和的读出](./03-compute-paradigms/mixed-signal-cim.md#signal-handoff)看它们怎样先后变成 8 和 15，再用[相同的输出要求](./03-compute-paradigms/analog-vs-digital-tradeoff-map.md#same-dot-product)对比能量和延迟。
+
 <span class="micro-legacy-anchor" id="十章地图"></span>
 
 ## 阅读顺序

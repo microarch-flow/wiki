@@ -2,33 +2,27 @@
 
 <span class="micro-legacy-anchor" id="三种-paradigm-三种-memory哪些组合是主流哪些罕见为什么"></span>
 <span class="micro-legacy-anchor" id="这页在回答什么问题"></span>
+
+上级：[阵列求值与信号转换](./README.md) · [存储介质与计算路径](../02-memory-technologies/README.md)
+
+看到一张标着「MRAM 计算阵列」的图，先遮住标题。只送入两个位，问图中的第一份结果是什么。是一个存储位的读数，是两位共同决定的 OR，还是能表示多项贡献的模拟量？知道存储单元用磁态保存数据，还答不了这个问题。
+
 <span class="micro-legacy-anchor" id="crossmap"></span>
+<span class="micro-legacy-anchor" id="交叉检查表"></span>
 <span class="micro-legacy-anchor" id="三个主流组合"></span>
 <span class="micro-legacy-anchor" id="罕见组合为什么罕见"></span>
+
+## 从哪一步查起？ {#read-cross-check}
+
+- **查一种介质能怎样算。** 在双行 MRAM 的教学例里，同样的 6 µA 能随比较参考的改变分别判出 OR 的 1 或 AND 的 0。另一种实测 MRAM 阵列用电阻求和。沿这两个例子对照，再去查 SRAM、ReRAM、Flash、PCM 各自的编码、读出和外围。[路线速查中的介质与求值方式交叉检查](../02-memory-technologies/memory-tech-comparison-matrix.md#medium-and-evaluation)
+- **查一颗宏怎样交付数字。** 画出输入编码和权重所在的位置，沿阵列结果找第一次转换，再追数字累加和最终输出。模拟部分和与数字结果各在线路的哪一端，决定了面积、时间和能量要算到哪里。[从模拟量进入数字部分和](./mixed-signal-cim.md#signal-handoff)
+
+<span class="micro-legacy-anchor" id="独立-cu-单列"></span>
+
+若行缓冲仍然交出原样的权重，沿线找到它与输入第一次相乘的位置。独立计算单元要查指令、寄存器和数据接口；即使它和 DRAM bank 位于同一颗 die，也能把这段操作与阵列读出分别画清楚。[bank 旁的运算单元](../02-memory-technologies/memory-tech-comparison-matrix.md#independent-cu-path) · [计算位置与术语](../01-overview/cim-pim-nmc-taxonomy.md)
+
+<span class="micro-legacy-anchor" id="怎样使用这张表"></span>
 <span class="micro-legacy-anchor" id="一句话理解"></span>
 <span class="micro-legacy-anchor" id="研究启示"></span>
 
-
-上级：[阵列求值与信号转换](./README.md)
-
-同一种介质可以支持不同求值方式。读到一个组合时，应检查编码、计算路径和外围成本，不能凭“主流”或“罕见”标签判定可行性。
-
-## 交叉检查表
-
-| 介质 | 模拟求值需要核查 | 数字求值需要核查 | 宏级混合信号边界 |
-| --- | --- | --- | --- |
-| SRAM | 多行激活、电流或电荷如何累积，误差怎样传播 | bitwise、bit-serial、popcount 的读出与归约 | SA/ADC、数字累加和控制是否计入 |
-| ReRAM | 电导编码、阵列非理想性、写入验证 | 读取路径是否参与离散求值，或只是供给独立 ALU | 转换、校准、差分编码和部分和合并 |
-| Flash | 电荷状态、读出精度与权重更新 | 具体感测或逻辑机制，不能由器件名推断 | 编程、转换、数字校准及控制 |
-| PCM | 电阻状态、漂移与温度依赖 | 离散状态读取与运算路径 | 漂移补偿、转换与累加 |
-| MRAM | 可区分状态和实际读出方案 | 阵列或 sense path 如何参与求值 | 比较、感测和数字结果处理的边界 |
-
-表中是问题清单，不声称每个组合已有相同成熟度的产品。具体器件实例见[介质章节](../02-memory-technologies/README.md)。模拟阵列与 mixed-signal 宏可以同时描述同一设计的不同层级。
-
-## 独立 CU 单列
-
-DRAM/HBM/GDDR 的独立 PIM 处理单元，用指令、算术资源、局部存储和接口描述。普通 PHY 包含模拟电路，不足以把整个系统称为 mixed-signal 求值宏。分类口径见[计算位置与术语](../01-overview/cim-pim-nmc-taxonomy.md)。
-
-## 怎样使用这张表
-
-先画输入编码、存储、求值、转换、累加和输出路径，再逐项查证对应的电路与实验。性能与能量的比较还要固定任务、精度和包含成本，查阅入口见[路线速查](../02-memory-technologies/memory-tech-comparison-matrix.md)。
+若两条路径都能算出 23，再把它们放在相同任务、精度和输出位置下比较。转换、部分和归并和最后一次搬运是否计入，往往会改变答案。[沿同一点积比较两种实现](./analog-vs-digital-tradeoff-map.md#same-dot-product) · [检查权重复用与整次任务能量](../02-memory-technologies/memory-tech-comparison-matrix.md#比较前统一什么)

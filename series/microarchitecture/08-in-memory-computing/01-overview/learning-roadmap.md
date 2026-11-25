@@ -19,7 +19,7 @@
 6. [一格 ReRAM 怎样存下权重，两行电流又怎样算出点积？](../02-memory-technologies/reram-as-compute-element.md)
 7. [把输入拆成两个位平面，模拟阵列怎样算出 23？](../03-compute-paradigms/analog-cim-fundamentals.md)
 8. [阵列每列只输出一位，怎样靠计数算出 2×4 + 3×5？](../03-compute-paradigms/digital-cim-fundamentals.md)　需要核算拍数时，接着看[六组位平面怎样排进读出通路](../03-compute-paradigms/digital-cim-deep-dive.md#schedule-six-pairs)。
-9. [Paradigm × Memory Crossmap](../03-compute-paradigms/paradigm-memory-crossmap.md)
+9. [存储介质与求值方式的交叉检查](../03-compute-paradigms/paradigm-memory-crossmap.md#read-cross-check)
 
 这条路径的目标是先建立分类直觉：看到一个对象时，先判计算位置和 memory technology；若阵列参与计算，再判断 CIM 的求值与转换范式；若是独立 PIM/NMC 单元，则查执行单元、局部存储和接口。
 
@@ -45,7 +45,7 @@
 如果目标是读 CIM 论文，推荐先建立指标和非理想性口径：
 
 1. [CIM/PIM/NMC taxonomy](./cim-pim-nmc-taxonomy.md)
-2. [Analog vs Digital Tradeoff Map](../03-compute-paradigms/analog-vs-digital-tradeoff-map.md)
+2. [同样算出 23，模拟和数字存内计算怎样公平比较？](../03-compute-paradigms/analog-vs-digital-tradeoff-map.md#same-dot-product)
 3. [ADC/DAC/SA in CIM](../04-circuit-and-macro/adc-dac-sa-in-cim.md)
 4. [Non-Idealities and Error Sources](../04-circuit-and-macro/non-idealities-and-error-sources.md)
 5. [Metrics Glossary](../09-research-frontier/metrics-glossary.md)
