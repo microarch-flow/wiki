@@ -66,7 +66,7 @@
 - [AI 加速器里的 DMA](./07-workloads-case-studies/ai-accelerator-dma.md)
 - [CPU / GPU / NPU 系统中的 DMA 分工](./07-workloads-case-studies/cpu-gpu-npu-comparison.md)
 - [嵌入式多媒体与存储/网络路径](./07-workloads-case-studies/embedded-storage-network.md)
-- [HBM 到 Tile 的数据供给链](./07-workloads-case-studies/hbm-to-tile-data-supply-chain.md)
+- [从 HBM 到计算阵列，一块数据什么时候才算就绪？](./07-workloads-case-studies/hbm-to-tile-data-supply-chain.md)
 - [AXI DMA 案例卡](./07-workloads-case-studies/axi-dma-case-card.md)
 - [PCIe NIC DMA 案例卡](./07-workloads-case-studies/pcie-nic-dma-case-card.md)
 - [NVMe / 存储路径中的 DMA](./07-workloads-case-studies/nvme-storage-dma-case-card.md)

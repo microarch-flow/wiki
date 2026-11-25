@@ -11,7 +11,7 @@
 
 ## 入口与边界
 
-[位置与术语](./01-overview/cim-pim-nmc-taxonomy.md)负责命名；[介质与求值方式](./01-overview/two-axes-memory-and-paradigm.md)负责物理坐标；[路线矩阵](./02-memory-technologies/memory-tech-comparison-matrix.md)负责查阅。公司和论文是机制的证据与案例，不是另一套平行分类。
+从《[同一个点积，挪到存储旁边或阵列里面怎么算？](./01-overview/cim-pim-nmc-taxonomy.md)》开始。跟着两个权重看它们走到哪个运算单元，再判断哪一段搬运发生了变化。[介质与求值方式](./01-overview/two-axes-memory-and-paradigm.md)负责物理坐标；[路线矩阵](./02-memory-technologies/memory-tech-comparison-matrix.md)负责查阅。公司和论文是机制的证据与案例，不是另一套平行分类。
 
 
 <span class="micro-legacy-anchor" id="十章地图"></span>

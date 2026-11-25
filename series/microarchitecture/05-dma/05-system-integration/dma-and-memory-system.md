@@ -8,7 +8,7 @@
 
 为什么 DMA 的瓶颈经常不在 DMA 本体，而在它连接的 local memory、DDR、HBM 和 memory controller；以及为什么 DMA 的 burst 和 stride 选择会直接改写 DRAM row locality 与片上 SRAM 冲突形状。
 
-## DMA 的真实上限由三类端点共同决定
+## 一笔搬运要经过哪三类资源？ {#dma-的真实上限由三类端点共同决定}
 
 任何一笔 DMA 路径至少都牵涉三类资源：
 
@@ -27,7 +27,7 @@
 - refill 写入压住 compute 读取
 - writeback 占住有限 staging buffer
 
-这些问题的危险在于它们常常不会表现成“大带宽不够”，而会表现成“偶发断供”“steady-state 起不来”或“某个 tile 特别慢”。对 deterministic NPU 来说，这类局部冲突往往比外存平均带宽更致命。
+同一块数据即使已从 HBM 返回，也可能因为目的端拒绝写入，暂时还不能交给下一次计算。
 
 ## DDR / HBM 真正卡人的地方不是规格值，而是访问形状
 
@@ -38,11 +38,17 @@
 - request 是否集中打到少数 channel 或 bank
 - memory controller 是否能做有效调度
 
-尤其是 stride 访问。软件视角下它只是“每行跳过一些字节”；DRAM 视角下，它可能意味着每次都打断 row hit 序列，让 controller 不断付 `PRE -> ACT -> RD/WR` 的代价。也就是说，`DMA ↔ RAM` 的关键关系不是“DMA 使用 DDR”，而是“DMA 的访问模式直接塑造了 DDR 能否兑现 row locality”。
+若步长让请求在同一 bank 的两条 DRAM 行之间轮换，在保留打开行的策略下，访问另一行前需要按时序关闭旧行、打开目标行，再发列命令。bank 原本关闭时则从激活开始。若地址分散到不同 bank，有些操作又可以重叠。目标行、初始行状态和服务顺序都应写进判断条件。[AMD HBM 控制器文档中的开页与关页延迟](https://docs.amd.com/r/en-US/pg276-axi-hbm/Performance)
+
+## 只改目的步长，源端的行命中会变吗？ {#same-source-different-destination}
+
+取四个 4 B 字，源端偏移为 0、64、128、192 B。先固定源端的地址映射、到达顺序和行策略：这些地址都在同一个 DRAM bank，基址按 256 B 对齐，教学行宽为 256 B，初始关行，访问后保持开行。第一次访问打开这一行，后面三次都能复用它。现在只改片上布局，四个字写到哪里会不同，源端这四笔读的行序列仍然一样。
+
+假设目的 SRAM 有四个 bank，每个 bank 每拍只接一笔 4 B 读或写，bank 编号为 (字节地址 ÷ 4 的整数部分) mod 4。目的基址按 16 B 对齐，四笔写同时到达。目的步长为 4 B 时，对应 bank 0、1、2、3，各 bank 的写端口都可用就能同拍接纳。改成 16 B，四笔全到 bank 0，至少要占四个接纳时间槽。此时若阵列还要从同一存储区的另一个字（偏移 64 B）取数，这一读也要排 bank 0 的同一个端口。源端以相同方式读完，并不能决定阵列在哪一拍拿到最后一个数。[对照两种步长的完整映射](../../../storage/01-memory-hierarchy/02-access-paths/sram-vs-dram-access-pattern.md#dma-source-row-destination-bank) · [跟着一块数据走到阵列输入就绪](../07-workloads-case-studies/hbm-to-tile-data-supply-chain.md#when-input-is-ready)
 
 ## Burst、tile 和 row locality 为什么必须一起看
 
-这三者在系统里是连锁关系。大 tile 往往更利于长 burst，也更可能形成稳定 row locality；但大 tile 同时会吃掉更多片上 buffer，让双缓冲和多流并发更难。小 tile 则可能让 local SRAM 调度更灵活，却会让外存侧 burst 变碎、header 开销变高、row reuse 变差。
+这三者在系统里是连锁关系。若扩大 tile 后新增的有效字节相邻、总线也允许合并，它们有机会组成更长的 burst；能否复用打开行仍取决于映射与调度。大 tile 也会占用更多片上 buffer，让双缓冲和多流并发更难。小 tile 则可能让 local SRAM 调度更灵活，却会让外存侧 burst 变碎、header 开销变高、row reuse 变差。
 
 所以 tile 不是 compute 自己的参数，burst 也不是 DMA 自己的参数；它们是 memory hierarchy 上下游共同决定的系统参数。最典型的错误做法，是只按算子映射选 tile，然后再寄希望于 DMA 自动把 memory system 用满。
 

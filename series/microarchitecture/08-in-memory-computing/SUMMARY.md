@@ -8,7 +8,7 @@
 
 - [章导读](./01-overview/README.md)
 - [Memory Wall 与 Von Neumann Bottleneck](./01-overview/problem-statement.md)
-- [CIM、PIM、NMC 的位置与口径](./01-overview/cim-pim-nmc-taxonomy.md)
+- [同一个点积，挪到存储旁边或阵列里面怎么算？](./01-overview/cim-pim-nmc-taxonomy.md)
 - [两条正交主线：Memory Technology × Compute Paradigm](./01-overview/two-axes-memory-and-paradigm.md)
 - [早期 PIM 原型未规模采用与 AI 时代的新机会](./01-overview/why-cim-now-and-why-not-before.md)
 - [CIM 整体分类体系](./01-overview/taxonomy.md)
@@ -113,3 +113,4 @@
 - [CIM 路线选型决策树](./10-reference/decision-tree-cim-route-selection.md)
 - [高频问题：最容易混淆的概念](./10-reference/high-frequency-questions.md)
 - [术语表](./10-reference/glossary.md)
+- [资料入口说明](./10-reference/source-notes.md)
