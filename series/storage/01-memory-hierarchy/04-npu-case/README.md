@@ -22,11 +22,9 @@ NPU 执行一个计算块时，权重、激活和部分和存在哪里？它们�
 
 ## 阅读顺序
 
-1. [NPU 存储层次](./npu-memory-hierarchy.md)：怎样按作用域、数据角色和访问路径描述存储？
-2. [数据搬运与复用](./data-movement-first-principle.md)：同一任务采用不同驻留策略时，各边界流量怎样变化？
-3. [权重缓冲区](./weight-buffer-design.md)：怎样根据工作集、复用和供数需求确定容量与组织？
-4. [激活缓冲与双缓冲](./activation-buffer-and-double-buffering.md)：数据填充与计算在什么条件下能重叠？
-5. [片上带宽预算](./on-chip-bandwidth-budget.md)：怎样从阵列访问推算每条边界及共享端口的流量？
+1. [权重驻留与阵列供数](./npu-memory-hierarchy.md)：同一组 4 B 权重连用三次。在哪个接口只传 4 B，又在哪个接口传了 12 B？再看这组权重放在哪里、需要多大容量、怎样按时送到阵列。
+2. [激活缓冲与双缓冲](./activation-buffer-and-double-buffering.md)：数据填充与计算在什么条件下能重叠？
+3. [片上带宽预算](./on-chip-bandwidth-budget.md)：怎样从阵列访问推算每条边界及共享端口的流量？
 
 需要分析存储与计算之间的限制，可读[存储与计算瓶颈](../03-performance/memory-bound-vs-compute-bound.md)。需要比较外存路线，可读[HBM 与 LPDDR 选型](../../06-system-integration/hbm-vs-lpddr-for-npu.md)。
 

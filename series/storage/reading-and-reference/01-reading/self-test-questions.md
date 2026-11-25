@@ -277,13 +277,13 @@
 <ol start="68" markdown>
 
 68. [F] 对具有多级片上存储的 NPU，为什么要先核对实际 buffer、连接和管理方式，而不能仅凭 L0/L1/L2 名称推断拓扑？
-   [参考正文](../../01-memory-hierarchy/04-npu-case/npu-memory-hierarchy.md)
+   [参考正文](../../01-memory-hierarchy/04-npu-case/npu-memory-hierarchy.md#paths)
 
 69. [T] 在搬运受限的 NPU 工作负载中，数据流、buffer 大小、DMA 节拍和外存路线如何影响搬运？何时还应优先检查计算瓶颈？
-   [参考正文](../../01-memory-hierarchy/04-npu-case/data-movement-first-principle.md)
+   [参考正文](../../01-memory-hierarchy/04-npu-case/npu-memory-hierarchy.md#traffic)
 
 70. [J] 设计 weight buffer 时，你如何从权重复用距离、tile blocking、PE 分发几何和读带宽反推容量与 bank 组织？
-   [参考正文](../../01-memory-hierarchy/04-npu-case/weight-buffer-design.md)
+   [参考正文](../../01-memory-hierarchy/04-npu-case/npu-memory-hierarchy.md#supply)
 
 71. [T] activation double buffering 在什么条件下真正隐藏 refill，在什么条件下只是多占了一份 SRAM 但仍然 stall？
    [参考正文](../../01-memory-hierarchy/04-npu-case/activation-buffer-and-double-buffering.md)

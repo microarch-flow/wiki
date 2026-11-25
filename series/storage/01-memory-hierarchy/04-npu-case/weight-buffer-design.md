@@ -1,48 +1,22 @@
-# 权重缓冲区：从工作集与供数需求确定容量和组织
+---
+search:
+  exclude: true
+---
 
-<span id="weight-buffer-的容量与组织从-model-size-反推"></span>
+# NPU 权重缓冲区（原入口）
 
-上级：[NPU 数据路径与存储组织](./README.md)
+本页已并入[NPU 连算三个块，为什么外存只读 4 B 权重，阵列却要接收 12 B？](./npu-memory-hierarchy.md)。原文各小节可直接在新文中阅读。
 
-相关：[数据搬运与复用](./data-movement-first-principle.md) · [片上带宽预算](./on-chip-bandwidth-budget.md)
+<div markdown="1" data-storage-redirect="true">
 
-## 这页在回答什么问题
+- <span id="权重缓冲区从工作集与供数需求确定容量和组织"></span>[计算同时驻留的权重容量](./npu-memory-hierarchy.md#residency)
+- <span id="weight-buffer-的容量与组织从-model-size-反推"></span>[从一块权重的驻留时间算空间](./npu-memory-hierarchy.md#residency)
+- <span id="这页在回答什么问题"></span>[哪些权重必须同时放得下](./npu-memory-hierarchy.md#residency)
+- <span id="权重工作集容量与复用"></span>[工作集、预取与容量](./npu-memory-hierarchy.md#residency)
+- <span id="weight-buffer-的容量与组织"></span>[缓冲区怎样及时向阵列供数](./npu-memory-hierarchy.md#supply)
+- <span id="局部与共享怎样选择"></span>[局部副本与共享缓冲区](./npu-memory-hierarchy.md#shared)
+- <span id="一句话理解"></span>[分别核对容量与供数](./npu-memory-hierarchy.md#residency)
+- <span id="建模启示"></span>[区分驻留与真实传输](./npu-memory-hierarchy.md#model)
+- <span id="接下来怎么读"></span>[继续看激活供给与片上带宽](./npu-memory-hierarchy.md#next)
 
-权重缓冲区（weight buffer）应容纳哪些数据？它需要多大容量和多少读出能力，才能支持所选的分块和调度？
-
-## 权重工作集、容量与复用
-
-模型大小（model size）说明全部参数的规模，但单次计算未必需要它们同时驻留。先确定算子分块、每块权重的大小、使用顺序和复用范围，再计算某个时刻必须同时留在目标存储中的数据。
-
-在[数据搬运的三个 tile 例子](./data-movement-first-principle.md#同一任务两种权重驻留策略)中，三个 tile 使用同一组 4 B 权重。若权重缓冲在三次使用期间不被覆盖，保留它只需要 4 B；多次使用本身不会增加这组权重的大小。若在使用当前 4 B 时，还要预取另一组独立的 4 B 权重，且两组必须同时驻留，则至少需要 8 B 的可用空间。
-
-放大来看，假设一个权重 tile 含 1,024 个 8-bit 权重，没有额外填充或元数据，则占 1,024 B。连续复用十次仍占 1,024 B；若当前 tile 与同样大小的下一 tile 同时驻留，峰值才是 2,048 B。
-
-如果权重以 b bit 紧密打包，每个 tile 有 n 个权重，且整个 tile 只在末尾补齐到字节，则数据部分为 ⌈n × b / 8⌉ B。实际格式可能要求每行、每个 block 分别对齐，也可能包含压缩元数据；应按实际布局计算，而不能把理想打包量当成物理占用。
-
-## Weight buffer 的容量与组织
-
-需要保留多久与需要多少容量是两个问题。较长的驻留时间只有在其他数据也需要同时留在该资源中时，才可能提高容量峰值。对共享 SRAM，应检查权重、激活及其他角色在同一时刻的**合计物理占用**；独立 SRAM 则分别检查。
-
-扩大容量可能允许更多数据同时驻留，从而减少某些回取。但如果已有容量足够，或调度没有改变，扩大容量未必减少流量。若目标是隐藏下一块的填充时间，还需要足够的空间、可并行的访问资源和正确的同步。
-
-容量满足后，还要检查权重如何被读出。例如，同一个权重广播给多个 PE 时，源 SRAM 的读取量可能少于所有 PE 接收量之和；若每个 PE 需要不同权重，则需要相应的独立数据供给。bank 数、地址映射、端口和分发路径共同决定能否在指定周期完成读取。
-
-## 局部与共享怎样选择？
-
-局部缓冲可缩短特定消费者的访问路径，但多个计算簇可能需要各存一份权重。共享缓冲可供多个消费者使用，但要检查同时读出的 bank 冲突、互连扇出和仲裁。哪种方案更合适，取决于实际映射、复用、面积和带宽需求。
-
-[NVDLA v1 的卷积缓冲](https://nvdla.org/hw/v1/ias/unit_description.html#convolution-buffer)把输入数据和权重作为不同逻辑缓冲，并在一组 bank 上配置其占用。它是共享物理资源的一种具体实现，不表示所有 NPU 都采用相同分区。
-
-## 一句话理解
-
-权重缓冲区应按同时驻留的工作集确定容量，并按消费者、bank 和分发路径检查供数；较大的容量只有改变了有效驻留或调度时才可能减少回取。
-
-## 建模启示
-
-至少记录权重块大小、驻留与释放时间、消费者、每个物理资源的占用峰值，以及实际跨边界的读取。需要诊断带宽时，再记录 bank 映射、端口和同周期竞争。对预取，既要表示下一块何时完成，也要表示当前块何时允许释放。
-
-## 接下来怎么读？
-
-- [激活缓冲与双缓冲](./activation-buffer-and-double-buffering.md)：进一步分析两个数据块的填充和消费时序。
-- [片上带宽预算](./on-chip-bandwidth-budget.md)：检查权重、激活及结果是否争用同一资源。
+</div>
