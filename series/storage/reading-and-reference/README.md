@@ -6,8 +6,9 @@
 
 | 目标 | 建议入口 | 能得到什么 |
 | --- | --- | --- |
+| 手算一条数据路径 | [CPU 读一个整数](./01-reading/first-read-practice.md#cpu-read) · [NPU 搬一块权重](./01-reading/first-read-practice.md#npu-move) | 判断读取会停在哪一层，或核对同一块权重在不同接口穿过多少次。 |
 | 找到学习次序 | [按目标选择学习路径](./01-reading/learning-roadmap.md) | 按系统全貌、DRAM 模型、NPU buffer 和性能分析选择前置知识。 |
-| 检验理解 | [自测问题](./01-reading/self-test-questions.md) | 按历史章节组织的题目，每题链接到参考正文；另有可靠性和 HBF 综合题。 |
+| 检验理解 | [自测问题](./01-reading/self-test-questions.md) | 按章节挑选 82 道题，每题链接到参考正文，包含可靠性和 HBF 综合题。 |
 | 查概念 | [术语表](./02-reference/glossary.md) · [高频问答](./02-reference/high-frequency-questions.md) | 区分介质、接口、控制、系统角色和封装。 |
 | 核查设计 | [SRAM 选型清单](./02-reference/sram-design-checklist.md) · [DRAM 性能排查清单](./02-reference/dram-debug-checklist.md) | 记录问题、条件和证据，并选择下一步检查。 |
 | 建立模型 | [DRAM 时序速查](./02-reference/timing-parameter-cheatsheet.md) · [存储系统建模模板](./02-reference/memory-modeling-template.md) | 选择模型边界，记录约束、观测点和验证方法。 |

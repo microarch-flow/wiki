@@ -36,6 +36,11 @@
       },
       {
         "kind": "file",
+        "source": "series/storage/reading-and-reference/01-reading/first-read-practice.md",
+        "target": "RAM/wiki/reading-and-reference/first-read-practice.md"
+      },
+      {
+        "kind": "file",
         "source": "series/storage/01-memory-hierarchy/README.md",
         "target": "RAM/wiki/01-overview/README.md"
       },

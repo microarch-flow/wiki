@@ -9,7 +9,7 @@
 
 <p class="ram-problem-lede">先确定要回答的问题，再选择阅读路径。理解器件原理、构建 DRAM 命令模型和分析 NPU 片上 buffer，需要的细节并不相同。</p>
 
-本文给出章节地图和几条按目标选择的路径。它们是阅读建议，不是要求每位读者先完成全部底层章节。遇到不熟悉的概念时，可以沿链接回读。
+想先动手，可以试着判断[CPU 第二次读数组会在哪里命中](./first-read-practice.md#cpu-read)，或算一算[NPU 重用权重后还要从外存搬多少字节](./first-read-practice.md#npu-move)。下表可用来找需要补读的章节。
 
 ## 1. 每一章负责回答什么？
 
@@ -75,7 +75,7 @@
 
 ## 7. 想比较 HBF 与其他存储：从工作负载到接口
 
-先读 [HBF 定位](../../05-hbf/01-position.md)与 [NAND 基础](../../05-hbf/02-nand-foundations.md)，再读 [写入与可靠性](../../05-hbf/06-write-and-reliability.md)及[工作负载与建模](../../05-hbf/07-workload-and-modeling.md)。比较 HBM 或其他存储时，分别记录容量、有效读取和写入、接口、数据管理及恢复边界；HBF 不能当作另一种 DRAM。需要综合封装与成本时，转到[存储系统集成与选型](../../06-system-integration/README.md)。
+先读 [HBF 定位](../../05-hbf/01-position.md)与 [NAND 基础](../../05-hbf/02-nand-foundations.md)。再沿[一次 HBF 读取](../../05-hbf/04-read-walkthrough.md)看主机接口如何用 64 B 单位请求完整的 4 KiB，以及数据怎样返回。接着读[写入与可靠性](../../05-hbf/06-write-and-reliability.md)及[工作负载与建模](../../05-hbf/07-workload-and-modeling.md)。比较 HBM 或其他存储时，分别记录容量、有效读取和写入、接口、数据管理及恢复边界；HBF 不能当作另一种 DRAM。需要综合封装与成本时，转到[存储系统集成与选型](../../06-system-integration/README.md)。
 
 ## 一句话理解
 

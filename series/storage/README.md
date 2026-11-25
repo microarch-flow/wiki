@@ -2,6 +2,8 @@
 
 程序先读数组里的一个整数 `A[0]`，等它返回，再读旁边的 `A[1]`。两次各要 4 个字节。为什么第一次可能要让八颗内存芯片一起工作，第二次却连一笔请求都没有发给内存？
 
+想自己推一遍，可以先做[CPU 读一个整数](./reading-and-reference/01-reading/first-read-practice.md#cpu-read)，判断请求在哪一层取到数据。也可以从[NPU 搬一块权重](./reading-and-reference/01-reading/first-read-practice.md#npu-move)开始，分别数外存送出的字节和计算阵列收到的字节。
+
 ## 第一次读，从哪个地址出发？ {#first-load}
 
 假设处理器发出了这两笔读取，每个整数占 4 B。数组位于普通的、允许缓存的内存中。我们先跟着 `A[0]` 走到能提供数据的地方，再看看 `A[1]` 在哪里停下。想从器件或 NPU 案例读起，也可以直接[按问题选专题](#topics)。
@@ -47,4 +49,4 @@
 | **HBF 高带宽闪存**　NAND 按块擦除，SSD 更新 A 页后，为什么同一块里的 B 页还能读？换成 HBF，主机又要负责什么？ | [SSD 怎样在 NAND 中更新一页](./05-hbf/02-nand-foundations.md) · [HBF 写入与可靠性](./05-hbf/06-write-and-reliability.md) · [HBF 专题导读](./05-hbf/README.md) |
 | **存储系统集成与选型**　同样的推理任务，需要多少外存带宽？怎样权衡封装、容量与成本？ | [专题导读](./06-system-integration/README.md) · [封装与集成](./06-system-integration/packaging/README.md) · [NPU 该选 HBM 还是 LPDDR？](./06-system-integration/hbm-vs-lpddr-for-npu.md) · [CXL 与近存计算](./06-system-integration/future-packaging-cxl-near-memory.md) |
 
-想动手算一算，可从[查阅与练习](./reading-and-reference/README.md)挑一道题。需要逐章翻原来的笔记，可沿用[原 RAM 阅读路线](./reading-and-reference/01-reading/README.md)。跨到其他系列时，[芯片制造与封装](../chip-development/FAB/wiki/README.md)解释这些器件怎样做出来，[DMA 双缓冲](../microarchitecture/05-dma/04-programming-model/tiling-double-buffering.md)接着解释数据搬入时计算能否继续。
+遇到具体的时序、调试或建模问题，可到[查阅与练习](./reading-and-reference/README.md)找速查表和清单。需要逐章翻原来的笔记，可沿用[原 RAM 阅读路线](./reading-and-reference/01-reading/README.md)。跨到其他系列时，[芯片制造与封装](../chip-development/FAB/wiki/README.md)解释这些器件怎样做出来，[DMA 双缓冲](../microarchitecture/05-dma/04-programming-model/tiling-double-buffering.md)接着解释数据搬入时计算能否继续。

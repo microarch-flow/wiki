@@ -1,7 +1,10 @@
-# RAM Wiki 自测问题列表
+# 存储系统自测：82 道题
 
-总共 82 题。前 80 题保留原 RAM 章节编号；第 81、82 题跨专题。使用方式：从头到尾过一遍，能立刻答上来的跳过，犹豫的标记下来回 wiki 查证。
-所有题目不附答案。每题附有现行 wiki 的参考正文；跨专题题附多个来源。
+<span id="ram-wiki-自测问题列表"></span>
+
+第一次来，可以先选一道能逐步核对的练习：[CPU 读一个整数](./first-read-practice.md#cpu-read)或 [NPU 搬一块权重](./first-read-practice.md#npu-move)。
+
+本题库共 82 题。前 80 题保留原 RAM 章节编号，第 81、82 题跨专题。可以任选一题作答，再打开题后的参考正文核对。
 
 题目分层标记：[F] = 事实回忆，[T] = 理解迁移，[J] = 架构判断力。
 
@@ -37,8 +40,8 @@
 6. [F] 6T SRAM cell 为什么必须同时满足 hold stability、read stability 和 write-ability，而不能只说“能存 0/1”？
    [参考正文](../../02-sram/foundations/6t-cell-bistable-storage.md)
 
-7. [T] SRAM 的读出、写入与恢复有哪些不同电气阶段？宏接口的输出可见边沿和下一次接纳间隔为何要分别确定？
-   [参考正文](../../02-sram/foundations/read-write-cycle-timing.md)
+7. [T] <span id="q7"></span>SRAM 怎样读出或写入一个字，又怎样让位线和端口恢复到能接纳下一次访问的状态？为什么要分别确定读数据何时在宏输出端有效、端口隔多久能接纳下一次请求？
+   [参考正文](../../02-sram/foundations/read-write-cycle-timing.md) · [动手逐拍检查一次接纳和一次交付](./first-read-practice.md#sram-slot)
 
 8. [J] 在一个局部 buffer 需要两路并发读的场景里，你如何判断应付 true multi-port SRAM 的代价，还是用 banking、复制或时分复用规避？
    [参考正文](../../02-sram/foundations/single-port-dual-port-multi-port.md)
@@ -66,8 +69,8 @@
 
 <ol start="14" markdown>
 
-14. [F] cache 的 tag array 为什么不是 data array 的“注释信息”，而是命中路径里决定数据能否被当作结果的关键结构？
-   [参考正文](../../02-sram/applications/cache-sram-tag-data-arrays.md)
+14. [F] <span id="q14"></span>cache 的 tag array 为什么不是 data array 的“注释信息”，而是命中路径里决定数据能否被当作结果的关键结构？
+   [参考正文](../../02-sram/applications/cache-sram-tag-data-arrays.md) · [动手检查缓存行的边界](./first-read-practice.md#cache-edge)
 
 15. [T] 对一个可由编译器精确 tiling 的矩阵计算 workload，为什么 scratchpad 可能比 cache 更适合承载局部数据？
    [参考正文](../../01-memory-hierarchy/02-access-paths/cache-vs-scratchpad.md)
@@ -75,7 +78,7 @@
 16. [J] 在 MCU 中断和控制闭环中，TCM 的显式放置可能有什么价值？若端口或总线发生竞争，访问时间还需要哪些前提才能确定？
    [参考正文](../../02-sram/applications/tcm-itcm-dtcm-in-mcu.md)
 
-17. [F] register file 为什么是 SRAM 设计空间中的极端点，尤其在端口数、同拍语义和执行管线时序上？
+17. [F] 若用 SRAM 实现寄存器文件，多个操作数读取和结果写回会对读写端口的数量提出什么要求？同一拍读写同一寄存器时，读到的值由什么决定？执行流水线何时能用这个值？
    [参考正文](../../02-sram/applications/register-file-as-sram.md)
 
 18. [T] weight、activation、accumulator buffer 的生命周期、读写方向和复用模式分别不同，这会怎样改变 NPU 片上 SRAM 的瓶颈位置？
@@ -119,8 +122,8 @@
 28. [T] 对一个 bursty workload，controller 推迟 refresh 可能改善当前读延迟；为什么这种策略也可能在后续形成更大的 tail spike？
    [参考正文](../../03-dram/foundations/refresh-the-fundamental-cost.md)
 
-29. [T] DRAM core 慢而宽、I/O 快而窄的节奏失配，为什么会自然推导出 prefetch 和 burst 这两个机制？
-   [参考正文](../../03-dram/foundations/bank-group-prefetch-burst.md)
+29. [T] <span id="q29"></span>DRAM core 慢而宽、I/O 快而窄的节奏失配，为什么会自然推导出 prefetch 和 burst 这两个机制？
+   [参考正文](../../03-dram/foundations/bank-group-prefetch-burst.md) · [动手算一次突发的字节数](./first-read-practice.md#cpu-first)
 
 30. [J] DRAM 单元缩放时，电容、漏电和制造约束如何影响密度与 retention？I/O 密度又需要单独检查哪些接口和封装因素？
    [参考正文](../../03-dram/foundations/dram-process-stacking-trends.md)
@@ -180,8 +183,8 @@
 43. [J] 多 master 共享 DRAM 时，如果低带宽控制流被大吞吐流长期压住，你会如何设计 QoS 规则来保护尾延迟而不过度牺牲总吞吐？
    [参考正文](../../04-dram-controller/qos-multi-master-arbitration.md)
 
-44. [F] 某个 FR-FCFS 实现如何定义 ready 和优先级？列命令就绪与 row hit 有何联系，为什么不能假定所有实现的排序规则相同？
-   [参考正文](../../04-dram-controller/command-scheduling-fr-fcfs.md)
+44. [F] <span id="q44"></span>某个 FR-FCFS 实现如何定义 ready 和优先级？列命令就绪与 row hit 有何联系，为什么不能假定所有实现的排序规则相同？
+   [参考正文](../../04-dram-controller/command-scheduling-fr-fcfs.md) · [动手为两个请求选下一条命令](./first-read-practice.md#bank-choice)
 
 45. [T] FR-FCFS 的 row-hit 偏好在什么流量和资源条件下可能提高吞吐？它为何也可能增加其他请求的饥饿风险？
    [参考正文](../../04-dram-controller/command-scheduling-fr-fcfs.md)
@@ -224,8 +227,8 @@
 55. [J] 面对张量流式搬运和指针追踪两类 workload，你会分别优先优化 startup latency、sustained throughput 还是 outstanding 并发能力？
    [参考正文](../../01-memory-hierarchy/03-performance/bandwidth-vs-latency-fundamental.md)
 
-56. [F] 一次 cache miss 从 tag miss 到 refill 完成，中间通常会经过哪些状态和事务边界？
-   [参考正文](../../01-memory-hierarchy/02-access-paths/cache-dram-coordination.md)
+56. [F] <span id="q56"></span>一次 cache miss 从 tag miss 到 refill 完成，中间通常会经过哪些状态和事务边界？
+   [参考正文](../../01-memory-hierarchy/02-access-paths/cache-dram-coordination.md) · [动手判断第二笔读取是否还要等](./first-read-practice.md#cache-edge)
 
 57. [T] cache 为什么不只是减少外存访问次数，还会改变 DRAM 看到的请求粒度、顺序和并发形态？
    [参考正文](../../01-memory-hierarchy/02-access-paths/cache-dram-coordination.md)
@@ -282,11 +285,11 @@
 69. [T] 在搬运受限的 NPU 工作负载中，数据流、buffer 大小、DMA 节拍和外存路线如何影响搬运？何时还应优先检查计算瓶颈？
    [参考正文](../../01-memory-hierarchy/04-npu-case/npu-memory-hierarchy.md#traffic)
 
-70. [J] 设计 weight buffer 时，你如何从权重复用距离、tile blocking、PE 分发几何和读带宽反推容量与 bank 组织？
-   [参考正文](../../01-memory-hierarchy/04-npu-case/npu-memory-hierarchy.md#supply)
+70. [J] <span id="q70"></span>设计 weight buffer 时，你如何从权重复用距离、tile blocking、PE 分发几何和读带宽反推容量与 bank 组织？
+   [参考正文](../../01-memory-hierarchy/04-npu-case/npu-memory-hierarchy.md#supply) · [动手核对 W 的两个计数器](./first-read-practice.md#weight-count)
 
-71. [T] activation double buffering 在什么条件下真正隐藏 refill，在什么条件下只是多占了一份 SRAM 但仍然 stall？
-   [参考正文](../../01-memory-hierarchy/04-npu-case/activation-buffer-and-double-buffering.md)
+71. [T] <span id="q71"></span>activation double buffering 在什么条件下真正隐藏 refill，在什么条件下只是多占了一份 SRAM 但仍然 stall？
+   [参考正文](../../01-memory-hierarchy/04-npu-case/activation-buffer-and-double-buffering.md) · [动手给双槽安排一个端口](./first-read-practice.md#sram-slot)
 
 72. [F] NPU 的片上带宽预算为什么必须拆成 weight、activation、psum、refill 和 drain 多类流量，而不能只报一个总 SRAM 带宽？
    [参考正文](../../01-memory-hierarchy/04-npu-case/on-chip-bandwidth-budget.md)
@@ -294,11 +297,11 @@
 73. [T] 判断一个 NPU 是否 memory-bound 时，为什么要继续定位瓶颈是在外存、NoC 分发、本地 SRAM bank，还是 psum read-modify-write 回路？
    [参考正文](../../01-memory-hierarchy/03-performance/memory-bound-vs-compute-bound.md)
 
-74. [J] 面对云端大模型推理和边缘 NPU 两种产品目标，你会如何在 HBM 与 LPDDR 之间做外存路线判断？
-   [参考正文](../../06-system-integration/hbm-vs-lpddr-for-npu.md)
+74. [J] <span id="q74"></span>面对云端大模型推理和边缘 NPU 两种产品目标，你会如何在 HBM 与 LPDDR 之间做外存路线判断？
+   [参考正文](../../06-system-integration/hbm-vs-lpddr-for-npu.md) · [动手重算每秒需要的外存带宽](./first-read-practice.md#decode-budget)
 
 75. [J] 如果产品选择 LPDDR 且测得外带宽不足，片上容量、tiling、复用和 DMA overlap 有哪些可能的改善方式？为什么不能假设它们总能补足带宽缺口？
-   [参考正文](../../06-system-integration/hbm-vs-lpddr-for-npu.md)
+   [参考正文](../../06-system-integration/hbm-vs-lpddr-for-npu.md) · [双缓冲能否同时填入和读出](../../01-memory-hierarchy/04-npu-case/activation-buffer-and-double-buffering.md#input-ports)
 
 </ol>
 

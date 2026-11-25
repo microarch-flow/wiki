@@ -81,6 +81,7 @@ MEMORY_SECTIONS = (
 RESOURCE_SECTIONS = (
     ("阅读路线与自测", "01-reading", (
         ("阅读路线与自测", "RAM/wiki/README.md"),
+        ("CPU 读取与 NPU 搬运练习", "RAM/wiki/reading-and-reference/first-read-practice.md"),
         ("按目标选择学习路径", "RAM/wiki/01-overview/learning-roadmap.md"),
         ("自测问题", "RAM/self-test-questions.md"),
         ("Cache 与 scratchpad 原入口", "COMPUTE/wiki/06-memory-discipline/README.md"),

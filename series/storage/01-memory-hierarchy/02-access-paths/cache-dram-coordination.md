@@ -129,6 +129,8 @@ Cache 会过滤命中请求，也会把小粒度读取变成 line 填充，并�
 
 ## 接下来怎么读？
 
+继续追 `A[0]`。假设各级 Cache 都不能供数，目标 bank 已预充好。控制器发出激活命令后，八颗芯片在内部合计打开 8 KiB。接下来哪 64 B 会穿过数据引脚，L1 又从中取哪 4 B 交给处理器？先沿[这笔读取的开行、选列和返回路径](../../03-dram/foundations/1t1c-cell-destructive-read.md#access-granularity)走一遍，再看[控制器发出列读命令后，首份数据在哪一拍到达引脚](../../03-dram/protocols/commands-act-rd-wr-pre.md#first-read)。
+
 - [Cache 与 scratchpad](./cache-vs-scratchpad.md)：比较自动填充与显式数据放置的责任。
 - [SRAM bank 与 DRAM 行状态](./sram-vs-dram-access-pattern.md)：看请求落到存储资源后，状态与冲突怎样影响服务。
 - [地址映射](../../04-dram-controller/address-mapping-channel-rank-bank-row-col.md)：看物理地址怎样分配到 channel、bank 和 row。
