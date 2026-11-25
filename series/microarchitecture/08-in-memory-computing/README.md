@@ -19,6 +19,8 @@
 
 换成 ReRAM，权重可以写成电导。先算[两行电流怎样汇成理想的 4.6 µA](./02-memory-technologies/reram-as-compute-element.md)，再沿同一列看[读数为什么会偏离这个值](./02-memory-technologies/reram-cim-deep-dive.md)。
 
+权重还可以写进 Flash 的阈值。[跟着三拍读出一次点积](./02-memory-technologies/flash-cim-niche.md#three-read-windows)后，可以分别检查[同一列的两只 PCM 单元过一段时间会读出多少电流](./02-memory-technologies/pcm-mram-for-cim.md#pcm-drift)，以及[MRAM 怎样从两行磁态得到一个逻辑结果](./02-memory-technologies/pcm-mram-for-cim.md#mram-two-rows)。
+
 
 <span class="micro-legacy-anchor" id="十章地图"></span>
 

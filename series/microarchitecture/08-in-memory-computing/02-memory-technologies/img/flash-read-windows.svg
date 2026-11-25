@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 700 470" role="img" aria-labelledby="title desc">
+  <title id="title">两个同时开始的 Flash 读脉冲在三个窗口内积出 230 飞库仑</title>
+  <desc id="desc">假设通态净电流恒定，断开时净电流为零。两个脉冲从同一时刻开始。输入 2 让第一行通 20 纳秒，贡献 4 微安；输入 3 让第二行通 30 纳秒，贡献 5 微安。每个窗口为 10 纳秒，列电流是 9、9、5 微安，各窗口电荷是 90、90、50 飞库仑。理想积分电荷为 230 飞库仑，即 0.23 皮库仑，以每单位 10 飞库仑换算为 23。所有数字均取自教学例。</desc>
+  <style>
+    text{font-family:system-ui,"Noto Sans CJK SC","PingFang SC",sans-serif;fill:#173c32}
+    .title{font-size:24px;font-weight:680}.heading{font-size:21px;font-weight:660}
+    .label{font-size:19px;font-weight:630}.copy{font-size:18px;fill:#3b5c4f}.mid{text-anchor:middle}
+    .value{font-size:20px;font-weight:630;text-anchor:middle}.off{fill:#596960}
+  </style>
+  <rect width="700" height="470" rx="14" fill="#f2f5ed"/>
+  <text x="18" y="34" class="title">两行同时开始读，第三个窗里还剩多少电流？</text>
+  <text x="18" y="65" class="copy">每个输入单位让该行开通 10 ns。读偏置固定，关断时净电流按 0 计。</text>
+  <rect x="16" y="80" width="668" height="270" rx="9" fill="#fafbf6" stroke="#afc2b1"/>
+  <text x="31" y="112" class="label">经过时间</text>
+  <g class="copy mid">
+    <text x="167" y="111">0 ns</text><text x="330" y="111">10 ns</text><text x="493" y="111">20 ns</text><text x="656" y="111">30 ns</text>
+  </g>
+  <path d="M167 121H656 M167 117V125 M330 117V125 M493 117V125 M656 117V125" fill="none" stroke="#738d79" stroke-width="1.8"/>
+  <path d="M167 127V338 M330 127V338 M493 127V338 M656 127V338" fill="none" stroke="#b3c1b3" stroke-dasharray="3 4"/>
+  <text x="30" y="162" class="label">第一行 · 输入 2</text>
+  <text x="30" y="210" class="label">第二行 · 输入 3</text>
+  <rect x="167" y="138" width="326" height="33" fill="#dcead9" stroke="#94af96"/>
+  <rect x="493" y="138" width="163" height="33" fill="#eef0e9" stroke="#bcc6b9"/>
+  <rect x="167" y="186" width="489" height="33" fill="#dcead9" stroke="#94af96"/>
+  <text x="330" y="162" class="label mid">开通 · 4 µA</text><text x="575" y="162" class="copy off mid">关断 · 0 µA</text>
+  <text x="412" y="210" class="label mid">开通 · 5 µA</text>
+  <path d="M30 235H665 M30 286H665" fill="none" stroke="#d1dace"/>
+  <text x="30" y="268" class="label">列净电流</text>
+  <g class="value"><text x="249" y="268">9 µA</text><text x="412" y="268">9 µA</text><text x="575" y="268">5 µA</text></g>
+  <text x="30" y="321" class="label">本窗电荷</text>
+  <g class="value"><text x="249" y="321">90 fC</text><text x="412" y="321">90 fC</text><text x="575" y="321">50 fC</text></g>
+
+  <text x="18" y="389" class="heading">积分器累计 90 + 90 + 50 = 230 fC，即 0.23 pC。</text>
+  <text x="18" y="423" class="copy">一个点积单位对应 1 µA × 10 ns = 10 fC，因而这次读出 230 ÷ 10 = 23。</text>
+  <text x="18" y="453" class="copy">图示理想读窗。通态电流由读偏置电源提供。</text>
+</svg>

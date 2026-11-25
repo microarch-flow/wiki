@@ -23,8 +23,8 @@
 - [多组 bank 各算出部分和，谁把它们合成最后的答案？](./02-memory-technologies/dram-pim-deep-dive.md)
 - [一格 ReRAM 怎样存下权重，两行电流又怎样算出点积？](./02-memory-technologies/reram-as-compute-element.md)
 - [理想列电流应该是 4.6 µA，为什么实际读数会偏？](./02-memory-technologies/reram-cim-deep-dive.md)
-- [Flash CIM：Mythic 的路线及其工程现实](./02-memory-technologies/flash-cim-niche.md)
-- [PCM 和 MRAM 作为 CIM 介质](./02-memory-technologies/pcm-mram-for-cim.md)
+- [Flash 怎样把权重写进阈值，再用三拍算出一个点积？](./02-memory-technologies/flash-cim-niche.md)
+- [PCM 的电导会漂移，MRAM 的两个磁态又怎样参与计算？](./02-memory-technologies/pcm-mram-for-cim.md)
 - [三大 Memory 路线全景对比](./02-memory-technologies/memory-tech-comparison-matrix.md)
 
 ## 03 Compute Paradigms — 纵轴

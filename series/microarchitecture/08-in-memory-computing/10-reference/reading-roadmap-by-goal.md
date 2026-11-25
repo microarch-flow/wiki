@@ -27,6 +27,8 @@
 
 读完应能回答：论文指标属于哪一层，ADC/非理想性/外围是否被计入，结果能否外推到系统。
 
+读一张非易失阵列的电路图时，可以先沿[Flash 的三个读窗](../02-memory-technologies/flash-cim-niche.md#three-read-windows)追踪输入，再沿[MRAM 的双行读出](../02-memory-technologies/pcm-mram-for-cim.md#mram-two-rows)追踪感测端第一次判出逻辑结果的位置。
+
 **目标：理解架构和系统。**
 
 1. [从 macro 到 system](../05-architecture-and-system/from-macro-to-system.md)

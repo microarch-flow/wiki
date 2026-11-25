@@ -23,6 +23,8 @@
 
 这条路径的目标是先建立分类直觉：看到一个对象时，先判计算位置和 memory technology；若阵列参与计算，再判断 CIM 的求值与转换范式；若是独立 PIM/NMC 单元，则查执行单元、局部存储和接口。
 
+若想比较非易失单元如何参与计算，从[Flash 的三拍读出](../02-memory-technologies/flash-cim-niche.md#three-read-windows)接到[PCM 的漂移与 MRAM 的双行感测](../02-memory-technologies/pcm-mram-for-cim.md)，最后用[存储计算路线速查](../02-memory-technologies/memory-tech-comparison-matrix.md)对照各条路径中第一个形成结果的位置。
+
 ## 架构建模路径
 
 如果目标是服务 archax 或类似架构探索工具链，先从系统收益衰减和可建模变量读起：

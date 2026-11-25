@@ -65,3 +65,5 @@
 <span class="micro-legacy-anchor" id="一句话理解"></span>
 
 三维集成能把存储阵列和读出、计算逻辑沿垂直方向接近，并提高集成密度。若因此缩短了某段互连，该段电阻和能耗可以重新估算；器件电导的写入分布、没有换掉的行线和 ADC 门槛仍须各自测量。再回到本例，若数字端见到 22，最值得保留的两个观测点是**第二行单元两端的 57.143 mV**，以及**量化前约 4.457 µA 的列电流**。如果第二行确实写成 50 µS，且已排除旁路，用第一个观测值便能预言第二个。接着把 4.457 µA 与 4.5 µA 的门槛比较，就知道这个 22 是怎样产生的。[三维集成基础](../../../chip-development/FAB/wiki/04-back-end-packaging/3d-routes/3dic-fundamentals.md) · [硅通孔 TSV](../../../chip-development/FAB/wiki/04-back-end-packaging/3d-routes/tsv-through-silicon-via.md) · [返回存储介质与计算路径](./README.md)
+
+ReRAM 的例子把权重 4、5 写成电导，把输入 2、3 施加为两行电压。换成 Flash，把权重写进单元的阈值，再用每一行参与读取的拍数表示输入，同一个点积怎样得到 23？[Flash 怎样把权重写进阈值，再用三拍算出一个点积？](./flash-cim-niche.md#three-read-windows)
