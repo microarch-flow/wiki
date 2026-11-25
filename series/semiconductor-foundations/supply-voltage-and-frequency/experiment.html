@@ -1,0 +1,185 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>降低供电以后，时钟还能跑多快？</title>
+  <style>
+    :root { color-scheme: light; --ink: #203c37; --muted: #496059; --teal: #09677b; --rust: #a34620; --line: #bccbbf; --paper: #fbfaf4; }
+    * { box-sizing: border-box; }
+    html { font: 17px/1.6 system-ui, "Noto Sans CJK SC", sans-serif; color: var(--ink); background: var(--paper); }
+    body { max-width: 44rem; margin: auto; padding: 1rem clamp(.75rem, 4vw, 2rem) 2.5rem; }
+    nav { display: flex; flex-wrap: wrap; gap: .3rem 1.1rem; border-bottom: 1px solid var(--line); padding-bottom: .6rem; }
+    a, summary { color: var(--teal); text-underline-offset: .2em; }
+    h1 { font-size: clamp(1.65rem, 5vw, 2.25rem); line-height: 1.3; margin: 1.2rem 0; }
+    h2 { font-size: clamp(1.25rem, 4vw, 1.6rem); line-height: 1.4; margin: .25rem 0 .65rem; }
+    h3 { font-size: 1.08rem; margin: 1.3rem 0 .4rem; }
+    p, figure, details { margin: .7rem 0; }
+    section { margin: 1.7rem 0; scroll-margin-top: .75rem; }
+    section + section { border-top: 1px solid var(--line); padding-top: 1.2rem; }
+    .controls { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 12rem), 1fr)); gap: .5rem 1.5rem; padding: .65rem .85rem; background: #edf2e9; border-radius: .5rem; }
+    label, select { display: block; }
+    output { font-weight: 650; }
+    select { min-height: 44px; background: var(--paper); color: var(--ink); border: 1px solid #768b7d; border-radius: .35rem; font: inherit; padding: 0 .3rem; }
+    input[type=range] { display: block; width: 100%; min-height: 44px; margin: 0; accent-color: var(--teal); }
+    :focus-visible { outline: 3px solid var(--rust); outline-offset: 3px; }
+    .chart { display: block; width: min(100%, 34rem); height: auto; background: #f6f5ee; border: 1px solid #c7d3c6; border-radius: .5rem; }
+    .chart text { fill: var(--ink); font: 18px system-ui, sans-serif; }
+    .axis { fill: none; stroke: #637a6f; }
+    .guide { fill: none; stroke: #95a89d; stroke-dasharray: 2 4; }
+    .base { fill: var(--teal); } .test { fill: var(--rust); }
+    .base-end { fill: var(--paper); stroke: var(--teal); stroke-width: 2; }
+    .test-end { fill: var(--rust); }
+    figcaption, details { font-size: .93rem; color: var(--muted); }
+    summary { cursor: pointer; }
+    table { width: min(100%, 34rem); border-collapse: collapse; font-variant-numeric: tabular-nums; }
+    th, td { border-bottom: 1px solid var(--line); padding: .35rem .15rem; }
+    th { font-weight: 550; text-align: left; }
+    td, th[scope=col]:not(:first-child) { text-align: right; }
+    .reading { font-weight: 620; }
+    .reading[data-meets="false"] { color: var(--rust); }
+    footer { border-top: 1px solid var(--line); padding-top: .7rem; }
+  </style>
+</head>
+<body>
+  <nav aria-label="实验导航"><a href="#edge">比较半高时间</a><a href="#clock">检查时钟周期</a><a href="./">返回正文</a></nav>
+  <h1>降低供电以后，时钟还能跑多快？</h1>
+  <noscript><p>当前显示两组实验的初始读数。启用 JavaScript 可以调整电流、电压档位与频率。</p><style>.controls { display: none; }</style></noscript>
+  <main>
+    <section id="edge" aria-labelledby="edge-title">
+      <h2 id="edge-title">电荷少了，为什么还可能更慢？</h2>
+      <p>将同一个 50 fF 节点从 0 V 拉高。分别在各档输出到达本地供电一半时停表。高压档在这段时间内的平均净充电电流给定为 0.40 mA。只改变低压档的平均电流，看看两档在什么条件下打平。</p>
+      <div class="controls">
+        <div><label for="current">低压档平均电流　<output for="current" id="current-label">0.28 mA</output></label>
+          <input type="range" id="current" min="0.20" max="0.45" step="0.01" value="0.28"></div>
+      </div>
+      <figure>
+        <svg class="chart" viewBox="0 0 418 194" role="img" aria-labelledby="edge-chart-title">
+          <title id="edge-chart-title">两档从输出开始充电到越过各自半高的用时，共用皮秒时间轴</title>
+          <path class="guide" d="M24 28V146 M124 28V146 M224 28V146 M324 28V146"/>
+          <text x="25" y="27">0.8 V 档 · 到 0.40 V</text>
+          <rect class="base" x="24" y="45" width="200" height="7"/><circle class="base-end" cx="224" cy="48.5" r="5"/>
+          <text x="25" y="91">0.7 V 档 · 到 0.35 V</text>
+          <rect class="test" id="edge-bar" x="24" y="109" width="250" height="7"/><rect class="test-end" id="edge-tip" x="270" y="108.5" width="8" height="8"/>
+          <path class="axis" d="M24 146H400 M24 143V150 M124 143V150 M224 143V150 M324 143V150"/>
+          <g text-anchor="middle"><text x="24" y="173">0</text><text x="124" y="173">25</text><text x="224" y="173">50</text><text x="324" y="173">75</text></g><text x="398" y="173" text-anchor="end">ps</text>
+        </svg>
+        <figcaption>两条横线的长度表示时间。圆点和方块分别标出两档越过半高的时刻。</figcaption>
+      </figure>
+      <table aria-label="同一负载在两档电压下的充电读数">
+        <thead><tr><th scope="col">节点读数</th><th scope="col">0.8 V 档</th><th scope="col">0.7 V 档</th></tr></thead>
+        <tbody>
+          <tr><th scope="row">充满所需电荷</th><td>40 fC</td><td>35 fC</td></tr>
+          <tr><th scope="row">充满一次的电源供能</th><td>32 fJ</td><td>24.5 fJ</td></tr>
+          <tr><th scope="row">到半高所需电荷</th><td>20 fC</td><td>17.5 fC</td></tr>
+          <tr><th scope="row">到半高的平均电流</th><td>0.40 mA</td><td id="edge-current">0.28 mA</td></tr>
+          <tr><th scope="row">到半高的用时</th><td>50 ps</td><td id="edge-delay">62.5 ps</td></tr>
+        </tbody>
+      </table>
+      <p id="edge-reading" class="reading" aria-live="polite">低压档少搬 12.5% 的电荷，送电荷的平均速度却慢了 30%，因此到半高多用 12.5 ps。</p>
+      <details><summary>怎样从电流得到这段时间？</summary>
+        <p>取恒定电容，初始电压为零。到达半高的电荷是 C × VDD/2，除以从开始到半高这段时间的平均净充电电流，就得到用时。1 fC ÷ 1 mA = 1 ps。两档电流都是给定的教学条件，实际器件需要查模型或测波形。</p>
+        <p>充到本档供电电压时，电源交付的总电荷为 CVDD，恒压电源的供能为 CVDD²。这个读数只计给外部电容的一次全摆幅充电。</p>
+      </details>
+    </section>
+    <section id="clock" aria-labelledby="clock-title">
+      <h2 id="clock-title">下一个采样沿来时，数据来得及吗？</h2>
+      <p>改看两个寄存器之间的一条完整路径。给定它在 0.8 V 和 0.7 V 下各需 0.86 ns 和 1.08 ns，已含发射寄存器、组合逻辑、接收端建立时间和预留量。将时钟从 900 MHz 提高到 1 GHz，观察周期还剩多少余量。</p>
+      <div class="controls">
+        <div><label for="voltage">本地供电电压</label><select id="voltage"><option value="0.8">0.8 V</option><option value="0.7" selected>0.7 V</option></select></div>
+        <div><label for="frequency">时钟频率　<output for="frequency" id="frequency-label">900 MHz</output></label><input type="range" id="frequency" min="800" max="1100" step="1" value="900"></div>
+      </div>
+      <figure>
+        <svg class="chart" viewBox="0 0 418 194" role="img" aria-labelledby="clock-chart-title">
+          <title id="clock-chart-title">从同一发射沿开始，比较时钟周期和路径需要的总时间</title>
+          <path class="guide" d="M24 28V146 M169 28V146 M314 28V146"/>
+          <text x="25" y="27">相邻采样沿间的周期</text>
+          <rect class="base" id="clock-bar" x="24" y="45" width="322.222" height="7"/><circle class="base-end" id="clock-tip" cx="346.222" cy="48.5" r="5"/>
+          <text x="25" y="91">路径所需总时间</text>
+          <rect class="test" id="require-bar" x="24" y="109" width="313.2" height="7"/><rect class="test-end" id="require-tip" x="333.2" y="108.5" width="8" height="8"/>
+          <path class="axis" d="M24 146H400 M24 143V150 M169 143V150 M314 143V150"/>
+          <g text-anchor="middle"><text x="24" y="173">0</text><text x="169" y="173">0.5</text><text x="314" y="173">1.0</text></g><text x="398" y="173" text-anchor="end">ns</text>
+        </svg>
+        <figcaption>圆点是下一次采样沿。方块是满足整条路径建立约束所需的最短周期。两者的位置差可以从下表读出。</figcaption>
+      </figure>
+      <table aria-label="寄存器路径的建立时间检查"><tbody>
+        <tr><th scope="row">所选时钟周期</th><td id="period">1.111111 ns</td></tr>
+        <tr><th scope="row">路径所需总时间</th><td id="required">1.08 ns</td></tr>
+        <tr><th scope="row">建立余量（周期减需求）</th><td id="slack">+31.111 ps</td></tr>
+      </tbody></table>
+      <p id="clock-reading" class="reading" aria-live="polite" data-meets="true">这一拍可以满足给定路径的建立要求。</p>
+      <h3>同一份工作走完 1,000 拍</h3>
+      <p>沿用上一篇程序 A 的 1,000 个节点，每个节点 50 fF，每拍平均上升 0.25 次。任务固定共发生 250,000 次全摆幅充电。左边固定为 0.8 V、1 GHz，右边跟随上方控制。只累计这些负载的切换能量。</p>
+      <table aria-label="完成同一份工作的负载切换能量与功率"><thead>
+        <tr><th scope="col">任务读数</th><th scope="col">原工作点</th><th scope="col">所选条件</th></tr>
+      </thead><tbody>
+        <tr><th scope="row">用时</th><td>1 µs</td><td id="duration">1.111111 µs</td></tr>
+        <tr><th scope="row">切换能量</th><td>8 nJ</td><td id="task-energy">6.125 nJ</td></tr>
+        <tr><th scope="row">平均切换功率</th><td>8 mW</td><td id="power">5.5125 mW</td></tr>
+      </tbody></table>
+      <details><summary>怎样判断找到的频率能用在哪里？</summary>
+        <p>周期以 ns 表示时，T = 1000 / f，其中 f 以 MHz 表示。给定路径的时间需求独立于上一项单门实验。真正选择电压与频率组合时，还要核对其他路径、保持约束、存储器和供电等条件。</p>
+        <p>在这组教学假设下，任务用时等于 1,000 个周期，负载切换能量等于 250,000 × C × VDD²。将能量除以用时就得到平均切换功率。忽略漏电、单元内部切换、稳压器损耗和其他电源域的开销。</p>
+      </details>
+    </section>
+  </main>
+  <footer><a href="./">返回《为什么降低供电电压能省电，却可能需要降频》</a></footer>
+  <script>
+    const get = id => document.getElementById(id);
+    const put = (id, value) => { get(id).textContent = value; };
+    const rounded = (value, places) => String(Number(value.toFixed(places)));
+
+    function renderEdge() {
+      const current = Number(get('current').value);
+      const halfTime = 17.5 / current;
+      const currentLabel = current.toFixed(2) + ' mA';
+      put('current-label', currentLabel);
+      put('edge-current', currentLabel);
+      get('current').setAttribute('aria-valuetext', currentLabel);
+      put('edge-delay', rounded(halfTime, 3) + ' ps');
+      get('edge-bar').setAttribute('width', 4 * halfTime);
+      get('edge-tip').setAttribute('x', 24 + 4 * halfTime - 4);
+      let message;
+      if (current < 0.35) {
+        message = '低压档少搬 12.5% 的电荷，送电荷的平均速度却慢了 ' + rounded(100 * (1 - current / 0.4), 1) + '%，因此到半高多用 ' + rounded(halfTime - 50, 3) + ' ps。';
+      } else if (current === 0.35) {
+        message = '低压档的电荷量和平均电流都减少 12.5%，两档都用 50 ps 到达各自的半高。';
+      } else {
+        message = '低压档只需送入 17.5 fC。按所选平均电流，它提前 ' + rounded(50 - halfTime, 3) + ' ps 到达半高。';
+      }
+      put('edge-reading', message);
+    }
+
+    function renderClock() {
+      const voltage = Number(get('voltage').value);
+      const frequency = Number(get('frequency').value);
+      const required = voltage === 0.8 ? 0.86 : 1.08;
+      const period = 1000 / frequency;
+      const slackPs = 1000 * (period - required);
+      const meets = slackPs >= 0;
+      put('frequency-label', frequency + ' MHz');
+      get('frequency').setAttribute('aria-valuetext', frequency + ' MHz');
+      put('period', rounded(period, 6) + ' ns');
+      put('required', required + ' ns');
+      put('slack', (meets ? '+' : '−') + rounded(Math.abs(slackPs), 3) + ' ps');
+      get('clock-bar').setAttribute('width', 290 * period);
+      get('clock-tip').setAttribute('cx', 24 + 290 * period);
+      get('require-bar').setAttribute('width', 290 * required);
+      get('require-tip').setAttribute('x', 24 + 290 * required - 4);
+      get('clock-reading').dataset.meets = String(meets);
+      put('clock-reading', meets ? '这一拍可以满足给定路径的建立要求。' : '采样沿过早，这条路径未满足建立要求。所选条件下无法保证任务正确完成，任务读数留空。');
+      const durationUs = 1000 / frequency;
+      const energyNj = 250000 * 50 * voltage * voltage / 1e6;
+      put('duration', meets ? rounded(durationUs, 6) + ' µs' : '—');
+      put('task-energy', meets ? rounded(energyNj, 5) + ' nJ' : '—');
+      put('power', meets ? rounded(energyNj / durationUs, 6) + ' mW' : '—');
+    }
+
+    get('current').addEventListener('input', renderEdge);
+    get('voltage').addEventListener('change', renderClock);
+    get('frequency').addEventListener('input', renderClock);
+    renderEdge();
+    renderClock();
+  </script>
+</body>
+</html>
