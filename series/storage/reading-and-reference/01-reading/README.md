@@ -27,4 +27,4 @@
 
 ## 自测
 
-阅读后可用[自测问题](self-test-questions.md)检查概念、迁移和架构判断。题目不附答案，每题链接到参考正文。
+第一次做题，可以从[CPU 读取与 NPU 搬运练习](./first-read-practice.md)开始，边算边核对。想按章节检验理解，可从[82 道自测题](./self-test-questions.md)选题，每题附有参考正文。

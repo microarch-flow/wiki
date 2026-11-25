@@ -555,6 +555,31 @@ class GeneratedNavigationTests(unittest.TestCase):
         starts_and_counts = [(int(start), len(re.findall(r'<li\b', content))) for start, content in sections]
         self.assertEqual(starts_and_counts, [(1, 5), (6, 8), (14, 7), (21, 10), (31, 10),
                                              (41, 12), (53, 10), (63, 5), (68, 8), (76, 5), (81, 2)])
+        items = [item for _, content in sections for item in re.findall(r"<li\b[^>]*>(.*?)</li>", content, re.DOTALL)]
+        for number in (7, 14, 29, 44, 56, 70, 71, 74):
+            bookmark = f'id="q{number}"'
+            self.assertEqual(article.count(bookmark), 1)
+            self.assertIn(bookmark, items[number - 1])
+
+    def test_storage_practice_entry_points(self):
+        practice = Path("RAM/wiki/reading-and-reference/first-read-practice/index.html")
+        html = (SITE / practice).read_text(encoding="utf-8")
+        breadcrumb = BREADCRUMB.search(html).group(1)
+        self.assertIn("查阅与练习", breadcrumb)
+        self.assertIn("阅读路线与自测", breadcrumb)
+        article = re.search(r"<article\b.*?</article>", html, re.DOTALL).group()
+        fragments = ("cpu-read", "npu-move")
+        for fragment in fragments:
+            self.assertEqual(article.count(f'id="{fragment}"'), 1)
+        search = json.loads((SITE / "search/search_index.json").read_text(encoding="utf-8"))
+        self.assertIn(practice.parent.as_posix() + "/", {item["location"] for item in search["docs"]})
+
+        for source in (Path("storage/index.html"), Path("RAM/self-test-questions/index.html")):
+            html = (SITE / source).read_text(encoding="utf-8")
+            article = re.search(r"<article\b.*?</article>", html, re.DOTALL).group()
+            links = {urljoin(page_url(source), unescape(href)) for href in re.findall(r'<a\s+[^>]*href="([^"]+)"', article)}
+            for fragment in fragments:
+                self.assertIn(page_url(practice) + "#" + fragment, links, source)
 
     def test_reference_legacy_urls_anchors_and_search(self):
         fixture = Path(__file__).parent / "fixtures/storage-reference-legacy-anchors.json"
@@ -1341,6 +1366,8 @@ class GeneratedNavigationTests(unittest.TestCase):
             "register-file-as-sram/", "cache-sram-tag-data-arrays/", "scratchpad-vs-cache/",
             "tcm-itcm-dtcm-in-mcu/", "npu-weight-buffer-activation-buffer/",
         ])
+        third_item = re.findall(r"<li>(.*?)</li>", reading.group(1), re.DOTALL)[2]
+        self.assertIn('href="../../../COMPUTE/wiki/06-memory-discipline/cache-vs-scratchpad/"', third_item)
         foundations = (SITE / "RAM/wiki/02-sram-foundations/index.html").read_text(encoding="utf-8")
         self.assertIn('href="sram-reliability-ecc-mbist-repair/"', foundations)
         index = json.loads((SITE / "search/search_index.json").read_text(encoding="utf-8"))

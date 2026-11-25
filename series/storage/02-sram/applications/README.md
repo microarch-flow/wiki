@@ -26,7 +26,7 @@ Cache 与 scratchpad 的管理责任和访问路径，在系统层的 [Cache 与
 
 1. [Register file](./register-file-as-sram.md)：从操作数供给看逻辑需求、端口与旁路。
 2. [Cache 的 tag 与 data](./cache-sram-tag-data-arrays.md)：看查找、比较和数据选择。
-3. [Scratchpad 与 cache 导读](./scratchpad-vs-cache.md)：进入系统层比较。
+3. [Scratchpad 与 cache 导读](./scratchpad-vs-cache.md)说明两种角色怎样使用 SRAM 的端口和 bank。要比较同一份数据由谁放入、何时能覆盖，可直接读[系统层的 Cache 与 scratchpad](../../01-memory-hierarchy/02-access-paths/cache-vs-scratchpad.md)。
 4. [TCM 与实时性](./tcm-itcm-dtcm-in-mcu.md)：分析紧耦合路径与共享带来的等待。
 5. [NPU 的 SRAM buffer](./npu-weight-buffer-activation-buffer.md)：从数据角色进入 NPU 的供数与搬运。
 
