@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="480" height="393" viewBox="0 0 480 393" xml:lang="zh-CN" role="img" aria-labelledby="title desc">
+  <title id="title">两只反相器的两个稳定状态</title>
+  <desc id="desc">信号由 X 经第一只反相器到 Y，再经第二只反相器到 Q，Q 直接接回 X。上图 X 与 Q 都是高电平，Y 低；下图 X 与 Q 都是低电平，Y 高。每只反相器从电源取能，在小扰动后继续将输出驱回原电平。</desc>
+  <rect x="1" y="1" width="478" height="391" rx="14" fill="#f7f6ef" stroke="#ced6c9"/>
+  <g font-family="Noto Sans CJK SC, Microsoft YaHei, sans-serif">
+    <text x="20" y="34" font-size="23" text-anchor="start" fill="#203c37" font-weight="650">两只反相器，哪两种状态能维持？</text>
+    <text x="20" y="63" font-size="17" text-anchor="start" fill="#52665d">两幅图使用同一电路，Q 经下方导线接回 X。</text>
+    <text x="57" y="102" font-size="19" text-anchor="middle" fill="#9b4c28" font-weight="650">X = 1</text>
+    <text x="236" y="102" font-size="19" text-anchor="middle" fill="#09677b" font-weight="650">Y = 0</text>
+    <text x="421" y="102" font-size="19" text-anchor="middle" fill="#9b4c28" font-weight="650">Q = 1</text>
+    <path d="M56 112 H117" stroke="#9b4c28" stroke-width="3" stroke-linejoin="round" stroke-linecap="round" fill="none"/>
+    <path d="M117 95 L157 112 L117 129 Z" stroke="#203c37" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round" fill="#e8ede4"/>
+    <circle cx="161.5" cy="112" r="4.5" fill="#f7f6ef" stroke="#203c37" stroke-width="2.2"/>
+    <path d="M166 112 H295" stroke="#09677b" stroke-width="3" stroke-linejoin="round" stroke-linecap="round" fill="none"/>
+    <path d="M295 95 L335 112 L295 129 Z" stroke="#203c37" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round" fill="#e8ede4"/>
+    <circle cx="339.5" cy="112" r="4.5" fill="#f7f6ef" stroke="#203c37" stroke-width="2.2"/>
+    <path d="M344 112 H421 V151 H56 V112" stroke="#9b4c28" stroke-width="3" stroke-linejoin="round" stroke-linecap="round" fill="none"/>
+    <circle cx="56" cy="112" r="3.6" fill="#9b4c28" stroke="none" stroke-width="2"/>
+    <circle cx="421" cy="112" r="3.6" fill="#9b4c28" stroke="none" stroke-width="2"/>
+    <text x="235" y="178" font-size="17" text-anchor="middle" fill="#52665d">Q 与 X 是同一节点</text>
+    <text x="22" y="208" font-size="18" text-anchor="start" fill="#203c37">Q 略降时，Y 仍低，第 2 级继续上拉。</text>
+    <text x="57" y="258" font-size="19" text-anchor="middle" fill="#09677b" font-weight="650">X = 0</text>
+    <text x="236" y="258" font-size="19" text-anchor="middle" fill="#9b4c28" font-weight="650">Y = 1</text>
+    <text x="421" y="258" font-size="19" text-anchor="middle" fill="#09677b" font-weight="650">Q = 0</text>
+    <path d="M56 268 H117" stroke="#09677b" stroke-width="3" stroke-linejoin="round" stroke-linecap="round" fill="none"/>
+    <path d="M117 251 L157 268 L117 285 Z" stroke="#203c37" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round" fill="#e8ede4"/>
+    <circle cx="161.5" cy="268" r="4.5" fill="#f7f6ef" stroke="#203c37" stroke-width="2.2"/>
+    <path d="M166 268 H295" stroke="#9b4c28" stroke-width="3" stroke-linejoin="round" stroke-linecap="round" fill="none"/>
+    <path d="M295 251 L335 268 L295 285 Z" stroke="#203c37" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round" fill="#e8ede4"/>
+    <circle cx="339.5" cy="268" r="4.5" fill="#f7f6ef" stroke="#203c37" stroke-width="2.2"/>
+    <path d="M344 268 H421 V307 H56 V268" stroke="#09677b" stroke-width="3" stroke-linejoin="round" stroke-linecap="round" fill="none"/>
+    <circle cx="56" cy="268" r="3.6" fill="#09677b" stroke="none" stroke-width="2"/>
+    <circle cx="421" cy="268" r="3.6" fill="#09677b" stroke="none" stroke-width="2"/>
+    <text x="235" y="334" font-size="17" text-anchor="middle" fill="#52665d">Q 与 X 是同一节点</text>
+    <text x="22" y="364" font-size="18" text-anchor="start" fill="#203c37">Q 略升时，Y 仍高，第 2 级继续下拉。</text>
+    <path d="M20 226 H460" stroke="#ced6c9" stroke-width="1.2" stroke-linejoin="round" stroke-linecap="round" fill="none"/>
+  </g>
+</svg>

@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="480" height="450" viewBox="0 0 480 450" role="img" aria-labelledby="title desc">
+  <title id="title">围绕一个时钟上升沿，读出建立、保持与时钟到输出延迟</title>
+  <desc id="desc">图中假设建立时间和保持时间均为正。竖虚线经过 CLK 上升沿的规定参考电压。阴影从建立窗口起点延续到保持窗口终点，此间数据 D 必须稳定。本例中 D 提前变为一，直到窗口结束后才降为零。输出 Q 从零升为一。时钟到 Q 延迟从 CLK 越过规定参考电压量至 Q 越过其规定参考电压。横轴为时间，示意图没有固定时间比例。</desc>
+  <defs>
+    <marker id="arrow" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="4" markerHeight="4" orient="auto"><path d="M0 0 8 4 0 8Z" fill="#48635c"/></marker>
+    <style>
+      text {font-family:system-ui,'Noto Sans CJK SC',sans-serif;fill:#203c37}
+      .title {font-size:23px;font-weight:650} .label {font-size:19px;font-weight:600}
+      .note {font-size:17px;fill:#48635c} .guide {stroke:#91a39b;stroke-width:1.2;stroke-dasharray:4 4}
+      .dim {stroke:#48635c;stroke-width:1.6;fill:none} .signal {fill:none;stroke-width:3.4;stroke-linejoin:round}
+    </style>
+  </defs>
+  <rect x="1" y="1" width="478" height="448" rx="14" fill="#f7f6ef" stroke="#c6cec2"/>
+  <text x="22" y="36" class="title">以 CLK 上升沿为准，怎样读时间？</text>
+  <text x="22" y="67" class="note">这里假设建立、保持两个要求都为正。</text>
+  <rect x="148" y="120" width="188" height="63" fill="#e0e9d9"/>
+  <path d="M148 110V183 M336 110V183 M248 109V326" class="guide" fill="none"/>
+  <path d="M148 116V105 M148 110H336 M248 104V116 M336 105V116" class="dim"/>
+  <text x="198" y="100" text-anchor="middle" class="note">建立时间</text>
+  <text x="292" y="100" text-anchor="middle" class="note">保持时间</text>
+  <g class="label" text-anchor="end">
+    <text x="62" y="163">D</text><text x="62" y="223">CLK</text><text x="62" y="285">Q</text>
+  </g>
+  <path class="signal" stroke="#9b4c28" d="M80 173H102L118 142H376L392 173H448"/>
+  <path class="signal" stroke="#48635c" d="M80 233H238L258 201H448"/>
+  <path class="signal" stroke="#09677b" d="M80 295H304L324 263H448"/>
+  <path d="M314 279V326" class="guide"/>
+  <circle cx="248" cy="217" r="4.5" fill="#203c37"/><circle cx="314" cy="279" r="4.5" fill="#09677b"/>
+  <path d="M248 320H314 M248 314V326 M314 314V326" class="dim"/>
+  <text x="332" y="325" class="label">t<tspan baseline-shift="sub" font-size="13">CQ</tspan></text>
+  <path d="M80 350H447" stroke="#48635c" stroke-width="1.6" marker-end="url(#arrow)"/>
+  <text x="447" y="373" text-anchor="end" class="note">时间</text>
+  <line x1="22" y1="385" x2="458" y2="385" stroke="#c6cec2"/>
+  <text x="22" y="413" class="label">阴影内，D 要一直保持同一个值。</text>
+  <text x="22" y="438" class="note">两圆点分别是 CLK、Q 越过规定参考电压的时刻。</text>
+</svg>

@@ -1,0 +1,231 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>把一个 1 改写成 0 · 锁存器与触发器实验</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --ink: #203c37;
+      --muted: #4a625a;
+      --teal: #09677b;
+      --paper: #fbfaf4;
+      --fill: #eff3eb;
+      --rule: #bdcabe;
+    }
+    * { box-sizing: border-box; }
+    html { font: 17px/1.6 system-ui, "Noto Sans CJK SC", sans-serif; color: var(--ink); background: var(--paper); }
+    body { max-width: 46rem; margin: 0 auto; padding: 1.2rem clamp(.8rem, 4vw, 2rem) 2.6rem; }
+    nav, .controls { display: flex; align-items: center; gap: .5rem 1rem; flex-wrap: wrap; }
+    nav { padding-bottom: .6rem; border-bottom: 1px solid var(--rule); }
+    h1 { font-size: clamp(1.65rem, 5vw, 2.3rem); line-height: 1.26; margin: 1.1rem 0 .5rem; }
+    h2 { margin: 0; font-size: clamp(1.25rem, 3.8vw, 1.6rem); }
+    p { margin: .55rem 0; }
+    a { color: var(--teal); text-underline-offset: .2em; }
+    a:focus-visible, button:focus-visible { outline: 3px solid #903c20; outline-offset: 3px; }
+    section { margin-top: 1.8rem; scroll-margin-top: .75rem; }
+    section + section { border-top: 1px solid var(--rule); padding-top: 1.3rem; }
+    .controls { gap: .5rem; margin: .85rem 0 .45rem; }
+    button {
+      cursor: pointer; background: var(--paper); color: var(--ink); font: inherit;
+      border: 1px solid #75887b; border-radius: .4rem; padding: .36rem .72rem; min-height: 44px;
+    }
+    button[aria-pressed="true"] { background: var(--teal); border-color: var(--teal); color: white; }
+    figure { margin: .7rem 0; }
+    svg {
+      width: 100%; max-width: 34rem; height: auto; display: block;
+      background: var(--fill); border: 1px solid var(--rule); border-radius: .65rem;
+    }
+    svg text { fill: var(--ink); font: 18px system-ui, sans-serif; text-anchor: middle; }
+    svg .value { font-weight: 680; }
+    svg .line { stroke: var(--ink); stroke-width: 2.3; fill: none; }
+    svg .branch { fill: none; stroke: #697c72; stroke-width: 2.2; }
+    svg .connected { stroke: var(--teal); stroke-width: 4; }
+    svg .contact { fill: var(--paper); stroke: inherit; stroke-width: 2.2; }
+    svg .gate { fill: var(--paper); stroke: var(--ink); stroke-width: 2.2; }
+    svg .node { fill: var(--ink); }
+    .caption, figcaption { color: var(--muted); font-size: .91rem; }
+    figcaption { margin-top: .35rem; }
+    .reading { font-weight: 600; }
+    table { border-collapse: collapse; font-variant-numeric: tabular-nums; margin: .75rem 0; width: min(100%, 32rem); }
+    caption { text-align: left; font-size: .93rem; color: var(--muted); }
+    th, td { padding: .23rem .28rem; text-align: center; border-bottom: 1px solid var(--rule); }
+    th:first-child, td:first-child { text-align: left; }
+    tbody tr:last-child { background: var(--fill); }
+  </style>
+</head>
+<body>
+  <nav aria-label="实验导航">
+    <a href="#write">开关怎样写入</a>
+    <a href="#edge">跟踪一次采样</a>
+    <a href="./">返回正文</a>
+  </nav>
+  <h1>把一个 1 改写成 0</h1>
+  <p>每点一次只改变一个输入。读数取这一动作完成、电路稳定后的值。两个实验独立，可以随时还原。</p>
+  <noscript><p>请启用 JavaScript 以改变输入。当前图和表显示初始状态。</p><style>.controls { display: none; }</style></noscript>
+
+  <section id="write" aria-labelledby="write-title">
+    <h2 id="write-title">哪条路在驱动 X？</h2>
+    <p>起点是 Q 存着 1，外面的 D 已经是 0。先把 EN 切到 1，观察两个反相器怎样传下这个 0。再把 EN 切回 0，试着把 D 改成 1。</p>
+    <div class="controls" role="group" aria-label="锁存器的输入">
+      <button type="button" id="write-enable" aria-label="切换写入使能 EN" aria-pressed="false">EN = 0</button>
+      <button type="button" id="write-data" aria-label="切换锁存器的数据 D" aria-pressed="false">D = 0</button>
+      <button type="button" id="write-reset">还原锁存器</button>
+    </div>
+    <figure>
+      <svg viewBox="0 0 388 167" role="img" aria-labelledby="loop-title loop-desc">
+        <title id="loop-title">写入开关和反馈开关共用输入节点 X</title>
+        <desc id="loop-desc">D 经 W 接到 X。X 经过两级反相器得到 Q，中间节点为 Y。Q 经 F 接回 X。当前各节点状态也列在图下。</desc>
+        <g id="write-branch" class="branch">
+          <path d="M22 73H64 M89 73H126"/>
+          <path id="write-blade" d="M64 73L88 58"/>
+          <circle class="contact" cx="64" cy="73" r="3.1"/><circle class="contact" cx="89" cy="73" r="3.1"/>
+        </g>
+        <g id="feedback-branch" class="branch connected">
+          <path d="M327 73V145H226 M199 145H126V73"/>
+          <path id="feedback-blade" d="M226 145H199"/>
+          <circle class="contact" cx="199" cy="145" r="3.1"/><circle class="contact" cx="226" cy="145" r="3.1"/>
+        </g>
+        <path class="line" d="M126 73H153 M195 73H238 M280 73H361"/>
+        <path class="gate" d="M153 53V93L185 73Z M238 53V93L270 73Z"/>
+        <circle class="gate" cx="190" cy="73" r="5"/><circle class="gate" cx="275" cy="73" r="5"/>
+        <circle class="node" cx="126" cy="73" r="3.7"/><circle class="node" cx="327" cy="73" r="3.7"/>
+        <text class="value" id="loop-d" x="31" y="36">D=0</text>
+        <text class="value" id="loop-x" x="126" y="36">X=1</text>
+        <text class="value" id="loop-y" x="215" y="36">Y=0</text>
+        <text class="value" id="loop-q" x="338" y="36">Q=1</text>
+        <text id="write-contact" x="76" y="107">W 断</text>
+        <text id="feedback-contact" x="211" y="119">F 通</text>
+      </svg>
+      <figcaption>粗线和闭合的触点标出驱动 X 的支路。每个三角形末端的小圆表示取反。</figcaption>
+    </figure>
+    <p class="reading" id="write-reading" aria-live="polite" aria-atomic="true">保持。D = 0，反馈将 Q = 1 接到 X = 1，经过 Y = 0 又恢复 Q = 1。</p>
+    <a href="./#write">回到正文看写入过程</a>
+  </section>
+
+  <section id="edge" aria-labelledby="edge-title">
+    <h2 id="edge-title">两级锁存器，哪一级还能看到 D？</h2>
+    <p>把主级输出记作 M，外部输出记作 Q。先把 CLK 从 0 切到 1，等 Q 更新后再改 D。继续切换 CLK，观察新的 D 要经过哪两个阶段才会到 Q。</p>
+    <div class="controls" role="group" aria-label="主从触发器的输入">
+      <button type="button" id="edge-clock" aria-label="切换时钟 CLK" aria-pressed="false">CLK = 0</button>
+      <button type="button" id="edge-data" aria-label="切换触发器的数据 D" aria-pressed="false">D = 0</button>
+      <button type="button" id="edge-reset">还原触发器</button>
+    </div>
+    <figure>
+      <svg viewBox="0 0 388 116" role="img" aria-labelledby="pair-title pair-desc">
+        <title id="pair-title">D 经主锁存器到 M，再经从锁存器到 Q</title>
+        <desc id="pair-desc">时钟为低时主级透明，从级保持。时钟为高时主级保持，从级透明。下方读数和记录给出当前值。</desc>
+        <defs><marker id="arrow" viewBox="0 0 6 8" refX="5" refY="4" markerWidth="5" markerHeight="5" orient="auto"><path d="M0 0L6 4L0 8Z" fill="#203c37"/></marker></defs>
+        <path class="line" d="M13 63H65 M139 63H239 M315 63H372" marker-end="url(#arrow)"/>
+        <rect class="gate" x="66" y="35" width="74" height="56" rx="6"/>
+        <rect class="gate" x="240" y="35" width="74" height="56" rx="6"/>
+        <text x="103" y="57">主级</text><text class="value" id="master-mode" x="103" y="81">透明</text>
+        <text x="277" y="57">从级</text><text class="value" id="slave-mode" x="277" y="81">保持</text>
+        <text class="value" id="pair-d" x="31" y="49">D=0</text>
+        <text class="value" id="pair-m" x="187" y="49">M=0</text>
+        <text class="value" id="pair-q" x="351" y="49">Q=1</text>
+      </svg>
+    </figure>
+    <p class="reading" id="edge-reading" aria-live="polite" aria-atomic="true">初始状态。CLK = 0，D = 0 已到达 M = 0，从级仍保存 Q = 1。</p>
+    <table>
+      <caption>最近六步，最后一行为当前状态</caption>
+      <thead><tr><th scope="col">操作</th><th scope="col">CLK</th><th scope="col">D</th><th scope="col">M</th><th scope="col">Q</th></tr></thead>
+      <tbody id="history"><tr><td>0 · 初始</td><td>0</td><td>0</td><td>0</td><td>1</td></tr></tbody>
+    </table>
+    <p class="caption">这里假设供电正常，初始值已知，两级按互补相位工作。每次操作之间都留足传播与稳定时间。边沿附近的数据变化、传播延迟和亚稳态要结合实际电路的时间尺度分析。</p>
+    <a href="./#edge">回到正文看两级采样</a> · <a href="./#timing">看建立时间和保持时间</a>
+  </section>
+
+  <script>
+    'use strict';
+    const element = (id) => document.getElementById(id);
+    const setText = (id, value) => { element(id).textContent = value; };
+    function showInput(id, name, value) {
+      const button = element(id);
+      button.textContent = name + ' = ' + value;
+      button.setAttribute('aria-pressed', String(value === 1));
+    }
+
+    const latch = { data: 0, enable: 0, q: 1 };
+    function updateLatch() {
+      if (latch.enable) latch.q = latch.data;
+      const transparent = latch.enable === 1;
+      const x = latch.q;
+      const y = 1 - x;
+      showInput('write-data', 'D', latch.data);
+      showInput('write-enable', 'EN', latch.enable);
+      setText('loop-d', 'D=' + latch.data);
+      setText('loop-x', 'X=' + x);
+      setText('loop-y', 'Y=' + y);
+      setText('loop-q', 'Q=' + latch.q);
+      element('write-branch').classList.toggle('connected', transparent);
+      element('feedback-branch').classList.toggle('connected', !transparent);
+      element('write-blade').setAttribute('d', transparent ? 'M64 73H89' : 'M64 73L88 58');
+      element('feedback-blade').setAttribute('d', transparent ? 'M226 145L200 130' : 'M226 145H199');
+      setText('write-contact', transparent ? 'W 通' : 'W 断');
+      setText('feedback-contact', transparent ? 'F 断' : 'F 通');
+      const route = transparent
+        ? '透明。W 接通，D = ' + latch.data + ' 驱动 X = ' + x
+        : '保持。D = ' + latch.data + '，反馈将 Q = ' + latch.q + ' 接到 X = ' + x;
+      setText('write-reading', route + '，经过 Y = ' + y + ' 得到 Q = ' + latch.q + '。');
+    }
+    element('write-data').addEventListener('click', () => {
+      latch.data = 1 - latch.data;
+      updateLatch();
+    });
+    element('write-enable').addEventListener('click', () => {
+      latch.enable = 1 - latch.enable;
+      updateLatch();
+    });
+    element('write-reset').addEventListener('click', () => {
+      Object.assign(latch, { data: 0, enable: 0, q: 1 });
+      updateLatch();
+    });
+
+    const pair = { clock: 0, data: 0, master: 0, q: 1, step: 0 };
+    function updatePair(action) {
+      if (pair.clock === 0) {
+        pair.master = pair.data;
+      } else {
+        pair.q = pair.master;
+      }
+      showInput('edge-clock', 'CLK', pair.clock);
+      showInput('edge-data', 'D', pair.data);
+      setText('pair-d', 'D=' + pair.data);
+      setText('pair-m', 'M=' + pair.master);
+      setText('pair-q', 'Q=' + pair.q);
+      setText('master-mode', pair.clock ? '保持' : '透明');
+      setText('slave-mode', pair.clock ? '透明' : '保持');
+      const explanation = pair.clock
+        ? '主级保持 M = ' + pair.master + '，从级透明，Q = ' + pair.q + '。'
+        : '主级透明，M = ' + pair.master + ' 跟随 D，从级保持 Q = ' + pair.q + '。';
+      setText('edge-reading', action + '。CLK = ' + pair.clock + '，D = ' + pair.data + '。' + explanation);
+
+      const history = element('history');
+      if (pair.step === 0) history.replaceChildren();
+      const row = history.insertRow();
+      for (const value of [pair.step + ' · ' + action, pair.clock, pair.data, pair.master, pair.q]) {
+        row.insertCell().textContent = value;
+      }
+      if (history.rows.length > 6) history.deleteRow(0);
+    }
+    element('edge-data').addEventListener('click', () => {
+      pair.data = 1 - pair.data;
+      pair.step++;
+      updatePair('改变 D');
+    });
+    element('edge-clock').addEventListener('click', () => {
+      pair.clock = 1 - pair.clock;
+      pair.step++;
+      updatePair(pair.clock ? '上升沿' : '下降沿');
+    });
+    element('edge-reset').addEventListener('click', () => {
+      Object.assign(pair, { clock: 0, data: 0, master: 0, q: 1, step: 0 });
+      updatePair('初始');
+    });
+    updateLatch();
+    updatePair('初始');
+  </script>
+</body>
+</html>

@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="480" height="418" viewBox="0 0 480 418" xml:lang="zh-CN" role="img" aria-labelledby="title desc">
+  <title id="title">一只传输门里的两条并联通路</title>
+  <desc id="desc">D 与 X 之间并联 PMOS 和 NMOS，PMOS 栅接使能的反相，NMOS 栅接使能 EN。EN 高时，靠近高电平可以由 PMOS 传递，靠近低电平可以由 NMOS 传递。EN 低时两只管都关断，写入支路断开。省略体端。</desc>
+  <rect x="1" y="1" width="478" height="416" rx="14" fill="#f7f6ef" stroke="#ced6c9"/>
+  <g font-family="Noto Sans CJK SC, Microsoft YaHei, sans-serif">
+    <text x="20" y="34" font-size="23" text-anchor="start" fill="#203c37" font-weight="650">一只写入开关，为什么用两只管？</text>
+    <text x="20" y="63" font-size="17" text-anchor="start" fill="#52665d">左端接 D，右端接 X，两管跨接同一对节点。</text>
+    <text x="252" y="94" font-size="17" text-anchor="middle" fill="#52665d">反相使能</text>
+    <path d="M250 99 V107" stroke="#203c37" stroke-width="2.6" stroke-linejoin="round" stroke-linecap="round" fill="none"/>
+    <circle cx="250" cy="112" r="5" fill="#f7f6ef" stroke="#203c37" stroke-width="2.2"/>
+    <path d="M250 117 V121 M219 121 H281" stroke="#203c37" stroke-width="2.6" stroke-linejoin="round" stroke-linecap="round" fill="none"/>
+    <path d="M91 181 V143 H209 V131 H291 V143 H390 V181" stroke="#9b4c28" stroke-width="3.2" stroke-linejoin="round" stroke-linecap="round" fill="none"/>
+    <path d="M91 181 V220 H209 V232 H291 V220 H390 V181" stroke="#09677b" stroke-width="3.2" stroke-linejoin="round" stroke-linecap="round" fill="none"/>
+    <path d="M219 242 H281 M250 242 V258" stroke="#203c37" stroke-width="2.6" stroke-linejoin="round" stroke-linecap="round" fill="none"/>
+    <text x="250" y="280" font-size="18" text-anchor="middle" fill="#52665d" font-weight="650">EN</text>
+    <text x="311" y="135" font-size="17" text-anchor="start" fill="#9b4c28" font-weight="650">PMOS</text>
+    <text x="311" y="211" font-size="17" text-anchor="start" fill="#09677b" font-weight="650">NMOS</text>
+    <path d="M46 181 H91 M390 181 H434" stroke="#203c37" stroke-width="2.6" stroke-linejoin="round" stroke-linecap="round" fill="none"/>
+    <circle cx="91" cy="181" r="3.7" fill="#203c37" stroke="none" stroke-width="2"/>
+    <circle cx="390" cy="181" r="3.7" fill="#203c37" stroke="none" stroke-width="2"/>
+    <text x="31" y="187" font-size="19" text-anchor="middle" fill="#203c37" font-weight="650">D</text>
+    <text x="450" y="187" font-size="19" text-anchor="middle" fill="#203c37" font-weight="650">X</text>
+    <path d="M20 296 H460" stroke="#ced6c9" stroke-width="1.2" stroke-linejoin="round" stroke-linecap="round" fill="none"/>
+    <text x="22" y="325" font-size="19" text-anchor="start" fill="#203c37" font-weight="650">EN = 1，两端接通</text>
+    <text x="22" y="351" font-size="17" text-anchor="start" fill="#203c37">接近高电平时靠 PMOS，接近低电平时靠 NMOS。</text>
+    <path d="M20 365 H460" stroke="#ced6c9" stroke-width="1.2" stroke-linejoin="round" stroke-linecap="round" fill="none"/>
+    <text x="22" y="396" font-size="19" text-anchor="start" fill="#203c37" font-weight="650">EN = 0，两管关断，写入支路隔离。</text>
+  </g>
+</svg>
