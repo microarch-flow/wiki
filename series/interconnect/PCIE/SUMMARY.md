@@ -74,6 +74,8 @@ title: "PCIe 知识地图"
 
 [章节导读](06-workloads-case-studies/README.md)
 
+- [一次跨桥读取：设备已经收到请求，主机为什么还在等？](06-workloads-case-studies/pcie-vs-axi-noc-boundary.md)
+
 - [NIC 的 RX 与 TX](06-workloads-case-studies/nic-dma-case-card.md)
 
 - [NVMe 队列与数据路径](06-workloads-case-studies/nvme-queue-data-path-case-card.md)
@@ -85,8 +87,6 @@ title: "PCIe 知识地图"
 - [设备不可用的三个阶段](06-workloads-case-studies/enumeration-failure-case-card.md)
 
 - [链路降速与降宽](06-workloads-case-studies/link-downgrade-case-card.md)
-
-- [PCIe、AXI 与 NoC 跨桥](06-workloads-case-studies/pcie-vs-axi-noc-boundary.md)
 
 ## 07 高级主题
 
