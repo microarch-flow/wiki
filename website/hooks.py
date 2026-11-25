@@ -834,8 +834,6 @@ def on_config(config, **kwargs):
     built_in_sections = {
         "microarchitecture.md": {MICRO: [
             {f"{MICRO}首页": "microarchitecture.md"},
-            {"精选文章": "articles.md"},
-            {"互动图解": "visuals.md"},
             *micro_topics,
         ]},
         "storage.md": {STORAGE: [{"系列首页": "storage.md"}, *storage_topics, *storage_resources]},

@@ -23,9 +23,10 @@ from storage_navigation import (INTEGRATION_AFTER, INTEGRATION_HOME, INTEGRATION
                                 MEMORY_HOME, MEMORY_SECTIONS, RESOURCE_HOME, RESOURCE_SECTIONS,
                                 SYSTEM_SELECTION)  # noqa: E402
 
+UNLISTED_LANDING_PAGES = {"articles/index.html", "visuals/index.html"}
 LANDING_PAGES = {
     "index.html", "microarchitecture/index.html",
-    "storage/index.html", "interconnect/index.html", "articles/index.html", "visuals/index.html",
+    "storage/index.html", "interconnect/index.html", *UNLISTED_LANDING_PAGES,
 }
 ACTIVE_LINK = re.compile(r'<a\s+href="([^"]+)"\s+class="[^"]*\bmd-nav__link--active\b[^"]*"[^>]*>')
 BREADCRUMB = re.compile(r'<nav class="site-breadcrumbs"[^>]*>(.*?)</nav>', re.DOTALL)
@@ -1008,7 +1009,10 @@ class GeneratedNavigationTests(unittest.TestCase):
             end = html.find('<div class="md-sidebar md-sidebar--secondary"', start)
             primary = html[start:end] if start >= 0 and end >= 0 else ""
             active = list(ACTIVE_LINK.finditer(primary))
-            if relative.parts[0] != "reviews":
+            if relative.as_posix() in UNLISTED_LANDING_PAGES:
+                if active:
+                    errors.append(f"{relative}: unlisted page has an active sidebar link")
+            elif relative.parts[0] != "reviews":
                 if len(active) != 1 or 'aria-current="page"' not in active[0].group():
                     errors.append(f"{relative}: expected one accessible current navigation link")
                     continue
