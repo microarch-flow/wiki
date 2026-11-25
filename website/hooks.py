@@ -929,12 +929,16 @@ def on_page_markdown(markdown, page, **kwargs):
 
     if page.file.src_uri == "RAM/wiki/02-sram-foundations/6t-cell-bistable-storage.md":
         template = (Path(__file__).parent / "partials" / "sram-demo.html").read_text(encoding="utf-8")
-        for mode, number, heading, intro, label in (
-            ("read", "01", "一次读操作", "初始状态：Q = 1，QB = 0。观察位线预充、差分形成和感测。", "读：Q = 1"),
-            ("write", "02", "把 Q 从 1 写成 0", "初始状态：Q = 1，QB = 0。观察写驱动如何推动 cell 翻转。", "写：Q 1 → 0"),
+        circuit = (Path(kwargs["config"].docs_dir) / "RAM/wiki/img/6t-sram-cell.svg").read_text(encoding="utf-8")
+        for mode, heading, intro, label in (
+            ("read", "一次读操作", "初始状态：Q = 1，QB = 0。观察位线预充、差分形成和感测。", "读：Q = 1"),
+            ("write", "把 Q 从 1 写成 0", "初始状态：Q = 1，QB = 0。观察写驱动如何推动 cell 翻转。", "写：Q 1 → 0"),
         ):
-            demo = template
-            for key, value in (("MODE", mode), ("NUMBER", number), ("TITLE", heading), ("INTRO", intro), ("LABEL", label)):
+            # The same schematic appears twice. Scope its accessible title and description to each copy.
+            schematic = circuit.replace('id="title"', f'id="sram-{mode}-title"').replace('id="desc"', f'id="sram-{mode}-desc"')
+            schematic = schematic.replace('aria-labelledby="title desc"', f'aria-labelledby="sram-{mode}-title sram-{mode}-desc"')
+            demo = template.replace("__CIRCUIT__", schematic)
+            for key, value in (("MODE", mode), ("TITLE", heading), ("INTRO", intro), ("LABEL", label)):
                 demo = demo.replace(f"__{key}__", value)
             markdown = markdown.replace(f"<!-- sram-{mode}-demo -->", demo)
 

@@ -1083,7 +1083,7 @@ class GeneratedNavigationTests(unittest.TestCase):
             ],
             "RAM/wiki/02-sram-foundations/6t-cell-bistable-storage/index.html": [
                 "首页", "存储系统", "SRAM 器件与应用", "SRAM 基础",
-                "6T SRAM cell：它如何保存、读取和写入 1 bit",
+                "6T SRAM 怎样读出一个 bit，又怎样把它改写？",
             ],
             "CPO/wiki/08-research/detailed-cards/cpo-status-challenges-solutions/index.html": [
                 "首页", "芯片与系统互连", "共封装光学（CPO）", "学习与查阅", "文献与术语",
@@ -1114,6 +1114,26 @@ class GeneratedNavigationTests(unittest.TestCase):
         self.assertNotIn("<p>上级：", ram)
         self.assertIn(">RAM 阅读路线</a>", ram)
         self.assertIn("<p>上级:", fab)
+
+    def test_sram_cell_keeps_old_reading_and_demo_links(self):
+        path = Path("RAM/wiki/02-sram-foundations/6t-cell-bistable-storage/index.html")
+        html = (SITE / path).read_text(encoding="utf-8")
+        article = re.search(r"<article\b.*?</article>", html, re.DOTALL).group()
+        ids = re.findall(r'\bid="([^"]+)"', article)
+        for fragment in (
+            "6t-sram-cell它如何保存读取和写入-1-bit", "1-先认识六个晶体管", "2-保持两个反相器互相维持状态",
+            "3-读先建立位线差分再感测", "步骤一预充并均衡", "步骤二打开字线形成差分", "步骤三感测并结束访问",
+            "为什么读也可能改变数据", "4-写让外部驱动改变旧状态", "步骤一准备目标数据",
+            "步骤二打开字线与旧状态竞争", "步骤三反馈推动新状态建立", "5-读稳定性与可写入性为什么需要折中",
+            "6-从-cell-到架构模型", "接下来怎么读", "延伸阅读", "sram-arrow-read", "sram-arrow-write",
+        ):
+            self.assertEqual(ids.count(fragment), 1, fragment)
+        for mode in ("read", "write"):
+            self.assertEqual(article.count(f'data-sram-demo="{mode}"'), 1)
+        featured = (SITE / "articles/index.html").read_text(encoding="utf-8")
+        card = re.search(rf'<a class="article-card" href="\.\./{path.parent.as_posix()}/">.*?<h2>(.*?)</h2>', featured)
+        self.assertIsNotNone(card)
+        self.assertEqual(card.group(1), "6T SRAM 怎样读出一个 bit，又怎样把它改写？")
 
     def test_sram_reading_order_and_reliability_search(self):
         applications = (SITE / "RAM/wiki/03-sram-applications/index.html").read_text(encoding="utf-8")
