@@ -1137,6 +1137,32 @@ class GeneratedNavigationTests(unittest.TestCase):
             "一句话理解": "timeline", "建模启示": "model", "接下来怎么读": "next",
         }, default="macro-pins")
 
+    def test_npu_weight_lessons_merge_without_losing_bookmarks(self):
+        chapter = Path("RAM/wiki/09-ai-chip-memory-architecture")
+        canonical = chapter / "npu-memory-hierarchy/index.html"
+        canonical_ids = {
+            "npu-存储层次数据放在哪里如何到达计算单元", "npu-的存储层次l0l1l2-sram-与-hbmlpddr", "这页在回答什么问题",
+            "各级存储的距离复用与职责", "一个贯穿本组文章的构造例子", "真实架构的路径可以不同", "一句话理解",
+            "建模启示", "接下来怎么读", "tile", "implementations",
+        }
+        legacy_routes = {
+            "data-movement-first-principle": ("traffic", {
+                "npu-数据搬运如何权衡复用时间与能耗": "traffic", "数据搬运优先原则在-npu-设计中的体现": "paths",
+                "这页在回答什么问题": "traffic", "计算所需的数据跨越哪些边界": "paths",
+                "同一任务两种权重驻留策略": "traffic", "搬运量减少以后还要检查什么": "energy",
+                "一句话理解": "traffic", "建模启示": "model", "接下来怎么读": "next",
+            }),
+            "weight-buffer-design": ("residency", {
+                "权重缓冲区从工作集与供数需求确定容量和组织": "residency", "weight-buffer-的容量与组织从-model-size-反推": "residency",
+                "这页在回答什么问题": "residency", "权重工作集容量与复用": "residency",
+                "weight-buffer-的容量与组织": "supply", "局部与共享怎样选择": "shared",
+                "一句话理解": "residency", "建模启示": "model", "接下来怎么读": "next",
+            }),
+        }
+        for slug, (default, routes) in legacy_routes.items():
+            with self.subTest(slug=slug):
+                self.assert_storage_merge_links(canonical, chapter / slug / "index.html", canonical_ids, routes, default)
+
     def assert_storage_merge_links(self, canonical, legacy, main_fragments, expected_routes, default):
         html = (SITE / canonical).read_text(encoding="utf-8")
         article = re.search(r"<article\b.*?</article>", html, re.DOTALL).group()

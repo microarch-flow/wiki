@@ -1,7 +1,14 @@
 """Stable published pages and source-aligned groups for storage navigation."""
 
+# Keep these legacy URLs tied to their source section when validating publication.
+MEMORY_LEGACY_PAGE_SECTION = {
+    "RAM/wiki/09-ai-chip-memory-architecture/data-movement-first-principle.md": "04-npu-case",
+    "RAM/wiki/09-ai-chip-memory-architecture/weight-buffer-design.md": "04-npu-case",
+}
+
 # Published URLs that lead into sections of merged storage articles.
 STORAGE_LEGACY_PAGES = {
+    *MEMORY_LEGACY_PAGE_SECTION,
     "RAM/wiki/02-sram-foundations/sram-macro-interface-and-semantics.md",
     "RAM/wiki/04-dram-foundations/row-column-decode-sense-amplify.md",
     "RAM/wiki/04-dram-foundations/row-buffer-as-cache.md",
@@ -60,9 +67,7 @@ MEMORY_SECTIONS = (
     )),
     ("NPU 数据路径与存储组织", "04-npu-case", (
         ("NPU 数据路径与存储组织", "RAM/wiki/09-ai-chip-memory-architecture/README.md"),
-        ("NPU 存储层次", "RAM/wiki/09-ai-chip-memory-architecture/npu-memory-hierarchy.md"),
-        ("数据搬运与复用", "RAM/wiki/09-ai-chip-memory-architecture/data-movement-first-principle.md"),
-        ("权重缓冲区", "RAM/wiki/09-ai-chip-memory-architecture/weight-buffer-design.md"),
+        ("权重驻留与阵列供数", "RAM/wiki/09-ai-chip-memory-architecture/npu-memory-hierarchy.md"),
         ("激活缓冲与双缓冲", "RAM/wiki/09-ai-chip-memory-architecture/activation-buffer-and-double-buffering.md"),
         ("片上带宽预算", "RAM/wiki/09-ai-chip-memory-architecture/on-chip-bandwidth-budget.md"),
     )),
@@ -87,5 +92,8 @@ RESOURCE_SECTIONS = (
     )),
 )
 
-MEMORY_PAGE_SECTION = {page: directory for _, directory, pages in MEMORY_SECTIONS for _, page in pages}
+MEMORY_PAGE_SECTION = {
+    **{page: directory for _, directory, pages in MEMORY_SECTIONS for _, page in pages},
+    **MEMORY_LEGACY_PAGE_SECTION,
+}
 RESOURCE_PAGE_SECTION = {page: directory for _, directory, pages in RESOURCE_SECTIONS for _, page in pages}

@@ -1,0 +1,57 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="460" height="550" viewBox="0 0 460 550" role="img" aria-labelledby="title desc">
+  <title id="title">三块计算复用一组权重，减少的是哪一段传输？</title>
+  <desc id="desc">三个计算块依次使用 W 的四个不同权重，每个权重 8 bit，一一装入 2×2 PE。假设每个计算块都从缓冲区重新装入 PE。若缓冲区每块从外存重取 W，外存到缓冲三次各传 4 B，共 12 B。若跨块保留 W，则分别传 4、0、0 B，共 4 B。两种策略中，缓冲到 PE 都是三次各 4 B，共 12 B。两条独立的读方向路径均按理想持续 2 B 每拍计算，各自所需服务拍数为外侧 6 或 2 拍、内侧 6 拍。若两组完整权重 W 和 V 同时在缓冲中，仅它们的净数据就占 8 B。</desc>
+  <style>
+    text { font-family: system-ui, "Noto Sans CJK SC", "Microsoft YaHei", sans-serif; fill: #203c37 }
+    .head { font-size: 20px; font-weight: 660 }
+    .label { font-size: 17px; font-weight: 650 }
+    .note { fill: #405a4d; font-size: 17px }
+    .value { font-size: 18px; text-anchor: middle }
+    .blue { fill: #205969 }
+    .green { fill: #28583f }
+  </style>
+  <rect x="1" y="1" width="458" height="548" rx="15" fill="#f7f6ef" stroke="#d3dacf"/>
+  <text x="18" y="36" font-size="23" font-weight="680">三块计算都用 W，哪一段少搬了权重？</text>
+  <text x="18" y="66" class="note">W 有四个不同的 8 bit 权重，共 4 B。只计权重。</text>
+
+  <rect x="17" y="88" width="86" height="61" rx="7" fill="#e3edf0" stroke="#aabec2"/>
+  <text x="60" y="113" text-anchor="middle" class="head">外存</text>
+  <text x="60" y="137" text-anchor="middle" class="note">W</text>
+  <path d="M104 119H149m-8-6 8 6-8 6" fill="none" stroke="#4c7d87" stroke-width="2.7" stroke-linecap="round" stroke-linejoin="round"/>
+  <rect x="154" y="88" width="113" height="61" rx="7" fill="#e6ede5" stroke="#adbfac"/>
+  <text x="210" y="113" text-anchor="middle" class="head">片上缓冲</text>
+  <text x="210" y="137" text-anchor="middle" class="note">W</text>
+  <path d="M268 119H316m-8-6 8 6-8 6" fill="none" stroke="#508165" stroke-width="2.7" stroke-linecap="round" stroke-linejoin="round"/>
+  <g text-anchor="middle">
+    <rect x="322" y="88" width="116" height="61" rx="7" fill="#dfebe1" stroke="#9cb59e"/>
+    <path d="M380 88v61 M322 118.5h116" stroke="#9cb59e"/>
+    <g class="label"><text x="351" y="109">w₀</text><text x="409" y="109">w₁</text>
+      <text x="351" y="141">w₂</text><text x="409" y="141">w₃</text></g>
+    <text x="380" y="172" class="label">2 × 2 PE</text>
+  </g>
+  <text x="18" y="198" class="note">三个块依次使用 W，PE 每块都从缓冲重新装入。</text>
+
+  <!-- Both boundaries share the same block, total byte and service-cycle columns. -->
+  <rect x="16" y="216" width="428" height="194" rx="7" fill="#eef1ea" stroke="#bfcdbf"/>
+  <g class="label" text-anchor="middle">
+    <text x="65" y="240">缓冲策略</text><text x="143" y="240">块 1</text><text x="195" y="240">块 2</text><text x="247" y="240">块 3</text><text x="324" y="240">合计</text><text x="398" y="240">服务拍</text>
+  </g>
+  <rect x="17" y="250" width="426" height="28" fill="#dce9ec"/>
+  <text x="26" y="271" class="label blue">外存 → 缓冲</text>
+  <text x="26" y="300" class="note">每块重取</text><text x="26" y="331" class="note">保留 W</text>
+  <g class="value">
+    <text x="143" y="300">4 B</text><text x="195" y="300">4 B</text><text x="247" y="300">4 B</text><text x="324" y="300">12 B</text><text x="398" y="300">6 拍</text>
+    <text x="143" y="331">4 B</text><text x="195" y="331" class="blue" font-weight="700">0 B</text><text x="247" y="331" class="blue" font-weight="700">0 B</text><text x="324" y="331" class="blue" font-weight="700">4 B</text><text x="398" y="331" class="blue" font-weight="700">2 拍</text>
+  </g>
+  <rect x="17" y="343" width="426" height="28" fill="#dfeadf"/>
+  <text x="26" y="364" class="label green">缓冲 → PE</text>
+  <text x="26" y="397" class="note">两种策略</text>
+  <g class="value">
+    <text x="143" y="397">4 B</text><text x="195" y="397">4 B</text><text x="247" y="397">4 B</text><text x="324" y="397" font-weight="700">12 B</text><text x="398" y="397">6 拍</text>
+  </g>
+  <text x="18" y="440" class="note">两条路径独立，各按理想持续 2 B/拍计算。</text>
+  <text x="18" y="465" class="note">能否重叠取决于依赖和调度，不能直接相加。</text>
+
+  <rect x="16" y="484" width="428" height="50" rx="6" fill="#eee7da" stroke="#c9b8a2"/>
+  <text x="230" y="515" text-anchor="middle" class="label">W 与下组 V 同时完整驻留　4 B + 4 B = 8 B</text>
+</svg>
