@@ -14,6 +14,8 @@ not_in_nav: |
   /RAM/wiki/04-dram-foundations/row-buffer-as-cache.md
   /RAM/wiki/05-dram-protocol-families/timing-parameters-trcd-trp-tras.md
   /RAM/wiki/06-memory-controller/page-policy-open-close-adaptive.md
+  /RAM/wiki/08-packaging-integration/hbm-2.5d-3d-tsv.md
+  /RAM/wiki/08-packaging-integration/why-hbm-is-expensive.md
   /RAM/wiki/09-ai-chip-memory-architecture/data-movement-first-principle.md
   /RAM/wiki/09-ai-chip-memory-architecture/weight-buffer-design.md
   /articles.md

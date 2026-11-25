@@ -6,9 +6,15 @@ MEMORY_LEGACY_PAGE_SECTION = {
     "RAM/wiki/09-ai-chip-memory-architecture/weight-buffer-design.md": "04-npu-case",
 }
 
+INTEGRATION_LEGACY_PAGE_SECTION = {
+    "RAM/wiki/08-packaging-integration/hbm-2.5d-3d-tsv.md": "packaging",
+    "RAM/wiki/08-packaging-integration/why-hbm-is-expensive.md": "packaging",
+}
+
 # Published URLs that lead into sections of merged storage articles.
 STORAGE_LEGACY_PAGES = {
     *MEMORY_LEGACY_PAGE_SECTION,
+    *INTEGRATION_LEGACY_PAGE_SECTION,
     "RAM/wiki/02-sram-foundations/sram-macro-interface-and-semantics.md",
     "RAM/wiki/04-dram-foundations/row-column-decode-sense-amplify.md",
     "RAM/wiki/04-dram-foundations/row-buffer-as-cache.md",
@@ -27,14 +33,13 @@ INTEGRATION_PACKAGING = (
     ("封装与集成", "RAM/wiki/08-packaging-integration/README.md"),
     ("DIMM 与 SODIMM", "RAM/wiki/08-packaging-integration/dimm-sodimm-traditional-forms.md"),
     ("PoP 与 MCP", "RAM/wiki/08-packaging-integration/pop-mcp-mobile-integration.md"),
-    ("HBM 堆叠与互连", "RAM/wiki/08-packaging-integration/hbm-2.5d-3d-tsv.md"),
-    ("HBM 成本", "RAM/wiki/08-packaging-integration/why-hbm-is-expensive.md"),
 )
 INTEGRATION_AFTER = (
     ("NPU 的 HBM 与 LPDDR 选型", "RAM/wiki/09-ai-chip-memory-architecture/hbm-vs-lpddr-for-npu.md"),
     ("CXL 与近存计算", "RAM/wiki/08-packaging-integration/future-packaging-cxl-near-memory.md"),
 )
 INTEGRATION_PAGE_SECTION = {
+    **INTEGRATION_LEGACY_PAGE_SECTION,
     INTEGRATION_HOME: "",
     SYSTEM_SELECTION: "",
     **{page: "packaging" for _, page in INTEGRATION_PACKAGING},

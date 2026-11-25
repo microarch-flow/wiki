@@ -1,0 +1,86 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="480" height="590" viewBox="0 0 480 590" role="img" aria-labelledby="title desc">
+  <title id="title">从 HBM 的一层 DRAM 读到旁边计算 die 的 PHY</title>
+  <desc id="desc">典型硅中介层封装剖面。左侧三层 DRAM die 和底部 base die 组成 HBM 堆叠，右侧的计算 die 与 HBM 并排。棕色箭头从选中 DRAM 的读出路径出发，经过硅片内的垂直导体和片间微凸点进入 base die，再经底部微凸点到硅中介层的横向短连线，从计算 die 下方的微凸点进入 PHY。贯穿硅的 TSV 段在硅片边界处终止；片间凸点另用圆点表示。封装基板位于中介层下方。灰色指引分别标出堆前裸片筛测、独立堆叠测试和封装组装终测的对象，这些阶段并非同时发生。</desc>
+  <style>
+    text { font-family: system-ui, "Noto Sans CJK SC", "Microsoft YaHei", sans-serif; fill: #213d36 }
+    .name { font-size: 18px; font-weight: 660 }
+    .note { font-size: 17px; fill: #435d51 }
+    .test { font-size: 18px; fill: #445963; font-weight: 620 }
+    .leader { fill: none; stroke: #73858a; stroke-width: 1.7; stroke-linejoin: round; stroke-linecap: round }
+    .trace { fill: none; stroke: #944b2a; stroke-width: 4.5; stroke-linecap: butt; stroke-linejoin: round }
+    .passive-trace { fill: none; stroke: #94a9a7; stroke-width: 2.3; stroke-linejoin: round }
+  </style>
+  <defs>
+    <!-- A TSV is a segment *inside* a die. Rounded contacts occupy the separate gaps. -->
+    <g id="bump"><rect x="-5" width="10" height="10" rx="4" fill="#a7b8b0" stroke="#758a7c"/></g>
+    <g id="active-bump"><rect x="-6" width="12" height="10" rx="4" fill="#d69b68" stroke="#8e4b2c" stroke-width="1.6"/></g>
+    <g id="joint-row"><use href="#bump" x="65"/><use href="#bump" x="101"/><use href="#bump" x="181"/><use href="#bump" x="215"/></g>
+  </defs>
+  <rect x="1" y="1" width="478" height="588" rx="15" fill="#f7f6ef" stroke="#d3dacf"/>
+  <text x="18" y="36" font-size="24" font-weight="680">从一层 HBM 读到计算 die 的 PHY</text>
+  <text x="18" y="65" class="note">硅中介层封装剖面。沿棕色箭头追踪读数据。</text>
+
+  <!-- The test leaders indicate the tested object, not electrical probes or data signals. -->
+  <path class="leader" d="M213 118V92H284 M244 118H252V304H244 M252 189H284"/>
+  <text x="293" y="98" class="test">裸片筛测</text>
+  <text x="293" y="195" class="test">堆叠后测试</text>
+
+  <!-- Die stack, adjacent compute die, and the separate substrate/interposer. -->
+  <g stroke-width="1.5">
+    <rect x="36" y="118" width="198" height="35" rx="3" fill="#dfebe3" stroke="#8fae9b"/>
+    <rect x="36" y="163" width="198" height="39" rx="3" fill="#f0e2cc" stroke="#b5956f"/>
+    <rect x="36" y="212" width="198" height="37" rx="3" fill="#dfebe3" stroke="#8fae9b"/>
+    <rect x="36" y="259" width="198" height="45" rx="3" fill="#d3e2da" stroke="#7e9d8b"/>
+    <rect x="305" y="241" width="142" height="63" rx="4" fill="#dfe8ec" stroke="#92aab2"/>
+    <rect x="17" y="314" width="445" height="67" rx="3" fill="#e1e9e6" stroke="#9eb2a7"/>
+    <rect x="17" y="403" width="445" height="40" rx="4" fill="#cbdcc8" stroke="#99b092"/>
+  </g>
+
+  <!-- Quiet TSVs and interconnects are context; the top die need not carry a through path. -->
+  <g fill="#96a8a1">
+    <path d="M179 163h4v39h-4z M213 163h4v39h-4z M213 212h4v37h-4z M213 259h4v45h-4z"/>
+  </g>
+  <path class="passive-trace" d="M65 314v32h342v-32 M101 314v27h274v-27"/>
+  <g>
+    <use href="#joint-row" y="153"/><use href="#joint-row" y="202"/><use href="#joint-row" y="249"/>
+    <use href="#bump" x="65" y="304"/><use href="#bump" x="101" y="304"/>
+    <use href="#bump" x="215" y="304"/>
+    <use href="#bump" x="375" y="304"/><use href="#bump" x="407" y="304"/>
+  </g>
+  <g fill="#b8c7bb" stroke="#8d9d92">
+    <rect x="51" y="381" width="22" height="22" rx="8"/><rect x="135" y="381" width="22" height="22" rx="8"/>
+    <rect x="219" y="381" width="22" height="22" rx="8"/><rect x="303" y="381" width="22" height="22" rx="8"/>
+    <rect x="387" y="381" width="22" height="22" rx="8"/>
+  </g>
+
+  <!-- Draw data segments per physical object; only contact bodies bridge die-to-die gaps. -->
+  <path class="trace" d="M146 183H181V202 M181 212V249 M181 259V276H196V304 M196 314V332H337V314 M337 304V279"/>
+  <circle cx="146" cy="183" r="4" fill="#944b2a"/>
+  <use href="#active-bump" x="181" y="202"/><use href="#active-bump" x="181" y="249"/>
+  <use href="#active-bump" x="196" y="304"/><use href="#active-bump" x="337" y="304"/>
+  <g fill="#944b2a">
+    <path d="M174 228h14l-7 10z"/>
+    <path d="M263 326v12l10-6z"/>
+    <path d="M331 288h12l-6-10z"/>
+  </g>
+  <rect x="317" y="255" width="45" height="23" rx="4" fill="#ebd8bd" stroke="#b59370"/>
+  <text x="339" y="273" text-anchor="middle" font-size="15.5" font-weight="700">PHY</text>
+
+  <g class="name">
+    <text x="48" y="143">DRAM</text>
+    <text x="47" y="189" fill="#77462b">选中 DRAM</text>
+    <text x="48" y="237">DRAM</text>
+    <text x="48" y="287">base die</text>
+    <text x="371" y="281" font-size="17">计算 die</text>
+    <text x="239" y="371" text-anchor="middle">硅中介层 · 横向高密度短连线</text>
+    <text x="239" y="430" text-anchor="middle">封装基板</text>
+  </g>
+  <path class="leader" d="M18 450v7h444v-7 M239 457v6"/>
+  <text x="239" y="482" class="test" text-anchor="middle">组装终测</text>
+
+  <rect x="19" y="506" width="4.5" height="23" fill="#944b2a"/>
+  <text x="38" y="523" class="note">TSV 穿过单层硅片。</text>
+  <use href="#active-bump" x="24" y="541"/>
+  <text x="38" y="552" class="note">微凸点连接两侧焊盘，跨过接合面。</text>
+  <text x="18" y="578" class="note">示意层数与尺寸。测试标注指不同阶段的受测对象。</text>
+</svg>

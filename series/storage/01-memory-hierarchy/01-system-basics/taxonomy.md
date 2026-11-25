@@ -153,4 +153,4 @@ DDR4、DDR5、LPDDR、GDDR 和 HBM 的具体接口不能因为都涉及双倍数
 - [速度·容量·成本·功耗](./memory-hierarchy-tension.md)：看不同实现如何在共同约束下取舍。
 - [SRAM 与 DRAM 的分化](./sram-dram-divergence.md)：从存储方式继续看两条技术路线。
 - [DRAM 协议对比](../../03-dram/protocols/ddr-lpddr-gddr-hbm-tradeoff-map.md)：比较不同 DRAM 路线的系统目标。
-- [HBM 封装与 TSV](../../06-system-integration/packaging/hbm-2.5d-3d-tsv.md)：进一步看 die 堆叠和系统集成。
+- [HBM 封装与 TSV](../../06-system-integration/hbm-vs-lpddr-for-npu.md#path)：进一步看 die 堆叠和系统集成。

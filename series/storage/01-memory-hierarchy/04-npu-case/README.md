@@ -26,7 +26,7 @@ NPU 执行一个计算块时，权重、激活和部分和存在哪里？它们�
 2. [激活缓冲与双缓冲](./activation-buffer-and-double-buffering.md)：数据填充与计算在什么条件下能重叠？
 3. [片上带宽预算](./on-chip-bandwidth-budget.md)：怎样从阵列访问推算每条边界及共享端口的流量？
 
-需要分析存储与计算之间的限制，可读[存储与计算瓶颈](../03-performance/memory-bound-vs-compute-bound.md)。需要比较外存路线，可读[HBM 与 LPDDR 选型](../../06-system-integration/hbm-vs-lpddr-for-npu.md)。
+需要分析存储与计算之间的限制，可读[存储与计算瓶颈](../03-performance/memory-bound-vs-compute-bound.md)。已有每个 token 的外存字节数时，可先算[工作负载需要的持续带宽](../../06-system-integration/hbm-vs-lpddr-for-npu.md#budget)，再比较 HBM 和 LPDDR。
 
 ## 一句话理解
 

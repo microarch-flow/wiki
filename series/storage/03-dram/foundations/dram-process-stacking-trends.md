@@ -2,7 +2,7 @@
 
 上级：<span id="dram-工艺路线平面到堆叠到-3d"></span>[DRAM 单元与阵列](./README.md)
 
-相关：[HBM 集成与 TSV](../../06-system-integration/packaging/hbm-2.5d-3d-tsv.md) · [HBM 成本](../../06-system-integration/packaging/why-hbm-is-expensive.md)
+相关：[HBM 集成与 TSV](../../06-system-integration/hbm-vs-lpddr-for-npu.md#path) · [HBM 成本](../../06-system-integration/hbm-vs-lpddr-for-npu.md#yield)
 
 ## 这页在回答什么问题
 

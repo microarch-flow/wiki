@@ -260,10 +260,10 @@
    [参考正文](../../06-system-integration/packaging/pop-mcp-mobile-integration.md)
 
 65. [J] HBM stack 内部的垂直互连与计算芯片到 stack 的连接各解决什么问题？比较具体封装时，TSV、base die、interposer 或 bridge 的作用是什么？
-   [参考正文](../../06-system-integration/packaging/hbm-2.5d-3d-tsv.md)
+   [参考正文](../../06-system-integration/hbm-vs-lpddr-for-npu.md#path)
 
 66. [F] HBM 的高成本应如何从 DRAM stack、KGD/test、interposer、封装良率、热设计和供应链协同这些环节拆解？
-   [参考正文](../../06-system-integration/packaging/why-hbm-is-expensive.md)
+   [参考正文](../../06-system-integration/hbm-vs-lpddr-for-npu.md#yield)
 
 67. [T] CXL memory expansion、near-memory compute 和先进封装分别在改变哪一层内存边界，为什么它们不是互相替代的同类方案？
    [参考正文](../../06-system-integration/future-packaging-cxl-near-memory.md)
@@ -318,7 +318,7 @@
    [DMA 双缓冲](../../../microarchitecture/05-dma/04-programming-model/tiling-double-buffering.md)、[RAM activation buffer](../../01-memory-hierarchy/04-npu-case/activation-buffer-and-double-buffering.md)
 
 79. [J] HBM 的 interposer 路由、PDN/SI 和热约束可能如何影响持续带宽？package test 与良率又如何影响成本或可供货性，为什么不能直接把它们当作带宽损失？
-   [FAB 封装信号完整性](../../../chip-development/FAB/wiki/06-cross-cutting-engineering/signal-integrity-in-package.md)、[RAM HBM 成本](../../06-system-integration/packaging/why-hbm-is-expensive.md)
+   [FAB 封装信号完整性](../../../chip-development/FAB/wiki/06-cross-cutting-engineering/signal-integrity-in-package.md)、[RAM HBM 成本](../../06-system-integration/hbm-vs-lpddr-for-npu.md#yield)
 
 80. [J] 从 RAM 视角看，DRAM-PIM 与 SRAM-CIM 在数据位置、刷新/保持、外围计算开销和上层 memory hierarchy 边界上有什么本质差异？
    [CIM DRAM-PIM](../../../microarchitecture/08-in-memory-computing/02-memory-technologies/dram-pim-foundation.md)、[CIM SRAM-CIM](../../../microarchitecture/08-in-memory-computing/02-memory-technologies/sram-cim-foundation.md)
