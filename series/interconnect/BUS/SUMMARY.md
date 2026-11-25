@@ -27,9 +27,9 @@
 ## 03 片上总线协议族
 
 - [首页](./03-on-chip-protocol-families/README.md)
+- [一次 AXI 写入](./03-on-chip-protocol-families/axi-five-channels-handshake.md)
 - [AXI / AHB / APB 对照](./03-on-chip-protocol-families/axi-ahb-apb-comparison.md)
 - [AXI Channel、ID 与 Outstanding](./03-on-chip-protocol-families/axi-channel-id-outstanding.md)
-- [AXI 五通道与 VALID/READY](./03-on-chip-protocol-families/axi-five-channels-handshake.md)
 - [AXI Burst、对齐与边界](./03-on-chip-protocol-families/axi-burst-alignment-boundary.md)
 - [AXI Narrow Transfer 与 WSTRB](./03-on-chip-protocol-families/axi-narrow-transfer-wstrb.md)
 - [AXI Response 与错误路径](./03-on-chip-protocol-families/axi-response-error-path.md)
