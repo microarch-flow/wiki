@@ -1,52 +1,65 @@
-# 精度与量化在电路层的实现约束
+# 同样算 23，为什么局部读数只差一码，输出却可能差 2？
 
-上级：[电路、外围与计算宏](./README.md)
-相关：[Data Encoding Strategies](./data-encoding-strategies.md), [Analog vs Digital Tradeoff Map](../03-compute-paradigms/analog-vs-digital-tradeoff-map.md), [RAM: SRAM Applications](../../../storage/02-sram/applications/README.md), [NoC: Reduction Networks](../../../interconnect/NOC/06-ai-noc-specifics/reduction-and-collective-networks.md)
+<span class="micro-legacy-anchor" id="精度与量化在电路层的实现约束"></span>
+<span class="micro-legacy-anchor" id="这页在回答什么问题"></span>
 
-## 这页在回答什么问题
+把权重 4、5 写在阵列上，送入 2、3，算 **2 × 4 + 3 × 5 = 23**。数字端先收一个 5，后收一个 9，最后寄存器里是 23。假设模数转换器（ADC）有一次把样本判到了相邻的较高码。如果看到的是 6、9，输出变成 24。如果看到的是 5、10，输出却变成 25。两次都是局部多读一码，哪一步让它们相差一倍？[上一节的三种输入编码](./data-encoding-strategies.md#encode-one-input)
 
-为什么论文里写 INT8、4-bit ADC 或 6-bit weight 仍然不够？因为模型精度、存储状态、输入编码、array accumulation、ADC 量化和数字 partial sum 宽度是不同层级的精度，不能混成一个数字。
+<span class="micro-legacy-anchor" id="精度的五个层级"></span>
 
-## 精度的五个层级
+## 跟着一码走到最后一次移位 {#trace-one-lsb}
 
-```text
-model numeric format
-  -> stored weight state
-  -> input drive precision
-  -> array accumulation precision
-  -> ADC / SA / digital accumulator precision
-```
+先在模型一侧规定数值。输入 2、3 用两位无符号整数表示，权重 4、5 用三位无符号整数表示，两者都以整数 1 为一个单位，零点为 0。四个数都能精确表示。再把权重写为 **40、50 µS** 两个目标电导，每个权重单位对应 10 µS。三位权重规定了模型允许哪些数；在这个教学模型里实现它，还要能把相邻的目标电导写开并读开。实际电路也可以通过多个单元分别保存不同权重位。
 
-模型层的 INT8 不代表 cell 保存 8-bit 权重，也不代表单次 array 输出有 8-bit 有效精度。很多 CIM macro 通过 bit-serial、多 cell、重复读、数字 shift-add 或 calibration 拼出等效精度。
+把输入按位送入。2 的二进制是 10，3 是 11。在低位读窗只开第二行，在高位读窗两行都开。每条被选中的行都施加 20 mV，列端保持 0 V。两个读窗各自复位，均在 1 pF 上积分 10 ns，电压变化量按正幅值记。同一只理想四位无符号 ADC 每码对应 **2 mV**，舍入到最近码，恰在中点取较高码，超出 0…15 的结果钳到端点。这样，一份局部计数对应 0.2 µA，积满一窗恰好对应一格 ADC 码。[从样本到整数码的判决门槛](./adc-dac-sa-in-cim.md#sample-to-code)
 
-## 三条 Paradigm 的精度来源
+| 本次选中的输入位 | 到达列端的电流 | 积分结束的电压变化 | 局部码 | 进入输出时的贡献 |
+| --- | ---: | ---: | ---: | ---: |
+| 低位，只开权重 5 | 1.0 µA | 10 mV | 5 | 5 × 1 = 5 |
+| 高位，同时开权重 4、5 | 1.8 µA | 18 mV | 9 | 9 × 2 = 18 |
 
-Analog CIM 的有效精度受 device variation、IR drop、noise、ADC bit、reference 和 calibration 共同限制。低比特固定模型更自然；高精度需要多次读出、差分编码、数字补偿或更重 ADC。
+两个读窗里，所有被选中的行都用同样的 20 mV 脉冲。哪个脉冲代表输入的高位，由脉冲所在的读窗决定。控制器把这次读数标为高位，数字端才把 9 左移一位再加。**一码到了这里值多少，取决于它来自哪个读窗。** 设低、高位局部整数码相对理想值的差为 e₀、e₁，累加无溢出，最终相差 **e₀ + 2e₁** 个点积单位。一处误判分别产生开头的 +1 或 +2。若两处各多一码，则结果为 6 + 2 × 10 = **26**。第二行在两个读窗都开通，同一处写入偏差就可能同时推高两次读数。只看 26，还不能确定究竟是写入还是读出出了问题。[同一输入的重复读数与对照实验](../03-compute-paradigms/analog-cim-deep-dive.md#repeat-read)
 
-Digital CIM 的精度由 bit-width、cycle count 和 accumulator width 决定。它更容易给出 deterministic worst-case，但 INT8/FP8 支持会增加周期、局部寄存器、routing 和 accumulator 面积。
+## 换一种分法，为什么正确的 23 也会掩盖错误？
 
-Mixed-signal CIM 的精度来自边界协同：array 内保留低比特 analog 局部并行，数字端做校正、累加和范围管理。它的核心问题是 ADC range、quantization scale 和模型 QAT 是否同口径设计。
+现在把两个乘积交给**两个子阵列**，各自完成一整项。输入 2、3 分别由 40、60 mV 的行电压表示，两个权重仍为 40、50 µS。电流为 1.6、3.0 µA；按上面的电容和读窗分别积分，得到相对复位点的 **16、30 mV**，同样用四位、2 mV/码的 ADC 先后转换。得到的 8、15 各自已经是完整的乘积，数字端直接相加，误差也变成两份码差直接相加。上一篇还演示了把两项电流合到**同一列**，一次积出 46 mV、读出码 23；那一处给这个样本配置了至少五位 ADC。这里每份样本独立转换，四位恰能读出这一组 8、15。[输入编码与转换位置](./data-encoding-strategies.md) · [两项各自积分时，谁保存部分和？](../03-compute-paradigms/mixed-signal-cim.md#signal-handoff)
 
-## Quantization 不是软件后处理
+设两个样本在各自送进 ADC 前分别偏了 **+1.2 mV、−1.2 mV**，其他条件理想。A 的 17.2 mV 越过了 17 mV 的判决门槛，给出 9；B 的 28.8 mV 低于 29 mV 的门槛，给出 14。得到 **9 + 14 = 23**。两项都判到了错误的码，这一组输入的输出误差却为零。倘若只在最终寄存器核对 23，就会漏掉这两处偏差。轮流单独激励一项并记录局部码，才能检出这次抵消。
 
-CIM 的量化必须下沉到电路约束。scale 是否对称、zero-point 是否需要 offset current、signed weight 是否用 differential pair、outlier 是否触发 saturation、partial sum 是否溢出，都会改变 macro 设计。
+## 数字累加器再加宽，能还原被截掉的 3 吗？ {#quantization-不是软件后处理}
 
-对于 ReRAM/Flash，multi-level state 的可分辨数量和 drift 决定 weight quantization 的真实上限。对于 SRAM，bit-serial 周期和 accumulator 宽度决定精度代价，相关存储背景可对照 RAM wiki 的 [SRAM applications](../../../storage/02-sram/applications/README.md)。对于 DRAM/HBM/GDDR-PIM，量化约束来自 PIM compute unit 的数据格式和 memory-side bandwidth，而不是 CIM macro 的 cell/bitline 精度；若 compute 位于 HBM base die、interposer 或 package-side logic，则属于 NMC 边界。partial sum 离开 macro 后还会进入 tile reduction 和互连，可连接 NoC wiki 的 [reduction networks](../../../interconnect/NOC/06-ai-noc-specifics/reduction-and-collective-networks.md)。
+保持两个子阵列和四位 ADC，把第二个权重从 5 改成 **6**。6 是三位无符号权重合法的值。写成 60 µS 后，第二支路给出 60 mV × 60 µS = 3.6 µA，积分得到 **36 mV**。以每码 2 mV 计，第二项应为 18，但 ADC 最大只报 15。原来的 30 mV 正好对应合法的最高码，这次的 36 mV 已超出代表范围。
 
-## 常见误解
+| 送给宏的权重 | 理想的两个乘积 | 四位 ADC 交付的码 | 宽累加器写下 | 理想答案 |
+| --- | --- | --- | ---: | ---: |
+| 4、5 | 8、15 | 8、15 | 23 | 23 |
+| 4、6 | 8、18 | 8、15 | 23 | 26 |
 
-常见误解：ADC 是 8-bit，所以 macro 有 8-bit 精度。实际上，ADC 只是读出链路的一环；input drive、cell state、array noise、offset、calibration 和 accumulator 都会降低有效位数。
+从两份现有码出发，数字端连哪次丢了 3 都分不出来。可以把输入拆成低、高位窗，使每次读数都装得下，再按位权移位合并。另一种做法是在模拟前端能线性接收更大信号的条件下，扩大 ADC 量程并保持需要的码间距。若仍只分 16 档，拉大量程要付出更粗的刻度。另看一个固定输入范围的例子：上限 1 V 的前端能区分 0.9 V 与上限，但 1.2 V 进入时已削顶到 1 V。用更密的码去测削顶后的 1 V，也量不出原先超出的 0.2 V。
 
-常见误解：模型能 QAT，就能吸收任何硬件误差。实际上，QAT 只能吸收统计上稳定、可建模的误差；温漂、retention、随机 write noise 和 aging 仍需要硬件校准或运行时保护。
+按本题的整个格式设计，单个乘积最大为 3 × 7 = 21，两项总和最大为 **42**。若要让任意合法输入都精确通过，按整项转换且沿用每个乘积单位一码，需要局部量程覆盖 0…21（至少五位），累加器覆盖 0…42（至少六位）。若按前面两个**输入位平面**分读，则单窗最多只把两个权重相加，最大为 14，四位局部码足够。数字端仍要完成带位权的累加。这就解释了为什么同一模型可以有不同的局部位宽。
 
-ADC ENOB 需在指定输入频率、幅度、采样率、带宽和测试方法下由 SINAD 换算（常用正弦测试 `ENOB=(SINAD_dB-1.76)/6.02`）；它不是完整点积误差或模型 accuracy。点积可报告相对理想值的 RMSE、偏差与饱和率；模型 accuracy 再在明确数据集和任务上测量。
+数字累加本身也有边界，即使送来的码全部正确，无符号八位寄存器仍装不下 **250 + 10 = 260**。按模 256 回绕写下 4，按饱和算术写下 255。若还有来自别的宏的分块部分和，可以先保留足够宽的数，送至 tile 或片上网络完成归约，再按输出格式收窄。接口还要传对部分和所对应的输出位置与尺度。[片上网络怎样合并部分和](../../../interconnect/NOC/06-ai-noc-specifics/reduction-and-collective-networks.md)
 
-例：ADC 输入量程上限为 1 V，两个理想点积分别对应 0.9 V 和 1.2 V；后者截顶至 1 V，增加 ADC 位数也不能恢复超量程信息。另一个独立问题是数字累加溢出：无符号 8-bit 累加 250+10，回绕为 4，饱和为 255；两种语义须分别记录。
+## 若下一级一格代表 2，收到的 23 要写成什么？
 
-## 一句话理解
+回到准确得到 23 的那一行。下一级若要求无符号五位输出、零点为 0、每个输出码代表 **2 个点积单位**，那么码 0…31 对应 0、2、…、62，范围足以覆盖本题最大值 42。把 23 除以 2 得 11.5，按本例中点取高的规则写**码 12**，它表示的数是 **24**。原值 24 同样写码 12。这里丢掉奇偶差别的地方是最后一次重量化；此时再提高列 ADC 的分辨率，也不会让这个输出格式拥有表示 23 的码。
 
-CIM 的精度是模型、编码、器件、array、ADC 和数字累加共同形成的有效精度，不是某个 bit 数标签。
+对称量化常取零点 0。若采用仿射量化，码 q、零点 Z 和步长 S 一起定义其数值 **S × (q − Z)**。有非零输入或权重零点时，直接相乘两个原始码会多算零点项；可用参考支路、偏置电流或数字校正扣除，具体取决于硬件。负权重可用一对电导之差表示，模拟与数字端都须保留符号和相应的动态范围。Jacob 等给出了一种实作：8 位权重与激活先在较宽的整数累加器中合并，再按输出尺度收窄。输出格式的舍入和截断要与训练、编译及设备约定一致；本文中点取高是本算例的约定。[仿射量化、整数累加和输出尺度，原论文第 2 节](https://openaccess.thecvf.com/content_cvpr_2018/papers/Jacob_Quantization_and_Training_CVPR_2018_paper.pdf)
 
-## 研究启示
+## 换一种存储和电路，精度要在哪一级验证？ {#三条-paradigm-的精度来源}
 
-高质量研究应报告有效精度链路：权重状态数、输入编码、ADC bit、accumulator width、校准方式、模型 accuracy 和 corner 条件。产业上，可接受的路线不是追求最高 nominal bit-width，而是在可测试、可校准、可编译的范围内闭合误差预算。
+模拟 CIM 要从能区分的单元状态一直验到输出。ReRAM 电导、Flash 阈值对应的读电流，会受写入分布和保持时间影响。输入驱动误差、阵列线阻造成的压降、读噪声、ADC 参考与失调，又会移动读数。低位宽、固定的模型通常需要区分的档位较少。提高有效精度，可以拆作多次读取、用差分编码或校准补偿，也可以增加转换器分辨率；这些办法分别多用读窗、单元、校准时间或外围面积。拆到数字端合并的混合信号宏还要按实际输入分布检查，较少出现的极值会不会让局部和在转换前削顶。[同一任务下的模拟与数字路线](../03-compute-paradigms/analog-vs-digital-tradeoff-map.md)
+
+数字 SRAM-CIM 的单元存离散位。只要感测判对、时序满足，给定位平面数、移位与累加器位宽，就能推导整数结果的最坏情况。用位串行周期拼成 INT8 会影响吞吐；支持 FP8 还要处理指数、对齐与舍入，相应的寄存器、路由和累加电路也要计入。DRAM、HBM、GDDR 的 bank 旁若配独立数字计算单元，先查它支持的指令格式与累加语义，再查存储侧带宽能以多快的速度供数。计算移到 HBM 基底裸片、中介层或封装侧独立逻辑时，进入近存计算的范围。[SRAM 的应用与实现](../../../storage/02-sram/applications/README.md)
+
+<span class="micro-legacy-anchor" id="常见误解"></span>
+<span class="micro-legacy-anchor" id="一句话理解"></span>
+
+## 一份“八位精度”的报告，怎样对回这次点积？ {#研究启示}
+
+一份报告若同时列出 INT8 模型、六位权重和四位 ADC，读者需要知道：每个权重是否真用一个单元能分清的 64 个状态表达，还是由多个单元或多次读出拼成；这些码又怎样进入最终寄存器。八位 ADC 有 256 个标称码。若要报告其动态有效位数（ENOB），常对近满幅正弦输入测量信噪失真比（SINAD），按满幅口径换算 **ENOB = (SINAD_dB − 1.76) / 6.02**。同时给出输入频率与幅度、采样率、测量带宽和测试方法；使用较小振幅时，换算的幅度口径也要说明。直流样本 30 mV 有没有跨过 29 mV 的门槛，要看这个工作点的偏置、噪声和跳码位置。这个点无法单独给出 ENOB。[Analog Devices MT-003，SINAD 与 ENOB 的满幅与非满幅条件](https://www.analog.com/media/en/training-seminars/tutorials/mt-003.pdf)
+
+要评价点积，先确定理想参考是量化后的整数模型，还是量化之前的浮点模型。对同一组输入记录输出偏差、均方根误差（RMSE）和各转换点的饱和率，并保留若干局部码，以免误差抵消。还应记录权重可分辨的状态数、输入编码、ADC 范围与位数、累加和重量化规则，以及校准前后、温度、供电、写后时间等工作条件。模型的准确率则要在指定数据集和任务上另测。
+
+量化感知训练（QAT）可以在训练时模拟取整和截断。若还要让模型适应硬件噪声，需测出相应分布，并在目标工作条件下验证。NeuRRAM 的作者测量硬件噪声后用于训练，还借真实模型数据调输入脉冲、记录 ADC 偏置，并用芯片在环微调，在指定任务上检验推理结果。换到未覆盖的温度、保持时间、写入噪声或老化状态，仍要重测，必要时重新校准或在运行时保护。测试也可以从眼前这个 23 开始：先保留每次转换的码，再沿写入、阵列和读出分段比较，看“多出的一码”最早在哪儿出现。[NeuRRAM 原论文的软硬件协同实验，图 4](https://pmc.ncbi.nlm.nih.gov/articles/PMC9385482/#Fig4) · [沿写入和读出定位误差](./non-idealities-and-error-sources.md#trace-weight-error) · [电路、外围与计算宏](./README.md)

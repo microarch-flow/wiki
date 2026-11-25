@@ -1,7 +1,7 @@
 # CIM 专用的量化策略：低比特、非对称、Calibration 的特殊性
 
 上级：[编译、量化与运行时](./README.md)
-相关：[Precision at Circuit](../04-circuit-and-macro/precision-and-quantization-at-circuit.md), [Data Encoding Strategies](../04-circuit-and-macro/data-encoding-strategies.md), [RAM: SRAM Cell](../../../storage/02-sram/foundations/6t-cell-bistable-storage.md), [FAB: Process Nodes](../../../chip-development/FAB/wiki/02-front-end-fabrication/process-nodes-and-ppa-tradeoffs.md), [BUS: AXI Attributes](../../../interconnect/BUS/04-microarchitecture-integration/axi-attributes-cacheability-barrier.md)
+相关：[一个码的偏差怎样传到点积](../04-circuit-and-macro/precision-and-quantization-at-circuit.md#trace-one-lsb)、[同一个输入怎样驱动阵列](../04-circuit-and-macro/data-encoding-strategies.md#encode-one-input), [RAM: SRAM Cell](../../../storage/02-sram/foundations/6t-cell-bistable-storage.md), [FAB: Process Nodes](../../../chip-development/FAB/wiki/02-front-end-fabrication/process-nodes-and-ppa-tradeoffs.md), [BUS: AXI Attributes](../../../interconnect/BUS/04-microarchitecture-integration/axi-attributes-cacheability-barrier.md)
 
 ## 这页在回答什么问题
 
