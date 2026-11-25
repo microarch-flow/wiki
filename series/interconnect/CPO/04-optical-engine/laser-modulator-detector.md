@@ -1,51 +1,19 @@
-# 激光器、调制器、探测器
+---
+search:
+  exclude: true
+---
 
-上级：[04 光引擎与核心器件](./README.md)
+# 激光器、调制器与探测器的原章节入口
 
-相关：[带宽、功耗与热](../05-electrical-thermal-reliability/bandwidth-power-thermal.md)、[制造流程](../06-manufacturing/process-flow.md)
+器件说明已并入《一个比特怎样从电路进入光纤，再回到电路？》。沿发送和接收的方向，可以回到原来阅读的位置。
 
-## 激光器
+<div markdown="1" data-article-redirect="true">
 
-激光器负责产生稳定光源，但它往往也是最不愿意和高热 ASIC 强绑定的器件之一，因为：
+- <span id="激光器调制器探测器"></span>[从信号进入光引擎读起](optical-link-basics.md#electrical)
+- <span id="激光器"></span>[连续光从哪里来，如何进入调制器](optical-link-basics.md#modulation)
+- <span id="调制器"></span>[驱动电压如何改变输出光功率](optical-link-basics.md#modulation)
+- <span id="探测器"></span>[入射光如何变成电流](optical-link-basics.md#receiver)
+- <span id="driver-与-tia"></span>[比较发送驱动与接收跨阻放大](optical-link-basics.md#receiver)
+- <span id="为什么器件问题会变成封装问题"></span>[热、耦合与更换边界](optical-link-basics.md#tradeoffs)
 
-- 温度对性能和寿命敏感
-- 老化与可靠性要求高
-- 失效后替换成本高
-
-因此很多 CPO 方案会优先考虑外置激光或远置激光，再把连续光送到封装附近做调制。
-
-## 调制器
-
-调制器负责把电信号映射到光强、相位或其他光学量上。站在系统角度，你不需要先区分所有物理结构，但要知道：
-
-- 它决定驱动难度和带宽上限的一部分
-- 它和 driver、偏置控制、热漂移是耦合的
-- 它会影响链路功耗和误码表现
-
-## 探测器
-
-探测器把入射光转换为光电流。后续 TIA 将电流转换为模拟电压；接收电路再完成均衡、时钟恢复与判决。系统上更关心：
-
-- 灵敏度
-- 带宽
-- 暗电流和噪声
-- 温度漂移
-
-## Driver 与 TIA
-
-很多人把注意力都放在“硅光”三个字上，但在工程里，driver 和 TIA 往往同样关键：
-
-- driver 决定怎么把高速电信号高质量送到调制器
-- TIA 把弱电流转换并放大为模拟电压；均衡、时钟恢复和判决由后续功能完成，也可能被集成在同一接收芯片内
-- 它们直接关联功耗、噪声、带宽和封装布局
-
-## 为什么器件问题会变成封装问题
-
-因为这些器件并不是单独工作，而是要在同一物理系统内同时满足：
-
-- 高频电连接
-- 温度稳定
-- 精密对位
-- 可制造与可测试
-
-这也是 CPO 为什么天然跨器件、跨封装、跨系统。
+</div>

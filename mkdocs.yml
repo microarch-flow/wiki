@@ -11,6 +11,10 @@ not_in_nav: |
   /SCALEUP/wiki/04-software-and-collectives/peer-access-setup.md
   /NETWORK/wiki/03-rdma-endpoints/completion-ordering-and-lifetime.md
   /D2D/wiki/01-foundations/cross-die-communication.md
+  /CPO/wiki/01-overview/learning-roadmap.md
+  /CPO/wiki/04-optical-engine/laser-modulator-detector.md
+  /SERDES/wiki/03-transmitter/parallel-to-serial.md
+  /SERDES/wiki/04-receiver/deserializer-and-alignment.md
   /RAM/wiki/02-sram-foundations/sram-macro-interface-and-semantics.md
   /RAM/wiki/04-dram-foundations/row-column-decode-sense-amplify.md
   /RAM/wiki/04-dram-foundations/row-buffer-as-cache.md

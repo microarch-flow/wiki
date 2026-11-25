@@ -26,4 +26,4 @@ SerDes 是 serializer / deserializer，即串行器与解串器。发送端把�
 
 ## 接下来怎么读
 
-看[数据经过 TX、通道和 RX](./link-end-to-end.md)，把串并转换放回完整链路。
+看[PHY、SerDes 与协议](./phy-serdes-protocol.md)，确定这些功能归哪一层；也可以回到[32 位字的收发时序](./link-end-to-end.md#launch)复算一个 UI。

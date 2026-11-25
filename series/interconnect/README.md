@@ -1,6 +1,6 @@
 # 芯片与系统互连
 
-本系列从事务语义、网络组织和物理链路出发，理解片上、封装内、设备和系统之间的通信。九个专题可组合使用。
+主机向加速卡请求一个数，卡边已经收到请求，还要等谁取回数据？从[第一次跨桥读取](PCIE/06-workloads-case-studies/pcie-vs-axi-noc-boundary.md)跟这笔请求走一个来回。已经熟悉单机数据路径的读者，可以直接算[四张 GPU 的一次 AllReduce](SCALEUP/04-software-and-collectives/four-gpu-allreduce-egress.md)，看两台服务器之间哪个出口最忙。
 
 1. [片上事务与总线（BUS）](BUS/README.md)：事务、握手、仲裁与桥接。
 2. [片上网络（NoC）](NOC/README.md)：路由、缓冲、流控与拓扑。

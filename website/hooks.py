@@ -305,7 +305,14 @@ def topic_tree(root, name):
 
 SCALEUP_PEER_REDIRECT = "SCALEUP/wiki/04-software-and-collectives/peer-access-setup.md"
 NETWORK_COMPLETION_REDIRECT = "NETWORK/wiki/03-rdma-endpoints/completion-ordering-and-lifetime.md"
-ORIGINAL_TOPIC_REDIRECTS = STORAGE_LEGACY_PAGES | {SCALEUP_PEER_REDIRECT, NETWORK_COMPLETION_REDIRECT}
+ORIGINAL_TOPIC_REDIRECTS = STORAGE_LEGACY_PAGES | {
+    SCALEUP_PEER_REDIRECT,
+    NETWORK_COMPLETION_REDIRECT,
+    "CPO/wiki/01-overview/learning-roadmap.md",
+    "CPO/wiki/04-optical-engine/laser-modulator-detector.md",
+    "SERDES/wiki/03-transmitter/parallel-to-serial.md",
+    "SERDES/wiki/04-receiver/deserializer-and-alignment.md",
+}
 
 COHERENCE_MSI_REDIRECT = "COHERENCE/wiki/02-protocols/msi-transactions.md"
 COHERENCE_CHAPTERS = (
@@ -428,8 +435,8 @@ CPO_SECTIONS = (
 
 
 def cpo_topic_tree(root, group):
-    """Group CPO chapters without moving or excluding any existing pages."""
-    tree = owned_topic_tree(root, "CPO", INTERCONNECT, group)
+    """Group CPO reading lists while leaving bookmark redirects out of the sidebar."""
+    tree = owned_topic_tree(root, "CPO", INTERCONNECT, group, exclude=ORIGINAL_TOPIC_REDIRECTS)
     section_for_title = {}
     for label, directories in CPO_SECTIONS:
         for directory in directories:

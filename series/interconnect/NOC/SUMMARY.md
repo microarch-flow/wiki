@@ -1,4 +1,6 @@
-# NoC Wiki Summary
+# 片上网络阅读目录
+
+<span id="noc-wiki-summary"></span>
 
 本文按问题组织 NoC 的阅读顺序。每个分组列出现有文章；[专题首页](./README.md)提供学习和建模入口。
 

@@ -24,4 +24,4 @@ DFE 估计的是模型中**过去判决**的贡献。它不能直接依靠未来
 
 ## 接下来怎么读
 
-看[解串、字边界与时钟域](./deserializer-and-alignment.md)。
+继续读[接收均衡的协同案例](./rx-cooperation-example.md)。如果每个位都判对但组出来的字仍不对，可回到[错开一位拼字的反例](../01-overview/link-end-to-end.md#align)。

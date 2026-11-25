@@ -31,7 +31,7 @@
 
 - 建立整体理解：基础概念 → Ethernet 与 IP → RDMA → 对应协议 → 性能与诊断。
 - 学习 RDMA：基础概念 → RDMA 端点 → RoCE 或 InfiniBand → 测试。
-- 分析多机 GPU：RDMA 完成 → 系统集成 → 性能预算，并联读加速器专题。
+- 分析多机 GPU 可以先追踪一笔 [RDMA 写何时完成](01-foundations/host-nic-data-path.md#completion)，再看两张同机 GPU 怎样争一块网卡的出口。[四张 GPU 做一次 AllReduce，哪个出口最忙？](../SCALEUP/04-software-and-collectives/four-gpu-allreduce-egress.md)
 
 ## 一次远端数据传输
 

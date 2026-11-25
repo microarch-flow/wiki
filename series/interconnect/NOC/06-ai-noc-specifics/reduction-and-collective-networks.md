@@ -56,6 +56,8 @@
 
 每端点发送字节数只统计其注入，不包括一份数据经过多个物理链路形成的全部负载。总 byte-hop 要按每份数据的字节数乘经过的链路数再求和。共享树和多份单播的具体对比见[广播、多播与复制](./broadcast-multicast-tree.md#软件复制的代价)。
 
+把环搬到两台服务器上，每台各放两张 GPU。每张 GPU 在两个方案里仍发送同样多的字节，换一种环顺序后，为什么同一网卡要承载更多数据？跟着一块走完六步，再核对每个方向。[两机四卡的逐链路算例](../../SCALEUP/04-software-and-collectives/four-gpu-allreduce-egress.md#one-chunk)
+
 ## All-to-All 的切面约束 {#all-to-all-的切面约束}
 
 All-to-All 不对相同位置的输入做归约，而是让各源向目的端交换各自的数据。均匀双向 Ring 的链路负载下界，以及不要求最短路径的切面证明，已移至 [All-to-All 与通信矩阵](./all-to-all-and-traffic-matrix.md#推广到均匀双向-ring)。

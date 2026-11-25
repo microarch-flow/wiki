@@ -8,8 +8,8 @@
 
 ## 阅读顺序
 
-1. [串行化的原因与取舍](./why-serdes.md)
-2. [数据经过 TX、通道和 RX](./link-end-to-end.md)
+1. [跟一个 32 位字走完链路](./link-end-to-end.md)
+2. [串行化的原因与取舍](./why-serdes.md)
 3. [PHY、SerDes 与协议](./phy-serdes-protocol.md)
 4. [位宽、速率与时钟](./rates-clocks-and-ui.md)
 

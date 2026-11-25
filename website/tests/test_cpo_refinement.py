@@ -18,6 +18,10 @@ sys.path.insert(0, str(ROOT / "website"))
 from hooks import grouped_original_topics, make_tree, reading_items  # noqa: E402
 from ownership import INTERCONNECT  # noqa: E402
 
+OLD_DEVICES = "CPO/wiki/04-optical-engine/laser-modulator-detector.md"
+OLD_ROADMAP = "CPO/wiki/01-overview/learning-roadmap.md"
+REDIRECTS = {OLD_DEVICES, OLD_ROADMAP}
+
 
 def location(source):
     path = source.relative_to(SOURCE)
@@ -52,6 +56,7 @@ class CpoRefinementTests(unittest.TestCase):
                          ["技术与工程", "产业与公司", "学习与查阅", "维护与模板"])
         paths = all_paths(topic)
         expected = {p.relative_to(DOCS).as_posix() for p in (DOCS / "CPO/wiki").rglob("*.md")}
+        expected -= REDIRECTS
         self.assertEqual(set(paths), expected)
         self.assertEqual(len(paths), len(expected))
 
@@ -59,12 +64,13 @@ class CpoRefinementTests(unittest.TestCase):
         self.assertEqual(len(chapters), 24)
         for chapter in chapters:
             listed = [name for name, _ in reading_items(chapter, include_subdirs=True)]
-            siblings = {p.name for p in chapter.glob("*.md") if p.name != "README.md"}
+            siblings = {p.name for p in chapter.glob("*.md")
+                        if p.name != "README.md" and f"CPO/wiki/{p.relative_to(SOURCE)}" not in REDIRECTS}
             children = {p.name for p in chapter.iterdir() if p.is_dir() and (p / "README.md").is_file()}
             self.assertEqual(set(listed), siblings | children, chapter)
             self.assertEqual(len(listed), len(siblings | children), chapter)
             staged = DOCS / "CPO/wiki" / chapter.relative_to(SOURCE)
-            tree = make_tree(staged, DOCS)[1:]
+            tree = make_tree(staged, DOCS, include=lambda p: p.relative_to(DOCS).as_posix() not in REDIRECTS)[1:]
             displayed = []
             for item in tree:
                 if isinstance(item, str):
@@ -90,6 +96,9 @@ class CpoRefinementTests(unittest.TestCase):
             page = read_page(SITE / loc / "index.html")
             full = re.search(r"^# (.+)$", source.read_text(), re.M)[1]
             with self.subTest(page=loc):
+                if f"CPO/wiki/{source.relative_to(SOURCE)}" in REDIRECTS:
+                    self.assertFalse(any(key.startswith(loc) for key in titles))
+                    continue
                 self.assertEqual(titles.get(loc), full)
                 self.assertTrue(unescape(re.search(r"<title>(.*?)</title>", page, re.S)[1]).startswith(full + " - "))
                 crumb = re.search(r'<nav class="site-breadcrumbs"[^>]*>(.*?)</nav>', page, re.S)
@@ -104,6 +113,25 @@ class CpoRefinementTests(unittest.TestCase):
         manufacturing = read_page(SITE / "CPO/wiki/06-manufacturing/index.html")
         self.assertIn('<span class="md-ellipsis">KGD 与良率</span>', manufacturing)
         self.assertIn('title="KGD、装配良率与系统良率"', manufacturing)
+
+    def test_redirect_each_old_section_to_the_part_that_replaces_it(self):
+        fixture = json.loads((ROOT / "website/tests/fixtures/interconnect-legacy-anchors.json").read_text())
+        targets = {
+            OLD_DEVICES: ("CPO/wiki/04-optical-engine/optical-link-basics/",
+                          ["electrical", "modulation", "modulation", "receiver", "receiver", "tradeoffs"]),
+            OLD_ROADMAP: ("CPO/wiki/16-learning-navigation/study-navigation/",
+                          ["start", "first", "first", "first", "engineering", "engineering", "engineering",
+                           "industry", "boundaries", "boundaries", "boundaries", "boundaries", "boundaries"]),
+        }
+        for path, (destination, sections) in targets.items():
+            loc = path.removesuffix(".md")
+            page = read_page(SITE / loc / "index.html")
+            menu = re.search(r'<div [^>]*data-article-redirect[^>]*>(.*?)</div>', page, re.S)[1]
+            links = re.findall(r'<li><span id="([^"]+)"></span>\s*<a href="([^"]+)">', menu)
+            self.assertEqual([anchor for anchor, _ in links], fixture[loc])
+            for (_anchor, url), section in zip(links, sections, strict=True):
+                self.assertEqual(urljoin(f"https://example.test/{loc}/", unescape(url)),
+                                 f"https://example.test/{destination}#{section}")
 
     def test_old_anchors_and_generated_article_links(self):
         fixture = json.loads((ROOT / "website/tests/fixtures/interconnect-legacy-anchors.json").read_text())

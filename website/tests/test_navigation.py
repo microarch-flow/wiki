@@ -421,6 +421,7 @@ class GeneratedNavigationTests(unittest.TestCase):
         nav_pages = pages(groups)
         cpo_pages = [page for page in nav_pages if page.startswith("CPO/wiki/")]
         expected_cpo = {path.relative_to(docs).as_posix() for path in (docs / "CPO/wiki").rglob("*.md")}
+        expected_cpo -= ORIGINAL_TOPIC_REDIRECTS
         self.assertEqual(set(cpo_pages), expected_cpo)
         self.assertEqual(len(cpo_pages), len(expected_cpo))
         cpo = groups[-1]["共封装光学（CPO）"]
@@ -431,7 +432,7 @@ class GeneratedNavigationTests(unittest.TestCase):
             expected = {path.relative_to(docs).as_posix()
                         for directory in directories
                         for path in (docs / "CPO/wiki" / directory).rglob("*.md")}
-            self.assertEqual(set(pages(section)), expected, label)
+            self.assertEqual(set(pages(section)), expected - ORIGINAL_TOPIC_REDIRECTS, label)
 
         search_index = json.loads((SITE / "search/search_index.json").read_text(encoding="utf-8"))
         self.assertEqual(search_index["config"]["pipeline"], [])
@@ -972,8 +973,8 @@ class GeneratedNavigationTests(unittest.TestCase):
 
     def test_serdes_chapter_order_and_figures(self):
         counts = {
-            "01-overview": 4, "02-signal-channel": 6, "03-transmitter": 5,
-            "04-receiver": 7, "05-signaling-and-metrics": 5, "06-link-operation": 5,
+            "01-overview": 4, "02-signal-channel": 6, "03-transmitter": 4,
+            "04-receiver": 6, "05-signaling-and-metrics": 5, "06-link-operation": 5,
             "07-design-and-validation": 6, "08-system-applications": 6, "09-modeling": 4,
             "10-reference": 10,
         }
@@ -1005,7 +1006,7 @@ class GeneratedNavigationTests(unittest.TestCase):
             "02-signal-channel/differential-and-return": "differential.svg",
             "02-signal-channel/impedance-and-reflection": "reflection.svg",
             "02-signal-channel/isi-noise-and-eye": "crosstalk-and-isi.svg",
-            "03-transmitter/parallel-to-serial": "tx-timing.svg",
+            "03-transmitter/tx-path-worked-example": "tx-timing.svg",
             "04-receiver/receiver-signal-chain": "rx-feedback.svg",
             "05-signaling-and-metrics/nrz-and-pam4": "nrz-pam4.svg",
             "05-signaling-and-metrics/eye-and-jitter": "eye-metrics.svg",
