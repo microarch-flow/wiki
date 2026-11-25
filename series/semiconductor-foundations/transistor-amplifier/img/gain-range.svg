@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="480" height="463" viewBox="0 0 480 463" xml:lang="zh-CN" role="img" aria-labelledby="title desc">
+  <title id="title">电阻负载共源级的整条稳态传输曲线</title>
+  <desc id="desc">在长沟道教学模型中，栅压从零升至 0.4 V，NMOS 截止，输出维持 1.2 V。随后管子进入饱和区。工作点是栅压 0.60 V、输出 0.70 V，局部切线斜率为负五。栅压超过约 0.672 V，管子进入线性区。蓝色曲线由负载电流与漏电流相等算出。</desc>
+  <rect x="1" y="1" width="478" height="461" rx="14" fill="#f7f6ef" stroke="#c6cec2"/>
+  <g font-family="Noto Sans CJK SC, Microsoft YaHei, sans-serif">
+    <text x="20.00" y="35.00" font-size="23" text-anchor="start" fill="#203c37" font-weight="650">换一个栅压，斜率还会是 −5 吗？</text>
+    <text x="20.00" y="63.00" font-size="18" text-anchor="start" fill="#52665d" font-weight="400">电阻负载共源级 · 稳态长沟道模型</text>
+    <rect x="66.00" y="83.00" width="125.00" height="30.00" fill="#e5ece4"/>
+    <text x="128.50" y="105.00" font-size="17" text-anchor="middle" fill="#203c37" font-weight="650">截止区</text>
+    <rect x="191.00" y="83.00" width="85.13" height="30.00" fill="#e0eeeb"/>
+    <text x="233.56" y="105.00" font-size="17" text-anchor="middle" fill="#203c37" font-weight="650">饱和区</text>
+    <rect x="276.13" y="83.00" width="164.87" height="30.00" fill="#f1e9db"/>
+    <text x="358.56" y="105.00" font-size="17" text-anchor="middle" fill="#203c37" font-weight="650">线性区</text>
+    <text x="80.00" y="135.00" font-size="17" text-anchor="start" fill="#52665d" font-weight="400">漏极电压（V）</text>
+    <path d="M191.00 114V319" fill="none" stroke="#c6cec2" stroke-width="1.1" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="4 5"/>
+    <path d="M276.13 114V319" fill="none" stroke="#c6cec2" stroke-width="1.1" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="4 5"/>
+    <path d="M66 215.17H253.50V319" fill="none" stroke="#c6cec2" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="4 4"/>
+    <path d="M66 141V319H445" fill="none" stroke="#52665d" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M61 319.00H66" fill="none" stroke="#52665d" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+    <text x="56.00" y="325.00" font-size="17" text-anchor="end" fill="#52665d" font-weight="400">0</text>
+    <path d="M61 215.17H66" fill="none" stroke="#52665d" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+    <text x="56.00" y="221.17" font-size="17" text-anchor="end" fill="#52665d" font-weight="400">0.7</text>
+    <path d="M61 141.00H66" fill="none" stroke="#52665d" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+    <text x="56.00" y="147.00" font-size="17" text-anchor="end" fill="#52665d" font-weight="400">1.2</text>
+    <path d="M66.00 319v5" fill="none" stroke="#52665d" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+    <text x="66.00" y="345.00" font-size="17" text-anchor="middle" fill="#52665d" font-weight="400">0</text>
+    <path d="M191.00 319v5" fill="none" stroke="#52665d" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+    <text x="191.00" y="345.00" font-size="17" text-anchor="middle" fill="#52665d" font-weight="400">0.4</text>
+    <path d="M253.50 319v5" fill="none" stroke="#52665d" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+    <text x="253.50" y="345.00" font-size="17" text-anchor="middle" fill="#52665d" font-weight="400">0.6</text>
+    <path d="M441.00 319v5" fill="none" stroke="#52665d" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+    <text x="441.00" y="345.00" font-size="17" text-anchor="middle" fill="#52665d" font-weight="400">1.2</text>
+    <path d="M66.00,141.00 L69.12,141.00 L72.25,141.00 L75.38,141.00 L78.50,141.00 L81.62,141.00 L84.75,141.00 L87.88,141.00 L91.00,141.00 L94.12,141.00 L97.25,141.00 L100.38,141.00 L103.50,141.00 L106.62,141.00 L109.75,141.00 L112.88,141.00 L116.00,141.00 L119.12,141.00 L122.25,141.00 L125.38,141.00 L128.50,141.00 L131.62,141.00 L134.75,141.00 L137.88,141.00 L141.00,141.00 L144.12,141.00 L147.25,141.00 L150.38,141.00 L153.50,141.00 L156.62,141.00 L159.75,141.00 L162.88,141.00 L166.00,141.00 L169.12,141.00 L172.25,141.00 L175.38,141.00 L178.50,141.00 L181.62,141.00 L184.75,141.00 L187.88,141.00 L191.00,141.00 L194.12,141.19 L197.25,141.74 L200.38,142.67 L203.50,143.97 L206.62,145.64 L209.75,147.67 L212.88,150.09 L216.00,152.87 L219.12,156.02 L222.25,159.54 L225.38,163.44 L228.50,167.70 L231.62,172.34 L234.75,177.34 L237.88,182.72 L241.00,188.47 L244.13,194.59 L247.25,201.07 L250.38,207.94 L253.50,215.17 L256.62,222.77 L259.75,230.74 L262.88,239.09 L266.00,247.80 L269.12,256.89 L271.44,263.86 L271.75,264.81 L272.07,265.77 L272.25,266.34 L272.38,266.74 L272.69,267.70 L273.00,268.68 L273.32,269.65 L273.63,270.63 L273.94,271.61 L274.25,272.60 L274.57,273.59 L274.88,274.58 L275.19,275.58 L275.38,276.17 L275.50,276.58 L275.82,277.58 L276.13,278.59 L276.44,279.51 L276.75,280.29 L277.07,280.97 L277.38,281.58 L277.69,282.14 L278.00,282.65 L278.32,283.13 L278.50,283.40 L278.63,283.58 L278.94,284.00 L279.25,284.40 L279.57,284.78 L279.88,285.14 L280.19,285.48 L280.50,285.81 L280.82,286.13 L281.62,286.90 L284.75,289.33 L287.88,291.23 L291.00,292.79 L294.12,294.12 L297.25,295.27 L300.38,296.28 L303.50,297.19 L306.62,298.01 L309.75,298.76 L312.88,299.44 L316.00,300.07 L319.12,300.66 L322.25,301.20 L325.38,301.71 L328.50,302.18 L331.62,302.62 L334.75,303.04 L337.88,303.44 L341.00,303.81 L344.12,304.17 L347.25,304.50 L350.38,304.82 L353.50,305.13 L356.62,305.42 L359.75,305.70 L362.88,305.96 L366.00,306.22 L369.12,306.46 L372.25,306.69 L375.38,306.92 L378.50,307.13 L381.62,307.34 L384.75,307.54 L387.88,307.73 L391.00,307.92 L394.12,308.10 L397.25,308.27 L400.38,308.44 L403.50,308.61 L406.63,308.76 L409.75,308.92 L412.88,309.06 L416.00,309.21 L419.13,309.35 L422.25,309.48 L425.38,309.61 L428.50,309.74 L431.62,309.86 L434.75,309.98 L437.88,310.10 L441.00,310.21" fill="none" stroke="#09677b" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M223.19 143.22L296.62 317.52" fill="none" stroke="#9b4c28" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="7 5"/>
+    <circle cx="253.50" cy="215.17" r="5" fill="#9b4c28" stroke="#f7f6ef" stroke-width="1.5"/>
+    <path d="M259.50 212.17l23 -14h10" fill="none" stroke="#52665d" stroke-width="1.1" stroke-linecap="round" stroke-linejoin="round"/>
+    <text x="299.00" y="203.17" font-size="18" text-anchor="start" fill="#203c37" font-weight="650">工作点</text>
+    <text x="443.00" y="374.00" font-size="17" text-anchor="end" fill="#52665d" font-weight="400">栅极电压（V）</text>
+    <path d="M20 389H460" fill="none" stroke="#c6cec2" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M23 414H56" fill="none" stroke="#09677b" stroke-width="3.3" stroke-linecap="round" stroke-linejoin="round"/>
+    <text x="69.00" y="420.00" font-size="17" text-anchor="start" fill="#203c37" font-weight="400">同一只管子在各个栅压下的输出</text>
+    <path d="M23 441H56" fill="none" stroke="#9b4c28" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="6 5"/>
+    <text x="69.00" y="447.00" font-size="17" text-anchor="start" fill="#203c37" font-weight="400">工作点切线，斜率 −5 V/V</text>
+  </g>
+</svg>

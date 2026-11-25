@@ -1,0 +1,224 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>给栅极加 5 mV，沿漏极读电压和电流</title>
+  <style>
+    :root { color-scheme: light; --ink: #203c37; --muted: #476059; --teal: #09677b; --orange: #a64b22; --rule: #bdcabe; --paper: #fbfaf4; }
+    * { box-sizing: border-box; }
+    html { background: var(--paper); color: var(--ink); font: 17px/1.65 system-ui, "Noto Sans CJK SC", sans-serif; }
+    body { margin: auto; max-width: 45rem; padding: 1rem clamp(.75rem, 4vw, 2rem) 3rem; }
+    nav, .controls { display: flex; align-items: center; gap: .5rem 1.2rem; flex-wrap: wrap; }
+    nav { border-bottom: 1px solid var(--rule); padding-bottom: .65rem; }
+    nav a, .back { font-size: .94rem; }
+    h1 { font-size: clamp(1.65rem, 5vw, 2.3rem); line-height: 1.25; margin: 1.1rem 0 .5rem; }
+    h2 { font-size: clamp(1.3rem, 4vw, 1.6rem); line-height: 1.35; margin: 0 0 .5rem; }
+    p { margin: .5rem 0; }
+    section { margin-top: 1.8rem; scroll-margin-top: .8rem; }
+    section + section { padding-top: 1.4rem; border-top: 1px solid var(--rule); }
+    a { color: var(--teal); text-underline-offset: .2em; }
+    :focus-visible { outline: 3px solid var(--orange); outline-offset: 3px; }
+    .controls { margin: .8rem 0; padding: .65rem .8rem; border-radius: .45rem; background: #eef2ea; }
+    label { display: flex; align-items: center; gap: .4rem; flex-wrap: wrap; }
+    select { min-height: 44px; max-width: 100%; padding: .15rem .45rem; border: 1px solid #71857a; border-radius: .3rem; background: var(--paper); color: var(--ink); font: inherit; }
+    figure { margin: .75rem 0; }
+    svg { width: min(100%, 31rem); display: block; height: auto; background: #f6f5ed; border: 1px solid #d4dbcd; border-radius: .55rem; }
+    svg text { font: 16px system-ui, sans-serif; fill: var(--ink); }
+    .grid { fill: none; stroke: #c2cec3; stroke-width: 1; stroke-dasharray: 4 4; }
+    .axis { fill: none; stroke: #57726a; stroke-width: 1.4; }
+    .curve { fill: none; stroke: var(--teal); stroke-width: 2.5; }
+    .tangent { fill: none; stroke: var(--orange); stroke-width: 5; stroke-dasharray: 7 5; }
+    .guide { fill: none; stroke: var(--orange); stroke-width: 1.8; stroke-dasharray: 5 4; }
+    figcaption, .model { color: var(--muted); font-size: .92rem; }
+    table { border-collapse: collapse; width: min(100%, 31rem); font-variant-numeric: tabular-nums; font-size: clamp(.82rem, 3.45vw, .97rem); }
+    th, td { border-bottom: 1px solid var(--rule); padding: .35rem .2rem; text-align: right; }
+    th:first-child { text-align: left; }
+    caption { text-align: left; color: var(--muted); padding-top: .45rem; }
+    .reading { font-weight: 650; }
+  </style>
+</head>
+<body>
+  <nav aria-label="实验导航"><a href="#gain">调工作点</a><a href="#step">看阶跃</a><a href="./">返回正文</a></nav>
+  <h1>给栅极加 5 mV，沿漏极读电压和电流</h1>
+  <p>源极和体端接地，电源为 1.2 V。电流先经 5 kΩ 电阻进入输出节点 Y，再经 NMOS 的沟道流向地。</p>
+  <noscript><p>以下是默认读数。启用 JavaScript 可以更改工作点和读数时刻。</p><style>.controls { display: none; }</style></noscript>
+  <section id="gain" aria-labelledby="gain-title">
+    <h2 id="gain-title">从不同的栅压出发，输出都要变 25 mV 吗？</h2>
+    <p>给栅极设一个起始电压，等电路稳定。只改动 5 mV，再次等到稳定，比较两次读数。</p>
+    <div class="controls">
+      <label>起始栅压 <select id="bias">
+        <option value="300">0.300 V</option><option value="350">0.350 V</option><option value="400">0.400 V</option><option value="450">0.450 V</option>
+        <option value="600" selected>0.600 V</option><option value="670">0.670 V</option><option value="800">0.800 V</option><option value="900">0.900 V</option>
+      </select></label>
+      <label>栅压变化 <select id="change"><option value="5">+5 mV</option><option value="-5">−5 mV</option></select></label>
+    </div>
+    <figure>
+      <svg viewBox="0 0 398 216" role="img" aria-labelledby="gain-fig gain-desc">
+        <title id="gain-fig">起始工作点附近，输出电压随栅压的变化</title>
+        <desc id="gain-desc">横轴表示栅压相对起始值的变化，纵轴表示输出电压相对起始值的变化。青色实线为模型曲线，棕色短虚线为起点的切线。空心方块是起点，实心圆是改动后的读数。</desc>
+        <text x="12" y="23">输出变化 ΔV<tspan baseline-shift="sub" font-size="12">Y</tspan> / mV</text>
+        <path class="grid" d="M58 40H371 M58 161H371 M58 40V161 M215 40V161 M371 40V161"/>
+        <path class="axis" d="M58 40V161 M58 101H371"/>
+        <g text-anchor="end"><text x="49" y="46">+80</text><text x="49" y="107">0</text><text x="49" y="166">−80</text></g>
+        <g text-anchor="middle"><text x="58" y="184">−10</text><text x="215" y="184">0</text><text x="371" y="184">+10</text></g>
+        <text x="380" y="206" text-anchor="end">栅压变化 ΔV<tspan baseline-shift="sub" font-size="12">G</tspan> / mV</text>
+        <path id="gain-tangent" class="tangent" d="M89.30 70.25 L339.70 130.75"/>
+        <path id="gain-curve" class="curve" d="M58.00 63.63 L73.65 67.23 L89.30 70.85 L104.95 74.49 L120.60 78.15 L136.25 81.83 L151.90 85.53 L167.55 89.24 L183.20 92.98 L198.85 96.73 L214.50 100.50 L230.15 104.29 L245.80 108.10 L261.45 111.93 L277.10 115.78 L292.75 119.64 L308.40 123.53 L324.05 127.43 L339.70 131.35 L355.35 135.30 L371.00 139.26"/>
+        <rect x="210" y="96" width="9" height="9" fill="#fbfaf4" stroke="#09677b" stroke-width="2"/>
+        <circle id="gain-dot" cx="293" cy="120" r="5" fill="#a64b22"/>
+      </svg>
+      <figcaption>青色实线为模型曲线，棕色短虚线为起点的切线。两条线在起点附近很接近。方块为起点，圆点为改动后的工作点。两轴都表示相对起点的变化，刻度不同。</figcaption>
+    </figure>
+    <table aria-label="比较前后两次直流读数">
+      <thead><tr><th>读数</th><th>起始</th><th>改动后</th><th>变化量</th></tr></thead>
+      <tbody>
+        <tr><th scope="row">栅压 / mV</th><td id="vg-a">600</td><td id="vg-b">605</td><td id="vg-d">+5</td></tr>
+        <tr><th scope="row">漏电流 / µA</th><td id="id-a">100</td><td id="id-b">105.0625</td><td id="id-d">+5.0625</td></tr>
+        <tr><th scope="row">输出 / mV</th><td id="vy-a">700</td><td id="vy-b">674.6875</td><td id="vy-d">−25.3125</td></tr>
+      </tbody>
+    </table>
+    <p class="reading" id="gain-reading" aria-live="polite">工作点在饱和区。起点的局部增益为 −5 V/V。这次变化量之比为 −5.0625 V/V。</p>
+    <p class="model">采用理想长沟道模型，阈值为 0.4 V，k 为 5 mA/V²，忽略亚阈值电流和沟道长度调制。每个直流点都要求电阻和 NMOS 的电流相等。局部增益取曲线在起点的切线斜率，适用于起点附近的微小变化；两次读数的差给出这段曲线的平均斜率。</p>
+    <a class="back" href="./#gain">回到正文看 5 mV 的推导</a>
+  </section>
+  <section id="step" aria-labelledby="step-title">
+    <h2 id="step-title">输出还来不及下降时，多出的电流从哪里来？</h2>
+    <p>把 10 fF 电容接在 Y 与地之间。让栅压从 0.600 V 跳到 0.605 V，分别量电阻流入节点的电流和沟道流出节点的电流。</p>
+    <div class="controls"><label>读数时刻 <select id="instant">
+      <option value="0">0⁺，刚跳变</option><option value="10">10 ps</option><option value="half">34.66 ps，半程</option>
+      <option value="50">50 ps</option><option value="100">100 ps</option><option value="200">200 ps</option><option value="steady">最终稳态</option>
+    </select></label></div>
+    <figure>
+      <svg viewBox="0 0 398 218" role="img" aria-labelledby="step-fig step-desc">
+        <title id="step-fig">栅压增加后输出 Y 的下降波形</title>
+        <desc id="step-desc">在零时刻 Y 仍为 700 毫伏，随后逐渐接近虚线标出的 674.6875 毫伏。动点表示所选时刻。最终稳态是一条渐近线。</desc>
+        <text x="12" y="24">输出电压 V<tspan baseline-shift="sub" font-size="12">Y</tspan> / mV</text>
+        <path class="grid" d="M60 45H365 M60 101H365 M60 158H365 M136 45V158 M212 45V158 M365 45V158"/>
+        <path class="axis" d="M60 40V158H365"/>
+        <g text-anchor="end"><text x="52" y="51">700</text><text x="52" y="108">685</text><text x="52" y="164">670</text></g>
+        <g text-anchor="middle"><text x="60" y="182">0</text><text x="136" y="182">50</text><text x="212" y="182">100</text><text x="365" y="182">200</text></g>
+        <text x="374" y="207" text-anchor="end">阶跃后经过的时间 / ps</text>
+        <path class="guide" d="M60 140.34H365"/>
+        <path id="step-curve" class="curve" d="M60.00 45.00 L67.62 54.07 L75.25 62.28 L82.88 69.71 L90.50 76.43 L98.12 82.51 L105.75 88.02 L113.38 93.00 L121.00 97.50 L128.62 101.58 L136.25 105.27 L143.88 108.61 L151.50 111.63 L159.12 114.36 L166.75 116.83 L174.38 119.07 L182.00 121.09 L189.62 122.93 L197.25 124.58 L204.88 126.08 L212.50 127.44 L220.12 128.67 L227.75 129.78 L235.38 130.78 L243.00 131.69 L250.62 132.52 L258.25 133.26 L265.88 133.94 L273.50 134.55 L281.12 135.10 L288.75 135.60 L296.38 136.05 L304.00 136.46 L311.62 136.83 L319.25 137.16 L326.88 137.46 L334.50 137.74 L342.12 137.99 L349.75 138.21 L357.38 138.41 L365.00 138.60"/>
+        <circle id="step-dot" cx="60" cy="45" r="5" fill="#a64b22"/>
+      </svg>
+      <figcaption>实心圆标出所选时刻。虚线表示最终稳态电压，选择“最终稳态”可直接读出这个极限。</figcaption>
+    </figure>
+    <table aria-label="输出电压和节点电流">
+      <thead><tr><th>量测位置</th><th>栅压跳变前</th><th>所选时刻</th></tr></thead>
+      <tbody>
+        <tr><th scope="row">输出 V<sub>Y</sub> / mV</th><td>700</td><td id="step-vy">700</td></tr>
+        <tr><th scope="row">电阻流入 I<sub>R</sub> / µA</th><td>100</td><td id="step-ir">100</td></tr>
+        <tr><th scope="row">沟道流出 I<sub>D</sub> / µA</th><td>100</td><td id="step-id">105.0625</td></tr>
+        <tr><th scope="row">差额 I<sub>R</sub> − I<sub>D</sub> / µA</th><td>0</td><td id="step-net">−5.0625</td></tr>
+      </tbody>
+    </table>
+    <p class="reading" id="step-reading" aria-live="polite">电阻还只送来 100 µA。沟道多取的 5.0625 µA 使电容开始放电。</p>
+    <p class="model">忽略栅漏电容耦合、亚阈值电流和沟道长度调制。这次阶跃前后管子都处在饱和区，跳变后 I<sub>D</sub> 保持恒定。由 C dV<sub>Y</sub>/dt = I<sub>R</sub> − I<sub>D</sub> 得到指数波形，时间常数 R<sub>D</sub>C = 50 ps。</p>
+    <a class="back" href="./#step">回到正文追踪输出节点的电荷</a>
+  </section>
+  <script>
+    'use strict';
+    // Units inside the model: volts, milliamperes, kilohms and picoseconds.
+    const supply = 1.2;
+    const resistance = 5;
+    const threshold = 0.4;
+    const k = 5;
+    const tau = 50;
+    const element = id => document.getElementById(id);
+    const setText = (id, value) => { element(id).textContent = value; };
+
+    function dcPoint(gate) {
+      const vov = gate - threshold;
+      if (vov <= 0) return { out: supply, current: 0, gain: 0, region: '截止区' };
+      const satCurrent = k * vov * vov / 2;
+      const satOut = supply - resistance * satCurrent;
+      if (satOut >= vov) {
+        return { out: satOut, current: satCurrent, gain: -resistance * k * vov, region: '饱和区' };
+      }
+      // The smaller triode-region root satisfies the resistor load line.
+      const kr = k * resistance;
+      const b = 1 + kr * vov;
+      const out = 2 * supply / (b + Math.sqrt(b * b - 2 * kr * supply));
+      const gm = k * out;
+      const gds = k * (vov - out);
+      return { out, current: (supply - out) / resistance, gain: -resistance * gm / (1 + resistance * gds), region: '线性区' };
+    }
+
+    function fmt(number, signed = false) {
+      const rounded = Number(number.toFixed(4));
+      if (rounded === 0) return '0';
+      const sign = rounded < 0 ? '−' : signed ? '+' : '';
+      return sign + Math.abs(rounded);
+    }
+    function drawPath(id, count, sample) {
+      const segments = [];
+      for (let i = 0; i <= count; i++) {
+        const [x, y] = sample(i / count);
+        segments.push((i === 0 ? 'M' : 'L') + x.toFixed(2) + ' ' + y.toFixed(2));
+      }
+      element(id).setAttribute('d', segments.join(' '));
+    }
+    function mark(id, x, y) {
+      element(id).setAttribute('cx', x.toFixed(2));
+      element(id).setAttribute('cy', y.toFixed(2));
+    }
+    function showGain() {
+      const bias = Number(element('bias').value) / 1000;
+      const delta = Number(element('change').value) / 1000;
+      const a = dcPoint(bias);
+      const b = dcPoint(bias + delta);
+      const inputs = [['vg', bias, bias + delta], ['id', a.current, b.current], ['vy', a.out, b.out]];
+      for (const [name, before, after] of inputs) {
+        setText(name + '-a', fmt(1000 * before));
+        setText(name + '-b', fmt(1000 * after));
+        setText(name + '-d', fmt(1000 * (after - before), true));
+      }
+      const x = change => 214.5 + change * 15650;
+      const y = change => 100.5 - change * 756.25;
+      drawPath('gain-tangent', 1, fraction => {
+        const shift = (2 * fraction - 1) * 0.008;
+        return [x(shift), y(a.gain * shift)];
+      });
+      drawPath('gain-curve', 100, fraction => {
+        const shift = (2 * fraction - 1) * 0.010;
+        return [x(shift), y(dcPoint(bias + shift).out - a.out)];
+      });
+      mark('gain-dot', x(delta), y(b.out - a.out));
+      const region = a.region === b.region ? '两点都在' + a.region : '从' + a.region + '进入' + b.region;
+      setText('gain-reading', region + '。起点的局部增益为 ' + fmt(a.gain) + ' V/V。这次变化量之比为 ' + fmt((b.out - a.out) / delta) + ' V/V。');
+    }
+
+    const before = dcPoint(.600);
+    const after = dcPoint(.605);
+    const transientOut = time => after.out + (before.out - after.out) * Math.exp(-time / tau);
+    const timeX = time => 60 + 305 * time / 200;
+    const voltageY = volts => 158 - (1000 * volts - 670) * 113 / 30;
+    drawPath('step-curve', 120, fraction => [timeX(fraction * 200), voltageY(transientOut(fraction * 200))]);
+    function showStep() {
+      const selected = element('instant').value;
+      const steady = selected === 'steady';
+      const time = selected === 'half' ? tau * Math.log(2) : Number(selected);
+      const voltage = steady ? after.out : transientOut(time);
+      const ir = (supply - voltage) / resistance;
+      const net = ir - after.current;
+      setText('step-vy', fmt(1000 * voltage));
+      setText('step-ir', fmt(1000 * ir));
+      setText('step-id', fmt(1000 * after.current));
+      setText('step-net', fmt(1000 * net));
+      element('step-dot').style.display = steady ? 'none' : '';
+      if (!steady) mark('step-dot', timeX(time), voltageY(voltage));
+      let reading = '沟道流出的电流仍比电阻送来的多 ' + fmt(-1000 * net) + ' µA，输出电压继续下降。';
+      if (time === 0) reading = '电阻还只送来 100 µA。沟道多取的 5.0625 µA 使电容开始放电。';
+      if (steady) reading = '电阻送来的电流已等于沟道流出的电流，电容上的净电荷保持稳定。';
+      setText('step-reading', reading);
+    }
+    element('bias').addEventListener('change', showGain);
+    element('change').addEventListener('change', showGain);
+    element('instant').addEventListener('change', showStep);
+    showGain();
+    showStep();
+  </script>
+</body>
+</html>
