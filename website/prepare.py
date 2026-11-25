@@ -9,6 +9,7 @@ from pathlib import PurePosixPath
 import shutil
 import tempfile
 
+from foundation_redirects import FOUNDATION_SPLIT_ARTICLES, SILICON_TO_LOGIC_LEGACY_SECTIONS, stage_split_guides
 from ownership import GROUPS, MICRO, STORAGE, owner
 from microarchitecture_navigation import MICRO_TOPICS
 from sources import copy_source, fetch_checkout, load_series, source_directory, validate_output_paths
@@ -37,14 +38,6 @@ FOUNDATION_COMPANIONS = (
     Path("supply-voltage-and-frequency/experiment.html"),
     Path("pvt-and-path-delay/experiment.html"),
 )
-SILICON_TO_LOGIC_LEGACY_SECTIONS = {
-    "circuit-quantities": "用电压电流电阻和电容描述一个节点",
-    "silicon-and-doping": "从硅的四个价电子理解-p-型和-n-型掺杂",
-    "pn-junction": "pn-结如何形成势垒二极管如何整流",
-    "bipolar-transistor": "三极管怎样放大电流并作为开关",
-    "mosfet": "mosfet-如何用栅极电压控制沟道电流",
-    "cmos-logic": "cmos-门怎样用充放电实现逻辑运算",
-}
 STORAGE_TOPICS = dict(zip((
     "01-memory-hierarchy", "02-sram", "03-dram", "04-dram-controller", "05-hbf", "06-system-integration",
 ), GROUPS[STORAGE]))
@@ -427,12 +420,13 @@ def stage_site(root=ROOT, build_root=None, registry=None, source_root=None, layo
                     destination = docs / local["publish"]
                     copy_source(selected, destination, public_only=True)
                     if local["directory"] == "series/semiconductor-foundations":
-                        for slug in FOUNDATION_MERGED_ARTICLES:
+                        for slug in (*FOUNDATION_MERGED_ARTICLES, *FOUNDATION_SPLIT_ARTICLES):
                             legacy = Path(slug) / "README.md"
                             if (destination / legacy).is_file():
                                 redirect = legacy.with_name("index.html")
                                 (destination / legacy).unlink()
-                                shutil.copy2(selected / redirect, destination / redirect)
+                                if slug in FOUNDATION_MERGED_ARTICLES:
+                                    shutil.copy2(selected / redirect, destination / redirect)
                                 published.add(selected / legacy, destination / redirect, rewrite_page=False)
                         for companion in FOUNDATION_COMPANIONS:
                             if (destination / companion.parent / "README.md").is_file():
@@ -459,14 +453,7 @@ def stage_site(root=ROOT, build_root=None, registry=None, source_root=None, layo
             copy_source(selected, docs / "external" / slug)
             print(f"Staged series {item['title']} from {source['repository']}:{source['directory']}")
 
-        silicon_to_logic = docs / "foundations/silicon-to-logic"
-        if (silicon_to_logic / "README.md").is_file():
-            template = (root / "website/foundation-section-redirect.html").read_text(encoding="utf-8")
-            for slug, anchor in SILICON_TO_LOGIC_LEGACY_SECTIONS.items():
-                redirect = silicon_to_logic / slug / "index.html"
-                redirect.parent.mkdir()
-                redirect.write_text(template.replace("__SECTION__", anchor), encoding="utf-8")
-
+        stage_split_guides(root, docs, published)
         published.rewrite()
         validate_output_paths(docs)
 

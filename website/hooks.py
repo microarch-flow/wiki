@@ -27,7 +27,6 @@ from noc_navigation import NOC_SUMMARY, noc_topic_tree, read_noc_sections  # noq
 from d2d_navigation import D2D_SUMMARY, d2d_topic_tree, read_d2d_sections  # noqa: E402
 
 
-FOUNDATION_READING_GROUPS = ("延伸阅读", "历史导读")
 CHIP_ARCHITECTURES = "series/chip-architectures"
 CHIP_ARCHITECTURES_HOME = f"{CHIP_ARCHITECTURES}/README.md"
 
@@ -612,34 +611,26 @@ def chip_architecture_tree(root, directory, labels):
 
 
 def foundations_tree(root, directory, labels):
-    """The guide owns article order, short titles and supplemental reading groups."""
+    """Use the series guide's numbered list for sidebar order and short titles."""
     landing = directory / "README.md"
     tree = [landing.relative_to(root).as_posix()]
-    groups = {name: [] for name in FOUNDATION_READING_GROUPS}
     remaining = {page.relative_to(directory).as_posix() for page in directory.rglob("*.md") if page != landing}
-    section = None
+    reading_order = False
     for line in landing.read_text(encoding="utf-8").splitlines():
         if line.startswith("## "):
-            section = line[3:].strip()
-            continue
-        if section == "阅读顺序":
-            item = re.match(r"^\d+\. \[([^\]]+)\]\(([^)]+)\)", line)
-        elif section in groups:
-            item = re.match(r"^- \[([^\]]+)\]\(([^)]+)\)", line)
-        else:
-            continue
+            reading_order = line.strip() == "## 阅读顺序"
+        item = re.match(r"^\d+\. \[([^\]]+)\]\(([^)]+)\)", line) if reading_order else None
         if item:
             short, target = item.groups()
-            target = urlsplit(target).path
-            if target not in remaining:
-                raise ValueError(f"Invalid or repeated foundations article in {section}: {target}")
-            remaining.remove(target)
-            path = (directory / target).relative_to(root).as_posix()
+            article = urlsplit(target).path
+            if article not in remaining:
+                raise ValueError(f"Invalid or repeated foundations article: {article}")
+            remaining.remove(article)
+            path = (directory / article).relative_to(root).as_posix()
             labels[path] = (short, title(root / path))
-            (tree if section == "阅读顺序" else groups[section]).append(path)
+            tree.append(path)
     if remaining:
         raise ValueError(f"Foundations guide omits articles: {sorted(remaining)}")
-    tree.extend({name: pages} for name, pages in groups.items() if pages)
     return tree
 
 
@@ -712,8 +703,6 @@ def render_breadcrumbs(page, root, sidebar_labels=None):
             url = None
             if page.file.src_uri.startswith(f"{CHIP_ARCHITECTURES}/"):
                 url = f"{CHIP_ARCHITECTURES}/#{quote(slugify_unicode(label, '-'))}"
-            elif page.file.src_uri.startswith("foundations/") and label in FOUNDATION_READING_GROUPS:
-                url = f"foundations/#{quote(label)}"
         else:
             path = index.file.src_uri
             if path == "README.md":
