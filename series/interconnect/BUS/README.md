@@ -6,7 +6,7 @@
 
 接着看写入。桥要往 SRAM 写四拍数据。第四拍被接走时，桥已经知道这次写成功了吗？在[《一次 AXI 写入，地址、数据和响应分别在哪一拍交付？》](./03-on-chip-protocol-families/axi-five-channels-handshake.md)里，沿着同一个接口找出答案。
 
-多笔请求同时到来时，再看[仲裁、顺序性与背压](./02-fundamentals/arbitration-ordering-backpressure.md)怎样决定谁先走。要回到卡外看主机何时取得结果，可读[《一次跨桥读取》](../PCIE/06-workloads-case-studies/pcie-vs-axi-noc-boundary.md)。
+如果桥和 DMA 同时向通往 SRAM 的那一个出口送地址，这一拍谁能通过？出口暂时不接收时，被选中的请求又停在哪里？第三篇[《两个模块同时访问同一目标，谁先走？》](./02-fundamentals/arbitration-ordering-backpressure.md)把两笔请求放在同一张时序表里。要回到卡外看主机何时取得结果，可读[《一次跨桥读取》](../PCIE/06-workloads-case-studies/pcie-vs-axi-noc-boundary.md)。
 
 <span id="dashboard"></span>
 
@@ -24,7 +24,7 @@
 | 按你的目标选最短阅读路径 | [按目标学习 BUS](./01-overview/goal-oriented-navigation.md) |
 | 先把 BUS、NoC、点到点链路分清 | [BUS vs NoC vs Point-to-Point](./02-fundamentals/bus-vs-noc-vs-point-to-point.md) |
 | 先搞懂 transaction 基本对象 | [地址已经收下，数据为什么还没回来？](./02-fundamentals/transaction-address-data-response.md) |
-| 抓住共享互连的核心矛盾 | [仲裁、顺序性与 Backpressure](./02-fundamentals/arbitration-ordering-backpressure.md) |
+| 区分等待仲裁和等待目标接收 | [两个模块同时访问同一目标，谁先走？](./02-fundamentals/arbitration-ordering-backpressure.md) |
 | 理解位宽、时钟和 burst 为什么重要 | [位宽、时钟、Burst 与延迟](./02-fundamentals/width-clock-burst-latency.md) |
 | 快速分清 AXI / AHB / APB | [AXI / AHB / APB 对照](./03-on-chip-protocol-families/axi-ahb-apb-comparison.md) |
 | 深入理解 AXI 为什么复杂 | [AXI Channel、ID 与 Outstanding](./03-on-chip-protocol-families/axi-channel-id-outstanding.md) |
@@ -78,17 +78,18 @@
 
 1. [地址已经收下，数据为什么还没回来？](./02-fundamentals/transaction-address-data-response.md)
 2. [一次 AXI 写入，地址、数据和响应分别在哪一拍交付？](./03-on-chip-protocol-families/axi-five-channels-handshake.md)
-3. [BUS 在解决什么问题](./01-overview/problem-statement.md)
-4. [BUS 分类框架](./01-overview/taxonomy.md)
-5. [BUS vs NoC vs Point-to-Point](./02-fundamentals/bus-vs-noc-vs-point-to-point.md)
-6. [学习路线图](./01-overview/learning-roadmap.md)
-7. [按目标学习 BUS](./01-overview/goal-oriented-navigation.md)
+3. [两个模块同时访问同一目标，谁先走？](./02-fundamentals/arbitration-ordering-backpressure.md)
+4. [BUS 在解决什么问题](./01-overview/problem-statement.md)
+5. [BUS 分类框架](./01-overview/taxonomy.md)
+6. [BUS vs NoC vs Point-to-Point](./02-fundamentals/bus-vs-noc-vs-point-to-point.md)
+7. [学习路线图](./01-overview/learning-roadmap.md)
+8. [按目标学习 BUS](./01-overview/goal-oriented-navigation.md)
 
 ### 路线 2：想把片上总线协议学透
 
 1. [地址已经收下，数据为什么还没回来？](./02-fundamentals/transaction-address-data-response.md)
 2. [一次 AXI 写入，地址、数据和响应分别在哪一拍交付？](./03-on-chip-protocol-families/axi-five-channels-handshake.md)
-3. [仲裁、顺序性与 Backpressure](./02-fundamentals/arbitration-ordering-backpressure.md)
+3. [两个模块同时访问同一目标，谁先走？](./02-fundamentals/arbitration-ordering-backpressure.md)
 4. [位宽、时钟、Burst 与延迟](./02-fundamentals/width-clock-burst-latency.md)
 5. [AXI / AHB / APB 对照](./03-on-chip-protocol-families/axi-ahb-apb-comparison.md)
 6. [AXI Channel、ID 与 Outstanding](./03-on-chip-protocol-families/axi-channel-id-outstanding.md)
