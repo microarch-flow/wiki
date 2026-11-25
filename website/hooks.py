@@ -60,8 +60,8 @@ SERIES_COVERS = {
         "计算、存储、互连与外部存储构成芯片的数据路径。", "",
     ),
     "storage.md": (
-        "assets/images/series-covers/storage.svg", "存储系统 / 系列首页", "计算、缓存、控制器与 DRAM",
-        "计算请求经过 cache 和控制器访问 DRAM，数据沿路径返回。", "",
+        "assets/images/series-covers/storage.svg", "存储系统 / 系列首页", "一次需要访问主存的读取",
+        "当缓存无法提供数据时，读取可经控制器到达 DRAM，数据沿路径返回。", "",
     ),
     "interconnect.md": (
         "assets/images/series-covers/interconnect.svg", "芯片与系统互连 / 系列首页", "端点、片上网络与链路",
