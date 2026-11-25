@@ -189,6 +189,8 @@ class GeneratedNavigationTests(unittest.TestCase):
             ("transistor-amplifier", "transistor-amplifier/experiment.html", "step"),
             ("quartz-oscillator", "quartz-oscillator/experiment.html", "mode"),
             ("quartz-oscillator", "quartz-oscillator/experiment.html", "startup"),
+            ("integer-pll", "integer-pll/experiment.html", "edges"),
+            ("integer-pll", "integer-pll/experiment.html", "correction"),
         )
         for slug, filename, fragment in panels:
             with self.subTest(article=slug, panel=fragment):

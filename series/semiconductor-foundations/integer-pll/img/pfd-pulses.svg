@@ -1,0 +1,53 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="480" height="570" viewBox="0 0 480 570" role="img" aria-labelledby="title description">
+  <title id="title">两个上升沿相隔 3 ns，鉴频鉴相器会输出什么？</title>
+  <desc id="description">两组独立测量使用相同的横向时间刻度。上图参考上升沿在 40 ns，反馈上升沿在 43 ns，UP 在 40 至 43 ns 为高，DOWN 为低。下图反馈在 37 ns 先到，参考仍在 40 ns，DOWN 在 37 至 40 ns 为高，UP 为低。理想图忽略复位延迟。</desc>
+  <style>
+    text { font-family: system-ui, 'Noto Sans CJK SC', 'Microsoft YaHei', sans-serif; fill: #203c37; }
+    .heading { font-size: 23px; font-weight: 700; }
+    .note { font-size: 17px; fill: #526861; }
+    .section { font-size: 20px; font-weight: 650; }
+    .row { font-size: 17px; font-weight: 600; }
+    .tick { font-size: 17px; text-anchor: middle; fill: #526861; }
+    .ref { stroke: #09677b; } .fb { stroke: #9b4c28; } .output { stroke: #203c37; }
+    .wave { fill: none; stroke-width: 2.8; stroke-linejoin: round; stroke-linecap: round; }
+    .guide { fill: none; stroke: #a4b3a7; stroke-width: 1; stroke-dasharray: 3 4; }
+    .axis { fill: none; stroke: #83978b; stroke-width: 1.1; }
+  </style>
+  <rect x="1" y="1" width="478" height="568" rx="15" fill="#f7f6ef" stroke="#c4d0c4"/>
+  <text x="20" y="35" class="heading">哪一路会拉高，持续多久？</text>
+  <text x="20" y="63" class="note">两次独立比较，参考上升沿都在 40 ns。</text>
+
+  <g id="feedback-late">
+    <text x="20" y="104" class="section">参考沿先到，UP 拉高 3 ns</text>
+    <rect x="281" y="115" width="99" height="131" rx="2" fill="#deeee7"/>
+    <path class="guide" d="M182 116V253 M281 116V253 M380 116V253"/>
+    <text x="20" y="138" class="row">参考</text><text x="20" y="172" class="row">反馈</text>
+    <text x="20" y="206" class="row">UP</text><text x="20" y="240" class="row">DOWN</text>
+    <path class="ref wave" d="M101 140H281V124H452"/>
+    <path class="fb wave" d="M101 174H380V158H452"/>
+    <path class="output wave" d="M101 208H281V192H380V208H452"/>
+    <path class="output wave" d="M101 242H452"/>
+    <path class="axis" d="M101 255H452 M182 251V260 M281 251V260 M380 251V260"/>
+    <text x="20" y="280" class="note">时间（ns）</text>
+    <text x="182" y="279" class="tick">37</text><text x="281" y="279" class="tick">40</text><text x="380" y="279" class="tick">43</text>
+  </g>
+
+  <path d="M20 299H460" fill="none" stroke="#c4d0c4"/>
+  <g id="feedback-early" transform="translate(0 223)">
+    <text x="20" y="104" class="section">反馈沿先到，DOWN 拉高 3 ns</text>
+    <rect x="182" y="115" width="99" height="131" rx="2" fill="#f4e5d8"/>
+    <path class="guide" d="M182 116V253 M281 116V253 M380 116V253"/>
+    <text x="20" y="138" class="row">参考</text><text x="20" y="172" class="row">反馈</text>
+    <text x="20" y="206" class="row">UP</text><text x="20" y="240" class="row">DOWN</text>
+    <path class="ref wave" d="M101 140H281V124H452"/>
+    <path class="fb wave" d="M101 174H182V158H452"/>
+    <path class="output wave" d="M101 208H452"/>
+    <path class="output wave" d="M101 242H182V226H281V242H452"/>
+    <path class="axis" d="M101 255H452 M182 251V260 M281 251V260 M380 251V260"/>
+    <text x="20" y="280" class="note">时间（ns）</text>
+    <text x="182" y="279" class="tick">37</text><text x="281" y="279" class="tick">40</text><text x="380" y="279" class="tick">43</text>
+  </g>
+
+  <path d="M20 523H460" fill="none" stroke="#c4d0c4"/>
+  <text x="20" y="551" class="note">图中忽略两路触发器的复位延迟。</text>
+</svg>

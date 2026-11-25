@@ -1,0 +1,219 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>沿着时钟边沿读懂二倍频</title>
+  <style>
+    :root { color-scheme: light; --ink: #203c37; --muted: #496059; --teal: #09677b; --rust: #a34620; --line: #bccbbf; --paper: #fbfaf4; }
+    * { box-sizing: border-box; }
+    html { font: 17px/1.65 system-ui, "Noto Sans CJK SC", sans-serif; color: var(--ink); background: var(--paper); }
+    body { max-width: 44rem; margin: auto; padding: 1rem clamp(.75rem, 4vw, 2rem) 2.5rem; }
+    nav, .stepper, .field { display: flex; flex-wrap: wrap; align-items: center; gap: .35rem .65rem; }
+    nav { gap: .35rem 1rem; border-bottom: 1px solid var(--line); padding-bottom: .6rem; }
+    a { color: var(--teal); text-underline-offset: .18em; }
+    h1 { font-size: clamp(1.65rem, 5vw, 2.25rem); line-height: 1.3; margin: 1.15rem 0 .7rem; }
+    h2 { font-size: clamp(1.25rem, 4vw, 1.6rem); line-height: 1.4; margin: .2rem 0 .6rem; }
+    section { margin: 1.8rem 0; scroll-margin-top: .75rem; }
+    section + section { border-top: 1px solid var(--line); padding-top: 1rem; }
+    p, figure { margin: .7rem 0; }
+    .controls { padding: .65rem .8rem; background: #edf2e9; border-radius: .5rem; }
+    .stepper { margin-top: .5rem; }
+    .stepper output { min-width: 3.5rem; text-align: center; }
+    button, select { min-height: 44px; font: inherit; color: var(--ink); background: var(--paper); border: 1px solid #768b7d; border-radius: .35rem; padding: .15rem .55rem; }
+    button { cursor: pointer; }
+    button:disabled { opacity: .55; cursor: default; }
+    input[type="range"] { display: block; width: min(100%, 24rem); min-height: 44px; margin: .15rem 0 0; accent-color: var(--teal); }
+    :focus-visible { outline: 3px solid var(--rust); outline-offset: 3px; }
+    .chart { display: block; width: min(100%, 34rem); height: auto; border: 1px solid #cbd7c9; border-radius: .55rem; background: #f5f4ed; }
+    .chart text { fill: var(--ink); font: 18px system-ui, sans-serif; }
+    .axis, .grid { fill: none; stroke: #9eafa1; }
+    .grid { stroke-dasharray: 3 4; }
+    .wave { fill: none; stroke: var(--teal); stroke-width: 2.4; stroke-linejoin: round; }
+    .wave.fb, .wave.down { stroke: var(--rust); }
+    .wave.vco { stroke: #3e524b; }
+    .mark { fill: var(--paper); stroke: var(--ink); stroke-width: 2.5; }
+    figcaption, details { font-size: .93rem; color: var(--muted); }
+    summary { cursor: pointer; color: var(--teal); }
+    table { width: min(100%, 34rem); border-collapse: collapse; font-variant-numeric: tabular-nums; }
+    th, td { border-bottom: 1px solid var(--line); padding: .35rem .2rem; }
+    th { font-weight: 550; text-align: left; }
+    td { text-align: right; }
+    output, .reading { font-weight: 620; font-variant-numeric: tabular-nums; }
+    footer { margin-top: 1rem; }
+  </style>
+</head>
+<body>
+  <nav aria-label="实验导航"><a href="#edges">跟踪三路时钟</a><a href="#correction">移动一个反馈沿</a><a href="./">返回正文</a></nav>
+  <h1>沿着时钟边沿读懂二倍频</h1>
+  <noscript><p>图表保留初始读数。启用 JavaScript 后可以切换频率并移动边沿。</p><style>.controls { display: none; }</style></noscript>
+
+  <section id="edges" aria-labelledby="edges-title">
+    <h2 id="edges-title">两个参考沿之间，还有谁在翻转？</h2>
+    <p>先把 VCO（压控振荡器）固定在 50 MHz。从 0 ns 向右读，看 20 ns 处哪一路出现了上升沿。再把 VCO 改成 40 MHz，依次选择起点后的前三对上升沿，观察参考和反馈之间的空隙。</p>
+    <div class="controls">
+      <div class="field"><label for="frequency">固定 VCO 频率</label>
+        <select id="frequency"><option value="40">40 MHz</option><option value="50" selected>50 MHz</option><option value="60">60 MHz</option></select>
+      </div>
+      <div class="stepper" role="group" aria-label="选择起点后的第几对上升沿">
+        <button type="button" id="previous" disabled>上一对</button>
+        <output id="pair">第 1 对</output>
+        <button type="button" id="next">下一对</button>
+      </div>
+    </div>
+    <figure>
+      <svg class="chart" viewBox="0 0 440 219" role="img" aria-labelledby="clock-title clock-desc">
+        <title id="clock-title">参考、VCO 和二分频反馈的方波</title>
+        <desc id="clock-desc">三路时钟在零时刻的上升沿对齐。下方读数给出所选一对参考和反馈上升沿的时刻。</desc>
+        <path class="grid" d="M76 20V171 M162 20V171 M248 20V171 M334 20V171 M420 20V171"/>
+        <text x="12" y="45">参考</text>
+        <text x="12" y="93">VCO</text>
+        <text x="12" y="141">反馈</text>
+        <path id="ref-wave" class="wave" d="M71 49H76V29H119V49H162V29H205V49H248V29H291V49H334V29H377V49H420V29"/>
+        <path id="vco-wave" class="wave vco" d="M71 97H76V77H97.5V97H119V77H140.5V97H162V77H183.5V97H205V77H226.5V97H248V77H269.5V97H291V77H312.5V97H334V77H355.5V97H377V77H398.5V97H420V77"/>
+        <path id="fb-wave" class="wave fb" d="M71 145H76V125H119V145H162V125H205V145H248V125H291V145H334V125H377V145H420V125"/>
+        <circle class="mark" id="ref-mark" cx="162" cy="29" r="4.7"/>
+        <circle class="mark" id="fb-mark" cx="162" cy="125" r="4.7"/>
+        <path class="axis" d="M76 171H420"/>
+        <g text-anchor="middle"><text x="76" y="191">0</text><text x="162" y="191">40</text><text x="248" y="191">80</text><text x="334" y="191">120</text><text x="420" y="191">160</text></g>
+        <text x="420" y="212" text-anchor="end">时间 / ns</text>
+      </svg>
+      <figcaption>沿竖直网格线对时。两枚圆圈标出当前比较的参考沿和反馈沿。反馈由 VCO 的上升沿触发，每次触发翻转一次。</figcaption>
+    </figure>
+    <table aria-label="所选边沿及时间差"><tbody>
+      <tr><th scope="row">VCO 周期</th><td id="vco-period">20 ns</td></tr>
+      <tr><th scope="row">二分频反馈周期</th><td id="fb-period">40 ns</td></tr>
+      <tr><th scope="row">所选参考上升沿</th><td id="ref-time">40 ns</td></tr>
+      <tr><th scope="row">所选反馈上升沿</th><td id="fb-time">40 ns</td></tr>
+      <tr><th scope="row">反馈时刻 − 参考时刻</th><td id="difference">0 ns</td></tr>
+    </tbody></table>
+    <p id="edges-reading" class="reading" aria-live="polite">第 1 对上升沿在 40 ns 重合。VCO 每 20 ns 就有一个上升沿，参考与反馈各隔 40 ns 才有一个。</p>
+    <details><summary>怎样从频率得到图里的时刻？</summary>
+      <p>用 MHz 表示频率，1000 除以频率就得到以 ns 表示的周期。表内时间最多保留两位小数。VCO 每过一个周期，分频器输出翻转一次。一个反馈周期包含一次上升和一次下降，所以它的周期等于两个 VCO 周期。</p>
+      <p>图中所有波形取 50% 占空比，忽略传播延迟，选取三个上升沿重合的时刻作为起点。每次切换时都保持所选频率，以便观察频差累积出来的时间差。闭合调节回路后，后续各沿会随 VCO 频率的变化而移动。</p>
+    </details>
+  </section>
+
+  <section id="correction" aria-labelledby="correction-title">
+    <h2 id="correction-title">让反馈晚到 3 ns，电容会多出多少电荷？</h2>
+    <p>只取一对待比较的上升沿。参考沿固定在 40 ns。把反馈沿从 43 ns 拖到 37 ns，观察哪个脉冲会出现，以及它从哪一刻开始、到哪一刻结束。</p>
+    <div class="controls">
+      <label for="delay">反馈相对参考的时间差 <output id="delay-value" for="delay">+3 ns</output></label>
+      <input type="range" id="delay" min="-6" max="6" step="1" value="3">
+    </div>
+    <figure>
+      <svg class="chart" viewBox="0 0 440 230" role="img" aria-labelledby="pfd-title pfd-desc">
+        <title id="pfd-title">一次边沿比较产生的 UP 和 DOWN 脉冲</title>
+        <desc id="pfd-desc">参考上升沿固定在 40 ns，反馈沿可以提前或推迟。选择的脉冲方向、宽度和对应净电荷见下表。</desc>
+        <path class="grid" d="M76 14V183 M162 14V183 M248 14V183 M334 14V183 M420 14V183"/>
+        <text x="12" y="37">参考</text><text x="12" y="77">反馈</text><text x="12" y="117">UP</text><text x="12" y="157">DOWN</text>
+        <path class="wave" d="M76 41H248V23H420"/>
+        <path class="wave fb" id="local-fb" d="M76 81H312.5V63H420"/>
+        <path class="wave" id="up" d="M76 121H248V103H312.5V121H420"/>
+        <path class="wave down" id="down" d="M76 161H420"/>
+        <path class="axis" d="M76 183H420"/>
+        <g text-anchor="middle"><text x="76" y="203">32</text><text x="162" y="203">36</text><text x="248" y="203">40</text><text x="334" y="203">44</text><text x="420" y="203">48</text></g>
+        <text x="420" y="223" text-anchor="end">时间 / ns</text>
+      </svg>
+      <figcaption>UP 为高时，电荷泵向电容注入电流。DOWN 为高时，电荷泵从电容抽走电流。两条脉冲各有自己的低电平基线。</figcaption>
+    </figure>
+    <table aria-label="单次电荷泵校正"><tbody>
+      <tr><th scope="row">反馈上升沿</th><td id="arrival">43 ns</td></tr>
+      <tr><th scope="row">有效脉冲</th><td id="pulse">UP · 3 ns</td></tr>
+      <tr><th scope="row">电容净电荷变化 ΔQ</th><td id="charge">+60 fC</td></tr>
+      <tr><th scope="row">电容电压变化 ΔV</th><td id="voltage">+3 mV</td></tr>
+    </tbody></table>
+    <p id="correction-reading" class="reading" aria-live="polite">40 ns 时参考先到，UP 拉高。43 ns 时反馈到达，UP 结束。电容电压上升 3 mV。</p>
+    <details><summary>怎样按脉宽算出电压变化？</summary>
+      <p>假设泵的注入和抽取电流大小都为 20 µA，直接作用在 20 pF 的电容上，忽略泄漏及复位延迟。在 1 ns 内，20 µA 转移 20 fC 电荷。将带符号的 ΔQ 除以电容，得到 ΔV。反馈晚 3 ns 时，ΔV = 60 fC ÷ 20 pF = 3 mV。</p>
+      <p>这里计算从一对边沿产生的净改变量。要推出接下来每一对边沿的位置，还需要滤波网络和 VCO 对控制电压的响应。</p>
+    </details>
+  </section>
+  <footer><a href="./">返回二倍频 PLL 正文</a></footer>
+
+  <script>
+    'use strict';
+    const byId = id => document.getElementById(id);
+    const put = (id, value) => { byId(id).textContent = value; };
+    const number = value => String(Number(value.toFixed(2)));
+    const signed = value => (value < 0 ? '−' : value > 0 ? '+' : '') + number(Math.abs(value));
+    const referencePeriod = 40;
+    const chartEnd = 160;
+    const edgeX = time => 76 + 344 * time / chartEnd;
+    let pair = 1;
+
+    function squareWave(period, low, high) {
+      const steps = Math.floor(2 * chartEnd / period + 1e-9);
+      let path = 'M71 ' + low;
+      for (let step = 0; step <= steps; step++) {
+        const x = edgeX(step * period / 2);
+        path += 'H' + number(x) + 'V' + (step % 2 === 0 ? high : low);
+      }
+      return path + 'H420';
+    }
+    function renderEdges() {
+      const frequency = Number(byId('frequency').value);
+      const vcoPeriod = 1000 / frequency;
+      const feedbackPeriod = 2 * vcoPeriod;
+      const reference = pair * referencePeriod;
+      const feedback = pair * feedbackPeriod;
+      const difference = feedback - reference;
+      byId('ref-wave').setAttribute('d', squareWave(referencePeriod, 49, 29));
+      byId('vco-wave').setAttribute('d', squareWave(vcoPeriod, 97, 77));
+      byId('fb-wave').setAttribute('d', squareWave(feedbackPeriod, 145, 125));
+      byId('ref-mark').setAttribute('cx', number(edgeX(reference)));
+      byId('fb-mark').setAttribute('cx', number(edgeX(feedback)));
+      put('pair', '第 ' + pair + ' 对');
+      byId('previous').disabled = pair === 1;
+      byId('next').disabled = pair === 3;
+      put('vco-period', number(vcoPeriod) + ' ns');
+      put('fb-period', number(feedbackPeriod) + ' ns');
+      put('ref-time', number(reference) + ' ns');
+      put('fb-time', number(feedback) + ' ns');
+      put('difference', signed(difference) + ' ns');
+      if (difference === 0) {
+        put('edges-reading', '第 ' + pair + ' 对上升沿在 ' + reference + ' ns 重合。VCO 每 20 ns 就有一个上升沿，参考与反馈各隔 40 ns 才有一个。');
+      } else {
+        const order = difference > 0 ? '晚' : '早';
+        put('edges-reading', '第 ' + pair + ' 对中，反馈比参考' + order + '到 ' + number(Math.abs(difference)) + ' ns。在这三对边沿中，每往后一对，时差的绝对值就多 ' + number(Math.abs(feedbackPeriod - referencePeriod)) + ' ns。');
+      }
+    }
+    byId('frequency').addEventListener('change', renderEdges);
+    byId('previous').addEventListener('click', () => { pair--; renderEdges(); });
+    byId('next').addEventListener('click', () => { pair++; renderEdges(); });
+
+    const localX = time => 76 + 344 * (time - 32) / 16;
+    function pulsePath(low, high, start, end) {
+      if (start === end) return 'M76 ' + low + 'H420';
+      return 'M76 ' + low + 'H' + localX(start) + 'V' + high + 'H' + localX(end) + 'V' + low + 'H420';
+    }
+    function renderCorrection() {
+      const slider = byId('delay');
+      const delta = Number(slider.value);
+      const arrival = 40 + delta;
+      const charge = 20 * delta;
+      const voltage = charge / 20;
+      put('delay-value', signed(delta) + ' ns');
+      slider.setAttribute('aria-valuetext', signed(delta) + ' 纳秒');
+      byId('local-fb').setAttribute('d', 'M76 81H' + localX(arrival) + 'V63H420');
+      byId('up').setAttribute('d', pulsePath(121, 103, 40, Math.max(40, arrival)));
+      byId('down').setAttribute('d', pulsePath(161, 143, Math.min(40, arrival), 40));
+      put('arrival', arrival + ' ns');
+      const active = delta > 0 ? 'UP' : 'DOWN';
+      put('pulse', delta === 0 ? '无 · 0 ns' : active + ' · ' + Math.abs(delta) + ' ns');
+      put('charge', signed(charge) + ' fC');
+      put('voltage', signed(voltage) + ' mV');
+      let reading = '两沿在 40 ns 同时到达。理想模型的有效脉宽为零，电容电压保持原值。';
+      if (delta > 0) {
+        reading = '40 ns 时参考先到，UP 拉高。' + arrival + ' ns 时反馈到达，UP 结束。电容电压上升 ' + voltage + ' mV。';
+      } else if (delta < 0) {
+        reading = arrival + ' ns 时反馈先到，DOWN 拉高。40 ns 时参考到达，DOWN 结束。电容电压下降 ' + Math.abs(voltage) + ' mV。';
+      }
+      put('correction-reading', reading);
+    }
+    byId('delay').addEventListener('input', renderCorrection);
+    renderEdges();
+    renderCorrection();
+  </script>
+</body>
+</html>

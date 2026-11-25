@@ -31,6 +31,7 @@ FOUNDATION_COMPANIONS = (
     Path("latch-and-divider/experiment.html"),
     Path("transistor-amplifier/experiment.html"),
     Path("quartz-oscillator/experiment.html"),
+    Path("integer-pll/experiment.html"),
 )
 SILICON_TO_LOGIC_LEGACY_SECTIONS = {
     "circuit-quantities": "用电压电流电阻和电容描述一个节点",
