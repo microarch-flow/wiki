@@ -46,7 +46,7 @@
 ## 阅读顺序
 
 1. [6T SRAM cell](./6t-cell-bistable-storage.md)：跟着一个存着 1 的单元，看读时哪根位线开始放电，再看写入 0 时两个内部节点怎样翻转。
-2. [字线、位线与读出放大](./wordline-bitline-sense-amp.md)：看单元如何连接到阵列外围。
+2. [字线、位线与读出放大](./wordline-bitline-sense-amp.md)：拉高 WL5 选中 16 个单元，跟着列选择电路看 C8 到 C11 的 4 个 bit 怎样送到输出端。
 3. [SRAM 读写时序](./read-write-cycle-timing.md)：区分电气过程与接口时间。
 4. [SRAM 宏接口与读写语义](./sram-macro-interface-and-semantics.md)：从使用者视角检查接口契约。
 5. [SRAM 端口与代价](./single-port-dual-port-multi-port.md)：比较不同并发能力及其代价。

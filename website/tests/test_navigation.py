@@ -1183,6 +1183,18 @@ class GeneratedNavigationTests(unittest.TestCase):
         self.assertIsNotNone(card)
         self.assertEqual(card.group(1), "6T SRAM 怎样读出一个 bit，又怎样把它改写？")
 
+    def test_sram_array_path_keeps_old_section_links(self):
+        path = SITE / "RAM/wiki/02-sram-foundations/wordline-bitline-sense-amp/index.html"
+        html = path.read_text(encoding="utf-8")
+        article = re.search(r"<article\b.*?</article>", html, re.DOTALL).group()
+        ids = re.findall(r'\bid="([^"]+)"', article)
+        for fragment in (
+            "字线位线与读出放大器sram-的阵列路径", "阵列中的职责", "一次读取行列和外围怎样配合",
+            "读位线电荷与差分", "写位线驱动-cell", "线为什么影响访问时间",
+            "一句话理解", "建模启示", "接下来怎么读",
+        ):
+            self.assertEqual(ids.count(fragment), 1, fragment)
+
     def test_sram_reading_order_and_reliability_search(self):
         applications = (SITE / "RAM/wiki/03-sram-applications/index.html").read_text(encoding="utf-8")
         reading = re.search(r'<h2\b[^>]*>[^<]*阅读顺序.*?</h2>.*?<ol>(.*?)</ol>', applications, re.DOTALL)
