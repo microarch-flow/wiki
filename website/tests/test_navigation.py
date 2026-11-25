@@ -217,6 +217,8 @@ class GeneratedNavigationTests(unittest.TestCase):
             ("integer-pll", "integer-pll/experiment.html", "correction"),
             ("fanout-and-wire-delay", "fanout-and-wire-delay/experiment.html", "load"),
             ("fanout-and-wire-delay", "fanout-and-wire-delay/experiment.html", "wire"),
+            ("supply-voltage-and-frequency", "supply-voltage-and-frequency/experiment.html", "edge"),
+            ("supply-voltage-and-frequency", "supply-voltage-and-frequency/experiment.html", "clock"),
         )
         for slug, filename, fragment in panels:
             with self.subTest(article=slug, panel=fragment):

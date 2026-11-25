@@ -33,6 +33,7 @@ FOUNDATION_COMPANIONS = (
     Path("quartz-oscillator/experiment.html"),
     Path("integer-pll/experiment.html"),
     Path("fanout-and-wire-delay/experiment.html"),
+    Path("supply-voltage-and-frequency/experiment.html"),
 )
 SILICON_TO_LOGIC_LEGACY_SECTIONS = {
     "circuit-quantities": "用电压电流电阻和电容描述一个节点",

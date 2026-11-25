@@ -14,7 +14,7 @@
 6. [石英振荡器的起振与稳幅](quartz-oscillator/README.md)。先看晶片上五个位置各自怎样运动，再沿电极和放大器追踪一次微小扰动。最后在同一条时间轴上观察模拟振动与相隔 40 ns 的数字上升沿。
 7. [PLL 怎样实现二倍频](integer-pll/README.md)。在两个 25 MHz 参考上升沿之间，找出 50 MHz 输出多出来的那个沿。把反馈沿推迟 3 ns，跟踪这段时间差怎样变成电荷、控制电压和振荡速度的变化。
 8. [门延迟、翻转能量与芯片功耗](fanout-and-wire-delay/README.md)。跟着同一个反相器的充电电流，先看负载多久越过门限，再算这一趟电源交付了多少能量。最后给两组同频电路数一数上升沿，比较它们的平均功耗。
-9. [降压与时钟频率](supply-voltage-and-frequency/README.md)。先算降压节省的能量，再看数据路径还能否在一拍内完成。
+9. [降压与时钟频率](supply-voltage-and-frequency/README.md)。把同一个 50 fF 节点从 0.8 V 降到 0.7 V，算出一次翻转少用多少能量。再对照寄存器路径和下一拍的采样沿，看原来的 1 GHz 能否保住。
 10. [IR drop 与本地去耦](ir-drop-and-decoupling/README.md)。沿供电和回流路径算电阻压降，再看同时翻转时去耦电容怎样供电。
 11. [PVT 与路径延迟](pvt-and-path-delay/README.md)。改变工艺、电压和温度，分别检查数据到得太晚和太早。
 12. [从反相器到芯片封装](inverter-to-package/README.md)。从两只管子的剖面看到封装和板卡，再辨认 GPU 与 HBM 之间的连接。

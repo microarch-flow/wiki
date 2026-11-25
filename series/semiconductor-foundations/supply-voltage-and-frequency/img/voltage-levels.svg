@@ -1,0 +1,51 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="480" height="526" viewBox="0 0 480 526" role="img" aria-labelledby="title desc">
+  <title id="title">降压时，应把电压量在哪里？</title>
+  <desc id="desc">供电电压取单元本地电源轨与地轨的差。在给定体偏置下，NMOS 的栅源电压与器件阈值比较。接收门的输入规格给出可保证判低和判高的范围。画在输出上升波形中间的 50% 虚线则是本文的计时基准。</desc>
+  <style>
+    text {font-family:system-ui,'Noto Sans CJK SC','Microsoft YaHei',sans-serif;fill:#203c37}
+    .title {font-size:23px;font-weight:700}.head {font-size:20px;font-weight:650}
+    .body {font-size:17px}.small {font-size:16px;fill:#455e55}
+    .ref {font-size:17px;font-weight:650;fill:#09677b}
+    .wire {stroke:#36574e;stroke-width:2.4;fill:none;stroke-linecap:round}
+    .t {stroke:#09677b;stroke-width:2.5;fill:none;stroke-linejoin:round;stroke-linecap:round}
+    .sep {stroke:#c4d0c4;stroke-width:1}.dot {fill:#09677b}
+  </style>
+  <rect x="1" y="1" width="478" height="524" rx="15" fill="#f7f6ef" stroke="#c4d0c4"/>
+  <text x="20" y="37" class="title">电路中的这些电压，分别在哪里量？</text>
+  <text x="20" y="69" class="head">单元本地的供电</text>
+  <path d="M71 88H166M71 132H166" class="wire"/>
+  <path d="M151 93V127m-4 -28 4 -6 4 6m-8 22 4 6 4 -6" class="t"/>
+  <text x="24" y="94" class="ref">VDD</text><text x="24" y="137" class="small">VSS</text>
+  <text x="189" y="103" class="body">两支探头量本地 VDD 和 VSS。</text>
+  <text x="189" y="130" class="body">两者之差就是这个门的供电。</text>
+  <path d="M20 149H460" class="sep"/>
+
+  <text x="20" y="177" class="head">单只 NMOS 的栅源电压</text>
+  <path d="M41 220H68m0 -15v30m8 -34v38m0 -34h31v-18m-31 47h31v19" class="wire"/>
+  <circle cx="41" cy="220" r="3.4" class="dot"/><circle cx="107" cy="253" r="3.4" class="dot"/>
+  <text x="22" y="225" class="ref">G</text><text x="119" y="253" class="ref">S</text>
+  <text x="119" y="203" class="small">D</text>
+  <text x="189" y="209" class="body">栅极对源极的电压记作 VGS。</text>
+  <text x="189" y="237" class="body">与这只管子的阈值 Vth 比较。</text>
+  <path d="M20 268H460" class="sep"/>
+
+  <text x="20" y="296" class="head">接收门的输入电平</text>
+  <text x="460" y="296" text-anchor="end" class="small">输入电压向右升高 →</text>
+  <rect x="24" y="312" width="133" height="38" fill="#dbe9e4"/>
+  <rect x="157" y="312" width="165" height="38" fill="#ece9dc"/>
+  <rect x="322" y="312" width="134" height="38" fill="#dbe9e4"/>
+  <path d="M157 311V357m165 -46v46" stroke="#73877a" stroke-width="1.6"/>
+  <g text-anchor="middle" class="body">
+    <text x="91" y="338">保证判低</text><text x="240" y="338">判值无保证</text><text x="389" y="338">保证判高</text>
+  </g>
+  <text x="157" y="377" text-anchor="middle" class="ref">VIL(max)</text><text x="322" y="377" text-anchor="middle" class="ref">VIH(min)</text>
+  <path d="M20 393H460" class="sep"/>
+
+  <text x="20" y="422" class="head">输出边沿的计时基准</text>
+  <path d="M24 477.5H163" stroke="#74867a" stroke-width="1.4" stroke-dasharray="4 4"/>
+  <path d="M24 503H51C75 503 81 494 93 477.5S111 452 135 452H161" class="t"/>
+  <circle cx="93" cy="477.5" r="3.8" class="dot"/>
+  <text x="24" y="469" class="small">50%</text>
+  <text x="189" y="465" class="body">在波形上标出半高交越点。</text>
+  <text x="189" y="493" class="body">计时用此基准，判高查输入规格。</text>
+</svg>
