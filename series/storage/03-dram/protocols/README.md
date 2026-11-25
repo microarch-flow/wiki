@@ -16,17 +16,16 @@ ACT、列访问和 PRE 将行状态暴露给控制器；时序参数限制命令
 
 ## 阅读顺序
 
-1. [ACT、RD、WR 与 PRE](./commands-act-rd-wr-pre.md)
-2. [DRAM 时序参数](./timing-parameters-trcd-trp-tras.md)
-3. [DDR 双沿传输](./why-double-data-rate.md)
-4. [DRAM PHY 初始化与训练](./dram-interface-init-training.md)
-5. [DDR1 到 DDR5](./ddr-generation-evolution.md)
-6. [DRAM 接口家族比较](./ddr-lpddr-gddr-hbm-tradeoff-map.md)
-7. [LPDDR 与低功耗](./lpddr-low-power-mobile.md)
-8. [GDDR 与高带宽](./gddr-graphics-bandwidth.md)
-9. [HBM 堆叠与宽接口](./hbm-stacked-wide-io.md)
+1. [同一个 DRAM bank 的三笔读取](./commands-act-rd-wr-pre.md)：跟着三笔请求走过未开行、行命中和行冲突，把 ACT、RD、PRE 与每次等待联系起来。
+2. [DDR 双沿传输](./why-double-data-rate.md)
+3. [DRAM PHY 初始化与训练](./dram-interface-init-training.md)
+4. [DDR1 到 DDR5](./ddr-generation-evolution.md)
+5. [DRAM 接口家族比较](./ddr-lpddr-gddr-hbm-tradeoff-map.md)
+6. [LPDDR 与低功耗](./lpddr-low-power-mobile.md)
+7. [GDDR 与高带宽](./gddr-graphics-bandwidth.md)
+8. [HBM 堆叠与宽接口](./hbm-stacked-wide-io.md)
 
-只比较选型时，可从第 6 篇进入对应接口。要分析命令级模型，先阅读第 1、2 篇，再结合控制器专题。
+想比较系统选型，可以从[接口家族比较](./ddr-lpddr-gddr-hbm-tradeoff-map.md)进入对应接口。要建立命令级模型，可先用这[三笔读取](./commands-act-rd-wr-pre.md#three-reads)检查一条时间线，再到[控制器专题](../../04-dram-controller/README.md)看多笔请求怎样排队和调度。
 
 ## 一句话理解
 

@@ -9,6 +9,7 @@ not_in_nav: |
   /reviews/
   /RAM/wiki/04-dram-foundations/row-column-decode-sense-amplify.md
   /RAM/wiki/04-dram-foundations/row-buffer-as-cache.md
+  /RAM/wiki/05-dram-protocol-families/timing-parameters-trcd-trp-tras.md
   /articles.md
   /visuals.md
 hooks:

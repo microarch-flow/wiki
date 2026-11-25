@@ -956,6 +956,35 @@ class GeneratedNavigationTests(unittest.TestCase):
                 for old, new in fragments.items():
                     self.assertEqual(urljoin(page_url(path), routes[old]), page_url(canonical) + "#" + new)
 
+    def test_dram_timing_bookmarks_land_in_merged_command_article(self):
+        chapter = Path("RAM/wiki/05-dram-protocol-families")
+        canonical = chapter / "commands-act-rd-wr-pre" / "index.html"
+        legacy = chapter / "timing-parameters-trcd-trp-tras" / "index.html"
+        old_fragments = {
+            "dram-时序从命令采样到读写恢复", "关键-timing-参数trcdtrptrastcl-的物理来源", "这页在回答什么问题",
+            "命令时序对应的物理等待", "开行列访问与首数据", "行保持与预充", "写恢复与参数适用条件",
+            "ddr4-同-bank-显式-pre-的完整下界", "一句话理解", "建模启示",
+        }
+        html = (SITE / canonical).read_text(encoding="utf-8")
+        article = re.search(r"<article\b.*?</article>", html, re.DOTALL).group()
+        for fragment in old_fragments | {
+            "dram-命令actrdwr-与-pre", "actrdwrpredram-命令集为什么长这样", "命令如何改变-bank-和行状态",
+            "actrdwrpre-的职责", "行命中关闭行和行冲突", "pre-不是列命令发出后立即可用",
+        }:
+            self.assertEqual(article.count(f'id="{fragment}"'), 1, fragment)
+        stub = (SITE / legacy).read_text(encoding="utf-8")
+        fallback = re.search(r'<div [^>]*data-storage-redirect[^>]*>(.*?)</div>', stub, re.DOTALL)
+        self.assertIsNotNone(fallback)
+        routes = re.findall(r'<span id="([^"]+)"></span>\s*<a href="([^"]+)"', fallback.group(1))
+        self.assertEqual({fragment for fragment, _ in routes}, old_fragments)
+        self.assertEqual(routes[0][0], "命令时序对应的物理等待")
+        for fragment, href in routes:
+            self.assertEqual(unquote(urljoin(page_url(legacy), href)), page_url(canonical) + "#" + fragment)
+        index = json.loads((SITE / "search/search_index.json").read_text(encoding="utf-8"))
+        locations = {entry["location"].partition("#")[0] for entry in index["docs"]}
+        self.assertIn(canonical.parent.as_posix() + "/", locations)
+        self.assertNotIn(legacy.parent.as_posix() + "/", locations)
+
     def test_cache_scratchpad_comparison_keeps_legacy_entry(self):
         main = Path("COMPUTE/wiki/06-memory-discipline/cache-vs-scratchpad/index.html")
         legacy = Path("RAM/wiki/03-sram-applications/scratchpad-vs-cache/index.html")
