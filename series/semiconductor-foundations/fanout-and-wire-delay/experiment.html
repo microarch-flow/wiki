@@ -1,0 +1,265 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>沿着一条线测量上升沿</title>
+  <style>
+    :root { color-scheme: light; --ink: #203c37; --muted: #496059; --teal: #09677b; --rust: #a34620; --line: #bccbbf; --paper: #fbfaf4; }
+    * { box-sizing: border-box; }
+    html { font: 17px/1.65 system-ui, "Noto Sans CJK SC", sans-serif; color: var(--ink); background: var(--paper); }
+    body { max-width: 44rem; margin: auto; padding: 1rem clamp(.75rem, 4vw, 2rem) 2.5rem; }
+    nav { display: flex; flex-wrap: wrap; gap: .35rem 1rem; border-bottom: 1px solid var(--line); padding-bottom: .6rem; }
+    a, summary { color: var(--teal); text-underline-offset: .18em; }
+    h1 { font-size: clamp(1.65rem, 5vw, 2.25rem); line-height: 1.3; margin: 1.15rem 0 .7rem; }
+    h2 { font-size: clamp(1.25rem, 4vw, 1.6rem); line-height: 1.4; margin: .2rem 0 .6rem; }
+    section { margin: 1.8rem 0; scroll-margin-top: .75rem; }
+    section + section { border-top: 1px solid var(--line); padding-top: 1rem; }
+    p, figure, details { margin: .7rem 0; }
+    .controls { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 13rem), 1fr)); gap: .3rem 1rem; background: #edf2e9; padding: .65rem .85rem; border-radius: .5rem; }
+    .controls label, select { display: block; }
+    select { max-width: 100%; min-height: 44px; background: var(--paper); color: var(--ink); border: 1px solid #768b7d; border-radius: .35rem; font: inherit; }
+    input[type="range"] { display: block; width: 100%; min-height: 44px; margin: 0; accent-color: var(--teal); }
+    output { font-weight: 650; }
+    :focus-visible { outline: 3px solid var(--rust); outline-offset: 3px; }
+    .chart { display: block; width: min(100%, 35rem); height: auto; border: 1px solid #c7d3c6; border-radius: .5rem; background: #f6f5ee; }
+    .chart text { fill: var(--ink); font: 17px system-ui, sans-serif; }
+    .grid { stroke: #c0cdbf; stroke-dasharray: 3 5; fill: none; }
+    .axis, .threshold { stroke: #84978c; fill: none; }
+    .threshold { stroke-dasharray: 6 4; }
+    .trace, .base { fill: none; stroke-linejoin: round; }
+    .trace { stroke: var(--teal); stroke-width: 2.8; }
+    .far { stroke: var(--rust); stroke-dasharray: 5 3; }
+    .base { stroke: #6d7970; stroke-width: 2; stroke-dasharray: 4 4; }
+    .cursor { stroke: #495951; stroke-width: 1.3; stroke-dasharray: 2 3; }
+    .dot { fill: var(--paper); stroke: var(--teal); stroke-width: 2; }
+    .square { fill: var(--paper); stroke: var(--rust); stroke-width: 2; }
+    .level { fill: var(--teal); stroke: var(--paper); stroke-width: 1.5; }
+    .interval { fill: none; stroke: var(--rust); stroke-width: 2; }
+    figcaption, details { color: var(--muted); font-size: .93rem; }
+    summary { cursor: pointer; }
+    .legend { display: flex; flex-wrap: wrap; align-items: center; gap: .1rem .9rem; margin-top: .3rem; }
+    .legend span::before { content: ""; display: inline-block; width: 1.3em; margin-right: .28rem; vertical-align: .25em; border-top: 3px solid var(--teal); }
+    .legend .ref-key::before { border-top: 2px dashed #6d7970; }
+    .legend .far-key::before { border-top: 3px dashed var(--rust); }
+    table { width: min(100%, 35rem); border-collapse: collapse; font-variant-numeric: tabular-nums; }
+    th, td { border-bottom: 1px solid var(--line); padding: .3rem .15rem; }
+    th { font-weight: 550; text-align: left; }
+    td { text-align: right; }
+    footer { margin-top: 1rem; }
+  </style>
+</head>
+<body>
+  <nav aria-label="实验导航"><a href="#load">改变扇出</a><a href="#wire">移动探头</a><a href="./">返回正文</a></nav>
+  <h1>沿着一条线测量上升沿</h1>
+  <noscript><p>当前展示初始状态。启用 JavaScript 可以调整负载、移动游标和切换布线。</p><style>.controls {display:none;}</style></noscript>
+
+  <section id="load" aria-labelledby="load-title">
+    <h2 id="load-title">同一个驱动门，多接几个输入会怎样？</h2>
+    <p>假设反相器输入在 0 ps 瞬间拉低，原为 0 V 的输出开始经 1 kΩ 上拉电阻充电，电源一直保持 0.8 V。把游标停在 10 ps，比较接一个和接八个输入时，输出分别充到了多少伏。</p>
+    <div class="controls">
+      <div><label for="fanout">接收门数量　<output for="fanout" id="fanout-label">1 个</output></label>
+        <input type="range" min="1" max="8" step="1" value="1" id="fanout"></div>
+      <div><label for="load-time">观察时刻　<output for="load-time" id="load-time-label">10 ps</output></label>
+        <input type="range" min="0" max="80" step="1" value="10" id="load-time"></div>
+    </div>
+    <figure>
+      <svg class="chart" viewBox="0 0 450 238" role="img" aria-labelledby="load-plot-title load-desc">
+        <title id="load-plot-title">负载电压随时间上升</title>
+        <desc id="load-desc">实线显示所选负载，虚线作为一个输入时的参照。实心点标出半幅交点，空心圆标出游标读数。下方横杠标出从 10% 升到 90% 所用时间。</desc>
+        <text x="10" y="23">电压 / V</text>
+        <path class="grid" d="M48 35H428 M143 35V155 M238 35V155 M333 35V155 M428 35V155"/>
+        <path class="threshold" d="M48 95H428"/>
+        <path class="axis" d="M48 34V155H428"/>
+        <g text-anchor="end"><text x="41" y="41">0.8</text><text x="41" y="101">0.4</text><text x="41" y="160">0</text></g>
+        <g text-anchor="middle"><text x="48" y="177">0</text><text x="143" y="177">20</text><text x="238" y="177">40</text><text x="333" y="177">60</text><text x="428" y="177">80</text></g>
+        <text x="434" y="196" text-anchor="end">时间 / ps</text>
+        <path id="base-wave" class="base" d="M43 155H48L48 155L52.75 140.9L57.5 128.456L62.25 117.475L67 107.784L71.75 99.231L76.5 91.684L81.25 85.023L86 79.146L90.75 73.958L95.5 69.381L100.25 65.341L105 61.776L109.75 58.629L114.5 55.853L119.25 53.403L124 51.24L128.75 49.332L133.5 47.648L138.25 46.162L143 44.85L147.75 43.693L152.5 42.671L157.25 41.77L162 40.974L166.75 40.272L171.5 39.653L176.25 39.106L181 38.624L185.75 38.198L190.5 37.822L195.25 37.491L200 37.198L204.75 36.94L209.5 36.712L214.25 36.511L219 36.333L223.75 36.176L228.5 36.038L233.25 35.916L238 35.809L242.75 35.714L247.5 35.63L252.25 35.556L257 35.49L261.75 35.433L266.5 35.382L271.25 35.337L276 35.297L280.75 35.262L285.5 35.232L290.25 35.204L295 35.18L299.75 35.159L304.5 35.141L309.25 35.124L314 35.109L318.75 35.097L323.5 35.085L328.25 35.075L333 35.066L337.75 35.059L342.5 35.052L347.25 35.046L352 35.04L356.75 35.036L361.5 35.031L366.25 35.028L371 35.024L375.75 35.022L380.5 35.019L385.25 35.017L390 35.015L394.75 35.013L399.5 35.012L404.25 35.01L409 35.009L413.75 35.008L418.5 35.007L423.25 35.006L428 35.005"/>
+        <path id="load-wave" class="trace" d="M43 155H48L48 155L52.75 140.9L57.5 128.456L62.25 117.475L67 107.784L71.75 99.231L76.5 91.684L81.25 85.023L86 79.146L90.75 73.958L95.5 69.381L100.25 65.341L105 61.776L109.75 58.629L114.5 55.853L119.25 53.403L124 51.24L128.75 49.332L133.5 47.648L138.25 46.162L143 44.85L147.75 43.693L152.5 42.671L157.25 41.77L162 40.974L166.75 40.272L171.5 39.653L176.25 39.106L181 38.624L185.75 38.198L190.5 37.822L195.25 37.491L200 37.198L204.75 36.94L209.5 36.712L214.25 36.511L219 36.333L223.75 36.176L228.5 36.038L233.25 35.916L238 35.809L242.75 35.714L247.5 35.63L252.25 35.556L257 35.49L261.75 35.433L266.5 35.382L271.25 35.337L276 35.297L280.75 35.262L285.5 35.232L290.25 35.204L295 35.18L299.75 35.159L304.5 35.141L309.25 35.124L314 35.109L318.75 35.097L323.5 35.085L328.25 35.075L333 35.066L337.75 35.059L342.5 35.052L347.25 35.046L352 35.04L356.75 35.036L361.5 35.031L366.25 35.028L371 35.024L375.75 35.022L380.5 35.019L385.25 35.017L390 35.015L394.75 35.013L399.5 35.012L404.25 35.01L409 35.009L413.75 35.008L418.5 35.007L423.25 35.006L428 35.005"/>
+        <path id="load-cursor" class="cursor" d="M95.5 32V155"/>
+        <circle id="half-mark" class="level" r="4.2" cx="74.34" cy="95"/>
+        <circle id="load-mark" class="dot" r="4.8" cx="95.5" cy="69.381"/>
+        <path id="rise-span" class="interval" d="M52.004 197v8m0 -4H135.498m0 -4v8"/>
+        <text x="48" y="228">10% 至 90% 的时间跨度</text>
+      </svg>
+      <figcaption><div class="legend"><span>所选负载</span><span class="ref-key">一个输入</span></div>
+        实心点标记 0.4 V。空心圆跟随游标。图下短横杠两端对应 0.08 V 与 0.72 V 的到达时刻。取一个输入时，两条曲线重合。</figcaption>
+    </figure>
+    <table aria-label="负载、电流和时间读数"><tbody>
+      <tr><th scope="row">总负载电容</th><td id="cap">8 fF</td></tr>
+      <tr><th scope="row">游标处输出电压</th><td id="load-voltage">0.571 V</td></tr>
+      <tr><th scope="row">游标处上拉电流</th><td id="load-current">229.2 µA</td></tr>
+      <tr><th scope="row">从 0 ps 到 0.4 V</th><td id="load-half">5.5 ps</td></tr>
+      <tr><th scope="row">从 0.08 V 到 0.72 V</th><td id="load-rise">17.6 ps</td></tr>
+    </tbody></table>
+    <details><summary>电容、电流和两个时间怎样计算？</summary>
+      <p>忽略线电阻。固定的输出寄生与导线电容共 6 fF，每个接收门再增加 2 fF。N 个输入给出 C = 6 + 2N fF。取 R = 1 kΩ，时间常数 τ = RC 的数值就等于 C 的 fF 数，单位为 ps。</p>
+      <p>输出电压为 0.8(1 − e<sup>−t/τ</sup>) V。刚接通上拉时，不论负载多大，电流都是 0.8 V / 1 kΩ = 800 µA。随后电流由电阻两端的压差决定。大电容要转移更多电荷，升到同一电压所需时间更长。</p>
+      <p>升到终值一半时 t = τ ln 2。从 10% 到 90% 的时间要用两次到达时刻相减，结果为 τ ln 9。实际门的传播延迟还要以输入越过库规定门限的时刻为起点。</p>
+    </details>
+  </section>
+
+  <section id="wire" aria-labelledby="wire-title">
+    <h2 id="wire-title">同一条线的两端，谁先到 0.4 V？</h2>
+    <p>保持 1 kΩ 驱动电阻与 22 fF 总电容。把一支探头放在驱动电阻之后、导线之前，另一支放在导线远端。停在同一个时刻，切换下面三种布线，看两支探头读到的电压。</p>
+    <div class="controls">
+      <div><label for="wire-model">布线与电容位置</label>
+        <select id="wire-model"><option value="short">线阻为零</option><option value="end">电容全在远端</option><option value="split" selected>近端 6 fF，远端 16 fF</option></select>
+      </div>
+      <div><label for="wire-time">观察时刻　<output id="wire-time-label" for="wire-time">20 ps</output></label>
+        <input type="range" id="wire-time" min="0" max="80" step="1" value="20"></div>
+    </div>
+    <p id="wire-note" aria-live="polite">0.5 kΩ 导线两侧都有电容。近端开始充电后，两端逐渐形成压差，电流才通过导线给远端充电。</p>
+    <figure>
+      <svg class="chart" viewBox="0 0 450 208" role="img" aria-labelledby="wire-plot-title wire-desc">
+        <title id="wire-plot-title">驱动端与接收端的电压</title>
+        <desc id="wire-desc">两条曲线共用时间和电压坐标，圆与方块标出游标时刻的近、远两端电压，水平虚线为半幅门限。</desc>
+        <text x="10" y="23">电压 / V</text>
+        <path class="grid" d="M48 35H428 M143 35V155 M238 35V155 M333 35V155 M428 35V155"/>
+        <path class="threshold" d="M48 95H428"/>
+        <path class="axis" d="M48 34V155H428"/>
+        <g text-anchor="end"><text x="41" y="41">0.8</text><text x="41" y="101">0.4</text><text x="41" y="160">0</text></g>
+        <g text-anchor="middle"><text x="48" y="177">0</text><text x="143" y="177">20</text><text x="238" y="177">40</text><text x="333" y="177">60</text><text x="428" y="177">80</text></g>
+        <text x="434" y="196" text-anchor="end">时间 / ps</text>
+        <path id="near-wave" class="trace" d="M43 155H48L48 155L52.75 139.156L57.5 129.064L62.25 122.208L67 117.189L71.75 113.232L76.5 109.904L81.25 106.964L86 104.278L90.75 101.769L95.5 99.393L100.25 97.125L105 94.951L109.75 92.86L114.5 90.846L119.25 88.904L124 87.032L128.75 85.224L133.5 83.48L138.25 81.797L143 80.172L147.75 78.604L152.5 77.091L157.25 75.629L162 74.219L166.75 72.858L171.5 71.543L176.25 70.275L181 69.05L185.75 67.868L190.5 66.727L195.25 65.626L200 64.563L204.75 63.537L209.5 62.546L214.25 61.59L219 60.667L223.75 59.776L228.5 58.916L233.25 58.085L238 57.284L242.75 56.511L247.5 55.764L252.25 55.043L257 54.347L261.75 53.676L266.5 53.027L271.25 52.402L276 51.797L280.75 51.214L285.5 50.652L290.25 50.108L295 49.584L299.75 49.077L304.5 48.589L309.25 48.117L314 47.662L318.75 47.222L323.5 46.798L328.25 46.388L333 45.993L337.75 45.611L342.5 45.243L347.25 44.887L352 44.544L356.75 44.213L361.5 43.893L366.25 43.584L371 43.286L375.75 42.999L380.5 42.721L385.25 42.453L390 42.194L394.75 41.945L399.5 41.704L404.25 41.471L409 41.246L413.75 41.029L418.5 40.82L423.25 40.618L428 40.423"/>
+        <path id="far-wave" class="trace far" d="M43 155H48L48 155L52.75 153.976L57.5 151.588L62.25 148.507L67 145.102L71.75 141.577L76.5 138.042L81.25 134.557L86 131.151L90.75 127.842L95.5 124.634L100.25 121.531L105 118.532L109.75 115.635L114.5 112.838L119.25 110.136L124 107.529L128.75 105.011L133.5 102.581L138.25 100.235L143 97.97L147.75 95.785L152.5 93.675L157.25 91.638L162 89.672L166.75 87.774L171.5 85.942L176.25 84.173L181 82.466L185.75 80.819L190.5 79.228L195.25 77.693L200 76.211L204.75 74.78L209.5 73.399L214.25 72.066L219 70.78L223.75 69.538L228.5 68.339L233.25 67.181L238 66.064L242.75 64.986L247.5 63.945L252.25 62.94L257 61.97L261.75 61.034L266.5 60.13L271.25 59.258L276 58.416L280.75 57.603L285.5 56.818L290.25 56.061L295 55.33L299.75 54.624L304.5 53.943L309.25 53.285L314 52.651L318.75 52.038L323.5 51.446L328.25 50.875L333 50.324L337.75 49.792L342.5 49.279L347.25 48.783L352 48.305L356.75 47.843L361.5 47.397L366.25 46.967L371 46.551L375.75 46.15L380.5 45.763L385.25 45.39L390 45.029L394.75 44.681L399.5 44.345L404.25 44.02L409 43.707L413.75 43.405L418.5 43.113L423.25 42.832L428 42.56"/>
+        <path id="wire-cursor" class="cursor" d="M143 32V155"/>
+        <circle id="near-mark" class="dot" r="5.5" cx="143" cy="80.172"/>
+        <rect id="far-mark" class="square" width="6" height="6" x="140" y="94.97"/>
+      </svg>
+      <figcaption><div class="legend"><span>近端 · 圆点</span><span class="far-key">远端 · 方块</span></div>
+        沿 0.4 V 水平线读取两处到达时刻。下表给出远端相对近端的延迟。</figcaption>
+    </figure>
+    <table aria-label="近端与远端的测量结果"><tbody>
+      <tr><th scope="row">游标处近端电压</th><td id="near-voltage">0.499 V</td></tr>
+      <tr><th scope="row">游标处远端电压</th><td id="far-voltage">0.380 V</td></tr>
+      <tr><th scope="row">近端到 0.4 V</th><td id="near-half">12.0 ps</td></tr>
+      <tr><th scope="row">远端到 0.4 V</th><td id="far-half">21.4 ps</td></tr>
+      <tr><th scope="row">远端到达时刻 − 近端到达时刻</th><td id="wire-lag">9.4 ps</td></tr>
+    </tbody></table>
+    <details><summary>这三种布线怎样充电？</summary>
+      <p>线阻为零时，近、远两端是同一个电气节点，两个探头始终同电压。把 22 fF 全放到远端，并加上 0.5 kΩ 线阻，远端由总共 1.5 kΩ 充电，时间常数变成 33 ps。近端没有电容，刚接通的瞬间便由电阻分压升到 0.267 V，之后随远端继续上升。</p>
+      <p>把电容分成近端 6 fF、远端 16 fF 时，两端电压都从零连续上升。经驱动电阻送入的电流一部分给近端充电，另一部分经线阻流向远端。曲线按两个节点各自的电流守恒求解。</p>
+      <p>三个实验都以理想开关接通上拉为 0 ps，忽略输入边沿时间、漏电和门的其他内部效应。电容与电阻取固定值。门内延迟和布线延迟的实际分界还取决于时序报告选取的引脚与门限。</p>
+    </details>
+  </section>
+  <footer><a href="./">返回扇出、布线与门延迟正文</a></footer>
+  <script>
+    'use strict';
+    const get = id => document.getElementById(id);
+    const put = (id, value) => { get(id).textContent = value; };
+    const attr = (id, name, value) => get(id).setAttribute(name, value);
+    const supply = 0.8;
+    // Horizontal units are ps. Vertical units are volts.
+    const x = time => 48 + 4.75 * time;
+    const y = voltage => 155 - 150 * voltage;
+    const compact = value => Number(value.toFixed(3));
+    const ps = value => value.toFixed(1) + ' ps';
+    const volts = value => value.toFixed(3) + ' V';
+    function wave(voltageAt) {
+      // Include the discharged state immediately before the ideal switch closes.
+      let path = 'M43 155H48';
+      for (let i = 0; i <= 320; i++) {
+        const time = i / 4;
+        path += 'L' + compact(x(time)) + ' ' + compact(y(voltageAt(time)));
+      }
+      return path;
+    }
+    function cursor(id, time) { attr(id, 'd', 'M' + x(time) + ' 32V155'); }
+    function dot(id, time, voltage) {
+      attr(id, 'cx', compact(x(time)));
+      attr(id, 'cy', compact(y(voltage)));
+    }
+    function readSlider(id, unit) {
+      const slider = get(id);
+      const value = Number(slider.value);
+      const label = value + ' ' + unit;
+      put(id + '-label', label);
+      slider.setAttribute('aria-valuetext', label);
+      return value;
+    }
+    function charged(t, tau) { return -supply * Math.expm1(-t / tau); }
+
+    function renderLoad() {
+      const count = readSlider('fanout', '个');
+      const time = readSlider('load-time', 'ps');
+      const cap = 6 + 2 * count;
+      const tau = cap; // 1 kΩ × 1 fF = 1 ps
+      const voltage = charged(time, tau);
+      const half = tau * Math.LN2;
+      attr('load-wave', 'd', wave(t => charged(t, tau)));
+      cursor('load-cursor', time);
+      dot('load-mark', time, voltage);
+      dot('half-mark', half, supply / 2);
+      const begin = compact(x(-tau * Math.log(.9)));
+      const end = compact(x(-tau * Math.log(.1)));
+      attr('rise-span', 'd', 'M' + begin + ' 197v8m0 -4H' + end + 'm0 -4v8');
+      put('cap', cap + ' fF');
+      put('load-voltage', volts(voltage));
+      put('load-current', ((supply - voltage) * 1000).toFixed(1) + ' µA');
+      put('load-half', ps(half));
+      put('load-rise', ps(tau * Math.log(9)));
+    }
+
+    const wireNotes = {
+      short: '忽略线阻，22 fF 接在同一个节点，两端电压始终相同。图中虚线叠在实线上。',
+      end: '0.5 kΩ 导线的远端接有全部 22 fF。把游标移到 0 ps，可读到理想开关闭合后一瞬间近端跳到的电压。',
+      split: '0.5 kΩ 导线两侧都有电容。近端开始充电后，两端逐渐形成压差，电流才通过导线给远端充电。'
+    };
+    // Two-node ladder transfer function at the far end: 1 / (1 + 30s + 48s²), with time in ps.
+    const fast = (30 + Math.sqrt(30 * 30 - 4 * 48)) / (2 * 48);
+    const slow = (30 - Math.sqrt(30 * 30 - 4 * 48)) / (2 * 48);
+    function wireVoltages(model, time) {
+      if (model === 'short') {
+        const voltage = charged(time, 22);
+        return [voltage, voltage];
+      }
+      if (model === 'end') {
+        const far = charged(time, 33);
+        return [(supply + 2 * far) / 3, far];
+      }
+      const fastTerm = Math.exp(-fast * time);
+      const slowTerm = Math.exp(-slow * time);
+      const far = supply * (1 - (fast * slowTerm - slow * fastTerm) / (fast - slow));
+      const farSlope = supply * fast * slow * (slowTerm - fastTerm) / (fast - slow);
+      return [far + 8 * farSlope, far]; // Vnear − Vfar = Rwire Cfar × dVfar/dt; 0.5 kΩ × 16 fF = 8 ps.
+    }
+    function halfTime(model, probe) {
+      let earlier = 0, later = 80;
+      for (let i = 0; i < 45; i++) {
+        const mid = (earlier + later) / 2;
+        if (wireVoltages(model, mid)[probe] < supply / 2) earlier = mid;
+        else later = mid;
+      }
+      return (earlier + later) / 2;
+    }
+    function renderWire() {
+      const model = get('wire-model').value;
+      const time = readSlider('wire-time', 'ps');
+      const [near, far] = wireVoltages(model, time);
+      const nearHalf = halfTime(model, 0);
+      const farHalf = halfTime(model, 1);
+      attr('near-wave', 'd', wave(t => wireVoltages(model, t)[0]));
+      attr('far-wave', 'd', wave(t => wireVoltages(model, t)[1]));
+      cursor('wire-cursor', time);
+      dot('near-mark', time, near);
+      attr('far-mark', 'x', compact(x(time) - 3));
+      attr('far-mark', 'y', compact(y(far) - 3));
+      if (get('wire-note').textContent !== wireNotes[model]) put('wire-note', wireNotes[model]);
+      put('near-voltage', volts(near));
+      put('far-voltage', volts(far));
+      put('near-half', ps(nearHalf));
+      put('far-half', ps(farHalf));
+      put('wire-lag', ps(farHalf - nearHalf));
+    }
+
+    attr('base-wave', 'd', wave(t => charged(t, 8)));
+    get('fanout').addEventListener('input', renderLoad);
+    get('load-time').addEventListener('input', renderLoad);
+    get('wire-model').addEventListener('change', renderWire);
+    get('wire-time').addEventListener('input', renderWire);
+    renderLoad();
+    renderWire();
+  </script>
+</body>
+</html>

@@ -1,0 +1,52 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="480" height="478" viewBox="0 0 480 478" role="img" aria-labelledby="title description">
+  <title id="title">同一个上拉管给输出节点上的各个电容充电</title>
+  <desc id="description">电源维持在零点八伏。反相器输入 A 从高变低后，PMOS 导通，NMOS 截止。约定方向的电流经过上拉管和输出 Y 流向各电容的上极板。输出寄生及连线合计六飞法，每个接收输入等效为两飞法。下极板用固定参考电位表示。此图忽略线阻、漏电与相邻节点切换。</desc>
+  <style>
+    text { font-family: system-ui, 'Noto Sans CJK SC', 'Microsoft YaHei', sans-serif; fill: #203c37; }
+    .heading { font-size: 23px; font-weight: 700; }
+    .body { font-size: 18px; } .note { font-size: 17px; fill: #526861; }
+    .label { font-size: 18px; font-weight: 650; } .tick { font-size: 16px; }
+    .mid { text-anchor: middle; } .end { text-anchor: end; }
+    .teal { fill: #09677b; } .rust { fill: #9b4c28; }
+    .wire,.charge,.grid,.axis,.curve { fill: none; stroke-linecap: round; stroke-linejoin: round; }
+    .wire { stroke: #36574e; stroke-width: 2.4; }
+    .charge { stroke: #09677b; stroke-width: 2.8; }
+    .axis { stroke: #687e70; stroke-width: 1.5; }
+    .grid { stroke: #c1cec2; stroke-width: 1.1; stroke-dasharray: 3 5; }
+    .curve { stroke-width: 3.1; }
+  </style>
+  <rect x="1" y="1" width="478" height="476" rx="15" fill="#f7f6ef" stroke="#c4d0c4"/>
+  <text x="20" y="36" class="heading">一个反相器怎样给多个输入充电？</text>
+  <text x="20" y="66" class="note">输入 A 由高变低后，将两只管子画成开关。</text>
+  <text x="90" y="106" class="label teal mid">0.8 V 电源</text>
+  <path d="M73 118H107 M90 118V146 M90 176V212H424" class="wire"/>
+  <path d="M90 149V173" stroke="#09677b" stroke-width="4.1" stroke-linecap="round"/>
+  <g fill="#f7f6ef" stroke="#09677b" stroke-width="2.3">
+    <circle cx="90" cy="147" r="3.5"/><circle cx="90" cy="175" r="3.5"/>
+  </g>
+  <text x="113" y="166" class="label teal">PMOS 导通</text>
+  <text x="142" y="199" class="label">输出 Y</text>
+  <path d="M90 212V252 M90 280L107 259 M90 285V319 M77 319H103 M82 325H98 M86 331H94" class="wire"/>
+  <g fill="#f7f6ef" stroke="#36574e" stroke-width="2"><circle cx="90" cy="253" r="3.5"/><circle cx="90" cy="283" r="3.5"/></g>
+  <text x="16" y="268" class="body">NMOS</text><text x="27" y="291" class="note">截止</text>
+  <path d="M125 212H161 M279 212H295" class="charge"/>
+  <path d="M154 206L163 212L154 218Z M291 206L300 212L291 218Z" fill="#09677b"/>
+  <circle cx="90" cy="212" r="4.2" fill="#36574e"/>
+  <path d="M232 212V257 M219 257H245 M219 266H245 M232 266V290 M222 290H242 M226 295H238 M230 300H234" class="wire"/>
+  <circle cx="232" cy="212" r="3.4" fill="#36574e"/>
+  <path d="M232 224V240 M228 235L232 241L236 235" class="charge"/>
+  <text x="232" y="329" class="label mid">固定寄生</text><text x="232" y="353" class="note mid">6 fF</text>
+  <path d="M327 212V257 M314 257H340 M314 266H340 M327 266V290 M317 290H337 M321 295H333 M325 300H329" class="wire"/>
+  <circle cx="327" cy="212" r="3.4" fill="#36574e"/>
+  <path d="M327 224V240 M323 235L327 241L331 235" class="charge"/>
+  <text x="327" y="329" class="label mid">输入 1</text><text x="327" y="353" class="note mid">2 fF</text>
+  <path d="M424 212V257 M411 257H437 M411 266H437 M424 266V290 M414 290H434 M418 295H430 M422 300H426" class="wire"/>
+  <circle cx="424" cy="212" r="3.4" fill="#36574e"/>
+  <path d="M424 224V240 M420 235L424 241L428 235" class="charge"/>
+  <text x="424" y="329" class="label mid">输入 N</text><text x="424" y="353" class="note mid">2 fF</text>
+  <g fill="#788e81"><circle cx="369" cy="261" r="1.8"/><circle cx="376" cy="261" r="1.8"/><circle cx="383" cy="261" r="1.8"/></g>
+  <path d="M20 375H460" stroke="#c4d0c4"/>
+  <text x="20" y="405" class="label teal">箭头表示充电时的约定电流方向。</text>
+  <text x="20" y="433" class="note">电荷沿金属线到达栅电极，隔着介质建立电场。</text>
+  <text x="20" y="460" class="note">各支路均折算为输出 Y 对固定电位的等效电容。</text>
+</svg>

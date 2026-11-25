@@ -1,0 +1,47 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="480" height="555" viewBox="0 0 480 555" role="img" aria-labelledby="title description">
+  <title id="title">三个探针如何区分门延迟、线延迟和转换时间</title>
+  <desc id="description">以三条线性边沿为独立的读图示例。驱动门输入在 10 ps 时向下通过 50%，近端输出在 22 ps 时向上通过 50%，接收端在 28 ps 时向上通过 50%。门和线的延迟分别为 12 ps 和 6 ps。远端电压在 20 ps 和 36 ps 越过 10% 和 90%，上升转换时间为 16 ps。</desc>
+  <rect x="1" y="1" width="478" height="553" fill="#f7f6ef" stroke="#c4d0c4" stroke-width="1" rx="15"/>
+  <g font-family="system-ui, 'Noto Sans CJK SC', 'Microsoft YaHei', sans-serif">
+    <text x="20" y="35" text-anchor="start" fill="#203c37" font-size="23" font-weight="700">延迟和转换时间，各从哪里量？</text>
+    <text x="20" y="63" text-anchor="start" fill="#526861" font-size="17" font-weight="400">同一时间轴上的示例波形，虚线为 50% 门限。</text>
+    <text x="20" y="101" text-anchor="start" fill="#4d6253" font-size="19" font-weight="650">驱动门输入</text>
+    <text x="451" y="101" text-anchor="end" fill="#4d6253" font-size="17" font-weight="550">50% · 10 ps</text>
+    <path d="M62 137 H440" stroke="#b7c7bc" stroke-width="1.2" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="3 4"/>
+    <path d="M62 114 H105 L191 160 H440" stroke="#4d6253" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round" />
+    <circle cx="148" cy="137" r="4.5" fill="#4d6253"/>
+    <text x="20" y="195" text-anchor="start" fill="#086a7e" font-size="19" font-weight="650">驱动门输出 · 近端</text>
+    <text x="451" y="195" text-anchor="end" fill="#086a7e" font-size="17" font-weight="550">50% · 22 ps</text>
+    <path d="M62 231 H440" stroke="#b7c7bc" stroke-width="1.2" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="3 4"/>
+    <path d="M62 254 H191 L311.4 208 H440" stroke="#086a7e" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round" />
+    <circle cx="251.2" cy="231" r="4.5" fill="#086a7e"/>
+    <text x="20" y="289" text-anchor="start" fill="#a54a22" font-size="19" font-weight="650">接收门输入 · 远端</text>
+    <text x="451" y="289" text-anchor="end" fill="#a54a22" font-size="17" font-weight="550">50% · 28 ps</text>
+    <path d="M62 325 H440" stroke="#b7c7bc" stroke-width="1.2" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="3 4"/>
+    <path d="M62 348 H216.8 L388.8 302 H440" stroke="#a54a22" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round" />
+    <circle cx="302.8" cy="325" r="4.5" fill="#a54a22"/>
+    <path d="M234 343.4 V380" stroke="#b7c7bc" stroke-width="1.2" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="3 4"/>
+    <path d="M371.6 306.6 V380" stroke="#b7c7bc" stroke-width="1.2" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="3 4"/>
+    <circle cx="234" cy="343.4" r="4.2" fill="#a54a22"/>
+    <circle cx="371.6" cy="306.6" r="4.2" fill="#a54a22"/>
+    <text x="226" y="334" text-anchor="end" fill="#a54a22" font-size="15" font-weight="600">10%</text>
+    <text x="380.6" y="328" text-anchor="start" fill="#a54a22" font-size="15" font-weight="600">90%</text>
+    <path d="M234 363 v5 H371.6 v-5" stroke="#a54a22" stroke-width="1.6" fill="none" stroke-linecap="round" stroke-linejoin="round" />
+    <path d="M62 386 H442" stroke="#526861" stroke-width="1.2" fill="none" stroke-linecap="round" stroke-linejoin="round" />
+    <path d="M62 382 v8" stroke="#526861" stroke-width="1.2" fill="none" stroke-linecap="round" stroke-linejoin="round" />
+    <text x="62" y="410" text-anchor="middle" fill="#526861" font-size="16" font-weight="400">0</text>
+    <path d="M148 382 v8" stroke="#526861" stroke-width="1.2" fill="none" stroke-linecap="round" stroke-linejoin="round" />
+    <text x="148" y="410" text-anchor="middle" fill="#526861" font-size="16" font-weight="400">10</text>
+    <path d="M234 382 v8" stroke="#526861" stroke-width="1.2" fill="none" stroke-linecap="round" stroke-linejoin="round" />
+    <text x="234" y="410" text-anchor="middle" fill="#526861" font-size="16" font-weight="400">20</text>
+    <path d="M320 382 v8" stroke="#526861" stroke-width="1.2" fill="none" stroke-linecap="round" stroke-linejoin="round" />
+    <text x="320" y="410" text-anchor="middle" fill="#526861" font-size="16" font-weight="400">30</text>
+    <path d="M406 382 v8" stroke="#526861" stroke-width="1.2" fill="none" stroke-linecap="round" stroke-linejoin="round" />
+    <text x="406" y="410" text-anchor="middle" fill="#526861" font-size="16" font-weight="400">40</text>
+    <text x="450" y="434" text-anchor="end" fill="#526861" font-size="16" font-weight="400">时间（ps）</text>
+    <path d="M20 447 H460" stroke="#b7c7bc" stroke-width="1" fill="none" stroke-linecap="round" stroke-linejoin="round" />
+    <text x="20" y="477" text-anchor="start" fill="#086a7e" font-size="18" font-weight="620">门延迟  22 − 10 = 12 ps</text>
+    <text x="20" y="504" text-anchor="start" fill="#a54a22" font-size="18" font-weight="620">线延迟  28 − 22 = 6 ps</text>
+    <text x="20" y="534" text-anchor="start" fill="#203c37" font-size="18" font-weight="650">远端从 10% 到 90%：36 − 20 = 16 ps</text>
+  </g>
+</svg>
