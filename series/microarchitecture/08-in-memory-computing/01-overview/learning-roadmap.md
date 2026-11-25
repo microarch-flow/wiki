@@ -16,7 +16,7 @@
 3. [两条正交主线](./two-axes-memory-and-paradigm.md)
 4. [SRAM 原本一次读出一个字，怎样让阵列参与计算？](../02-memory-technologies/sram-cim-foundation.md)
 5. [ReRAM 作为计算元件](../02-memory-technologies/reram-as-compute-element.md)
-6. [DRAM-PIM 基础](../02-memory-technologies/dram-pim-foundation.md)
+6. [把乘加器放在 DRAM bank 旁，一条命令怎样算起来？](../02-memory-technologies/dram-pim-foundation.md)
 7. [Analog CIM 基础](../03-compute-paradigms/analog-cim-fundamentals.md)
 8. [Digital CIM 基础](../03-compute-paradigms/digital-cim-fundamentals.md)
 9. [Paradigm × Memory Crossmap](../03-compute-paradigms/paradigm-memory-crossmap.md)

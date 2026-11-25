@@ -33,8 +33,8 @@ HBM base die、interposer、package-side logic 或 memory module 旁 compute 按
 2. [位线上的电压，怎样变成可累加的数字部分和？](./sram-cim-deep-dive.md)　跟踪正负两组位线电压，看看电压差怎样变成数字部分和。
 3. [ReRAM 作为计算元件](./reram-as-compute-element.md)：CIM；analog / mixed-signal；电导阵列可执行 MVM；非理想性与写入成本需核查。
 4. [ReRAM-CIM 深入](./reram-cim-deep-dive.md)
-5. [DRAM-PIM 基础](./dram-pim-foundation.md)：PIM；independent digital processing；重点是 memory die/bank 内 processing，不是 array-native CIM。
-6. [DRAM-PIM 深入](./dram-pim-deep-dive.md)
+5. [把乘加器放在 DRAM bank 旁，一条命令怎样算起来？](./dram-pim-foundation.md)：PIM；independent digital processing；重点是 memory die/bank 内 processing，不是 array-native CIM。
+6. [多组 bank 各算出部分和，谁把它们合成最后的答案？](./dram-pim-deep-dive.md)
 7. [Flash CIM](./flash-cim-niche.md)：CIM；analog / mixed-signal；需结合权重更新、校准与部署条件评估。
 8. [PCM 和 MRAM 作为 CIM 介质](./pcm-mram-for-cim.md)：CIM 研究分支；取决于 device；PCM 偏 analog multi-level，MRAM 更偏 binary/digital-like。
 9. [存储计算路线速查](./memory-tech-comparison-matrix.md)

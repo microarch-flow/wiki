@@ -15,6 +15,8 @@
 
 想看阵列怎样动手算，先沿[一列 SRAM 的两行读出](./02-memory-technologies/sram-cim-foundation.md)找出一个逻辑位，再沿[另一种 SRAM 的电荷共享和数字读出](./02-memory-technologies/sram-cim-deep-dive.md)跟踪一个部分和。
 
+如果权重仍由 DRAM 正常读出，谁来做乘加？先跟踪[一对 bank 旁的处理单元](./02-memory-technologies/dram-pim-foundation.md)，再看[不同组的局部结果怎样合成主机需要的答案](./02-memory-technologies/dram-pim-deep-dive.md)。
+
 
 <span class="micro-legacy-anchor" id="十章地图"></span>
 

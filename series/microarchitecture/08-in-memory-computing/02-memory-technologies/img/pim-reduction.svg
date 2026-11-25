@@ -1,0 +1,60 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 622" role="img" aria-labelledby="title desc">
+  <title id="title">同一矩阵按输入切分和按输出切分</title>
+  <desc id="desc">教学模型中两组 A、B 计算同一个两行四列矩阵与输入向量 (2,3,1,4) 的乘积。按输入切分时 A 算前两列，得部分和 (23,2)，B 算后两列，得 (负11,1)，主机逐项相加得到 (12,3)。按输出切分时 A 算完整的第零行得 12，B 算完整的第一行得 3，主机按下标放回即得到 (12,3)。若在组内提前对零号输出的部分和做 ReLU，会把负11截成0，最后得到错误的23。</desc>
+  <style>
+    text{font-family:system-ui,"Noto Sans CJK SC","PingFang SC",sans-serif;fill:#173c32}
+    .title{font-size:24px;font-weight:680}.heading{font-size:20px;font-weight:660}
+    .copy{font-size:18px;fill:#3b5c4f}.label{font-size:18px;font-weight:625}
+    .val{font-size:20px;font-weight:615;text-anchor:middle}.mid{text-anchor:middle}
+    .green{fill:#e1ecdf;stroke:#98b29a}.ochre{fill:#f3e8d9;stroke:#c4ac90}
+  </style>
+  <rect width="800" height="622" rx="14" fill="#f2f5ed"/>
+  <text x="20" y="35" class="title">两组都返回结果，该相加，还是按下标放回？</text>
+  <text x="20" y="66" class="copy">两种教学布局都计算同一个 y = W x，输入 x = (2, 3, 1, 4)。</text>
+  <rect x="20" y="90" width="371" height="392" rx="9" fill="#fafbf6" stroke="#afc2b1"/>
+  <rect x="409" y="90" width="371" height="392" rx="9" fill="#fafbf6" stroke="#afc2b1"/>
+  <text x="35" y="123" class="heading">沿输入下标 k 切分</text>
+  <text x="424" y="123" class="heading">沿输出行切分</text>
+  <text x="35" y="151" class="copy">A 取前两项，B 取后两项。</text>
+  <text x="424" y="151" class="copy">每组都用完整的四项输入。</text>
+
+  <g class="copy mid">
+    <text x="83" y="191">权重</text><text x="150" y="191">k=0</text><text x="211" y="191">1</text><text x="272" y="191">2</text><text x="333" y="191">3</text>
+    <text x="472" y="191">权重</text><text x="539" y="191">k=0</text><text x="600" y="191">1</text><text x="661" y="191">2</text><text x="722" y="191">3</text>
+  </g>
+  <rect x="122" y="202" width="118" height="68" rx="5" class="green"/>
+  <rect x="244" y="202" width="118" height="68" rx="5" class="ochre"/>
+  <rect x="511" y="202" width="240" height="32" rx="5" class="green"/>
+  <rect x="511" y="238" width="240" height="32" rx="5" class="ochre"/>
+  <g class="copy mid">
+    <text x="81" y="227">第 0 行</text><text x="81" y="261">第 1 行</text>
+    <text x="470" y="227">第 0 行</text><text x="470" y="261">第 1 行</text>
+  </g>
+  <g class="val">
+    <text x="150" y="227">4</text><text x="211" y="227">5</text><text x="272" y="227">−3</text><text x="333" y="227">−2</text>
+    <text x="150" y="261">1</text><text x="211" y="261">0</text><text x="272" y="261">1</text><text x="333" y="261">0</text>
+    <text x="539" y="227">4</text><text x="600" y="227">5</text><text x="661" y="227">−3</text><text x="722" y="227">−2</text>
+    <text x="539" y="261">1</text><text x="600" y="261">0</text><text x="661" y="261">1</text><text x="722" y="261">0</text>
+  </g>
+  <g class="label">
+    <rect x="39" y="300" width="36" height="27" rx="4" class="green"/><text x="57" y="321" class="mid">A</text>
+    <rect x="39" y="334" width="36" height="27" rx="4" class="ochre"/><text x="57" y="355" class="mid">B</text>
+    <rect x="428" y="300" width="36" height="27" rx="4" class="green"/><text x="446" y="321" class="mid">A</text>
+    <rect x="428" y="334" width="36" height="27" rx="4" class="ochre"/><text x="446" y="355" class="mid">B</text>
+  </g>
+  <g class="label">
+    <text x="87" y="322">两行各有一份部分和 (23, 2)</text>
+    <text x="87" y="356">两行各有一份部分和 (−11, 1)</text>
+    <text x="476" y="322">完整的第 0 项 y[0] = 12</text>
+    <text x="476" y="356">完整的第 1 项 y[1] = 3</text>
+  </g>
+  <path d="M35 385H376 M424 385H765" fill="none" stroke="#c4d2c3"/>
+  <text x="35" y="417" class="heading">主机把相同下标的部分和相加</text>
+  <text x="35" y="451" class="copy">(23 + (−11), 2 + 1) = (12, 3)</text>
+  <text x="424" y="417" class="heading">主机按输出下标放回</text>
+  <text x="424" y="451" class="copy">y[0] 放 12，y[1] 放 3，得到 (12, 3)</text>
+
+  <text x="20" y="525" class="heading">为什么左边的第 0 项要等负的部分和回来？</text>
+  <text x="20" y="556" class="label">先相加再做 ReLU，得到 ReLU(23 − 11) = 12。</text>
+  <text x="20" y="585" class="copy">若两组各自先做 ReLU，负的部分变成 0，主机就会得到 23 + 0 = 23。</text>
+</svg>
