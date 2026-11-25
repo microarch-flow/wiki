@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>拉长一拍，哪项时序余量会改变？</title>
+  <style>
+    :root { color-scheme: light; --ink: #203c37; --muted: #496059; --teal: #09677b; --rust: #a34620; --line: #bccbbf; --paper: #fbfaf4; }
+    * { box-sizing: border-box; }
+    html { background: var(--paper); color: var(--ink); font: 17px/1.6 system-ui, "Noto Sans CJK SC", sans-serif; }
+    body { max-width: 44rem; margin: auto; padding: 1rem clamp(.75rem, 4vw, 2rem) 2.5rem; }
+    a { color: var(--teal); text-underline-offset: .2em; }
+    nav { padding-bottom: .6rem; border-bottom: 1px solid var(--line); }
+    h1 { font-size: clamp(1.6rem, 5vw, 2.25rem); line-height: 1.3; margin: 1.1rem 0 .7rem; }
+    h2 { font-size: clamp(1.2rem, 4vw, 1.5rem); line-height: 1.4; margin: 1.5rem 0 .4rem; }
+    p, figure { margin: .65rem 0; }
+    .controls { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 12rem), 1fr)); gap: .65rem 1rem; align-items: end; background: #edf2e9; padding: .8rem 1rem; border-radius: .55rem; }
+    label, select, input { display: block; }
+    select { min-height: 44px; color: var(--ink); font: inherit; border: 1px solid #768b7d; border-radius: .3rem; background: var(--paper); padding: .15rem .35rem; }
+    input[type=range] { width: 100%; min-height: 44px; accent-color: var(--teal); margin: 0; }
+    output, .reading { font-weight: 650; }
+    :focus-visible { outline: 3px solid var(--rust); outline-offset: 3px; }
+    .chart { width: min(100%, 32rem); display: block; background: #f6f5ee; border: 1px solid #c7d3c6; border-radius: .5rem; }
+    .chart text { font: 18px system-ui, sans-serif; fill: var(--ink); }
+    .axis { stroke: #637a6f; fill: none; }
+    .grid { stroke: #cad6c9; stroke-dasharray: 2 4; fill: none; }
+    .window { fill: #c4d6c4; stroke: #4e6f5e; }
+    .data { fill: var(--teal); }
+    .capture { stroke: var(--ink); stroke-width: 2; }
+    figcaption, details { color: var(--muted); font-size: .93rem; }
+    summary { cursor: pointer; color: var(--teal); }
+    table { width: min(100%, 32rem); border-collapse: collapse; font-variant-numeric: tabular-nums; }
+    th, td { border-bottom: 1px solid var(--line); padding: .28rem .1rem; }
+    th { text-align: left; font-weight: 550; }
+    td { text-align: right; }
+    .reading[data-result="late"], .reading[data-result="early"] { color: var(--rust); }
+    footer { margin-top: 1.3rem; border-top: 1px solid var(--line); padding-top: .65rem; }
+  </style>
+</head>
+<body>
+  <nav aria-label="实验导航"><a href="./">返回第十篇正文</a></nav>
+  <main id="timing">
+    <h1>拉长一拍，哪项时序余量会改变？</h1>
+    <p>把发射寄存器送出新值的时钟沿定为 0 ps。这也是接收寄存器采样旧值的时刻。先保持工作点 B，把周期从 1,000 ps 拉长到 1,030 ps，观察两幅图里哪些标记移动了。</p>
+    <noscript><p>当前显示工作点 B、周期 1,000 ps、短支路未增加延迟时的读数。启用 JavaScript 可调整条件。</p><style>.controls { display: none; }</style></noscript>
+    <div class="controls">
+      <div><label for="corner">长路径工作点</label><select id="corner"><option value="A">工作点 A</option><option value="B" selected>工作点 B</option></select></div>
+      <div><label for="period">时钟周期　<output for="period" id="period-label">1,000 ps</output></label><input type="range" id="period" min="850" max="1150" step="1" value="1000"></div>
+      <div><label for="padding">短支路增加的最小延迟</label><select id="padding"><option value="0" selected>0 ps</option><option value="20">20 ps</option></select></div>
+    </div>
+    <section aria-labelledby="setup">
+      <h2 id="setup">新值最迟何时要在 D 端稳定？</h2>
+      <p id="setup-model">工作点 B 下，发射寄存器时钟到 Q 最多 85 ps，长路径再用 875 ps。接收寄存器需要 70 ps 建立时间。</p>
+      <figure>
+        <svg viewBox="0 0 420 162" class="chart" role="img" aria-labelledby="setup-graph-title">
+          <title id="setup-graph-title">建立检查放大本拍末段。圆点标记数据最迟到达，绿色窗口从建立截止时刻延伸至下一采样沿。</title>
+          <path class="grid" d="M30 25V126 M150 25V126 M270 25V126 M390 25V126"/>
+          <text x="30" y="25">长路径数据最迟到达</text>
+          <path class="axis" d="M30 46H390"/>
+          <circle class="data" id="last-mark" cx="246" cy="46" r="5"/>
+          <text x="30" y="82">D 端须在下一沿之前稳定</text>
+          <path class="axis" d="M30 102H390"/>
+          <rect class="window" id="setup-window" x="228" y="95" width="42" height="14"/>
+          <line class="capture" id="capture-mark" x1="270" x2="270" y1="90" y2="115"/>
+          <path class="axis" d="M30 126H390 M30 126v5 M150 126v5 M270 126v5 M390 126v5"/>
+          <g text-anchor="middle"><text x="30" y="150">600</text><text x="150" y="150">800</text><text x="270" y="150">1000</text><text x="390" y="150">1200</text></g>
+        </svg>
+        <figcaption>横轴是从 0 ps 发射沿起算的时间，图中只放大 600–1,200 ps。圆点应落在绿色窗口左边或左边界。窗口右端的竖线是下一次采样沿。</figcaption>
+      </figure>
+      <table aria-label="建立检查读数"><tbody>
+        <tr><th scope="row">新值最迟到达</th><td id="latest">960 ps</td></tr>
+        <tr><th scope="row">建立截止（周期 − 建立时间）</th><td id="deadline">930 ps</td></tr>
+        <tr><th scope="row">建立余量（截止 − 最迟到达）</th><td id="setup-slack">−30 ps</td></tr>
+      </tbody></table>
+      <p class="reading" id="setup-result" data-result="late" aria-live="polite">新值最迟可能晚到 30 ps，下一拍的采样得不到保证。</p>
+    </section>
+    <section aria-labelledby="hold">
+      <h2 id="hold">旧值至少要在 D 端保留到什么时候？</h2>
+      <p>现在单看同一时钟域中的一条短支路。当前时钟沿既让接收端采样旧值，也让发射端启程送出下一份数据。新数据最早可能在 45 ps 改变 D 端，但接收端需要旧值至少保持 55 ps。</p>
+      <figure>
+        <svg viewBox="0 0 420 162" class="chart" role="img" aria-labelledby="hold-graph-title">
+          <title id="hold-graph-title">保持检查放大当前采样沿附近。圆点标记短支路最早变化，绿色窗口表示 D 端必须保持旧值的时间。</title>
+          <path class="grid" d="M30 25V126 M120 25V126 M210 25V126 M300 25V126 M390 25V126"/>
+          <text x="30" y="25">短支路数据最早改变 D 端</text>
+          <path class="axis" d="M30 46H390"/>
+          <circle class="data" id="first-mark" cx="192" cy="46" r="5"/>
+          <text x="30" y="82">D 端须在当前沿之后保持旧值</text>
+          <path class="axis" d="M30 102H390"/>
+          <rect class="window" x="30" y="95" width="198" height="14"/>
+          <line class="capture" x1="30" x2="30" y1="90" y2="115"/>
+          <path class="axis" d="M30 126H390 M30 126v5 M120 126v5 M210 126v5 M300 126v5 M390 126v5"/>
+          <g text-anchor="middle"><text x="30" y="150">0</text><text x="120" y="150">25</text><text x="210" y="150">50</text><text x="300" y="150">75</text><text x="390" y="150">100</text></g>
+        </svg>
+        <figcaption>这次横轴放大 0–100 ps。窗口左边是当前采样沿，右边是保持结束。圆点应落在窗口右边或右边界。</figcaption>
+      </figure>
+      <table aria-label="保持检查读数"><tbody>
+        <tr><th scope="row">新数据最早改变 D 端</th><td id="earliest">45 ps</td></tr>
+        <tr><th scope="row">旧值需要保持至</th><td id="hold-limit">55 ps</td></tr>
+        <tr><th scope="row">保持余量（最早变化 − 保持结束）</th><td id="hold-slack">−10 ps</td></tr>
+      </tbody></table>
+      <p class="reading" id="hold-result" data-result="early" aria-live="polite">旧值可能提前 10 ps 消失，当前沿的采样得不到保证。</p>
+    </section>
+    <details><summary>怎样把这个实验对应到时序报告？</summary>
+      <p>假设发射、接收时钟同时到达，没有抖动，路径按单周期检查。建立取长路径的最大延迟，保持取另一条短支路的最小延迟。两组给定数值各自独立。选择 A 或 B 只改变长路径的工作条件。</p>
+      <p>只给短支路增加 20 ps 最小延迟，是为了观察最早到达的变化。实际插入延迟单元或修改布线后，还要在相应工作角重新检查受影响路径的最大延迟、最小延迟以及建立和保持余量。</p>
+    </details>
+  </main>
+  <footer><a href="./">返回《同一条逻辑路径，为什么既可能太慢，也可能太快？》</a></footer>
+  <script>
+    const element = id => document.getElementById(id);
+    const conditions = {
+      A: { clockToQ: 60, logic: 780, setup: 60 },
+      B: { clockToQ: 85, logic: 875, setup: 70 }
+    };
+    function ps(value) { return value.toLocaleString('en-US') + ' ps'; }
+    function signedPs(value) {
+      if (value === 0) return '0 ps';
+      return (value > 0 ? '+' : '−') + ps(Math.abs(value));
+    }
+    function setupX(time) { return 30 + (time - 600) * 0.6; }
+    function render() {
+      const corner = element('corner').value;
+      const cond = conditions[corner];
+      const period = Number(element('period').value);
+      const latest = cond.clockToQ + cond.logic;
+      const deadline = period - cond.setup;
+      const setupSlack = deadline - latest;
+      const earliest = 45 + Number(element('padding').value);
+      const holdSlack = earliest - 55;
+      element('period-label').textContent = ps(period);
+      element('period').setAttribute('aria-valuetext', ps(period));
+      element('setup-model').textContent = '工作点 ' + corner + ' 下，发射寄存器时钟到 Q 最多 ' + ps(cond.clockToQ) + '，长路径再用 ' + ps(cond.logic) + '。接收寄存器需要 ' + ps(cond.setup) + ' 建立时间。';
+      element('latest').textContent = ps(latest);
+      element('deadline').textContent = ps(deadline);
+      element('setup-slack').textContent = signedPs(setupSlack);
+      element('earliest').textContent = ps(earliest);
+      element('hold-slack').textContent = signedPs(holdSlack);
+      element('last-mark').setAttribute('cx', setupX(latest));
+      element('setup-window').setAttribute('x', setupX(deadline));
+      element('setup-window').setAttribute('width', cond.setup * 0.6);
+      element('capture-mark').setAttribute('x1', setupX(period));
+      element('capture-mark').setAttribute('x2', setupX(period));
+      element('first-mark').setAttribute('cx', 30 + earliest * 3.6);
+      const setup = element('setup-result');
+      setup.dataset.result = setupSlack < 0 ? 'late' : 'meets';
+      if (setupSlack < 0) {
+        setup.textContent = '新值最迟可能晚到 ' + ps(-setupSlack) + '，下一拍的采样得不到保证。';
+      } else if (setupSlack === 0) {
+        setup.textContent = '新值正好赶上建立截止，建立余量为零。';
+      } else {
+        setup.textContent = '新值最迟也能提前 ' + ps(setupSlack) + ' 赶到建立截止。';
+      }
+      const hold = element('hold-result');
+      hold.dataset.result = holdSlack < 0 ? 'early' : 'meets';
+      hold.textContent = holdSlack < 0
+        ? '旧值可能提前 ' + ps(-holdSlack) + ' 消失，当前沿的采样得不到保证。'
+        : '新数据最早到达时，旧值已比保持要求多留了 ' + ps(holdSlack) + '。';
+    }
+    element('corner').addEventListener('change', render);
+    element('period').addEventListener('input', render);
+    element('padding').addEventListener('change', render);
+    render();
+  </script>
+</body>
+</html>

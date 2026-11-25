@@ -8,7 +8,9 @@ Wiki 与博客的共同写作和设计要求见 [Wiki 与博客设计规则](../
 
 `website/ownership.py` 指定原有文章和芯片开发流程文章的主系列和主专题。按更具体的文件规则处理 HBM、FAB 良率等例外。文章可以从多个导读链接，但只能在主导航出现一次；构建会拒绝重复的主导航条目。新增文章时，检查其路径是否落在正确的规则内，并核对面包屑与阅读链接。
 
-「半导体与电路基础」的导读、文章和配图位于 `series/semiconductor-foundations/`。系列导读中的编号列表决定正文阅读顺序和侧栏短标题。该系列沿用 `foundations/` 发布路径，文章仍可通过原网址和小节锚点访问。`website/prepare.py` 为《从硅到门电路》的六个历史小节地址生成跳转，并随正文发布八份离线图解，分别位于 `electrons-to-diode/interactive.html`、`bands-to-channel/experiments.html`、`latch-and-divider/experiment.html`、`transistor-amplifier/experiment.html`、`quartz-oscillator/experiment.html`、`integer-pll/experiment.html`、`fanout-and-wire-delay/experiment.html` 和 `supply-voltage-and-frequency/experiment.html`。合并后的门延迟与翻转能量正文位于 `fanout-and-wire-delay/`。原 `switching-energy-and-power/` 在 GitHub 保留迁移说明，发布时使用同目录的静态跳转页，按旧小节链接跳到合并后的对应位置。
+「半导体与电路基础」的导读、文章和配图位于 `series/semiconductor-foundations/`，发布在 `foundations/`。侧栏依次读取系列导读中“阅读顺序”的十个编号链接，再将“延伸阅读”和“历史导读”的无序列表列为两个分组。三个小节的链接文字兼作侧栏短标题。第十篇的离线实验位于 `pvt-and-path-delay/experiment.html`，系列配套 HTML 的发布清单见 [prepare.py 中的 FOUNDATION_COMPANIONS](prepare.py)。
+
+门延迟与翻转能量合并后，旧的 `switching-energy-and-power/` 指向 `fanout-and-wire-delay/#energy`。供电压降与去耦合并后，旧的 `ir-drop-and-decoupling/` 指向 `supply-voltage-and-frequency/#supply-loop`。两个旧目录分别保留 GitHub 迁移说明和网站跳转页。带旧小节的书签会转到对应位置，原供电回路图也保留原网址。《从硅到门电路》的六个历史小节地址仍由构建脚本生成。
 
 Workload 的十二个专题及七条源码移动映射维护在 `website/workload.py`。专题导读的“阅读顺序”编号链接决定侧栏正文顺序与短标题。“历史入口”下的编号链接单独形成可展开的子目录，七个兼容页从搜索排除。构建检查遗漏、重复、越界和目标存在性。源码按当前专题组织，已移动的文章继续使用历史公开路径，新旧源码引用均映射到同一页面。新增正文须加入对应导读，标题调整时保留旧锚点。
 

@@ -1,0 +1,44 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="480" height="559" viewBox="0 0 480 559" role="img" aria-labelledby="title desc">
+  <title id="title">以当前采样沿为零，分别放大建立检查和保持检查的窗口</title>
+  <desc id="desc">理想同钟、无偏差示例。建立检查比较最晚数据和下一沿。周期为 1,000 ps，建立时间为 70 ps，截止时刻是 930 ps，数据在 960 ps 才到，晚了 30 ps。保持检查采用另一个最短路径算例，比较最早数据和当前沿。旧数据须保持到 55 ps，但新数据在 45 ps 就到了，早了 10 ps。两幅局部图的横轴分别放大到不同刻度。</desc>
+  <rect x="1" y="1" width="478" height="557" rx="15" fill="#f7f6ef" stroke="#c4d0c4"/>
+  <g font-family="system-ui, 'Noto Sans CJK SC', 'Microsoft YaHei', sans-serif" fill="#203c37">
+    <text x="20" y="34" font-size="23" font-weight="700">建立和保持，各盯住哪一个沿？</text>
+    <text x="20" y="62" font-size="17" fill="#526861">理想同钟，时钟偏差和不确定度均取零。</text>
+    <path d="M48 94H432" fill="none" stroke="#839a8a" stroke-width="1.7"/>
+    <g fill="#203c37" stroke="#203c37" stroke-width="1.6">
+      <path d="M43 83l5 6 5-6z M48 88v12"/><path d="M427 83l5 6 5-6z M432 88v12"/>
+    </g>
+    <g font-size="17" fill="#354e44">
+      <text x="22" y="125">当前沿 · 0 ps</text><text x="456" y="125" text-anchor="end">下一沿 · 1,000 ps</text>
+    </g>
+    <path d="M20 144H460 M20 337H460" stroke="#c4d0c4"/>
+
+    <text x="20" y="174" font-size="20" font-weight="650">建立检查 · 下一沿之前的新值</text>
+    <text x="20" y="199" font-size="16" fill="#526861">放大 900–1,000 ps。新值要提前 70 ps 稳定。</text>
+    <rect x="170" y="230" width="252" height="18" fill="#d8e7e2"/>
+    <path d="M62 242H422 M62 237v10 M422 233v19" fill="none" stroke="#748b7d" stroke-width="1.5"/>
+    <text x="170" y="224" text-anchor="middle" font-size="17">截止 930</text>
+    <text x="422" y="224" text-anchor="end" font-size="17">捕获 1,000</text>
+    <path d="M170 228v24 M422 228v24" fill="none" stroke="#356046" stroke-width="1.8"/>
+    <path d="M278 235l-6 7 6 7 6-7z" fill="#a54a22"/>
+    <path d="M170 254v5H278v-5" fill="none" stroke="#a54a22" stroke-width="1.8"/>
+    <text x="62" y="279" text-anchor="middle" font-size="15" fill="#526861">900</text>
+    <text x="278" y="282" text-anchor="middle" font-size="17" fill="#a54a22">最晚到 D · 960 ps</text>
+    <text x="20" y="317" font-size="19" font-weight="650">建立余量　930 − 960 = −30 ps</text>
+
+    <text x="20" y="368" font-size="20" font-weight="650">保持检查 · 当前沿之后的旧值</text>
+    <text x="20" y="395" font-size="16" fill="#526861">另一个最短路径算例，放大 0–70 ps。</text>
+    <rect x="62" y="426" width="282.857" height="18" fill="#d8e7e2"/>
+    <path d="M62 438H422 M62 429v18 M422 433v10" fill="none" stroke="#748b7d" stroke-width="1.5"/>
+    <text x="62" y="420" text-anchor="middle" font-size="17">捕获 0</text>
+    <text x="344.857" y="420" text-anchor="middle" font-size="17">保持到 55</text>
+    <path d="M62 424v24 M344.857 424v24" fill="none" stroke="#356046" stroke-width="1.8"/>
+    <path d="M293.429 431l-6 7 6 7 6-7z" fill="#a54a22"/>
+    <path d="M293.429 450v5h51.428v-5" fill="none" stroke="#a54a22" stroke-width="1.8"/>
+    <text x="293.429" y="478" text-anchor="middle" font-size="17" fill="#a54a22">最早到 D · 45 ps</text>
+    <text x="422" y="475" text-anchor="middle" font-size="15" fill="#526861">70</text>
+    <text x="20" y="516" font-size="19" font-weight="650">保持余量　45 − 55 = −10 ps</text>
+    <text x="20" y="541" font-size="16" fill="#526861">延长周期只会向后移动下一沿。</text>
+  </g>
+</svg>

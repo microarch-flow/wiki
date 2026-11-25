@@ -25,6 +25,7 @@ SOURCE_TOPICS = tuple(name for name in TOPICS if name not in {"RAM", "HBF", "COM
 INTERCONNECT_TOPICS = frozenset({"BUS", "NOC", "D2D", "PCIE", "COHERENCE",
                                 "SCALEUP", "NETWORK", "SERDES", "CPO"})
 BUS_LEGACY_INDEX = "docs/archive/interconnect/BUS/README.md"
+FOUNDATION_MERGED_ARTICLES = ("switching-energy-and-power", "ir-drop-and-decoupling")
 FOUNDATION_COMPANIONS = (
     Path("electrons-to-diode/interactive.html"),
     Path("bands-to-channel/experiments.html"),
@@ -34,6 +35,7 @@ FOUNDATION_COMPANIONS = (
     Path("integer-pll/experiment.html"),
     Path("fanout-and-wire-delay/experiment.html"),
     Path("supply-voltage-and-frequency/experiment.html"),
+    Path("pvt-and-path-delay/experiment.html"),
 )
 SILICON_TO_LOGIC_LEGACY_SECTIONS = {
     "circuit-quantities": "用电压电流电阻和电容描述一个节点",
@@ -425,12 +427,13 @@ def stage_site(root=ROOT, build_root=None, registry=None, source_root=None, layo
                     destination = docs / local["publish"]
                     copy_source(selected, destination, public_only=True)
                     if local["directory"] == "series/semiconductor-foundations":
-                        legacy = Path("switching-energy-and-power/README.md")
-                        if (destination / legacy).is_file():
-                            redirect = legacy.with_name("index.html")
-                            (destination / legacy).unlink()
-                            shutil.copy2(selected / redirect, destination / redirect)
-                            published.add(selected / legacy, destination / redirect, rewrite_page=False)
+                        for slug in FOUNDATION_MERGED_ARTICLES:
+                            legacy = Path(slug) / "README.md"
+                            if (destination / legacy).is_file():
+                                redirect = legacy.with_name("index.html")
+                                (destination / legacy).unlink()
+                                shutil.copy2(selected / redirect, destination / redirect)
+                                published.add(selected / legacy, destination / redirect, rewrite_page=False)
                         for companion in FOUNDATION_COMPANIONS:
                             if (destination / companion.parent / "README.md").is_file():
                                 shutil.copy2(selected / companion, destination / companion)

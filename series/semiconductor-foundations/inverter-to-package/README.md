@@ -8,7 +8,7 @@
 
 图中选用平面 CMOS 作教学示例。p 型衬底中的 n 阱容纳 PMOS，旁边的 p 型区域容纳 NMOS。两只管各有源区、漏区和被薄绝缘层隔开的栅极。晶圆表面上的**接触**把器件端子引到上面的导线，不同金属层之间则用**过孔**连接。[康奈尔大学的 CMOS 器件与反相器讲义](https://web.csl.cornell.edu/courses/ece6745/handouts/ece6745-T01-basic-devices.pdf)
 
-试着按网络名称读图。**IN** 接到两只栅极。**OUT** 是由金属连在一起的两个漏极。**VDD** 接 PMOS 源极，**VSS** 接 NMOS 源极。低输入时，上面的供电网经 PMOS 给输出节点充电。高输入时，输出经 NMOS 放电。图中同名 IN 标记表示这两点在其他位置接通。阱和衬底的偏置接触、完整金属层栈与保护结构均加以简化。实际 FinFET 和环绕栅器件的剖面也各有其形状。[从硅到门电路的反相器原理图](../silicon-to-logic/README.md) · [晶圆制造中的器件与金属层](../../chip-development/FAB/wiki/02-front-end-fabrication/process-flow-overview.md)
+试着按网络名称读图。**IN** 接到两只栅极。**OUT** 是由金属连在一起的两个漏极。**VDD** 接 PMOS 源极，**VSS** 接 NMOS 源极。低输入时，上面的供电网经 PMOS 给输出节点充电。高输入时，输出经 NMOS 放电。图中同名 IN 标记表示这两点在其他位置接通。阱和衬底的偏置接触、完整金属层栈与保护结构均加以简化。实际 FinFET 和环绕栅器件的剖面也各有其形状。[第三篇的 CMOS 反相器原理图](../cmos-logic-gates/README.md#inverter) · [晶圆制造中的器件与金属层](../../chip-development/FAB/wiki/02-front-end-fabrication/process-flow-overview.md)
 
 制造时，先在整片晶圆上形成隔离区、阱、栅和源漏等结构，再把端子引出，逐层形成金属线和过孔。每一层按需要重复材料生长或沉积、光刻、刻蚀和整平等工序。版图为不同层分别定义图形。只有当对应的层加工并接通，一条从漏极通往下一级输入的真实导线才形成。[晶圆制造的整体流程](../../chip-development/FAB/wiki/02-front-end-fabrication/process-flow-overview.md)
 
@@ -25,7 +25,7 @@
 
 还有一种常见连接方式是引线键合。金属细线把裸片表面的焊盘接到基板或引线框架。倒装则让裸片的连接面朝向载体，通过分布在表面的凸点连接。封装底部的一排排焊球描述的是板侧接口。要知道里面的裸片如何接到载体，还要看封装结构图。[封装结构与连接方式](../../chip-development/FAB/wiki/04-back-end-packaging/packaging-taxonomy.md)
 
-从板上向反相器追一根电源线，会依次经过板上铜面、板侧焊点、封装基板、裸片凸点、片内金属电源网，最后到达晶体管。回流也有相应路径。这里的每一段都可能贡献电阻和电感。热量则通过裸片、封装材料以及散热结构等路径流出。具体工序顺序随封装方式变化，例如晶圆级工艺可以在切割前完成部分封装步骤。[从晶圆到成品的对象流](../../chip-development/FAB/wiki/01-overview/from-wafer-to-product.md) · [ST 的制造与封测流程](https://www.st.com/content/st_com/en/about/manufacturing-at-st/semiconductor-value-chain.html) · [逻辑门两端的实际供电](../ir-drop-and-decoupling/README.md)
+从板上向反相器追一根电源线，会依次经过板上铜面、板侧焊点、封装基板、裸片凸点、片内金属电源网，最后到达晶体管。回流也有相应路径。这里的每一段都可能贡献电阻和电感。热量则通过裸片、封装材料以及散热结构等路径流出。具体工序顺序随封装方式变化，例如晶圆级工艺可以在切割前完成部分封装步骤。[从晶圆到成品的对象流](../../chip-development/FAB/wiki/01-overview/from-wafer-to-product.md) · [ST 的制造与封测流程](https://www.st.com/content/st_com/en/about/manufacturing-at-st/semiconductor-value-chain.html) · [沿供电和回流路径量出门两端的电压](../supply-voltage-and-frequency/README.md#supply-loop)
 
 ## 同一个 GPU 封装里，哪段横着走，哪段竖着走
 

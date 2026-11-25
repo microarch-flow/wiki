@@ -6,7 +6,7 @@
 
 一个输入电压怎样决定电路输出 0 还是 1？从[电子到二极管](../electrons-to-diode/README.md)出发，有两条路可走。想看反向偏置的结怎样收集另一端注入的电子，可以先读下面的 [BJT](#三极管怎样放大电流并作为开关)。想弄清数字门怎样翻转，可以直接从 [MOS 的栅极与沟道](../bands-to-channel/README.md)读到 [CMOS 反相器](../cmos-logic-gates/README.md#inverter)，跟着输出节点上的电荷算一次翻转要花多少[时间](../fanout-and-wire-delay/README.md#load)和[能量](../fanout-and-wire-delay/README.md#energy)。
 
-从门电路继续，还可以追一拍时钟的来路。先看[放大级](../transistor-amplifier/README.md)怎样补回[石英振荡回路](../quartz-oscillator/README.md)的损耗，再看[触发器怎样采样和二分频](../latch-and-divider/README.md)，以及 [PLL 怎样利用分频反馈倍频](../integer-pll/README.md)。芯片能用多快的时钟，还受[本地供电压降](../ir-drop-and-decoupling/README.md)以及[工艺、电压、温度对路径延迟的影响](../pvt-and-path-delay/README.md)约束。
+从门电路继续，还可以追一拍时钟的来路。先看[放大级](../transistor-amplifier/README.md)怎样补回[石英振荡回路](../quartz-oscillator/README.md)的损耗，再看[触发器怎样采样和二分频](../latch-and-divider/README.md)，以及 [PLL 怎样利用分频反馈倍频](../integer-pll/README.md)。芯片能用多快的时钟，还受[本地供电压降](../supply-voltage-and-frequency/README.md#supply-loop)以及[工艺、电压、温度对路径延迟的影响](../pvt-and-path-delay/README.md)约束。
 
 ## 硅晶体里的电子 {#从硅的四个价电子理解-p-型和-n-型掺杂}
 
