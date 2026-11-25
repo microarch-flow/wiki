@@ -83,4 +83,4 @@
 
 可以试着把输入往高处拨一点。反相器会把 Y 拉低，反馈电阻便使输入端的电荷朝降低输入电压的方向变化。沿这条直流反馈路走一圈只经过**一次反相**，偏离工作点的小变化受到纠正。第四篇的存储环走一圈经过**两次反相**，会在转换区把微小差异进一步放大，最终落在两个稳定状态之一。[回看两次反相怎样保持一位](../latch-and-divider/README.md#feedback)
 
-接入石英和负载电容后，变化着的信号还有一条与频率有关的返回路径。大电阻先给放大级定下工作点；上电扰动中的哪一种频率能绕一圈回来继续增强，要沿这条交流路径去看。下一篇就从这里跟踪一次振动，看看电源怎样经放大器补回石英每周期的损耗。[石英振荡器怎样起振与稳幅](../quartz-oscillator/README.md) · [ST AN2867：Pierce 振荡器的偏置与反馈](https://www.st.com/resource/en/application_note/cd00221665-oscillator-design-guide-for-stm8af-al-s-stm32-mcus-and-mpus-stmicroelectronics.pdf)
+接入石英和负载电容后，变化着的信号还有一条与频率有关的返回路径。大电阻先给放大级定下工作点；上电扰动中的哪一种频率能绕一圈回来继续增强，要沿这条交流路径去看。下一篇就从这里跟踪一次振动，看看电源怎样经放大器补回石英每周期的损耗。[一块石英和一个放大器，怎样产生稳定的时钟？](../quartz-oscillator/README.md) · [ST AN2867：Pierce 振荡器的偏置与反馈](https://www.st.com/resource/en/application_note/cd00221665-oscillator-design-guide-for-stm8af-al-s-stm32-mcus-and-mpus-stmicroelectronics.pdf)
