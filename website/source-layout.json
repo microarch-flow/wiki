@@ -667,6 +667,14 @@
         "target": "CIM/wiki/02-memory-technologies/reram-cim-deep-dive.md"
       },
       {
+        "source": "series/microarchitecture/08-in-memory-computing/02-memory-technologies/img/sram-cim-bitlines.svg",
+        "target": "CIM/wiki/02-memory-technologies/img/sram-cim-bitlines.svg"
+      },
+      {
+        "source": "series/microarchitecture/08-in-memory-computing/02-memory-technologies/img/sram-cim-charge-readout.svg",
+        "target": "CIM/wiki/02-memory-technologies/img/sram-cim-charge-readout.svg"
+      },
+      {
         "source": "series/microarchitecture/08-in-memory-computing/02-memory-technologies/sram-cim-deep-dive.md",
         "target": "CIM/wiki/02-memory-technologies/sram-cim-deep-dive.md"
       },

@@ -17,8 +17,8 @@
 ## 02 Memory Technologies — 横轴
 
 - [章导读](./02-memory-technologies/README.md)
-- [SRAM-CIM 基础：6T/8T/10T Cell 怎么变成计算单元](./02-memory-technologies/sram-cim-foundation.md)
-- [SRAM-CIM 深入：Bitline 加和、Charge Sharing、典型 Macro](./02-memory-technologies/sram-cim-deep-dive.md)
+- [SRAM 原本一次读出一个字，怎样让阵列参与计算？](./02-memory-technologies/sram-cim-foundation.md)
+- [位线上的电压，怎样变成可累加的数字部分和？](./02-memory-technologies/sram-cim-deep-dive.md)
 - [ReRAM 作为计算元件：电阻态如何编码权重](./02-memory-technologies/reram-as-compute-element.md)
 - [ReRAM-CIM 深入：Crossbar、IR Drop、Sneak Path](./02-memory-technologies/reram-cim-deep-dive.md)
 - [DRAM-PIM 基础：为什么在 DRAM Die 上加 Compute Unit](./02-memory-technologies/dram-pim-foundation.md)

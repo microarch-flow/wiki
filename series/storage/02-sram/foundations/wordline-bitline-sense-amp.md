@@ -39,6 +39,8 @@
 
 当差分和使能时机满足读出电路的要求，sense amp 判决并输出数字结果。它不必等待较低位线降到完整的逻辑 0。预充位线也会扰动 cell 的低节点；**差分足够感测**和**cell 保持原值**是两个都需要满足的条件。单元内的具体路径见 [6T SRAM cell](./6t-cell-bistable-storage.md)。
 
+普通读在一列里判决选中行的一个 bit。如果想让这列中两个存储位共同给出一个逻辑结果，读通路怎样改？换一种电路，各列又怎样通过电荷共享，把多项贡献汇成可测的电压差？[两个存储位怎样共同求值](../../../microarchitecture/08-in-memory-computing/02-memory-technologies/sram-cim-foundation.md) · [多列怎样通过电荷共享求和](../../../microarchitecture/08-in-memory-computing/02-memory-technologies/sram-cim-deep-dive.md)
+
 SRAM 的读感测一般不承担常见 1T1C DRAM 开行时的电容恢复过程。两者的内部职责和接口规则不同，见 [DRAM 的感测与恢复](../../03-dram/foundations/1t1c-cell-destructive-read.md#sense-restore)。
 
 ## 写：位线驱动 cell
