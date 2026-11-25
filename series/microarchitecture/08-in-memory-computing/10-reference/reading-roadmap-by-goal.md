@@ -20,7 +20,7 @@
 **目标：理解电路和 macro。**
 
 1. [SRAM-CIM 基础](../02-memory-technologies/sram-cim-foundation.md)
-2. [ReRAM 作为计算元件](../02-memory-technologies/reram-as-compute-element.md)
+2. [一格 ReRAM 怎样存下权重，两行电流又怎样算出点积？](../02-memory-technologies/reram-as-compute-element.md)
 3. [Analog CIM](../03-compute-paradigms/analog-cim-fundamentals.md)
 4. [ADC/DAC/SA](../04-circuit-and-macro/adc-dac-sa-in-cim.md)
 5. [非理想性与误差源](../04-circuit-and-macro/non-idealities-and-error-sources.md)

@@ -667,6 +667,14 @@
         "target": "CIM/wiki/02-memory-technologies/pcm-mram-for-cim.md"
       },
       {
+        "source": "series/microarchitecture/08-in-memory-computing/02-memory-technologies/img/reram-column-dot.svg",
+        "target": "CIM/wiki/02-memory-technologies/img/reram-column-dot.svg"
+      },
+      {
+        "source": "series/microarchitecture/08-in-memory-computing/02-memory-technologies/img/reram-column-error.svg",
+        "target": "CIM/wiki/02-memory-technologies/img/reram-column-error.svg"
+      },
+      {
         "source": "series/microarchitecture/08-in-memory-computing/02-memory-technologies/reram-as-compute-element.md",
         "target": "CIM/wiki/02-memory-technologies/reram-as-compute-element.md"
       },

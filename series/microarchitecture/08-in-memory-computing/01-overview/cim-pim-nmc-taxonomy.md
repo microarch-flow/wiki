@@ -93,3 +93,5 @@
 比较时先约定同一批输入、输出精度和复用次数，再从布局准备一直计到消费者可用。宏电路内每瓦能做多少运算和整机生成一个 token 要多久，统计边界不同。最初的问题现在可以落到一条具体线上：**下一次点积还用 4 和 5，哪一条线可以少传它们，留下的局部读取、感测和归约又要做多少次？** [CIM 从宏到系统的性能与能效建模](../05-architecture-and-system/performance-energy-modeling.md)
 
 还能沿这次点积拆开其中一步。前面用 DRAM 的三行激活算了一对 AND；换成 SRAM，能把两个存储位一起接到位线上吗？先看单行读取哪条位线，再看一颗实测芯片怎样控制两行的读通路。[SRAM 原本一次读出一个字，怎样让阵列参与计算？](../02-memory-technologies/sram-cim-foundation.md)
+
+同一个点积也可以沿着电流算。若把权重 4 和 5 写成电导，把输入 2 和 3 变成两行的电压，两股电流在同一列汇合之后，怎样从读数还原 23？[用两行 ReRAM 重算这次点积](../02-memory-technologies/reram-as-compute-element.md#ideal-column-current)

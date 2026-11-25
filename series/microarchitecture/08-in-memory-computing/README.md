@@ -17,6 +17,8 @@
 
 如果权重仍由 DRAM 正常读出，谁来做乘加？先跟踪[一对 bank 旁的处理单元](./02-memory-technologies/dram-pim-foundation.md)，再看[不同组的局部结果怎样合成主机需要的答案](./02-memory-technologies/dram-pim-deep-dive.md)。
 
+换成 ReRAM，权重可以写成电导。先算[两行电流怎样汇成理想的 4.6 µA](./02-memory-technologies/reram-as-compute-element.md)，再沿同一列看[读数为什么会偏离这个值](./02-memory-technologies/reram-cim-deep-dive.md)。
+
 
 <span class="micro-legacy-anchor" id="十章地图"></span>
 
