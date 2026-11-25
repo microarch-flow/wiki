@@ -29,7 +29,7 @@
 
 ## 按问题选择阅读入口
 
-- 权限与旧值：先读[一致性约束](../01-foundations/coherence-invariants.md)，再查[MSI 事务](../02-protocols/msi-transactions.md)。
+- 权限与旧值：核对[A 取得写权限的时刻](../01-foundations/coherence-invariants.md#write-permission)和[B 再读时的数据来源](../01-foundations/coherence-invariants.md#read-again)。
 - 消息交叉与挂起：读[瞬态状态](../02-protocols/transient-states-and-races.md)和[前进条件](../02-protocols/forward-progress.md)。
 - CHI 接口：查[事务完成](../03-chi/chi-flow-control-retry-completion.md)，同时核对目标规范版本。
 - CXL 接入：先查[地址路径](../04-cxl/cxl-type3-address-path.md)，再查[Linux 对象](../04-cxl/cxl-linux-regions-and-memory.md)。

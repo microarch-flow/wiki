@@ -303,6 +303,7 @@ def topic_tree(root, name):
     return items
 
 
+COHERENCE_MSI_REDIRECT = "COHERENCE/wiki/02-protocols/msi-transactions.md"
 COHERENCE_CHAPTERS = (
     ("01-foundations", "01-foundations/README.md"),
     ("02-protocols", "02-protocols/README.md"),
@@ -337,6 +338,7 @@ def coherence_sections(root):
             assigned.add(path)
         sections.append((label, pages))
     expected = {path.relative_to(root).as_posix() for path in wiki.rglob("*.md")}
+    expected.discard(COHERENCE_MSI_REDIRECT)
     if assigned != expected:
         raise ValueError(f"Coherence navigation coverage: missing={sorted(expected - assigned)}, extra={sorted(assigned - expected)}")
     return sections

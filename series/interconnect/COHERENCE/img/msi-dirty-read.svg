@@ -1,0 +1,69 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="360" height="381" viewBox="0 0 360 381" role="img" aria-labelledby="title desc" xml:lang="zh-CN">
+  <title id="title">B 再读时，目录 H 怎样找到 A 手中的新值</title>
+  <desc id="desc">目录式写回 MSI 教学例。开始时 B 为 I，A 为 M 且 x 为 1，内存中 x 为 0。① B 向目录 H 请求读取。② H 向持有脏行的 A 索取数据。③ A 把整行返回 H，行中 x 为 1。④ H 用新数据更新后备内存。⑤ H 把整行和读权限交给 B。读事务完成后 A、B 都为 S，x 为 1，内存也已更新。</desc>
+  <defs>
+    <marker id="ask-head" markerWidth="5" markerHeight="6" viewBox="0 0 5 6" refX="4.5" refY="3" orient="auto">
+      <path d="M0 0 5 3 0 6Z" fill="#315f88"/>
+    </marker>
+    <marker id="data-head" markerWidth="5" markerHeight="6" viewBox="0 0 5 6" refX="4.5" refY="3" orient="auto">
+      <path d="M0 0 5 3 0 6Z" fill="#28715a"/>
+    </marker>
+  </defs>
+  <style>
+    text { text-anchor: middle; font-family: system-ui, "Noto Sans CJK SC", sans-serif; fill: #243b4b; font-size: 16px; }
+    .actor, .caption { font-size: 17px; font-weight: 650; }
+    .caption { text-anchor: start; }
+    .lane { fill: none; stroke: #a1afab; stroke-width: 1; stroke-dasharray: 3 4; }
+    .ask, .data { fill: none; stroke-width: 2.5; stroke-linecap: round; }
+    .ask { stroke: #315f88; marker-end: url(#ask-head); }
+    .data { stroke: #28715a; marker-end: url(#data-head); }
+    .ask-label, .data-label { font-weight: 600; paint-order: stroke; stroke: #fafbf8; stroke-width: 4; stroke-linejoin: round; }
+    .ask-label { fill: #27547e; }
+    .data-label { fill: #185c47; }
+    .detail { fill: #185c47; }
+  </style>
+  <rect x="1" y="1" width="358" height="379" rx="10" fill="#fafbf8" stroke="#c4cdca"/>
+  <text class="caption" x="12" y="24">B 发出读之前</text>
+  <rect x="7" y="32" width="77" height="52" rx="6" fill="#eef1ef"/>
+  <rect x="94" y="32" width="80" height="52" rx="6" fill="#e3edf7"/>
+  <rect x="183" y="32" width="80" height="52" rx="6" fill="#def0e6"/>
+  <rect x="273" y="32" width="80" height="52" rx="6" fill="#f1ecdf"/>
+  <text class="actor" x="45" y="52">缓存 B</text>
+  <text x="45" y="74">I</text>
+  <text class="actor" x="134" y="52">目录 H</text>
+  <text x="134" y="74">持有者 A</text>
+  <text class="actor" x="223" y="52">缓存 A</text>
+  <text x="223" y="74">M · x=1</text>
+  <text class="actor" x="313" y="52">内存</text>
+  <text x="313" y="74">x=0</text>
+
+  <path class="lane" d="M45 84V310 M134 84V310 M223 84V238 M223 251V310 M313 84V310"/>
+  <text class="ask-label" x="89" y="108">① 请求读</text>
+  <circle cx="45" cy="117" r="3" fill="#315f88"/>
+  <path class="ask" d="M45 117H133"/>
+
+  <text class="ask-label" x="179" y="147">② 索取脏行</text>
+  <circle cx="134" cy="156" r="3" fill="#315f88"/>
+  <path class="ask" d="M134 156H222"/>
+
+  <text class="data-label" x="179" y="184">③ 回传整行</text>
+  <circle cx="223" cy="193" r="3" fill="#28715a"/>
+  <path class="data" d="M223 193H135"/>
+  <text class="detail" x="179" y="214">x=1</text>
+
+  <text class="data-label" x="224" y="236">④ 更新内存，x=1</text>
+  <circle cx="134" cy="245" r="3" fill="#28715a"/>
+  <path class="data" d="M134 245H312"/>
+
+  <text class="data-label" x="89" y="273">⑤ 交付整行</text>
+  <circle cx="134" cy="282" r="3" fill="#28715a"/>
+  <path class="data" d="M134 282H46"/>
+  <text class="detail" x="89" y="303">和读权限</text>
+
+  <path d="M8 314H352" stroke="#c4cdca"/>
+  <text class="caption" x="12" y="336">B 读完成后</text>
+  <text x="45" y="363">B · S · 1</text>
+  <text x="134" y="363">共享 A、B</text>
+  <text x="223" y="363">A · S · 1</text>
+  <text x="313" y="363">内存 x=1</text>
+</svg>
