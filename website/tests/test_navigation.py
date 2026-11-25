@@ -783,6 +783,24 @@ class GeneratedNavigationTests(unittest.TestCase):
         self.assertEqual(unescape(active.group(1).strip()), "写入与可靠性")
         self.assertIn('aria-label="HBF 写入与可靠性：主机和设备如何分工"', active.group())
 
+    def test_nand_lesson_keeps_storage_landing_link_and_legacy_sections(self):
+        canonical = Path("HBF/wiki/02-nand-foundations/index.html")
+        html = (SITE / canonical).read_text(encoding="utf-8")
+        article = re.search(r"<article\b.*?</article>", html, re.DOTALL).group()
+        ids = re.findall(r'\bid="([^"]+)"', article)
+        for fragment in (
+            "nand-基础电荷阵列与-pageblock", "nand-基础从电荷到-page-和-block", "cell-怎样表示数据",
+            "stringwordline-和-bitline", "page-与-block-分别做什么", "用-4-kib-检查数据量", "编程擦除与覆盖",
+            "两种堆叠不是同一件事",
+        ):
+            self.assertEqual(ids.count(fragment), 1, fragment)
+        home = Path("storage/index.html")
+        html = (SITE / home).read_text(encoding="utf-8")
+        article = re.search(r"<article\b.*?</article>", html, re.DOTALL).group()
+        links = re.findall(r'<a href="([^"]+)">([^<]+)</a>', article)
+        self.assertTrue(any(urljoin(page_url(home), href) == page_url(canonical) and "NAND" in label and "SSD" in label
+                            for href, label in links))
+
     def test_archived_reviews_are_reachable_but_not_in_reader_navigation(self):
         for relative in (Path("index.html"), Path("microarchitecture/index.html"),
                          Path("RAM/wiki/01-overview/index.html")):
