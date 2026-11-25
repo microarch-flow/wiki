@@ -1,6 +1,6 @@
 # 知识地图
 
-这页只保留章节级入口。
+下面按九章列出各篇文章。第一次阅读可从[专题首页的四个问题](./README.md#dma-first-reads)开始。
 
 如果你要：
 
@@ -21,16 +21,16 @@
 - [首页](./02-fundamentals/README.md)
 - [传输对象与基本语义](./02-fundamentals/transfer-basics.md)
 - [缓存一致性、IOMMU 与地址空间](./02-fundamentals/consistency-cache-coherency.md)
-- [地址、描述符与 Burst](./02-fundamentals/address-descriptor-burst.md)
+- [一条 DMA 描述符，为什么会变成多笔读写请求？](./02-fundamentals/address-descriptor-burst.md)
 - [Non-Coherent vs Coherent DMA](./02-fundamentals/noncoherent-vs-coherent-dma.md)
 
 ## 03 DMA 引擎微架构
 
 - [首页](./03-dma-microarchitecture/README.md)
 - [DMA 引擎的组成](./03-dma-microarchitecture/engine-components.md)
-- [调度、Outstanding 与回包组织](./03-dma-microarchitecture/scheduling-outstanding.md)
+- [后发的 DMA 请求先回来，数据怎样放回正确的位置？](./03-dma-microarchitecture/scheduling-outstanding.md)
 - [多通道、虚拟化与隔离](./03-dma-microarchitecture/channels-virtualization.md)
-- [多维 DMA 与 Stride 地址生成](./03-dma-microarchitecture/multidimensional-stride-dma.md)
+- [矩阵每行隔着一段空隙，DMA 怎样只搬有效数据？](./03-dma-microarchitecture/multidimensional-stride-dma.md)
 
 ## 04 软件栈与编程模型
 
@@ -38,7 +38,7 @@
 - [软件栈与编程模型](./04-programming-model/software-stack.md)
 - [同步、一致性与常见错误](./04-programming-model/synchronization-errors.md)
 - [Tiling、Double Buffer 与 Overlap](./04-programming-model/tiling-double-buffering.md)
-- [队列、Doorbell 与 Completion](./04-programming-model/queues-doorbells-completions.md)
+- [DMA 已经取走描述符，软件现在能复用缓冲区吗？](./04-programming-model/queues-doorbells-completions.md)
 
 ## 05 系统集成
 

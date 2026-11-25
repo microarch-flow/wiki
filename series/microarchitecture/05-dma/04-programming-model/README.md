@@ -10,7 +10,7 @@
 1. [软件栈与编程模型](./software-stack.md)
 2. [同步、一致性与常见错误](./synchronization-errors.md)
 3. [Tiling、Double Buffer 与 Overlap](./tiling-double-buffering.md)
-4. [队列、Doorbell 与 Completion](./queues-doorbells-completions.md)
+4. [DMA 已经取走描述符，软件现在能复用缓冲区吗？](./queues-doorbells-completions.md)
 
 ## 本章输出物
 

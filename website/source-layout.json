@@ -383,6 +383,10 @@
         "target": "DMA/wiki/02-fundamentals/address-descriptor-burst.md"
       },
       {
+        "source": "series/microarchitecture/05-dma/02-fundamentals/img/axi-burst-split.svg",
+        "target": "DMA/wiki/02-fundamentals/img/axi-burst-split.svg"
+      },
+      {
         "source": "series/microarchitecture/05-dma/02-fundamentals/consistency-cache-coherency.md",
         "target": "DMA/wiki/02-fundamentals/consistency-cache-coherency.md"
       },

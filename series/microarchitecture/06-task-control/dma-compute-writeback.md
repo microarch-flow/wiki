@@ -10,7 +10,7 @@
 
 ## DMA 取到了描述符，阵列就可以读了吗？
 
-块 0 的输入有 16 字节。控制器向搬入引擎提交一条**描述符**，其中给出源地址、目的位置 I0 和长度 16 字节。DMA（直接内存访问）引擎读到它时，只是知道去哪里取哪些数。此时若阵列去读 I0，里面甚至可能还是上一轮留下的值。[DMA 的地址、描述符与事务拆分](../05-dma/02-fundamentals/address-descriptor-burst.md) · [AMD AXI CDMA 实际使用的描述符字段](https://docs.amd.com/r/en-US/pg034-axi-cdma/Scatter-Gather-Transfer-Descriptor-Definition)
+块 0 的输入有 16 字节。控制器向搬入引擎提交一条**描述符**，其中给出源地址、目的位置 I0 和长度 16 字节。DMA（直接内存访问）引擎读到它时，只是知道去哪里取哪些数。此时若阵列去读 I0，里面甚至可能还是上一轮留下的值。[一条 DMA 描述符，为什么会变成多笔读写请求？](../05-dma/02-fundamentals/address-descriptor-burst.md) · [AMD AXI CDMA 实际使用的描述符字段](https://docs.amd.com/r/en-US/pg034-axi-cdma/Scatter-Gather-Transfer-Descriptor-Definition)
 
 为了看清中间步骤，给这台教学机器规定每笔读请求最多取 8 字节。DMA 算出两个源地址，分别从起始地址和起始地址加 8 处读 8 字节。它可以先后发出两笔请求，再按请求所对应的偏移，把回来的数据写入 I0 的前半或后半。哪怕后半先返回，也只更新后半，仍有前半没到。即使两笔读数据都收齐了，如果后半还在等写入片上 SRAM，阵列读它就可能把新块的前半和旧块的后半拼在一起。
 
