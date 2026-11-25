@@ -1,1 +1,67 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="520" height="750" viewBox="0 0 520 750" role="img" aria-labelledby="title desc"><title id="title">主机、NIC 与接收应用的职责</title><desc id="desc">普通 socket 与硬件 RDMA 具有不同提交路径，两者都经过网络并需要接收方正确消费。</desc><defs><marker id="arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0 0 L8 4 L0 8" fill="#376b9a"/></marker></defs><style>text{font-family:system-ui,-apple-system,sans-serif;fill:#203a50;font-size:23px}.small{font-size:20px}.line,.arrow{stroke:#376b9a;stroke-width:2.5;fill:none}.arrow{marker-end:url(#arrow)}.box{fill:#e7f0f6;stroke:#7496b2;stroke-width:1.5}.green{fill:#dfeee3;stroke:#699477;stroke-width:1.5}.dash{stroke-dasharray:6 5}</style><rect width="520" height="750" rx="16" fill="#f4f7fa"/><text x="260" y="38" text-anchor="middle" class="">端点职责：两种提交路径</text><text x="135" y="84" text-anchor="middle" class="">普通 socket</text><text x="385" y="84" text-anchor="middle" class="">硬件 RDMA</text><rect x="25" y="110" width="220" height="52" rx="9" class="box"/><text x="135.0" y="144.0" text-anchor="middle" class="">应用缓冲区</text><path d="M135 162 L135 202" class="arrow "/><rect x="25" y="210" width="220" height="52" rx="9" class="box"/><text x="135.0" y="244.0" text-anchor="middle" class="">协议栈与驱动</text><path d="M135 262 L135 302" class="arrow "/><rect x="25" y="310" width="220" height="52" rx="9" class="box"/><text x="135.0" y="344.0" text-anchor="middle" class="">NIC 收发队列</text><rect x="275" y="110" width="220" height="52" rx="9" class="box"/><text x="385.0" y="144.0" text-anchor="middle" class="">授权与资源准备</text><path d="M385 162 L385 202" class="arrow "/><rect x="275" y="210" width="220" height="52" rx="9" class="box"/><text x="385.0" y="244.0" text-anchor="middle" class="">工作请求与 CQ</text><path d="M385 262 L385 302" class="arrow "/><rect x="275" y="310" width="220" height="52" rx="9" class="box"/><text x="385.0" y="344.0" text-anchor="middle" class="">NIC 传输引擎</text><path d="M135 362 L135 410" class="arrow "/><path d="M385 362 L385 410" class="arrow "/><rect x="25" y="420" width="470" height="54" rx="9" class="green"/><text x="260.0" y="455.0" text-anchor="middle" class="">交换网络：转发、排队与拥塞</text><path d="M260 474 L260 515" class="arrow "/><rect x="25" y="525" width="470" height="54" rx="9" class="box"/><text x="260.0" y="560.0" text-anchor="middle" class="">目标端：放置数据并交付相应状态</text><path d="M260 579 L260 620" class="arrow "/><rect x="25" y="630" width="470" height="54" rx="9" class="green"/><text x="260.0" y="665.0" text-anchor="middle" class="">应用：同步、消费、回收缓冲</text><text x="260" y="724" text-anchor="middle" class="small">逻辑路径；不固定复制次数</text></svg>
+<svg xmlns="http://www.w3.org/2000/svg" width="360" height="536" viewBox="0 0 360 536" role="img" aria-labelledby="title desc" xml:lang="zh-CN">
+  <title id="title">同一条 4 KiB 记录的 TCP 与 RDMA 收发路径</title>
+  <desc id="desc">两列分别表示两种传送。普通复制型 TCP 经两端协议栈、驱动和网卡；A 的 send 累计接纳 4096 字节后可以复用整个源区，B 的 recv 累计收齐 4096 字节后才有一条完整记录。可靠连接 RDMA 使用非内联、要求本地完成的带立即数写，网卡从已注册源区取数据，按远端地址写入授权目标槽；A 获取这笔写的成功发送完成项后才可复用源区，B 的同一 CPU 线程获取对应的成功接收完成项后可以读取目标槽。数据路径的箭头不规定两端应用观察完成的先后。</desc>
+  <defs>
+    <marker id="tcp-arrow" markerWidth="5" markerHeight="7" refX="4.4" refY="3.5" orient="auto">
+      <path d="M0 0 5 3.5 0 7Z" fill="#3c668c"/>
+    </marker>
+    <marker id="rdma-arrow" markerWidth="5" markerHeight="7" refX="4.4" refY="3.5" orient="auto">
+      <path d="M0 0 5 3.5 0 7Z" fill="#357660"/>
+    </marker>
+  </defs>
+  <style>
+    text { font: 16px system-ui, "Noto Sans CJK SC", sans-serif; fill: #243b4b; text-anchor: middle; }
+    .title { font-size: 18px; font-weight: 650; }
+    .head, .question { font-size: 17px; font-weight: 650; }
+    .tcp { fill: #285376; }
+    .rdma { fill: #1e604b; }
+    .tcp-line, .rdma-line { fill: none; stroke-width: 2; }
+    .tcp-line { stroke: #3c668c; marker-end: url(#tcp-arrow); }
+    .rdma-line { stroke: #357660; marker-end: url(#rdma-arrow); }
+  </style>
+  <rect x="1" y="1" width="358" height="534" rx="12" fill="#fafbf8" stroke="#c4ceca"/>
+  <text class="title" x="180" y="29">同一条 4 KiB 记录，从 A 送到 B</text>
+
+  <rect x="10" y="47" width="165" height="35" rx="6" fill="#e1ebf4"/>
+  <rect x="185" y="47" width="165" height="35" rx="6" fill="#dfeee6"/>
+  <text class="head tcp" x="92" y="70">TCP 复制收发</text>
+  <text class="head rdma" x="268" y="70">RC 带立即数写</text>
+
+  <rect x="10" y="93" width="165" height="68" rx="6" fill="#eef3f8" stroke="#a4bacb"/>
+  <rect x="185" y="93" width="165" height="68" rx="6" fill="#eef5ef" stroke="#a7bfae"/>
+  <text x="92" y="119">A 的协议栈与驱动</text>
+  <text x="92" y="145">准备网卡发送队列</text>
+  <text x="268" y="119">A 将写请求入队</text>
+  <text x="268" y="145">网卡读已注册源区</text>
+
+  <path class="tcp-line" d="M92 162v16"/>
+  <path class="rdma-line" d="M268 162v16"/>
+  <rect x="10" y="181" width="340" height="33" rx="6" fill="#e6ebe7"/>
+  <text x="180" y="204">数据经交换网络送往 B</text>
+  <path class="tcp-line" d="M92 215v15"/>
+  <path class="rdma-line" d="M268 215v15"/>
+
+  <rect x="10" y="233" width="165" height="66" rx="6" fill="#eef3f8" stroke="#a4bacb"/>
+  <rect x="185" y="233" width="165" height="66" rx="6" fill="#eef5ef" stroke="#a7bfae"/>
+  <text x="92" y="259">B 的网卡收包</text>
+  <text x="92" y="283">经协议栈交给 socket</text>
+  <text x="268" y="259">B 的网卡校验权限</text>
+  <text x="268" y="283">按远端地址放置记录</text>
+
+  <path d="M12 316h336" stroke="#c4ceca"/>
+  <text class="question" x="180" y="342">A 何时可以覆写整个源区？</text>
+  <rect x="10" y="354" width="165" height="57" rx="6" fill="#e8eff5"/>
+  <rect x="185" y="354" width="165" height="57" rx="6" fill="#e7f1e9"/>
+  <text class="tcp" x="92" y="377">send 累计接纳</text>
+  <text class="tcp" x="92" y="400">全部 4096 B</text>
+  <text class="rdma" x="268" y="377">取到该写请求的</text>
+  <text class="rdma" x="268" y="400">成功发送 CQE</text>
+
+  <text class="question" x="180" y="447">B 何时可以开始处理完整记录？</text>
+  <rect x="10" y="460" width="165" height="60" rx="6" fill="#e8eff5"/>
+  <rect x="185" y="460" width="165" height="60" rx="6" fill="#e7f1e9"/>
+  <text class="tcp" x="92" y="485">recv 累计交付</text>
+  <text class="tcp" x="92" y="509">全部 4096 B</text>
+  <text class="rdma" x="268" y="485">取到匹配本轮的</text>
+  <text class="rdma" x="268" y="509">成功接收 CQE</text>
+</svg>

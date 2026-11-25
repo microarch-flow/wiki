@@ -2,7 +2,7 @@
 
 <span id="系统网络ethernetrdma-与-infiniband-怎样配合"></span>
 
-服务器、存储和加速器交换数据，需要端点准备合法资源、网络传输数据，以及软件正确观察完成。本专题沿这条路径展开七章、34 页：本导读、七篇章节导读和 26 篇正文。
+服务器、存储和加速器交换数据，需要端点准备合法资源、网络传输数据，以及软件正确观察完成。本专题分为七章，共 25 篇正文。第一次阅读，可以从[《同样发 4 KiB，TCP 和 RDMA 什么时候能复用缓冲区？》](01-foundations/host-nic-data-path.md)开始，跟踪同一段数据在两端的去向。
 
 ## 先分清对象
 
@@ -21,7 +21,7 @@
 
 1. [01 基础概念](01-foundations/README.md)：区分消息、操作、包和帧，建立主机与 NIC 数据路径。
 2. [02 Ethernet 与 IP 网络](02-ethernet-and-ip/README.md)：解释转发、多路径、排队、重传与拥塞控制。
-3. [03 RDMA 端点](03-rdma-endpoints/README.md)：建立队列、授权、操作、完成和缓冲区生命周期契约。
+3. [03 RDMA 端点](03-rdma-endpoints/README.md)：解释连接怎样使用队列、远端内存如何授权，以及不同操作需要哪些接收资源。
 4. [04 RoCE](04-roce/README.md)：跟踪 RoCEv2 封装、PFC、ECN/CNP 与部署条件。
 5. [05 InfiniBand](05-infiniband/README.md)：解释子网管理、SL/VL、信用，并比较不同 RDMA 承载。
 6. [06 系统集成与新协议](06-system-integration/README.md)：分析 GPU 内存访问、通信库选路及 UE 1.1 的能力边界。
@@ -37,7 +37,7 @@
 
 构造例子：A、B 使用兼容的 RoCEv2 RC 连接。双方建立合法资源，A 持有有效源缓冲，B 授权目标 MR，并提供应用协议所需的接收与通知资源。A 提交写操作，NIC 经交换网络发送，B 的 NIC 检查并放置数据。
 
-A 的提交成功、A 的成功工作完成、B 的相应通知以及 B 的应用消费是不同事件。普通 Write 和 Write with Immediate 的通知方式不同，详细见[操作比较](03-rdma-endpoints/send-read-write-and-atomics.md)与[完成时序](03-rdma-endpoints/completion-ordering-and-lifetime.md)。
+A 的提交成功、A 的成功工作完成、B 的相应通知以及 B 的应用消费是不同事件。普通 Write 和 Write with Immediate 的通知方式不同，详细见[操作比较](03-rdma-endpoints/send-read-write-and-atomics.md)与[两端的完成时序](01-foundations/host-nic-data-path.md#completion)。
 
 网卡卸载数据路径后，软件仍需建立连接、管理内存和处理失败。实际性能取决于端点、网络、拥塞与消费者，不能只用链路额定速率推断。
 

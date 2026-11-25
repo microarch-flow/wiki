@@ -46,5 +46,5 @@
 
 - ping 成功，为何 RDMA Write 仍可能因权限失败？回看[部署条件](../04-roce/deployment-and-isolation.md)。
 - 两条 100 Gb/s 上行，为何一个流不一定得到 200 Gb/s？回看[ECMP](../02-ethernet-and-ip/clos-ecmp-and-rails.md)。
-- 发送完成，为何不能证明远端 GPU kernel 已消费？回看[完成时序](../03-rdma-endpoints/completion-ordering-and-lifetime.md)。
+- 发送完成，为何不能证明远端 GPU kernel 已消费？回看[完成时序](../01-foundations/host-nic-data-path.md#completion)。
 - 无损流控，为何仍不能保证应用永远前进？回看[PFC](../04-roce/pfc-headroom-and-stalls.md)与 [IB 信用](../05-infiniband/vl-credit-routing-and-congestion.md)。

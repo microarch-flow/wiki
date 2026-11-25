@@ -304,7 +304,8 @@ def topic_tree(root, name):
 
 
 SCALEUP_PEER_REDIRECT = "SCALEUP/wiki/04-software-and-collectives/peer-access-setup.md"
-ORIGINAL_TOPIC_REDIRECTS = STORAGE_LEGACY_PAGES | {SCALEUP_PEER_REDIRECT}
+NETWORK_COMPLETION_REDIRECT = "NETWORK/wiki/03-rdma-endpoints/completion-ordering-and-lifetime.md"
+ORIGINAL_TOPIC_REDIRECTS = STORAGE_LEGACY_PAGES | {SCALEUP_PEER_REDIRECT, NETWORK_COMPLETION_REDIRECT}
 
 COHERENCE_MSI_REDIRECT = "COHERENCE/wiki/02-protocols/msi-transactions.md"
 COHERENCE_CHAPTERS = (
