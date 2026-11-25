@@ -23,6 +23,7 @@ from storage_navigation import (DRAM_LEGACY_PAGES, INTEGRATION_AFTER, INTEGRATIO
                                 MEMORY_HOME, MEMORY_SECTIONS, RESOURCE_HOME, RESOURCE_SECTIONS,
                                 SYSTEM_SELECTION)  # noqa: E402
 
+SHARED_PATHS_DIAGRAM = Path("NOC/wiki/01-overview/img/shared-paths.html")
 UNLISTED_LANDING_PAGES = {"articles/index.html", "visuals/index.html"}
 LANDING_PAGES = {
     "index.html", "microarchitecture/index.html",
@@ -1151,9 +1152,25 @@ class GeneratedNavigationTests(unittest.TestCase):
                       {entry["location"] for entry in index["docs"]})
         self.assertFalse(any(entry["location"].startswith("reviews/") for entry in index["docs"]))
 
+    def test_noc_comparison_links_to_its_interactive_diagram(self):
+        page = Path("NOC/wiki/01-overview/bus-vs-noc-vs-crossbar/index.html")
+        body = (SITE / page).read_text(encoding="utf-8").split("<article", 1)[1].split("</article>", 1)[0]
+        diagram_url = f"https://example.test/{SHARED_PATHS_DIAGRAM.as_posix()}"
+        for pattern in (r'<iframe\b[^>]*\bsrc="([^"]+)"', r'<a\b[^>]*\bhref="([^"]+)"'):
+            targets = {urljoin(page_url(page), unescape(ref)) for ref in re.findall(pattern, body)}
+            self.assertIn(diagram_url, targets)
+
+        diagram = (SITE / SHARED_PATHS_DIAGRAM).read_text(encoding="utf-8")
+        controls = re.findall(r'<input type="radio" name="([^"]+)" value="([^"]+)"', diagram)
+        self.assertCountEqual(controls, [
+            ("structure", "bus"), ("structure", "crossbar"), ("structure", "mesh"),
+            ("target", "x"), ("target", "y"),
+        ])
+
     def test_current_navigation_and_breadcrumb_links(self):
         self.assertTrue(SITE.is_dir(), "Build the site before running this test")
         standalone_pages = {
+            SITE / SHARED_PATHS_DIAGRAM,
             SITE / "series/index.html",
             SITE / "foundations/switching-energy-and-power/index.html",
             *(SITE / "foundations" / companion for companion in FOUNDATION_COMPANIONS),
