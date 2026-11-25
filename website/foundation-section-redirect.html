@@ -3,15 +3,30 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>从硅到门电路</title>
-  <script>
-    location.replace("../" + (location.hash || "#__SECTION__"));
-  </script>
-  <noscript>
-    <meta http-equiv="refresh" content="0; url=../#__SECTION__">
-  </noscript>
+  <meta name="robots" content="noindex">
+  <link rel="canonical" href="$default_href">
+  <title>$title</title>
 </head>
 <body>
-  <a href="../#__SECTION__">前往《从硅到门电路》的对应小节</a>
+  <main>
+    <h1>$title</h1>
+    <p>各节已经并入相应正文。<a id="default-target" href="$default_href">$default_label</a></p>
+    <ul>
+$sections
+    </ul>
+  </main>
+  <script>
+    let fragment = location.hash.slice(1);
+    try {
+      fragment = decodeURIComponent(fragment);
+    } catch {
+      // A malformed bookmark still opens the default section.
+    }
+    const row = document.getElementById(fragment)?.closest("li");
+    const link = row?.querySelector("a") || document.getElementById("default-target");
+    const target = new URL(link.href);
+    target.search = location.search;
+    location.replace(target.href);
+  </script>
 </body>
 </html>

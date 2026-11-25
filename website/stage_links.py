@@ -66,8 +66,8 @@ class PublishedPaths:
         if posixpath.normpath(ordinary) == posixpath.normpath(unquote(path)):
             return raw
         if html:
-            base = _page_directory(staged)
-            target_path = _page_directory(mapped) if mapped.endswith(".md") else mapped
+            base = page_directory(staged)
+            target_path = page_directory(mapped) if mapped.endswith(".md") else mapped
         else:
             base = posixpath.dirname(staged) or "."
             target_path = mapped
@@ -89,7 +89,7 @@ class PublishedPaths:
                 page.write_text(updated, encoding="utf-8")
 
 
-def _page_directory(path):
+def page_directory(path):
     path = PurePosixPath(path)
     if path.name in {"README.md", "index.md"}:
         return str(path.parent)
