@@ -585,8 +585,6 @@ class GeneratedNavigationTests(unittest.TestCase):
             INTEGRATION_PACKAGING[0][1]: ("封装与集成", "封装如何改变存储接口边界", "阅读顺序"),
             INTEGRATION_PACKAGING[1][1]: ("dimmsodimm传统封装形态的电气与机械约束", "模块化容量与板级链路"),
             INTEGRATION_PACKAGING[2][1]: ("popmcp移动端的集成方式", "移动封装的位置与容量取舍"),
-            INTEGRATION_PACKAGING[3][1]: ("hbm-的-25d3d-集成与-tsv-技术", "tsv堆叠与近距宽接口"),
-            INTEGRATION_PACKAGING[4][1]: ("hbm-的成本结构为什么这么高", "堆叠良率与封装成本"),
             INTEGRATION_AFTER[0][1]: ("npu-选-hbm-还是-lpddr决策框架", "从工作负载反推外存需求"),
             INTEGRATION_AFTER[1][1]: ("cxl近存计算与未来封装方向", "协议计算位置与封装的边界"),
         }
@@ -709,13 +707,10 @@ class GeneratedNavigationTests(unittest.TestCase):
         hbm_html = (SITE / "RAM/wiki/05-dram-protocol-families/hbm-stacked-wide-io/index.html").read_text(encoding="utf-8")
         article = re.search(r"<article\b.*?</article>", hbm_html, re.DOTALL).group()
         source_url = page_url(Path("RAM/wiki/05-dram-protocol-families/hbm-stacked-wide-io/index.html"))
-        targets = {urlsplit(urljoin(source_url, unescape(href))).path for href in re.findall(r'<a\s+[^>]*href="([^"]+)"', article)}
-        for target in (
-            "/RAM/wiki/08-packaging-integration/hbm-2.5d-3d-tsv/",
-            "/RAM/wiki/08-packaging-integration/why-hbm-is-expensive/",
-            "/RAM/wiki/09-ai-chip-memory-architecture/hbm-vs-lpddr-for-npu/",
-        ):
-            self.assertIn(target, targets)
+        targets = {urljoin(source_url, unescape(href)) for href in re.findall(r'<a\s+[^>]*href="([^"]+)"', article)}
+        selection = page_url(Path("RAM/wiki/09-ai-chip-memory-architecture/hbm-vs-lpddr-for-npu/index.html"))
+        for fragment in ("path", "yield", "choose"):
+            self.assertIn(selection + "#" + fragment, targets)
 
     def test_memory_controller_order_and_legacy_anchors(self):
         group = grouped_original_topics(SITE.parent / "docs", STORAGE)[3]["DRAM 控制器与请求调度"]
@@ -927,8 +922,6 @@ class GeneratedNavigationTests(unittest.TestCase):
         cases = {
             "RAM/wiki/05-dram-protocol-families/hbm-stacked-wide-io/index.html": ("存储系统", "DRAM 器件与接口"),
             "RAM/wiki/02-sram-foundations/6t-cell-bistable-storage/index.html": ("存储系统", "SRAM 器件与应用"),
-            "RAM/wiki/08-packaging-integration/hbm-2.5d-3d-tsv/index.html": ("存储系统", "存储系统集成与选型"),
-            "RAM/wiki/08-packaging-integration/why-hbm-is-expensive/index.html": ("存储系统", "存储系统集成与选型"),
             "RAM/wiki/09-ai-chip-memory-architecture/hbm-vs-lpddr-for-npu/index.html": ("存储系统", "存储系统集成与选型"),
             "NOC/wiki/02-router-microarchitecture/credit-based-flow-control/index.html": ("芯片与系统互连", "片上网络（NoC）"),
             "SERDES/wiki/06-link-operation/pcie-training-case/index.html": ("芯片与系统互连", "高速电链路（SerDes）"),
@@ -1179,6 +1172,29 @@ class GeneratedNavigationTests(unittest.TestCase):
         for slug, (default, routes) in legacy_routes.items():
             with self.subTest(slug=slug):
                 self.assert_storage_merge_links(canonical, chapter / slug / "index.html", canonical_ids, routes, default)
+
+    def test_hbm_packaging_and_cost_bookmarks_land_in_selection_article(self):
+        canonical = Path("RAM/wiki/09-ai-chip-memory-architecture/hbm-vs-lpddr-for-npu/index.html")
+        fragments = {
+            "path", "width", "yield", "budget", "choose", "model", "next",
+            "npu-外存选型hbm-与-lpddr", "npu-选-hbm-还是-lpddr决策框架", "这页在回答什么问题",
+            "从工作负载反推外存需求", "一个教学算例", "按什么顺序比较", "一句话理解", "建模启示",
+        }
+        old_directory = Path("RAM/wiki/08-packaging-integration")
+        packaging = {
+            "hbm-的堆叠与封装内互连": "path", "hbm-的-25d3d-集成与-tsv-技术": "path",
+            "这页在回答什么问题": "path", "tsv堆叠与近距宽接口": "path", "宽接口怎样形成带宽": "width",
+            "一句话理解": "path", "建模启示": "model",
+        }
+        cost = {
+            "hbm-的成本从哪里来": "yield", "hbm-的成本结构为什么这么高": "yield",
+            "这页在回答什么问题": "yield", "堆叠良率与封装成本": "yield", "两个有边界的算例": "yield",
+            "比较时固定目标": "choose", "一句话理解": "yield", "建模启示": "model",
+        }
+        self.assert_storage_merge_links(canonical, old_directory / "hbm-2.5d-3d-tsv/index.html",
+                                        fragments, packaging, "path")
+        self.assert_storage_merge_links(canonical, old_directory / "why-hbm-is-expensive/index.html",
+                                        fragments, cost, "yield")
 
     def assert_storage_merge_links(self, canonical, legacy, main_fragments, expected_routes, default):
         html = (SITE / canonical).read_text(encoding="utf-8")

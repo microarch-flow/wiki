@@ -11,8 +11,8 @@
 ## 阅读顺序
 
 1. [不同计算系统如何选择存储层次](./why-systems-choose-different-memory.md)：从 MCU、CPU、GPU、NPU 的需求出发，不按处理器类别硬编码答案。
-2. [存储模块、封装与集成](./packaging/README.md)：依次了解 DIMM/SODIMM、PoP/MCP、HBM 互连与成本。
-3. [NPU 外存选型：HBM 与 LPDDR](./hbm-vs-lpddr-for-npu.md)：用容量、流量和产品约束比较候选方案。
+2. [存储模块、封装与集成](./packaging/README.md)：了解 DIMM/SODIMM 的板级连接以及 PoP/MCP 的移动封装。
+3. [NPU 该选 HBM 还是 LPDDR？从一笔权重读取算起](./hbm-vs-lpddr-for-npu.md)。从读取路径算接口峰值和工作负载需要的持续带宽，再把容量和封装成本一起纳入选型。
 4. [存储扩展与近存计算](./future-packaging-cxl-near-memory.md)：区分 CXL 接口、计算位置和封装集成。
 
 只想比较 NPU 外存，可先读第 3 篇，再按需回看第 2 篇。研究多级内存和计算卸载时，可直接读第 4 篇。

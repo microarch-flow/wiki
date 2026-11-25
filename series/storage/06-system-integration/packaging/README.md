@@ -27,10 +27,8 @@
 
 1. [DIMM 与 SODIMM](./dimm-sodimm-traditional-forms.md)：模块化的容量、维护和板级链路。
 2. [PoP 与 MCP](./pop-mcp-mobile-integration.md)：封装组成和移动设备的取舍。
-3. [HBM 堆叠与互连](./hbm-2.5d-3d-tsv.md)：区分 stack 内部与计算侧的连接。
-4. [HBM 成本](./why-hbm-is-expensive.md)：理解筛测、封装和良率的成本边界。
 
-完成后可读 [NPU 的 HBM 与 LPDDR 选型](../hbm-vs-lpddr-for-npu.md)，再读 [CXL 与近存计算](../future-packaging-cxl-near-memory.md)。后者讨论系统接口和计算位置，不属于某一种封装形态。
+接着看 NPU 怎样选外存。沿[一笔权重读取的路径](../hbm-vs-lpddr-for-npu.md#path)辨认 stack 内的 TSV 和通往计算 die 的互连，再算[封装良率怎样改变合格品成本](../hbm-vs-lpddr-for-npu.md#yield)。要继续研究系统接口和计算位置，可读 [CXL 与近存计算](../future-packaging-cxl-near-memory.md)。
 
 ## 一句话理解
 

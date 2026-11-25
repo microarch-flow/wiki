@@ -255,6 +255,11 @@
         "target": "RAM/wiki/09-ai-chip-memory-architecture/hbm-vs-lpddr-for-npu.md"
       },
       {
+        "kind": "file",
+        "source": "series/storage/06-system-integration/img/hbm-package-read-path.svg",
+        "target": "RAM/wiki/09-ai-chip-memory-architecture/img/hbm-package-read-path.svg"
+      },
+      {
         "kind": "directory",
         "source": "series/storage/assets",
         "target": "RAM/wiki/img"

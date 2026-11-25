@@ -118,4 +118,4 @@ HBM 是一个跨层选择的例子。Micron 的 [HBM2E 资料](https://www.micro
 - [局部性与数据搬运](./locality-working-set-data-movement.md)：看工作集和访问序列如何改变跨层流量。
 - [SRAM 与 DRAM 的分化](./sram-dram-divergence.md)：继续看两种存储方式如何影响组织。
 - [带宽与延迟](../03-performance/bandwidth-vs-latency-fundamental.md)：进一步区分响应时间与持续吞吐。
-- [HBM 的成本](../../06-system-integration/packaging/why-hbm-is-expensive.md)：了解堆叠、测试和封装带来的成本因素。
+- [HBM 的成本](../../06-system-integration/hbm-vs-lpddr-for-npu.md#yield)：了解堆叠、测试和封装带来的成本因素。
