@@ -9,7 +9,7 @@
     .title { font-size:24px; font-weight:680 }
     .heading { font-size:20px; font-weight:660 }
     .label { font-size:18px; font-weight:620 }
-    .copy { font-size:17px; fill:#3b5c4f }
+    .copy { font-size:18px; fill:#3b5c4f }
     .mid { text-anchor:middle }
     .value { font-size:20px; text-anchor:middle; font-weight:590 }
     .pos { fill:#285344 }
