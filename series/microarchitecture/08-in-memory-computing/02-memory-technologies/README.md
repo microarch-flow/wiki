@@ -3,27 +3,17 @@
 <span class="micro-legacy-anchor" id="02-memory-technologies"></span>
 
 
-上级：[CIM Wiki](../README.md)
-相关：[两条正交主线](../01-overview/two-axes-memory-and-paradigm.md), [CIM、PIM、NMC 的位置与口径](../01-overview/cim-pim-nmc-taxonomy.md)
+上级：[存内与近存计算](../README.md)
 
 ## 这页在回答什么问题
 
-为什么 CIM/PIM 不能只按 analog、digital、mixed-signal 来讲，还必须先按 memory technology 拆开？因为 cell 物理、读写路径、容量、工艺和可靠性决定了哪些 compute paradigm 自然成立，哪些只是论文里可以做但工程上不划算。
+算一次 `2×4 + 3×5`，数字寄存器可以依次写入 8、23。换一种电路，读出端可能只接到一股电流，或者一份积在电容上的电荷。下面从一次普通 SRAM 读出开始，先看存储单元与感测器能合作算出什么，再追踪结果怎样交给后面的数字电路。
 
 ## 本章的横轴
 
-本章按 memory technology 组织，而不是按公司或论文名组织。每条路线都要回答两个问题：第一，计算是否真的发生在 memory cell 或 array path 中；第二，这类 memory 更自然地走 analog、digital 还是 mixed-signal。
+本章按存储介质安排。先问**权重存在哪里**，再问**第一个有计算意义的结果出现在哪里**。用 SRAM 中两个逻辑位做按位与，要看读路径的感测结果。把计算单元放在 DRAM bank 旁，要追寄存器里的部分和。如果独立运算逻辑在 HBM 的逻辑底座、封装中介层或内存模块旁边，本系列把它归入近存计算，还要追踪数据如何跨过存储 die 的边界。[按位置区分 CIM、PIM、NMC](../01-overview/cim-pim-nmc-taxonomy.md)
 
-| 路线 | 归类 | 主导 paradigm | 核心判断 |
-| --- | --- | --- | --- |
-| [SRAM-CIM](./sram-cim-foundation.md) | CIM | digital / mixed-signal | 可利用 CMOS 集成；具体 CIM 宏的产品证据需单独核对 |
-| [ReRAM-CIM](./reram-as-compute-element.md) | CIM | analog / mixed-signal | 电导阵列可执行 MVM；非理想性与写入成本需核查 |
-| [Flash-CIM](./flash-cim-niche.md) | CIM | analog / mixed-signal | 需结合权重更新、校准与部署条件评估 |
-| [PCM/MRAM-CIM](./pcm-mram-for-cim.md) | CIM 研究分支 | 取决于 device | PCM 偏 analog multi-level，MRAM 更偏 binary/digital-like |
-| [DRAM/HBM/GDDR-PIM](./dram-pim-foundation.md) | PIM | independent digital processing | 重点是 memory die/bank 内 processing，不是 array-native CIM |
-
-HBM base die、interposer、package-side logic 或 memory module 旁 compute 按 01 章定义归 NMC，不放入 DRAM-PIM 主线。
-
+再来看非易失单元。ReRAM 的例子在固定时刻量一列的电流，Flash 的例子要收集一段时间内流过的电荷。PCM 的写后漂移会改变同一输入引起的读数，MRAM 的感测器则可以用不同参考值，在一次双行读出时判断不同的逻辑函数。选定介质后，仍可分别考察数字、模拟和混合信号实现。[存储介质和求值方式的两条线索](../01-overview/two-axes-memory-and-paradigm.md)
 
 <span class="micro-legacy-anchor" id="推荐阅读顺序"></span>
 
@@ -31,18 +21,15 @@ HBM base die、interposer、package-side logic 或 memory module 旁 compute 按
 
 1. [SRAM 原本一次读出一个字，怎样让阵列参与计算？](./sram-cim-foundation.md)　跟踪同一列的两位，改变其中一位，看看输出怎样从 0 变为 1。
 2. [位线上的电压，怎样变成可累加的数字部分和？](./sram-cim-deep-dive.md)　跟踪正负两组位线电压，看看电压差怎样变成数字部分和。
-3. [把乘加器放在 DRAM bank 旁，一条命令怎样算起来？](./dram-pim-foundation.md)：PIM；independent digital processing；重点是 memory die/bank 内 processing，不是 array-native CIM。
-4. [多组 bank 各算出部分和，谁把它们合成最后的答案？](./dram-pim-deep-dive.md)
+3. [把乘加器放在 DRAM bank 旁，一条命令怎样算起来？](./dram-pim-foundation.md)　跟着一条命令，看计算单元怎样从相邻 bank 取出权重，再把结果写回来。
+4. [多组 bank 各算出部分和，谁把它们合成最后的答案？](./dram-pim-deep-dive.md)　用同一个矩阵比较按输入项和按输出行分工。
 5. [一格 ReRAM 怎样存下权重，两行电流又怎样算出点积？](./reram-as-compute-element.md)　把两个权重写成电导，沿两行算到同一列的 4.6 µA。
 6. [理想列电流应该是 4.6 µA，为什么实际读数会偏？](./reram-cim-deep-dive.md)　从理想电流出发，找出误差在哪一段进入读数。
-7. [Flash CIM](./flash-cim-niche.md)：CIM；analog / mixed-signal；需结合权重更新、校准与部署条件评估。
-8. [PCM 和 MRAM 作为 CIM 介质](./pcm-mram-for-cim.md)：CIM 研究分支；取决于 device；PCM 偏 analog multi-level，MRAM 更偏 binary/digital-like。
-9. [存储计算路线速查](./memory-tech-comparison-matrix.md)
+7. [Flash 怎样把权重写进阈值，再用三拍算出一个点积？](./flash-cim-niche.md)　逐窗看哪些行仍导通，核对列电流怎样被积分成电荷。
+8. [PCM 的电导会漂移，MRAM 的两个磁态又怎样参与计算？](./pcm-mram-for-cim.md)　先复算同一列的两只 PCM 单元怎样因漂移而改变读数，再看两行 MRAM 的磁态怎样决定判决结果。
+9. [存储计算路线速查](./memory-tech-comparison-matrix.md)　按第一处可测的结果查机制，再用权重复用 60 次的例子比较整次任务。
 
-## 一句话理解
+<span class="micro-legacy-anchor" id="一句话理解"></span>
+<span class="micro-legacy-anchor" id="研究启示"></span>
 
-Memory technology 决定 CIM/PIM 的物理边界：SRAM 追求工程可落地，ReRAM/Flash 追求阵列原生 MVM，DRAM/HBM/GDDR-PIM 追求大容量 memory-side 系统收益。
-
-## 研究启示
-
-本章后续研究应避免把 “memory 更靠近 compute” 当成统一结论。每条路线都要先证明它满足 01 章的计算位置定义，再证明它的主导 paradigm 与该 memory 的物理特性匹配；否则普通 memory + 旁路数字逻辑、PIM、NMC 和真正 CIM 会再次混在同一张表里。
+读完可以再做一次自查。拿到一张标着「存内计算」的框图，选两个具体权重，画出它们各自影响哪条支路、在哪里合成一个结果，以及谁第一次拿到能用的数字。如果作者给的是峰值能效，就沿这条路径核对编程、输入驱动、读出转换和数字归并算到了哪一步。[回到路线速查表](./memory-tech-comparison-matrix.md)

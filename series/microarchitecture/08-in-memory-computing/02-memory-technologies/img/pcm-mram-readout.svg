@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 700 611" role="img" aria-labelledby="title desc">
+  <title id="title">PCM 按比例换算与 MRAM 用阈值判决</title>
+  <desc id="desc">上图为 PCM 教学例。两行分别加 40、60 毫伏，第一只单元保持 40 微西门子，第二只从 50 变为 45 微西门子，列电流从 4.6 变为 4.3 微安。以每单位 0.20 微安换算，量化前的等效点积从 23 变为 21.5。下图另设两个同时选通的独立并联磁隧道结，每个结两端都是 40 毫伏。平行态编码一，十千欧，每支路四微安；反平行态编码零，二十千欧，每支路两微安。位组合零零、零一或一零、一一，对应四、六、八微安。超过五微安为一时得到或，超过七微安为一时得到与。</desc>
+  <style>
+    text{font-family:system-ui,"Noto Sans CJK SC","PingFang SC",sans-serif;fill:#173c32}
+    .title{font-size:24px;font-weight:680}.heading{font-size:21px;font-weight:660}
+    .label{font-size:19px;font-weight:630}.copy{font-size:18px;fill:#3b5c4f}
+    .mid{text-anchor:middle}.value{font-size:20px;font-weight:630;text-anchor:middle}.ref{fill:#845437}
+  </style>
+  <rect width="700" height="611" rx="14" fill="#f2f5ed"/>
+  <text x="18" y="34" class="title">读到列电流以后，怎样换算或判决？</text>
+  <rect x="16" y="54" width="668" height="224" rx="9" fill="#fafbf6" stroke="#afc2b1"/>
+  <text x="30" y="86" class="heading">PCM · 同样的输入读两次</text>
+  <text x="30" y="116" class="copy">两行读压固定为 40、60 mV。假设第二只单元的电导从 50 降到 45 µS。</text>
+  <rect x="27" y="130" width="645" height="33" rx="4" fill="#e2ecdf"/>
+  <g class="label mid">
+    <text x="79" y="154">时刻</text><text x="225" y="154">电导对 (µS)</text>
+    <text x="424" y="154">列电流 (µA)</text><text x="595" y="154">等效点积</text>
+  </g>
+  <g class="copy mid">
+    <text x="79" y="191">初次读</text><text x="225" y="191">(40, 50)</text><text x="424" y="191">1.6 + 3.0 = 4.6</text><text x="595" y="191" class="label">23</text>
+    <text x="79" y="225">稍后读</text><text x="225" y="225">(40, 45)</text><text x="424" y="225">1.6 + 2.7 = 4.3</text><text x="595" y="225" class="label">21.5</text>
+  </g>
+  <path d="M27 202H672" fill="none" stroke="#d0dbce"/>
+  <text x="30" y="259" class="copy">按 0.20 µA/单位换算。21.5 是量化前的等效点积。</text>
+
+  <rect x="16" y="293" width="668" height="299" rx="9" fill="#fafbf6" stroke="#afc2b1"/>
+  <text x="30" y="325" class="heading">MRAM · 同一组电流改用两个判决阈值</text>
+  <text x="30" y="356" class="copy">两个独立支路并联且同时选通，每支路两端均为 40 mV。</text>
+  <text x="30" y="387" class="copy">P 存 1，10 kΩ 读出 4 µA。AP 存 0，20 kΩ 读出 2 µA。</text>
+
+  <text x="30" y="428" class="label">两位组合</text>
+  <g class="label mid"><text x="204" y="428">00</text><text x="416" y="428">01 或 10</text><text x="628" y="428">11</text></g>
+  <path d="M195 449H638" fill="none" stroke="#658572" stroke-width="2"/>
+  <g fill="#38694e"><circle cx="204" cy="449" r="4.5"/><circle cx="416" cy="449" r="4.5"/><circle cx="628" cy="449" r="4.5"/></g>
+  <path d="M310 439V457 M522 439V457" fill="none" stroke="#996847" stroke-width="2.5" stroke-dasharray="3 2"/>
+  <text x="30" y="480" class="copy">列电流</text>
+  <g class="copy mid">
+    <text x="204" y="480">4 µA</text><text x="310" y="480" class="ref">5 µA</text><text x="416" y="480">6 µA</text><text x="522" y="480" class="ref">7 µA</text><text x="628" y="480">8 µA</text>
+  </g>
+  <rect x="27" y="501" width="645" height="33" rx="4" fill="#e2ecdf"/>
+  <text x="37" y="525" class="label">I &gt; 5 µA（OR）</text>
+  <text x="37" y="565" class="label">I &gt; 7 µA（AND）</text>
+  <g class="value"><text x="204" y="525">0</text><text x="416" y="525">1</text><text x="628" y="525">1</text>
+    <text x="204" y="565">0</text><text x="416" y="565">0</text><text x="628" y="565">1</text></g>
+</svg>

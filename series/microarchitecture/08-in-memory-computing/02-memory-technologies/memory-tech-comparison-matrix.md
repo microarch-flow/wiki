@@ -2,38 +2,45 @@
 
 <span class="micro-legacy-anchor" id="三大-memory-路线全景对比"></span>
 <span class="micro-legacy-anchor" id="这页在回答什么问题"></span>
-<span class="micro-legacy-anchor" id="不能直接横比的指标"></span>
-<span class="micro-legacy-anchor" id="路线选择的第一性问题"></span>
-<span class="micro-legacy-anchor" id="常见误解"></span>
-<span class="micro-legacy-anchor" id="一句话理解"></span>
-<span class="micro-legacy-anchor" id="研究启示"></span>
 
-
-上级：[存储介质与计算路径](./README.md)
-
-这张表用于定位需要深入核查的路径，不给路线排总榜。计算位置的术语口径见[分类页](../01-overview/cim-pim-nmc-taxonomy.md)，analog/digital/mixed-signal 的观察层级见[求值方式](../01-overview/two-axes-memory-and-paradigm.md)。
-
+同样算 `2×4 + 3×5`，在 DRAM bank 旁可以读到寄存器里的 23，在 ReRAM 列端可以量到 4.6 µA，在本章的 Flash 例子里可以量到 230 fC。后两个数为什么都能读成 23？因为各自的电路给每一个点积单位约定了不同的物理刻度。反过来，如果一条感测线只告诉你「两位是否都为 1」，还得经过哪些步骤才能交付完整点积？
 
 <span class="micro-legacy-anchor" id="路线对比矩阵"></span>
 
 ## 路线对照
 
-| 路线与正文入口 | 可采用的机制 | 必须计入的代价 | 不能由名称推出的结论 |
-| --- | --- | --- | --- |
-| [SRAM-CIM](./sram-cim-foundation.md) | 阵列读路径中的位逻辑或电流/电荷计算 | cell 面积、端口、感测、累加及转换 | 标准 SRAM 工艺成熟不等于所有 CIM 宏已产品化 |
-| [ReRAM-CIM](./reram-as-compute-element.md) | 电导编码与阵列 MVM 等 | 写入验证、非理想性、ADC、校准、差分编码 | 单元密度不等于系统可用权重密度 |
-| [Flash-CIM](./flash-cim-niche.md) | 电荷状态与模拟读出路径 | 编程、保持、温漂、转换和模型更新 | 非易失不等于适合所有固定权重任务 |
-| [PCM/MRAM](./pcm-mram-for-cim.md) | 按器件分别核查状态、感测与求值 | 写入、漂移或可靠性、读出、外围 | 两类器件不能共用一个精度或耐久结论 |
-| [DRAM/HBM/GDDR-PIM](./dram-pim-foundation.md) | 本专题主线讨论 die/bank 内独立 CU | 指令能力、bank 共享、数据重排、host 同步 | 大容量不等于目标程序获得端到端加速 |
+先找每条路径里**第一个值得测的量**。表内数字沿用各篇的教学条件，SRAM 和 MRAM 两行保留各自实例实际能给出的结果。分类时可以分别追踪[计算发生的位置](../01-overview/cim-pim-nmc-taxonomy.md)和[阵列及外围的求值方式](../01-overview/two-axes-memory-and-paradigm.md)。
 
-这些是需验证的候选机制。具体工艺、精度与数值以各篇列出的器件或论文为准。若研究 DRAM 阵列自身的复制或逻辑操作，需单独标明操作范围，不能套用独立 CU 的模型。
+| 路线 | 权重或操作数在哪里，先观察什么 | 要交付结果，还要检查什么 |
+| --- | --- | --- |
+| [SRAM 阵列求值](./sram-cim-foundation.md) | 单元保持逻辑位。两行一起参与一次感测，可以判出一个按位与。另一种宏让多项乘积在电容上形成电压差。 | 按位与只有一位，数字路径还需按位权合并。电荷路径需校准、量化与局部累加。计入读稳定性、端口、面积和外围。[从压差到数字部分和](./sram-cim-deep-dive.md) |
+| [DRAM/HBM/GDDR-PIM](./dram-pim-foundation.md) | 权重经过 DRAM 的普通读出通路，再到存储芯片上的独立计算单元。本章示例的一条通道连续乘加，寄存器从 0 变为 8，再变为 23。 | 检查命令、bank 争用和结果读回。沿输入维切分时，还要归并各组返回的同一输出。DRAM 阵列本身若执行行复制或位逻辑，需要另画其读写路径。[多组结果的去向](./dram-pim-deep-dive.md) |
+| [ReRAM](./reram-as-compute-element.md#ideal-column-current) | 权重映射到读区电导，行电压代表输入，两股电流在一列汇成 4.6 µA。除以本例的 0.2 µA/单位，得到 23。 | 区分写入误差、线阻、旁路和量化。差分对占用的单元、ADC、参考和校准都要计入。[为什么数字读数会变成 22](./reram-cim-deep-dive.md#column-voltage-error) |
+| [Flash](./flash-cim-niche.md#three-read-windows) | 先调阈值，使两个选通单元在固定读偏置下分别贡献 4 和 5 µA。本例用开通时长给输入赋值，积分得到 230 fC。除以 10 fC/单位，得到 23。 | 核对实际输入编码、编程与校验、温度和保持时间，以及积分、转换、数字后处理。换模型需要重写多少权重，也会改变整次任务的能耗。 |
+| [PCM](./pcm-mram-for-cim.md#pcm-drift) | 相态影响读出电导。在教学例中驱动不变，若仅第二格从 50 漂到 45 µS，同一列理想和便从 4.6 变成 4.3 µA。 | 检查写后多久测量、各状态怎样漂移、何时校准。在给定刻度下 4.3 µA 对应 21.5 个点积单位，还要知道读出如何量化。[IBM HERMES 的实物路径](../../../chip-architectures/ibm-hermes/README.md) |
+| [MRAM](./pcm-mram-for-cim.md#mram-two-rows) | 磁隧道结的两种相对磁化方向产生两个阻态。文中的两支路同时读出，列电流出现 4、6、8 µA 三档，用不同参考就能判 OR 或 AND。 | 检查相邻电流分布有多宽、读电流是否影响磁态，以及感测后怎样组成多位运算。若先逐位读回，再送独立 MAC，要另按 MAC 的位置归类。 |
+
+<span class="micro-legacy-anchor" id="不能直接横比的指标"></span>
+<span class="micro-legacy-anchor" id="路线选择的第一性问题"></span>
 
 ## 比较前统一什么
 
-统一任务、精度、运算计数、包含的外围和能耗边界；分别报告初始化、稳态与尾部。把写入、转换、主机交换及未加速算子的成本计入所选系统范围。
+**先让两个方案交付同一个输出。** 同样的矩阵、输入精度和输出误差容限下，一边若只给出四个 tile 各自的部分和，另一边已经给出可用输出，前一边还得合并并传到相同的消费端。随后统一运算口径，例如一次 MAC 计为一次乘加还是乘、加各一次。峰值 TOPS/W、整个算子的能量和包含主机等待的一次 token 延迟，各自回答不同的问题。
 
-可驻留权重数由可用 cell/bit、每权重编码、差分对、冗余和外围面积共同决定。TOPS/W 的峰值也必须标明哪些操作被计入，不能直接替代任务能量或 token latency。
+再把「权重写一次」放回任务时间线。设有两个**虚构设计**，每次都完成同一任务，精度相同。A 每换一组权重先多花 120 pJ，随后每次花 4 pJ。B 的相同任务每次花 6 pJ，已含本例所需的装载，两者其余开销相同。同一组权重复用 n 次，总能量分别为 `120 + 4n` 和 `6n`，单位均为 pJ。
+
+| 复用次数 | A 总能量 | B 总能量 |
+| --- | --- | --- |
+| 1 | 124 pJ | 6 pJ |
+| 60 | 360 pJ | 360 pJ |
+| 61 | 364 pJ | 366 pJ |
+
+只看稳态的 4 和 6，会错过前 60 次的情形。若 A 每隔一段时间还得重写、重校准，就把相应事件加回时间线。实际测量也应分别计入初始化、稳态、最后一块写回，以及没有下沉的算子和主机交换。上表的数值只为展示算法，不代表任何一种介质的实测值。
+
+<span class="micro-legacy-anchor" id="常见误解"></span>
+<span class="micro-legacy-anchor" id="一句话理解"></span>
+<span class="micro-legacy-anchor" id="研究启示"></span>
 
 ## 读表后的下一步
 
-沿上表进入对应器件正文，再读[宏到系统](../05-architecture-and-system/from-macro-to-system.md)和[性能能量建模](../05-architecture-and-system/performance-energy-modeling.md)。商业状态需看具体公司卡的证据日期；本表不以缺少同口径数据的“成熟度排名”代替验证。
+读一篇器件论文，先看作者实际测了哪些单元、在哪个偏置和温度下测、测到了哪个输出。读到宏或芯片报告，再看转换、校准和数字归并是否计入面积、时间和能量。比较可驻留权重数时，还要扣除编码和冗余的占用，例如每个权重使用两个差分单元时，同样数量的物理单元可容纳的权重数约减半。工艺平台、实测样片、可交付产品和客户部署各有相应证据，商业进展要查具体型号及日期。[从计算宏到系统](../05-architecture-and-system/from-macro-to-system.md) · [性能与能量建模](../05-architecture-and-system/performance-energy-modeling.md) · [返回存储介质与计算路径](./README.md)

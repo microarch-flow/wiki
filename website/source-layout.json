@@ -655,6 +655,14 @@
         "target": "CIM/wiki/02-memory-technologies/dram-pim-foundation.md"
       },
       {
+        "source": "series/microarchitecture/08-in-memory-computing/02-memory-technologies/img/flash-read-windows.svg",
+        "target": "CIM/wiki/02-memory-technologies/img/flash-read-windows.svg"
+      },
+      {
+        "source": "series/microarchitecture/08-in-memory-computing/02-memory-technologies/img/pcm-mram-readout.svg",
+        "target": "CIM/wiki/02-memory-technologies/img/pcm-mram-readout.svg"
+      },
+      {
         "source": "series/microarchitecture/08-in-memory-computing/02-memory-technologies/flash-cim-niche.md",
         "target": "CIM/wiki/02-memory-technologies/flash-cim-niche.md"
       },
