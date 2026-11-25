@@ -213,11 +213,11 @@ memory controller 与 DRAM 设备之间的一条相对独立的数据与命令�
 
 `PoP`
 
-Package on Package。移动系统中把内存与主芯片以更近封装方式叠接的集成形态，常与 LPDDR 路线配套。
+Package on Package，封装叠封装。它描述上下叠放并连接的独立封装。移动系统中常见的例子是把 LPDDR 内存封装叠在处理器封装上。
 
 `MCP`
 
-Multi-Chip Package。把多个 die 或芯片组合进一个封装中的通用术语，语义比 PoP 更宽。
+Multi-Chip Package，多芯片封装。它描述一个封装内装有多颗裸片。若上层内存封装含有多颗裸片，它本身就是 MCP。把它叠接在处理器封装上，上下两个封装就组成 PoP。[对照移动封装专题中的 PoP 与 MCP](../../06-system-integration/packaging/pop-mcp-mobile-integration.md)
 
 `TSV`
 
