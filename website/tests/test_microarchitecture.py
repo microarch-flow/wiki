@@ -88,6 +88,36 @@ class MicroarchitecturePublicationTests(unittest.TestCase):
                 expected = "https://microarch-flow.github.io/wiki/" + record["html"].removesuffix("index.html")
                 self.assertIn(f'<link rel="canonical" href="{expected}">', text)
 
+    def test_first_reads_link_to_the_published_articles_in_order(self):
+        home = (SITE / "microarchitecture/index.html").read_text()
+        content = home.split('id="series-home-content"', 1)[1]
+        reading = re.search(r'<h2 id="first-reads">.*?</h2>\s*<ol>(.*?)</ol>', content, re.DOTALL)
+        self.assertIsNotNone(reading)
+        paths = [urlsplit(urljoin("/microarchitecture/", href)).path.strip("/") for href
+                 in re.findall(r'<li><a href="([^"]+)">', reading.group(1))]
+        sources = [
+            "00-overview/microarchitecture-decisions.md",
+            "02-pipeline/pipeline-register-insertion.md",
+            "03-instruction-execution/dependencies-bypass-issue.md",
+        ]
+        self.assertEqual(paths, [html_path(self.mapping[source]).parent.as_posix() for source in sources])
+
+    def test_first_read_anchors_added_after_the_legacy_snapshot(self):
+        anchors = {
+            "00-overview/microarchitecture-decisions.md": {
+                "微架构在决定什么软件语义执行资源与实现约束", "先区分三种问题", "同一个点积两种资源日程",
+                "一项工作至少经过四种约束", "本系列的阅读主线", "如何验证自己的理解",
+            },
+            "03-instruction-execution/dependencies-bypass-issue.md": {
+                "数据依赖旁路与发射", "先把依赖和冲突分开", "一个明示时序的例子", "旁路需要哪些硬件和判断",
+                "就绪不等于获准执行", "延迟启动间隔与依赖距离",
+            },
+        }
+        for source, expected in anchors.items():
+            with self.subTest(article=source):
+                article = SITE / html_path(self.mapping[source])
+                self.assertLessEqual(expected, set(Article(article.read_text()).ids))
+
     def test_article_links_and_ids(self):
         parsed = {}
         for staged in self.pages:

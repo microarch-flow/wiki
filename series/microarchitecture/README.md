@@ -4,9 +4,13 @@ title: "计算微架构：执行、数据通路与资源协作"
 
 # 计算微架构：执行、数据通路与资源协作
 
-<span id="微架构执行数据通路与资源协作" aria-hidden="true"></span>微架构把软件要求变成可执行的资源、状态和时序。本系列从运算与流水线出发，连接指令控制、并行阵列、异步搬运和任务同步，再比较资源组织、存内计算与功耗取舍。
+<span id="微架构执行数据通路与资源协作" aria-hidden="true"></span>给芯片一段计算，谁来算，先得到的数放在哪里，下一项工作要等到哪一拍？从一个点积开始，逐拍跟踪数据和指令，再把同样的问题带到计算阵列和整块任务。
 
-第一次阅读，可从[微架构在决定什么](./00-overview/microarchitecture-decisions.md)开始。各专题按机制组织；CPU、GPU、NPU 是组合这些机制的不同实例。
+## 先读这三篇 {#first-reads}
+
+1. [芯片怎样算出一个点积？](./00-overview/microarchitecture-decisions.md)　用一个乘法器算出 `2×4 + 3×5`，再换成两个，看看哪一拍能省下来。
+2. [第一份结果还没出来，下一份能开始吗？](./02-pipeline/pipeline-register-insertion.md)　跟着几组输入走过三级流水线，比较独立运算和依赖前一次结果的运算。
+3. [第二条指令在等，第三条能先执行吗？](./03-instruction-execution/dependencies-bypass-issue.md)　逐拍看三条指令的操作数何时到齐、执行端口由谁使用，以及结果何时提交。
 
 ## 专题地图 {#topics}
 
@@ -26,7 +30,7 @@ title: "计算微架构：执行、数据通路与资源协作"
 
 ## 按处理器类型阅读
 
-- **CPU 路线**：[指令生命周期](./03-instruction-execution/instruction-lifecycle.md) → [依赖与发射](./03-instruction-execution/dependencies-bypass-issue.md) → [流水线与时序](./02-pipeline/README.md) → [CPU/GPU 资源组织](./07-chip-organization/cpu-vs-gpu-core-area.md)。
+- **CPU 路线**：[第三条指令能先执行吗](./03-instruction-execution/dependencies-bypass-issue.md) → [从取指到提交](./03-instruction-execution/instruction-lifecycle.md) → [流水线与时序](./02-pipeline/README.md) → [CPU/GPU 资源组织](./07-chip-organization/cpu-vs-gpu-core-area.md)。
 - **GPU 路线**：[SIMD、向量与 SIMT](./04-parallel-execution/simd-vector-simt.md) → [CPU/GPU 资源组织](./07-chip-organization/cpu-vs-gpu-core-area.md) → [局部矩阵资源与片上组织](./07-chip-organization/gpu-as-tiled-tpu.md) → [GPU Copy Engine](./05-dma/07-workloads-case-studies/gpu-copy-engine-case-card.md)。
 - **NPU 路线**：[运算数据通路](./01-datapath/README.md) → [阵列逐拍示例](./04-parallel-execution/why-systolic-array.md) → [数据流](./04-parallel-execution/dataflow-taxonomy.md) → [跨引擎协作](./06-task-control/dma-compute-writeback.md)。
 

@@ -1,0 +1,63 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 442" role="img" aria-labelledby="title desc">
+  <title id="title">一个乘法器，先后完成两次乘法</title>
+  <desc id="desc">时间向下。起点四个输入已在寄存器中。t=1 时 P0 装入 8。第二拍 P0 保持，乘法器复用来计算 3 乘 5。t=2 时 P1 装入 15。t=3 时 S 装入 8 加 15 的结果 23。</desc>
+  <defs>
+    <marker id="arrow" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="5" markerHeight="5" orient="auto">
+      <path d="M1 1L7 4L1 7" fill="none" stroke="#497061" stroke-width="1.5"/>
+    </marker>
+  </defs>
+  <style>
+    text { font-family: system-ui, "Noto Sans CJK SC", "PingFang SC", "Microsoft YaHei", sans-serif; text-anchor: middle; fill: #183e33; }
+    .heading { font-size: 20px; font-weight: 700; text-anchor: start; }
+    .edge { font-size: 17px; font-weight: 700; }
+    .input { fill: #f6eedf; stroke: #bf9d69; }
+    .op { fill: #235642; }
+    .state { fill: #e1eedf; stroke: #69917c; }
+    .value { font-size: 19px; font-weight: 650; }
+    .operation { font-size: 18px; font-weight: 600; fill: #fff; }
+    .note { font-size: 16px; fill: #496356; }
+    .grid { fill: none; stroke: #d1ddd2; stroke-dasharray: 3 5; }
+    .flow { fill: none; stroke: #497061; stroke-width: 2; marker-end: url(#arrow); }
+  </style>
+  <rect width="500" height="442" rx="14" fill="#f1f5ed"/>
+  <text class="heading" x="17" y="32">一个乘法器 M，三个周期</text>
+  <path class="grid" d="M62 77H488 M62 175H488 M62 273H488 M62 399H488"/>
+  <g class="edge">
+    <text x="34" y="83">t = 0</text><text x="34" y="181">t = 1</text>
+    <text x="34" y="279">t = 2</text><text x="34" y="405">t = 3</text>
+  </g>
+  <g>
+    <rect class="input" x="74" y="59" width="178" height="36" rx="7"/>
+    <rect class="input" x="287" y="59" width="194" height="36" rx="7"/>
+    <text class="value" x="163" y="84">输入 2 和 4</text>
+    <text class="value" x="384" y="84">输入 3 和 5</text>
+    <path class="flow" d="M163 95V108"/>
+    <path class="flow" d="M163 144V155"/>
+    <rect class="op" x="80" y="109" width="166" height="35" rx="17"/>
+    <text class="operation" x="163" y="133">M 算 2 × 4</text>
+    <path class="flow" d="M384 95V204" stroke-dasharray="4 4"/>
+    <rect x="330" y="119" width="108" height="30" rx="7" fill="#f1f5ed"/>
+    <text class="note" x="384" y="140">保持输入</text>
+  </g>
+  <g>
+    <rect class="state" x="85" y="157" width="156" height="36" rx="7"/>
+    <text class="value" x="163" y="182">P0 ← 8</text>
+    <path class="flow" d="M163 193V252" stroke-dasharray="4 4"/>
+    <rect class="op" x="287" y="206" width="194" height="35" rx="17"/>
+    <text class="operation" x="384" y="230">同一 M 算 3 × 5</text>
+    <path class="flow" d="M384 241V252"/>
+  </g>
+  <g>
+    <rect class="state" x="75" y="255" width="176" height="36" rx="7"/>
+    <text class="value" x="163" y="280">P0 保持 8</text>
+    <rect class="state" x="306" y="255" width="156" height="36" rx="7"/>
+    <text class="value" x="384" y="280">P1 ← 15</text>
+    <path class="flow" d="M163 291V308L213 326"/>
+    <path class="flow" d="M384 291V308L334 326"/>
+    <rect class="op" x="179" y="328" width="188" height="35" rx="17"/>
+    <text class="operation" x="273" y="352">加法器算 8 + 15</text>
+    <path class="flow" d="M273 363V378"/>
+    <rect class="state" x="195" y="381" width="156" height="36" rx="7"/>
+    <text class="value" x="273" y="406">S ← 23</text>
+  </g>
+</svg>

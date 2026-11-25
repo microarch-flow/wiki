@@ -978,6 +978,14 @@
         "target": "microarchitecture/00-overview/microarchitecture-decisions.md"
       },
       {
+        "source": "series/microarchitecture/00-overview/img/dot-one-multiplier.svg",
+        "target": "microarchitecture/00-overview/img/dot-one-multiplier.svg"
+      },
+      {
+        "source": "series/microarchitecture/00-overview/img/dot-two-multipliers.svg",
+        "target": "microarchitecture/00-overview/img/dot-two-multipliers.svg"
+      },
+      {
         "source": "series/microarchitecture/02-pipeline/stalls-and-backpressure.md",
         "target": "COMPUTE/wiki/04-clocking-and-pipeline/stalls-and-backpressure.md"
       },
@@ -988,6 +996,10 @@
       {
         "source": "series/microarchitecture/03-instruction-execution/dependencies-bypass-issue.md",
         "target": "microarchitecture/03-instruction-execution/dependencies-bypass-issue.md"
+      },
+      {
+        "source": "series/microarchitecture/03-instruction-execution/img/issue-data-path.svg",
+        "target": "microarchitecture/03-instruction-execution/img/issue-data-path.svg"
       },
       {
         "source": "series/microarchitecture/03-instruction-execution/instruction-lifecycle.md",

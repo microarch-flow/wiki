@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 225" role="img" aria-labelledby="title desc">
+  <title id="title">三级乘加流水线与结果反馈</title>
+  <desc id="desc">第一级整理并零扩展操作数，第二级乘法，第三级将乘积与随行的旧累加值相加。加法结果可沿反馈线回到下一项的输入。每一级在自己的入口寄存器保存数据和一个有效位。</desc>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+      <path d="M0 0L10 5L0 10Z" fill="#366b60"/>
+    </marker>
+    <marker id="return" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+      <path d="M0 0L10 5L0 10Z" fill="#8a462b"/>
+    </marker>
+  </defs>
+  <rect x="1" y="1" width="758" height="223" rx="14" fill="#f5f7ef" stroke="#d5dfd2"/>
+  <g stroke="#366b60" fill="none" stroke-width="2.5" marker-end="url(#arrow)">
+    <path d="M19 93H48"/><path d="M225 93H277"/><path d="M454 93H506"/><path d="M683 93H734"/>
+  </g>
+  <g fill="#e6eee4" stroke="#91afa0" stroke-width="1.5">
+    <rect x="51" y="37" width="174" height="103" rx="7"/><rect x="280" y="37" width="174" height="103" rx="7"/><rect x="509" y="37" width="174" height="103" rx="7"/>
+  </g>
+  <g fill="#204941" font-family="system-ui, sans-serif" text-anchor="middle">
+    <g font-size="19" font-weight="650">
+      <text x="138" y="68">第一级 · 整理输入</text><text x="367" y="68">第二级 · 做乘法</text><text x="596" y="68">第三级 · 做加法</text>
+    </g>
+    <g font-size="16">
+      <text x="138" y="98">寄存 a, b, s</text><text x="367" y="98">寄存扩展后的 a, b, s</text><text x="596" y="98">寄存 p, s</text>
+      <text x="138" y="122">扩展两个乘数</text><text x="367" y="122">p = a × b</text><text x="596" y="122">结果 = s + p</text>
+    </g>
+  </g>
+  <path d="M704 94V170H138V145" fill="none" stroke="#8a462b" stroke-width="2.3" stroke-dasharray="7 5" marker-end="url(#return)"/>
+  <circle cx="704" cy="93" r="3.7" fill="#8a462b"/>
+  <text x="422" y="199" font-family="system-ui, sans-serif" text-anchor="middle" font-size="16" fill="#713722">同一条累加链：结果送回，成为下一项的 s</text>
+</svg>
