@@ -13,6 +13,8 @@
 
 从《[同一个点积，挪到存储旁边或阵列里面怎么算？](./01-overview/cim-pim-nmc-taxonomy.md)》开始。跟着两个权重看它们走到哪个运算单元，再判断哪一段搬运发生了变化。[介质与求值方式](./01-overview/two-axes-memory-and-paradigm.md)负责物理坐标；[路线矩阵](./02-memory-technologies/memory-tech-comparison-matrix.md)负责查阅。公司和论文是机制的证据与案例，不是另一套平行分类。
 
+想看阵列怎样动手算，先沿[一列 SRAM 的两行读出](./02-memory-technologies/sram-cim-foundation.md)找出一个逻辑位，再沿[另一种 SRAM 的电荷共享和数字读出](./02-memory-technologies/sram-cim-deep-dive.md)跟踪一个部分和。
+
 
 <span class="micro-legacy-anchor" id="十章地图"></span>
 

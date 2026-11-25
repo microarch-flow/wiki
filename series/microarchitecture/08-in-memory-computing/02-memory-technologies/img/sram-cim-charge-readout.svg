@@ -1,0 +1,69 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 668" role="img" aria-labelledby="title desc">
+  <title id="title">CONV-SRAM 的四列教学例和积分读出</title>
+  <desc id="desc">同一条读字线选中四列权重，输入为 1、1、0、1，权重依次为正一、负一、正一、正一。关断字线后，四个等大的电容接到正轨，初始电压为 U、0、0、U，共享后为 U/2。负轨也接四个电容，初值为 0、U、0、0，共享后为 U/4。第一次比较可知符号为正。把已预充的复制位线短暂接入较低的负轨，然后断开、重新比较。循环直到比较器输出翻转，统计共享脉冲得到幅值码。图中的四列没有指定 ADC 步数或实际电压。</desc>
+  <defs>
+    <marker id="arrow" markerWidth="8" markerHeight="8" refX="6" refY="4" viewBox="0 0 8 8" orient="auto" markerUnits="userSpaceOnUse"><path d="M1 1L6 4L1 7" stroke="#4f7560" stroke-width="1.7" fill="none" stroke-linecap="round" stroke-linejoin="round"/></marker>
+  </defs>
+  <style>
+    text { font-family: system-ui, "Noto Sans CJK SC", "PingFang SC", sans-serif; fill:#173c32 }
+    .title { font-size:24px; font-weight:680 }
+    .heading { font-size:20px; font-weight:660 }
+    .label { font-size:18px; font-weight:620 }
+    .copy { font-size:18px; fill:#3b5c4f }
+    .mid { text-anchor:middle }
+    .value { font-size:20px; text-anchor:middle; font-weight:590 }
+    .pos { fill:#285344 }
+    .neg { fill:#805037 }
+    .link { stroke:#4f7560; stroke-width:2; fill:none; stroke-linejoin:round; marker-end:url(#arrow) }
+  </style>
+  <rect width="800" height="668" rx="14" fill="#f2f5ed"/>
+  <text x="20" y="35" class="title">四列的电荷怎样汇成一个带符号的读数？</text>
+  <text x="20" y="65" class="copy">教学例取四列，每列两条局部位线的电容均为 C。输入 1 预充到 U，输入 0 预充到 0。</text>
+
+  <rect x="18" y="83" width="764" height="269" rx="10" fill="#fafbf6" stroke="#afc2b1"/>
+  <path d="M18 121H782" stroke="#c7d5c6"/>
+  <g class="label mid">
+    <text x="263" y="110">列 0</text><text x="352" y="110">列 1</text><text x="441" y="110">列 2</text><text x="530" y="110">列 3</text>
+  </g>
+  <text x="34" y="150" class="label">各列的输入 x</text>
+  <text x="34" y="182" class="label">同一行的权重 w</text>
+  <g class="value">
+    <text x="263" y="150">1</text><text x="352" y="150">1</text><text x="441" y="150">0</text><text x="530" y="150">1</text>
+    <text x="263" y="182">+1</text><text x="352" y="182">−1</text><text x="441" y="182">+1</text><text x="530" y="182">+1</text>
+  </g>
+  <rect x="28" y="196" width="744" height="41" rx="5" fill="#edf2ea"/>
+  <text x="39" y="222" class="copy">选中该行，权重决定哪侧放电。关断读字线 RWL 后，两侧位线再接入正、负轨。</text>
+  <text x="34" y="264" class="copy">接入各轨前的电压</text>
+  <text x="671" y="264" class="copy mid">跨四列共享后</text>
+  <rect x="28" y="273" width="744" height="32" rx="4" fill="#e3eee1"/>
+  <rect x="28" y="309" width="744" height="32" rx="4" fill="#f3e9dc"/>
+  <g class="label"><text x="38" y="296" class="pos">正轨</text><text x="38" y="332" class="neg">负轨</text></g>
+  <g class="value">
+    <text x="263" y="296">U</text><text x="352" y="296">0</text><text x="441" y="296">0</text><text x="530" y="296">U</text>
+    <text x="263" y="332">0</text><text x="352" y="332">U</text><text x="441" y="332">0</text><text x="530" y="332">0</text>
+    <text x="666" y="296" class="pos">2U / 4 = U/2</text><text x="666" y="332" class="neg">U / 4</text>
+  </g>
+  <path class="link" d="M561 289h29"/><path class="link" d="M561 325h29"/>
+  <text x="20" y="385" class="label">两轨相差 U/4，对应四项的有符号和 (+1) + (−1) + 0 + (+1) = +1。</text>
+
+  <text x="20" y="429" class="heading">比较器怎样把电压差读成数字？</text>
+  <rect x="18" y="446" width="191" height="76" rx="8" fill="#e4eee2" stroke="#a6bba8"/>
+  <text x="114" y="473" class="label mid">先比较，记下符号</text>
+  <text x="114" y="503" class="copy mid">正轨较高，记为正</text>
+  <path class="link" d="M210 485h39"/>
+  <rect x="251" y="446" width="221" height="76" rx="8" fill="#fafbf6" stroke="#a6bba8"/>
+  <text x="362" y="473" class="label mid">向较低的负轨共享电荷</text>
+  <text x="362" y="503" class="copy mid">接入已预充的复制位线</text>
+  <path class="link" d="M473 485h42"/>
+  <rect x="517" y="446" width="265" height="76" rx="8" fill="#fafbf6" stroke="#a6bba8"/>
+  <text x="650" y="473" class="label mid">断开复制位线，再比较</text>
+  <text x="650" y="503" class="copy mid">负轨电压超过正轨了吗？</text>
+  <path class="link" d="M580 523v33H362v-31"/>
+  <rect x="412" y="540" width="132" height="28" fill="#f2f5ed"/>
+  <text x="478" y="561" class="copy mid">否，再共享一次</text>
+  <path class="link" d="M699 523v55"/>
+  <text x="712" y="558" class="copy">是</text>
+  <rect x="250" y="581" width="532" height="40" rx="7" fill="#e4eee2" stroke="#a6bba8"/>
+  <text x="516" y="607" class="label mid">比较结果翻转，结束转换。共享脉冲数给出幅值码。</text>
+  <text x="20" y="650" class="copy">每轮比较时重新预充复制位线。论文图 12 另举了输出码为 +4 的波形例子。</text>
+</svg>

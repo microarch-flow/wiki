@@ -29,8 +29,8 @@ HBM base die、interposer、package-side logic 或 memory module 旁 compute 按
 
 ## 阅读顺序
 
-1. [SRAM-CIM 基础](./sram-cim-foundation.md)：CIM；digital / mixed-signal；可利用 CMOS 集成；具体 CIM 宏的产品证据需单独核对。
-2. [SRAM-CIM 深入](./sram-cim-deep-dive.md)
+1. [SRAM 原本一次读出一个字，怎样让阵列参与计算？](./sram-cim-foundation.md)　跟踪同一列的两位，改变其中一位，看看输出怎样从 0 变为 1。
+2. [位线上的电压，怎样变成可累加的数字部分和？](./sram-cim-deep-dive.md)　跟踪正负两组位线电压，看看电压差怎样变成数字部分和。
 3. [ReRAM 作为计算元件](./reram-as-compute-element.md)：CIM；analog / mixed-signal；电导阵列可执行 MVM；非理想性与写入成本需核查。
 4. [ReRAM-CIM 深入](./reram-cim-deep-dive.md)
 5. [DRAM-PIM 基础](./dram-pim-foundation.md)：PIM；independent digital processing；重点是 memory die/bank 内 processing，不是 array-native CIM。

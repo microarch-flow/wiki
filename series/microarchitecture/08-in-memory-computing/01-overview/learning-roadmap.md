@@ -14,7 +14,7 @@
 1. [Memory Wall 与 Von Neumann Bottleneck](./problem-statement.md)
 2. [CIM、PIM、NMC 的位置与口径](./cim-pim-nmc-taxonomy.md)
 3. [两条正交主线](./two-axes-memory-and-paradigm.md)
-4. [SRAM-CIM 基础](../02-memory-technologies/sram-cim-foundation.md)
+4. [SRAM 原本一次读出一个字，怎样让阵列参与计算？](../02-memory-technologies/sram-cim-foundation.md)
 5. [ReRAM 作为计算元件](../02-memory-technologies/reram-as-compute-element.md)
 6. [DRAM-PIM 基础](../02-memory-technologies/dram-pim-foundation.md)
 7. [Analog CIM 基础](../03-compute-paradigms/analog-cim-fundamentals.md)

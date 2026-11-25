@@ -1,0 +1,64 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 746 590" role="img" aria-labelledby="title desc">
+  <title id="title">同一列 6T SRAM 的普通读、两行 AND 与两行 NOR</title>
+  <desc id="desc">采用独立的左右字线。上图只画 AND 模式，两个工作行 A、B 的真值分别为 1、0；两行 WLR 均开，WLL 均关。B 的零使 BL 的电压下降，BLB 维持高，二者对参考电压的单端判决相与得到 0。下表比较四次独立读。普通只读 A 得 1。把 B 改写为 1 后以 AND 读取，结果为 1。以 A 为 1、B 为 0 做 NOR 时仅开两行 WLL，BLB 下降，结果为 0。图是抽象逻辑路径，没有给出电压随时间变化的波形。</desc>
+  <style>
+    text { font-family: system-ui, "Noto Sans CJK SC", "PingFang SC", sans-serif; fill: #173c32; }
+    .title { font-size: 24px; font-weight: 680; }
+    .sub { font-size: 17px; fill: #3b5c4f; }
+    .label { font-size: 18px; font-weight: 630; }
+    .mid { font-size: 18px; text-anchor: middle; }
+    .key { font-size: 18px; text-anchor: middle; font-weight: 660; }
+    .small { font-size: 16px; font-weight: 540; fill: #456357; }
+    .on { fill: none; stroke: #42745a; stroke-width: 3; stroke-linecap: round; }
+    .open { fill: none; stroke: #798b80; stroke-width: 2; stroke-linecap: round; }
+    .wire { fill: none; stroke: #81998b; stroke-width: 2; }
+  </style>
+  <rect width="746" height="590" rx="14" fill="#f2f5ed"/>
+  <text x="18" y="34" class="title">读出两行的 AND，哪一个存储节点能改变位线？</text>
+  <text x="18" y="63" class="sub">图中 A 存 1、B 存 0。每次读之前，先把 BLB、BL 都预充到高电平。</text>
+  <rect x="16" y="79" width="714" height="223" rx="10" fill="#fafbf6" stroke="#afc2b1"/>
+  <text x="53" y="109" class="label">BLB</text><text x="656" y="109" class="label">BL</text>
+  <path class="wire" d="M75 118V271H161 M667 118V271H585"/>
+  <!-- Each access gate is shown as a controlled switch. The gray left gates are open. -->
+  <g>
+    <text x="162" y="135" class="small">WLL 关</text><text x="533" y="135" class="small">WLR 开</text>
+    <path class="open" d="M75 152H161 M162 152l29 -12 M199 152H245"/>
+    <circle cx="162" cy="152" r="3" fill="#798b80"/><circle cx="199" cy="152" r="3" fill="#798b80"/>
+    <path class="on" d="M499 152H667"/>
+    <circle cx="545" cy="152" r="3.5" fill="#42745a"/><circle cx="584" cy="152" r="3.5" fill="#42745a"/>
+    <rect x="245" y="132" width="254" height="41" rx="6" fill="#e4eee2" stroke="#8ca78e"/>
+    <text x="290" y="159" class="key">反位 0</text><text x="372" y="159" class="mid">行 A</text><text x="454" y="159" class="key">真位 1</text>
+    <text x="162" y="192" class="small">WLL 关</text><text x="533" y="192" class="small">WLR 开</text>
+    <path class="open" d="M75 209H161 M162 209l29 -12 M199 209H245"/>
+    <circle cx="162" cy="209" r="3" fill="#798b80"/><circle cx="199" cy="209" r="3" fill="#798b80"/>
+    <path d="M499 209H667" fill="none" stroke="#a5683d" stroke-width="3.4"/>
+    <path d="M519 203l-8 6 8 6" fill="none" stroke="#a5683d" stroke-width="2.8"/>
+    <circle cx="545" cy="209" r="3.5" fill="#a5683d"/><circle cx="584" cy="209" r="3.5" fill="#a5683d"/>
+    <rect x="245" y="189" width="254" height="41" rx="6" fill="#e4eee2" stroke="#8ca78e"/>
+    <text x="290" y="216" class="key">反位 1</text><text x="372" y="216" class="mid">行 B</text><text x="454" y="216" class="key">真位 0</text>
+    <text x="530" y="236" class="small" style="fill:#81502e">BL 经 B 放电</text>
+    <circle cx="75" cy="152" r="3.5" fill="#81998b"/><circle cx="75" cy="209" r="3.5" fill="#81998b"/>
+    <circle cx="667" cy="152" r="3.5" fill="#42745a"/><circle cx="667" cy="209" r="3.5" fill="#a5683d"/>
+  </g>
+  <rect x="161" y="249" width="424" height="40" rx="7" fill="#e5ede1" stroke="#9cb4a0"/>
+  <text x="373" y="276" class="key">分别与 Vref 比较，判决 1 AND 0 = 0</text>
+  <text x="18" y="333" class="label">分别重新预充，比较四次读数</text>
+  <rect x="16" y="345" width="714" height="34" rx="5" fill="#dfeadc"/>
+  <g class="key">
+    <text x="67" y="368">操作</text><text x="170" y="368">(A, B)</text><text x="309" y="368">打开的开关</text>
+    <text x="433" y="368">BLB</text><text x="501" y="368">BL</text><text x="638" y="368">感测后的输出</text>
+  </g>
+  <g class="mid">
+    <text x="67" y="404">普通读 A</text><text x="170" y="404">(1, 0)</text><text x="309" y="404">A 的左右两侧</text>
+    <text x="433" y="404">下降</text><text x="501" y="404">高</text><text x="638" y="404">差分读 A = 1</text>
+    <text x="67" y="440">两行 AND</text><text x="170" y="440">(1, 0)</text><text x="309" y="440">两行的 WLR</text>
+    <text x="433" y="440">高</text><text x="501" y="440">下降</text><text x="638" y="440">1 AND 0 = 0</text>
+    <text x="67" y="476">两行 AND</text><text x="170" y="476">(1, 1)</text><text x="309" y="476">两行的 WLR</text>
+    <text x="433" y="476">高</text><text x="501" y="476">高</text><text x="638" y="476">1 AND 1 = 1</text>
+    <text x="67" y="512">两行 NOR</text><text x="170" y="512">(1, 0)</text><text x="309" y="512">两行的 WLL</text>
+    <text x="433" y="512">下降</text><text x="501" y="512">高</text><text x="638" y="512">0 AND 1 = 0</text>
+  </g>
+  <path d="M17 416H729 M17 452H729 M17 488H729 M17 524H729" fill="none" stroke="#d0dbcf"/>
+  <text x="18" y="550" class="small">最后一列按 BLB、BL 顺序列出逻辑模式的两个判决。普通读直接比较两线。</text>
+<text x="18" y="576" class="small">图示抽象的接入与感测路径。逻辑模式中，「下降」指感测时已低于参考电压。</text>
+</svg>
