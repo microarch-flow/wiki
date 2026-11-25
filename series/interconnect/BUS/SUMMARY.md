@@ -1,6 +1,6 @@
 # 知识地图
 
-这页只保留章节级入口。
+这里列出各章的阅读入口和正文。
 
 如果你要：
 
@@ -19,8 +19,8 @@
 ## 02 基础对象与事务语义
 
 - [首页](./02-fundamentals/README.md)
+- [地址已经收下，数据为什么还没回来？](./02-fundamentals/transaction-address-data-response.md)
 - [BUS vs NoC vs Point-to-Point](./02-fundamentals/bus-vs-noc-vs-point-to-point.md)
-- [地址、数据、响应与事务语义](./02-fundamentals/transaction-address-data-response.md)
 - [仲裁、顺序性与 Backpressure](./02-fundamentals/arbitration-ordering-backpressure.md)
 - [位宽、时钟、Burst 与延迟](./02-fundamentals/width-clock-burst-latency.md)
 

@@ -6,7 +6,7 @@ title: "系统 I/O 互连：从发现设备到完成一次 DMA"
 
 # 系统 I/O 互连：从发现设备到完成一次 DMA
 
-PCI Express（PCIe）把主机与设备连接成可枚举、可寻址的事务网络。读懂它，需要分别追踪设备发现、地址配置、数据传输和完成通知：设备能被发现，并不代表 BAR 已可用；链路收到了包，也不代表软件命令已完成。
+主机通过 PCI Express（PCIe）读取加速卡上的数据。请求到达卡边以后，还得经过桥和片内路径才能取到目标值。从[《一次跨桥读取：设备已经收到请求，主机为什么还在等？》](06-workloads-case-studies/pcie-vs-axi-noc-boundary.md)读起，沿请求和返回各走一次。
 
 <div id="dashboard" class="pcie-legacy-anchor"></div>
 
@@ -32,7 +32,7 @@ PCI Express（PCIe）把主机与设备连接成可枚举、可寻址的事务�
 
 ## 选择阅读路径
 
-- 第一次学习：按[学习路线图](01-overview/learning-roadmap.md)建立前置概念。
+- 想接着了解设备如何被发现、内存窗口怎样配置，可沿[学习路线图](01-overview/learning-roadmap.md)继续。
 - 已有工程问题：用[按目标学习 PCIe](01-overview/goal-oriented-navigation.md)直接找负责的文章。
 - 查看全部文章：打开[知识地图](SUMMARY.md)。
 - 随时查数与排错：使用[查阅、建模与检查清单](08-reference/README.md)。

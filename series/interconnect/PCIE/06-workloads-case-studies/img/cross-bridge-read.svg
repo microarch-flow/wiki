@@ -1,0 +1,66 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="460" height="476" viewBox="0 0 460 476" role="img" aria-labelledby="title desc" xml:lang="zh-CN">
+  <title id="title">一次跨桥读取的去程与回程</title>
+  <desc id="desc">按从上至下的时间顺序读图。主机请求方把 4 字节读请求交给卡上的桥，桥把 AXI 读地址交给片上网络入口，目标端接口把请求交给 SRAM 控制器。控制器把数值 42 和状态交给网络，在桥侧的 AXI 返回通道完成交付，最后由桥通过 PCIe 完成包把 42 送回主机。各段时长可以不同。</desc>
+  <defs>
+    <marker id="request" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto">
+      <path d="M1 1 L6 3.5 L1 6" fill="none" stroke="#335d81" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </marker>
+    <marker id="return" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto">
+      <path d="M1 1 L6 3.5 L1 6" fill="none" stroke="#227257" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </marker>
+  </defs>
+  <style>
+    text { font-family: system-ui, 'Noto Sans CJK SC', sans-serif; fill: #203a50 }
+    .label { font-size: 19px; font-weight: 650 }
+    .hint { font-size: 16px; fill: #415968 }
+    .actor { font-size: 17px; font-weight: 650; text-anchor: middle }
+    .rail { stroke: #92a7b4; stroke-width: 1.3; stroke-dasharray: 4 5; fill: none }
+    .out { fill: none; stroke: #335d81; stroke-width: 2.6; marker-end: url(#request) }
+    .back { fill: none; stroke: #227257; stroke-width: 2.6; marker-end: url(#return) }
+  </style>
+  <rect x="1" y="1" width="458" height="474" rx="14" fill="#f5f8f9" stroke="#c4cfd4"/>
+  <text x="16" y="34" font-size="23" font-weight="700">一次跨桥读取的去程与回程</text>
+  <text x="16" y="60" class="hint">从上往下读。每个箭头代表一次交付。</text>
+
+  <g stroke="#afc2cd" fill="#e8f0f4">
+    <rect x="137" y="80" width="76" height="56" rx="7"/>
+    <rect x="215" y="80" width="76" height="56" rx="7"/>
+    <rect x="293" y="80" width="76" height="56" rx="7"/>
+    <rect x="371" y="80" width="76" height="56" rx="7"/>
+  </g>
+  <g class="actor">
+    <text x="175" y="103">主机<tspan x="175" dy="21">请求方</tspan></text>
+    <text x="253" y="114">卡上的桥</text>
+    <text x="331" y="103">片上网络<tspan x="331" dy="21">及其接口</tspan></text>
+    <text x="409" y="103">SRAM<tspan x="409" dy="21">控制器</tspan></text>
+  </g>
+
+  <rect x="9" y="150" width="442" height="148" rx="7" fill="#eaf1f6"/>
+  <rect x="9" y="305" width="442" height="157" rx="7" fill="#e8f2eb"/>
+  <path class="rail" d="M175 136 V450 M253 136 V450 M331 136 V450 M409 136 V450"/>
+  <g class="label">
+    <text x="17" y="178">请求读 4 字节</text>
+    <text x="17" y="228">入口收下地址</text>
+    <text x="17" y="278">目标收到请求</text>
+    <text x="17" y="334">目标交出 42</text>
+    <text x="17" y="385">桥接下 42</text>
+    <text x="17" y="436">主机收齐 42</text>
+  </g>
+  <g class="hint">
+    <text x="17" y="199">PCIe 读请求</text>
+    <text x="17" y="249">AXI 地址握手</text>
+    <text x="17" y="355">附成功状态</text>
+    <text x="17" y="406">AXI 数据握手</text>
+    <text x="17" y="457">PCIe 完成包</text>
+  </g>
+  <g fill="#335d81">
+    <circle cx="175" cy="178" r="3.8"/><path class="out" d="M175 178 H251"/>
+    <circle cx="253" cy="228" r="3.8"/><path class="out" d="M253 228 H329"/>
+    <circle cx="331" cy="278" r="3.8"/><path class="out" d="M331 278 H407"/>
+  </g>
+  <g fill="#227257">
+    <circle cx="409" cy="334" r="3.8"/><path class="back" d="M409 334 H333"/>
+    <circle cx="331" cy="385" r="3.8"/><path class="back" d="M331 385 H255"/>
+    <circle cx="253" cy="436" r="3.8"/><path class="back" d="M253 436 H177"/>
+  </g>
+</svg>

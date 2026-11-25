@@ -33,6 +33,10 @@ body { background: var(--paper); }
 .md-typeset :is(p, li, td) a:not([class]):hover { color: #004d5d; text-decoration-color: currentColor; }
 .md-typeset table:not([class]) { background: var(--paper); border-color: var(--line); }
 .md-typeset table:not([class]) th { background: #eaf1e7; color: var(--ink); }
+@media (max-width: 640px) {
+  .md-typeset .bus-read-trace table:not([class]) th { min-width: 0; }
+  .md-typeset .bus-read-trace table:not([class]) :is(th, td) { padding: .6em .5em; }
+}
 .md-typeset code, .md-typeset pre > code { border-radius: .3rem; }
 .md-typeset blockquote { padding: .05rem .9rem; border-radius: .2rem; background: var(--note-surface); color: var(--note-ink); }
 [dir="ltr"] .md-typeset blockquote { padding-left: .9rem; border-left: .18rem solid var(--note-border); }
