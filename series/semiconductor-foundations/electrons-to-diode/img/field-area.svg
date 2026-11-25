@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="460" height="388" viewBox="0 0 460 388" role="img" aria-labelledby="title description" xml:lang="zh-CN">
+<title id="title">对称 PN 结中的电场大小与内建电势差</title>
+<desc id="description">一维均匀对称突变结在热平衡下的耗尽近似。横轴向右，P 区在左，N 区在右。场的方向向左。纵轴取场强大小，结外近似为零，结面处约为每厘米 3.3 万伏。从结面到两侧耗尽边缘各约 0.215 微米，两侧三角形的面积各约 0.357 伏。</desc>
+<style>
+  text {font-family:system-ui,"Noto Sans CJK SC","Microsoft YaHei",sans-serif;font-size:18px;fill:#203c37}
+  .title {font-size:24px;font-weight:700}
+  .muted {fill:#526861}
+  .ink {font-weight:650}
+  .axis {fill:none;stroke:#62766d;stroke-width:1.6}
+  .grid {fill:none;stroke:#c6cfc3;stroke-width:1;stroke-dasharray:4 5}
+</style>
+<rect x="1" y="1" width="458" height="386" rx="16" fill="#f7f6ef" stroke="#d2d8cb"/>
+<text class="title" x="22" y="37">场强图的面积有多大？</text>
+<text class="muted" x="22" y="66">300 K，P、N 两侧掺杂均为 10¹⁶ cm⁻³</text>
+<text class="ink" x="25" y="105">场强大小 |E|</text>
+<text class="ink" x="251" y="121">3.3 × 10⁴ V/cm</text>
+<path class="axis" d="M51 116 V283 H430"/>
+<path d="M92 283 L242 133 V283 Z" fill="#ead7c7"/>
+<path d="M242 283 V133 L392 283 Z" fill="#cce4df"/>
+<path d="M51 283 H92 L242 133 L392 283 H430" fill="none" stroke="#315c56" stroke-width="3.4" stroke-linejoin="round"/>
+<path d="M242 133 V283" class="grid" style="stroke:#6e7c71"/>
+<circle cx="242" cy="133" r="4" fill="#315c56"/>
+<g text-anchor="middle">
+  <text x="184" y="240" class="ink">P 侧</text>
+  <text x="184" y="268">0.357 V</text>
+  <text x="300" y="240" class="ink">N 侧</text>
+  <text x="300" y="268">0.357 V</text>
+  <path class="axis" d="M92 284 v6 M242 284 v6 M392 284 v6"/>
+  <text x="92" y="313">−0.215</text>
+  <text x="242" y="313">0</text>
+  <text x="392" y="313">0.215</text>
+  <text class="muted" x="242" y="340">位置 x（μm）</text>
+</g>
+<path d="M22 350 H438" stroke="#d3d9cf"/>
+<text x="22" y="376">电场指向 P 侧，两半面积合计约 0.714 V。</text>
+</svg>

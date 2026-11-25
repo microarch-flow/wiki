@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="460" height="241" viewBox="0 0 460 241" role="img" aria-labelledby="title desc" xml:lang="zh-CN">
+  <title id="title">交流源、理想二极管与电阻构成的半波整流器</title>
+  <desc id="desc">交流源的上端连接左侧阳极 A。右侧阴极 K 与一千欧电阻串联，再经下方回线返回交流源。输入与电阻上的输出均以公共回线为零伏，上端为正参考方向。输入为峰值二伏的正弦波。正半周有顺时针常规电流，峰值二毫安，负半周无电流。图中箭头表示正半周的常规电流方向。</desc>
+  <defs>
+    <marker id="current" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="4" markerHeight="4" orient="auto">
+      <path d="M0 0 10 5 0 10 2 5Z" fill="#9b4c28"/>
+    </marker>
+  </defs>
+  <rect x="1" y="1" width="458" height="239" rx="15" fill="#f7f6ef" stroke="#c9d3c7"/>
+  <g font-family="system-ui, 'Noto Sans CJK SC', sans-serif" fill="#203c37" font-size="19">
+    <text x="23" y="33" font-size="22" font-weight="650">半波整流 · 理想二极管</text>
+    <g fill="none" stroke="#203c37" stroke-width="2.7" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M80 129V86H220M247 86H342V125M342 174V201H80V177"/>
+      <circle cx="80" cy="153" r="24"/>
+      <path d="M64 153C69 137 75 137 80 153S91 169 96 153" stroke-width="2"/>
+      <rect x="332" y="125" width="20" height="49" fill="#f7f6ef" rx="1"/>
+      <path d="M220 71L246 86 220 101Z" fill="#203c37"/>
+      <path d="M247 70V102"/>
+    </g>
+    <text x="219" y="62" text-anchor="middle">A</text>
+    <text x="248" y="62" text-anchor="middle">K</text>
+    <path d="M100 75H181" fill="none" stroke="#9b4c28" stroke-width="2.8" marker-end="url(#current)"/>
+    <text x="78" y="62" fill="#884421" font-size="18">正半周电流</text>
+    <g font-size="22" text-anchor="middle"><text x="42" y="131">+</text><text x="42" y="185">−</text>
+      <text x="378" y="122">+</text><text x="378" y="186">−</text></g>
+    <text x="16" y="159" font-weight="600">输入</text>
+    <text x="366" y="158" font-weight="600">输出</text>
+    <text x="318" y="156" text-anchor="end">1 kΩ</text>
+    <text x="211" y="226" text-anchor="middle" fill="#597069" font-size="18">公共回线 · 0 V</text>
+
+  </g>
+</svg>

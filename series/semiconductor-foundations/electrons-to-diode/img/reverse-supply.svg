@@ -1,0 +1,56 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="460" height="410" viewBox="0 0 460 410" role="img" aria-labelledby="title desc" xml:lang="zh-CN">
+  <title id="title">反偏时，载流子从哪里来？</title>
+  <desc id="desc">P 端接负、N 端接正，结区电场向左。第一幅跟踪 P 区热产生的一对载流子中的导带电子，只有扩散到耗尽区边缘的电子才会被扫向 N 区。第二幅中电子与空穴就在耗尽区内产生，电场把电子扫向 N、空穴扫向 P。虚线路径表示扩散。</desc>
+  <defs>
+    <g id="electron" stroke-width="2.3">
+      <circle r="10" fill="#09677b"/>
+      <path d="M-5 0H5" fill="none" stroke="#fff"/>
+    </g>
+    <g id="hole" fill="#f7f6ef" stroke="#9b4c28" stroke-width="2.3">
+      <circle r="9"/>
+      <path d="M-4.5 0h9M0-4.5v9"/>
+    </g>
+    <g id="regions">
+      <rect x="22" width="139" height="62" fill="#f2e5d8"/>
+      <rect x="161" width="138" height="62" fill="#eee8d9"/>
+      <rect x="299" width="139" height="62" fill="#e0ebe4"/>
+      <path d="M161 0v62M299 0v62" stroke="#879891" stroke-dasharray="3 4" fill="none"/>
+      <rect x="22" width="416" height="62" fill="none" stroke="#adb9ad"/>
+    </g>
+    <marker id="electron-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="4" markerHeight="4" orient="auto">
+      <path d="M0 0l10 5-10 5z" fill="#09677b"/>
+    </marker>
+    <marker id="hole-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="4" markerHeight="4" orient="auto">
+      <path d="M0 0l10 5-10 5z" fill="#9b4c28"/>
+    </marker>
+  </defs>
+  <rect x="1" y="1" width="458" height="408" rx="14" fill="#f7f6ef" stroke="#cdd5cb"/>
+  <g font-family="system-ui,'Noto Sans CJK SC',sans-serif" fill="#203c37" font-size="18">
+    <text x="22" y="35" font-size="23" font-weight="650">反偏时，载流子从哪里来？</text>
+    <g fill="#597069" text-anchor="middle">
+      <text x="92" y="72">P 端接负</text>
+      <text x="230" y="72">耗尽区</text>
+      <text x="368" y="72">N 端接正</text>
+    </g>
+    <path d="M292 86H174m0 0 9-5m-9 5 9 5" fill="none" stroke="#597069" stroke-width="2.3"/>
+    <text x="230" y="109" text-anchor="middle" fill="#597069">电场</text>
+
+    <text x="22" y="142" font-weight="650">在 P 区产生</text>
+    <use href="#regions" y="153"/>
+    <use href="#hole" x="49" y="194"/>
+    <use href="#electron" x="68" y="172"/>
+    <path d="M82 172l15 10 8-15 12 27 11-15 13 10 18-5" fill="none" stroke="#09677b" stroke-width="2.8" stroke-dasharray="4 3" stroke-linejoin="round" marker-end="url(#electron-arrow)"/>
+    <path d="M166 184h158" stroke="#09677b" stroke-width="3" marker-end="url(#electron-arrow)"/>
+    <text x="91" y="240" text-anchor="middle">电子先扩散</text>
+    <text x="287" y="240" text-anchor="middle">到达结边，再被场扫走</text>
+
+    <text x="22" y="278" font-weight="650">在耗尽区内产生</text>
+    <use href="#regions" y="290"/>
+    <use href="#hole" x="219" y="321"/>
+    <use href="#electron" x="242" y="321"/>
+    <path d="M202 321H139" stroke="#9b4c28" stroke-width="3" marker-end="url(#hole-arrow)"/>
+    <path d="M259 321h65" stroke="#09677b" stroke-width="3" marker-end="url(#electron-arrow)"/>
+    <text x="115" y="382" text-anchor="middle" fill="#9b4c28">空穴被扫向 P 区</text>
+    <text x="340" y="382" text-anchor="middle" fill="#09677b">电子被扫向 N 区</text>
+  </g>
+</svg>

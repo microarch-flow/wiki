@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="460" height="430" viewBox="0 0 460 430" role="img" aria-labelledby="title desc">
+  <title id="title">平衡 PN 结中，导带电子的扩散和漂移通量如何抵消</title>
+  <desc id="desc">位置从左侧 P 区到右侧 N 区，导带电子浓度以对数刻度画出。示意室温下两侧各掺杂每立方厘米十的十六次方的硅对称突变结。在结面附近，浓度由左向右上升，电子扩散通量向左。结区内建电场向左，带负电的电子漂移通量向右。在同一位置，热平衡时导带电子的两种通量大小相等，净通量为零。箭头代表粒子通量，移动方向与该粒子的常规电流方向相反。</desc>
+  <defs>
+    <marker id="tip-field" markerUnits="userSpaceOnUse" markerWidth="12" markerHeight="14" refX="10" refY="7" orient="auto">
+      <path d="M1 1 10 7 1 13" fill="none" stroke="#597069" stroke-width="2.7" stroke-linecap="round" stroke-linejoin="round"/>
+    </marker>
+    <marker id="tip-electron" markerUnits="userSpaceOnUse" markerWidth="13" markerHeight="15" refX="10" refY="7.5" orient="auto">
+      <path d="M1 1 10 7.5 1 14" fill="none" stroke="#09677b" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+    </marker>
+  </defs>
+  <rect x="1" y="1" width="458" height="428" rx="15" fill="#f7f6ef" stroke="#d3dacf"/>
+  <g font-family="system-ui, 'Noto Sans CJK SC', sans-serif" fill="#203c37" font-size="18">
+    <text x="19" y="35" font-size="23" font-weight="650">热平衡时的导带电子分布</text>
+    <text x="20" y="66" fill="#405c56">电子浓度（cm⁻³，对数刻度）</text>
+    <path d="M75 86h174v126H75z" fill="#f2e9de"/>
+    <path d="M249 86h177v126H249z" fill="#e3eeea"/>
+    <g stroke="#bfcac1" stroke-dasharray="3 4">
+      <path d="M75 102h351m-351 48h351m-351 48h351"/>
+    </g>
+    <path d="M249 86v126" stroke="#81978b" stroke-dasharray="5 4" stroke-width="1.3"/>
+    <path d="M75 86v126h351" stroke="#597069" stroke-width="1.6" fill="none"/>
+    <g text-anchor="end" fill="#405c56">
+      <text x="67" y="108">10¹⁶</text>
+      <text x="67" y="156">10¹⁰</text>
+      <text x="67" y="204">10⁴</text>
+    </g>
+    <path d="M76 198H151Q200 198 249 150Q298 102 347 102H426" fill="none" stroke="#09677b" stroke-width="3.7"/>
+    <circle cx="249" cy="150" r="4.4" fill="#09677b"/>
+    <g text-anchor="middle">
+      <text x="114" y="237">P 区</text><text x="249" y="237">结面</text><text x="390" y="237">N 区</text>
+    </g>
+    <g>
+      <text x="28" y="275" fill="#405c56">结面处的电场</text>
+      <path d="M307 269H235" stroke="#597069" stroke-width="2.7" fill="none" marker-end="url(#tip-field)"/>
+      <text x="28" y="316">电子扩散通量</text>
+      <path d="M330 310H212" stroke="#09677b" stroke-width="3.6" fill="none" marker-end="url(#tip-electron)"/>
+      <text x="28" y="353">电子漂移通量</text>
+      <path d="M212 347H330" stroke="#09677b" stroke-width="3.6" fill="none" marker-end="url(#tip-electron)"/>
+      <path d="M351 309h7v39h-7" fill="none" stroke="#8ca39a" stroke-width="1.7"/>
+      <text x="367" y="335" fill="#405c56">等大</text>
+    </g>
+    <path d="M18 372h424" stroke="#d3dacf"/>
+    <text x="230" y="406" text-anchor="middle" font-size="20" font-weight="650">同一位置，净电子通量为零</text>
+  </g>
+</svg>

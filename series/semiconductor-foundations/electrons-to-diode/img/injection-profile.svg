@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="460" height="395" viewBox="0 0 460 395" role="img" aria-labelledby="title description" xml:lang="zh-CN">
+<title id="title">P 侧准中性区结边电子浓度与偏置的关系</title>
+<desc id="description">长 P 区位于图的左边，右端是 P 区的耗尽边界。横轴是向左进入 P 区的距离，以电子扩散长度为单位。纵轴为导带电子浓度除以平衡值，使用对数刻度。三个偏压下按长基区的稳态扩散解绘制。结边的归一化浓度分别约为 10.2、1、0.021，远处均趋近 1。</desc>
+<style>
+  text {font-family:system-ui,"Noto Sans CJK SC","Microsoft YaHei",sans-serif;font-size:18px;fill:#203c37}
+  .title {font-size:24px;font-weight:700}
+  .muted {fill:#526861}
+  .ink {font-weight:650}
+  .axis {fill:none;stroke:#62766d;stroke-width:1.6}
+  .grid {fill:none;stroke:#c6cfc3;stroke-width:1;stroke-dasharray:4 5}
+</style>
+<rect x="1" y="1" width="458" height="393" rx="16" fill="#f7f6ef" stroke="#d2d8cb"/>
+<text class="title" x="22" y="37">P 区导带电子怎样分布？</text>
+<text class="muted" x="22" y="66">浓度 / 平衡浓度（对数刻度）</text>
+<text class="ink" x="68" y="99">P 区深处</text>
+<text class="ink" x="326" y="90" text-anchor="end">P 侧结边</text>
+<path class="axis" d="M67 100 V296 H326"/>
+<path d="M326 96 V296" stroke="#b3bdb0" stroke-width="1.5"/>
+<path class="grid" d="M67 296.00 H326"/><text text-anchor="end" x="57" y="302.00">0.01</text>
+<path class="grid" d="M67 234.83 H326"/><text text-anchor="end" x="57" y="240.83">0.1</text>
+<path class="grid" d="M67 173.66 H326"/><text text-anchor="end" x="57" y="179.66">1</text>
+<path class="grid" d="M67 112.49 H326"/><text text-anchor="end" x="57" y="118.49">10</text>
+<path class="axis" d="M67.00 296 v5"/><text text-anchor="middle" x="67.00" y="323">5</text>
+<path class="axis" d="M118.80 296 v5"/><text text-anchor="middle" x="118.80" y="323">4</text>
+<path class="axis" d="M170.60 296 v5"/><text text-anchor="middle" x="170.60" y="323">3</text>
+<path class="axis" d="M222.40 296 v5"/><text text-anchor="middle" x="222.40" y="323">2</text>
+<path class="axis" d="M274.20 296 v5"/><text text-anchor="middle" x="274.20" y="323">1</text>
+<path class="axis" d="M326.00 296 v5"/><text text-anchor="middle" x="326.00" y="323">0</text>
+<path d="M67 173.66 H326" fill="none" stroke="#5b6c5b" stroke-width="2.5" stroke-dasharray="2 4"/>
+<circle cx="326" cy="173.66" r="3.5" fill="#5b6c5b"/>
+<text x="341" y="171.66" class="ink">0 mV</text>
+<text x="341" y="194.66">1 倍</text>
+<path d="M67.00 172.06 L86.23 171.38 L102.64 170.57 L117.33 169.63 L130.51 168.57 L142.60 167.38 L154.05 166.04 L164.85 164.54 L175.22 162.89 L185.16 161.08 L194.88 159.08 L204.60 156.86 L214.32 154.41 L224.04 151.73 L233.76 148.81 L243.70 145.60 L254.07 142.01 L264.87 138.04 L276.32 133.58 L288.41 128.63 L301.59 122.99 L316.06 116.55 L326.00 112.00 L326.00 112.00" fill="none" stroke="#09677b" stroke-width="3.2"  stroke-linejoin="round"/><circle cx="326" cy="112.00" r="4" fill="#09677b"/><text class="ink" style="fill:#09677b" x="341" y="110.00">+60 mV</text><text x="341" y="133.00">10.2 倍</text>
+<path d="M67.00 173.83 L115.60 174.11 L147.57 174.50 L171.33 175.00 L190.13 175.62 L205.68 176.34 L218.86 177.17 L230.09 178.09 L239.81 179.11 L248.45 180.23 L256.01 181.43 L262.71 182.70 L268.76 184.07 L274.16 185.51 L279.13 187.06 L283.66 188.70 L287.77 190.43 L291.44 192.20 L294.89 194.12 L297.92 196.04 L300.73 198.07 L303.32 200.21 L305.69 202.44 L307.85 204.75 L310.02 207.39 L311.96 210.13 L313.69 212.93 L315.42 216.17 L316.93 219.48 L318.44 223.38 L319.74 227.37 L320.82 231.31 L321.90 236.06 L322.98 241.97 L323.84 248.01 L324.70 255.99 L325.35 264.23 L325.78 271.69 L326.00 276.42 L326.00 276.42" fill="none" stroke="#9b4c28" stroke-width="3.2" stroke-dasharray="7 3" stroke-linejoin="round"/><circle cx="326" cy="276.42" r="4" fill="#9b4c28"/><text class="ink" style="fill:#9b4c28" x="341" y="274.42">−100 mV</text><text x="341" y="297.42">0.021 倍</text>
+<text x="230" y="349" text-anchor="middle">距结边的距离 s / 扩散长度 L</text>
+<path d="M22 359 H438" stroke="#d3d9cf"/>
+<text x="22" y="383" class="muted">300 K，平衡电子浓度约 10⁴ cm⁻³</text>
+</svg>

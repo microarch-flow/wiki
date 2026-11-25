@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="460" height="296" viewBox="0 0 460 296" role="img" aria-labelledby="title desc">
+  <title id="title">同一条价带里，少一个电子后电流怎样改变</title>
+  <desc id="desc">两行比较同一组代表性状态，每行左右三对速度大小相同、方向相反。上行满带，电流为零。下行拿走一个向右传播的电子，剩余电子的净运动向左，常规电流向右。图上横向排列用来区分速度方向，没有表示电子所在的位置。</desc>
+  <rect x="1" y="1" width="458" height="294" rx="14" fill="#f7f6ef" stroke="#ccd4c9"/>
+  <g font-family="system-ui,'Noto Sans CJK SC',sans-serif" fill="#203c37">
+    <text x="20" y="34" font-size="23" font-weight="700">满带里少一个电子</text>
+    <text x="124" y="71" text-anchor="middle" font-size="19">← 向左传播的态</text>
+    <text x="336" y="71" text-anchor="middle" font-size="19">向右传播的态 →</text>
+    <path d="M34 83H426 M230 85V119 M34 167H426 M230 176V207" stroke="#c8d1c7" fill="none"/>
+    <g fill="#09677b">
+      <circle cx="65" cy="104" r="10"/><circle cx="123" cy="104" r="10"/><circle cx="181" cy="104" r="10"/>
+      <circle cx="279" cy="104" r="10"/><circle cx="337" cy="104" r="10"/><circle cx="395" cy="104" r="10"/>
+      <circle cx="65" cy="193" r="10"/><circle cx="123" cy="193" r="10"/><circle cx="181" cy="193" r="10"/>
+      <circle cx="279" cy="193" r="10"/><circle cx="337" cy="193" r="10"/>
+    </g>
+    <circle cx="395" cy="193" r="10" fill="none" stroke="#9b4c28" stroke-width="3"/>
+    <text x="230" y="145" text-anchor="middle" font-size="20">满带：左右逐对抵消，电流为零</text>
+    <text x="230" y="235" text-anchor="middle" font-size="20">少一个右行电子：常规电流向右 →</text>
+    <circle cx="75" cy="271" r="8" fill="#09677b"/><text x="92" y="278" font-size="18">电子占据</text>
+    <circle cx="258" cy="271" r="8" fill="none" stroke="#9b4c28" stroke-width="3"/><text x="275" y="278" font-size="18">价带空态</text>
+  </g>
+</svg>
