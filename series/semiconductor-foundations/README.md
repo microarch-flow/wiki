@@ -11,7 +11,7 @@
 3. [从 MOS 管到逻辑门](cmos-logic-gates/README.md)。先给单只 NMOS 的输出端接一只电容，再加上一只 PMOS。沿着充放电路径读出反相器的输出，接着用串联和并联推导 NAND 与 NOR。
 4. [从反相器到锁存器与触发器](latch-and-divider/README.md)。从一对存着 1 的反相器出发，断开反馈、写入 0，再接回反馈。把两级锁存器放到同一条时钟轴上，跟踪哪一级能改写、哪一级保存旧值，最后逐沿推导二分频。
 5. [晶体管的小信号放大](transistor-amplifier/README.md)。把一只 NMOS 的栅压升高 5 mV，先看输出节点上的电荷怎样变化，再读出约 25 mV 的反向电压变化。换回 PMOS，看看反相器怎样在石英振荡电路里放大微小扰动。
-6. [石英振荡器的起振与稳幅](quartz-oscillator/README.md)。沿 Pierce 回路辨认选频、起振、稳幅与整形。
+6. [石英振荡器的起振与稳幅](quartz-oscillator/README.md)。先看晶片上五个位置各自怎样运动，再沿电极和放大器追踪一次微小扰动。最后在同一条时间轴上观察模拟振动与相隔 40 ns 的数字上升沿。
 7. [PLL 怎样实现二倍频](integer-pll/README.md)。以 25 MHz 为参考，从 40 MHz 的初始振荡出发，看反馈怎样把输出调到 50 MHz。
 8. [扇出、布线与门延迟](fanout-and-wire-delay/README.md)。分别改变负载电容和导线电阻，看远端电压何时越过门限。
 9. [翻转能量与芯片功耗](switching-energy-and-power/README.md)。从单次翻转的能量，算到一组节点的平均功率，比较相同频率下的不同任务。
@@ -20,7 +20,6 @@
 12. [PVT 与路径延迟](pvt-and-path-delay/README.md)。改变工艺、电压和温度，分别检查数据到得太晚和太早。
 13. [从反相器到芯片封装](inverter-to-package/README.md)。从两只管子的剖面看到封装和板卡，再辨认 GPU 与 HBM 之间的连接。
 14. [从硅到门电路](silicon-to-logic/README.md)。想沿另一条器件路线走，可以从 PN 结继续跟踪一个电子，看它怎样在 NPN 管中被注入、传输和收集。
-15. [从电容充电到时钟边沿](voltage-to-clock/README.md)。先算电容电压升到门限需要多久，再看电路怎样反复翻转、石英晶体怎样提供频率参考。最后回到寄存器，看输入数据为什么要在时钟边沿前后保持稳定。
 
 ## 接着往哪读
 
@@ -29,3 +28,7 @@
 想知道时钟能跑多快，可以跟着数据走过两个寄存器之间的一段逻辑，算一算它能否赶上下一个采样边沿。见[电路与时序基础](../microarchitecture/02-pipeline/electrical-timing-foundations.md#4-算一条路径需要多长的时钟周期)。
 
 想看反相器的剖面怎样一步步加工出来，或继续追踪 2.5D、3D 和 HBM 的封装工艺，可以从[芯片开发与实现中的 FAB 制造与封测](../chip-development/FAB/wiki/README.md)进入。
+
+## 历史导读
+
+- [从电容充电到时钟边沿](voltage-to-clock/README.md)。旧文的 RC 充电算例和各节入口都在这里。要沿时钟的产生过程阅读，可从第六篇的双门限电路读到石英振荡器；要追踪时钟如何采样数据，可读第四篇。

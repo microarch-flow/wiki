@@ -1,0 +1,251 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>跟着一片石英看驻波和起振</title>
+  <style>
+    :root { color-scheme: light; --ink: #203c37; --muted: #496059; --teal: #09677b; --rust: #a34620; --line: #bdcabe; --paper: #fbfaf4; }
+    * { box-sizing: border-box; }
+    html { font: 17px/1.65 system-ui, "Noto Sans CJK SC", sans-serif; background: var(--paper); color: var(--ink); }
+    body { max-width: 44rem; margin: auto; padding: 1rem clamp(.75rem, 4vw, 2rem) 2.5rem; }
+    nav, .buttons { display: flex; gap: .35rem .9rem; align-items: center; flex-wrap: wrap; }
+    nav { border-bottom: 1px solid var(--line); padding-bottom: .6rem; }
+    h1 { font-size: clamp(1.65rem, 5vw, 2.25rem); line-height: 1.3; margin: 1.15rem 0 .6rem; }
+    h2 { font-size: clamp(1.25rem, 4vw, 1.6rem); line-height: 1.35; margin: .2rem 0 .6rem; }
+    a { color: var(--teal); text-underline-offset: .18em; }
+    section { margin: 1.8rem 0; scroll-margin-top: .75rem; }
+    section + section { padding-top: 1rem; border-top: 1px solid var(--line); }
+    p, figure { margin: .65rem 0; }
+    .controls { padding: .65rem .8rem; background: #edf2e9; border-radius: .5rem; }
+    button, select { min-height: 44px; border: 1px solid #768b7d; border-radius: .35rem; background: var(--paper); color: var(--ink); font: inherit; padding: .15rem .6rem; }
+    button { cursor: pointer; }
+    label { display: flex; flex-wrap: wrap; align-items: center; gap: .25rem .6rem; }
+    input[type="range"] { display: block; width: min(100%, 25rem); min-height: 42px; accent-color: var(--teal); margin: 0; }
+    :focus-visible { outline: 3px solid var(--rust); outline-offset: 3px; }
+    button:disabled { opacity: .55; cursor: default; }
+    svg { width: min(100%, 30rem); display: block; height: auto; background: #f5f4ed; border: 1px solid #cbd7c9; border-radius: .55rem; }
+    svg text { font: 17px system-ui, sans-serif; fill: var(--ink); }
+    .axis, .track { stroke: #9eafa1; fill: none; }
+    .track { stroke-dasharray: 3 4; }
+    .layer { fill: #b8d8dc; stroke: var(--teal); stroke-width: 2; }
+    .trace { fill: none; stroke: var(--teal); stroke-width: 3; }
+    .velocity { stroke: var(--rust); stroke-width: 2.5; }
+    figcaption, .note { color: var(--muted); font-size: .92rem; }
+    .reading { font-weight: 620; }
+    table { width: min(100%, 30rem); border-collapse: collapse; font-variant-numeric: tabular-nums; }
+    th, td { text-align: right; padding: .24rem .28rem; border-bottom: 1px solid var(--line); }
+    th:first-child { text-align: left; }
+    output { font-variant-numeric: tabular-nums; font-weight: 650; }
+    details { margin: .65rem 0; }
+    summary { cursor: pointer; color: var(--teal); }
+  </style>
+</head>
+<body>
+  <nav aria-label="实验导航"><a href="#mode">驻波的五个位置</a><a href="#startup">振动的能量收支</a><a href="./">返回正文</a></nav>
+  <h1>跟着一片石英看驻波和起振</h1>
+  <noscript><p>图表显示初始状态，启用 JavaScript 可以逐帧操作。</p><style>.controls { display: none; }</style></noscript>
+
+  <section id="mode" aria-labelledby="mode-title">
+    <h2 id="mode-title">两面的石英同时过中线，为什么下一刻又会分开？</h2>
+    <p>从厚度剪切模的一个极端位置开始。A、E 在两面，C 在厚度正中。图上竖直方向是厚度，每层沿水平方向运动。把相位推进四分之一个周期，先看青色标记停在什么位置，再看棕色箭头此刻指向哪里。</p>
+    <div class="controls">
+      <label for="phase">周期内的位置 <output id="phase-value" for="phase">0% · 0 ns</output></label>
+      <input type="range" id="phase" min="0" max="100" step="1" value="0" aria-label="周期内的相位百分比">
+      <div class="buttons"><button id="quarter" type="button">前进 ¼ 周期</button><button id="play" type="button" aria-pressed="false">慢速播放</button><button id="mode-reset" type="button">回到起点</button></div>
+    </div>
+    <figure>
+      <svg viewBox="0 0 390 245" role="img" aria-labelledby="layers-title layers-desc">
+        <title id="layers-title">沿晶片厚度选取的五个剪切位移</title>
+        <desc id="layers-desc">每层沿面内方向运动。青色标记是相对该层平衡位置的位移，棕色箭头表示瞬时速度。数值见下表。</desc>
+        <defs><marker id="v-tip" viewBox="0 0 6 6" refX="5" refY="3" markerWidth="3.6" markerHeight="3.6" orient="auto"><path d="M0 0L6 3L0 6Z" fill="#a34620"/></marker></defs>
+        <text x="13" y="26">厚度位置</text><text x="221" y="26" text-anchor="middle">平衡位置</text>
+        <path class="axis" d="M221 34V226"/>
+        <g id="points">
+          <text x="15" y="57">A · 表面</text><path class="track" d="M113 51H339"/><circle id="point-A" class="layer" cx="289" cy="51" r="6"/><path id="arrow-A" class="velocity" marker-end="url(#v-tip)"/>
+          <text x="15" y="98">B · ¼ 厚</text><path class="track" d="M113 92H339"/><circle id="point-B" class="layer" cx="269.08" cy="92" r="6"/><path id="arrow-B" class="velocity" marker-end="url(#v-tip)"/>
+          <text x="15" y="139">C · 中心</text><path class="track" d="M113 133H339"/><circle id="point-C" class="layer" cx="221" cy="133" r="6"/><path id="arrow-C" class="velocity" marker-end="url(#v-tip)"/>
+          <text x="15" y="180">D · ¾ 厚</text><path class="track" d="M113 174H339"/><circle id="point-D" class="layer" cx="172.92" cy="174" r="6"/><path id="arrow-D" class="velocity" marker-end="url(#v-tip)"/>
+          <text x="15" y="221">E · 表面</text><path class="track" d="M113 215H339"/><circle id="point-E" class="layer" cx="153" cy="215" r="6"/><path id="arrow-E" class="velocity" marker-end="url(#v-tip)"/>
+        </g>
+      </svg>
+      <figcaption>水平位移已夸大。箭头指向下一瞬的运动方向，转折点的瞬时速度为零，此时隐藏箭头。</figcaption>
+    </figure>
+    <table aria-label="各层归一化位移与速度"><thead><tr><th scope="col">位置</th><th scope="col">位移</th><th scope="col">速度</th><th scope="col">此刻</th></tr></thead><tbody>
+      <tr><th scope="row">A</th><td id="u-A">+1.00</td><td id="v-A">0.00</td><td id="motion-A">转折点</td></tr>
+      <tr><th scope="row">B</th><td id="u-B">+0.71</td><td id="v-B">0.00</td><td id="motion-B">转折点</td></tr>
+      <tr><th scope="row">C</th><td id="u-C">0.00</td><td id="v-C">0.00</td><td id="motion-C">节点</td></tr>
+      <tr><th scope="row">D</th><td id="u-D">−0.71</td><td id="v-D">0.00</td><td id="motion-D">转折点</td></tr>
+      <tr><th scope="row">E</th><td id="u-E">−1.00</td><td id="v-E">0.00</td><td id="motion-E">转折点</td></tr>
+    </tbody></table>
+    <p class="reading" id="mode-reading">两侧处于相反的极端位置，此刻速度为零。C 始终在平衡位置。</p>
+    <details><summary>这五个读数怎样算？</summary>
+      <p>把 A 所在的表面取为 z = 0，E 所在表面为 z = d。两个表面近似自由。理想厚度剪切基模的归一化位移为 cos(πz/d) cos(2πt/T)，归一化速度为 −cos(πz/d) sin(2πt/T)。位移除以表面的最大位移，速度除以表面的最大速度，两个标度各自独立。正号都指向右边。以 25 MHz 为例，一个周期 T 为 40 ns，慢速播放把它拉长到约 8 秒。</p>
+    </details>
+    <a href="./#mode">回到正文看反射与驻波</a>
+  </section>
+
+  <section id="startup" aria-labelledby="startup-title">
+    <h2 id="startup-title">每个周期都在损耗，下一周期还能振得更大吗？</h2>
+    <p>给同一个机械模式相同的初始微扰，起始归一化振幅取 0.10。选择一种补能方式，观察每个周期留下的能量和下一周期的振幅。</p>
+    <div class="controls">
+      <label>补能方式 <select id="drive"><option value="none">断开补能</option><option value="weak">补能不足</option><option value="active" selected>小振幅时补能充足</option></select></label>
+      <label for="cycle">已经过的周期数 <output id="cycle-value" for="cycle">0</output></label>
+      <input type="range" id="cycle" min="0" max="100" step="1" value="0" aria-label="已经过的周期数">
+      <div class="buttons"><button id="next-cycle" type="button">前进一周期</button><button id="startup-reset" type="button">回到初始微扰</button></div>
+    </div>
+    <figure>
+      <svg viewBox="0 0 390 218" role="img" aria-labelledby="envelope-title envelope-desc">
+        <title id="envelope-title">同一振动模式的归一化振幅包络</title>
+        <desc id="envelope-desc">曲线连接每周期的振幅读数，实心圆标出当前选择的周期。纵轴随补能方式切换，刻度标在左侧。</desc>
+        <text x="14" y="24">归一化振幅</text>
+        <path class="axis" d="M62 44V163H356"/><path class="track" d="M62 45H356 M62 104H356 M209 45V163"/>
+        <g text-anchor="end"><text id="scale-top" x="52" y="51">1.00</text><text id="scale-mid" x="52" y="110">0.50</text><text x="52" y="168">0</text></g>
+        <g text-anchor="middle"><text x="62" y="185">0</text><text x="209" y="185">50</text><text x="356" y="185">100</text></g>
+        <text x="361" y="208" text-anchor="end">周期数</text>
+        <path id="envelope" class="trace" d="M62.00 151.20 L64.94 150.10 L67.88 148.89 L70.82 147.58 L73.76 146.16 L76.70 144.61 L79.64 142.94 L82.58 141.12 L85.52 139.17 L88.46 137.06 L91.40 134.81 L94.34 132.40 L97.28 129.83 L100.22 127.11 L103.16 124.24 L106.10 121.24 L109.04 118.11 L111.98 114.87 L114.92 111.55 L117.86 108.16 L120.80 104.73 L123.74 101.29 L126.68 97.86 L129.62 94.48 L132.56 91.16 L135.50 87.94 L138.44 84.82 L141.38 81.83 L144.32 78.98 L147.26 76.27 L150.20 73.72 L153.14 71.33 L156.08 69.09 L159.02 67.00 L161.96 65.07 L164.90 63.28 L167.84 61.63 L170.78 60.11 L173.72 58.72 L176.66 57.45 L179.60 56.28 L182.54 55.22 L185.48 54.25 L188.42 53.37 L191.36 52.56 L194.30 51.84 L197.24 51.18 L200.18 50.58 L203.12 50.03 L206.06 49.54 L209.00 49.10 L211.94 48.70 L214.88 48.33 L217.82 48.01 L220.76 47.71 L223.70 47.44 L226.64 47.20 L229.58 46.98 L232.52 46.79 L235.46 46.61 L238.40 46.45 L241.34 46.31 L244.28 46.18 L247.22 46.06 L250.16 45.95 L253.10 45.86 L256.04 45.77 L258.98 45.70 L261.92 45.63 L264.86 45.56 L267.80 45.51 L270.74 45.46 L273.68 45.41 L276.62 45.37 L279.56 45.33 L282.50 45.30 L285.44 45.27 L288.38 45.24 L291.32 45.22 L294.26 45.20 L297.20 45.18 L300.14 45.16 L303.08 45.14 L306.02 45.13 L308.96 45.12 L311.90 45.10 L314.84 45.09 L317.78 45.08 L320.72 45.08 L323.66 45.07 L326.60 45.06 L329.54 45.06 L332.48 45.05 L335.42 45.05 L338.36 45.04 L341.30 45.04 L344.24 45.03 L347.18 45.03 L350.12 45.03 L353.06 45.02 L356.00 45.02"/>
+        <circle id="envelope-dot" cx="62" cy="151.2" r="5" fill="#a34620"/>
+      </svg>
+      <figcaption>每个点表示该周期振动的幅度。衰减时纵轴上限为 0.10，起振时为 1.00，可沿曲线查看振幅何时开始趋稳。</figcaption>
+    </figure>
+    <table aria-label="当前周期的归一化能量收支"><tbody>
+      <tr><th scope="row">当前振幅 a</th><td id="amplitude">0.10000</td></tr>
+      <tr><th scope="row">当前储能 E = a²</th><td id="energy">0.010000</td></tr>
+      <tr><th scope="row">本周期损失</th><td id="loss">0.0020000</td></tr>
+      <tr><th scope="row">本周期补入</th><td id="input">0.0039604</td></tr>
+      <tr><th scope="row">下一周期的储能变化</th><td id="net">+0.0019604</td></tr>
+    </tbody></table>
+    <p id="startup-reading" class="reading" aria-live="polite">补入大于损失，振幅将增长。</p>
+    <details><summary>怎样用本周期的读数推出下一个点？</summary>
+      <p>每次取同一振动相位读数，下一周期的储能 = 当前储能 − 损失 + 补入。模型把储能按参考能量归一化，并令振幅 a = √E。每周期损失取 0.20E。三种设置的补入分别为 0、0.10E 和 0.40E/(1+E)。第三种设置在小振幅时能补回超过损失的能量；随振幅增长，单位储能获得的补偿减小，到 E = 1 时收支相等。</p>
+      <p>这里给选定模式的补入项已经计入反馈相位的作用。系数特意取得较大，方便在一百个周期内看清三种走向。实际晶体的损耗、环路相位、放大器非线性和起振时间需另行测量或建模。</p>
+    </details>
+    <a href="./#startup">回到正文看起振与稳幅</a>
+  </section>
+  <script>
+    'use strict';
+    const element = id => document.getElementById(id);
+    const setText = (id, value) => { element(id).textContent = value; };
+    const phase = element('phase');
+    const names = ['A', 'B', 'C', 'D', 'E'];
+    const shape = [1, Math.SQRT1_2, 0, -Math.SQRT1_2, -1];
+    function signed(value) {
+      const magnitude = Math.abs(value);
+      return magnitude < .005 ? '0.00' : (value < 0 ? '−' : '+') + magnitude.toFixed(2);
+    }
+    function drawMode() {
+      const pct = Number(phase.value);
+      const angle = 2 * Math.PI * pct / 100;
+      const readout = pct + '% · ' + Number((.4 * pct).toFixed(1)) + ' ns';
+      setText('phase-value', readout);
+      phase.setAttribute('aria-valuetext', readout);
+      names.forEach((layer, i) => {
+        const u = shape[i] * Math.cos(angle);
+        const v = -shape[i] * Math.sin(angle);
+        const x = 221 + 68 * u;
+        const y = 51 + 41 * i;
+        element('point-' + layer).setAttribute('cx', x.toFixed(3));
+        const arrow = element('arrow-' + layer);
+        const moving = Math.abs(v) >= 1e-8;
+        const direction = Math.sign(v);
+        if (moving) {
+          const tail = x + 8 * direction;
+          const tip = tail + direction * (5 + 26 * Math.abs(v));
+          arrow.setAttribute('d', 'M' + tail + ' ' + y + 'H' + tip);
+        } else {
+          arrow.removeAttribute('d');
+        }
+        setText('u-' + layer, signed(u));
+        setText('v-' + layer, signed(v));
+        setText('motion-' + layer, moving ? (v > 0 ? '向右' : '向左') : (layer === 'C' ? '节点' : '转折点'));
+      });
+      let reading = '两半片的运动方向相反，同一半片上各层的位移幅度随深度而变。C 始终在平衡位置。';
+      if (pct % 50 === 0) reading = '两侧处于相反的极端位置，此刻速度为零。C 始终在平衡位置。';
+      if (pct % 50 === 25) reading = '五层同时经过或处在平衡位置。除了节点 C，其余各层此刻的速率分别达到各自的最大值。';
+      setText('mode-reading', reading);
+    }
+    let timer = null;
+    function pause() {
+      window.clearInterval(timer);
+      timer = null;
+      element('play').setAttribute('aria-pressed', 'false');
+      setText('play', '慢速播放');
+    }
+    phase.addEventListener('input', () => { pause(); drawMode(); });
+    element('quarter').addEventListener('click', () => {
+      pause();
+      const next = Number(phase.value) + 25;
+      phase.value = next > 100 ? next - 100 : next;
+      drawMode();
+    });
+    element('mode-reset').addEventListener('click', () => { pause(); phase.value = 0; drawMode(); });
+    element('play').addEventListener('click', () => {
+      if (timer !== null) { pause(); return; }
+      element('play').setAttribute('aria-pressed', 'true');
+      setText('play', '暂停');
+      timer = window.setInterval(() => {
+        phase.value = Number(phase.value) % 100 + 1;
+        drawMode();
+      }, 80);
+    });
+    document.addEventListener('visibilitychange', () => { if (document.hidden) pause(); });
+
+    const cycle = element('cycle');
+    const lastCycle = Number(cycle.max);
+    function exchange(energy, drive) {
+      const loss = .20 * energy;
+      let input = 0;
+      if (drive === 'weak') input = .10 * energy;
+      if (drive === 'active') input = .40 * energy / (1 + energy);
+      return { loss, input, net: input - loss };
+    }
+    function displayNumber(value) {
+      if (value === 0) return '0';
+      return Number(value.toPrecision(5)).toString().replace('-', '−');
+    }
+    let energies = [];
+    function drawStartup() {
+      const n = Number(cycle.value);
+      const energy = energies[n];
+      const drive = element('drive').value;
+      const max = drive === 'active' ? 1 : .1;
+      const x = i => 62 + 294 * i / lastCycle;
+      const y = e => 163 - 118 * Math.sqrt(e) / max;
+      element('envelope-dot').setAttribute('cx', x(n));
+      element('envelope-dot').setAttribute('cy', y(energy));
+      const { loss, input, net } = exchange(energy, drive);
+      setText('cycle-value', n);
+      setText('amplitude', displayNumber(Math.sqrt(energy)));
+      setText('energy', displayNumber(energy));
+      setText('loss', displayNumber(loss));
+      setText('input', displayNumber(input));
+      setText('net', (net > 0 ? '+' : '') + displayNumber(net));
+      let reading = '补入少于损失，下一周期的振幅将更小。';
+      if (drive === 'none') reading = '外部补入为零，晶体用原先的储能维持衰减的自由振动。';
+      if (drive === 'active') reading = energy > .95 ? '收支已很接近，振幅正缓慢趋近 1。' : '补入大于损失，下一周期的振幅将更大。';
+      setText('startup-reading', reading);
+      element('next-cycle').disabled = n >= lastCycle;
+    }
+    function changeDrive() {
+      const drive = element('drive').value;
+      energies = [.01];
+      for (let i = 0; i < lastCycle; i++) {
+        const e = energies[i];
+        energies.push(e + exchange(e, drive).net);
+      }
+      const max = drive === 'active' ? 1 : .1;
+      setText('scale-top', max.toFixed(2));
+      setText('scale-mid', (max / 2).toFixed(2));
+      const path = energies.map((e, i) => (i ? 'L' : 'M') + (62 + 294 * i / lastCycle).toFixed(2) + ' ' + (163 - 118 * Math.sqrt(e) / max).toFixed(2));
+      element('envelope').setAttribute('d', path.join(' '));
+      drawStartup();
+    }
+    element('drive').addEventListener('change', changeDrive);
+    cycle.addEventListener('input', drawStartup);
+    element('next-cycle').addEventListener('click', () => { cycle.stepUp(); drawStartup(); });
+    element('startup-reset').addEventListener('click', () => { cycle.value = 0; drawStartup(); });
+    drawMode();
+    changeDrive();
+  </script>
+</body>
+</html>

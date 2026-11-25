@@ -1,0 +1,74 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="480" height="449" viewBox="0 0 480 449" role="img" aria-labelledby="title desc">
+  <title id="title">同一块石英，沿厚度的五个标记怎样横向振动？</title>
+  <desc id="desc">理想 AT 切晶片厚度剪切基模。A、B、C、D、E 沿厚度等距，上下表面自由。零时刻从 A 到 E 的相对位移为 1、约 0.71、0、约 −0.71、−1；四分之一周期时都经过或留在平衡位置，A、B 此时向左，D、E 向右；半周期后与起始位移相反。中间的 C 始终不动。</desc>
+  <rect x="1" y="1" width="478" height="447" rx="15" fill="#f7f6ef" stroke="#c9d3c7"/>
+  <g font-family="system-ui, 'Noto Sans CJK SC', 'Microsoft YaHei', sans-serif">
+    <text x="20" y="36" font-size="23" text-anchor="start" fill="#203c37" font-weight="700">同一块石英，五个位置怎样振动？</text>
+    <text x="20" y="64" font-size="18" text-anchor="start" fill="#50675e" font-weight="450">从上表面 A 到下表面 E 等距取点。</text>
+    <text x="20" y="89" font-size="18" text-anchor="start" fill="#50675e" font-weight="450">位移平行于表面，沿图中水平方向。</text>
+    <path d="M20 101H460" fill="none" stroke="#c9d3c7" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+    <text x="60" y="129" font-size="16" text-anchor="middle" fill="#50675e" font-weight="560">厚度位置</text>
+    <text x="147" y="129" font-size="20" text-anchor="middle" fill="#203c37" font-weight="650">t = 0</text>
+    <path d="M147 143V336" fill="none" stroke="#50675e" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="3 4"/>
+    <text x="278" y="129" font-size="20" text-anchor="middle" fill="#203c37" font-weight="650">T/4</text>
+    <path d="M278 143V336" fill="none" stroke="#50675e" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="3 4"/>
+    <text x="411" y="129" font-size="20" text-anchor="middle" fill="#203c37" font-weight="650">T/2</text>
+    <path d="M411 143V336" fill="none" stroke="#50675e" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="3 4"/>
+    <text x="21" y="167" font-size="20" text-anchor="start" fill="#203c37" font-weight="670">A</text>
+    <text x="89" y="167" font-size="17" text-anchor="end" fill="#50675e" font-weight="420">0</text>
+    <path d="M101 161H193" fill="none" stroke="#c9d3c7" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M147 161h39.000" fill="none" stroke="#09677b" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+    <circle cx="186.00" cy="161.00" r="4.4" fill="#09677b" stroke="#f7f6ef" stroke-width="1.5"/>
+    <path d="M232 161H324" fill="none" stroke="#c9d3c7" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M278.00 161h-39.00m6 -4l-6 4l6 4" fill="none" stroke="#994725" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"/>
+    <circle cx="278.00" cy="161.00" r="4.4" fill="#09677b" stroke="#f7f6ef" stroke-width="1.5"/>
+    <path d="M365 161H457" fill="none" stroke="#c9d3c7" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M411 161h-39.000" fill="none" stroke="#09677b" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+    <circle cx="372.00" cy="161.00" r="4.4" fill="#09677b" stroke="#f7f6ef" stroke-width="1.5"/>
+    <text x="21" y="206" font-size="20" text-anchor="start" fill="#203c37" font-weight="670">B</text>
+    <text x="89" y="206" font-size="17" text-anchor="end" fill="#50675e" font-weight="420">d/4</text>
+    <path d="M101 200H193" fill="none" stroke="#c9d3c7" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M147 200h27.577" fill="none" stroke="#09677b" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+    <circle cx="174.58" cy="200.00" r="4.4" fill="#09677b" stroke="#f7f6ef" stroke-width="1.5"/>
+    <path d="M232 200H324" fill="none" stroke="#c9d3c7" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M278.00 200h-27.58m6 -4l-6 4l6 4" fill="none" stroke="#994725" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"/>
+    <circle cx="278.00" cy="200.00" r="4.4" fill="#09677b" stroke="#f7f6ef" stroke-width="1.5"/>
+    <path d="M365 200H457" fill="none" stroke="#c9d3c7" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M411 200h-27.577" fill="none" stroke="#09677b" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+    <circle cx="383.42" cy="200.00" r="4.4" fill="#09677b" stroke="#f7f6ef" stroke-width="1.5"/>
+    <text x="21" y="245" font-size="20" text-anchor="start" fill="#203c37" font-weight="670">C</text>
+    <text x="89" y="245" font-size="17" text-anchor="end" fill="#50675e" font-weight="420">d/2</text>
+    <path d="M101 239H193" fill="none" stroke="#c9d3c7" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"/>
+    <circle cx="147.00" cy="239.00" r="4.4" fill="#09677b" stroke="#f7f6ef" stroke-width="1.5"/>
+    <path d="M232 239H324" fill="none" stroke="#c9d3c7" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"/>
+    <circle cx="278.00" cy="239.00" r="4.4" fill="#09677b" stroke="#f7f6ef" stroke-width="1.5"/>
+    <path d="M365 239H457" fill="none" stroke="#c9d3c7" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"/>
+    <circle cx="411.00" cy="239.00" r="4.4" fill="#09677b" stroke="#f7f6ef" stroke-width="1.5"/>
+    <text x="21" y="284" font-size="20" text-anchor="start" fill="#203c37" font-weight="670">D</text>
+    <text x="89" y="284" font-size="17" text-anchor="end" fill="#50675e" font-weight="420">3d/4</text>
+    <path d="M101 278H193" fill="none" stroke="#c9d3c7" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M147 278h-27.577" fill="none" stroke="#09677b" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+    <circle cx="119.42" cy="278.00" r="4.4" fill="#09677b" stroke="#f7f6ef" stroke-width="1.5"/>
+    <path d="M232 278H324" fill="none" stroke="#c9d3c7" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M278.00 278h27.58m-6 -4l6 4l-6 4" fill="none" stroke="#994725" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"/>
+    <circle cx="278.00" cy="278.00" r="4.4" fill="#09677b" stroke="#f7f6ef" stroke-width="1.5"/>
+    <path d="M365 278H457" fill="none" stroke="#c9d3c7" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M411 278h27.577" fill="none" stroke="#09677b" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+    <circle cx="438.58" cy="278.00" r="4.4" fill="#09677b" stroke="#f7f6ef" stroke-width="1.5"/>
+    <text x="21" y="323" font-size="20" text-anchor="start" fill="#203c37" font-weight="670">E</text>
+    <text x="89" y="323" font-size="17" text-anchor="end" fill="#50675e" font-weight="420">d</text>
+    <path d="M101 317H193" fill="none" stroke="#c9d3c7" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M147 317h-39.000" fill="none" stroke="#09677b" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+    <circle cx="108.00" cy="317.00" r="4.4" fill="#09677b" stroke="#f7f6ef" stroke-width="1.5"/>
+    <path d="M232 317H324" fill="none" stroke="#c9d3c7" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M278.00 317h39.00m-6 -4l6 4l-6 4" fill="none" stroke="#994725" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"/>
+    <circle cx="278.00" cy="317.00" r="4.4" fill="#09677b" stroke="#f7f6ef" stroke-width="1.5"/>
+    <path d="M365 317H457" fill="none" stroke="#c9d3c7" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M411 317h39.000" fill="none" stroke="#09677b" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+    <circle cx="450.00" cy="317.00" r="4.4" fill="#09677b" stroke="#f7f6ef" stroke-width="1.5"/>
+    <path d="M20 348H460" fill="none" stroke="#c9d3c7" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+    <text x="20" y="375" font-size="18" text-anchor="start" fill="#203c37" font-weight="540">圆点是此刻位置，竖虚线是平衡位置。</text>
+    <text x="20" y="402" font-size="17" text-anchor="start" fill="#994725" font-weight="510">T/4 时，橙色箭头指向各点此刻的运动方向。</text>
+    <text x="20" y="430" font-size="18" text-anchor="start" fill="#203c37" font-weight="540">两面振幅最大，中面 C 的位移始终为零。</text>
+  </g>
+</svg>

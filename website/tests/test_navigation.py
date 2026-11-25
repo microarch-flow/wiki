@@ -94,10 +94,14 @@ class GeneratedNavigationTests(unittest.TestCase):
         source = Path(__file__).resolve().parents[2] / "series/semiconductor-foundations"
         titles = {page.parent.name: page.read_text(encoding="utf-8").splitlines()[0].removeprefix("# ")
                   for page in source.glob("*/README.md")}
-        self.assertEqual(slugs[:5], ["electrons-to-diode", "bands-to-channel", "cmos-logic-gates",
-                                     "latch-and-divider", "transistor-amplifier"])
+        self.assertEqual(slugs[:7], ["electrons-to-diode", "bands-to-channel", "cmos-logic-gates",
+                                     "latch-and-divider", "transistor-amplifier", "quartz-oscillator", "integer-pll"])
         self.assertEqual(entries[0][1], "从电子到二极管")
-        self.assertCountEqual(slugs, titles.keys())
+        archive = guide.split('id="历史导读"', 1)[1].split("</ul>", 1)[0]
+        old_entries = re.findall(r'<li><a href="([^"/]+)/">([^<]+)</a>', archive)
+        self.assertEqual([slug for slug, _ in old_entries], ["voltage-to-clock"])
+        entries.extend(old_entries)
+        self.assertCountEqual([slug for slug, _ in entries], titles)
         for slug, short in entries:
             with self.subTest(article=slug):
                 self.assertNotIn(f'href="foundations/{slug}/"', body)
@@ -183,6 +187,8 @@ class GeneratedNavigationTests(unittest.TestCase):
             ("latch-and-divider", "latch-and-divider/experiment.html", "edge"),
             ("transistor-amplifier", "transistor-amplifier/experiment.html", "gain"),
             ("transistor-amplifier", "transistor-amplifier/experiment.html", "step"),
+            ("quartz-oscillator", "quartz-oscillator/experiment.html", "mode"),
+            ("quartz-oscillator", "quartz-oscillator/experiment.html", "startup"),
         )
         for slug, filename, fragment in panels:
             with self.subTest(article=slug, panel=fragment):
