@@ -6,18 +6,14 @@
 
 ## 这一章在回答什么问题
 
-01 章回答了"为什么需要 BUS"——就像理解了"为什么城市需要交通系统"。02 章要回答的是：这个交通系统到底由哪些基本零件组成，什么规则决定一辆车（一笔访问）能不能到达目的地，什么参数决定它跑得快不快。
-
-具体来说，02 章把 BUS 拆成四个基础对象：连接关系（路网结构）、transaction 生命周期（一次出行的全过程）、共享约束（交通规则）、时序粒度（车道宽度和限速）。后面的 AXI、bridge、crossbar、性能调试都建立在这四个对象之上。
+先看桥和片上网络入口之间的一次交接。桥交出读地址后，还要等目标服务和数据返回。有了这一笔读作参照，再让两个发起者同时请求同一目标，就能看出共享通路如何带来等待。
 
 ## 本章阅读顺序
 
-1. [BUS vs NoC vs Point-to-Point](./bus-vs-noc-vs-point-to-point.md)
-2. [地址、数据、响应与事务语义](./transaction-address-data-response.md)
+1. [地址已经收下，数据为什么还没回来？](./transaction-address-data-response.md)
+2. [BUS vs NoC vs Point-to-Point](./bus-vs-noc-vs-point-to-point.md)
 3. [仲裁、顺序性与 Backpressure](./arbitration-ordering-backpressure.md)
 4. [位宽、时钟、Burst 与延迟](./width-clock-burst-latency.md)
-
-这个顺序不是按协议字段展开，而是按建模依赖展开。先判断连接关系，再定义一次访问的生命周期，然后讨论多笔访问共享资源时的约束，最后把位宽、频率、burst 和 latency 放进同一个时间模型。
 
 ## 四个基础判断
 

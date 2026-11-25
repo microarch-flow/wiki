@@ -1,8 +1,17 @@
-# BUS Wiki
+# 片上事务与总线
 
-> `BUS 不是“把模块接起来”的线网别名，而是在有限带宽、仲裁、时序、顺序性和软件可见约束下，把 CPU、DMA、memory、peripheral 和 accelerator 组织成可工作的事务系统。要真正理解 BUS，必须同时看 transaction、ordering、arbitration、backpressure、bridge、clock domain、协议族和系统路径。`
+<span id="bus-wiki"></span>
 
-## Dashboard
+主机从加速卡的 SRAM 读 4 个字节时，桥先把地址交给片上网络。站在桥旁的接口上，哪一拍能看到地址被收下，哪一拍才能接到数值 42？从[《地址已经收下，数据为什么还没回来？》](./02-fundamentals/transaction-address-data-response.md)开始，对照同一笔读的地址与数据。
+
+多笔请求同时到来时，再看[仲裁、顺序性与背压](./02-fundamentals/arbitration-ordering-backpressure.md)怎样决定谁先走。要回到卡外看主机何时取得结果，可读[《一次跨桥读取》](../PCIE/06-workloads-case-studies/pcie-vs-axi-noc-boundary.md)。
+
+<span id="dashboard"></span>
+
+## 按问题查阅
+
+<details markdown="1">
+<summary>展开协议、集成、建模与调试索引</summary>
 
 | 你现在要做什么 | 直接入口 |
 | --- | --- |
@@ -12,7 +21,7 @@
 | 第一次系统学习 BUS | [学习路线图](./01-overview/learning-roadmap.md) |
 | 按你的目标选最短阅读路径 | [按目标学习 BUS](./01-overview/goal-oriented-navigation.md) |
 | 先把 BUS、NoC、点到点链路分清 | [BUS vs NoC vs Point-to-Point](./02-fundamentals/bus-vs-noc-vs-point-to-point.md) |
-| 先搞懂 transaction 基本对象 | [地址、数据、响应与事务语义](./02-fundamentals/transaction-address-data-response.md) |
+| 先搞懂 transaction 基本对象 | [地址已经收下，数据为什么还没回来？](./02-fundamentals/transaction-address-data-response.md) |
 | 抓住共享互连的核心矛盾 | [仲裁、顺序性与 Backpressure](./02-fundamentals/arbitration-ordering-backpressure.md) |
 | 理解位宽、时钟和 burst 为什么重要 | [位宽、时钟、Burst 与延迟](./02-fundamentals/width-clock-burst-latency.md) |
 | 快速分清 AXI / AHB / APB | [AXI / AHB / APB 对照](./03-on-chip-protocol-families/axi-ahb-apb-comparison.md) |
@@ -59,20 +68,22 @@
 | 统一记录协议学习笔记 | [BUS 协议阅读模板](./07-reference/protocol-reading-template.md) |
 | 快速查术语与检查清单 | [术语表](./07-reference/glossary.md) / [BUS 设计检查清单](./07-reference/bus-design-checklist.md) |
 
+</details>
+
 ## 快速开始
 
 ### 路线 1：第一次学 BUS
 
-1. [BUS 在解决什么问题](./01-overview/problem-statement.md)
-2. [BUS 分类框架](./01-overview/taxonomy.md)
-3. [BUS vs NoC vs Point-to-Point](./02-fundamentals/bus-vs-noc-vs-point-to-point.md)
-4. [地址、数据、响应与事务语义](./02-fundamentals/transaction-address-data-response.md)
+1. [地址已经收下，数据为什么还没回来？](./02-fundamentals/transaction-address-data-response.md)
+2. [BUS 在解决什么问题](./01-overview/problem-statement.md)
+3. [BUS 分类框架](./01-overview/taxonomy.md)
+4. [BUS vs NoC vs Point-to-Point](./02-fundamentals/bus-vs-noc-vs-point-to-point.md)
 5. [学习路线图](./01-overview/learning-roadmap.md)
 6. [按目标学习 BUS](./01-overview/goal-oriented-navigation.md)
 
 ### 路线 2：想把片上总线协议学透
 
-1. [地址、数据、响应与事务语义](./02-fundamentals/transaction-address-data-response.md)
+1. [地址已经收下，数据为什么还没回来？](./02-fundamentals/transaction-address-data-response.md)
 2. [仲裁、顺序性与 Backpressure](./02-fundamentals/arbitration-ordering-backpressure.md)
 3. [位宽、时钟、Burst 与延迟](./02-fundamentals/width-clock-burst-latency.md)
 4. [AXI / AHB / APB 对照](./03-on-chip-protocol-families/axi-ahb-apb-comparison.md)
