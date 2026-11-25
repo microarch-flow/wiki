@@ -1,0 +1,65 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 804 637" role="img" aria-labelledby="title desc">
+  <title id="title">一对 bank 共用的 PIM 单元怎样算出 23</title>
+  <desc id="desc">Aquabolt-XL 教学布局。进入 AB-PIM 后，主机侧内存控制器的列读命令触发片内控制器执行 CRF 指令，从同一偶 bank 的行缓冲取两个不同列块。只追踪十六条 FP16 lane 中的第零条。输入二和三分别预装在 GRF_A[0] 和 GRF_A[1]。权重四和五位于 C0 和 C1 的对应位置。两条 MAC 先后将同一 GRF_B[0] 的 lane 0 从零变成八，再变成二十三。采用先把向量写到 bank、退出至单 bank 模式、再由主机普通读取的方案。</desc>
+  <defs><marker id="arrow" viewBox="0 0 8 8" refX="6" refY="4" markerWidth="8" markerHeight="8" orient="auto" markerUnits="userSpaceOnUse"><path d="M1 1L6 4L1 7" stroke="#4e735e" stroke-width="1.7" fill="none"/></marker></defs>
+  <style>
+    text {font-family:system-ui,"Noto Sans CJK SC","PingFang SC",sans-serif; fill:#173c32}
+    .title {font-size:24px;font-weight:680}.heading {font-size:20px;font-weight:650}
+    .label {font-size:18px;font-weight:620}.copy {font-size:18px;fill:#3b5c4f}
+    .mid {text-anchor:middle}.strong {font-size:18px;font-weight:640;text-anchor:middle}
+    .wire {fill:none;stroke:#4e735e;stroke-width:2;marker-end:url(#arrow)}
+    .signal {fill:none;stroke:#4e735e;stroke-width:2;stroke-dasharray:5 4;marker-end:url(#arrow)}
+  </style>
+  <rect width="804" height="637" rx="14" fill="#f2f5ed"/>
+  <text x="20" y="35" class="title">同一条 lane 怎样把 8 留到下一次乘加？</text>
+  <text x="20" y="64" class="copy">取 Aquabolt-XL 的一对 bank。输入已预装，累加器从 0 开始，只追踪 lane 0。</text>
+
+  <text x="20" y="107" class="heading">谁发命令，谁决定做乘加？</text>
+  <rect x="19" y="122" width="208" height="61" rx="7" fill="#e4eee2" stroke="#abbfac"/>
+  <text x="123" y="146" class="strong">主机侧内存控制器</text>
+  <text x="123" y="174" class="copy mid">在 AB-PIM 下发列读</text>
+  <path class="signal" d="M229 152h165"/>
+  <text x="312" y="141" class="copy mid">RD(C0)、RD(C1)</text>
+  <rect x="396" y="122" width="388" height="61" rx="7" fill="#fafbf6" stroke="#abbfac"/>
+  <text x="590" y="146" class="strong">片内控制器推进 CRF 程序计数器</text>
+  <text x="590" y="174" class="copy mid">本例依次执行已装入 CRF 的两条 MAC</text>
+
+  <text x="20" y="223" class="heading">权重从哪来，部分和存在哪？</text>
+  <rect x="19" y="237" width="222" height="66" rx="7" fill="#fafbf6" stroke="#abbfac"/>
+  <text x="130" y="262" class="strong">偶 bank 的行缓冲</text>
+  <text x="130" y="291" class="copy mid">两个列块 C0、C1</text>
+  <path class="wire" d="M242 270h53"/>
+  <rect x="298" y="237" width="239" height="66" rx="7" fill="#e4eee2" stroke="#abbfac"/>
+  <text x="418" y="262" class="strong">共用的 PIM 单元</text>
+  <text x="418" y="291" class="copy mid">16 条 FP16 运算 lane</text>
+  <path d="M538 270h53" fill="none" stroke="#9da99e" stroke-width="2"/>
+  <rect x="593" y="237" width="191" height="66" rx="7" fill="#fafbf6" stroke="#bac7ba"/>
+  <text x="688" y="262" class="strong">配对的奇 bank</text>
+  <text x="688" y="291" class="copy mid">本例由偶 bank 供权重</text>
+  <rect x="19" y="327" width="765" height="39" rx="5" fill="#dfeadc"/>
+  <g class="strong">
+    <text x="78" y="353">执行顺序</text><text x="248" y="353">GRF_A 的输入</text>
+    <text x="426" y="353">列块中的权重</text><text x="635" y="353">同一 GRF_B[0] 的 lane 0</text>
+  </g>
+  <g class="copy mid">
+    <text x="78" y="399">第 1 条 MAC</text><text x="248" y="399">GRF_A[0] 取 2</text>
+    <text x="426" y="399">C0 取 4</text><text x="635" y="399" class="label">0 + 2 × 4 = 8</text>
+    <text x="78" y="442">第 2 条 MAC</text><text x="248" y="442">GRF_A[1] 取 3</text>
+    <text x="426" y="442">C1 取 5</text><text x="635" y="442" class="label">8 + 3 × 5 = 23</text>
+  </g>
+  <path d="M19 414H784 M19 457H784" fill="none" stroke="#ccd8ca"/>
+
+  <text x="20" y="505" class="heading">23 何时成为主机可读的数据？</text>
+  <rect x="19" y="521" width="215" height="61" rx="7" fill="#e4eee2" stroke="#abbfac"/>
+  <text x="126" y="545" class="strong">PIM 将结果向量</text>
+  <text x="126" y="574" class="copy mid">从 GRF_B 写回 bank</text>
+  <path class="wire" d="M235 552h43"/>
+  <rect x="281" y="521" width="249" height="61" rx="7" fill="#fafbf6" stroke="#abbfac"/>
+  <text x="405" y="545" class="strong">退出计算模式</text>
+  <text x="405" y="574" class="copy mid">AB-PIM → AB → SB</text>
+  <path class="wire" d="M531 552h44"/>
+  <rect x="577" y="521" width="207" height="61" rx="7" fill="#fafbf6" stroke="#abbfac"/>
+  <text x="681" y="545" class="strong">主机普通读回</text>
+  <text x="681" y="574" class="copy mid">返回数据中含有 23</text>
+  <text x="20" y="614" class="copy">列块、寄存器号与 lane 位置均为教学布局。两次 MAC 是指令顺序。</text>
+</svg>

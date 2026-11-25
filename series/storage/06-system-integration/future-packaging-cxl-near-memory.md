@@ -31,7 +31,13 @@
 
 近存计算通常指将部分处理移到靠近数据的位置；PIM（processing in memory）用于描述不同程度的存储侧处理。名称的使用范围会随资料变化，因此比较时应明确：计算在独立逻辑、内存 die 的处理单元，还是阵列及其外围电路中执行；数据通过哪些接口移动；支持哪些操作。
 
+<span id="hbm-pim-data-path"></span>
+
 例如，[Samsung 的 HBM-PIM 技术介绍](https://semiconductor.samsung.com/news-events/tech-blog/hbm-pim-cutting-edge-memory-technology-to-accelerate-next-generation-ai/)描述了在 HBM 中加入处理能力。它并不意味着 DRAM cell 本身完成所有算术，也不表示所有应用都能获益。具体 bank、命令和软件约束见 [HBM-PIM 案例](../../microarchitecture/08-in-memory-computing/09-research-frontier/case-study-samsung-hbm-pim-research-angle.md)。
+
+以 Aquabolt-XL 为例，权重已放进一个 DRAM bank。选中一行后，权重从阵列的局部 I/O 送到同一片 DRAM die 上紧邻 bank 的处理单元，与寄存器里的输入相乘。这样省下的是把这份权重送出 HBM 再计算的那一程。输入若来自主机，仍要送进来；触发执行的命令也要经过内存控制器。多个 bank 可随同一条命令并行工作。若两组结果共用同一条对外数据通路，读回它们仍要分时占用这条通路。[Samsung 的芯片结构与命令图](https://hc33.hotchips.org/assets/program/conference/day1/20210813_HC33_Aquabolt-XL_PIM_Jin_Kim_slide.pdf)
+
+假设把同一个点积拆给 A、B 两组本地单元，A 算出 23，B 算出 −11，并约定由主机合并。23 刚出现在 A 的累加寄存器时，主机能从结果地址读到它了吗？程序要先把两组各自的结果向量写回预留的 bank 地址，结束存储侧执行并恢复普通读取。主机侧的内存控制器随后从 HBM 读回包含部分和的数据块。主机取出对应的两项，相加才得到 12。[跟着 23 走出本地寄存器](../../microarchitecture/08-in-memory-computing/02-memory-technologies/dram-pim-foundation.md#read-back-local-sum) · [检查两份结果何时都可读](../../microarchitecture/08-in-memory-computing/02-memory-technologies/dram-pim-deep-dive.md#when-partials-are-visible)
 
 假设一个操作原来要将大量输入送到处理器、计算后只返回少量结果。若存储侧支持该操作，且任务能在那里访问输入，则减少跨边界传输可能有利；但还要计入启动、数据布局、同步、局部计算能力和结果搬运。数据需要频繁在主机和存储侧交替修改时，这些代价可能抵消收益。
 

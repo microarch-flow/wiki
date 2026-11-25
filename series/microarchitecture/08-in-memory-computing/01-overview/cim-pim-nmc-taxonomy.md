@@ -15,7 +15,7 @@
 
 **把同样的数字乘加器放进内存 die，接在一个 bank 旁边。** bank 是可以分别选择和操作的一组存储阵列。假设这四个输入均已放在该单元可访问的位置。打开行后，存储单元的值先由感测电路读出，再经局部数据通路到达乘加器。它算出的仍是 8、15，累加器仍要保存中间结果。改变的是两个乘数走到算术电路所经过的边界。4 从阵列送到了 bank 旁的单元，却无需穿过内存对外接口去计算芯片。最后对外返回 23；主机仍要发命令、判断完成，阵列也仍要完成读操作。
 
-真实器件上可以找这段局部连线。Samsung Aquabolt-XL 的框图画出了连接偶、奇 bank 的处理单元，单元里有寄存器、FP16 乘法和加法硬件。看图时，从 bank 接口往下找，才找到乘法器。这里比较位置，手算的小整数、数据如何排进 bank、执行了几条指令都不能从这张框图倒推。[Samsung 在 Hot Chips 33 展示的 Aquabolt-XL 处理单元](https://hc33.hotchips.org/assets/program/conference/day1/20210813_HC33_Aquabolt-XL_PIM_Jin_Kim_slide.pdf)
+真实器件上可以找这段局部连线。Samsung Aquabolt-XL 的框图画出了连接偶、奇 bank 的处理单元，单元里有寄存器、FP16 乘法和加法硬件。看图时，从 bank 接口往下找，才找到乘法器。这里比较位置，手算的小整数、数据如何排进 bank、执行了几条指令都不能从这张框图倒推。[Samsung 在 Hot Chips 33 展示的 Aquabolt-XL 处理单元](https://hc33.hotchips.org/assets/program/conference/day1/20210813_HC33_Aquabolt-XL_PIM_Jin_Kim_slide.pdf) 想沿这张框图走完一次乘加，可以从[指令怎样到达 bank 旁的计算单元](../02-memory-technologies/dram-pim-foundation.md)继续读。
 
 ## 如果阵列只能做「按位与」，怎么可能算成点积？
 

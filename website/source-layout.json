@@ -639,6 +639,14 @@
         "target": "CIM/wiki/02-memory-technologies/README.md"
       },
       {
+        "source": "series/microarchitecture/08-in-memory-computing/02-memory-technologies/img/pim-bank-path.svg",
+        "target": "CIM/wiki/02-memory-technologies/img/pim-bank-path.svg"
+      },
+      {
+        "source": "series/microarchitecture/08-in-memory-computing/02-memory-technologies/img/pim-reduction.svg",
+        "target": "CIM/wiki/02-memory-technologies/img/pim-reduction.svg"
+      },
+      {
         "source": "series/microarchitecture/08-in-memory-computing/02-memory-technologies/dram-pim-deep-dive.md",
         "target": "CIM/wiki/02-memory-technologies/dram-pim-deep-dive.md"
       },
