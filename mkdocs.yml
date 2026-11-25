@@ -7,6 +7,7 @@ docs_dir: .site-build/docs
 site_dir: .site-build/site
 not_in_nav: |
   /reviews/
+  /COHERENCE/wiki/02-protocols/msi-transactions.md
   /D2D/wiki/01-foundations/cross-die-communication.md
   /RAM/wiki/02-sram-foundations/sram-macro-interface-and-semantics.md
   /RAM/wiki/04-dram-foundations/row-column-decode-sense-amplify.md

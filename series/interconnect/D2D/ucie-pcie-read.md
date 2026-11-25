@@ -74,4 +74,4 @@
 
 - **想看更多读同时在途。** 性能篇把传输对象换成每笔 64 B，分别计算线路速率、A 的在途窗口和 B 的服务能力；链路可靠性篇讲校验、重放与 Raw Mode 的区别。UCIe 1.1 的 streaming flit 和 Raw Mode 各有适用条件，本例采用的是前文选定的 PCIe 承载格式。[跨芯粒读取的有效性能](./03-system-design/effective-bandwidth-and-latency.md) · [链路错误检测与重放](./03-system-design/link-reliability.md)
 - **想换一种接口或封装。** 可以把图里的收发接口换成 BoW，沿另一套协议走一遍，或者换成堆叠结构，观察通道怎样变化。不同版本的 UCIe 支持范围也可分开查阅。[BoW PHY](./bow-phy.md) · [BoW.Flexi 的 AHB 读](./bow-flexi.md) · [CHI C2C](./02-interfaces/chi-c2c.md) · [UCIe-3D](./02-interfaces/ucie-3d.md) · [UCIe.mem](./02-interfaces/ucie-memory.md) · [封装内电接口](../SERDES/08-system-applications/chiplet-and-d2d.md) · [HBM 的堆叠和封装](../../storage/06-system-integration/packaging/hbm-2.5d-3d-tsv.md)
-- **接着读系列主线。** 这次读的是一个值固定的设备寄存器。如果改读一份可缓存的数据，A 和 B 原先都读到 0，后来 A 把它写成 1，B 下一次从谁手里取得 1？这个问题引出缓存一致性。[一致性与内存互连](../COHERENCE/01-foundations/coherence-invariants.md)
+- **接着读系列主线。** 这次读的是一个值固定的设备寄存器。如果改读一份可缓存的数据，A 和 B 原先都读到 0，后来 A 把它写成 1，B 下一次从谁手里取得 1？这个问题引出缓存一致性。[《内存里还是 0，为什么 B 能读到 A 写的 1？》](../COHERENCE/01-foundations/coherence-invariants.md)

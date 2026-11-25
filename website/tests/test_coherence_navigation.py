@@ -14,7 +14,7 @@ SITE = ROOT / '.site-build/site'
 DOCS = ROOT / '.site-build/docs'
 SOURCE = ROOT / 'series/interconnect/COHERENCE'
 sys.path.insert(0, str(ROOT / 'website'))
-from hooks import coherence_sections, coherence_topic_tree
+from hooks import COHERENCE_MSI_REDIRECT, coherence_sections, coherence_topic_tree
 
 
 def location(source):
@@ -27,10 +27,13 @@ class CoherenceNavigationTests(unittest.TestCase):
     def test_chapter_coverage_and_legacy_cxl_parent(self):
         sections = coherence_sections(DOCS)
         self.assertEqual(len(sections), 6)
-        self.assertEqual([len(pages) - 1 for _, pages in sections], [3, 5, 3, 4, 3, 3])
+        self.assertEqual([len(pages) - 1 for _, pages in sections], [3, 4, 3, 4, 3, 3])
         self.assertEqual(sections[3][1][0][1], 'COHERENCE/wiki/cxl-host-memory.md')
         self.assertTrue(all(p.startswith('COHERENCE/wiki/04-cxl/') for _, p in sections[3][1][1:]))
-        self.assertEqual(len(list(SOURCE.rglob('*.md'))), 28)
+        paths = [path for _, pages in sections for _, path in pages]
+        self.assertNotIn(COHERENCE_MSI_REDIRECT, paths)
+        expected = {'COHERENCE/wiki/' + f.relative_to(SOURCE).as_posix() for f in SOURCE.rglob('*.md')}
+        self.assertEqual(set(paths), expected - {'COHERENCE/wiki/README.md', COHERENCE_MSI_REDIRECT})
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
             shutil.copytree(SOURCE, root / 'COHERENCE/wiki')
@@ -46,6 +49,9 @@ class CoherenceNavigationTests(unittest.TestCase):
             page = (SITE / loc / 'index.html').read_text()
             full = re.search(r'^# (.+)$', source.read_text(), re.M)[1]
             with self.subTest(page=loc):
+                if loc == COHERENCE_MSI_REDIRECT.removesuffix('.md') + '/':
+                    self.assertFalse(any(path.startswith(loc) for path in titles))
+                    continue
                 self.assertEqual(titles[loc], full)
                 self.assertTrue(unescape(re.search(r'<title>(.*?)</title>', page, re.S)[1]).startswith(full + ' - '))
                 self.assertIn(f'<link rel="canonical" href="https://microarch-flow.github.io/wiki/{loc}">', page)
@@ -70,6 +76,25 @@ class CoherenceNavigationTests(unittest.TestCase):
                 self.assertIn(short, unescape(found[0][1]))
                 positions.append(found[0][0])
             self.assertEqual(positions, sorted(positions))
+
+    def test_msi_bookmarks_reach_the_matching_merged_sections(self):
+        path = COHERENCE_MSI_REDIRECT.removesuffix('.md') + '/'
+        page = (SITE / path / 'index.html').read_text()
+        menu = re.search(r'<div [^>]*data-article-redirect[^>]*>(.*?)</div>', page, re.S)
+        self.assertIsNotNone(menu)
+        links = re.findall(r'<li><span id="([^"]+)"></span>\s*<a href="([^"]+)">', menu[1])
+        expected = {
+            '用-msi-走完读写事务数据和权限怎样转移': '', '本文采用的教学模型': 'model',
+            '从无人缓存到共享': 'shared', '从共享到独占写入': 'write-permission',
+            '脏-owner-遇到另一个读取': 'read-again', '回收不是直接删掉缓存行': 'evict',
+        }
+        self.assertEqual([key for key, _ in links], list(expected))
+        new = 'COHERENCE/wiki/01-foundations/coherence-invariants/'
+        for key, href in links:
+            anchor = expected[key]
+            target = urlsplit(urljoin('https://example.test/' + path, unescape(href)))
+            self.assertEqual((target.path, target.fragment), ('/' + new, anchor))
+            self.assertEqual(page.count(f'id="{key}"'), 1)
 
     def test_legacy_anchors_and_internal_article_links(self):
         fixture = json.loads((ROOT / 'website/tests/fixtures/interconnect-legacy-anchors.json').read_text())

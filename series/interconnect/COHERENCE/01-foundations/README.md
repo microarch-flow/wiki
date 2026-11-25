@@ -10,7 +10,7 @@
 
 ## 阅读顺序
 
-1. [一致性约束](coherence-invariants.md)
+1. [MSI 的值与权限](coherence-invariants.md)
 2. [内存顺序与原子性](coherence-consistency-atomicity.md)
 3. [一致性域与 I/O](coherence-domains-and-io.md)
 
