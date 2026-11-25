@@ -1,0 +1,53 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="360" height="360" viewBox="0 0 360 360" role="img" aria-labelledby="title desc" xml:lang="zh-CN">
+  <title id="title">两个请求队列，共享一个 SRAM 读地址出口</title>
+  <desc id="desc">桥的队首是桥0，后面等着桥1。DMA 的队首是 DMA0，后面等着 DMA1。仲裁器从两个队首中选一路，将选中的读地址和 ARVALID 送到 SRAM 控制器。反向的虚线表示控制器给出的 ARREADY。每个上升沿，当 ARVALID 与 ARREADY 同时为 1，控制器收下一个地址。</desc>
+  <defs>
+    <marker id="forward" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="6" markerHeight="6" orient="auto">
+      <path d="M1 1 7 4 1 7" fill="none" stroke="#335d81" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </marker>
+    <marker id="reverse" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="6" markerHeight="6" orient="auto">
+      <path d="M1 1 7 4 1 7" fill="none" stroke="#227257" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </marker>
+  </defs>
+  <style>
+    text { font-family: system-ui, "Noto Sans CJK SC", sans-serif; fill: #203a50; text-anchor: middle; }
+    .head { font-size: 19px; font-weight: 650; }
+    .entry { font-size: 18px; }
+    .note { font-size: 16px; fill: #415968; }
+    .out { stroke: #335d81; stroke-width: 2.5; fill: none; marker-end: url(#forward); }
+    .back { stroke: #227257; stroke-width: 2.5; stroke-dasharray: 6 4; fill: none; marker-end: url(#reverse); }
+  </style>
+  <rect x="1" y="1" width="358" height="358" rx="14" fill="#f5f8f9" stroke="#c4cfd4"/>
+
+  <text x="91" y="31" class="head">桥的请求队列</text>
+  <text x="269" y="31" class="head">DMA 请求队列</text>
+  <g fill="#edf2f4" stroke="#aabdc8">
+    <rect x="20" y="44" width="142" height="72" rx="7"/>
+    <rect x="198" y="44" width="142" height="72" rx="7"/>
+  </g>
+  <g fill="#deebf3" stroke="#8ca6b7">
+    <rect x="20" y="79" width="142" height="37" rx="6"/>
+    <rect x="198" y="79" width="142" height="37" rx="6"/>
+  </g>
+  <g class="entry">
+    <text x="91" y="69">后续　桥1</text>
+    <text x="269" y="69">后续　DMA1</text>
+    <text x="91" y="104" font-weight="650">队首　桥0</text>
+    <text x="269" y="104" font-weight="650">队首　DMA0</text>
+  </g>
+
+  <path class="out" d="M91 116 V129 L128 161 V166"/>
+  <path class="out" d="M269 116 V129 L232 161 V166"/>
+  <rect x="68" y="168" width="224" height="51" rx="8" fill="#e8f0f4" stroke="#8ca6b7"/>
+  <text x="180" y="200" class="head">选一路读地址</text>
+
+  <path class="out" d="M128 219 V284"/>
+  <path class="back" d="M232 286 V221"/>
+  <text x="80" y="248" class="note">地址</text>
+  <text x="80" y="270" class="note">ARVALID</text>
+  <text x="284" y="259" class="note">ARREADY</text>
+
+  <rect x="68" y="288" width="224" height="59" rx="8" fill="#e8f2eb" stroke="#96b7a6"/>
+  <text x="180" y="313" class="head">SRAM 控制器</text>
+  <text x="180" y="336" class="note">每个上升沿至多收一个地址</text>
+</svg>

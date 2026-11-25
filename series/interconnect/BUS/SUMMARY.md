@@ -20,8 +20,8 @@
 
 - [首页](./02-fundamentals/README.md)
 - [地址已经收下，数据为什么还没回来？](./02-fundamentals/transaction-address-data-response.md)
+- [争用同一目标，谁先走？](./02-fundamentals/arbitration-ordering-backpressure.md)
 - [BUS vs NoC vs Point-to-Point](./02-fundamentals/bus-vs-noc-vs-point-to-point.md)
-- [仲裁、顺序性与 Backpressure](./02-fundamentals/arbitration-ordering-backpressure.md)
 - [位宽、时钟、Burst 与延迟](./02-fundamentals/width-clock-burst-latency.md)
 
 ## 03 片上总线协议族

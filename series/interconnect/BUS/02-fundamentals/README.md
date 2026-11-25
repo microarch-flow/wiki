@@ -6,13 +6,13 @@
 
 ## 这一章在回答什么问题
 
-先看桥和片上网络入口之间的一次交接。桥交出读地址后，还要等目标服务和数据返回。有了这一笔读作参照，再让两个发起者同时请求同一目标，就能看出共享通路如何带来等待。
+先看桥和片上网络入口之间的一次交接。桥交出读地址后，还要等目标服务和数据返回。再让桥和 DMA 同时访问同一块 SRAM，逐拍观察哪一笔还没轮到，哪一笔已经被选中却没能交给目标。
 
 ## 本章阅读顺序
 
 1. [地址已经收下，数据为什么还没回来？](./transaction-address-data-response.md)
-2. [BUS vs NoC vs Point-to-Point](./bus-vs-noc-vs-point-to-point.md)
-3. [仲裁、顺序性与 Backpressure](./arbitration-ordering-backpressure.md)
+2. [两个模块同时访问同一目标，谁先走？](./arbitration-ordering-backpressure.md)
+3. [BUS vs NoC vs Point-to-Point](./bus-vs-noc-vs-point-to-point.md)
 4. [位宽、时钟、Burst 与延迟](./width-clock-burst-latency.md)
 
 ## 四个基础判断

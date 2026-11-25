@@ -93,4 +93,4 @@
 
 只估算吞吐与延迟时，可以省去 42 到 45 的具体位值。按通道记录握手时刻、队列容量、服务时间和被谁挡住，区分“响应生成”和“响应被接收”，模型就能复现刚才多出来的两个周期。若要检查写入结果，还得按推导出的地址和 `WSTRB` 逐字节更新目标模型，核对 `AWLEN` 与 `WLAST`、`AWID` 与 `BID`、返回状态及同 ID 的顺序。读侧对应地记录 `ARID`、`RID`、每拍 `RRESP` 和最后一次 `RVALID && RREADY && RLAST`。
 
-现在只有桥在写。若另一台 DMA 也要在同一个时钟沿使用通向 SRAM 的出口，谁拿到这一拍，另一笔又停在哪里？这个问题进入下一篇的[仲裁、顺序与回压](../02-fundamentals/arbitration-ordering-backpressure.md)。
+这次只有桥在使用通向 SRAM 的出口。若一个 DMA 引擎也在同一拍送来地址，入口得先从两个请求里选一个。带着那笔还在等待的请求进入下一篇，看看它何时能被接收。[《两个模块同时访问同一目标，谁先走？》](../02-fundamentals/arbitration-ordering-backpressure.md)
