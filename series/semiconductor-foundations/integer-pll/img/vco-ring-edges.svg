@@ -1,0 +1,80 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="480" height="492" viewBox="0 0 480 492" role="img" aria-labelledby="title description">
+  <title id="title">三只反相器的边沿怎样绕行一周</title>
+  <desc id="description">三个反相器的输出节点依次为 A、B、C，C 接回第一级输入。假设上升与下降的单级传播延迟都为 τ。一个 A 上升沿经过 τ 使 B 下降，经过 2τ 使 C 上升，经过 3τ 回到 A 并使 A 下降。再经过三次逐级翻转，A 在 6τ 时再次上升。因此周期为 6τ。</desc>
+  <defs>
+    <style>
+      text { font-family:system-ui,'Noto Sans CJK SC','Microsoft YaHei',sans-serif; fill:#203c37; }
+      .title { font-size:23px; font-weight:700; }
+      .heading { font-size:20px; font-weight:650; }
+      .note { font-size:17px; fill:#526861; }
+      .axis { font-size:16px; }
+      .label { font-size:19px; font-weight:650; }
+      .wire { fill:none; stroke:#34534c; stroke-width:2.4; stroke-linecap:round; stroke-linejoin:round; }
+      .wave { fill:none; stroke-width:3; stroke-linejoin:round; }
+      .a { fill:#09677b; }
+      .b { fill:#964626; }
+      .c { fill:#465a50; }
+    </style>
+    <marker id="direction" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="4.7" markerHeight="4.7" orient="auto">
+      <path d="M1 1 L9 5 L1 9 Z" fill="#34534c"/>
+    </marker>
+    <g id="inverter" stroke="#34534c" stroke-width="2.4" fill="#f7f6ef" stroke-linejoin="round">
+      <path d="M0 -18 L37 0 L0 18 Z"/>
+      <circle cx="42" cy="0" r="4.4"/>
+    </g>
+  </defs>
+  <rect x="1" y="1" width="478" height="490" rx="15" fill="#f7f6ef" stroke="#c4d0c4"/>
+  <text x="20" y="35" class="title">三只反相器怎样走出一个周期？</text>
+  <text x="20" y="63" class="note">设每个门的上升、下降传播延迟都等于 τ。</text>
+  <g class="wire">
+    <path d="M40 118 H67 M114 118 H193 M240 118 H319 M366 118 H435 V150 H237" marker-end="url(#direction)"/>
+    <path d="M237 150 H40 V118"/>
+  </g>
+  <use href="#inverter" transform="translate(67 118)"/>
+  <use href="#inverter" transform="translate(193 118)"/>
+  <use href="#inverter" transform="translate(319 118)"/>
+  <g text-anchor="middle" class="label">
+    <text x="142" y="101" class="a">A</text>
+    <text x="268" y="101" class="b">B</text>
+    <text x="394" y="101" class="c">C</text>
+  </g>
+  <circle cx="142" cy="118" r="4" class="a"/>
+  <circle cx="268" cy="118" r="4" class="b"/>
+  <circle cx="394" cy="118" r="4" class="c"/>
+  <text x="240" y="178" text-anchor="middle" class="note">C 的输出接回第一级输入</text>
+  <path d="M20 194 H460" stroke="#c4d0c4"/>
+  <text x="20" y="223" class="heading">从 A 的一次上升沿开始计时</text>
+  <g fill="none" stroke="#c4d0c4" stroke-width="1.2" stroke-dasharray="3 4">
+    <path d="M90 236 V389 M145 236 V389 M200 236 V389 M255 236 V389 M310 236 V389 M365 236 V389 M420 236 V389"/>
+  </g>
+  <g class="label" text-anchor="middle">
+    <text x="34" y="267" class="a">A</text>
+    <text x="34" y="318" class="b">B</text>
+    <text x="34" y="369" class="c">C</text>
+  </g>
+  <path class="wave" stroke="#09677b" d="M65 275 H90 V248 H255 V275 H420 V248 H449"/>
+  <path class="wave" stroke="#964626" d="M65 299 H145 V326 H310 V299 H449"/>
+  <path class="wave" stroke="#465a50" d="M65 377 H200 V350 H365 V377 H449"/>
+  <g class="a">
+    <circle cx="90" cy="261.5" r="4"/>
+    <circle cx="255" cy="261.5" r="4"/>
+    <circle cx="420" cy="261.5" r="4"/>
+  </g>
+  <g class="b">
+    <circle cx="145" cy="312.5" r="4"/>
+    <circle cx="310" cy="312.5" r="4"/>
+  </g>
+  <g class="c">
+    <circle cx="200" cy="363.5" r="4"/>
+    <circle cx="365" cy="363.5" r="4"/>
+  </g>
+  <g class="axis" text-anchor="middle">
+    <text x="90" y="409">0</text><text x="145" y="409">τ</text>
+    <text x="200" y="409">2τ</text><text x="255" y="409">3τ</text>
+    <text x="310" y="409">4τ</text><text x="365" y="409">5τ</text>
+    <text x="420" y="409">6τ</text>
+  </g>
+  <path d="M20 426 H460" stroke="#c4d0c4"/>
+  <text x="20" y="452" class="heading">绕一圈，A 从高变低。再绕一圈，A 又变高。</text>
+  <text x="20" y="478" class="note">从一个 A 上升沿到下一个，周期为 6τ。</text>
+</svg>
