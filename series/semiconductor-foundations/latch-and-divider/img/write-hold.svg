@@ -61,7 +61,7 @@
     <circle cx="419" cy="325" r="3.7" fill="#203c37" stroke="none" stroke-width="2"/>
     <text x="20" y="419" font-size="17" text-anchor="start" fill="#203c37">D 把 X 拉低，第 1 级拉高 Y，第 2 级拉低 Q。</text>
     <path d="M20 431 H460" stroke="#ced6c9" stroke-width="1.2" stroke-linejoin="round" stroke-linecap="round" fill="none"/>
-    <text x="20" y="464" font-size="20" text-anchor="start" fill="#203c37" font-weight="650">关回反馈，再改变 D  ·  EN = 0</text>
+    <text x="20" y="464" font-size="20" text-anchor="start" fill="#203c37" font-weight="650">接回反馈，再改变 D  ·  EN = 0</text>
     <text x="41" y="496" font-size="17" text-anchor="middle" fill="#203c37" font-weight="650">D=1</text>
     <text x="161" y="496" font-size="17" text-anchor="middle" fill="#203c37" font-weight="650">X=0</text>
     <text x="280" y="496" font-size="17" text-anchor="middle" fill="#203c37" font-weight="650">Y=1</text>
