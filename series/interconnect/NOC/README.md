@@ -1,4 +1,6 @@
-# NoC Wiki
+# 片上网络（NoC）
+
+<span id="noc-wiki"></span>
 
 桥要从加速卡的 SRAM 读回 42。站在桥旁，看到的是一次读地址握手。把观察点移到路由器，链路上传的是什么？如果桥同时在等两笔读，返回的 42 又该交给谁？从[《一次读取怎样变成 NoC 里的请求包和返回包？》](./05-system-integration/ni-network-interface-design.md)开始，跟着这笔读走一个来回。
 

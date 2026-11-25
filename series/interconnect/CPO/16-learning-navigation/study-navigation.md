@@ -1,142 +1,52 @@
 # CPO 学习顺序导航页
 
-上级：[16 学习顺序导航](./README.md)
+上级：[学习顺序导航](README.md)
 
-相关：[CPO 一页版总览](../13-one-page-summary/cpo-one-page.md)、[4 天学习计划与阅读提问清单](../08-research/4-day-study-plan.md)
+## 先选要回答的问题 {#start}
 
-## 这页怎么用
+<span id="这页怎么用"></span>
+<span id="如果你时间很少"></span>
 
-如果你面对整套 wiki 觉得内容很多，不要顺着目录机械往下读。  
-更好的办法是先判断你的目标，再选路径。
+第一次接触 CPO，可以先跟一个比特走。准备做器件、封装或互连研究，可以从下列工程问题直接进入。做产业调查则先辨认合作方提供哪一环，再核对公开证据。
 
-## 路径 A：只想先快速建立整体概念
+## 第一次阅读，先指出转换发生在哪里 {#first}
 
-适合：
+<span id="路径-a只想先快速建立整体概念"></span>
 
-- 第一次接触 CPO
-- 想先判断这个主题值不值得深入
-- 想在 30 到 60 分钟内得到稳定概念框架
+1. [沿一个比特走完整条电光链路](../04-optical-engine/optical-link-basics.md)。在图上指出哪段高速电连接缩短了，从一根光纤的四个波长中找出一路，再算这一路的余量。
+2. [CPO 在解决什么问题](../01-overview/problem-statement.md)。在端口数和线速相同的条件下，检查哪些系统指标可能变化。
+3. [CPO 与相邻概念](../01-overview/taxonomy.md)。分别给一项设计标出引擎位置、光源位置和工艺。需要快速回顾各类问题时，使用[一页版总览](../13-one-page-summary/cpo-one-page.md)。
 
-推荐顺序：
+## 做工程分析，按系统边界选下一站 {#engineering}
 
-1. [CPO 在解决什么问题](../01-overview/problem-statement.md)
-2. [CPO 分类框架](../01-overview/taxonomy.md)
-3. [系统栈与接口位置](../03-architecture-platform/system-stack.md)
-4. [光链路基础与功率预算](../04-optical-engine/optical-link-basics.md)
-5. [带宽、功耗与热](../05-electrical-thermal-reliability/bandwidth-power-thermal.md)
+<span id="路径-b想系统学习技术与工程逻辑"></span>
 
-如果电路或时序概念不熟悉，可按需补读[电路到时序的共用基础](../../../microarchitecture/02-pipeline/electrical-timing-foundations.md)；器件细节见[激光器、调制器、探测器](../04-optical-engine/laser-modulator-detector.md)。
+- **画数据和供光路径。** [系统栈](../03-architecture-platform/system-stack.md)说明 SerDes、光源、光引擎和可选重定时器的位置；回到[光引擎](../04-optical-engine/optical-link-basics.md#modulation)可看驱动电压如何控制光功率。
+- **遇到误码。** 先在[预算参考面](../04-optical-engine/optical-link-basics.md#budget)核对同一波长的收发规格，再到[测试与故障定位](../05-electrical-thermal-reliability/reliability-test.md)区分光路、电路和装配问题。有关电采样窗口的先修见[电路到时序](../../../microarchitecture/02-pipeline/electrical-timing-foundations.md)。
+- **评估是否能量产或维修。** 查看[功耗与热](../05-electrical-thermal-reliability/bandwidth-power-thermal.md)、[制造流程](../06-manufacturing/process-flow.md)和[已知良品与装配良率](../06-manufacturing/known-good-die-and-yield.md)。判断一个失效部件会连带更换什么，取决于封装和维修边界。
 
-读完后你应该能回答：
+## 读论文时怎样保留可复核的证据 {#papers}
 
-- CPO 为什么出现
-- 它和 pluggable / NPO 有什么关系
-- 它最核心的工程代价是什么
+<span id="路径-c想按论文把-cpo-学透"></span>
 
-## 路径 B：想系统学习技术与工程逻辑
+从[十篇入门文献](../08-research/reading-pack-cpo-top-10.md)或[四天阅读计划](../08-research/4-day-study-plan.md)选择主题。[完整论文卡](../08-research/detailed-cards/README.md)举例说明如何分析论证；[论文短卡库](../08-research/paper-cards/README.md)便于按器件、封装、功耗与热查找材料。
 
-适合：
+## 查行业与公司时从谁开始 {#industry}
 
-- 想真正看懂 CPO
-- 想和芯片、封装、光通信相关从业者做有质量讨论
+<span id="路径-d想重点理解产业链供应链和公司生态"></span>
 
-推荐顺序：
+[产业角色](../02-industry/value-chain.md)和[供应链分层](../09-supply-chain-geography/supply-chain-stack.md)先说明各方提供什么，再用[区域分布](../09-supply-chain-geography/regional-landscape.md)、[合作关系](../10-company-ecosystem/partnership-map.md)、[公司深卡](../11-deep-company-cards/README.md)和[平台与部件的风险](../12-conclusions-competition/winners-components-risks.md)核实具体项目。[来源表](../18-sources-and-updates/company-ecosystem-sources.md)记录公司与合作信息的出处。
 
-1. [学习路线图](../01-overview/learning-roadmap.md)
-2. [系统栈与接口位置](../03-architecture-platform/system-stack.md)
-3. [光链路基础](../04-optical-engine/optical-link-basics.md)
-4. [激光器、调制器、探测器](../04-optical-engine/laser-modulator-detector.md)
-5. [带宽、功耗与热](../05-electrical-thermal-reliability/bandwidth-power-thermal.md)
-6. [测试、可靠性与失效定位](../05-electrical-thermal-reliability/reliability-test.md)
-7. [制造流程](../06-manufacturing/process-flow.md)
-8. [KGD、装配良率与系统良率](../06-manufacturing/known-good-die-and-yield.md)
+<span id="路径-e想重点看中国大陆机会"></span>
 
-读完后你应该能回答：
+关注中国大陆时，按[已有位置](../15-china-opportunities/china-position.md)、[机会环节](../15-china-opportunities/opportunity-areas.md)、[约束条件](../15-china-opportunities/constraints.md)、[跟踪方法](../15-china-opportunities/how-to-track-china.md)阅读，可依次查产品、测试与客户资格证据。
 
-- CPO 的真正硬问题是什么
-- 为什么热、测试、可靠性会决定 adoption
-- 为什么器件强不等于系统可落地
+## 对比两种方案时，要固定什么？ {#boundaries}
 
-## 路径 C：想按论文把 CPO 学透
+<span id="一句话总结"></span>
 
-适合：
+光引擎缩短高速电连接以后，计算整端功耗要包括 SerDes、驱动、激光、接收放大及有关温控。封装是否能稳定对位、测试是否能定位故障、现场要换哪个单元，都影响最终成本。比较可插拔与共封装设计，应先固定两边的净速率、距离、环境和可维护性要求。不同系统可以给出不同的选择。[系统收益与代价](../01-overview/problem-statement.md) · [采用条件与限制](../07-applications-economics/adoption-barriers.md)
 
-- 你更习惯从论文和技术材料入手
-- 你想形成自己的判断，而不只看总结
+<span id="如果你想把它讲给别人听"></span>
 
-推荐顺序：
-
-1. [CPO 入门必读 10 篇](../08-research/reading-pack-cpo-top-10.md)
-2. [4 天学习计划与阅读提问清单](../08-research/4-day-study-plan.md)
-3. [完整论文卡](../08-research/detailed-cards/README.md)
-4. [论文卡片库](../08-research/paper-cards/README.md)
-
-读完后你应该能回答：
-
-- 哪类论文更接近系统问题
-- 哪类论文更接近量产工程
-- 哪些路线更像长期主线
-
-## 路径 D：想重点理解产业链、供应链和公司生态
-
-适合：
-
-- 你更偏产业研究、战略研究或行业跟踪
-
-推荐顺序：
-
-1. [产业链与角色](../02-industry/value-chain.md)
-2. [供应链分层地图](../09-supply-chain-geography/supply-chain-stack.md)
-3. [区域格局：美国、台湾地区、日本、欧洲、中国大陆](../09-supply-chain-geography/regional-landscape.md)
-4. [合作关系图](../10-company-ecosystem/partnership-map.md)
-5. [重点公司深卡](../11-deep-company-cards/README.md)
-6. [平台角色、关键部件与风险](../12-conclusions-competition/winners-components-risks.md)
-
-读完后你应该能回答：
-
-- 谁控制平台入口
-- 谁更像关键拼图
-- 如何区分产品演示、生产声明和客户部署证据
-
-## 路径 E：想重点看中国大陆机会
-
-适合：
-
-- 你关心大陆供应链切入点
-- 你关心哪些环节更现实、哪些环节更长期
-
-推荐顺序：
-
-1. [中国大陆在 CPO 生态中的位置](../15-china-opportunities/china-position.md)
-2. [中国大陆可研究的机会环节](../15-china-opportunities/opportunity-areas.md)
-3. [主要约束与短板](../15-china-opportunities/constraints.md)
-4. [研究与跟踪框架](../15-china-opportunities/how-to-track-china.md)
-
-读完后你应该能回答：
-
-- 可以从哪些环节收集产品、测试和客户资格证据
-- 哪些判断仍是研究假设
-- 如何比较具体项目的进入条件
-
-## 如果你时间很少
-
-只读这 6 页：
-
-1. [CPO 一页版总览](../13-one-page-summary/cpo-one-page.md)
-2. [CPO 在解决什么问题](../01-overview/problem-statement.md)
-3. [系统栈与接口位置](../03-architecture-platform/system-stack.md)
-4. [带宽、功耗与热](../05-electrical-thermal-reliability/bandwidth-power-thermal.md)
-5. [阶段性研究结论](../12-conclusions-competition/interim-conclusions.md)
-6. [如何比较 CPO 商用进展](../12-conclusions-competition/who-scales-first.md)
-
-## 如果你想把它讲给别人听
-
-优先读：
-
-1. [CPO 一页版总览](../13-one-page-summary/cpo-one-page.md)
-2. [CPO 研究汇报模板](../17-report-template/cpo-report-template.md)
-3. [术语索引表](../14-indexes/term-index.md)
-
-## 一句话总结
-
-整套 wiki 最有效的读法，不是机械地按全部章节顺序阅读，而是先明确你要解决的是概念、技术、论文、产业还是中国机会，再走对应路径。
+做汇报可用[一页版总览](../13-one-page-summary/cpo-one-page.md)、[研究汇报模板](../17-report-template/cpo-report-template.md)和[术语索引](../14-indexes/term-index.md)。需要说明商业进展时，用[阶段性结论](../12-conclusions-competition/interim-conclusions.md)和[商用证据比较方法](../12-conclusions-competition/who-scales-first.md)区分已确认事项和待检验假设。

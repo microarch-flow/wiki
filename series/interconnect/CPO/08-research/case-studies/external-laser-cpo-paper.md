@@ -2,7 +2,7 @@
 
 上级：[案例库](./README.md)
 
-相关：[激光器、调制器、探测器](../../04-optical-engine/laser-modulator-detector.md)
+相关：[连续光怎样进入调制器](../../04-optical-engine/optical-link-basics.md#modulation)
 
 ## 这类论文通常在做什么
 

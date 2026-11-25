@@ -22,6 +22,12 @@ def location(source):
     return "SERDES/wiki/" + ("" if relative == "." else relative + "/")
 
 
+MERGED_ARTICLES = {
+    "SERDES/wiki/03-transmitter/parallel-to-serial/",
+    "SERDES/wiki/04-receiver/deserializer-and-alignment/",
+}
+
+
 class SerdesReaderTests(unittest.TestCase):
     def test_reading_lists_cover_all_articles(self):
         chapters = sorted(path for path in SOURCE.iterdir()
@@ -30,11 +36,12 @@ class SerdesReaderTests(unittest.TestCase):
         counts = []
         for chapter in chapters:
             items = reading_items(chapter)
-            expected = {path.name for path in chapter.glob("*.md") if path.name != "README.md"}
+            expected = {path.name for path in chapter.glob("*.md")
+                        if path.name != "README.md" and location(path) not in MERGED_ARTICLES}
             self.assertEqual({name for name, _ in items}, expected, chapter.name)
             self.assertEqual(len(items), len(expected), chapter.name)
             counts.append(len(items))
-        self.assertEqual(sum(counts[:-1]), 48)
+        self.assertEqual(sum(counts[:-1]), 46)
         self.assertEqual(counts[-1], 10)
 
         # These section labels are also the titles inside Material's mobile drawer.
@@ -55,6 +62,10 @@ class SerdesReaderTests(unittest.TestCase):
             page = (SITE / loc / "index.html").read_text()
             full = re.search(r"^# (.+)$", source.read_text(), re.M)[1]
             with self.subTest(page=loc):
+                if loc in MERGED_ARTICLES:
+                    self.assertFalse(any(key.startswith(loc) for key in titles))
+                    self.assertIn("data-article-redirect", page)
+                    continue
                 self.assertEqual(titles.get(loc), full)
                 document_title = unescape(re.search(r"<title>(.*?)</title>", page, re.S)[1])
                 self.assertTrue(document_title.startswith(full + " - "))

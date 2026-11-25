@@ -42,7 +42,7 @@ class ScaleupNavigationTests(unittest.TestCase):
     def test_reading_lists_cover_all_articles(self):
         chapters = sorted(p for p in SOURCE.iterdir() if (p / "README.md").is_file())
         self.assertEqual(len(chapters), 6)
-        self.assertEqual([len(reading_items(p)) for p in chapters], [3, 4, 4, 3, 5, 3])
+        self.assertEqual([len(reading_items(p)) for p in chapters], [3, 4, 4, 4, 5, 3])
         for chapter in chapters:
             items = reading_items(chapter)
             actual = [filename for filename, _ in items]
@@ -57,7 +57,7 @@ class ScaleupNavigationTests(unittest.TestCase):
         indexed = {unquote(row["location"]) for row in search}
         search_titles = {unquote(row["location"]): row["title"] for row in search}
         sources = list(SOURCE.rglob("*.md"))
-        self.assertEqual(len(sources), 30)
+        self.assertEqual(len(sources), 31)
         for source in sources:
             loc = location(source)
             page = (SITE / loc / "index.html").read_text()

@@ -72,4 +72,4 @@
 
 若把第 17 轮这样的写连续发很多次，主机 C 也持续向 B 发送，两股流就可能争用同一个出口。配套算例让两股 100 Gb/s 的流争一个 100 Gb/s 出口：交换机何时给包打 ECN 标记，由 B 的网卡向源端发回拥塞通知 CNP？它又何时用 PFC 要求直接相邻的上游端口暂停？标记、减速、暂停都可能推迟数据到达；它们不能代替本轮的完成通知。[同一出口的两个门槛](../04-roce/pfc-headroom-and-stalls.md#one-egress) · [跟踪 CNP 怎样返回源端](../04-roce/ecn-cnp-and-dcqcn.md#跟踪一次反馈)
 
-上一篇由两张 GPU 交接一块缓冲，也要区分“可以读”和“已经用完”。下一篇把两台服务器、每台两张 GPU 和一块网卡放在同一张图上，计算一次 AllReduce 中哪个出口最忙。[两张 GPU 的缓冲区交接](../../SCALEUP/01-access-semantics/address-mapping-and-permissions.md) · [集体通信与物理链路的映射](../../SCALEUP/04-software-and-collectives/collective-mapping-and-offload.md)
+上一篇由两张 GPU 交接一块缓冲，也要区分“可以读”和“已经用完”。下一篇把两台服务器、每台两张 GPU 和一块网卡放在同一张图上，计算一次 AllReduce 中哪个出口最忙。[两张 GPU 的缓冲区交接](../../SCALEUP/01-access-semantics/address-mapping-and-permissions.md) · [四张 GPU 做一次 AllReduce，哪个出口最忙？](../../SCALEUP/04-software-and-collectives/four-gpu-allreduce-egress.md)

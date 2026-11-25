@@ -4,7 +4,7 @@
 
 公司进展、公告日期和证据边界见 [Intel 深卡](../../11-deep-company-cards/intel.md)。
 
-相关：[光链路基础](../../04-optical-engine/optical-link-basics.md)、[激光器、调制器、探测器](../../04-optical-engine/laser-modulator-detector.md)
+相关：[光源与调制器](../../04-optical-engine/optical-link-basics.md#modulation)、[接收与探测](../../04-optical-engine/optical-link-basics.md#receiver)
 
 ## 公司角色
 

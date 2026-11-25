@@ -1,0 +1,58 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="368" height="538" viewBox="0 0 368 538" role="img" aria-labelledby="title desc" xml:lang="zh-CN">
+  <title id="title">跟踪 32 位并行字的串行发送、采样与重新分组</title>
+  <desc id="desc">W0 是 B2000000，W1 是 A5A5A5A5，最高位先发，1 UI 为 100 ps。中间省略 UI 4 至 30。UI 0、1、2、3、31、32 的发送位分别为 1、0、1、1、0、1；接收端对应的归一化样本为 +0.5、−0.5、+0.5、+0.9、−0.9、+0.5。零门限判决与发送位一致。用 UI 0 至 31 拼字得到 0xB2000000；用 UI 1 至 32 拼字得到 0x64000001。</desc>
+  <style>
+    text { font: 16px system-ui, "Noto Sans CJK SC", sans-serif; fill: #213b49; }
+    .head { font-size: 17px; font-weight: 650; }
+    .mid { text-anchor: middle; }
+    .grid { stroke: #bcc8cc; stroke-width: 1; stroke-dasharray: 3 4; }
+    .sample { fill: #20715c; }
+    .code { font: 17px ui-monospace, monospace; }
+  </style>
+  <rect x="1" y="1" width="366" height="536" rx="12" fill="#fafbf8" stroke="#c4d1cb"/>
+  <text x="16" y="29" class="head">A 装载 W0，最高位先发</text>
+  <text x="16" y="55" class="code">0xB2000000</text>
+  <text x="156" y="55">下一个字 W1</text>
+  <text x="256" y="55" class="code">0xA5A5A5A5</text>
+  <path d="M16 69H352" stroke="#cad5cf"/>
+  <text x="16" y="94" class="head">串行发送</text>
+  <text x="201" y="94">每格 1 UI = 100 ps</text>
+  <g class="grid">
+    <path d="M38 106V323 M84 106V323 M130 106V323 M176 106V323 M268 106V323 M314 106V323"/>
+  </g>
+  <g class="mid">
+    <text x="38" y="122">0</text><text x="84" y="122">1</text><text x="130" y="122">2</text><text x="176" y="122">3</text>
+    <text x="222" y="122">…</text><text x="268" y="122">31</text><text x="314" y="122">32</text>
+    <text x="38" y="145">1</text><text x="84" y="145">0</text><text x="130" y="145">1</text><text x="176" y="145">1</text>
+    <text x="222" y="145">…</text><text x="268" y="145">0</text><text x="314" y="145">1</text>
+  </g>
+  <g fill="none" stroke="#326788" stroke-width="3" stroke-linejoin="round">
+    <path d="M16 157H61V176H107V157H198 M246 176H291V157H336"/>
+  </g>
+  <rect x="9" y="185" width="348" height="43" fill="#fafbf8"/>
+  <text x="16" y="201" class="head">B 在各 UI 中点采样</text>
+  <text x="206" y="201">圆点为接收样本</text>
+  <path d="M14 269H350" stroke="#7a8887"/>
+  <g class="sample">
+    <circle cx="38" cy="250" r="4"/><circle cx="84" cy="288" r="4"/><circle cx="130" cy="250" r="4"/>
+    <circle cx="176" cy="235" r="4"/><circle cx="268" cy="303" r="4"/><circle cx="314" cy="250" r="4"/>
+  </g>
+  <g class="mid">
+    <text x="38" y="240">+0.5</text><text x="84" y="312">−0.5</text><text x="130" y="240">+0.5</text>
+    <text x="176" y="226">+0.9</text><text x="268" y="324">−0.9</text><text x="314" y="240">+0.5</text>
+  </g>
+  <rect x="195" y="258" width="60" height="22" fill="#fafbf8"/>
+  <text x="225" y="274" class="mid">门限 0</text>
+  <text x="16" y="350" class="head">逐位判决</text>
+  <g class="code mid">
+    <text x="38" y="375">1</text><text x="84" y="375">0</text><text x="130" y="375">1</text><text x="176" y="375">1</text>
+    <text x="222" y="375">…</text><text x="268" y="375">0</text><text x="314" y="375">1</text>
+  </g>
+  <path d="M38 386V391H268V386" fill="none" stroke="#27634e" stroke-width="2"/>
+  <path d="M84 396V401H314V396" fill="none" stroke="#8d5c16" stroke-width="2"/>
+  <rect x="15" y="412" width="338" height="41" rx="5" fill="#e8f1ea"/>
+  <text x="23" y="439">取第 0 至 31 位</text><text class="code" x="205" y="439">0xB2000000</text>
+  <rect x="15" y="459" width="338" height="41" rx="5" fill="#f6eedf"/>
+  <text x="23" y="486">取第 1 至 32 位</text><text class="code" x="205" y="486">0x64000001</text>
+  <text x="16" y="523">各行按符号对齐，省略了传播延迟。</text>
+</svg>

@@ -1,10 +1,14 @@
-# CPO Wiki
+# 共封装光学（CPO）
+
+<span id="cpo-wiki"></span>
 
 共封装光学（CPO）将光引擎与主芯片在封装层级紧密集成，以缩短部分高速电通道。它同时改变光链路、散热、制造、测试和维护边界。收益要按具体系统比较。
 
 <span id="dashboard"></span>
 
 ## 从哪里开始
+
+**首篇 · [一个比特怎样从电路进入光纤，再回到电路？](./04-optical-engine/optical-link-basics.md)** 从一组 0、1、0 出发，跟踪驱动器、调制器、光纤和接收电路，再看四个波长共纤时如何单独计算一路的光功率余量。
 
 | 目标 | 入口 |
 | --- | --- |
@@ -21,13 +25,7 @@
 
 ## 技术阅读主线
 
-1. [CPO 解决什么问题](./01-overview/problem-statement.md)：先确定要缩短的电段和系统约束。
-2. [CPO 与相邻概念](./01-overview/taxonomy.md)：分清封装层级、光源位置和器件工艺。
-3. [系统栈与电光接口](./03-architecture-platform/system-stack.md)：沿发送和接收方向追踪数据。
-4. [光链路基础与功率预算](./04-optical-engine/optical-link-basics.md)：理解器件和光学参考面。
-5. [功耗与热](./05-electrical-thermal-reliability/bandwidth-power-thermal.md) → [制造流程](./06-manufacturing/process-flow.md) → [KGD 与良率](./06-manufacturing/known-good-die-and-yield.md)：检查系统代价。
-
-需要电路和时序基础时，可先读[电路到时序的共用基础](../../microarchitecture/02-pipeline/electrical-timing-foundations.md)。其他学习目标见[学习顺序导航](./16-learning-navigation/study-navigation.md)。
+首篇中若对转换位置有疑问，可回看[电通道缩短在哪里](./04-optical-engine/optical-link-basics.md#electrical)；若要评估系统收益，从[原有系统的约束](./01-overview/problem-statement.md)出发，接着看[光源与引擎的不同位置](./01-overview/taxonomy.md)、[功耗与热](./05-electrical-thermal-reliability/bandwidth-power-thermal.md)及[制造与良率](./06-manufacturing/README.md)。按工程问题查找其他文章可用[学习顺序导航](./16-learning-navigation/study-navigation.md)。
 
 <span id="路线-3想从论文进入"></span>
 <span id="路线-4想做产业公司研究"></span>

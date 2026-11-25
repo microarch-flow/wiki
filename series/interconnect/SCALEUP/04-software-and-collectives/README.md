@@ -11,5 +11,6 @@
 1. [GPU 发起通信与通知](gpu-initiated-communication.md)
 2. [NCCL／RCCL 通信契约](nccl-rccl-contracts.md)
 3. [映射、分块与交换归约](collective-mapping-and-offload.md)
+4. [四张 GPU 的 AllReduce 出口](four-gpu-allreduce-egress.md)
 
 返回[专题导读](../README.md)，选择机制、系统或任务分析路线。

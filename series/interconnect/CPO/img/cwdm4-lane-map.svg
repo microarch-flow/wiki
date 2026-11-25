@@ -1,0 +1,59 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="368" height="520" viewBox="0 0 368 520" role="img" aria-labelledby="title desc" xml:lang="zh-CN">
+  <title id="title">四条电通道怎样共用一根数据光纤</title>
+  <desc id="desc">A 的四条发送电通道 L0 至 L3 分别调制中心波长为 1271、1291、1311、1331 纳米的光。MUX 合波，从 TP2 至 TP3 共用光纤一。B 的 DEMUX 分波，分别探测并恢复为 L0 至 L3。回复方向使用相同四个波长，从 B 经独立的光纤二抵达 A。供光光纤未画出。</desc>
+  <defs>
+    <marker id="down" markerWidth="6" markerHeight="6" refX="5" refY="3" viewBox="0 0 6 6" orient="auto"><path d="M0 0L6 3 0 6Z" fill="#315b54"/></marker>
+  </defs>
+  <style>
+    text { font: 16px system-ui,"Noto Sans CJK SC",sans-serif; fill: #25463e; text-anchor: middle; }
+    .section { font-size: 18px; font-weight: 650; } .bold { font-weight: 650; }
+    .port { fill: #e3ede9; stroke: #839c91; }
+    .trunk { stroke: #315b54; stroke-width: 2.8; fill: none; marker-end: url(#down); }
+    .bar { fill: #eae8df; stroke: #9a9076; }
+    .guide { stroke: #809186; stroke-dasharray: 3 3; fill: none; }
+    .branch { stroke-width: 2.2; fill: none; }
+  </style>
+  <rect x="1" y="1" width="366" height="518" rx="11" fill="#f8f9f4" stroke="#c5cfc3"/>
+  <text x="184" y="30" class="section">A 发送：四条电通道各驱动一路光</text>
+  <g class="port">
+    <rect x="17" y="47" width="74" height="35" rx="5"/><rect x="103" y="47" width="74" height="35" rx="5"/>
+    <rect x="191" y="47" width="74" height="35" rx="5"/><rect x="277" y="47" width="74" height="35" rx="5"/>
+  </g>
+  <g class="bold"><text x="54" y="70">L0</text><text x="140" y="70">L1</text><text x="228" y="70">L2</text><text x="314" y="70">L3</text></g>
+  <g class="branch">
+    <path stroke="#38668e" d="M54 82v11 m0 17v14l20 10"/>
+    <path stroke="#8c6136" d="M140 82v11 m0 17v14l7 10"/>
+    <path stroke="#785585" d="M228 82v11 m0 17v14l-7 10"/>
+    <path stroke="#317369" d="M314 82v11 m0 17v14l-20 10"/>
+  </g>
+  <text x="54" y="108">1271 nm</text><text x="140" y="108">1291 nm</text>
+  <text x="228" y="108" class="bold">1311 nm</text><text x="314" y="108">1331 nm</text>
+  <rect x="39" y="134" width="290" height="35" rx="6" class="bar"/>
+  <text x="184" y="158" class="bold">MUX 合波：四种波长进入同一光口</text>
+  <path d="M184 169v106" class="trunk"/>
+  <path d="M32 189h141 m22 0h139 M32 257h141 m22 0h139" class="guide"/>
+  <rect x="35" y="177" width="120" height="23" fill="#f8f9f4"/>
+  <text x="95" y="195">TP2 发射光口</text>
+  <rect x="35" y="245" width="120" height="23" fill="#f8f9f4"/>
+  <text x="95" y="263">TP3 接收光口</text>
+  <text x="95" y="230" class="bold">数据光纤一</text><text x="267" y="230">A → B，四波长</text>
+  <rect x="39" y="280" width="290" height="35" rx="6" class="bar"/>
+  <text x="184" y="303" class="bold">DEMUX 分波：送往各自的探测器</text>
+  <g class="branch">
+    <path stroke="#38668e" d="M74 315l-20 11v8 m0 19v12"/>
+    <path stroke="#8c6136" d="M147 315l-7 11v8 m0 19v12"/>
+    <path stroke="#785585" d="M221 315l7 11v8 m0 19v12"/>
+    <path stroke="#317369" d="M294 315l20 11v8 m0 19v12"/>
+  </g>
+  <text x="54" y="351">1271 nm</text><text x="140" y="351">1291 nm</text>
+  <text x="228" y="351" class="bold">1311 nm</text><text x="314" y="351">1331 nm</text>
+  <g class="port">
+    <rect x="17" y="365" width="74" height="35" rx="5"/><rect x="103" y="365" width="74" height="35" rx="5"/>
+    <rect x="191" y="365" width="74" height="35" rx="5"/><rect x="277" y="365" width="74" height="35" rx="5"/>
+  </g>
+  <g class="bold"><text x="54" y="389">L0</text><text x="140" y="389">L1</text><text x="228" y="389">L2</text><text x="314" y="389">L3</text></g>
+  <text x="184" y="425" class="section">B 接收：恢复四条电通道</text>
+  <path d="M16 442h336" class="guide"/>
+  <text x="184" y="470" class="bold">反向使用数据光纤二：B → A</text>
+  <text x="184" y="498">相同四种波长，独立收发</text>
+</svg>

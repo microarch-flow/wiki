@@ -28,7 +28,7 @@
 6. FFE 在此例的发送侧改变输出；CTLE 在线性接收前端调整频率响应；DFE 利用接收端的历史判决。输出范围、噪声、系数误差和反馈时序限制效果。[发送均衡](../03-transmitter/tx-equalization-ffe.md)、[CTLE](../04-receiver/analog-frontend-and-ctle.md)、[DFE](../04-receiver/dfe-and-error-propagation.md)
 7. 依赖跳变的检测器在该区间没有新的边沿信息，要依靠已有状态和本地时钟；频差会带来相位漂移。锁定与字边界对齐是不同状态。[CDR](../04-receiver/cdr-and-timing-recovery.md)
 8. 不一定。无扰动示例得到 +0.3，仍在零门限上方；加上题文所述扰动后才可能翻转。[DFE 反例](../04-receiver/dfe-and-error-propagation.md)
-9. 位序、单 lane 字边界与多 lane 相对位置分别需要约定和检查。[解串与对齐](../04-receiver/deserializer-and-alignment.md)
+9. 位序、单 lane 字边界与多 lane 相对位置分别需要约定和检查。[由同一串位拼出两个不同的字](../01-overview/link-end-to-end.md#align)
 10. 不能。示意图表达关系；仿真受模型和条件限制；测量覆盖所测样片与条件；产品验证还需相应的互通、工作条件和可靠性证据。[RX 案例的边界](../04-receiver/rx-cooperation-example.md)
 
 </details>

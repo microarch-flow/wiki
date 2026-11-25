@@ -1,49 +1,26 @@
-# 学习路线图
+---
+search:
+  exclude: true
+---
 
-上级：[01 概览与问题定义](./README.md)
+# 学习路线图的原章节入口
 
-相关：[完整学习路线](../16-learning-navigation/study-navigation.md)、[术语表](../08-research/glossary.md)
+首读、工程和研究路线已汇入《CPO 学习顺序导航页》，各阶段仍可从这里进入。
 
-## 建议学习路径
+<div markdown="1" data-article-redirect="true">
 
-### 阶段 1：先搞清系统问题
+- <span id="学习路线图"></span>[按学习目的选择路线](../16-learning-navigation/study-navigation.md#start)
+- <span id="建议学习路径"></span>[第一次阅读的顺序](../16-learning-navigation/study-navigation.md#first)
+- <span id="阶段-1先搞清系统问题"></span>[比较转换位置与系统问题](../16-learning-navigation/study-navigation.md#first)
+- <span id="阶段-2先分清相邻概念"></span>[分类与集成边界](../16-learning-navigation/study-navigation.md#first)
+- <span id="阶段-3建立系统栈视角"></span>[沿电接口和光接口走一遍](../16-learning-navigation/study-navigation.md#engineering)
+- <span id="阶段-4进入光引擎"></span>[光引擎、器件和预算](../16-learning-navigation/study-navigation.md#engineering)
+- <span id="阶段-5进入共性工程问题"></span>[热、测试、制造与良率](../16-learning-navigation/study-navigation.md#engineering)
+- <span id="阶段-6再看产业与商业化"></span>[产业、供应链与合作](../16-learning-navigation/study-navigation.md#industry)
+- <span id="常见误区"></span>[如何判断系统收益与适用条件](../16-learning-navigation/study-navigation.md#boundaries)
+- <span id="误区-1cpo-只是更高级的光模块"></span>[封装与更换边界](../16-learning-navigation/study-navigation.md#boundaries)
+- <span id="误区-2只要把电改成光功耗就一定更低"></span>[比较全端口功耗](../16-learning-navigation/study-navigation.md#boundaries)
+- <span id="误区-3cpo-的主要难点只是硅光器件"></span>[热、对位、测试和维修](../16-learning-navigation/study-navigation.md#boundaries)
+- <span id="误区-4cpo-一定会全面替代-pluggable"></span>[具体场景的采用条件](../16-learning-navigation/study-navigation.md#boundaries)
 
-先看[系统问题](./problem-statement.md)：电通道、面板密度和功耗何时约束目标配置。
-
-### 阶段 2：先分清相邻概念
-
-用[分类框架](./taxonomy.md)区分集成位置、光源位置和器件工艺；同一方案可以同时落在多个维度。
-
-### 阶段 3：建立系统栈视角
-
-沿[系统栈](../03-architecture-platform/system-stack.md)追踪数据和可选供光支路；retimer 与 gearbox 是否存在取决于实现。
-
-### 阶段 4：进入光引擎
-
-阅读[光链路基础](../04-optical-engine/optical-link-basics.md)，明确各器件的输入、输出和预算参考面。
-
-### 阶段 5：进入共性工程问题
-
-从[功耗与热](../05-electrical-thermal-reliability/bandwidth-power-thermal.md)进入，再看[制造与良率](../06-manufacturing/README.md)和[测试与可靠性](../05-electrical-thermal-reliability/reliability-test.md)。
-
-### 阶段 6：再看产业与商业化
-
-从[产业角色](../02-industry/value-chain.md)进入；公司关系和产品状态以[来源表](../18-sources-and-updates/company-ecosystem-sources.md)为准。
-
-## 常见误区
-
-### 误区 1：CPO 只是“更高级的光模块”
-
-不准确。它改变的是系统边界、测试边界和维护边界，不只是模块形态升级。
-
-### 误区 2：只要把电改成光，功耗就一定更低
-
-错误。系统总功耗取决于 SerDes、driver、TIA、laser、热设计和封装损失，不是“光”三个字自动获胜。
-
-### 误区 3：CPO 的主要难点只是硅光器件
-
-错误。真正决定量产难度的往往是热、封装、测试、维修和供应链协同。
-
-### 误区 4：CPO 一定会全面替代 pluggable
-
-错误。它更可能先在超高带宽、超高密度、功耗敏感的特定场景落地，而不是一步替代全部数据中心互连。
+</div>

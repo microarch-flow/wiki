@@ -2,7 +2,7 @@
 
 上级：[08 研究模板与术语](./README.md)
 
-相关：[论文卡片库](./paper-cards/README.md)、[学习路线图](../01-overview/learning-roadmap.md)
+相关：[论文卡片库](./paper-cards/README.md)、[工程和研究的阅读路线](../16-learning-navigation/study-navigation.md)
 
 ## 这页和其他论文页怎么分工
 

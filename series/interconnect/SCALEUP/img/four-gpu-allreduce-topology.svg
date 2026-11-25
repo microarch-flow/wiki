@@ -1,0 +1,53 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="360" height="492" viewBox="0 0 360 492" role="img" aria-labelledby="title desc" xml:lang="zh-CN">
+  <title id="title">两台服务器、四张 GPU 和一条共享的机间链路</title>
+  <desc id="desc">服务器 A 的 A0 和 A1 之间、服务器 B 的 B0 和 B1 之间各有一条每方向 100 GiB/s 的直连。每张 GPU 各有独立的每方向 50 GiB/s 通路到本机唯一的网卡。网卡 A 与网卡 B 之间只有一条每方向 25 GiB/s 的全双工链路。线条示意模型里的可用路径。</desc>
+  <style>
+    text { font: 16px system-ui, "Noto Sans CJK SC", sans-serif; text-anchor: middle; fill: #21394a; }
+    .head { font-size: 17px; font-weight: 650; }
+    .node { font-weight: 650; }
+    .local { fill: none; stroke: #647d7a; stroke-width: 2; }
+    .net { fill: none; stroke: #305c86; stroke-width: 3; }
+    .box { fill: #eef5f1; stroke: #89aba0; }
+    .nic { fill: #e6eef5; stroke: #8da9c1; }
+    .rate { fill: #3e595b; }
+    .shared { fill: #244f78; font-weight: 650; }
+  </style>
+  <rect x="1" y="1" width="358" height="490" rx="12" fill="#fafbf8" stroke="#cad1cd"/>
+  <text class="head" x="180" y="26">图上速率均为每方向 GiB/s</text>
+
+  <rect x="12" y="40" width="336" height="164" rx="8" fill="#f1f5f1" stroke="#bbc9c2"/>
+  <text class="head" x="180" y="62">服务器 A</text>
+  <path class="local" d="M100 98H260 M66 117V133L143 166 M294 117V133L217 166"/>
+  <text class="rate" x="180" y="92">100</text>
+  <text class="rate" x="108" y="137">50</text>
+  <text class="rate" x="252" y="137">50</text>
+  <rect class="box" x="26" y="79" width="82" height="37" rx="6"/>
+  <rect class="box" x="252" y="79" width="82" height="37" rx="6"/>
+  <text class="node" x="67" y="103">GPU A0</text>
+  <text class="node" x="293" y="103">GPU A1</text>
+  <rect class="nic" x="133" y="156" width="94" height="36" rx="6"/>
+  <text class="node" x="180" y="179">网卡 A</text>
+
+  <path class="net" d="M174 194V274 M186 194V274"/>
+  <path d="M169 265L174 275L179 265 M181 203L186 193L191 203" fill="none" stroke="#305c86" stroke-width="2"/>
+  <text class="shared" x="113" y="232">A → B</text>
+  <text class="shared" x="113" y="253">25</text>
+  <text class="shared" x="246" y="232">B → A</text>
+  <text class="shared" x="246" y="253">25</text>
+
+  <rect x="12" y="278" width="336" height="166" rx="8" fill="#f1f5f1" stroke="#bbc9c2"/>
+  <path class="net" d="M174 274V288 M186 274V288"/>
+  <path class="local" d="M143 310L66 343V358 M217 310L294 343V358 M100 377H260"/>
+  <text class="rate" x="108" y="348">50</text>
+  <text class="rate" x="252" y="348">50</text>
+  <text class="rate" x="180" y="371">100</text>
+  <rect class="nic" x="133" y="289" width="94" height="36" rx="6"/>
+  <text class="node" x="180" y="312">网卡 B</text>
+  <rect class="box" x="26" y="359" width="82" height="37" rx="6"/>
+  <rect class="box" x="252" y="359" width="82" height="37" rx="6"/>
+  <text class="node" x="67" y="383">GPU B0</text>
+  <text class="node" x="293" y="383">GPU B1</text>
+  <text class="head" x="180" y="428">服务器 B</text>
+
+  <text x="180" y="474">两张卡向外发送时，共用本网卡的出口</text>
+</svg>
