@@ -618,7 +618,6 @@ class GeneratedNavigationTests(unittest.TestCase):
             ("why-mc-is-the-real-bottleneck.md", "memory-controller-如何影响-dram-的实际性能"),
             ("address-mapping-channel-rank-bank-row-col.md", "地址映射物理地址到-channelrankbankrowcol-的拆分艺术"),
             ("command-scheduling-fr-fcfs.md", "命令调度fr-fcfs-及其变体"),
-            ("page-policy-open-close-adaptive.md", "opencloseadaptive-page-policy-的权衡"),
             ("write-buffer-write-drain.md", "写缓冲与-write-drain为什么读优先"),
             ("refresh-management-distributed-postponed.md", "refresh-调度分散刷新推迟刷新bank-level-refresh"),
             ("qos-multi-master-arbitration.md", "多-master-场景下的-qos-与公平性"),
@@ -640,8 +639,8 @@ class GeneratedNavigationTests(unittest.TestCase):
         active = re.search(r'<label\b[^>]*md-nav__link--active[^>]*for="__toc"[^>]*>\s*'
                            r'<span class="md-ellipsis">(.*?)</span>', article[start:end], re.DOTALL)
         self.assertIsNotNone(active)
-        self.assertEqual(unescape(active.group(1).strip()), "命令调度与 FR-FCFS")
-        self.assertIn('aria-label="DRAM 命令调度：就绪判断与 FR-FCFS"', active.group())
+        self.assertEqual(unescape(active.group(1).strip()), "请求调度与行保留")
+        self.assertIn('aria-label="DRAM 控制器为什么先服务后来排队的读取？"', active.group())
 
     def test_hbf_order_search_anchors_and_mobile_label(self):
         group = grouped_original_topics(SITE.parent / "docs", STORAGE)[4]["HBF 高带宽闪存"]
@@ -991,21 +990,39 @@ class GeneratedNavigationTests(unittest.TestCase):
             "命令时序对应的物理等待", "开行列访问与首数据", "行保持与预充", "写恢复与参数适用条件",
             "ddr4-同-bank-显式-pre-的完整下界", "一句话理解", "建模启示",
         }
-        html = (SITE / canonical).read_text(encoding="utf-8")
-        article = re.search(r"<article\b.*?</article>", html, re.DOTALL).group()
-        for fragment in old_fragments | {
+        self.assert_dram_merge_links(canonical, legacy, {
             "dram-命令actrdwr-与-pre", "actrdwrpredram-命令集为什么长这样", "命令如何改变-bank-和行状态",
             "actrdwrpre-的职责", "行命中关闭行和行冲突", "pre-不是列命令发出后立即可用",
-        }:
+        }, {key: key for key in old_fragments}, default="命令时序对应的物理等待")
+
+    def test_page_policy_bookmarks_land_in_scheduling_article(self):
+        chapter = Path("RAM/wiki/06-memory-controller")
+        canonical = chapter / "command-scheduling-fr-fcfs/index.html"
+        legacy = chapter / "page-policy-open-close-adaptive/index.html"
+        self.assert_dram_merge_links(canonical, legacy, {
+            "dram-命令调度就绪判断与-fr-fcfs", "命令调度fr-fcfs-及其变体", "就绪命令选择与等待代价",
+            "一个可复核的仲裁例子", "吞吐与等待",
+        }, {
+            "行缓冲策略保留预充与自适应选择": "page-policy", "opencloseadaptive-page-policy-的权衡": "page-policy",
+            "这页在回答什么问题": "page-policy", "打开行的保留与关闭决策": "打开行的保留与关闭决策",
+            "行驻留与后续请求": "行驻留与后续请求", "观察到达时间": "观察到达时间",
+            "自适应策略要看什么": "自适应策略要看什么", "策略与-auto-precharge-的区别": "策略与-auto-precharge-的区别",
+            "一句话理解": "page-policy", "建模启示": "model",
+        }, default="page-policy")
+
+    def assert_dram_merge_links(self, canonical, legacy, main_fragments, expected_routes, default):
+        html = (SITE / canonical).read_text(encoding="utf-8")
+        article = re.search(r"<article\b.*?</article>", html, re.DOTALL).group()
+        for fragment in main_fragments | set(expected_routes) | set(expected_routes.values()):
             self.assertEqual(article.count(f'id="{fragment}"'), 1, fragment)
         stub = (SITE / legacy).read_text(encoding="utf-8")
         fallback = re.search(r'<div [^>]*data-storage-redirect[^>]*>(.*?)</div>', stub, re.DOTALL)
         self.assertIsNotNone(fallback)
         routes = re.findall(r'<span id="([^"]+)"></span>\s*<a href="([^"]+)"', fallback.group(1))
-        self.assertEqual({fragment for fragment, _ in routes}, old_fragments)
-        self.assertEqual(routes[0][0], "命令时序对应的物理等待")
+        self.assertEqual({fragment for fragment, _ in routes}, set(expected_routes))
+        self.assertEqual(unquote(urlsplit(routes[0][1]).fragment), default)
         for fragment, href in routes:
-            self.assertEqual(unquote(urljoin(page_url(legacy), href)), page_url(canonical) + "#" + fragment)
+            self.assertEqual(unquote(urljoin(page_url(legacy), href)), page_url(canonical) + "#" + expected_routes[fragment])
         index = json.loads((SITE / "search/search_index.json").read_text(encoding="utf-8"))
         locations = {entry["location"].partition("#")[0] for entry in index["docs"]}
         self.assertIn(canonical.parent.as_posix() + "/", locations)

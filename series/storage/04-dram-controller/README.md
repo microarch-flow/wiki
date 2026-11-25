@@ -20,14 +20,13 @@ DRAM 控制器（Memory Controller，MC）连接上游请求与 DRAM 接口。�
 
 1. [控制器：从请求到响应](./why-mc-is-the-real-bottleneck.md)
 2. [地址映射](./address-mapping-channel-rank-bank-row-col.md)
-3. [命令调度与 FR-FCFS](./command-scheduling-fr-fcfs.md)
-4. [行保留与预充策略](./page-policy-open-close-adaptive.md)
-5. [写缓冲与写排空](./write-buffer-write-drain.md)
-6. [刷新调度](./refresh-management-distributed-postponed.md)
-7. [QoS、公平性与隔离](./qos-multi-master-arbitration.md)
-8. [控制器仿真建模](./mc-modeling-for-simulation.md)
+3. [请求调度与行保留](./command-scheduling-fr-fcfs.md)：两笔读请求在同一个 bank 排队时，控制器这一拍能发什么命令？保留或关掉当前行，又会怎样改变下一次选择？
+4. [写缓冲与写排空](./write-buffer-write-drain.md)
+5. [刷新调度](./refresh-management-distributed-postponed.md)
+6. [QoS、公平性与隔离](./qos-multi-master-arbitration.md)
+7. [控制器仿真建模](./mc-modeling-for-simulation.md)
 
-想理解一次请求怎样变成命令，可先读 1—4。分析读写混合、刷新或多请求源时，再读 5—7；第 8 篇汇总建模和验证方法。
+想理解一次请求怎样变成命令，可先读前 3 篇。分析读写混合、刷新或多请求源时，再读第 4 到 6 篇。最后一篇汇总建模和验证方法。
 
 ## 一句话理解
 

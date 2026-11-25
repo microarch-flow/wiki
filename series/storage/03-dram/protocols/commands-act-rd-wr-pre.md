@@ -66,7 +66,7 @@ C 的请求提前了 11 CK，首数据从 74 提前到 65，只早了 9 CK。若
 
 把目光放回 B。只改变一个条件：另一个 bank group 中的 bank 在同一 rank 上于 CK 24 发了 RD，已经预订同一组数据引脚的 **[35, 39)**。如果 B 仍在 26 发 RD，它的数据窗口 **[37, 41)** 就会和前一笔重叠。在相同读延迟、跨 bank group 的连续读列命令最短间隔为 4 CK、其他条件均满足时，B 最早到 **CK 28** 才能发 RD，让自己的数据使用 **[39, 43)**。行 R 一直开着。本次多等的 2 CK 来自列命令间隔和共享数据线的时段约束。
 
-再区分一种等待。假如 B 的 RD 在某个沿已经合法、将来的数据窗口也空着，但控制器把这一拍的命令位置给了另一个请求，B 仍须在队列里等。查看一段命令记录时，可以逐笔问：是 bank 的状态和时序还不允许，是数据引脚被预订，还是有几条合法命令正在竞争同一个发射机会？[控制器怎样在就绪请求之间调度](../../04-dram-controller/command-scheduling-fr-fcfs.md) · [何时保留打开的行](../../04-dram-controller/page-policy-open-close-adaptive.md)
+再区分一种等待。假如 B 的 RD 在某个沿已经合法、将来的数据窗口也空着，但控制器把这一拍的命令位置给了另一个请求，B 仍须在队列里等。查看一段命令记录时，可以逐笔问：是 bank 的状态和时序还不允许，是数据引脚被预订，还是有几条合法命令正在竞争同一个发射机会？[控制器怎样在就绪请求之间调度](../../04-dram-controller/command-scheduling-fr-fcfs.md#ready) · [何时保留打开的行](../../04-dram-controller/command-scheduling-fr-fcfs.md#page-policy)
 
 ## 查参数时，哪些前提会改变上面的算法？ {#mode-and-writes}
 
@@ -98,4 +98,4 @@ WR 告诉器件要写哪一列，写数据要到后面的突发窗口才送到�
 
 <span id="read-on"></span>
 
-**接下来读**　把 BL8 的八次传输沿着数据线放大看，为什么只占 4 CK？[DDR 双沿传输](./why-double-data-rate.md)。如果你关心的是三笔请求同时排队后谁先得到服务，可以接着读[DRAM 命令调度](../../04-dram-controller/command-scheduling-fr-fcfs.md)。
+**接下来读**　把 BL8 的八次传输沿着数据线放大看，为什么只占 4 CK？[DDR 双沿传输](./why-double-data-rate.md)。如果多笔请求同时在队列里，为什么后到的可能先读？[跟着控制器作一次选择](../../04-dram-controller/command-scheduling-fr-fcfs.md#queue-choice)。

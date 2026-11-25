@@ -190,13 +190,13 @@
    [参考正文](../../04-dram-controller/command-scheduling-fr-fcfs.md)
 
 47. [F] open-page、close-page 和 adaptive page policy 分别在赌未来访问模式的哪种性质？
-   [参考正文](../../04-dram-controller/page-policy-open-close-adaptive.md)
+   [参考正文](../../04-dram-controller/command-scheduling-fr-fcfs.md#page-policy)
 
 48. [T] 为什么 page policy 会改变 FR-FCFS 能看到的 row-hit 候选分布，因此两者不能分开评价？
-   [参考正文](../../04-dram-controller/page-policy-open-close-adaptive.md)
+   [参考正文](../../04-dram-controller/command-scheduling-fr-fcfs.md#queue-choice)
 
 49. [J] 当 workload 从大块顺序 GEMM 切到 attention decode 的散点 KV cache 访问时，page policy 应如何重新判断 open 与 close 的风险？
-   [参考正文](../../04-dram-controller/page-policy-open-close-adaptive.md)
+   [参考正文](../../04-dram-controller/command-scheduling-fr-fcfs.md#自适应策略要看什么)
 
 50. [F] write buffer 的 high/low watermark 和 write-drain 模式分别解决什么问题，为什么读写请求不能完全对称调度？
    [参考正文](../../04-dram-controller/write-buffer-write-drain.md)

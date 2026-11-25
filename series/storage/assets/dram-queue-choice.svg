@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="460" height="536" viewBox="0 0 460 536" role="img" aria-labelledby="title desc">
+  <title id="title">同一队列，只改变 A2 到达时间，CK4 的选择为什么不同？</title>
+  <desc id="desc">两种情况初始都在同一 bank 打开行 0，最老请求 B 要行 1，A1 在 CK0 前已排队，要行 0。A2 也要行 0，唯一变化是它在 CK1 还是 CK5 到达。每个命令采样沿最多一条命令，nRTP 和 nCCD 都是 4 CK，优先合法的行命中。两种情况在 CK0 都发 RD A1。若 A2 在 CK1 到，CK4 可选 RD A2 或为 B 发 PRE，因此优先 RD A2，CK8 再为 B 发 PRE。若 A2 在 CK5 到，CK4 尚不能选它，于是为 B 发 PRE。到 CK5，CK4 发出的 PRE 已使 A2 无法直接读取行 0。</desc>
+  <style>
+    text { font-family: system-ui, "Noto Sans CJK SC", "Microsoft YaHei", sans-serif; fill: #203c37 }
+    .body { font-size: 18px }
+    .note { font-size: 17.5px; fill: #415b51 }
+    .head { font-size: 20px; font-weight: 660 }
+    .blue { fill: #235a6b }
+    .warm { fill: #794626 }
+  </style>
+  <rect x="1" y="1" width="458" height="534" rx="15" fill="#f7f6ef" stroke="#d3dacf"/>
+  <text x="20" y="37" font-size="24" font-weight="680">CK4 发读命令，还是关行？</text>
+  <text x="20" y="66" class="note">每个命令沿最多发一条，优先选合法的行命中。</text>
+
+  <rect x="16" y="84" width="428" height="137" rx="8" fill="#ecf0e9" stroke="#bdc9bd"/>
+  <text x="30" y="112" class="head">同一 bank，起初行 0 已打开</text>
+  <text x="30" y="141" class="body">B 最老，要行 1。A1 要行 0。</text>
+  <text x="30" y="167" class="body">两笔请求都已在 CK0 之前排队。</text>
+  <path d="M17 179h426" stroke="#c3cec4"/>
+  <text x="30" y="206" class="head blue">CK0　RD A1</text>
+  <text x="196" y="205" class="note">nRTP = nCCD = 4 CK</text>
+
+  <text x="20" y="252" class="head">A2 也读行 0，只有到达时间改变</text>
+  <rect x="16" y="268" width="208" height="244" rx="8" fill="#f1f4ee" stroke="#bdc9bd"/>
+  <rect x="236" y="268" width="208" height="244" rx="8" fill="#f1f4ee" stroke="#bdc9bd"/>
+  <text x="29" y="298" class="head">A2 在 CK1 到</text>
+  <text x="249" y="298" class="head">A2 在 CK5 到</text>
+  <g class="body">
+    <text x="29" y="331">CK4 可发 RD A2，</text>
+    <text x="29" y="357">也可为 B 发 PRE。</text>
+    <text x="249" y="331">CK4 时 A2 尚未到，</text>
+    <text x="249" y="357">只有 B 待发命令。</text>
+  </g>
+  <rect x="17" y="371" width="206" height="45" fill="#dae9e8"/>
+  <rect x="237" y="371" width="206" height="45" fill="#efe3d2"/>
+  <text x="29" y="400" class="head blue">CK4　RD A2</text>
+  <text x="249" y="400" class="head warm">CK4　为 B 发 PRE</text>
+  <g class="body">
+    <text x="29" y="450">CK8</text>
+    <text x="29" y="478">这时为 B 发 PRE。</text>
+    <text x="249" y="450">CK5　A2 到达。</text>
+    <text x="249" y="478">CK4 已发 PRE，</text>
+    <text x="249" y="502">无法直接读行 0。</text>
+  </g>
+</svg>

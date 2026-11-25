@@ -67,7 +67,7 @@
 | 当前没有打开行，已预充就绪 | ACT → RD | 先让目标行的数据进入感放 |
 | 打开着另一行（行冲突） | 满足条件后 PRE → ACT → RD | 先关掉旧行，复用同一组资源打开新行 |
 
-关行时，芯片先让字线关闭，把已恢复或写好的电容与位线隔开，再把位线对均衡、预充到下一次感测所需的参考电平。这解释了为什么**预充位线不会把存储电容一起抹到 0.5 V**。控制器可以按策略保留打开行，也可以请求自动预充；后者把关行动作安排在器件内部，外部不一定单独发送 PRE。接口也可以向上层隐藏这些命令。[DRAM 命令](../protocols/commands-act-rd-wr-pre.md) · [行保留与预充策略](../../04-dram-controller/page-policy-open-close-adaptive.md)
+关行时，芯片先让字线关闭，把已恢复或写好的电容与位线隔开，再把位线对均衡、预充到下一次感测所需的参考电平。这解释了为什么**预充位线不会把存储电容一起抹到 0.5 V**。控制器可以按策略保留打开行，也可以请求自动预充；后者把关行动作安排在器件内部，外部不一定单独发送 PRE。接口也可以向上层隐藏这些命令。[DRAM 命令](../protocols/commands-act-rd-wr-pre.md) · [行保留与预充策略](../../04-dram-controller/command-scheduling-fr-fcfs.md#page-policy)
 
 行命中和 cache 命中都能利用已有数据，但查找的位置不同。cache 用地址和 tag 判断有无副本；在这里，控制器关心的是目标 bank 当前打开哪一行。行命中省下了重新开行的工作，端到端是否更快还要看控制器队列、共享数据总线（DQ）、读写方向切换和刷新占用。[SRAM bank 与 DRAM 行状态](../../01-memory-hierarchy/02-access-paths/sram-vs-dram-access-pattern.md)
 

@@ -5,6 +5,7 @@ DRAM_LEGACY_PAGES = {
     "RAM/wiki/04-dram-foundations/row-column-decode-sense-amplify.md",
     "RAM/wiki/04-dram-foundations/row-buffer-as-cache.md",
     "RAM/wiki/05-dram-protocol-families/timing-parameters-trcd-trp-tras.md",
+    "RAM/wiki/06-memory-controller/page-policy-open-close-adaptive.md",
 }
 
 MEMORY_TOPIC = "存储层级与数据路径"

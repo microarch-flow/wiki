@@ -158,4 +158,4 @@ NPU 中也有类似问题：DMA 将数据搬入片上 scratchpad，计算要等�
 - [局部性与数据搬运](./locality-working-set-data-movement.md)：看访问序列和复用如何影响跨层流量。
 - [带宽与延迟](../03-performance/bandwidth-vs-latency-fundamental.md)：进一步区分单次响应与持续吞吐。
 - [地址映射](../../04-dram-controller/address-mapping-channel-rank-bank-row-col.md)：看地址怎样影响行局部性和并行机会。
-- [命令调度与 FR-FCFS](../../04-dram-controller/command-scheduling-fr-fcfs.md)：看控制器如何在合法候选中选择命令。
+- [请求调度与行保留](../../04-dram-controller/command-scheduling-fr-fcfs.md)：看控制器如何在合法候选中选择命令。
