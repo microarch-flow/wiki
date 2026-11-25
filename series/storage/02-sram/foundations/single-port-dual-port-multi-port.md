@@ -2,7 +2,7 @@
 
 上级：[SRAM 基础](./README.md)
 
-相关：<span id="单口双口多口-sram端口数为什么是关键代价"></span><span id="这页在回答什么问题"></span>[SRAM 宏接口与读写语义](./sram-macro-interface-and-semantics.md) · [SRAM 阵列组织](./sram-array-organization.md) · [Register file](../applications/register-file-as-sram.md)
+相关：<span id="单口双口多口-sram端口数为什么是关键代价"></span><span id="这页在回答什么问题"></span>[SRAM 宏接口与读写语义](./read-write-cycle-timing.md#ports) · [SRAM 阵列组织](./sram-array-organization.md) · [Register file](../applications/register-file-as-sram.md)
 
 <p class="ram-problem-lede">端口决定哪些访问可以同时进入存储资源。增加并发能力可能需要更多 cell 接入、位线、外围电路或额外的系统组织；具体代价取决于实现和所承诺的访问规则。</p>
 
@@ -27,7 +27,7 @@
 
 表中只是常见命名。多个端口是否允许同时操作、时钟能否不同步、同地址读写或双写是否有定义，必须查看目标宏。`1R1W` 和 `1RW1R` 都有两个端口，但能提供的读写组合不同。
 
-例如，一个端口读 word X、另一个端口同时写 X，可能得到旧值、新值或未定义结果；某些宏禁止这个组合。端口使用独立时钟时，即使采样沿不重合，也可能违反宏规定的同地址访问间隔。上层若需要更强的语义，可以使用仲裁、等待或转发，但必须确认这些逻辑实际存在并满足时序。详见 [SRAM 宏接口与读写语义](./sram-macro-interface-and-semantics.md)。
+例如，一个端口读 word X、另一个端口同时写 X，可能得到旧值、新值或未定义结果；某些宏禁止这个组合。端口使用独立时钟时，即使采样沿不重合，也可能违反宏规定的同地址访问间隔。上层若需要更强的语义，可以使用仲裁、等待或转发，但必须确认这些逻辑实际存在并满足时序。详见[双端口同址读写](./read-write-cycle-timing.md#collision)。
 
 ## 端口的电路和冲突代价
 

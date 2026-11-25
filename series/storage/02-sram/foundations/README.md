@@ -35,7 +35,7 @@
 - 如果资源只有一个 `1RW` 端口，且每拍只接纳一笔操作，这两笔请求需要分开接纳。
 - 如果资源有一个可同时使用的读口和写口，且目标宏允许这一读写组合，则可以同拍接纳。
 
-这里比较的是**请求接纳**，不是数据返回或写入可见的时间。同地址读写、不同的时钟关系和其他并发组合仍须遵守目标宏的规则。端口名称只是起点，不能替代接口规格。见 [SRAM 宏接口与读写语义](./sram-macro-interface-and-semantics.md)和 [SRAM 端口与代价](./single-port-dual-port-multi-port.md)。
+这里比较的是**请求接纳**，不是数据返回或写入可见的时间。同地址读写、不同的时钟关系和其他并发组合仍须遵守目标宏的规则。端口名称只是起点，不能替代接口规格。见[宏的端口怎样接纳请求](./read-write-cycle-timing.md#ports)和 [SRAM 端口与代价](./single-port-dual-port-multi-port.md)。
 
 ## 4. 稳定保存和低功耗是两个相关问题
 
@@ -47,16 +47,15 @@
 
 1. [6T SRAM cell](./6t-cell-bistable-storage.md)：跟着一个存着 1 的单元，看读时哪根位线开始放电，再看写入 0 时两个内部节点怎样翻转。
 2. [字线、位线与读出放大](./wordline-bitline-sense-amp.md)：拉高 WL5 选中 16 个单元，跟着列选择电路看 C8 到 C11 的 4 个 bit 怎样送到输出端。
-3. [SRAM 读写时序](./read-write-cycle-timing.md)：区分电气过程与接口时间。
-4. [SRAM 宏接口与读写语义](./sram-macro-interface-and-semantics.md)：从使用者视角检查接口契约。
-5. [SRAM 端口与代价](./single-port-dual-port-multi-port.md)：比较不同并发能力及其代价。
-6. [SRAM 阵列组织](./sram-array-organization.md)：看局部阵列和共享路径如何组合。
-7. [bank 地址映射与冲突](./sram-bank-address-mapping-conflicts.md)：用地址和请求推导竞争。
-8. [先进工艺与 SRAM](./sram-process-scaling-challenge.md)：看工艺、变异与工作电压。
-9. [SRAM 漏电与低功耗](./sram-power-leakage-retention.md)：比较保持、断电与唤醒。
-10. [SRAM 可靠性](./sram-reliability-ecc-mbist-repair.md)：区分初始化、ECC、测试与修复。
+3. [SRAM 宏接口与读写时序](./read-write-cycle-timing.md)：沿一条时间线区分接纳、读数据可用与下一笔接纳，再看端口冲突和部分写入。
+4. [SRAM 端口与代价](./single-port-dual-port-multi-port.md)：比较不同并发能力及其代价。
+5. [SRAM 阵列组织](./sram-array-organization.md)：看局部阵列和共享路径如何组合。
+6. [bank 地址映射与冲突](./sram-bank-address-mapping-conflicts.md)：用地址和请求推导竞争。
+7. [先进工艺与 SRAM](./sram-process-scaling-challenge.md)：看工艺、变异与工作电压。
+8. [SRAM 漏电与低功耗](./sram-power-leakage-retention.md)：比较保持、断电与唤醒。
+9. [SRAM 可靠性](./sram-reliability-ecc-mbist-repair.md)：区分初始化、ECC、测试与修复。
 
-可以按上表系统阅读。如果当前主要关心并发，先读第 4 至 7 篇；如果主要关心低电压、保持和恢复，先读第 8 至 10 篇。研究 ECC 初始化或部分写入时，可结合第 4 篇的宏接口与读改写。遇到不熟悉的电路概念时，再回读前面的文章。
+可以按上表系统阅读。如果当前主要关心并发，先读第 3 至 6 篇；如果主要关心低电压、保持和恢复，先读第 7 至 9 篇。研究 ECC 初始化或部分写入时，可结合第 3 篇的[读改写过程](./read-write-cycle-timing.md#read-modify-write)。遇到不熟悉的电路概念时，再回读前面的文章。
 
 ## 一句话理解
 

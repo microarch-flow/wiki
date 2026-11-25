@@ -50,7 +50,7 @@
 
 ## 4. 想分析 NPU 片上 buffer：从资源到搬运
 
-1. 读 [SRAM 宏接口与读写语义](../../02-sram/foundations/sram-macro-interface-and-semantics.md)、[SRAM 端口与代价](../../02-sram/foundations/single-port-dual-port-multi-port.md)、[SRAM 阵列组织](../../02-sram/foundations/sram-array-organization.md)和 [bank 地址映射与冲突](../../02-sram/foundations/sram-bank-address-mapping-conflicts.md)，确定接口、端口、bank 和共享通路的含义。
+1. 读 [SRAM 宏接口与读写语义](../../02-sram/foundations/read-write-cycle-timing.md#macro-pins)、[SRAM 端口与代价](../../02-sram/foundations/single-port-dual-port-multi-port.md)、[SRAM 阵列组织](../../02-sram/foundations/sram-array-organization.md)和 [bank 地址映射与冲突](../../02-sram/foundations/sram-bank-address-mapping-conflicts.md)，确定接口、端口、bank 和共享通路的含义。
 2. 读 [Cache 与 scratchpad](../../01-memory-hierarchy/02-access-paths/cache-vs-scratchpad.md)和 [NPU 的 SRAM buffer](../../02-sram/applications/npu-weight-buffer-activation-buffer.md)，区分数据角色与管理方式。
 3. 阅读 [NPU 数据路径与存储组织](../../01-memory-hierarchy/04-npu-case/README.md)，或按问题选择[权重缓冲区](../../01-memory-hierarchy/04-npu-case/weight-buffer-design.md)、[激活缓冲与双缓冲](../../01-memory-hierarchy/04-npu-case/activation-buffer-and-double-buffering.md)和[片上带宽预算](../../01-memory-hierarchy/04-npu-case/on-chip-bandwidth-budget.md)。
 4. 如果涉及 DMA 与计算的交接，再看 DMA 专题的[同步、一致性与常见错误](../../../microarchitecture/05-dma/04-programming-model/synchronization-errors.md)。

@@ -1,0 +1,49 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="460" height="409" viewBox="0 0 460 409" role="img" aria-labelledby="title desc">
+  <title id="title">在同一个 2 ns 周期内区分请求接纳、D 稳定和寄存器采样</title>
+  <desc id="desc">读 word 5 与写 word 6 均已在 0 ns 之前到达封装层。单个读写端口每正沿可以接纳一笔，这次读优先。0 ns 正沿宏接纳读 5，写 6 等待。横轴按线性比例绘制。1.55 ns，读 5 的结果在接收寄存器的 D 端稳定。为了在 2 ns 正沿采样，D 最迟要在 1.85 ns 稳定，满足 0.15 ns 的建立时间，所以本例有 0.30 ns 建立裕量。2 ns 正沿，接收器采样读 5 的结果，同时宏接纳写 6。</desc>
+  <style>
+    text { font-family: system-ui, "Noto Sans CJK SC", "Microsoft YaHei", sans-serif; fill: #203c37 }
+    .head { font-size: 20px; font-weight: 670 }
+    .body { font-size: 18px }
+    .note { font-size: 17px; fill: #455d52 }
+    .blue { fill: #245a6c }
+    .green { fill: #255b46 }
+    .amber { fill: #85512e }
+  </style>
+  <rect x="1" y="1" width="458" height="407" rx="15" fill="#f7f6ef" stroke="#d3dacf"/>
+  <text x="19" y="36" font-size="24" font-weight="680">一个 SRAM 端口，两笔请求</text>
+  <text x="19" y="65" class="note">读 word 5、写 word 6 都在 0 ns 前到达宏外队列。</text>
+  <text x="19" y="90" class="note">每个正沿最多接纳一笔，本例优先读。</text>
+
+  <rect x="17" y="106" width="193" height="88" rx="7" fill="#e7eeeb" stroke="#b2c6bb"/>
+  <rect x="222" y="106" width="221" height="88" rx="7" fill="#e7eeeb" stroke="#b2c6bb"/>
+  <text x="30" y="132" class="head blue">0 ns　正沿</text>
+  <text x="30" y="159" class="body">宏接纳读 word 5。</text>
+  <text x="30" y="183" class="body">写 word 6 仍在排队。</text>
+  <text x="235" y="132" class="head blue">2 ns　正沿</text>
+  <text x="235" y="159" class="body">接收器采样读 5 的结果。</text>
+  <text x="235" y="183" class="body">宏同时接纳写 word 6。</text>
+
+  <!-- Linear axis: x = 35 + 195 * t(ns). Endpoints and both interior events share this scale. -->
+  <path d="M35 194V220 M425 194V220" fill="none" stroke="#517889" stroke-width="2"/>
+  <path d="M30 216H40L35 223Z M420 216H430L425 223Z" fill="#315e72"/>
+  <path d="M35 226H425" fill="none" stroke="#86968a" stroke-width="2"/>
+  <g stroke="#87968a" stroke-width="1.5"><path d="M35 226v6 M132.5 226v6 M230 226v6 M327.5 226v6 M425 226v6"/></g>
+  <text x="132.5" y="248" text-anchor="middle" class="note">0.5</text>
+  <text x="230" y="248" text-anchor="middle" class="note">1.0</text>
+  <text x="35" y="248" class="note">时间 / ns</text>
+
+  <!-- Green is the margin before the requirement; orange is the required setup interval. -->
+  <path d="M337.25 226H395.75" fill="none" stroke="#529272" stroke-width="6"/>
+  <path d="M395.75 226H425" fill="none" stroke="#bd8754" stroke-width="6"/>
+  <circle cx="337.25" cy="226" r="4.7" fill="#2d694e"/>
+  <path d="M337.25 231V276H321" fill="none" stroke="#539274" stroke-width="2"/>
+  <text x="310" y="282" text-anchor="end" class="body green">1.55 ns　读数据在 D 端稳定</text>
+
+  <path d="M395.75 217V313H381" fill="none" stroke="#a66a3e" stroke-width="2" stroke-dasharray="4 3"/>
+  <text x="369" y="320" text-anchor="end" class="body amber">1.85 ns　D 必须稳定的最迟时刻</text>
+  <text x="19" y="350" class="note">从 1.85 ns 到 2 ns，正好留出 0.15 ns 建立时间。</text>
+
+  <rect x="17" y="367" width="426" height="30" rx="5" fill="#e2ece2"/>
+  <text x="230" y="389" text-anchor="middle" class="body green" font-weight="650">建立裕量 = 1.85 − 1.55 = 0.30 ns</text>
+</svg>
