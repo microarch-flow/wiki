@@ -4,7 +4,7 @@
 <span class="micro-legacy-anchor" id="与其他域的接口"></span>
 
 
-这是一条自底向上的阅读路线：从整数运算、选择网络与数据复用，走到流水线、芯片组织和实现成本。它保留原 COMPUTE 入口，不再承担整个微架构系列的分类职责。
+这是一条自底向上的阅读路线：从整数运算、选择网络与数据复用，走到流水线、芯片组织和实现成本。它保留原 COMPUTE 入口，不再承担整个计算微架构系列的分类职责。
 
 
 <span class="micro-legacy-anchor" id="全域主线"></span>
@@ -36,4 +36,4 @@
 
 这条路线起源于 [Reiner Pope 的 Chip design from the bottom up 访谈](https://www.dwarkesh.com/p/reiner-pope-2)（2026-05）。访谈用于提供问题线索；技术结论以各篇的一手资料和明确模型为依据。它不覆盖完整 CPU 控制、访存子系统或全部加速器类型。
 
-更完整的机制地图和 CPU、GPU、NPU 阅读入口见[微架构首页](../../README.md)。
+更完整的机制地图和 CPU、GPU、NPU 阅读入口见[计算微架构首页](../../README.md)。

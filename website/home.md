@@ -22,7 +22,7 @@ hide:
 
 如果你第一次接触芯片，可以从两个硅原子之间的一条共价键读起，再看门电路怎样组成乘加单元。如果你正在部署模型，可以先读「算法与模型」和「推理运行时」。等你发现某一步在等数据，再翻到「存储系统」和「芯片与系统互连」。
 
-<nav aria-label="笔记系列" id="common-foundations">
+<nav aria-labelledby="series" id="common-foundations">
 <!-- site-series -->
 </nav>
 

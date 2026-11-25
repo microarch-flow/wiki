@@ -43,4 +43,4 @@
 
 ## 阅读边界
 
-本文系列提出工作负载与实验需求；具体硬件机制和工具实现状态由[微架构](../../microarchitecture/README.md)、[存储](../../storage/README.md)、[互连](../../interconnect/README.md)及相应工具文档负责。
+本文系列提出工作负载与实验需求；具体硬件机制和工具实现状态由[计算微架构](../../microarchitecture/README.md)、[存储系统](../../storage/README.md)、[芯片与系统互连](../../interconnect/README.md)及相应工具文档负责。

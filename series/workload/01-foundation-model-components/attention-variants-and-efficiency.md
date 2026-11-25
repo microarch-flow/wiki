@@ -54,7 +54,7 @@ $$
 
 固定窗口减少连接数，但远距离交互要依赖移位、跨层传播或额外全局 token。线性 attention 通常改变核表达或计算分解，不应直接等同于原始 softmax attention。SSM 则以递推状态建模序列，见 [Mamba 与 SSM](mamba-and-ssm.md)。
 
-选择方法时，先记录质量约束，再测请求长度分布、batch、prefill/decode 比例和存储边界。某种内核在长序列训练中有效，不意味着它在单请求短 decode 中收益相同。运行时缓存与调度的主要归属见[推理与运行时系列](../../inference-runtime/README.md)；其中规划中的页面不能当作已验证实现。
+选择方法时，先记录质量约束，再测请求长度分布、batch、prefill/decode 比例和存储边界。某种内核在长序列训练中有效，不意味着它在单请求短 decode 中收益相同。运行时缓存与调度的主要归属见[推理运行时](../../inference-runtime/README.md)；其中规划中的页面不能当作已验证实现。
 
 <span id="演进与未来方向判断" class="workload-legacy-anchor"></span>
 <span id="参考来源" class="workload-legacy-anchor"></span>

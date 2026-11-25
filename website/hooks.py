@@ -52,11 +52,11 @@ TOPICS = (
 # outside the site and retain their original headings and links.
 SERIES_COVERS = {
     "foundations/README.md": (
-        "foundations/silicon-to-logic/img/silicon-bonds.svg", "半导体基础 / 系列首页", "硅晶体中的共价键",
+        "foundations/silicon-to-logic/img/silicon-bonds.svg", "半导体与电路基础 / 系列首页", "硅晶体中的共价键",
         "平面示意中，中心硅原子与四个近邻各共享一对电子。实际的四条键沿四面体方向分布。", "",
     ),
     "microarchitecture.md": (
-        "assets/images/series-covers/microarchitecture.svg", "微架构 / 系列首页", "执行、搬运、同步与资源",
+        "assets/images/series-covers/microarchitecture.svg", f"{MICRO} / 系列首页", "执行、搬运、同步与资源",
         "计算、存储、互连与外部存储构成芯片的数据路径。", "",
     ),
     "storage.md": (
@@ -144,20 +144,32 @@ def read_series(root, registry=None):
             if parsed.scheme != "https" or not parsed.netloc:
                 raise ValueError(f"Series URL must be an absolute HTTPS URL: {url}")
             href = target = url
-        result.append({"title": name, "description": description, "href": href, "target": target, "source": source, "local": local})
+        result.append({"title": name, "description": description, "group": item.get("group", "").strip(),
+                       "href": href, "target": target, "source": source, "local": local})
     return result
 
 
 def render_series(entries):
-    """Use the registered series as the homepage reading list."""
-    items = []
+    """Group homepage cards by reading question, preserving registry order."""
+    groups = {}
     for entry in entries:
-        items.append(
+        groups.setdefault(entry["group"], []).append(
             f'<li><a class="portal-series-card" href="{escape(entry["href"], quote=True)}">'
             f'<strong>{escape(entry["title"])}</strong>'
             f'<span>{escape(entry["description"])}</span></a></li>'
         )
-    return '<ul class="portal-series-grid" id="common-foundations-heading">\n' + "\n".join(items) + "\n</ul>"
+    sections = []
+    for number, (question, cards) in enumerate(groups.items(), start=1):
+        grid = '<ul class="portal-series-grid">\n' + "\n".join(cards) + "\n</ul>"
+        if question:
+            heading_id = f"series-group-{number}"
+            sections.append(
+                f'<section class="portal-series-group" aria-labelledby="{heading_id}">\n'
+                f'<h3 id="{heading_id}">{escape(question)}</h3>\n{grid}\n</section>'
+            )
+        else:
+            sections.append(grid)
+    return '<div id="common-foundations-heading">\n' + "\n".join(sections) + "\n</div>"
 
 
 def title(path):
@@ -604,7 +616,7 @@ def breadcrumb_ancestors(page):
     parent = page.parent
     while parent:
         index = next((item for item in parent.children if item.is_page and item.is_index), None)
-        landing = {"微架构": "microarchitecture.md", "存储系统": "storage.md", "芯片与系统互连": "interconnect.md"}.get(parent.title)
+        landing = {MICRO: "microarchitecture.md", STORAGE: "storage.md", INTERCONNECT: "interconnect.md"}.get(parent.title)
         if landing:
             index = next((item for item in parent.children if item.is_page and item.file.src_uri == landing), None)
         if index is None or index.file.src_uri != page.file.src_uri:
@@ -820,8 +832,8 @@ def on_config(config, **kwargs):
                 paths.append(asset)
         setattr(config, setting, paths)
     built_in_sections = {
-        "microarchitecture.md": {"微架构": [
-            {"微架构首页": "microarchitecture.md"},
+        "microarchitecture.md": {MICRO: [
+            {f"{MICRO}首页": "microarchitecture.md"},
             {"精选文章": "articles.md"},
             {"互动图解": "visuals.md"},
             *micro_topics,

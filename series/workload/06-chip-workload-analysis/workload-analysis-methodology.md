@@ -63,7 +63,7 @@ $$
 
 ## 与其他系列和架构模型连接
 
-[存储层级与数据路径](../../storage/01-memory-hierarchy/README.md)解释容量、带宽与复用；[NoC](../../interconnect/NOC/README.md)解释路由、流控和通信；[微架构](../../microarchitecture/README.md)承接执行结构；[推理与运行时](../../inference-runtime/README.md)承接缓存与服务调度。链接到规划中内容时，应按目标页状态使用。
+[存储层级与数据路径](../../storage/01-memory-hierarchy/README.md)解释容量、带宽与复用；[NoC](../../interconnect/NOC/README.md)解释路由、流控和通信；[计算微架构](../../microarchitecture/README.md)承接执行结构；[推理运行时](../../inference-runtime/README.md)承接缓存与服务调度。链接到规划中内容时，应按目标页状态使用。
 
 若将结果转为 Archax 实验输入，可以列资源容量、连接、执行依赖与所需算子能力，但本系列不证明某版本已经支持这些能力。要运行实验，仍需对照当前编译器、模拟器和接口契约。
 

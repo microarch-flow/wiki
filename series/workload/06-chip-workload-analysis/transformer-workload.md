@@ -72,7 +72,7 @@ FlashAttention 可避免完整分数矩阵写入 HBM；GQA 减少 KV 头；分�
 
 记录输入长度、输出长度、batch/并发、权重和 KV 精度、设备、内核及缓存策略。服务指标还要区分首 token 延迟、后续 token 间隔与总请求时间。
 
-本页负责模型工作量和存储规模；调度、前缀复用和服务 SLO 的主要入口是[推理与运行时](../../inference-runtime/README.md)。Pope 等论文的测量来自其 TPU 配置，不能直接作为所有 GPU/NPU 的固定瓶颈结论。
+本页负责模型工作量和存储规模；调度、前缀复用和服务 SLO 的主要入口是[推理运行时](../../inference-runtime/README.md)。Pope 等论文的测量来自其 TPU 配置，不能直接作为所有 GPU/NPU 的固定瓶颈结论。
 
 ## 来源与延伸
 

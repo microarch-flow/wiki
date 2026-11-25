@@ -1,6 +1,6 @@
 # 从硅到系统
 
-这份笔记记录从模型到芯片的工程问题。[首页序章《第一个字出现之前》](https://microarch-flow.github.io/wiki/)讲述这些笔记的来由。想从器件开始，可先读[半导体基础](./series/semiconductor-foundations/README.md)，从硅原子间的共价键读到门电路与时钟边沿。
+这份笔记记录从模型到芯片的工程问题。[首页序章《第一个字出现之前》](https://microarch-flow.github.io/wiki/)讲述这些笔记的来由。想从器件开始，可先读[半导体与电路基础](./series/semiconductor-foundations/README.md)，从硅原子间的共价键读到门电路与时钟边沿。
 
 网站版的本地预览、内容维护与 GitHub Pages 发布方法见[网站构建与维护](./website/README.md)。
 
@@ -8,14 +8,26 @@
 
 ## 系列源码入口
 
+### 硬件怎样工作？
+
 | 系列 | 内容 |
 | --- | --- |
-| [半导体基础](./series/semiconductor-foundations/README.md) | 硅、掺杂、晶体管、门电路与寄存器采样 |
-| [芯片微架构](./series/microarchitecture/README.md) | 运算、流水线、指令控制、并行执行、异步搬运与资源协作 |
+| [半导体与电路基础](./series/semiconductor-foundations/README.md) | 硅、掺杂、晶体管、门电路与寄存器采样 |
+| [计算微架构](./series/microarchitecture/README.md) | 运算、流水线、指令控制、并行执行、异步搬运与资源协作 |
 | [存储系统](./series/storage/README.md) | SRAM、DRAM、HBM 和高带宽闪存 |
 | [芯片与系统互连](./series/interconnect/README.md) | 片上总线、网络、PCIe、SerDes 和光互连 |
+
+### 模型怎样计算，一次推理怎样跑起来？
+
+| 系列 | 内容 |
+| --- | --- |
 | [算法与模型](./series/workload/README.md) | 模型组件、视觉、自动驾驶、机器人和芯片工作负载 |
 | [推理运行时](./series/inference-runtime/README.md) | 请求路径、模型执行、状态管理、调度、解码、分布式服务与性能验证 |
+
+### 一颗真实芯片怎样设计、实现和交付？
+
+| 系列 | 内容 |
+| --- | --- |
 | [芯片架构实例](./series/chip-architectures/README.md) | 具体产品代际的计算、存储、互连和软件映射 |
 | [芯片开发与实现](./series/chip-development/README.md) | 开发流程、晶圆制造、封装与测试 |
 
