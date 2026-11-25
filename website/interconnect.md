@@ -17,7 +17,7 @@
 3. [封装内芯粒互连](D2D/wiki/README.md)：[一次跨芯粒的寄存器读，什么时候才算完成？](D2D/wiki/ucie-pcie-read.md)
 4. [系统 I/O 互连（PCIe）](PCIE/wiki/README.md)：[主机第一次读卡上的寄存器，地址是怎么来的？](PCIE/wiki/03-configuration-enumeration-addressing/config-space-bar-capability.md)
 5. [一致性与内存互连](COHERENCE/wiki/README.md)：[内存里还是 0，为什么 B 能读到 A 写的 1？](COHERENCE/wiki/01-foundations/coherence-invariants.md)
-6. [加速器互连](SCALEUP/wiki/README.md)：多个加速器怎样访问资源、组织通信，并满足任务性能目标？
+6. [加速器互连](SCALEUP/wiki/README.md)：[GPU A 能访问 GPU B 的地址，什么时候才能读？](SCALEUP/wiki/01-access-semantics/address-mapping-and-permissions.md)
 7. [系统网络](NETWORK/wiki/README.md)：节点怎样通过 Ethernet/IP、RDMA 与 InfiniBand 传输数据、确认完成并控制拥塞？
 8. [高速电链路（SerDes）](SERDES/wiki/README.md)：电信号怎样经过通道，并在接收端恢复？
 9. [共封装光学（CPO）](CPO/wiki/README.md)：光引擎怎样与电子芯片集成，封装和维护带来什么约束？

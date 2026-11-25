@@ -31,4 +31,4 @@
 
 NCCL 支持多种互连，并向上提供通信原语。[NCCL 概述](https://docs.nvidia.com/deeplearning/nccl/user-guide/docs/overview.html) 这说明应用接口与承载链路不是一一对应关系。支持相同 API，也不意味着两种底层协议能够直接互通。
 
-本专题负责设备之间的访问、交换和任务通信。[D2D](../../D2D/README.md)解释封装内承载，[一致性与内存互连](../../COHERENCE/README.md)解释缓存与内存保证，[系统网络](../../NETWORK/README.md)解释域间网络机制。下一步先看[地址与权限](address-mapping-and-permissions.md)。
+本专题负责设备之间的访问、交换和任务通信。[D2D](../../D2D/README.md)解释封装内承载，[一致性与内存互连](../../COHERENCE/README.md)解释缓存与内存保证，[系统网络](../../NETWORK/README.md)解释域间网络机制。下一步先看[对端缓冲区的访问与同步](address-mapping-and-permissions.md)。
