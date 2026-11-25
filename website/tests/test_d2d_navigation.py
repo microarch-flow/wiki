@@ -63,7 +63,7 @@ class D2dNavigationTests(unittest.TestCase):
                     html = (SITE / page / "index.html").read_text(encoding="utf-8")
                     page_title = re.search(r"<title>(.*?)</title>", html, re.DOTALL)
                     self.assertIsNotNone(page_title)
-                    self.assertEqual(unescape(page_title.group(1)), source.splitlines()[0][2:] + " - 技术笔记")
+                    self.assertEqual(unescape(page_title.group(1)), source.splitlines()[0][2:] + " - 从硅到系统")
                     breadcrumb = re.search(r'<nav class="site-breadcrumbs"[^>]*>(.*?)</nav>', html, re.DOTALL)
                     self.assertIsNotNone(breadcrumb)
                     self.assertIn(group, breadcrumb.group(1))

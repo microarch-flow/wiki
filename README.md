@@ -1,6 +1,6 @@
-# 芯片 Wiki 学习入口
+# 从硅到系统
 
-这份 Wiki 记录从模型到芯片的工程问题。[首页序章《第一个字出现之前》](https://microarch-flow.github.io/wiki/)讲述这些笔记的来由。想从器件开始，可先读[半导体基础](./series/semiconductor-foundations/README.md)，从硅原子间的共价键读到门电路与时钟边沿。
+这份笔记记录从模型到芯片的工程问题。[首页序章《第一个字出现之前》](https://microarch-flow.github.io/wiki/)讲述这些笔记的来由。想从器件开始，可先读[半导体基础](./series/semiconductor-foundations/README.md)，从硅原子间的共价键读到门电路与时钟边沿。
 
 网站版的本地预览、内容维护与 GitHub Pages 发布方法见[网站构建与维护](./website/README.md)。
 

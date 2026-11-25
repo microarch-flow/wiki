@@ -247,17 +247,17 @@ class GeneratedNavigationTests(unittest.TestCase):
 
         ucie = (SITE / "D2D/wiki/ucie-pcie-read/index.html").read_text(encoding="utf-8")
         self.assertIn('title="UCIe 1.1 如何承载一次 PCIe 读取？"', ucie)
-        self.assertIn("<title>UCIe 1.1 如何承载一次 PCIe 读取？ - 技术笔记</title>", ucie)
+        self.assertIn("<title>UCIe 1.1 如何承载一次 PCIe 读取？ - 从硅到系统</title>", ucie)
         self.assertRegex(ucie, r'<span class="md-ellipsis">\s*UCIe 1\.1 读取案例\s*</span>')
 
         bow = (SITE / "D2D/wiki/bow-phy/index.html").read_text(encoding="utf-8")
         self.assertIn('title="BoW PHY 2.0：数据怎样通过并行线路跨越芯粒？"', bow)
-        self.assertIn("<title>BoW PHY 2.0：数据怎样通过并行线路跨越芯粒？ - 技术笔记</title>", bow)
+        self.assertIn("<title>BoW PHY 2.0：数据怎样通过并行线路跨越芯粒？ - 从硅到系统</title>", bow)
         self.assertRegex(bow, r'<span class="md-ellipsis">\s*BoW PHY 2\.0\s*</span>')
 
         flexi = (SITE / "D2D/wiki/bow-flexi/index.html").read_text(encoding="utf-8")
         self.assertIn('title="BoW.Flexi：AHB 读取怎样封装成跨芯粒数据包？"', flexi)
-        self.assertIn("<title>BoW.Flexi：AHB 读取怎样封装成跨芯粒数据包？ - 技术笔记</title>", flexi)
+        self.assertIn("<title>BoW.Flexi：AHB 读取怎样封装成跨芯粒数据包？ - 从硅到系统</title>", flexi)
         self.assertRegex(flexi, r'<span class="md-ellipsis">\s*BoW\.Flexi 读取案例\s*</span>')
 
         cxl = (SITE / "COHERENCE/wiki/cxl-host-memory/index.html").read_text(encoding="utf-8")
