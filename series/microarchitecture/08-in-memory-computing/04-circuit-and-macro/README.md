@@ -26,8 +26,8 @@ CIM 的定义要求计算发生在 cell 内或紧邻 array path。第 04 章只�
 2. [比较器每次只判一位，ADC 怎样把 16 mV 和 30 mV 读成 8 和 15？](./adc-dac-sa-in-cim.md)　沿四次阈值比较，把保持的两个样本分别读成 8 和 15，再检查这两份码何时能相加。
 3. [输入都是 3，行驱动器该加多高的电压、开多久？](./data-encoding-strategies.md)　同样的输入 3，比较改变行电压、改变通电时长以及分开读两个二进制位时，列端分别要读几次。
 4. [同样算 23，为什么局部读数只差一码，输出却可能差 2？](./precision-and-quantization-at-circuit.md)　低、高位平面各多读一码，分别会把 23 改成多少？再看超量程后能否靠更宽的累加器补救。
-5. [非理想性总览](./non-idealities-and-error-sources.md)：误差如何从 device 传到模型 accuracy；analog/mixed-signal 是数值误差，digital 更像离散故障和时序问题。
-6. [Peripheral 开销](./peripheral-overhead.md)：为什么外围常吞掉 array 收益；三条路线的成本主项不同，统计口径必须统一。
+5. [点积从 23 变成 26，怎样查出偏差发生在哪里？](./non-idealities-and-error-sources.md)　同一列读到 26，先固定写入重复读，再把重写、等待时长和读次数分别作为变量。
+6. [阵列已经算完，交付一个 23 还要付出多少？](./peripheral-overhead.md)　跟到接收方取走结果，逐项核算两次转换、输出等待和参考校准各花了多少。
 7. [Macro 设计的决策框架](./macro-design-tradeoff-framework.md)：如何从 workload 反推 macro 参数；analog/digital/mixed-signal 的选择条件不同。
 ## 三条 Paradigm 在 Macro 层的差异
 

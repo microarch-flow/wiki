@@ -45,8 +45,8 @@
 - [比较器每次只判一位，ADC 怎样把 16 mV 和 30 mV 读成 8 和 15？](./04-circuit-and-macro/adc-dac-sa-in-cim.md)
 - [输入都是 3，行驱动器该加多高的电压、开多久？](./04-circuit-and-macro/data-encoding-strategies.md)
 - [同样算 23，为什么局部读数只差一码，输出却可能差 2？](./04-circuit-and-macro/precision-and-quantization-at-circuit.md)
-- [非理想性总览：Noise、Mismatch、Variation、Retention](./04-circuit-and-macro/non-idealities-and-error-sources.md)
-- [Peripheral 开销：为什么 ADC/控制常吃掉主要功耗与面积](./04-circuit-and-macro/peripheral-overhead.md)
+- [点积从 23 变成 26，怎样查出偏差发生在哪里？](./04-circuit-and-macro/non-idealities-and-error-sources.md)
+- [阵列已经算完，交付一个 23 还要付出多少？](./04-circuit-and-macro/peripheral-overhead.md)
 - [Macro 设计的决策框架：从 Workload 到 Macro 参数](./04-circuit-and-macro/macro-design-tradeoff-framework.md)
 
 ## 05 Architecture and System — 架构与系统

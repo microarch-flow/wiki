@@ -1,7 +1,7 @@
 # 从 Cell 到 System：Macro、Tile 与 Chip 的层级
 
 上级：[架构与系统集成](./README.md)
-相关：[Macro Design Framework](../04-circuit-and-macro/macro-design-tradeoff-framework.md), [Peripheral Overhead](../04-circuit-and-macro/peripheral-overhead.md), [NoC: Tile Architecture](../../../interconnect/NOC/06-ai-noc-specifics/tile-architecture-and-noc.md)
+相关：[Macro Design Framework](../04-circuit-and-macro/macro-design-tradeoff-framework.md), [宏内一次结果交付的开销](../04-circuit-and-macro/peripheral-overhead.md#cost-per-delivered-result), [NoC: Tile Architecture](../../../interconnect/NOC/06-ai-noc-specifics/tile-architecture-and-noc.md)
 
 ## 这页在回答什么问题
 

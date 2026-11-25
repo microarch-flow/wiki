@@ -23,7 +23,7 @@ workload numeric / reuse / update rate
 
 ## 关键参数怎么选
 
-Array size 越大，parallelism 和 peripheral amortization 越好，但 IR drop、variation、read disturb、ADC range 和 yield 风险上升。ReRAM crossbar 尤其受 array size 约束；SRAM-CIM 则要平衡 bitline load、WL driver 和 local logic。
+Array size 越大，parallelism 和 peripheral amortization 越好，但 IR drop、variation、read disturb、ADC range 和 yield 风险上升。ReRAM crossbar 尤其受 array size 约束；SRAM-CIM 则要平衡 bitline load、WL driver 和 local logic。 想知道共用一只 ADC 能省下多少面积、又会让哪份样本多等一拍，可以从[交付一个点积的外围开销](./peripheral-overhead.md#cost-per-delivered-result)算起。
 
 固定转换架构、采样率和量程时，增加位宽可减小理想量化步长；如果噪声或饱和主导，结果精度未必改善。能耗、面积、latency 和 II 随 ADC/DAC 架构、带宽及工作点变化，不能套用统一的非线性规律。低比特 ADC 配合 QAT 和数字累加更现实；高等效精度需要证明外围没有吞掉收益。
 

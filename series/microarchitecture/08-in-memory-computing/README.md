@@ -30,7 +30,9 @@
 
 再把这两份样本放进一颗计算宏。沿着[一条命令的驱动、转换和交付](./04-circuit-and-macro/cim-macro-primitives.md#follow-one-command)找结果在哪里等待，再用[保持样本与参考电压的逐次比较](./04-circuit-and-macro/adc-dac-sa-in-cim.md#sample-to-code)复算它的数字码。
 
-输入 3 可以写成一档行电压，也可以让同一行多开一会儿。先看[不同编码怎样让阵列读出同一个点积](./04-circuit-and-macro/data-encoding-strategies.md#encode-one-input)，再比较[同样多读一码，为什么加在低位和高位上会有不同结果](./04-circuit-and-macro/precision-and-quantization-at-circuit.md#trace-one-lsb)。
+输入 3 可以写成一档行电压，也可以让同一行多开一会儿。先看[怎样把输入送进阵列](./04-circuit-and-macro/data-encoding-strategies.md#encode-one-input)，再看[同样多读一码，为什么加在低位和高位上会有不同结果](./04-circuit-and-macro/precision-and-quantization-at-circuit.md#trace-one-lsb)。
+
+如果理想点积是 23，芯片却报了 26，可以沿[同一列的重读、重写与等待实验](./04-circuit-and-macro/non-idealities-and-error-sources.md#trace-weight-error)定位偏差。若读数正确，还可以沿[一次结果交付](./04-circuit-and-macro/peripheral-overhead.md#cost-per-delivered-result)核算阵列之外的驱动、转换和等待开销。
 
 <span class="micro-legacy-anchor" id="十章地图"></span>
 
