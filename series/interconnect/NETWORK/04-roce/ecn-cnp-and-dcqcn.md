@@ -20,11 +20,15 @@ A 的网卡为受控流保存当前速率、恢复时参考的目标速率和拥
 
 ## 与 DCTCP、PFC 区别在哪里
 
+<div class="bus-read-trace" markdown="1">
+
 | 机制 | 反馈或控制位置 | 核心作用 |
 | --- | --- | --- |
 | DCTCP | TCP 接收反馈与发送端窗口 | 根据标记比例调整 TCP 拥塞窗口 |
 | DCQCN | RoCEv2 接收反馈与源 NIC | 根据反馈调节发送速率 |
 | PFC | 相邻链路及优先级 | 接收资源不足时暂停相应上游发送 |
+
+</div>
 
 DCTCP 的 TCP ACK 反馈不能直接当作 CNP，PFC 暂停时间也不是端到端公平性指标。[DCTCP 规范说明](https://www.rfc-editor.org/rfc/rfc8257.html)
 
