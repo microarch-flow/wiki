@@ -20,7 +20,7 @@ from hooks import CPO_SECTIONS, grouped_original_topics, make_tree, storage_reso
 from ownership import GROUPS, INTERCONNECT, STORAGE, owner  # noqa: E402
 from prepare import (FOUNDATION_COMPANIONS, FOUNDATION_MERGED_ARTICLES, FOUNDATION_SPLIT_ARTICLES,
                      SILICON_TO_LOGIC_LEGACY_SECTIONS)  # noqa: E402
-from storage_navigation import (DRAM_LEGACY_PAGES, INTEGRATION_AFTER, INTEGRATION_HOME, INTEGRATION_PACKAGING,
+from storage_navigation import (STORAGE_LEGACY_PAGES, INTEGRATION_AFTER, INTEGRATION_HOME, INTEGRATION_PACKAGING,
                                 MEMORY_HOME, MEMORY_SECTIONS, RESOURCE_HOME, RESOURCE_SECTIONS,
                                 SYSTEM_SELECTION)  # noqa: E402
 
@@ -661,7 +661,7 @@ class GeneratedNavigationTests(unittest.TestCase):
                 if path.is_file():
                     expected.add(path.relative_to(docs).as_posix())
         self.assertEqual(len(assigned), len(set(assigned)))
-        self.assertEqual(set(assigned), expected - DRAM_LEGACY_PAGES)
+        self.assertEqual(set(assigned), expected - STORAGE_LEGACY_PAGES)
         memory = topics[0]["存储层级与数据路径"]
         self.assertEqual(memory[0], {"专题首页": MEMORY_HOME})
         self.assertEqual([next(iter(item)) for item in memory[1:]], [name for name, _, _ in MEMORY_SECTIONS])
@@ -1098,7 +1098,7 @@ class GeneratedNavigationTests(unittest.TestCase):
             "命令时序对应的物理等待", "开行列访问与首数据", "行保持与预充", "写恢复与参数适用条件",
             "ddr4-同-bank-显式-pre-的完整下界", "一句话理解", "建模启示",
         }
-        self.assert_dram_merge_links(canonical, legacy, {
+        self.assert_storage_merge_links(canonical, legacy, {
             "dram-命令actrdwr-与-pre", "actrdwrpredram-命令集为什么长这样", "命令如何改变-bank-和行状态",
             "actrdwrpre-的职责", "行命中关闭行和行冲突", "pre-不是列命令发出后立即可用",
         }, {key: key for key in old_fragments}, default="命令时序对应的物理等待")
@@ -1107,9 +1107,11 @@ class GeneratedNavigationTests(unittest.TestCase):
         chapter = Path("RAM/wiki/06-memory-controller")
         canonical = chapter / "command-scheduling-fr-fcfs/index.html"
         legacy = chapter / "page-policy-open-close-adaptive/index.html"
-        self.assert_dram_merge_links(canonical, legacy, {
+        self.assert_storage_merge_links(canonical, legacy, {
             "dram-命令调度就绪判断与-fr-fcfs", "命令调度fr-fcfs-及其变体", "就绪命令选择与等待代价",
             "一个可复核的仲裁例子", "吞吐与等待",
+            "行缓冲策略保留预充与自适应选择", "opencloseadaptive-page-policy-的权衡",
+            "这页在回答什么问题", "一句话理解", "建模启示",
         }, {
             "行缓冲策略保留预充与自适应选择": "page-policy", "opencloseadaptive-page-policy-的权衡": "page-policy",
             "这页在回答什么问题": "page-policy", "打开行的保留与关闭决策": "打开行的保留与关闭决策",
@@ -1118,10 +1120,27 @@ class GeneratedNavigationTests(unittest.TestCase):
             "一句话理解": "page-policy", "建模启示": "model",
         }, default="page-policy")
 
-    def assert_dram_merge_links(self, canonical, legacy, main_fragments, expected_routes, default):
+    def test_sram_macro_bookmarks_land_in_timing_article(self):
+        chapter = Path("RAM/wiki/02-sram-foundations")
+        canonical = chapter / "read-write-cycle-timing/index.html"
+        legacy = chapter / "sram-macro-interface-and-semantics/index.html"
+        self.assert_storage_merge_links(canonical, legacy, {
+            "sram-一次访问电气阶段与接口时序", "访问由哪些阶段构成", "一个同步宏的接口例子",
+            "为什么延迟和接纳间隔不能混为一谈", "工艺频率与可见边界", "建模启示", "接下来怎么读",
+            "electrical", "collision", "timing-checks",
+        }, {
+            "sram-宏接口地址时序与访问语义": "macro-pins", "sram-宏接口怎样正确发起读写": "macro-pins",
+            "1-宏向外提供什么": "macro-pins", "2-从一个-64-32-bit-的宏读接口": "word-address",
+            "byte-地址怎样对应-word-地址": "word-address", "写掩码改变哪些位": "write-mask",
+            "部分写入需要读改写时": "read-modify-write", "3-数据有效时间与下一次接纳间隔": "pipeline",
+            "4-两个端口可以同时做什么": "ports", "5-宏接口与系统接口在哪里分界": "wrapper",
+            "一句话理解": "timeline", "建模启示": "model", "接下来怎么读": "next",
+        }, default="macro-pins")
+
+    def assert_storage_merge_links(self, canonical, legacy, main_fragments, expected_routes, default):
         html = (SITE / canonical).read_text(encoding="utf-8")
         article = re.search(r"<article\b.*?</article>", html, re.DOTALL).group()
-        for fragment in main_fragments | set(expected_routes) | set(expected_routes.values()):
+        for fragment in main_fragments | set(expected_routes.values()):
             self.assertEqual(article.count(f'id="{fragment}"'), 1, fragment)
         stub = (SITE / legacy).read_text(encoding="utf-8")
         fallback = re.search(r'<div [^>]*data-storage-redirect[^>]*>(.*?)</div>', stub, re.DOTALL)
@@ -1294,7 +1313,7 @@ class GeneratedNavigationTests(unittest.TestCase):
             *(SITE / "foundations/silicon-to-logic" / slug / "index.html" for slug in SILICON_TO_LOGIC_LEGACY_SECTIONS),
         }
         unlisted = UNLISTED_LANDING_PAGES | {
-            (Path(path).with_suffix("") / "index.html").as_posix() for path in DRAM_LEGACY_PAGES
+            (Path(path).with_suffix("") / "index.html").as_posix() for path in STORAGE_LEGACY_PAGES
         }
         pages = sorted(p for p in SITE.rglob("*.html") if p.name != "404.html" and p not in standalone_pages)
         self.assertGreater(len(pages), 1)

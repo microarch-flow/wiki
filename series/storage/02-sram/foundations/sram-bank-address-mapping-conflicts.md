@@ -2,7 +2,7 @@
 
 上级：[SRAM 基础](./README.md)
 
-相关：[SRAM 宏接口与读写语义](./sram-macro-interface-and-semantics.md) · [SRAM 端口与代价](./single-port-dual-port-multi-port.md) · [SRAM 阵列组织](./sram-array-organization.md)
+相关：[SRAM 宏接口与读写时序](./read-write-cycle-timing.md#macro-pins) · [SRAM 端口与代价](./single-port-dual-port-multi-port.md) · [SRAM 阵列组织](./sram-array-organization.md)
 
 <p class="ram-problem-lede">bank 的数量只给出一种潜在并行能力。每个请求实际落到哪里、同一 bank 有多少端口、请求能否到达并返回，共同决定可以同时服务多少请求。</p>
 

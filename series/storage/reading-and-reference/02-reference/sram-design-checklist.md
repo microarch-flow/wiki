@@ -4,7 +4,7 @@
 
 上级：[参考资料与工具](./README.md)
 
-相关：[宏接口与读写语义](../../02-sram/foundations/sram-macro-interface-and-semantics.md) · [SRAM 可靠性](../../02-sram/foundations/sram-reliability-ecc-mbist-repair.md)
+相关：[宏接口与读写语义](../../02-sram/foundations/read-write-cycle-timing.md#macro-pins) · [SRAM 可靠性](../../02-sram/foundations/sram-reliability-ecc-mbist-repair.md)
 
 <span id="这页在回答什么问题"></span>
 
