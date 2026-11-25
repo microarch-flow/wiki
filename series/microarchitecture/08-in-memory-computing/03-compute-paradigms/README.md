@@ -29,11 +29,13 @@
 2. [同一个输入反复读，怎样找出部分和里的误差？](./analog-cim-deep-dive.md)　先把同一个输入读几遍，再换一组输入，检查哪些误差能由这两种观测区分。
 3. [阵列每列只输出一位，怎样靠计数算出 2×4 + 3×5？](./digital-cim-fundamentals.md)　从两列的按位与数出有几个 1，再按输入位和权重位的位置累加。
 4. [六组位平面要算几拍，换成负数又怎样累加？](./digital-cim-deep-dive.md)　先排出六组位平面占用的计算资源，再给补码的符号位带上负权。
-5. [Mixed-Signal CIM](./mixed-signal-cim.md)：array 内 analog/charge/current 计算，外围数字转换与校正；SRAM、ReRAM、Flash；边界复杂，外围开销容易被低估。
-6. [Analog vs Digital](./analog-vs-digital-tradeoff-map.md)
-7. [存储介质与求值方式的交叉检查](./paradigm-memory-crossmap.md)
+5. [同一个点积分在两处算，模拟结果怎样交给数字累加器？](./mixed-signal-cim.md)　两个子阵列同时保持样本，看共享的 ADC 如何交出 8 和 15。
+6. [同样算出 23，模拟和数字存内计算怎样公平比较？](./analog-vs-digital-tradeoff-map.md)　固定输入范围和输出精度，比较每次交付的能量与延迟。
+7. [存储介质与求值方式的交叉检查](./paradigm-memory-crossmap.md)　沿旧入口查找每种介质的证据，完整交叉表在第二章的路线速查中。
 
 <span class="micro-legacy-anchor" id="一句话理解"></span>
 <span class="micro-legacy-anchor" id="研究启示"></span>
 
 读完可以用一张宏的框图自查。圈出第一个局部和，标明它是电流、电压、电荷还是数字码。再沿线找到量化、校正、移位和跨块归并的位置。到这里，论文里的精度损失、外围面积和 TOPS/W 各自覆盖哪段电路，就有了可以核对的边界。
+
+下一章沿着刚才的读出去找电路。谁驱动字线，谁保持电压，谁把码写进累加器？[进入计算宏的电路原语](../04-circuit-and-macro/cim-macro-primitives.md)

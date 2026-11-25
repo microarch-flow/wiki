@@ -25,7 +25,7 @@
 - [理想列电流应该是 4.6 µA，为什么实际读数会偏？](./02-memory-technologies/reram-cim-deep-dive.md)
 - [Flash 怎样把权重写进阈值，再用三拍算出一个点积？](./02-memory-technologies/flash-cim-niche.md)
 - [PCM 的电导会漂移，MRAM 的两个磁态又怎样参与计算？](./02-memory-technologies/pcm-mram-for-cim.md)
-- [三大 Memory 路线全景对比](./02-memory-technologies/memory-tech-comparison-matrix.md)
+- [存储计算路线速查：机制、代价与验证入口](./02-memory-technologies/memory-tech-comparison-matrix.md)
 
 ## 03 Compute Paradigms — 纵轴
 
@@ -34,9 +34,9 @@
 - [同一个输入反复读，怎样找出部分和里的误差？](./03-compute-paradigms/analog-cim-deep-dive.md)
 - [阵列每列只输出一位，怎样靠计数算出 2×4 + 3×5？](./03-compute-paradigms/digital-cim-fundamentals.md)
 - [六组位平面要算几拍，换成负数又怎样累加？](./03-compute-paradigms/digital-cim-deep-dive.md)
-- [Mixed-Signal CIM：在哪一段切换、为什么切换](./03-compute-paradigms/mixed-signal-cim.md)
-- [Analog vs Digital 全景对比](./03-compute-paradigms/analog-vs-digital-tradeoff-map.md)
-- [三种 Paradigm × 三种 Memory 交叉图](./03-compute-paradigms/paradigm-memory-crossmap.md)
+- [同一个点积分在两处算，模拟结果怎样交给数字累加器？](./03-compute-paradigms/mixed-signal-cim.md)
+- [同样算出 23，模拟和数字存内计算怎样公平比较？](./03-compute-paradigms/analog-vs-digital-tradeoff-map.md)
+- [存储介质与求值方式的交叉检查](./03-compute-paradigms/paradigm-memory-crossmap.md)
 
 ## 04 Circuit and Macro — 电路与宏
 
