@@ -1,0 +1,2001 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="light dark"><title>从电子到二极管 · 交互图解 | 从硅到系统</title>
+<style>
+:root {
+  --bg: #f8f9fb;
+  --paper: #fff;
+  --ink: #182533;
+  --muted: #526273;
+  --line: #dce3eb;
+  --soft: #edf3f8;
+  --accent: #155d87;
+  --blue: #246ba7;
+  --orange: #a65e21;
+  --purple: #7955a5;
+  --red: #a74c40;
+  --p: #f5e2dc;
+  --n: #dcecf8;
+  --pd: #eab8a9;
+  --nd: #a8cbea;
+  --shadow: 0 5px 24px #25384c08;
+  --mono: ui-monospace, SFMono-Regular, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #141a22;
+    --paper: #1c2530;
+    --ink: #e8edf4;
+    --muted: #b5c1ce;
+    --line: #354354;
+    --soft: #263443;
+    --accent: #9ac9e8;
+    --blue: #79b7ef;
+    --orange: #edb478;
+    --purple: #c1a2ed;
+    --red: #efab9b;
+    --p: #49332f;
+    --n: #263e53;
+    --pd: #74483f;
+    --nd: #385d80;
+    --shadow: none;
+  }
+}
+* {
+  box-sizing: border-box;
+}
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 22px;
+}
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font:
+    16px/1.85 -apple-system,
+    BlinkMacSystemFont,
+    "PingFang SC",
+    "Microsoft YaHei",
+    "Noto Sans CJK SC",
+    sans-serif;
+}
+a {
+  color: var(--accent);
+  text-decoration: none;
+}
+a:hover {
+  text-decoration: underline;
+}
+button,
+input,
+select {
+  font: inherit;
+}
+button,
+select {
+  border: 1px solid var(--line);
+  border-radius: 7px;
+  padding: 6px 12px;
+  background: var(--paper);
+  color: var(--ink);
+  cursor: pointer;
+}
+button.active,
+button[aria-pressed="true"] {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--paper);
+}
+button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+a:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
+input[type="range"] {
+  width: 100%;
+  accent-color: var(--accent);
+}
+button:disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+.shell {
+  max-width: 1450px;
+  margin: auto;
+  display: grid;
+  grid-template-columns: 260px minmax(0, 1fr);
+  gap: 42px;
+  padding: 36px 42px 80px;
+}
+.sidebar {
+  position: sticky;
+  top: 25px;
+  align-self: start;
+  max-height: calc(100vh - 50px);
+  overflow: auto;
+  padding: 4px 12px 10px 0;
+  border-right: 1px solid var(--line);
+}
+.brand {
+  font-size: 14px;
+  letter-spacing: 0.12em;
+  font-weight: 750;
+  color: var(--accent);
+}
+.sidebar h2 {
+  font-size: 18px;
+  margin: 9px 0 18px;
+}
+.sidebar a {
+  display: block;
+  font-size: 13px;
+  line-height: 1.55;
+  color: var(--muted);
+  padding: 7px 10px;
+  border-radius: 5px;
+}
+.sidebar a:hover,
+.sidebar a.selected {
+  background: var(--soft);
+  color: var(--accent);
+  text-decoration: none;
+}
+.sidebar .navnum {
+  display: inline-block;
+  min-width: 26px;
+  font-family: var(--mono);
+  opacity: 0.75;
+}
+.sidebar .tiny {
+  font-size: 11px;
+  color: var(--muted);
+  padding: 8px 10px;
+}
+main {
+  max-width: 960px;
+  min-width: 0;
+}
+.hero {
+  padding: 36px 0 30px;
+  border-bottom: 1px solid var(--line);
+  margin-bottom: 40px;
+}
+.eyebrow {
+  font: 600 12px/1.6 var(--mono);
+  color: var(--accent);
+  letter-spacing: 0.1em;
+}
+.hero h1 {
+  font-size: clamp(32px, 5vw, 56px);
+  line-height: 1.17;
+  margin: 14px 0 20px;
+  letter-spacing: -0.035em;
+}
+.hero .lead {
+  font-size: 19px;
+  color: var(--muted);
+  max-width: 740px;
+}
+.meta {
+  font-size: 12px;
+  color: var(--muted);
+  margin-top: 22px;
+}
+.road {
+  display: flex;
+  gap: 7px;
+  align-items: center;
+  flex-wrap: wrap;
+  font-size: 12px;
+  margin: 20px 0;
+}
+.road span {
+  padding: 5px 9px;
+  border: 1px solid var(--line);
+  border-radius: 5px;
+  background: var(--paper);
+}
+.road b {
+  color: var(--muted);
+}
+section {
+  padding: 12px 0 38px;
+  border-bottom: 1px solid var(--line);
+  margin-bottom: 28px;
+}
+h2 {
+  font-size: clamp(23px, 3vw, 30px);
+  line-height: 1.35;
+  margin: 16px 0 20px;
+  letter-spacing: -0.02em;
+}
+h2 .num {
+  font: 600 13px var(--mono);
+  color: var(--accent);
+  display: block;
+  letter-spacing: 0.08em;
+  margin-bottom: 6px;
+}
+h3 {
+  font-size: 20px;
+  margin: 28px 0 9px;
+  line-height: 1.5;
+}
+h4 {
+  font-size: 16px;
+  margin: 16px 0 5px;
+}
+p {
+  margin: 9px 0 13px;
+}
+strong {
+  font-weight: 700;
+}
+ul,
+ol {
+  padding-left: 1.45em;
+  margin: 10px 0 16px;
+}
+li {
+  margin: 5px 0;
+}
+.take {
+  border-left: 3px solid var(--accent);
+  padding: 11px 15px;
+  margin: 18px 0;
+  background: var(--soft);
+  border-radius: 0 5px 5px 0;
+}
+.take p {
+  margin: 4px 0;
+}
+.note {
+  font-size: 13px;
+  color: var(--muted);
+}
+.rule {
+  font-weight: 700;
+  color: var(--accent);
+}
+.eq {
+  font: 500 16px/1.8 var(--mono);
+  text-align: center;
+  white-space: normal;
+  overflow-wrap: anywhere;
+  background: var(--soft);
+  border-radius: 7px;
+  padding: 12px 10px;
+  margin: 14px 0;
+}
+.tablewrap {
+  overflow-x: auto;
+  margin: 15px 0;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+}
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+  min-width: 420px;
+}
+th {
+  text-align: left;
+  background: var(--soft);
+  font-weight: 650;
+}
+th,
+td {
+  padding: 10px 13px;
+  border-bottom: 1px solid var(--line);
+  vertical-align: top;
+}
+tr:last-child td {
+  border-bottom: none;
+}
+.demo,
+figure {
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 17px 20px;
+  margin: 20px 0;
+  box-shadow: var(--shadow);
+}
+.demohead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin: 0 0 12px;
+}
+.demohead h3,
+.demohead h4 {
+  margin: 0;
+  font-size: 16px;
+}
+.tag {
+  font: 600 10px var(--mono);
+  letter-spacing: 0.05em;
+  color: var(--muted);
+  border: 1px solid var(--line);
+  padding: 3px 6px;
+  border-radius: 4px;
+}
+.controls {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin: 12px 0;
+}
+.control {
+  display: grid;
+  grid-template-columns: minmax(100px, 1fr) minmax(80px, 2fr) 80px;
+  align-items: center;
+  gap: 12px;
+  font-size: 13px;
+  margin: 12px 0;
+}
+.control output {
+  text-align: right;
+  font-family: var(--mono);
+  font-size: 12px;
+  white-space: nowrap;
+}
+.demo svg,
+figure svg {
+  width: 100%;
+  display: block;
+  height: auto;
+  overflow: visible;
+}
+.demo svg text,
+figure svg text {
+  font-family: inherit;
+  fill: var(--ink);
+}
+.demo svg .muted,
+figure svg .muted {
+  fill: var(--muted);
+}
+.demo svg .axis,
+figure svg .axis {
+  stroke: var(--muted);
+  stroke-width: 1;
+  fill: none;
+}
+.demo svg .gridline {
+  stroke: var(--line);
+  stroke-width: 1;
+}
+.legend {
+  display: flex;
+  gap: 15px;
+  flex-wrap: wrap;
+  font-size: 12px;
+  color: var(--muted);
+  margin: 8px 0;
+}
+.swatch {
+  width: 10px;
+  height: 10px;
+  display: inline-block;
+  border-radius: 2px;
+  margin-right: 5px;
+}
+.metrics {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(125px, 1fr));
+  gap: 8px;
+  margin: 12px 0;
+}
+.metric {
+  background: var(--soft);
+  padding: 10px 12px;
+  border-radius: 7px;
+}
+.metric small {
+  display: block;
+  font-size: 11px;
+  color: var(--muted);
+}
+.metric b {
+  font: 600 21px/1.5 var(--mono);
+  color: var(--ink);
+  overflow-wrap: anywhere;
+}
+.explain {
+  font-size: 14px;
+  background: var(--soft);
+  padding: 10px 13px;
+  border-radius: 6px;
+  margin: 12px 0 0;
+}
+figcaption,
+.caption {
+  font-size: 12px;
+  color: var(--muted);
+  margin-top: 9px;
+  line-height: 1.65;
+}
+.q {
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 10px 14px;
+  margin: 10px 0;
+  background: var(--paper);
+}
+details summary {
+  cursor: pointer;
+  font-weight: 650;
+  line-height: 1.6;
+}
+details p {
+  font-size: 14px;
+}
+.cards {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  margin: 16px 0;
+}
+.cards > div {
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--paper);
+  padding: 13px;
+}
+.cards h4 {
+  margin: 0 0 5px;
+}
+.cards p {
+  font-size: 14px;
+  margin: 0;
+}
+.flow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 7px;
+  font-size: 13px;
+  margin: 16px 0;
+}
+.flow span {
+  border: 1px solid var(--line);
+  background: var(--paper);
+  border-radius: 6px;
+  padding: 8px 10px;
+}
+.flow b {
+  color: var(--muted);
+}
+.refs a {
+  overflow-wrap: anywhere;
+}
+.refs li {
+  font-size: 13px;
+}
+.ref {
+  font-size: 11px;
+  vertical-align: super;
+  margin-left: 2px;
+}
+footer {
+  font-size: 12px;
+  color: var(--muted);
+}
+.mobiletoc {
+  display: none;
+}
+code {
+  font-family: var(--mono);
+}
+@media (max-width: 850px) {
+  .shell {
+    display: block;
+    padding: 18px 19px 50px;
+  }
+  .sidebar {
+    display: none;
+  }
+  .mobiletoc {
+    display: block;
+    margin: 0 0 24px;
+  }
+  .mobiletoc a {
+    display: block;
+    font-size: 14px;
+    padding: 3px 0;
+  }
+  .hero {
+    padding-top: 15px;
+    margin-bottom: 25px;
+  }
+  .demo,
+  figure {
+    padding: 12px;
+  }
+  .control {
+    grid-template-columns: 1fr 1.4fr 70px;
+    gap: 7px;
+  }
+  .cards {
+    grid-template-columns: 1fr;
+  }
+  .hero .lead {
+    font-size: 16px;
+  }
+  .metric b {
+    font-size: 18px;
+  }
+}
+@media print {
+  body {
+    background: white;
+    color: black;
+    font-size: 11pt;
+  }
+  .shell {
+    display: block;
+    padding: 0;
+  }
+  .sidebar,
+  .mobiletoc,
+  .controls,
+  .control {
+    display: none;
+  }
+  main {
+    max-width: none;
+  }
+  .demo,
+  figure,
+  .tablewrap,
+  .take {
+    break-inside: avoid;
+    box-shadow: none;
+  }
+  section {
+    break-inside: auto;
+  }
+  a {
+    color: black;
+  }
+  h2,
+  h3 {
+    break-after: avoid;
+  }
+  .hero h1 {
+    font-size: 30pt;
+  }
+}
+
+.back-link {
+  display: inline-block;
+  padding: 0.25rem 0;
+  font-weight: 650;
+}
+.skip {
+  position: absolute;
+  top: 0.5rem;
+  left: 0.5rem;
+  z-index: 1;
+  padding: 0.25rem 0.7rem;
+  background: var(--paper);
+  transform: translateY(-200%);
+}
+.skip:focus {
+  transform: none;
+}
+@media (max-width: 540px) {
+  .control {
+    grid-template-columns: minmax(0, 1fr) auto;
+  }
+  .control input {
+    grid-column: 1 / -1;
+    grid-row: 2;
+    min-height: 30px;
+    margin: 0;
+  }
+  .control output {
+    grid-row: 1;
+    grid-column: 2;
+  }
+  .controls button,
+  .mobiletoc a,
+  .back-link {
+    min-height: 40px;
+  }
+  table {
+    min-width: 0;
+    table-layout: fixed;
+  }
+  th,
+  td {
+    overflow-wrap: anywhere;
+    padding: 0.45rem;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+}
+</style>
+</head><body><a class="skip" href="#main">跳到图解正文</a>
+<div class="shell">
+
+<nav class="sidebar" aria-label="目录">
+<div class="brand">半导体与电路基础
+</div>
+<h2>从电子到二极管</h2>
+<div id="nav">
+</div>
+</nav>
+
+<main id="main">
+<header class="hero"><a class="back-link" href="./">← 返回正文</a>
+<h1>从电子到二极管</h1>
+<p class="lead">以电子为主线，从量子状态、空间传播和电荷分布出发，推导硅的导电性、PN 结的形成与二极管的单向导电。</p>
+<div class="road"><span>电子与状态</span><b>→</b><span>能带与输运</span><b>→</b><span>电学与掺杂</span><b>→</b><span>PN 结</span><b>→</b><span>二极管</span>
+</div>
+<p class="meta">14 个交互图解，可调整模型参数并观察结果。</p>
+</header>
+
+<details class="mobiletoc q"><summary>展开目录</summary>
+<div id="mobileNav">
+</div>
+</details>
+
+<section id="intro" data-title="阅读方法">
+<h2><span class="num">00 / READING GUIDE</span>先建立模型，再推导现象</h2>
+<p>本文不以“空穴向哪边移动”作为推理起点。我们首先追踪电子处于哪些状态、电子的空间分布怎样变化、这些变化怎样改变净电荷及电场。空穴是一个方便的等效载流子描述，而不是额外引入的基本粒子。</p>
+<p>需要同时保留两套互补的视角：<strong>真实空间</strong>关注电荷在哪里、怎样传输；<strong>能量与状态空间</strong>关注哪些状态允许存在、它们具有怎样的能量和传播特性、哪些被占据。读图时要先看横轴。画 PN 结带边时，E<sub>C</sub>(x)、E<sub>V</sub>(x) 的横轴 x 就是器件里的真实位置；画晶体的 E(k) 色散关系时，横轴 k 是波矢。两图的纵轴都是能量，上下位置不代表电子在硅片里的物理高度。</p>
+<div class="take">
+<p><strong>适用范围。</strong>主要研究室温、普通非简并掺杂的硅、较大尺寸的一维突变 PN 同质结、良好的欧姆接触和正常偏压。涉及数值时明确说明假设。强场、高注入、纳米尺度和复杂接触的真实行为可能偏离这些模型。</p>
+</div>
+<p class="note">交互图中，蓝色代表电子或电子能带，橙色代表价带缺失，紫色代表电场或势垒相关量；P 区用浅红色、N 区用浅蓝色。所有粒子、波形和几何尺寸示意均非原子级模拟。</p>
+</section>
+
+<section id="state" data-title="电子、状态与真实空间">
+<h2><span class="num">01 / ELECTRON & STATE</span>电子、量子状态与真实空间</h2>
+<h3>1.1 电荷不是另一颗粒子</h3>
+<p>电子是一种基本粒子，具有质量、负电荷等物理属性。电荷与质量类似：不是藏在电子内部的另一个物体，也不只是某种效果，而是决定电子如何参与电磁相互作用的物理量。一个电子的电荷始终是 −e，其中 e ≈ 1.602 × 10<sup>−19</sup> C。无论处于价带还是导带，电子都没有改变电荷。</p>
+<h3>1.2 什么是电子的状态？</h3>
+<p>经典小球可以用位置、速度等描述。电子具有量子波动性，完整状态描述其空间概率分布、运动相关性质、自旋以及相位等信息。<strong>能量只是状态的一个属性。</strong>两个状态可以有相同能量，却具有相反的平均传播方向。完整状态也不一定对应一个确定能量；它可以由多个能量本征态叠加组成。</p>
+<p>在给定材料模型中，允许的能量本征状态有各自的能量和空间波形。某个状态“空着”，意味着该允许状态没有电子占据，而不是空间中有一个洞。泡利不相容原理限制相同完整单粒子状态（包括自旋）的占据；一个空间轨道通常可容纳两个自旋不同的电子。</p>
+<h3>1.3 电子到底有没有在真实空间移动？</h3>
+<p>有。单电子波包的传播是该电子的空间传播的量子描述，并不是另一个东西代替电子运动。我们不能给它指定一条确定的经典轨迹，但它的空间概率分布可以从左边移动到右边，这会对应真实的电荷输运。在多电子系统里，电子不可区分，通常不能给每个电子贴标签一路跟踪。</p>
+<div class="demo">
+<div class="demohead">
+<h4>同一个波包：空间位置与状态标签</h4><span class="tag">交互 01 · 示意</span>
+</div>
+<div class="controls" id="waveBtns"><button data-wave="move" class="active">同一能带内传播</button><button data-wave="flip">改变传播方向</button><button data-wave="local">延展态 → 局域态</button>
+</div>
+<div class="control"><label for="waveTime">演示进度</label><input id="waveTime" type="range" min="0" max="100" value="30"><output for="waveTime" id="waveOut">30%</output>
+</div>
+<svg id="waveSvg" viewBox="0 0 650 220" role="img" aria-label="电子波包空间分布变化"></svg>
+<p class="explain" id="waveText"></p>
+<p class="caption">蓝色曲线为概率密度的示意，灰色圆点为晶格位置。传播示例用平移高斯分布演示，不是对硅波函数的求解；方向改变示例说明密度相同也可具有不同电流。</p>
+</div>
+<h3>1.4 状态变化和位置变化的包含关系</h3>
+<div class="take">
+<p><strong>空间概率分布变化 ⇒ 完整量子状态变化。</strong></p>
+<p><strong>完整量子状态变化 ⇏ 空间概率分布一定变化。</strong></p>
+</div>
+<p>例如，在同一个能带内，两种波函数可有相同概率密度、不同的空间相位梯度，从而产生不同方向的概率流。波包在晶体中传播时，多个状态之间的相对相位随时间演化，即使其各能量成分的占据概率不变，真实空间的分布也可以移动。</p>
+<p>“跃迁”通常描述从一个允许状态到另一个允许状态的转换，可以是带内跃迁（例如散射）或带间跃迁。完整状态的连续演化不需要被理解为一次次离散跃迁。<strong>所以，空间运动并不要求电子每经过一个原子就更换一个能带状态。</strong></p>
+<details class="q"><summary>大量电子改变状态，是否必然有电子产生位移？</summary>
+<p>若每次事件有独立的非零概率 r 引起空间分布改变，M 次中至少一次改变的概率为 1−(1−r)<sup>M</sup>。但这只是给定假设下的概率结论。它不能说明分布变化必然是平移，也不能解释位移方向或电流；电子在没有这类跃迁时也可以传播。扩散应直接从载流子的空间输运和统计分布出发。</p>
+</details>
+</section>
+
+<section id="bands" data-title="能级、能带与导电性">
+<h2><span class="num">02 / BAND STRUCTURE</span>为什么有价带、导带和禁带？</h2>
+<h3>2.1 允许状态由什么决定？</h3>
+<p>孤立原子的束缚电子只有特定的允许能量。原子靠近形成晶体时，原子核、电子及晶格周期结构共同改变这些状态。原来能量相同的许多原子轨道产生相互作用，形成大量能量相近的状态；其能量在宏观晶体中极为密集，这就是能带。</p>
+<figure>
+<svg viewBox="0 0 650 200" role="img" aria-label="原子能级形成能带"><g class="axis"><path d="M24 175V20 M18 28L24 20L30 28"/></g><text x="12" y="14" font-size="12">能量</text><g font-size="14" text-anchor="middle"><text x="120" y="24">孤立原子</text><text x="325" y="24">少量原子相互作用</text><text x="532" y="24">大量原子构成晶体</text></g><g stroke="var(--blue)" stroke-width="3"><path d="M64 69H176 M64 151H176"/></g><g stroke="var(--blue)" stroke-width="1.6"><path d="M265 59H385 M265 64H385 M265 69H385 M265 74H385 M265 79H385 M265 141H385 M265 146H385 M265 151H385 M265 156H385 M265 161H385"/></g><rect x="464" y="47" width="136" height="43" rx="4" fill="var(--nd)"/><rect x="464" y="130" width="136" height="43" rx="4" fill="var(--nd)"/><g stroke="var(--blue)" opacity=".5"><path d="M470 55H594 M470 63H594 M470 71H594 M470 79H594 M470 86H594 M470 138H594 M470 146H594 M470 154H594 M470 162H594 M470 169H594"/></g><text x="532" y="113" text-anchor="middle" font-size="13">禁带</text><path d="M191 108H245 M238 102L245 108L238 114 M397 108H448 M441 102L448 108L441 114" fill="none" stroke="var(--muted)"/></svg>
+<figcaption>理想化能级分裂示意。能带可能互相分离，也可能重叠；纵轴为能量。</figcaption></figure>
+<p>对于硅，价带主要与较低能量的成键状态相关；导带是更高能量、能够支持电子传输的状态集合；两者之间的禁带是理想晶体没有相应允许电子状态的能量区间。硅室温禁带宽度约 1.12 eV。杂质和缺陷可以在原有禁带内引入状态。</p>
+<h3>2.2 带有多少个状态？为什么纯硅的价带正好填满？</h3>
+<p>以 1000 个硅原子构成的周期性晶体为例，忽略表面。每个硅原子有 4 个价电子和 4 个成键方向，每条键由两个原子共享，所以有 2000 条键。用简化成键轨道模型，每条键的成键轨道可容纳两个电子，合计 4000 个完整状态。1000 个硅原子恰好提供 4000 个价电子，因此理想 0 K 下这些较低能量的状态被填满。</p>
+<p>更一般地说，在包含 M 个原胞的周期晶体里，一条不计自旋的能带分支通常有 M 个允许的波矢状态；计入通常的两重自旋简并可容纳 2M 个电子。硅原胞有两个原子，简化 sp³ 价轨道模型中 4 条低能成键带可容纳每原胞 8 个价电子。这个计数解释理想价带为何恰好填满。禁带的宽度要从材料中允许态的能量求出；仅数电子和空态，算不出硅的 1.12 eV。反键带也只是理解低阶空能带的近似模型。</p>
+<h3>2.3 满带、空带和禁带是不同的</h3>
+<div class="demo">
+<div class="demohead">
+<h4>电子占据模型</h4><span class="tag">交互 02 · 状态计数</span>
+</div>
+<div class="controls" id="fillBtns"><button data-fill="full" class="active">纯硅：0 K</button><button data-fill="excited">热激发</button><button data-fill="move">价带占据重新分布</button><button data-fill="recomb">复合</button>
+</div>
+<svg id="fillSvg" viewBox="0 0 650 216" role="img" aria-label="价带和导带占据情况"></svg>
+<p class="explain" id="fillText"></p>
+<p class="caption">每个格子是一个完整电子状态，而不是晶格中的位置；画出的状态数只是教学计数。重新分布事件需要满足能量、动量及相互作用等条件。</p>
+</div>
+<p>满带：所有状态已占据；空带：有状态但没有电子；禁带：没有相应允许状态。在普通硅中，能带里波矢 k 与 −k 对应的状态群速度相反。满带把这些状态都占满，贡献的电流逐对抵消。部分填充时，热平衡下仍可抵消；外场或浓度梯度能使运动分布不再对称，从而有净输运。有多少净电流，还取决于载流子浓度、态的延展性和散射。<a class="ref" href="#r1">[1]</a></p>
+<h3>2.4 为什么有导体、半导体和绝缘体？</h3>
+<div class="tablewrap">
+<table><thead>
+<tr><th>材料</th><th>能带占据与结构</th><th>表现</th></tr></thead><tbody>
+<tr><td>普通金属（如钠、铜）</td><td>部分填充的能带，或能带重叠；费米能级附近有允许态</td><td>通常容易形成电流</td></tr>
+<tr><td>硅</td><td>理想 0 K 价带满、导带空；禁带约 1.12 eV（室温）</td><td>常温有少量载流子，掺杂可调节</td></tr>
+<tr><td>金刚石</td><td>禁带约 5.5 eV</td><td>室温热产生载流子极少，通常绝缘</td></tr>
+<tr><td>石墨</td><td>碳原子形成层状结构，π 能带使其成为半金属</td><td>沿层面较易导电</td></tr></tbody></table>
+</div>
+<p>金刚石和石墨都是碳组成，却有不同的成键和空间结构，说明元素种类不是唯一决定因素。晶格排列、原子间距、轨道重叠、材料成分、温度、应变和缺陷都会影响能带结构。不能简单认为原子核外电子越多、禁带就越小，或共价键越强、材料就必然越绝缘。</p>
+</section>
+
+<section id="transport" data-title="电场、电压、电流与散射">
+<h2><span class="num">03 / CHARGE TRANSPORT</span>从电子运动到电压、电流与电阻</h2>
+<h3>3.1 电场、电势和势能</h3>
+<p>带电物体会产生电场；电场又会对电荷施加作用。电子的电场力是 F = −eE，方向与电场相反。电场表示某一点上单位正电荷受到的力，单位 V/m 或 N/C。</p>
+<p>电势 φ 描述单位正电荷相对于选定参考点的电势能。电压是两点的电势差。电子的电势能 U = −eφ，所以电势较高的位置，对电子而言电势能反而较低。</p>
+<div class="eq">E = −dφ/dx &nbsp; · &nbsp; U = −eφ &nbsp; · &nbsp; V<sub>AB</sub> = φ<sub>A</sub> − φ<sub>B</sub>
+</div>
+<p>在静电或准静态一维模型里，电场决定电势沿空间变化的快慢。电子从低电势移动到高电势，电场对其做正功。一个电子经过 1 V 的电势上升，电场做功 1 eV；不意味着所有电子瞬间获得 1 eV 的动能，能量也可能通过散射传给晶格。</p>
+<div class="demo">
+<div class="demohead">
+<h4>相同电压，不同电场</h4><span class="tag">交互 03 · 均匀电场</span>
+</div>
+<div class="control"><label for="fieldV">电势差 (V)</label><input id="fieldV" type="range" min="0" max="5" step="0.1" value="1"><output for="fieldV" id="fieldVout"></output>
+</div>
+<div class="control"><label for="fieldL">间距 (μm)</label><input id="fieldL" type="range" min="1" max="10" step="0.5" value="5"><output for="fieldL" id="fieldLout"></output>
+</div>
+<svg id="fieldSvg" viewBox="0 0 650 156" role="img" aria-label="电势差和电场"></svg>
+<div class="metrics">
+<div class="metric"><small>平均电场强度</small><b id="fieldVal"></b><small>V/μm</small>
+</div>
+<div class="metric"><small>单电子跨越电压时的电势能降低</small><b id="fieldEnergy"></b><small>eV</small>
+</div>
+</div>
+<p class="caption">假设电场均匀，忽略边缘效应。电源维持电势差；闭合电路中的电荷重新分布（包括表面电荷）会建立相应电场。</p>
+</div>
+<h3>3.2 电流是净电荷传输速率</h3>
+<p>电流 I = dQ/dt 是单位时间通过截面的净电荷量。一群电子的净传输向右，它们贡献的约定电流就向左。看到一个电子向右运动，还需要知道反方向上的电子通量，才能判断净电流。电流不是电子速度，也不要求电子在导体中越积越多。稳定的电荷密度和持续的电流可以同时存在：流入与流出相抵消。</p>
+<h3>3.3 漂移与扩散</h3>
+<p>在均匀材料的热平衡中，电子仍有空间传播和散射，各方向的电流贡献在统计上相互抵消。电场改变运动分布，建立平均漂移；浓度不均匀时，即使没有外加电场，也会出现从高浓度向低浓度的净扩散。扩散不是渗透作用，也不是低浓度区域用某种力吸引高浓度区域的电子。</p>
+<div class="take">
+<p><strong>扩散：</strong>空间浓度梯度造成不对称的统计净传输。</p>
+<p><strong>漂移：</strong>电场影响载流子运动形成的平均定向传输。</p>
+</div>
+<p>如果选择主要分布于某一侧的局域波包作为状态，也可以说“N 区电子转变到 P 区未占据的局域导带状态”，但这是特定描述方式，不是延展本征态天然按 P/N 区划分。空状态为允许的电子状态转换提供条件，但普通硅的导带在两侧都远未填满，导带扩散主要由电子浓度差驱动，而不是由哪侧导带空位更多决定。</p>
+<h3>3.4 散射与电阻</h3>
+<p>晶格热振动、杂质和缺陷会扰动电子所处的环境，使电子的运动状态发生改变，称为散射。它可以改变传播方向、速度或能量；弹性散射可以保持能量不变而改变动量。正常周期性晶格本身已经包含在能带模型里，不应把它当作一串必然造成电阻的障碍物。</p>
+<p>在普通欧姆导体中，电场使电子群体形成定向运动分布，能够松弛电流的散射则削弱这种分布。在稳态，平均漂移速度有限。电子可以在一次弹性散射中改变动量而不把能量传给晶格。长时间看，电场输入的能量经非弹性过程转给晶格，形成焦耳热。</p>
+<div class="eq">σ = e(nμ<sub>n</sub> + pμ<sub>p</sub>) &nbsp; · &nbsp; R = L/(σA)
+</div>
+<p>这是均匀半导体低场欧姆近似。n、p 是载流子浓度，μ 是迁移率（单位电场下平均漂移的大小）。载流子少、迁移率低、导体长或截面积小，都可以使电阻增大。接触与势垒也会限制输运，不是所有电阻都可以归因于晶格散射。对非线性器件，V/I 与微分电阻 dV/dI 不一定相同。</p>
+<p>功率 P = VI：每单位电荷的能量差乘以每单位时间的净传输电荷量，就是每单位时间传递的能量。普通电阻中最终主要变为热。</p>
+<details class="q"><summary>超导是否意味着没有散射？</summary>
+<p>不是。传统超导体中电子形成库珀对，集体凝聚态承载无耗散的稳态超导电流。杂质、晶格振动、准粒子散射可以仍然存在，但不一定使超导电流衰减；超过临界条件或出现涡旋运动、相位滑移等可以产生耗散。它说明零电阻不等于零散射。本文不展开超导理论。</p>
+</details>
+</section>
+
+<section id="doping" data-title="纯硅与 P/N 型掺杂">
+<h2><span class="num">04 / INTRINSIC & DOPED SILICON</span>纯硅与 P 型、N 型掺杂</h2>
+<h3>4.1 纯硅不是完全绝缘的</h3>
+<p>在常温热平衡下，少量价带电子通过热激发进入导带，留下价带电子缺失；导带电子也能释放能量重新占据价带空状态，称为复合。产生和复合持续进行，平均速率相等。无外接电源并不自动保证热平衡（例如光照可使系统处于非平衡）。</p>
+<p>理想本征硅的导带电子与空穴浓度相等，室温约 10<sup>10</sup> cm<sup>−3</sup>，而硅原子密度约 5×10<sup>22</sup> cm<sup>−3</sup>，所以载流子虽有许多，比例却极小。</p>
+<h3>4.2 空穴的本质：价带电子的缺失</h3>
+<p>如果原本完整的价带缺少一个电子，电子系统相对于满带参考状态就少了一份负电荷，可以用带正电的空穴描述。空穴是准粒子，不是独立的基本粒子。其他价带电子可以改变占据情况，原来的占据状态又变为空状态。</p>
+<p>在局域共价键视角下，可以把这种现象画成相邻电子填补缺失，负电荷向一侧传输，缺失向另一侧传播。但在真实硅晶体中，价带状态可延展到许多原子，电子缺失可以由多个状态叠加形成局域波包。空穴传播不要求某个特定电子波包逐键跳跃。</p>
+<h3>4.3 P 型掺杂：让价带出现更多电子缺失</h3>
+<p>硼（B）有 3 个价电子，替换具有 4 个价电子的 Si 后，在四配位成键计数模型中少一个电子。在普通低浓度下，B 在硅禁带内引入距价带顶部约 0.045 eV 的浅受主能级，而不是一条完整新能带。高浓度时杂质态可能互相重叠。</p>
+<p>室温下价带电子可以转移到受主状态，形成固定的负受主中心 B⁻，同时留下一个可移动的价带空穴。通常用“延展价带状态 → B 附近局域受主状态”来建立单电子近似直觉；实际电离是多电子系统的电荷重新分布，不能将电子身份和局域轨迹当成精确事实。低温下空穴可能仍束缚于受主附近。</p>
+<h3>4.4 N 型掺杂：让导带出现更多电子</h3>
+<p>磷（P）有 5 个价电子，四个参与主要成键，额外电子在低温下可以束缚在磷附近。磷引入距导带底部约 0.045 eV 的浅施主能级。该电子在硅中的库仑束缚受到介电屏蔽以及能带有效质量的影响，束缚能很小。在常温、通常掺杂条件下，施主容易电离，导带中多出一个电子，留下固定的正施主中心 P⁺（此处 P 指磷元素）。<a class="ref" href="#r2">[2]</a></p>
+<div class="demo">
+<div class="demohead">
+<h4>对比本征、受主和施主电离</h4><span class="tag">交互 04 · 能量示意</span>
+</div>
+<div class="controls" id="dopBtns"><button data-dop="i" class="active">纯硅</button><button data-dop="p">B 掺杂 · P 型</button><button data-dop="n">P 掺杂 · N 型</button><button id="ionBtn">切换激发 / 电离</button>
+</div>
+<svg id="dopSvg" viewBox="0 0 650 245" role="img" aria-label="受主和施主能级"></svg>
+<p class="explain" id="dopText"></p>
+<p class="caption">图中的能级间距、占据比例和粒子数均不按真实比例。杂质能级的本质是电离能量尺度；局域态模型用于解释而非逐原子精确计算。</p>
+</div>
+<h3>4.5 两侧仍然电中性</h3>
+<p>掺杂改变的是占据情况以及载流子浓度，并没有凭空给整块硅施加净电荷。普通均匀材料在热平衡时满足近似电荷中性；电离施主的固定正电荷由导带电子等补偿，电离受主的固定负电荷由价带电子缺失等补偿。</p>
+<p>在非简并、热平衡的条件下，n·p = n<sub>i</sub>²。给定温度下，N 型掺杂使费米能级更靠近导带，电子浓度 n 升高，平衡空穴浓度 p = nᵢ²/n 随之降低；P 型硅则相反。平衡时产生率和复合率相等，单看复合快慢无法算出少数浓度。这个关系不能直接用于正向注入后的非平衡系统。</p>
+<div class="tablewrap">
+<table><thead>
+<tr><th>材料</th><th>导带电子 n (cm⁻³)</th><th>空穴 p (cm⁻³)</th><th>固定掺杂电荷</th></tr></thead><tbody>
+<tr><td>纯硅</td><td>10¹⁰</td><td>10¹⁰</td><td>无</td></tr>
+<tr><td>P 型</td><td>约 10⁴</td><td>约 10¹⁶</td><td>负受主中心</td></tr>
+<tr><td>N 型</td><td>约 10¹⁶</td><td>约 10⁴</td><td>正施主中心</td></tr></tbody></table>
+</div>
+<p class="note">示例：300 K，nᵢ = 10¹⁰ cm⁻³，单侧掺杂 10¹⁶ cm⁻³、近似完全电离。数量优势的一类叫多数载流子，另一类叫少数载流子。P 区的“空穴多”是相对于导带电子而言，不是价带大部分都空了。</p>
+</section>
+
+<section id="fermi" data-title="费米能级与金属接触">
+<h2><span class="num">05 / FERMI LEVEL</span>费米能级：从允许状态到实际占据</h2>
+<h3>5.1 为什么还需要一个费米能级？</h3>
+<p>能带告诉我们有哪些允许的状态，但并不直接告诉我们这些状态有多少被占据。在热平衡下，费米能级 E<sub>F</sub> 是电子系统的电化学势，也是决定费米—狄拉克占据概率的能量参数。它不一定是某个真实存在的可占据状态。</p>
+<div class="eq">f(E) = 1 / [1 + exp((E − E<sub>F</sub>)/kT)]
+</div>
+<p>当 E 等于 E<sub>F</sub>，如果该能量存在允许态，其占据概率为 50%；低于 E<sub>F</sub> 越多越接近 100%，高于越多越接近 0%。实际电子浓度还取决于每段能量范围内有多少允许状态，即态密度。</p>
+<div class="demo">
+<div class="demohead">
+<h4>占据概率与费米能级</h4><span class="tag">交互 05 · Fermi–Dirac</span>
+</div>
+<div class="controls" id="fermiBtns"><button data-ef="0.18">P 型示例</button><button data-ef="0.56" class="active">纯硅示例</button><button data-ef="0.94">N 型示例</button>
+</div>
+<div class="control"><label for="temp">温度 (K)</label><input type="range" id="temp" min="100" max="600" step="10" value="300"><output for="temp" id="tempOut"></output>
+</div>
+<svg id="fermiSvg" viewBox="0 0 650 245" role="img" aria-label="费米狄拉克占据概率"></svg>
+<p class="explain" id="fermiText"></p>
+<p class="caption">固定价带顶 0 eV、导带底 1.12 eV，三种 E_F 为教学示例。温度滑块只改变统计函数，真实材料的禁带、费米能级也会随温度调整。禁带中的曲线为数学参考，不表示存在电子态。</p>
+</div>
+<h3>5.2 P/N 型费米能级为何不同？</h3>
+<p>掺杂改变电子数量和允许状态；热平衡时电子重新分布，费米能级随之调整。普通 N 型硅的费米能级靠近导带，普通 P 型硅靠近价带，纯硅接近禁带中间（不必恰好居中）。这是电子系统的统计结果，不是费米能级像一根棍子一样把电子推向某个能带。</p>
+<p>在非简并情况下，n ≈ N<sub>C</sub>exp[−(E<sub>C</sub>−E<sub>F</sub>)/kT]，p ≈ N<sub>V</sub>exp[−(E<sub>F</sub>−E<sub>V</sub>)/kT]。所以判断载流子浓度应比较 E<sub>F</sub> 与局部带边的距离，而非仅比较费米能级的绝对高低。</p>
+<h3>5.3 金属导线里的电子进入硅，究竟进入哪个能带？</h3>
+<p>金属的电子也占据能带中的允许状态，但这些状态并不能原封不动地搬到硅中。界面处的能量对齐、目标状态占据、态密度、势垒及传输概率共同决定电子怎样交换。</p>
+<p>同温度的两个系统接触并允许电子交换时，电子具有从高电化学势向低电化学势净传输的趋势；电荷重新分布产生电场，热平衡时两者费米能级对齐，净交换为零。实际界面可能形成肖特基势垒；工程上常用高掺杂接触区使界面势垒变薄，获得低阻欧姆接触。<a class="ref" href="#r3">[3]</a></p>
+<div class="tablewrap">
+<table><thead>
+<tr><th>普通欧姆接触</th><th>金属向硅提供电子</th><th>金属从硅接收电子</th></tr></thead><tbody>
+<tr><td>N 型</td><td>主要补充导带电子</td><td>主要从导带取走电子</td></tr>
+<tr><td>P 型</td><td>主要填补价带空状态</td><td>主要从价带取走电子</td></tr></tbody></table>
+</div>
+<p>这张表采用普通低阻欧姆接触、低注入且接触附近以多数载流子导电的近似。金属接触也可能收集少数载流子，界面还可能发生复合。电源将两个端子的电子电化学势维持在不同水平；对同材质的金属端子，负极的电子电化学势更高。半导体偏置后不再有全局统一的平衡 E<sub>F</sub>，可以用电子和空穴的准费米能级描述局部非平衡占据。</p>
+</section>
+
+<section id="junction" data-title="PN 结：扩散与电荷分离">
+<h2><span class="num">06 / PN JUNCTION</span>从零开始推导 PN 结</h2>
+<h3>6.1 初始条件</h3>
+<p>设 P 区在左，N 区在右，x 向右为正。实际 PN 结一般在连续晶体中形成，而不是两块硅简单机械接触。为理解形成过程，我们假想两侧均匀掺杂、起初分别电中性，随后允许载流子交换。</p>
+<p>P 区具有大量价带缺失、很少导带电子、固定负受主中心；N 区具有大量导带电子、很少价带缺失、固定正施主中心。两侧都不是宏观带电的硅块。</p>
+<h3>6.2 最初的扩散：两个方向都有运动</h3>
+<p>举个例子。取两侧相同体积的近界面区域，N 有 100 个导带电子、P 有 10 个，假设同一短时间内各有 50% 通过交界面。则 N→P 有 50 个、P→N 有 5 个，净传输 45 个电子。这个假设只用于说明初始统计效应，实际通量取决于浓度、速度、势垒等。</p>
+<p>对于价带，可以用局域状态的接力模型理解。假设 P 有 100 个电子缺失、N 有 10 个，且各有 50% 的缺失等效地跨界，则缺失的净传输为 P→N 45 个，对应价带电子系统的净负电荷传输为 N→P 45 个。这里的概率针对缺失（空穴），不是说两侧所有价带电子都有 50% 跃迁概率。</p>
+<div class="demo">
+<div class="demohead">
+<h4>双向扩散：净传输的统计含义</h4><span class="tag">交互 06 · 假设计数</span>
+</div>
+<div class="control"><label for="diffN">N 侧导带电子</label><input id="diffN" type="range" min="10" max="200" step="10" value="100"><output for="diffN" id="diffNout"></output>
+</div>
+<div class="control"><label for="diffP">P 侧导带电子</label><input id="diffP" type="range" min="10" max="200" step="10" value="10"><output for="diffP" id="diffPout"></output>
+</div>
+<div class="control"><label for="diffF">单侧跨界比例</label><input id="diffF" type="range" min="10" max="90" step="10" value="50"><output for="diffF" id="diffFout"></output>
+</div>
+<svg id="diffSvg" viewBox="0 0 650 180" role="img" aria-label="电子双向扩散统计"></svg>
+<p class="explain" id="diffText"></p>
+<p class="caption">未考虑电场、复合和浓度随时间变化；只演示从双向传输到净传输的统计关系。若把 N/P 的计数换成 P/N 的空穴数，则可解释空穴扩散的反向关系。</p>
+</div>
+<h3>6.3 净电荷出现，不是掺杂离子在移动</h3>
+<p>把交界面当成一道记账线，比较每次输运前后的净电荷。一个导带电子从 N 跨到 P，N 侧少一份负电荷（ΔQ<sub>N</sub> = +e），P 侧多一份（ΔQ<sub>P</sub> = −e）。一个空穴从 P 跨到 N，净电荷变化也是 P 侧 −e、N 侧 +e。这是另一种载流子的贡献。若改用“价带电子向左”来描述同一次空穴输运，只记一次。</p>
+<p>若刚进入 P 侧的导带电子就地与一个空穴复合，该处同时少一个导带电子和一个空穴。用体积内的粒子数来算，局部净电荷变化为 (−e)×(−1) + (+e)×(−1) = 0。复合能改变载流子数，但不会再给 P 侧增加一份负电荷。交界附近的净电荷来自跨边界输运造成的电荷分离，掺杂离子始终留在原处。</p>
+<div class="eq">ρ(x) = e[p(x) − n(x) + N<sub>D</sub><sup>+</sup>(x) − N<sub>A</sub><sup>−</sup>(x)]
+</div>
+<p>这个式子是统一的电荷计数：p 为相对满价带缺少的负电荷，n 为导带电子，后两项为电离施主及受主。远离结区的均匀材料中，这些贡献通常近似抵消；结区附近则不再抵消。</p>
+<div class="demo">
+<div class="demohead">
+<h4>PN 结是怎样自己建立电场的？</h4><span class="tag">交互 07 · 时间快照</span>
+</div>
+<div class="controls" id="formBtns"><button data-form="0" class="active">分别电中性</button><button data-form="1">初始净扩散</button><button data-form="2">形成净电荷</button><button data-form="3">达到热平衡</button>
+</div>
+<svg id="formSvg" viewBox="0 0 650 205" role="img" aria-label="PN结形成的四阶段"></svg>
+<p class="explain" id="formText"></p>
+<p class="caption">固定离子位置始终不变。圆点为空穴或导带电子示意；为突出电荷补偿，省略多数真实原子、少数载流子与复合。阶段之间并非真实时间比例。</p>
+</div>
+<h3>6.4 负反馈建立动态平衡</h3>
+<p>内建电场由 N 指向 P（向左），对电子的力向右。因此，它抵抗原来 N→P 的导带电子净扩散；对价带电子系统，电场对应的净负电荷漂移也向右（等效为正空穴向左）。浓度差倾向于扩散，电场倾向于恢复电荷补偿。</p>
+<p>随着电荷分离加剧，势垒升高，N→P 导带电子跨结的比例降低，P→N 的少数导带电子跨结得到电场帮助，空穴也有相应的平衡。最终在热平衡时，<strong>每类载流子在各位置的扩散电流和漂移电流分别抵消</strong>；不是只有总电流恰好为零。仍有双向运动、热产生和复合。<a class="ref" href="#r4">[4]</a></p>
+<div class="tablewrap">
+<table><thead>
+<tr><th>输运机制</th><th>扩散对应的方向</th><th>电场对应的漂移方向</th></tr></thead><tbody>
+<tr><td>导带电子的净负电荷运动</td><td>N → P</td><td>P → N</td></tr>
+<tr><td>价带电子系统的净负电荷运动</td><td>N → P</td><td>P → N</td></tr>
+<tr><td>等效的空穴运动</td><td>P → N</td><td>N → P</td></tr></tbody></table>
+</div>
+<p>表中是电子传输方向，不是约定正电流方向。两种电子输运对应相同方向的负电荷传输。</p>
+</section>
+
+<section id="depletion" data-title="耗尽区为什么有边界？">
+<h2><span class="num">07 / SPACE CHARGE & FIELD</span>耗尽区为什么有边界，而不是整个晶体耗尽？</h2>
+<h3>7.1 到底耗尽了什么？</h3>
+<p>耗尽区内，P 侧原先补偿受主的多数空穴减少，N 侧原先补偿施主的多数电子减少，于是固定掺杂电荷不再被充分补偿。“耗尽”主要指各侧的多数载流子。在热平衡下，从 P 侧体区向掺杂交界面走，空穴浓度下降，少数电子浓度反而可以上升。它仍有大量成键电子和原子内部电子，也有少量导带电子、空穴。绝非所有电子都消失。</p>
+<p>真实浓度和电场是连续变化的，耗尽区边界只是从明显空间电荷过渡到近似电中性的工程定义。整个 PN 结处于热平衡，不是只有耗尽区处于平衡。</p>
+<h3>7.2 为什么区外电场很小，区内电场在交界面最强？</h3>
+<p>不要只考虑距离电子最近的一块电荷。我们把固定净电荷划分为八个面积很大的均匀带电薄平面，四个负、四个正，每层的电荷绝对值相同。无限大均匀带电平面产生的电场大小与垂直距离无关（每侧 σ/2ε），因此可以直接叠加各层产生的力。</p>
+<div class="demo">
+<div class="demohead">
+<h4>把电子移到不同位置，逐层叠加受力</h4><span class="tag">交互 08 · 带电平面近似</span>
+</div>
+<div class="control"><label for="sheetPos">测试电子位置</label><input id="sheetPos" type="range" min="0" max="8" step="1" value="8"><output for="sheetPos" id="sheetPosOut"></output>
+</div>
+<svg id="sheetSvg" viewBox="0 0 650 205" role="img" aria-label="带电平面对电子的作用力"></svg>
+<div class="metrics">
+<div class="metric"><small>向左合计</small><b id="forceL"></b>
+</div>
+<div class="metric"><small>向右合计</small><b id="forceR"></b>
+</div>
+<div class="metric"><small>净电场力</small><b id="forceNet"></b>
+</div>
+</div>
+<p class="explain" id="sheetText"></p>
+<p class="caption">每个平面贡献力大小 F₀；测试电子位于层间，不改变电荷分布。实际 PN 结的空间电荷连续分布，离散层模型只用于理解电场叠加；有限面积和边缘效应可能改变远场。</p>
+</div>
+<p>位于 N 侧区外时，所有负层在左，排斥电子向右；所有正层也在左，吸引电子向左，大小相等。位于 N 侧耗尽区内部时，一部分正层现在位于电子的右边，它们的吸引力转为向右，因此向右合力增大。到达交界面时，所有负层在左、正层在右，合力全部向右。继续进入 P 侧后，一部分负层位于电子右边，合力减弱。八个平面产生阶梯状的场强。用越来越密的薄层逼近两段均匀空间电荷，场强幅值的轮廓就趋向三角形。</p>
+<h3>7.3 N 侧正常电子为什么不能把耗尽区填满？</h3>
+<p><strong>它们确实不断进入耗尽区。</strong>在 N 侧准中性区，电子浓度很高；向左深入耗尽区，电子浓度逐渐降低，有向左的净扩散。但电子同时受到向右的电场力。从 N 侧耗尽边缘走向掺杂交界面，这个局部力逐渐变大。越过交界面后，向右的力逐渐变小，但方向未变；继续向 P 侧走，电子的势能仍会上升。</p>
+<p>边缘的电子浓度不是突然从 100 跳到 0，而是逐渐变化。越靠近准中性区，浓度梯度也越小，所需的反向漂移越弱。平衡时两者在各位置抵消。外侧的移动电荷还会重新分布，对局部电场起屏蔽作用。</p>
+<p>如果要更定量地看，采用一维非简并热平衡近似：J<sub>n</sub> = eμ<sub>n</sub>nE + eD<sub>n</sub>dn/dx = 0，且 D<sub>n</sub>/μ<sub>n</sub> = kT/e。所以 E = −(kT/e)·d(ln n)/dx。即导带电子浓度的空间变化和电场不是两条独立假设，而是同一个平衡解的组成部分。<a class="ref" href="#r4">[4]</a></p>
+<h3>7.4 内建电压、势垒和宽度</h3>
+<p>从 A 走到 B，电势的变化是电场沿路径积分的负值：φ(B) − φ(A) = −∫ₐᵇ E·dℓ。电子从 N→P 逆着电场力运动，电势能升高，所需克服的能量差称为势垒。内建电势差 V<sub>bi</sub> = φ<sub>N</sub> − φ<sub>P</sub>，电子势垒为 eV<sub>bi</sub>。场强给出势能曲线在当前位置的斜率；跨越一段空间要付出多少势能，须把这一路上的电场积分。</p>
+<p>以 300 K、两侧各掺 10¹⁶ cm⁻³ 的对称突变结为例。从 N 侧耗尽边缘走到掺杂交界面时，局部场强达到峰值，电子势能只升了约 0.357 eV。继续走到 P 侧耗尽边缘，场强逐渐降为零，两半的积分相加，势能共升约 0.714 eV。图中的三角形尖端对应最大场强；最左侧的势能平台对应完整势垒。</p>
+<p>在室温、非简并、完全电离的突变结近似下，热平衡载流子浓度比决定所需的内建电势：<a class="ref" href="#r5">[5]</a></p>
+<div class="eq">V<sub>bi</sub> = (kT/e) ln(N<sub>A</sub>N<sub>D</sub>/n<sub>i</sub>²)
+</div>
+<p>空间电荷密度决定电场变化率：dE/dx = ρ/ε。在耗尽近似中忽略移动载流子，P 侧 ρ ≈ −eN<sub>A</sub>，N 侧 ρ ≈ +eN<sub>D</sub>。两侧耗尽净电荷绝对值相等，得到 N<sub>A</sub>W<sub>P</sub> = N<sub>D</sub>W<sub>N</sub>。宽度由掺杂、内建电压和介电常数共同决定。</p>
+<div class="eq">W = √[(2ε<sub>Si</sub>/e)·(1/N<sub>A</sub> + 1/N<sub>D</sub>)·V<sub>bi</sub>]
+</div>
+<p>在同一个给定突变结中，为使两侧的耗尽电荷量大小相等，轻掺杂一侧要延伸得更远，即 W<sub>P</sub>/W<sub>N</sub> = N<sub>D</sub>/N<sub>A</sub>。若改变某一侧的掺杂，已变成另一个结；总宽度 W 同时取决于两侧掺杂和新的内建电势，应代入上式重算。</p>
+<div class="demo">
+<div class="demohead">
+<h4>耗尽区、电场与内建电势</h4><span class="tag">交互 09 · 突变结计算</span>
+</div>
+<div class="control"><label for="na">P 侧 log₁₀(N_A)</label><input id="na" type="range" min="14" max="17" step="0.25" value="16"><output for="na" id="naOut"></output>
+</div>
+<div class="control"><label for="nd">N 侧 log₁₀(N_D)</label><input id="nd" type="range" min="14" max="17" step="0.25" value="16"><output for="nd" id="ndOut"></output>
+</div>
+<div class="metrics">
+<div class="metric"><small>内建电势</small><b id="biVal"></b><small>V</small>
+</div>
+<div class="metric"><small>总耗尽宽度</small><b id="wVal"></b><small>μm</small>
+</div>
+<div class="metric"><small>最大场强</small><b id="emVal"></b><small>kV/cm</small>
+</div>
+</div>
+<svg id="pnSvg" viewBox="0 0 650 372" role="img" aria-label="PN结耗尽宽度和场分布"></svg>
+<p class="explain" id="pnText"></p>
+<p class="caption">300 K，nᵢ=10¹⁰ cm⁻³，εSi=11.7ε₀。横轴按当前耗尽宽度自动缩放。上图显示耗尽近似下的空间电荷区，中图绘制电场幅值；在耗尽区内部，电场向左，电子受力向右。中、下图的纵轴也按当前峰值缩放，比较不同掺杂时请读数值。下图显示电子势能相对于 N 侧的变化。耗尽近似把边缘理想化为突变，不能据此认为真实浓度在边缘跳变。</p>
+</div>
+<h3>7.5 为什么不会整个 PN 结被耗尽？</h3>
+<p>因为电荷分离产生负反馈：耗尽范围扩大 → 未补偿净电荷增加 → 电势垒上升 → 进一步净扩散受抑制。达到热平衡后，不再有使空间电荷无限扩大的净输运。若耗尽范围超过平衡值，电场会促使载流子重新补偿固定电荷。</p>
+<p>在通常较大的器件里，仅需很薄的区域就够了，例如两侧各掺 10¹⁶ cm⁻³、300 K 时 V<sub>bi</sub>≈0.714 V，W≈0.43 μm。如果半导体极薄、轻掺杂，或施加足够的反向偏压，整个薄层则可能完全耗尽。</p>
+<details class="q"><summary>内建电势与硅棒大小、0.7 V 的关系</summary>
+<p>在足够大的理想平面结中，同样的掺杂和温度决定相同的 V<sub>bi</sub> 和 W。增大结面积会按比例增大两侧各自的耗尽电荷量绝对值；两侧的符号相反，它们的代数和仍约为零。结电容和同偏压下的总电流也随面积增大。有限厚度、边缘电场或不均匀掺杂会改变这一近似。</p>
+<p>恒温、无光照、无外加激励时，将高内阻电压表的同材质金属表笔分别接到二极管两端，读数为 0 V。表笔之间比较的是两端电子电化学势之差；热平衡时，器件、欧姆接触和表笔的电子电化学势处处相同。沿闭合测量路径，还要计入金属与半导体等界面的接触电势变化，它们补偿结内的内建电势。直接把内部的 0.714 V 当成可用的端电压，会漏掉这些接触。</p>
+</details>
+</section>
+
+<section id="align" data-title="能带弯曲与费米能级对齐">
+<h2><span class="num">08 / BAND BENDING</span>把耗尽区与能量模型统一起来</h2>
+<p>接触前，两侧在同一能量参考下 N 型的费米能级较高、P 型较低。接触后电子从 N 向 P 净传输，形成空间电荷和电势差。N 侧电势变高，电子电势能相对降低；P 侧电子电势能相对升高。</p>
+<p>对于同一种硅，局部电势 φ 改变使导带底和价带顶共同移动约 −eφ，禁带宽度在普通偏置下基本不变。热平衡时 E<sub>F</sub> 成为水平线，导带、价带在结区弯曲。远离结区，P 侧的 E<sub>F</sub> 仍靠近价带，N 侧仍靠近导带。</p>
+<div class="demo">
+<div class="demohead">
+<h4>接触前后：能带弯曲与费米能级对齐</h4><span class="tag">交互 10 · 能量示意</span>
+</div>
+<div class="controls" id="alignBtns"><button data-align="0">接触前</button><button data-align="1" class="active">热平衡后</button>
+</div>
+<svg id="alignSvg" viewBox="0 0 650 260" role="img" aria-label="费米能级对齐与能带弯曲"></svg>
+<p class="explain" id="alignText"></p>
+<p class="caption">同一能量参考下的示意。上下两条蓝线分别为导带底与价带顶，不表示真实空间中两条物理通道。</p>
+</div>
+<p><strong>费米能级对齐不等于浓度相同。</strong>浓度取决于费米能级到局部带边的距离。电势变化使带边发生位移，使两边即使具有相同 E<sub>F</sub> 也仍保持不同的多数载流子浓度。这和空间电荷模型是同一个平衡过程的不同描述。</p>
+</section>
+
+<section id="forward" data-title="正向偏置：为什么导通？">
+<h2><span class="num">09 / FORWARD BIAS</span>正接电源后，为什么能够持续导电？</h2>
+<h3>9.1 先明确端子和电子状态</h3>
+<p>P 侧接电源正极，N 侧接电源负极。对于普通欧姆接触，负极主要补充 N 区导带电子；正极主要接收 P 区价带电子，在 P 区价带产生新的缺失。二极管内的净负电荷传输由 N 向 P（向左），约定正电流由 P 向 N。</p>
+<h3>9.2 外部电压改变的是势垒</h3>
+<p>正向电压使结区原本的内建电势差降低，移动载流子重新补偿部分固定电荷，耗尽区变窄，净结区电场减弱。不是电源给每个电子加上固定动能，也不是两个固定不变的电场简单相减；电势、载流子分布和空间净电荷一起调整。</p>
+<p>在理想低注入、忽略中性区和接触压降的近似下，外加正向结电压 V 使多数电子跨结的势垒从 eV<sub>bi</sub> 降为 e(V<sub>bi</sub>−V)。零偏压时就有电子跨结，只是双向通量抵消。因此<strong>二极管无需等耗尽区完全消失，就能产生持续而显著的正向电流。</strong></p>
+<h3>9.3 为什么降低一点势垒，电流就增加很多？</h3>
+<p>先看 P 侧耗尽区边缘的导带电子。热平衡时，这里的少数电子浓度为 n<sub>p0</sub>。施加正向结电压 V<sub>j</sub>，电子从 N 进入 P 要克服的势垒降低 eV<sub>j</sub>。在非简并、低注入且耗尽区内复合可忽略的理想模型中，玻尔兹曼统计给出新的边界浓度。令 V<sub>T</sub> = kT/e：</p>
+<div class="eq">n<sub>p</sub>(P 侧耗尽边缘) = n<sub>p0</sub> exp(V<sub>j</sub>/V<sub>T</sub>)</div>
+<p>300 K 时 V<sub>T</sub> ≈ 25.85 mV。加上约 60 mV 正向结电压，P 侧边缘的少数电子浓度变成原来的约十倍。离结较远处仍接近平衡浓度，于是有浓度梯度，过剩电子从结边向 P 侧准中性区扩散。它们沿途与空穴复合，或到达接触端被收集。N 侧也有相应的少数空穴扩散。电源从两端补充或取走电荷，维持这个稳态分布，外电路便有持续电流。<a class="ref" href="#r8">[8]</a></p>
+<div class="eq">I = I<sub>S</sub>[exp(V<sub>j</sub>/V<sub>T</sub>) − 1]</div>
+<p>减去的 1 对应零偏时的平衡基线。正反两向的通量之差决定净电流，扩散电流的大小取决于结边过剩少数载流子的浓度梯度。I<sub>S</sub> 也取决于器件面积、掺杂、扩散系数、复合寿命和边界条件。耗尽区复合、串联电阻或高注入都会改变真实器件的特性。<a class="ref" href="#r5">[5]</a></p>
+<details class="q"><summary>怎样使用“两个方向各 100 个”的计数图？</summary>
+<p>在相同时间内，若双向各通过 100 个电子，净传输为零；若分别为 1000 和 100 个，净传输为 900 个。这是通量相减的示意。实际偏压下的载流子分布与外电流要由结边浓度、扩散和接触条件求出；不能预设真实反向跨界事件始终为 100 次。</p></details>
+<div class="demo">
+<div class="demohead">
+<h4>正反偏置：势垒、宽度与理想电流</h4><span class="tag">交互 11 · 低注入模型</span>
+</div>
+<div class="controls"><button id="setRev">−300 mV</button><button id="setRev100">−100 mV</button><button id="setRev10">−10 mV</button><button id="setZero">零偏置</button><button id="setFwd">正接 +0.30 V</button>
+</div>
+<div class="control"><label for="bias">结电压 Vⱼ（P 相对 N）</label><input id="bias" type="range" min="-1" max="0.5" step="0.01" value="0.2"><output for="bias" id="biasOut"></output>
+</div>
+<div class="metrics">
+<div class="metric"><small>N → P 电子势垒</small><b id="barrierVal"></b><small>eV</small>
+</div>
+<div class="metric"><small>相对耗尽宽度 W/W₀</small><b id="bwVal"></b>
+</div>
+<div class="metric"><small>理想净电流 I/I_S</small><b id="currentVal"></b>
+</div>
+</div>
+<svg id="biasSvg" viewBox="0 0 650 286" role="img" aria-label="偏置对耗尽区和势垒的影响"></svg>
+<p class="explain" id="biasText" aria-live="polite"></p>
+<p class="caption">固定 Vbi=0.70 V，300 K，对称突变结；W/W₀ = √[(Vbi−V)/Vbi]。下图给出带边形状示意，虚线为零偏置；蓝色箭头表示净电子传输，方向与约定电流相反。这里仅计算暗态下的理想扩散电流。300 K 时，可依次选 −10 mV、−100 mV 和 0 V，比较弱反偏、接近反向饱和与零偏置。</p>
+</div>
+<h3>9.4 N 区导带电子进入 P 区后，是否立即变成价带电子？</h3>
+<p>不会。跨结可以保持在导带中。电子进入 P 区后，从多数载流子变为少数载流子，通常继续传播和扩散，随后可能复合或被接触收集。如果 P 区长度小于电子扩散长度，部分电子可在复合前到达金属接触。硅的导带底和价带顶位于不同波矢；近带边的带间光学跃迁通常要声子参与动量交换。实际器件的复合也常由缺陷态辅助。</p>
+<p>费米能级不是强迫每个电子回到较低能带的作用力；它描述占据统计。偏置下的 P 区本来就是非平衡的，过剩导带电子浓度可以比原平衡浓度大很多。不能继续使用平衡关系 np=nᵢ² 去约束所有位置。</p>
+<div class="flow"><span>负极提供电子</span><b>→</b><span>N 区导带</span><b>→</b><span>P 区导带</span><b>→</b><span>复合进入价带</span><b>→</b><span>P 区价带输运 / 正极</span>
+</div>
+<p>这是一条典型的<strong>电荷传输链</strong>，不是某一个电子必须从头到尾依次走过每一站。还存在另一条价带电子系统的跨结传输路径（等效为空穴从 P 注入 N），在 N 区可能通过复合与导带电子电流衔接。两种机制共同维持总电流，靠近结区时两者都可能重要。</p>
+<h3>9.5 导通电压是工程约定，不是物理开关</h3>
+<p>只要施加正向结电压，理想方程就预测非零正向净电流。在低电压时它可能很小，随电压增加而呈指数增长。我们常把某个指定电流下的正向压降称为导通电压；硅二极管常见约 0.6–0.8 V，但随器件、电流及温度而变。它与内建电势不是同一个量。</p>
+</section>
+
+<section id="reverse" data-title="反向偏置：为什么不导通？">
+<h2><span class="num">10 / REVERSE BIAS</span>反接电源后，为什么电子不能持续大量通过？</h2>
+<h3>10.1 先分析接通瞬间的动态行为</h3>
+<p>假设二极管初始处于零偏置热平衡。反接：P 区接负极，N 区接正极。负极主要向 P 区价带缺失提供电子，正极主要从 N 区导带抽取电子。P 侧价带占据重新分布，使原来耗尽边缘的电子缺失减少；N 侧导带电子重新分布，使原来边缘的导带电子减少。固定电荷失去更多补偿，耗尽区向两边扩展，内建方向的电场增强。</p>
+<p>切换电压时，端子向结电容充电。局部总电流密度包含载流子的传导电流和随电场变化产生的位移电流 ∂D/∂t；端子上看到的充电电流并不要求同样多的电子穿过耗尽区全程。随后在固定反向电压下建立新的稳态，不会无限向整个 P 区堆积自由电子，也不会一直抽干整个 N 区。准中性区保持近似电中性。</p>
+<h3>10.2 为什么 P 区的价带电子不会大量进入 N 区？</h3>
+<p>电子受力方向确实向右。P 侧耗尽区的可移动空穴很少。N 区价带也接近满带，尤其反偏时结边缘的少数空穴浓度会低于平衡值。电场能改变状态和运动分布，不能让已占据的状态无限重复占据。</p>
+<p>在我们采用的局域占据视角中，P 侧价带要持续向 N 侧传输负电荷，需要 N 侧不断供应少数空穴。它们通常先从准中性区扩散到耗尽边缘，再被结区电场扫向 P 侧。因此这种价带净传输受少数空穴供应限制，而不是因为价带电子全都不能运动。</p>
+<h3>10.3 为什么 P 区的导带电子也不能形成大电流？</h3>
+<p>正常反偏下，P 区的导带电子一旦到达耗尽区，电场会帮助它进入 N 区。问题不是电场太弱，而是 P 区导带电子本来就少，普通 P 型欧姆接触并不会持续高效地向 P 区导带注入大量电子。</p>
+<p>此外，反向势垒抑制了数量众多的 N 区多数导带电子向 P 区注入；对 P 区多数空穴也有相应抑制。所以可以顺着结区电场力跨结的电子输运，主要来自两侧少数载流子和结区的载流子产生。</p>
+<h3>10.4 为什么反向时不能大量将 P 区价带电子激发到导带？</h3>
+<p>正接时，注入 P 区的导带电子复合到价带是释放能量的过程。反接时，要在 P 区就地把价带电子变成导带电子，则要获得跨越局部禁带的能量（硅约 1.12 eV）并满足跃迁条件。</p>
+<p>反向电压使能带随空间弯曲，并不意味着局部禁带消失，也不意味着每个价带电子自动得到等于外加电压的激发能量。常温热产生有限，普通电场无法大量引起带间跃迁。只要有热产生或缺陷辅助产生，便会有小电流。</p>
+<div class="demo">
+<div class="demohead">
+<h4>只追踪电子：比较正向链路和反向链路</h4><span class="tag">交互 12 · 电荷连续性</span>
+</div>
+<div class="controls" id="pathBtns"><button data-path="fwd" class="active">正接</button><button data-path="rev">反接 · 准中性区产生</button><button data-path="junction">反接 · 耗尽区内产生</button>
+</div>
+<svg id="pathSvg" viewBox="0 0 650 235" role="img" aria-label="正反向电子传输路径，箭头表示电子传输方向"></svg>
+<p class="explain" id="pathText"></p>
+<p class="caption">以一条导带—价带传输衔接路径解释电荷守恒；蓝色水平箭头表示电子输运，方向与其贡献的约定电流相反；橙色水平箭头表示空穴输运，方向与它贡献的约定电流相同。竖直箭头表示带间过程。正向还存在价带跨结传输，反向还存在 N 侧少数空穴供给。两行分别标记导带和价带，未画能带弯曲。</p>
+</div>
+<p>按载流子从哪里供应来分类，可以避免把同一个电子算两遍。例如，P 侧热产生的电子先从价带进入导带，再由 P 跨到 N：前一段是产生，后一段是收集，这整条路径贡献一次电子收集。</p>
+<div class="tablewrap">
+<table><thead>
+<tr><th>产生或供应位置</th><th>到达端子的过程</th></tr></thead><tbody>
+<tr><td>P 侧准中性区的少数电子</td><td>扩散到结边的电子被结区电场扫向 N 侧。没到结边就复合的电子不计入收集量。</td></tr>
+<tr><td>N 侧准中性区的少数空穴</td><td>扩散到结边的空穴被扫向 P 侧；也可描述为价带电子系统反向传输负电荷。</td></tr>
+<tr><td>耗尽区内产生的电子—空穴对</td><td>在结区直接分离，电子去 N，空穴去 P。完整收集一对给外电路的净转移量为一个元电荷。</td></tr></tbody></table>
+</div>
+<p>无光照、低注入且忽略额外漏电时，用理想方程可算出 300 K 下 −10 mV 对应约 −0.321 I<sub>S</sub>，−100 mV 对应约 −0.979 I<sub>S</sub>，0 V 对应 0。只有当反偏幅度 |V<sub>j</sub>| 远大于 V<sub>T</sub> 且尚未击穿时，exp(V<sub>j</sub>/V<sub>T</sub>) 才很小，理想反向电流才接近 −I<sub>S</sub>。实际漏电还受耗尽区热产生、表面漏电和温度影响。</p>
+<p>把反偏保持不变，改用能被硅吸收的光照射结区或靠近结边的准中性区。吸收光子后产生的电子—空穴对可被收集，反向电流随光生载流子的供应增加，甚至远大于暗态 I<sub>S</sub>。这正是光电二极管能够测光的原因，无需击穿。<a class="ref" href="#r9">[9]</a></p>
+<div class="take">
+<p><strong>反接的核心：</strong>多数载流子跨结受抑制；电场可以高效输送少数载流子，但其供应有限。不能把阻断简单解释为大量电子堆积并产生向左排斥力。</p>
+</div>
+</section>
+
+<section id="breakdown" data-title="隧穿与反向击穿">
+<h2><span class="num">11 / BREAKDOWN</span>隧穿与反向击穿</h2>
+<h3>11.1 隧穿不是电子凭空获得能量</h3>
+<p>经典粒子能量不足时不能越过势垒。量子电子的波函数却可以在经典禁阻区域内衰减，并延伸到另一侧。有限势垒的另一侧若存在合适的可用状态，电子有非零透射概率。弹性隧穿不要求电子借来能量，不违反能量守恒。</p>
+<div class="demo">
+<div class="demohead">
+<h4>势垒宽度与高度对隧穿的影响</h4><span class="tag">交互 13 · WKB 指数近似</span>
+</div>
+<div class="control"><label for="tunnelH">势垒高度 − 电子能量 (eV)</label><input id="tunnelH" type="range" min="0.1" max="2" step="0.1" value="0.5"><output for="tunnelH" id="tunnelHout"></output>
+</div>
+<div class="control"><label for="tunnelW">矩形势垒宽度 (nm)</label><input id="tunnelW" type="range" min="0.5" max="5" step="0.1" value="1.5"><output for="tunnelW" id="tunnelWout"></output>
+</div>
+<svg id="tunnelSvg" viewBox="0 0 650 185" role="img" aria-label="电子穿越势垒时波函数衰减"></svg>
+<div class="metrics">
+<div class="metric"><small>指数透射因子 exp(−2κL)</small><b id="tunnelVal"></b>
+</div>
+</div>
+<p class="caption">在相同的入射条件下比较衰减趋势；波形未求解反射和界面匹配。采用矩形势垒、自由电子质量 mₑ 的指数近似 κ=√[2mₑ(U−E)]/ℏ。不是完整透射系数（省略界面匹配前因子），也不是硅 PN 结隧穿电流计算。蓝线表示波函数示意而非概率轨迹。</p>
+</div>
+<h3>11.2 两类反向击穿</h3>
+<p><strong>雪崩击穿：</strong>已经存在的导带电子或空穴在强电场中获得能量，通过碰撞电离产生更多电子—空穴对，新的载流子又可能继续倍增。这里电场能够经已有载流子把能量传给原本处于价带的电子。</p>
+<p><strong>齐纳击穿：</strong>通常在重掺杂、窄耗尽区、强电场条件下，能带剧烈弯曲，P 侧已占据价带状态与 N 侧空导带状态之间出现足够短的隧穿距离，电子可直接或经声子辅助发生带间隧穿，形成反向电流。硅是间接带隙材料，动量匹配也重要。<a class="ref" href="#r6">[6]</a></p>
+<p>反向电压升高通常使整个耗尽区变宽，却可能使<strong>局部带间隧穿距离</strong>缩短，因为能带倾斜更陡。这两个“宽度”并非同一物理量。实际两种击穿机制可能共存。击穿电压不是简单地让电源驱动力超过一个最大的电子排斥力；它依赖掺杂、结构、材料和温度。</p>
+<p>击穿并不必然损坏器件（稳压二极管可以设计为在受限电流下工作），但如果不限流，过大电流和热量可能损坏器件。</p>
+</section>
+
+<section id="transient" data-title="断电、结电容与反向恢复">
+<h2><span class="num">12 / TRANSIENT RESPONSE</span>从静态导电进入动态电路</h2>
+<h3>12.1 为什么 PN 结具有结电容？</h3>
+<p>外加电压变化会引起耗尽区宽度和净空间电荷变化，必须通过瞬态电荷传输调整这些电荷。结电容描述电荷变化对电压变化的响应，而不是静态总电荷量本身。理想突变结的结电容 C<sub>j</sub> = ε<sub>Si</sub>A/W。反偏越大，耗尽区越宽，储存的分离电荷量增大，但增量电容反而减小。</p>
+<h3>12.2 扩散电容与结电容不同</h3>
+<p>正向导电时，部分导带电子已注入 P 区但未复合，部分空穴已注入 N 区但未复合。这些过剩载流子主要存在于准中性区域，其数量会随正向电压改变。它们通常受到当地多数载流子的补偿，区域仍近似电中性。这种存储对电压的响应表现为扩散电容，而不是两块极板上的净电荷堆积。</p>
+<h3>12.3 开路、短路和反向驱动并不相同</h3>
+<div class="tablewrap">
+<table><thead>
+<tr><th>从正向稳态切换</th><th>电荷和电压的变化</th></tr></thead><tbody>
+<tr><td>开路断电</td><td>外部电流被切断，但过剩载流子和电压不会瞬间消失；内部复合和电荷重新分布逐渐恢复热平衡</td></tr>
+<tr><td>外部短路</td><td>短路通道可允许瞬态电流，帮助调整内部电荷分布；端子电压受外电路约束</td></tr>
+<tr><td>施加反向驱动</td><td>过剩载流子可通过结区被抽取，出现暂时较大的反向电流；随后结区恢复反向阻断能力</td></tr></tbody></table>
+</div>
+<p>开路时外部端电压不必立刻等于零，最终在没有外部激励、普通接触和充分弛豫的条件下恢复零端电压，结区仍有内建电势。恢复时间与载流子寿命、结构、电容及外部电路有关。</p>
+<div class="demo">
+<div class="demohead">
+<h4>正向导电突然切换为反向驱动</h4><span class="tag">交互 14 · 定性过程</span>
+</div>
+<div class="controls" id="rrBtns"><button data-rr="0" class="active">正向稳态</button><button data-rr="1">刚切换</button><button data-rr="2">抽取存储电荷</button><button data-rr="3">反向阻断</button>
+</div>
+<svg id="rrSvg" viewBox="0 0 650 290" role="img" aria-label="反向恢复过程和电流波形"></svg>
+<p class="explain" id="rrText"></p>
+<p class="caption">上图蓝色箭头表示电子净传输。下图纵轴是约定电流 I，以 P → N 为正，橙点标记所选阶段。波形仅示意受限反向驱动，实际电流、结电压及耗尽宽度由器件与电路共同决定。</p>
+</div>
+<p>反向恢复时间 t<sub>rr</sub> 通常从电流过零计到规定的反向电流衰减阈值；反向恢复电荷 Q<sub>rr</sub> 是规定区间内反向电流的积分。两者并不等价。已有过剩载流子从远处扩散到结区需要时间，部分会复合，因此不能只靠强场瞬间完成恢复。</p>
+<p>普通 PN 二极管储存少数载流子；快恢复 PN 二极管可通过寿命控制和结构设计降低存储及恢复时间；典型肖特基二极管主要是多数载流子器件，少数载流子存储小，但依然存在结电容充放电等瞬态电流。<a class="ref" href="#r7">[7]</a></p>
+</section>
+
+<section id="summary" data-title="统一心智模型与自检">
+<h2><span class="num">13 / MENTAL MODEL</span>以后遇到一个器件，应该从哪里开始分析？</h2>
+<div class="cards">
+<div>
+<h4>01 · 状态</h4>
+<p>材料允许哪些状态？价带和导带的相对能量如何？是否有杂质能级？</p>
+</div>
+<div>
+<h4>02 · 占据</h4>
+<p>哪些状态被占据？局部电子、空穴浓度如何？是热平衡还是非平衡？</p>
+</div>
+<div>
+<h4>03 · 空间电荷</h4>
+<p>固定掺杂电荷与移动载流子如何补偿？净电荷分布在哪里？</p>
+</div>
+<div>
+<h4>04 · 电场与势垒</h4>
+<p>全部电荷及端子条件建立什么电场？电子受力方向是什么？能带如何弯曲？</p>
+</div>
+<div>
+<h4>05 · 输运</h4>
+<p>电子如何在带内传播、扩散和漂移？跨带跃迁是否可行？散射、复合速率如何限制它？</p>
+</div>
+<div>
+<h4>06 · 边界与时间</h4>
+<p>接触端注入或抽取什么载流子？电荷会积累吗？稳态与瞬态分别怎样？</p>
+</div>
+</div>
+<p>这套分析顺序能覆盖 PN 结和二极管。接下来研究 MOSFET 时，我们要把重点从跨结注入转向栅极电场如何改变半导体表面的电子占据、耗尽、反型与沟道电导；再研究门电路时，进一步考虑电容充放电、瞬态电流和延迟。本文不预先引入 MOSFET 或逻辑门的具体工作结论。</p>
+<h3>检查容易混淆的判断</h3>
+<details class="q"><summary>1. 电子状态变化就是电子的位置变化吗？</summary>
+<p>不是。状态包含空间概率分布和相位等信息；分布改变必然对应完整状态改变，但状态改变不一定改变分布，也不需要离散跃迁才可以空间传播。</p>
+</details>
+<details class="q"><summary>2. 导带电子不需要空状态就可以移动吗？</summary>
+<p>导带电子不需要相邻共价键缺位才可以传播，但同样受泡利不相容原理约束。允许的空状态为重新分布提供条件；空状态与物理位置不同。</p>
+</details>
+<details class="q"><summary>3. 为什么纯硅常温有电子和空穴，仍然整体电中性？</summary>
+<p>热产生和复合一对一改变两类载流子的数量；电子由价带变为导带没有创造电荷。掺杂电荷也必须计入净电荷。</p>
+</details>
+<details class="q"><summary>4. 耗尽区边界为什么能维持？</summary>
+<p>边界不是墙，电子确实扩散进入，但进入后受到电场驱动的反向漂移。在真实过渡区，浓度梯度与电场逐渐变化。平衡时各位置净电流为零。</p>
+</details>
+<details class="q"><summary>5. 费米能级对齐是否意味着 P、N 两侧电子浓度相同？</summary>
+<p>不是。带边随位置发生弯曲，浓度取决于费米能级相对局部带边的距离。</p>
+</details>
+<details class="q"><summary>6. 正向导通是否需要消除耗尽区？</summary>
+<p>不需要。正向偏置降低势垒，使多数载流子注入呈强烈非线性增长。普通正向导电时耗尽区仍可存在。</p>
+</details>
+<details class="q"><summary>7. 反向电场已经推动电子向右，为什么电流仍然小？</summary>
+<p>在暗态、击穿前，多数载流子跨结受抑制，能到达耗尽区的少数载流子及结内热产生通常有限。增加光生电子—空穴对后，同样的反偏可以收集更大的电流。</p>
+</details>
+<details class="q"><summary>8. 反向击穿与反向恢复是同一回事吗？</summary>
+<p>不是。击穿是强场产生或倍增载流子的机制；反向恢复是先前正向注入的过剩载流子尚未清除造成的瞬态。</p>
+</details>
+</section>
+
+<section id="refs" class="refs" data-title="参考与适用条件">
+<h2><span class="num">14 / REFERENCES</span>参考资料与模型边界</h2>
+<p>以下资料可用于查阅能带、掺杂、接触、PN 结定量关系、隧穿和开关现象。</p>
+<ol>
+<li id="r1"><a href="https://ssp.utasphys.cloud.edu.au/6-semiconductors/6-1-semiconductors/">University of Tasmania · Solid-state physics: Semiconductors 101</a> — 能带、群速度、满带零净电流。</li>
+<li id="r2"><a href="https://www.semiconductors.co.uk/properties-of-silicon.html">Physical and Electronic Properties of Silicon</a> — 硅、硼与磷的材料参数和电离能量级。</li>
+<li id="r3"><a href="https://homepages.iitb.ac.in/~alsangle/MM765_Lecture_10.html">IIT Bombay · Semiconductor Devices, Lecture 10</a>；<a href="https://web.stanford.edu/class/ee311/NOTES/Contacts.pdf">Stanford EE311 · Ohmic Contacts</a> — 欧姆接触与多数载流子交换近似。</li>
+<li id="r4"><a href="https://web.mit.edu/course/6/6.012/SPR98/www/lectures/S98_Lecture14.pdf">MIT 6.012 · Lecture 14</a>；<a href="https://www.colorado.edu/ecee/media/2239">University of Colorado Boulder · Semiconductor physics formula sheet</a> — 漂移、扩散、浓度及电场关系。</li>
+<li id="r5"><a href="https://ocw.mit.edu/courses/6-012-microelectronic-devices-and-circuits-fall-2009/d4188477c2031371931b0ac68b034217_MIT6_012F09_exam1_formula.pdf">MIT OpenCourseWare 6.012 · Exam 1 formula sheet</a>；<a href="https://ocw.mit.edu/courses/3-15-electrical-optical-magnetic-materials-and-devices-fall-2006/7cc1e94191cd88d82d1385eeac20bb98_lecture4_5_6.pdf">MIT 3.15 · PN junction notes</a> — 内建电压、耗尽宽度、理想二极管电流及过剩载流子。</li>
+<li id="r6"><a href="https://openstax.org/books/university-physics-volume-3/pages/7-6-the-quantum-tunneling-of-particles-through-potential-barriers">OpenStax · University Physics Vol. 3, Quantum Tunneling</a> — 势垒与隧穿的基本物理。</li>
+<li id="r7"><a href="https://toshiba.semicon-storage.com/ap-en/semiconductor/knowledge/faq/diode/what-is-trr.html">Toshiba · What is diode reverse recovery time?</a>；<a href="https://toshiba.semicon-storage.com/eu/semiconductor/knowledge/faq/diode/do-sbds-have-reverse-recovery-characteristictrr.html">Do SBDs have reverse recovery characteristic?</a> — 反向恢复与肖特基二极管的区别。</li>
+<li id="r8"><a href="https://ocw.mit.edu/courses/6-012-microelectronic-devices-and-circuits-fall-2005/4b2ed0f760def0cae0d70cc9fbf934df_lec16.pdf">MIT 6.012 · Lecture 16, PN Junction Diode I–V Characteristics</a> — 结边少数载流子浓度、扩散电流与外加偏压。</li>
+<li id="r9"><a href="https://www.hamamatsu.com/content/dam/hamamatsu-photonics/sites/documents/99_SALES_LIBRARY/ssd/si_pd_kspd9001e.pdf">Hamamatsu · Si photodiodes</a> — 不同区域的光生电子—空穴对及收集条件。</li></ol>
+<p class="note">局限：本版不是 TCAD 或量子输运模拟器。交互演示中的波包、粒子计数、接触示意与恢复波形主要用于解释逻辑；定量耗尽区和二极管曲线采用标明假设的解析近似，不能代替真实工艺或器件参数。全文采用电子优先视角，但保留空穴、准费米能级等标准术语以便与专业资料互通。</p>
+</section>
+
+<footer><a class="back-link" href="./">← 返回正文</a>
+</footer>
+</main>
+</div>
+<script>
+"use strict";
+const $ = (id) => document.getElementById(id),
+  val = (id) => Number($(id).value),
+  set = (id, s) => ($(id).textContent = s);
+const C = {
+  blue: "var(--blue)",
+  orange: "var(--orange)",
+  purple: "var(--purple)",
+  muted: "var(--muted)",
+  line: "var(--line)",
+  p: "var(--p)",
+  n: "var(--n)",
+  pd: "var(--pd)",
+  nd: "var(--nd)",
+  red: "var(--red)",
+  ink: "var(--ink)",
+  paper: "var(--paper)",
+};
+const svg = (id, s) => ($(id).innerHTML = s);
+const tx = (x, y, s, anchor = "start", color = C.ink, size = 13) =>
+  `<text x="${x}" y="${y}" text-anchor="${anchor}" font-size="${size}" style="fill:${color}">${s}</text>`;
+const rect = (x, y, w, h, c, rx = 0, op = 1) =>
+  `<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="${rx}" fill="${c}" opacity="${op}"/>`;
+const ln = (x, y, x2, y2, c = C.muted, w = 1.5, dash = "") =>
+  `<line x1="${x}" y1="${y}" x2="${x2}" y2="${y2}" stroke="${c}" stroke-width="${w}" ${dash ? 'stroke-dasharray="' + dash + '"' : ""}/>`;
+const path = (d, c = C.blue, w = 2.8, fill = "none", dash = "") =>
+  `<path d="${d}" fill="${fill}" stroke="${c}" stroke-width="${w}" stroke-linecap="round" stroke-linejoin="round" ${dash ? 'stroke-dasharray="' + dash + '"' : ""}/>`;
+function arr(x, y, X, Y, c = C.blue, w = 2.5) {
+  const a = Math.atan2(Y - y, X - x),
+    len = 10;
+  if (Math.hypot(X - x, Y - y) < 1) return "";
+  return (
+    ln(x, y, X, Y, c, w) +
+    `<path d="M${X},${Y} L${X - len * Math.cos(a - 0.48)},${Y - len * Math.sin(a - 0.48)} L${X - len * Math.cos(a + 0.48)},${Y - len * Math.sin(a + 0.48)} Z" fill="${c}"/>`
+  );
+}
+const circ = (x, y, r, filled = true, c = C.blue) =>
+  `<circle cx="${x}" cy="${y}" r="${r}" fill="${filled ? c : "none"}" stroke="${c}" stroke-width="1.8" ${filled ? "" : 'stroke-dasharray="3 2"'}/>`;
+const seq = (n, f) => Array.from({ length: n }, (_, i) => f(i)).join("");
+function bindButtons(id, attr, cb) {
+  const description = $(id).closest(".demo").querySelector(".explain");
+  if (description) description.setAttribute("aria-live", "polite");
+  const items = [...$(id).querySelectorAll("button[data-" + attr + "]")];
+  items.forEach((b) =>
+    b.addEventListener("click", () => {
+      items.forEach((a) => {
+        a.classList.toggle("active", a === b);
+        a.setAttribute("aria-pressed", String(a === b));
+      });
+      cb(b.dataset[attr]);
+    }),
+  );
+  items.forEach((b) => b.setAttribute("aria-pressed", String(b.classList.contains("active"))));
+}
+function bindRanges(ids, fn) {
+  ids.forEach((id) => $(id).addEventListener("input", fn));
+  fn();
+}
+const sections = [...document.querySelectorAll("section[data-title]")];
+$("nav").innerHTML = sections
+  .map(
+    (s, i) =>
+      `<a href="#${s.id}"><span class="navnum">${String(i).padStart(2, "0")}</span>${s.dataset.title}</a>`,
+  )
+  .join("");
+$("mobileNav").innerHTML = $("nav").innerHTML;
+if ("IntersectionObserver" in window) {
+  const obs = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((e) => {
+        if (e.isIntersecting)
+          document
+            .querySelectorAll("#nav a")
+            .forEach((a) => a.classList.toggle("selected", a.hash === "#" + e.target.id));
+      });
+    },
+    { rootMargin: "-15% 0px -65% 0px" },
+  );
+  sections.forEach((s) => obs.observe(s));
+}
+// 01: Wave packet visualization
+let waveMode = "move";
+function wave() {
+  const t = val("waveTime") / 100;
+  set("waveOut", Math.round(t * 100) + "%");
+  let a = waveMode === "move" ? 125 + 390 * t : 325,
+    b = waveMode === "local" ? 140 - 110 * t : 47;
+  if (waveMode === "flip") b = 68;
+  let d =
+    "M40 152 " +
+    seq(251, (i) => {
+      let x = 40 + (i * 570) / 250;
+      let y = 152 - 90 * Math.exp(-0.5 * ((x - a) / b) ** 2) * (waveMode === "local" ? 30 / b : 1);
+      return `L${x.toFixed(2)} ${y.toFixed(2)} `;
+    }) +
+    "L610 152Z";
+  let s =
+    ln(40, 152, 610, 152) +
+    tx(40, 20, "真实空间：概率密度", "start", C.muted) +
+    path(d, C.blue, 2.4, C.n) +
+    seq(16, (i) => circ(48 + i * 37, 169, 5, true, C.muted)) +
+    tx(610, 193, "空间位置 x →", "end", C.muted);
+  if (waveMode === "flip")
+    s +=
+      arr(325, 52, 325 + (t < 0.5 ? 105 : -105), 52, C.purple, 3) +
+      tx(325, 38, t < 0.5 ? "平均向右传播" : "平均向左传播", "middle", C.purple);
+  if (waveMode === "move")
+    s +=
+      arr(a, 45, Math.min(610, a + 75), 45, C.blue) +
+      tx(325, 213, "能带不变 · 波包中心改变", "middle", C.muted, 12);
+  if (waveMode === "local")
+    s += tx(325, 213, "空间分布逐渐集中 · 示意杂质束缚", "middle", C.muted, 12);
+  svg("waveSvg", s);
+  set(
+    "waveText",
+    {
+      move: "同一个导带电子波包在晶体中向右传播。能带标签可以不变，完整状态随时间演化。",
+      flip: "示意具有相同空间概率密度、相反平均速度的两个状态。方向翻转并不要求概率密度改变。",
+      local:
+        "示意从延展态转为局域态时，空间分布的范围变小。能量状态变化可以伴随空间重新分布，但不是所有跃迁都如此。",
+    }[waveMode],
+  );
+}
+bindButtons("waveBtns", "wave", (v) => {
+  waveMode = v;
+  wave();
+});
+bindRanges(["waveTime"], wave);
+// 02: Band filling
+let fillMode = "full",
+  recombinationSlot = 3;
+function filling() {
+  const h = fillMode === "excited" ? 5 : fillMode === "move" ? 3 : -1,
+    active = h >= 0;
+  if (active) recombinationSlot = h;
+  let s =
+    rect(110, 23, 500, 64, C.n, 5) +
+    rect(110, 140, 500, 64, C.line, 5) +
+    tx(20, 59, "导带", "start", C.blue) +
+    tx(20, 176, "价带", "start", C.blue) +
+    tx(360, 117, "禁带：没有允许态", "middle", C.muted);
+  s += seq(
+    10,
+    (i) =>
+      circ(142 + i * 47, 55, 11, active && i === 5, C.blue) +
+      circ(142 + i * 47, 172, 11, i !== h, i === h ? C.orange : C.blue),
+  );
+  if (fillMode === "excited") s += arr(377, 151, 377, 70, C.orange);
+  if (fillMode === "move")
+    s += arr(283, 193, 377, 193, C.blue) + tx(330, 213, "价带电子填补原空态", "middle", C.blue, 11);
+  if (fillMode === "recomb")
+    s +=
+      arr(377, 70, 142 + recombinationSlot * 47, 160, C.orange) +
+      circ(142 + recombinationSlot * 47, 172, 14, false, C.orange) +
+      tx(394, 113, "释放能量", "start", C.orange, 11);
+  svg("fillSvg", s);
+  set(
+    "fillText",
+    {
+      full: "价带 10/10，导带 0/10。满价带里相反群速度的贡献抵消，空导带没有电子贡献电流。",
+      excited: "一个电子吸收能量进入导带。导带 1/10，价带 9/10，留下一个空穴。",
+      move: "价带中缺失的状态改变。仍是 1 个导带电子和 1 个空穴；这不要求再次跨越禁带。",
+      recomb: `复合后导带恢复空、价带恢复满。圈出的第 ${recombinationSlot + 1} 个价带态刚被填入；回放箭头指向它的原空位。`,
+    }[fillMode],
+  );
+}
+bindButtons("fillBtns", "fill", (v) => {
+  fillMode = v;
+  filling();
+});
+filling();
+// 03: E, potential
+function field() {
+  let V = val("fieldV"),
+    L = val("fieldL");
+  set("fieldVout", V.toFixed(1) + " V");
+  set("fieldLout", L.toFixed(1) + " μm");
+  set("fieldVal", (V / L).toFixed(3));
+  set("fieldEnergy", V.toFixed(1));
+  let w = 130 + 36 * L,
+    x = 325 - w / 2,
+    X = 325 + w / 2,
+    s =
+      rect(x, 30, w, 75, C.n, 4) +
+      rect(x - 14, 25, 14, 85, C.muted, 2) +
+      rect(X, 25, 14, 85, C.muted, 2) +
+      tx(x, 19, V > 0 ? "−" : "0 V", "middle") +
+      tx(X, 19, V > 0 ? "+" : "0 V", "middle") +
+      circ(325, 72, 10, true) +
+      tx(325, 76, "−", "middle", C.paper);
+  if (V > 0)
+    s +=
+      seq(4, (i) => {
+        let a = x + 25 + ((i + 1) * (w - 50)) / 5;
+        return arr(a + 12, 43, a - 12, 43, C.purple, 1.7);
+      }) + arr(342, 73, Math.min(X - 10, 342 + Math.min(110, 20 + (65 * V) / L)), 73, C.blue, 3);
+  s +=
+    ln(x, 123, X, 123) +
+    tx(325, 141, "间距 " + L.toFixed(1) + " μm", "middle", C.muted) +
+    tx(
+      325,
+      155,
+      V > 0 ? "电子受力向右；电场向左" : "无电势差：均匀电场为零",
+      "middle",
+      C.muted,
+      11,
+    );
+  svg("fieldSvg", s);
+}
+bindRanges(["fieldV", "fieldL"], field);
+// 04: doping states
+let dop = "i",
+  ion = false;
+function doping() {
+  $("ionBtn").setAttribute("aria-pressed", String(ion));
+  let s =
+    rect(110, 15, 500, 60, C.n, 5) +
+    rect(110, 182, 500, 60, C.line, 5) +
+    tx(20, 49, "导带", "start", C.blue) +
+    tx(20, 216, "价带", "start", C.blue) +
+    tx(326, 128, "硅禁带约 1.12 eV", "middle", C.muted);
+  let h = (dop === "i" || dop === "p") && ion,
+    cb = (dop === "i" || dop === "n") && ion;
+  s += seq(
+    9,
+    (i) =>
+      circ(145 + i * 53, 45, 10, cb && i === 4, C.blue) +
+      circ(145 + i * 53, 212, 10, !(h && i === 4), h && i === 4 ? C.orange : C.blue),
+  );
+  let x = 357;
+  if (dop === "i" && ion) s += arr(x, 190, x, 61, C.orange);
+  if (dop === "p") {
+    s +=
+      ln(110, 164, 610, 164, C.orange, 2, "6 4") +
+      circ(x, 164, 9, ion, C.orange) +
+      tx(440, 157, "受主 · 0.045 eV", "start", C.orange);
+    if (ion) s += arr(x, 199, x, 175, C.orange);
+  }
+  if (dop === "n") {
+    s +=
+      ln(110, 92, 610, 92, C.orange, 2, "6 4") +
+      circ(x, 92, 9, !ion, C.orange) +
+      tx(440, 108, "施主 · 0.045 eV", "start", C.orange);
+    if (ion) s += arr(x, 80, x, 59, C.orange);
+  }
+  svg("dopSvg", s);
+  set(
+    "dopText",
+    dop === "i"
+      ? ion
+        ? "热激发：价带电子进入导带，产生一对电子与空穴。"
+        : "纯硅的理想低温占据：价带满、导带空。"
+      : dop === "p"
+        ? ion
+          ? "受主电离：价带电子填补受主状态，产生固定负受主中心与可移动空穴。"
+          : "B 替代 Si，引入靠近价带的受主能级；未电离时受主未接受该电子。"
+        : ion
+          ? "施主电离：束缚电子进入导带，留下固定正施主中心。"
+          : "磷额外的电子占据靠近导带的局域施主状态。",
+  );
+}
+bindButtons("dopBtns", "dop", (v) => {
+  dop = v;
+  ion = false;
+  doping();
+});
+$("ionBtn").addEventListener("click", () => {
+  ion = !ion;
+  doping();
+});
+doping();
+// 05 Fermi occupancy
+let ef = 0.56;
+function fermi() {
+  const T = val("temp"),
+    k = 0.00008617333262 * T,
+    fx = (e) => 55 + ((e + 0.2) / 1.52) * 570,
+    fy = (f) => 208 - 177 * f,
+    prob = (e) => 1 / (1 + Math.exp((e - ef) / k));
+  set("tempOut", T + " K");
+  let s =
+    rect(fx(0), 31, fx(1.12) - fx(0), 177, C.line, 0, 0.35) +
+    rect(55, 31, fx(0) - 55, 177, C.pd, 0, 0.3) +
+    rect(fx(1.12), 31, 625 - fx(1.12), 177, C.nd, 0, 0.45);
+  s += seq(
+    5,
+    (i) =>
+      ln(55, fy(i * 0.25), 625, fy(i * 0.25), C.line) +
+      tx(47, fy(i * 0.25) + 4, i * 25 + "%", "end", C.muted, 11),
+  );
+  s +=
+    ln(55, 31, 55, 208) +
+    ln(55, 208, 625, 208) +
+    path(
+      seq(301, (i) => {
+        let e = -0.2 + (i * 1.52) / 300;
+        return `${i ? "L" : "M"}${fx(e).toFixed(2)} ${fy(prob(e)).toFixed(2)} `;
+      }),
+      C.blue,
+      3,
+    ) +
+    ln(fx(ef), 31, fx(ef), 208, C.orange, 1.5, "5 4") +
+    circ(fx(ef), fy(0.5), 4, true, C.orange) +
+    tx(fx(ef), 23, "E_F = " + ef.toFixed(2) + " eV", "middle", C.orange, 12) +
+    tx(fx(-0.1), 49, "价带", "middle", C.red, 12) +
+    tx(fx(0.56), 49, "禁带", "middle", C.muted, 12) +
+    tx(fx(1.22), 49, "导带", "middle", C.blue, 12);
+  s +=
+    seq(4, (i) =>
+      tx(fx([0, 0.4, 0.8, 1.12][i]), 225, [0, 0.4, 0.8, 1.12][i].toFixed(2), "middle", C.muted, 11),
+    ) + tx(625, 243, "电子状态能量 (eV)", "end", C.muted, 11);
+  svg("fermiSvg", s);
+  set(
+    "fermiText",
+    "若价带顶与导带底存在对应状态：价带顶未占据概率约 " +
+      (1 / (1 + Math.exp(ef / k))).toExponential(2) +
+      "；导带底占据概率约 " +
+      prob(1.12).toExponential(2) +
+      "。它们不是整个能带的填充比例。",
+  );
+}
+bindButtons("fermiBtns", "ef", (v) => {
+  ef = Number(v);
+  fermi();
+});
+bindRanges(["temp"], fermi);
+// 06 diffusion
+function diff() {
+  let n = val("diffN"),
+    p = val("diffP"),
+    f = val("diffF") / 100,
+    a = n * f,
+    b = p * f;
+  set("diffNout", n);
+  set("diffPout", p);
+  set("diffFout", Math.round(f * 100) + "%");
+  let s =
+    rect(20, 22, 305, 88, C.p, 5) +
+    rect(325, 22, 305, 88, C.n, 5) +
+    tx(160, 16, "P 区", "middle") +
+    tx(485, 16, "N 区", "middle");
+  let dots = (n, x) =>
+    seq(Math.min(n, 200), (i) =>
+      circ(x + 8 + (i % 20) * 14, 35 + Math.floor(i / 20) * 7, 2.1, true, C.blue),
+    );
+  s +=
+    dots(p, 30) +
+    dots(n, 335) +
+    arr(525, 130, 125, 130, C.blue, Math.max(1.2, a / 25)) +
+    tx(325, 122, a.toFixed(0) + " 个 N → P", "middle", C.blue) +
+    arr(125, 160, 525, 160, C.blue, Math.max(1.2, b / 25)) +
+    tx(325, 151, b.toFixed(0) + " 个 P → N", "middle", C.blue);
+  svg("diffSvg", s);
+  let d = a - b;
+  set(
+    "diffText",
+    d === 0
+      ? "双向跨界数量相同，净传输为 0。"
+      : `每单位时间净传输 ${Math.abs(d).toFixed(0)} 个电子，${d > 0 ? "N → P" : "P → N"}。`,
+  );
+}
+bindRanges(["diffN", "diffP", "diffF"], diff);
+// 07 formation
+let form = 0;
+function formDraw() {
+  let w = [0, 35, 82, 82][form],
+    s =
+      rect(20, 25, 305, 112, C.p, 4) +
+      rect(325, 25, 305, 112, C.n, 4) +
+      rect(325 - w, 25, w, 112, C.pd) +
+      rect(325, 25, w, 112, C.nd) +
+      tx(145, 17, "P 区", "middle") +
+      tx(505, 17, "N 区", "middle") +
+      ln(325, 25, 325, 137, C.muted, 1, "3 3");
+  for (let i = 0; i < 7; i++) {
+    let x = 55 + i * 40,
+      X = 595 - i * 40;
+    s += tx(x, 65, "A⁻", "middle", C.red, 16) + tx(X, 65, "D⁺", "middle", C.blue, 16);
+    if (x < 325 - w) s += circ(x, 106, 10, false, C.orange);
+    if (X > 325 + w) s += circ(X, 106, 10, true, C.blue);
+  }
+  if (form === 1)
+    s +=
+      arr(470, 153, 180, 153, C.blue, 3) +
+      tx(325, 169, "电子净扩散 N → P", "middle", C.blue, 12) +
+      arr(180, 181, 470, 181, C.orange, 3) +
+      tx(325, 200, "空穴净扩散 P → N", "middle", C.orange, 12);
+  if (form >= 2)
+    s +=
+      arr(325 + w, 158, 325 - w, 158, C.purple, 3) +
+      tx(325, 178, "内建电场 N → P", "middle", C.purple) +
+      tx(
+        325,
+        200,
+        form === 3 ? "净扩散与漂移平衡" : "电场开始阻碍进一步净扩散",
+        "middle",
+        C.muted,
+        12,
+      );
+  svg("formSvg", s);
+  set(
+    "formText",
+    [
+      "固定 A⁻ 和 D⁺ 分别由移动载流子补偿，两侧近似电中性。",
+      "两侧浓度差引起净扩散，交界附近开始出现未补偿电荷。",
+      "固定净负电荷和净正电荷建立内建电场，反过来限制多数载流子跨结。",
+      "整个系统达到热平衡：耗尽区、电场和浓度稳定，但载流子仍双向运动。",
+    ][form],
+  );
+}
+bindButtons("formBtns", "form", (v) => {
+  form = Number(v);
+  formDraw();
+});
+formDraw();
+// 08 sheet force
+function sheet() {
+  let j = val("sheetPos"),
+    xx = 65 + 65 * j,
+    L = 0,
+    R = 0;
+  let s =
+    rect(18, 27, 307, 83, C.p, 4) +
+    rect(325, 27, 307, 83, C.n, 4) +
+    tx(165, 19, "P 侧", "middle") +
+    tx(485, 19, "N 侧", "middle");
+  for (let i = 0; i < 8; i++) {
+    let x = 97.5 + i * 65,
+      neg = i < 4;
+    let right = neg ? i < j : i >= j;
+    if (right) R++;
+    else L++;
+    s +=
+      ln(x, 39, x, 92, neg ? C.red : C.blue, 4) + tx(x, 72, neg ? "−" : "+", "middle", C.paper, 18);
+  }
+  s += circ(xx, 125, 11, true, C.blue) + tx(xx, 130, "−", "middle", C.paper, 15);
+  if (R > L) s += arr(xx, 154, Math.min(630, xx + (R - L) * 14), 154, C.blue, 3);
+  s += tx(
+    325,
+    185,
+    `电子位置：${j === 0 ? "P 侧外部" : j === 8 ? "N 侧外部" : j === 4 ? "交界面" : "耗尽区内部"}`,
+    "middle",
+    C.muted,
+  );
+  svg("sheetSvg", s);
+  set("sheetPosOut", j === 4 ? "交界面" : j === 0 ? "P 外" : j === 8 ? "N 外" : "层间 " + j);
+  set("forceL", L + " F₀");
+  set("forceR", R + " F₀");
+  set("forceNet", R === L ? "0" : `${R - L} F₀ →`);
+  set(
+    "sheetText",
+    j === 0 || j === 8
+      ? "两组等量异号平面在外侧对电子产生相反作用，合力为零。"
+      : j === 4
+        ? "左侧所有负平面排斥电子向右，右侧所有正平面吸引电子向右，净作用最大。"
+        : `8 层电荷中，${R} 层对测试电子的力向右，${L} 层向左。越接近交界面，向右的合力越大。`,
+  );
+}
+bindRanges(["sheetPos"], sheet);
+// 09 depletion calculator: cm units
+const q = 1.602176634e-19,
+  eps = 11.7 * 8.8541878128e-14,
+  VT = 0.0258519998,
+  ni = 1e10;
+function pn() {
+  let NA = 10 ** val("na"),
+    ND = 10 ** val("nd"),
+    v = VT * Math.log((NA * ND) / (ni * ni)),
+    W = Math.sqrt(((2 * eps) / q) * (1 / NA + 1 / ND) * v),
+    wp = (W * ND) / (NA + ND),
+    wn = (W * NA) / (NA + ND),
+    em = (q * ND * wn) / eps;
+  set("naOut", NA.toExponential(2));
+  set("ndOut", ND.toExponential(2));
+  set("biVal", v.toFixed(3));
+  set("wVal", (W * 1e4).toFixed(3));
+  set("emVal", (em / 1000).toFixed(1));
+  let x0 = 100,
+    xe = 550,
+    j = x0 + ((xe - x0) * wp) / W;
+  const fx = (x) => x0 + ((x + wp) / W) * (xe - x0);
+  function U(x) {
+    if (x <= -wp) return v;
+    if (x >= wn) return 0;
+    if (x < 0) return v - (q * NA * (x + wp) ** 2) / (2 * eps);
+    return (q * ND * (wn - x) ** 2) / (2 * eps);
+  }
+  let s =
+    rect(25, 34, j - 25, 55, C.p, 4) +
+    rect(j, 34, 625 - j, 55, C.n, 4) +
+    rect(x0, 34, j - x0, 55, C.pd) +
+    rect(j, 34, xe - j, 55, C.nd) +
+    tx((25 + j) / 2, 24, "P 区", "middle", C.red) +
+    tx((j + 625) / 2, 24, "N 区", "middle", C.blue);
+  s +=
+    tx((x0 + j) / 2, 68, "−", "middle", C.red, 20) +
+    tx((j + xe) / 2, 68, "+", "middle", C.blue, 20) +
+    ln(j, 25, j, 325, C.muted, 1, "4 4");
+  s +=
+    tx(25, 116, "电场强度 |E|（方向向左）", "start", C.purple) +
+    ln(25, 211, 625, 211) +
+    path(`M25 211H${x0}L${j} 132L${xe} 211H625`, C.purple, 3) +
+    tx(j, 128, (em / 1000).toFixed(1) + " kV/cm", "middle", C.purple, 11) +
+    tx(25, 243, "电子势能（相对 N 侧，eV）", "start", C.blue) +
+    ln(25, 325, 625, 325);
+  s +=
+    path(
+      "M25 " +
+        (325 - 64) +
+        " H" +
+        x0 +
+        " " +
+        seq(151, (i) => {
+          let x = -wp + (W * i) / 150;
+          return `L${fx(x).toFixed(2)} ${(325 - (64 * U(x)) / v).toFixed(2)} `;
+        }) +
+        "H625",
+      C.blue,
+      3,
+    ) +
+    tx(40, 257, v.toFixed(3), "start", C.blue, 11) +
+    tx(620, 318, "0", "end", C.blue, 11) +
+    tx(x0, 345, "−" + (wp * 1e4).toFixed(3), "middle", C.muted, 11) +
+    tx(j, 363, "0", "middle", C.muted, 11) +
+    tx(xe, 345, "+" + (wn * 1e4).toFixed(3), "middle", C.muted, 11) +
+    tx(625, 362, "位置 (μm)", "end", C.muted, 11);
+  svg("pnSvg", s);
+  set(
+    "pnText",
+    `P 侧耗尽宽度 ${(wp * 1e4).toFixed(3)} μm；N 侧 ${(wn * 1e4).toFixed(3)} μm。从 N 侧耗尽边缘走到交界面，电子势能已升高 ${U(0).toFixed(3)} eV；继续到 P 侧耗尽边缘，共升高 ${v.toFixed(3)} eV。${NA === ND ? "对称掺杂，耗尽区左右等宽。" : NA < ND ? "P 侧掺杂更轻，耗尽区主要延伸进入 P 侧。" : "N 侧掺杂更轻，耗尽区主要延伸进入 N 侧。"}`,
+  );
+}
+bindRanges(["na", "nd"], pn);
+// 10 alignment
+let aligned = true;
+function align() {
+  let s =
+    tx(22, 19, "电子能量 ↑", "start", C.muted) +
+    tx(150, 39, "P 型硅", "middle") +
+    tx(500, 39, "N 型硅", "middle");
+  if (aligned) {
+    s +=
+      rect(240, 45, 170, 195, C.line, 0, 0.3) +
+      path("M30 65H240C290 65 360 126 410 126H620", C.blue, 3) +
+      path("M30 169H240C290 169 360 230 410 230H620", C.blue, 3) +
+      ln(30, 148, 620, 148, C.orange, 2, "6 4") +
+      tx(325, 140, "共同 E_F", "middle", C.orange) +
+      tx(30, 59, "E_C", "start", C.blue) +
+      tx(30, 187, "E_V", "start", C.blue) +
+      tx(325, 254, "耗尽区", "middle", C.muted);
+  } else {
+    s +=
+      path("M30 65H293 M357 65H620", C.blue, 3) +
+      path("M30 169H293 M357 169H620", C.blue, 3) +
+      ln(30, 148, 293, 148, C.orange, 2, "6 4") +
+      ln(357, 87, 620, 87, C.orange, 2, "6 4") +
+      tx(156, 141, "E_F,P", "middle", C.orange) +
+      tx(490, 81, "E_F,N", "middle", C.orange) +
+      tx(30, 59, "E_C", "start", C.blue) +
+      tx(30, 187, "E_V", "start", C.blue) +
+      arr(488, 201, 162, 201, C.blue) +
+      tx(325, 220, "接触后具有净电子传输趋势 N → P", "middle", C.muted, 12);
+  }
+  svg("alignSvg", s);
+  set(
+    "alignText",
+    aligned
+      ? "费米能级对齐；局部带边随电势弯曲。P 区 E_F 仍靠近价带，N 区仍靠近导带。"
+      : "独立的 P 型与 N 型硅具有不同的电子电化学势；各自内部已热平衡。",
+  );
+}
+bindButtons("alignBtns", "align", (v) => {
+  aligned = v === "1";
+  align();
+});
+align();
+// 11 bias calculator
+function biasDraw() {
+  let V = val("bias"),
+    bar = 0.7 - V,
+    w = Math.sqrt(bar / 0.7),
+    I = Math.expm1(V / VT),
+    mode = V > 0.0001 ? "正向偏置" : V < -0.0001 ? "反向偏置" : "零偏置";
+  set("biasOut", V.toFixed(2) + " V");
+  set("barrierVal", bar.toFixed(2));
+  set("bwVal", w.toFixed(3) + "×");
+  const currentRatio = Math.abs(I) >= 1000 ? I.toExponential(2) : I.toFixed(3);
+  set("currentVal", currentRatio);
+  let half = 76 * w,
+    x = 325 - half,
+    X = 325 + half,
+    s =
+      rect(20, 28, 305, 63, C.p, 5) +
+      rect(325, 28, 305, 63, C.n, 5) +
+      rect(x, 28, half, 63, C.pd) +
+      rect(325, 28, half, 63, C.nd) +
+      tx(145, 19, "P 区" + (V === 0 ? "" : V > 0 ? " (+)" : " (−)"), "middle", C.red) +
+      tx(505, 19, "N 区" + (V === 0 ? "" : V > 0 ? " (−)" : " (+)"), "middle", C.blue) +
+      tx((x + 325) / 2, 68, "−", "middle", C.red, 24) +
+      tx((325 + X) / 2, 68, "+", "middle", C.blue, 24) +
+      ln(x, 103, X, 103) +
+      ln(x, 98, x, 108) +
+      ln(X, 98, X, 108) +
+      tx(325, 119, "耗尽区", "middle", C.muted, 11);
+  let y = 250 - bar * 54;
+  s +=
+    tx(25, 141, "导带底（电子能量）", "start", C.muted) +
+    path(
+      `M30 ${250 - 0.7 * 54}H249C280 ${250 - 0.7 * 54} 370 250 401 250H620`,
+      C.muted,
+      1.5,
+      "none",
+      "5 4",
+    ) +
+    path(`M30 ${y}H${x}C${x + half * 0.45} ${y} ${X - half * 0.45} 250 ${X} 250H620`, C.blue, 3) +
+    tx(34, y - 7, bar.toFixed(2) + " eV", "start", C.blue, 12) +
+    tx(620, 267, "0 eV", "end", C.blue, 11) +
+    tx(
+      325,
+      282,
+      mode +
+        (V > 0
+          ? " · 净电子传输 N → P，约定电流 P → N"
+          : V < 0
+            ? " · 净电子传输 P → N，约定电流 N → P"
+            : " · 无净电流"),
+      "middle",
+      C.muted,
+      11,
+    );
+  if (V !== 0) s += V > 0 ? arr(390, 263, 290, 263, C.blue) : arr(260, 263, 360, 263, C.blue);
+  svg("biasSvg", s);
+  const edgeRatio = Math.exp(V / VT);
+  let explanation;
+  if (V > 0) {
+    explanation = `势垒降低，P 侧结边少数电子浓度为平衡值的 ${edgeRatio.toPrecision(3)} 倍。结边与准中性区深处之间形成过剩浓度梯度；稳态理想电流 I/I_S = ${currentRatio}。`;
+  } else if (V < 0) {
+    explanation = `|Vⱼ|/V_T = ${(Math.abs(V) / VT).toFixed(2)}，结边浓度降至平衡值的 ${edgeRatio.toPrecision(3)} 倍。I/I_S ≈ ${currentRatio}。精确值与反向饱和值 −1 的差为 exp(Vⱼ/V_T) = ${edgeRatio.toPrecision(3)}。`;
+  } else {
+    explanation = "无光照、零偏热平衡：结边浓度等于平衡值，扩散与漂移电流抵消，I/I_S = 0。耗尽区与内建电场仍然存在。";
+  }
+  set("biasText", explanation);
+}
+bindRanges(["bias"], biasDraw);
+[
+  ["setRev", -0.3],
+  ["setRev100", -0.1],
+  ["setRev10", -0.01],
+  ["setZero", 0],
+  ["setFwd", 0.3],
+].forEach(([id, v]) =>
+  $(id).addEventListener("click", () => {
+    $("bias").value = v;
+    biasDraw();
+  }),
+);
+// 12 electron path
+let pathMode = "fwd";
+function pathDraw() {
+  let f = pathMode === "fwd",
+    s =
+      rect(40, 22, 285, 176, C.p, 4) +
+      rect(325, 22, 285, 176, C.n, 4) +
+      rect(295, 22, 60, 176, C.line, 0, 0.5) +
+      tx(155, 15, "P 区 " + (f ? "(+)" : "(−)"), "middle") +
+      tx(495, 15, "N 区 " + (f ? "(−)" : "(+)"), "middle") +
+      ln(45, 58, 605, 58, C.blue, 2) +
+      ln(45, 162, 605, 162, C.blue, 2) +
+      tx(51, 49, "导带", "start", C.blue) +
+      tx(51, 183, "价带", "start", C.blue);
+  let explanation;
+  if (f) {
+    s +=
+      circ(530, 58, 7, true) + circ(190, 58, 7, true) +
+      arr(600, 58, 205, 58, C.blue, 3) + arr(190, 72, 190, 150, C.orange, 3) +
+      arr(180, 162, 44, 162, C.blue, 3) + tx(207, 110, "复合：释放能量", "start", C.orange) +
+      tx(325, 221, "净负电荷传输 N → P", "middle", C.muted);
+    explanation = "正接示例：导带电子从 N 注入 P，在准中性区继续扩散。图中选择了最终复合的一条路径；其他注入电子也可能抵达接触端。";
+  } else if (pathMode === "rev") {
+    s +=
+      arr(45, 162, 160, 162, C.blue, 3) + arr(160, 149, 160, 69, C.orange, 3) +
+      circ(160, 58, 7, true) + arr(173, 58, 294, 58, C.blue, 3) +
+      arr(297, 58, 354, 58, C.blue, 3) + arr(360, 58, 600, 58, C.blue, 3) +
+      tx(213, 47, "扩散到结边", "middle", C.blue, 12) + tx(325, 43, "漂移", "middle", C.blue, 12) +
+      tx(173, 110, "P 侧准中性区产生", "start", C.orange) +
+      tx(325, 221, "先扩散到结边，再由电场扫过耗尽区", "middle", C.muted);
+    explanation = "P 侧准中性区产生一对载流子。少数电子可能与空穴复合，也可能扩散到耗尽边缘；到达结边后，结区电场使电子向 N 侧漂移。产生和跨结是同一收集过程的前后两步。";
+  } else {
+    s +=
+      arr(325, 147, 325, 72, C.orange, 3) + circ(325, 58, 7, true) +
+      circ(325, 162, 7, false, C.orange) + arr(338, 58, 468, 58, C.blue, 3) +
+      arr(312, 162, 185, 162, C.orange, 3) +
+      tx(350, 110, "耗尽区内热产生或光生", "start", C.orange) +
+      tx(405, 46, "电子 → N", "middle", C.blue, 12) + tx(246, 151, "空穴 → P", "middle", C.orange, 12) +
+      tx(325, 221, "在耗尽区内产生，直接被结区电场分开", "middle", C.muted);
+    explanation = "载流子在耗尽区内产生时，已经身处结区电场。电子漂向 N 侧，空穴漂向 P 侧，无需先扩散到耗尽边缘。吸收合适能量的光子也可产生这样的载流子对。";
+  }
+  svg("pathSvg", s);
+  set("pathText", explanation);
+}
+bindButtons("pathBtns", "path", (v) => {
+  pathMode = v;
+  pathDraw();
+});
+pathDraw();
+// 13 tunneling
+function tunnel() {
+  let h = val("tunnelH"),
+    w = val("tunnelW"),
+    kap = 5.12317 * Math.sqrt(h),
+    T = Math.exp(-2 * kap * w);
+  set("tunnelHout", h.toFixed(1) + " eV");
+  set("tunnelWout", w.toFixed(1) + " nm");
+  set("tunnelVal", T.toExponential(2));
+  let x = 240,
+    X = x + 38 * w,
+    top = 74 - 27 * h,
+    s =
+      rect(x, top, X - x, 142 - top, C.line, 0, 0.8) +
+      ln(20, 95, 630, 95, C.muted, 1, "4 4") +
+      tx((x + X) / 2, top - 7, "势垒", "middle", C.muted, 12) +
+      tx(25, 90, "电子能量", "start", C.muted, 11);
+  let d = seq(200, (i) => {
+    let z = 20 + (i * (x - 20)) / 199;
+    return `${i ? "L" : "M"}${z.toFixed(2)} ${(95 - 27 * Math.cos((z - x) * 0.16)).toFixed(2)} `;
+  });
+  let mid = seq(100, (i) => {
+    let z = x + (i * (X - x)) / 99;
+    return `L${z.toFixed(2)} ${(95 - 27 * Math.exp((-kap * w * i) / 99)).toFixed(2)} `;
+  });
+  let end = seq(150, (i) => {
+    let z = X + (i * (630 - X)) / 149;
+    return `L${z.toFixed(2)} ${(95 - 27 * Math.sqrt(T) * Math.cos((z - X) * 0.16)).toFixed(2)} `;
+  });
+  s +=
+    path(d + mid + end, C.blue, 2.4) +
+    ln(x, 149, X, 149) +
+    ln(x, 144, x, 154) +
+    ln(X, 144, X, 154) +
+    tx((x + X) / 2, 166, w.toFixed(1) + " nm", "middle", C.muted, 12) +
+    tx(130, 185, "入射波", "middle", C.blue, 12) +
+    tx(520, 185, "透射波（可能极小）", "middle", C.blue, 12);
+  svg("tunnelSvg", s);
+}
+bindRanges(["tunnelH", "tunnelW"], tunnel);
+// 14 reverse recovery
+let rr = 0;
+function recovery() {
+  let w = [25, 25, 40, 94][rr],
+    num = [5, 5, 2, 0][rr],
+    s =
+      rect(20, 26, 305, 90, C.p, 4) +
+      rect(325, 26, 305, 90, C.n, 4) +
+      rect(325 - w, 26, w, 90, C.pd) +
+      rect(325, 26, w, 90, C.nd) +
+      tx(130, 18, "P 区", "middle") +
+      tx(520, 18, "N 区", "middle");
+  for (let i = 0; i < num; i++) {
+    s +=
+      circ(80 + i * 39, 66 + (i % 2) * 24, 7, true, C.blue) +
+      circ(570 - i * 39, 66 + (i % 2) * 24, 7, false, C.orange);
+  }
+  if (rr === 0) s += arr(430, 106, 220, 106, C.blue);
+  if (rr === 1 || rr === 2) s += arr(220, 106, 430, 106, C.blue);
+  s +=
+    tx(325, 132, "过剩少数载流子与耗尽区（示意）", "middle", C.muted, 12) +
+    ln(45, 150, 45, 271) +
+    ln(45, 207, 625, 207) +
+    tx(25, 158, "I", "start", C.muted, 12) +
+    tx(625, 283, "t", "end", C.muted, 12) +
+    path("M45 165H160L205 207L247 258H385C422 258 451 219 489 211S570 208 625 208", C.blue, 3) +
+    ln(205, 150, 205, 271, C.line, 1, "4 3") +
+    ln(385, 150, 385, 271, C.line, 1, "4 3");
+  let points = [
+    [106, 165],
+    [230, 237.36],
+    [385, 258],
+    [625, 208],
+  ];
+  s +=
+    circ(points[rr][0], points[rr][1], 6, true, C.orange) +
+    tx(285, 286, "储存阶段", "middle", C.muted, 11) +
+    tx(468, 286, "恢复阶段", "middle", C.muted, 11);
+  svg("rrSvg", s);
+  set(
+    "rrText",
+    [
+      "正向稳态：蓝色实点是 P 侧的过剩电子，橙色空圈是 N 侧的过剩空穴。结区较窄，约定电流从 P 到 N。",
+      "刚切换：图中橙点的端电流已经反向；存储的载流子尚未清除，结电压仍可能短暂为正。",
+      "载流子被抽取或复合；达到足够低的结边缘浓度后，结区建立反向阻断电压，反向电流衰减。",
+      "过剩载流子已显著减少，耗尽区变宽，恢复反向阻断，仅余正常漏电等。",
+    ][rr],
+  );
+}
+bindButtons("rrBtns", "rr", (v) => {
+  rr = Number(v);
+  recovery();
+});
+recovery();
+</script></body></html>

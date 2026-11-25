@@ -93,7 +93,8 @@ class GeneratedNavigationTests(unittest.TestCase):
         source = Path(__file__).resolve().parents[2] / "series/semiconductor-foundations"
         titles = {page.parent.name: page.read_text(encoding="utf-8").splitlines()[0].removeprefix("# ")
                   for page in source.glob("*/README.md")}
-        self.assertEqual(slugs[:2], ["silicon-to-logic", "voltage-to-clock"])
+        self.assertEqual(slugs[:3], ["electrons-to-diode", "silicon-to-logic", "voltage-to-clock"])
+        self.assertEqual(entries[0][1], "从电子到二极管")
         self.assertCountEqual(slugs, titles.keys())
         for slug, short in entries:
             with self.subTest(article=slug):
@@ -114,26 +115,56 @@ class GeneratedNavigationTests(unittest.TestCase):
 
     def test_silicon_to_logic_sections_and_legacy_routes(self):
         topic = "foundations/silicon-to-logic/"
-        article = (SITE / topic / "index.html").read_text(encoding="utf-8")
-        sections = re.findall(r'<h2 id="([^"]+)">', article)
-        legacy_sections = SILICON_TO_LOGIC_LEGACY_SECTIONS
-        self.assertEqual(sections, [
-            legacy_sections["silicon-and-doping"], "p-型与-n-型掺杂",
-            legacy_sections["pn-junction"], legacy_sections["bipolar-transistor"],
-            legacy_sections["mosfet"], legacy_sections["cmos-logic"], "用到哪里",
+        page = (SITE / topic / "index.html").read_text(encoding="utf-8")
+        article = re.search(r'<article\b[^>]*>(.*?)</article>', page, re.DOTALL).group(1)
+        baseline = json.loads((Path(__file__).parent / "fixtures/silicon-to-logic-legacy.json").read_text(encoding="utf-8"))
+        old_routes = baseline["redirects"]
+        self.assertEqual(re.findall(r'<h2 id="([^"]+)">', article), [
+            old_routes["silicon-and-doping"], "p-型与-n-型掺杂", old_routes["pn-junction"],
+            old_routes["bipolar-transistor"], old_routes["mosfet"], old_routes["cmos-logic"], "用到哪里",
         ])
-        for anchor in ("阅读顺序", "先选参考点和方向", "电阻把压差换算成支路电流",
-                       "电容把电流换算成电压变化", "接下来怎么读"):
-            self.assertIn(f'id="{anchor}"', article)
-        for slug, anchor in legacy_sections.items():
-            self.assertIn(f'id="{anchor}"', article)
-            redirect = (SITE / topic / slug / "index.html").read_text(encoding="utf-8")
-            self.assertIn(f'content="0; url=../#{anchor}"', redirect)
-            self.assertIn(f'href="../#{anchor}"', redirect)
+        ids = Counter(re.findall(r'\bid="([^"]+)"', article))
+        for anchor in baseline["fragments"]:
+            self.assertEqual(ids[anchor], 1, anchor)
+        self.assertIn('href="../electrons-to-diode/"', article)
+        for slug, anchor in old_routes.items():
+            with self.subTest(legacy_route=slug):
+                redirect = (SITE / topic / slug / "index.html").read_text(encoding="utf-8")
+                self.assertIn(f'content="0; url=../#{anchor}"', redirect)
+                self.assertIn(f'href="../#{anchor}"', redirect)
         index = json.loads((SITE / "search/search_index.json").read_text(encoding="utf-8"))
         pages = [entry["location"] for entry in index["docs"]
                  if entry["location"].startswith(topic) and "#" not in entry["location"]]
         self.assertEqual(pages, [topic])
+
+    def test_electrons_to_diode_article_search_and_interactive_links(self):
+        topic = "foundations/electrons-to-diode/"
+        page = (SITE / topic / "index.html").read_text(encoding="utf-8")
+        article = re.search(r'<article\b[^>]*>(.*?)</article>', page, re.DOTALL).group(1)
+        self.assertRegex(article, r'href="\.\./silicon-to-logic/(?:#[^"]*)?"')
+        old_guide = (SITE / "foundations/silicon-to-logic/index.html").read_text(encoding="utf-8")
+        onward_links = re.findall(r'href="\.\./electrons-to-diode/#([^"]+)"', old_guide)
+        self.assertTrue(onward_links)
+        native_ids = set(re.findall(r'\bid="([^"]+)"', article))
+        self.assertTrue({unquote(unescape(fragment)) for fragment in onward_links} <= native_ids)
+        index = json.loads((SITE / "search/search_index.json").read_text(encoding="utf-8"))
+        entries = [entry for entry in index["docs"] if entry["location"].startswith(topic)]
+        self.assertEqual([entry["location"] for entry in entries if "#" not in entry["location"]], [topic])
+        indexed_sections = [entry for entry in entries if entry["location"].startswith(topic + "#")]
+        text = " ".join(entry["text"] for entry in indexed_sections).replace("\u200b", "")
+        for term in ("能带", "耗尽区"):
+            self.assertIn(term, text)
+
+        companion = (SITE / topic / "interactive.html").read_text(encoding="utf-8")
+        anchors = set(re.findall(r'\bid="([^"]+)"', companion))
+        links = re.findall(r'<a\b[^>]*href="(?:\./)?interactive\.html#([^"]+)"[^>]*>(.*?)</a>', article, re.DOTALL)
+        self.assertTrue(links, "The native article should link directly to the interactive illustrations")
+        for fragment, label in links:
+            with self.subTest(interactive_section=fragment):
+                self.assertIn(unquote(unescape(fragment)), anchors)
+                name = unescape(re.sub(r"<[^>]*>", "", label)).strip()
+                self.assertTrue(name)
+                self.assertNotIn(name, ("这里", "点击这里", "interactive.html"))
 
     def test_series_redirect_targets_homepage_section(self):
         redirect = (SITE / "series/index.html").read_text(encoding="utf-8")
@@ -943,11 +974,11 @@ class GeneratedNavigationTests(unittest.TestCase):
 
     def test_current_navigation_and_breadcrumb_links(self):
         self.assertTrue(SITE.is_dir(), "Build the site before running this test")
-        redirects = {SITE / "series/index.html", *(
+        standalone_pages = {SITE / "series/index.html", SITE / "foundations/electrons-to-diode/interactive.html", *(
             SITE / "foundations/silicon-to-logic" / slug / "index.html"
             for slug in SILICON_TO_LOGIC_LEGACY_SECTIONS
         )}
-        pages = sorted(p for p in SITE.rglob("*.html") if p.name != "404.html" and p not in redirects)
+        pages = sorted(p for p in SITE.rglob("*.html") if p.name != "404.html" and p not in standalone_pages)
         self.assertGreater(len(pages), 1)
         errors = []
         for path in pages:
