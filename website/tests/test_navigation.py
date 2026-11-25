@@ -536,6 +536,14 @@ class GeneratedNavigationTests(unittest.TestCase):
         start = homepage.index('<div class="md-sidebar md-sidebar--primary"')
         end = homepage.index('<div class="md-sidebar md-sidebar--secondary"', start)
         self.assertIn('<span class="md-ellipsis">存储层级与数据路径</span>', homepage[start:end])
+        route = re.search(r'<h3[^>]*>访问路径与数据管理：按哪条线读？.*?</h3>.*?<ol>(.*?)</ol>', homepage, re.DOTALL)
+        self.assertIsNotNone(route)
+        links = re.findall(r'<li><a href="([^"]+)">([^<]+)</a>', route.group(1))
+        guide = Path("RAM/wiki/01-overview/index.html")
+        expected_access = next(pages for name, _, pages in MEMORY_SECTIONS if name == "访问路径与数据管理")
+        expected_links = [(page_url(Path(path).with_suffix("") / "index.html"), label) for label, path in expected_access]
+        self.assertEqual([(urljoin(page_url(guide), href), label) for href, label in links], expected_links)
+        self.assertEqual([label for _, label in links[:2]], ["Cache 怎样判断命中", "Cache miss 的处理"])
         search = json.loads((SITE / "search/search_index.json").read_text(encoding="utf-8"))
         locations = {entry["location"] for entry in search["docs"]}
         for page in paths([memory, *resources]):
