@@ -547,7 +547,10 @@ class GeneratedNavigationTests(unittest.TestCase):
                 self.assertIsNotNone(article)
                 ids = set(re.findall(r'\bid="([^"]+)"', article.group(1)))
                 self.assertFalse(set(anchors) - ids, (path, set(anchors) - ids))
-                self.assertIn(path + "/", locations)
+                if path + ".md" in ORIGINAL_TOPIC_REDIRECTS | {D2D_READ_REDIRECT, COHERENCE_MSI_REDIRECT}:
+                    self.assertNotIn(path + "/", locations)
+                else:
+                    self.assertIn(path + "/", locations)
 
     def test_self_test_question_numbers_continue_across_sections(self):
         html = (SITE / "RAM/self-test-questions/index.html").read_text(encoding="utf-8")
