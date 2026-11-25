@@ -1,7 +1,7 @@
 # CIM Macro 的基本原语：Array、Driver、Sense、Accumulator
 
 上级：[电路、外围与计算宏](./README.md)
-相关：[SRAM-CIM 深入](../02-memory-technologies/sram-cim-deep-dive.md), [Digital CIM 深入](../03-compute-paradigms/digital-cim-deep-dive.md), [RAM: Wordline Bitline Sense Amp](../../../storage/02-sram/foundations/wordline-bitline-sense-amp.md), [NoC: Reduction Networks](../../../interconnect/NOC/06-ai-noc-specifics/reduction-and-collective-networks.md)
+相关：[SRAM-CIM 深入](../02-memory-technologies/sram-cim-deep-dive.md), [数字阵列的位平面排程](../03-compute-paradigms/digital-cim-deep-dive.md), [RAM: Wordline Bitline Sense Amp](../../../storage/02-sram/foundations/wordline-bitline-sense-amp.md), [NoC: Reduction Networks](../../../interconnect/NOC/06-ai-noc-specifics/reduction-and-collective-networks.md)
 
 ## 这页在回答什么问题
 
@@ -22,6 +22,19 @@ macro controller --控制/状态--> driver、array、sense、accumulator、buffe
 controller 是控制路径：发出预充和驱动，在稳定时间满足后采样，结果可写入输出 buffer；buffer 反压可阻止后续发射。数据不会串行经过 controller。
 
 这个链路中，array 只是一部分。CIM 的收益来自把一部分 multiply、bitwise operation 或 reduction 推进 cell、bitline、sense path；如果计算主要发生在 output buffer 后的普通 MAC array，就不应称为 CIM。
+
+### 计数器交出一个 2，累加器为什么要加 16？ {#count-to-accumulator}
+
+在数字点积的最后一次读出里，两个独立的逻辑输出都是 1。局部计数器只做一件事：把这两个 1 数成整数 2。单看这个 2，还不知道该往结果里加多少。控制器要同时指出，这次送入的是**输入的第 1 位**和**权重的第 2 位**（均从第 0 位起算）。在无符号格式下，这一对的位权是 `2 × 4 = 8`。移位电路因此把 2 左移三位，交给加法器的是 16。前五对平面已累加到 7，这一次写入后才得到 23。[查看六对位平面的发起顺序与每一步的和](../03-compute-paradigms/digital-cim-deep-dive.md#schedule-six-pairs)
+
+| 观察位置 | 本次能看到什么 |
+| --- | --- |
+| 阵列读出或紧邻阵列的按位逻辑 | 两项分别输出 1、1。先在这里核对每个输入位有没有与对应的权重位相与。 |
+| 计数器输出 | 2，用二进制写是 `10`。若接口只留一位，就无法原样传递这个计数。 |
+| 移位与累加入口 | 数值 2 和位平面的位置要对应同一次读出；按无符号位权移位后贡献 16。 |
+| 本地累加器与输出缓冲 | 加法前为 7，加法后为 23。全部贡献都已接收，才可把这个值作为完整点积交给下游。 |
+
+例如累加入口使用 valid/ready 握手，最后一次计数到达时下游恰好停一拍。若这一拍的上升沿上 `valid=1、ready=0`，计数 2 和位权信息要一起保持有效，累加器仍为 7。下一上升沿两者都为 1，累加器才加一次 16，更新为 23。在相同六对计数下，若只把权重的最高位改作三位二补码的符号位，同一对的系数便由 +8 变为 −8。读出端还是两个 1。这时前五组已累计到 −1，最后一组贡献 −16，得到 −17。[从按位与到局部计数](../03-compute-paradigms/digital-cim-fundamentals.md#and-and-count)
 
 ## 原语如何对应三条 Paradigm
 

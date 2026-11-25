@@ -23,6 +23,8 @@
 
 读完各类介质，再跟一次完整读出。在[两次位平面读出怎样合成 23](./03-compute-paradigms/analog-cim-fundamentals.md#two-input-planes)里，先找阵列交给转换器的部分和；接着[重复测量同一输入](./03-compute-paradigms/analog-cim-deep-dive.md#repeat-read)，判断偏差从哪一步进入。
 
+同一个点积也可以在数字读出路径上计算。先看[两列的按位与怎样变成可累加的计数](./03-compute-paradigms/digital-cim-fundamentals.md#and-and-count)，再看[六组位平面怎样排进有限的读出通路](./03-compute-paradigms/digital-cim-deep-dive.md#schedule-six-pairs)。
+
 
 <span class="micro-legacy-anchor" id="十章地图"></span>
 
