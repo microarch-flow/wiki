@@ -1,0 +1,92 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="480" height="614" viewBox="0 0 480 614" xml:lang="zh-CN" role="img" aria-labelledby="title desc">
+  <title id="title">同一只锁存器的写入与保持</title>
+  <desc id="desc">每幅均为 D 经 W 到 X，X 经第一只反相器到 Y，再经第二只反相器到 Q，Q 经反馈开关 F 回到 X。第一幅 EN=0、D=0，Q 保持1。第二幅 EN=1，反馈断开，D 令 X 变0，Y 变1，Q 变0。第三幅先关写入并恢复反馈，再把 D 改为1，Q 保持0。</desc>
+  <rect x="1" y="1" width="478" height="612" rx="14" fill="#f7f6ef" stroke="#ced6c9"/>
+  <g font-family="Noto Sans CJK SC, Microsoft YaHei, sans-serif">
+    <text x="20" y="34" font-size="23" text-anchor="start" fill="#203c37" font-weight="650">先存着 1，怎样把 0 写进去？</text>
+    <text x="20" y="62" font-size="17" text-anchor="start" fill="#52665d">上方读 D 到 Q，下方沿 Q 经 F 返回 X。</text>
+    <text x="20" y="94" font-size="20" text-anchor="start" fill="#203c37" font-weight="650">保持旧值  ·  EN = 0</text>
+    <text x="41" y="126" font-size="17" text-anchor="middle" fill="#203c37" font-weight="650">D=0</text>
+    <text x="161" y="126" font-size="17" text-anchor="middle" fill="#203c37" font-weight="650">X=1</text>
+    <text x="280" y="126" font-size="17" text-anchor="middle" fill="#203c37" font-weight="650">Y=0</text>
+    <text x="419" y="126" font-size="17" text-anchor="middle" fill="#203c37" font-weight="650">Q=1</text>
+    <path d="M40 140 H78" stroke="#66786f" stroke-width="2.6" stroke-linejoin="round" stroke-linecap="round" fill="none"/>
+    <path d="M78 140 L114 126" stroke="#66786f" stroke-width="3.1" stroke-linejoin="round" stroke-linecap="round" fill="none"/>
+    <circle cx="78" cy="140" r="3.1" fill="#f7f6ef" stroke="#66786f" stroke-width="2.4"/>
+    <circle cx="114" cy="140" r="3.1" fill="#f7f6ef" stroke="#66786f" stroke-width="2.4"/>
+    <path d="M114 140 H161" stroke="#66786f" stroke-width="2.6" stroke-linejoin="round" stroke-linecap="round" fill="none"/>
+    <text x="96" y="167" font-size="16" text-anchor="middle" fill="#66786f">W 断</text>
+    <path d="M161 140 H194" stroke="#203c37" stroke-width="2.6" stroke-linejoin="round" stroke-linecap="round" fill="none"/>
+    <path d="M194 123 L228 140 L194 157 Z" stroke="#203c37" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round" fill="#e8ede4"/>
+    <circle cx="232.5" cy="140" r="4.5" fill="#f7f6ef" stroke="#203c37" stroke-width="2.2"/>
+    <path d="M237 140 H313" stroke="#203c37" stroke-width="2.6" stroke-linejoin="round" stroke-linecap="round" fill="none"/>
+    <path d="M313 123 L347 140 L313 157 Z" stroke="#203c37" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round" fill="#e8ede4"/>
+    <circle cx="351.5" cy="140" r="4.5" fill="#f7f6ef" stroke="#203c37" stroke-width="2.2"/>
+    <path d="M356 140 H419" stroke="#203c37" stroke-width="2.6" stroke-linejoin="round" stroke-linecap="round" fill="none"/>
+    <path d="M419 140 V186 H283" stroke="#09677b" stroke-width="2.6" stroke-linejoin="round" stroke-linecap="round" fill="none"/>
+    <path d="M246 186 L283 186" stroke="#09677b" stroke-width="3.1" stroke-linejoin="round" stroke-linecap="round" fill="none"/>
+    <circle cx="246" cy="186" r="3.1" fill="#f7f6ef" stroke="#09677b" stroke-width="2.4"/>
+    <circle cx="283" cy="186" r="3.1" fill="#f7f6ef" stroke="#09677b" stroke-width="2.4"/>
+    <path d="M246 186 H161 V140" stroke="#09677b" stroke-width="2.6" stroke-linejoin="round" stroke-linecap="round" fill="none"/>
+    <text x="265" y="207" font-size="16" text-anchor="middle" fill="#09677b">F 通</text>
+    <circle cx="161" cy="140" r="3.7" fill="#203c37" stroke="none" stroke-width="2"/>
+    <circle cx="419" cy="140" r="3.7" fill="#203c37" stroke="none" stroke-width="2"/>
+    <text x="20" y="234" font-size="17" text-anchor="start" fill="#203c37">D 已经是 0，写入端断开，Q 仍保持 1。</text>
+    <path d="M20 246 H460" stroke="#ced6c9" stroke-width="1.2" stroke-linejoin="round" stroke-linecap="round" fill="none"/>
+    <text x="20" y="279" font-size="20" text-anchor="start" fill="#203c37" font-weight="650">让新值进入  ·  EN = 1</text>
+    <text x="41" y="311" font-size="17" text-anchor="middle" fill="#203c37" font-weight="650">D=0</text>
+    <text x="161" y="311" font-size="17" text-anchor="middle" fill="#203c37" font-weight="650">X=0</text>
+    <text x="280" y="311" font-size="17" text-anchor="middle" fill="#203c37" font-weight="650">Y=1</text>
+    <text x="419" y="311" font-size="17" text-anchor="middle" fill="#203c37" font-weight="650">Q=0</text>
+    <path d="M40 325 H78" stroke="#09677b" stroke-width="2.6" stroke-linejoin="round" stroke-linecap="round" fill="none"/>
+    <path d="M78 325 L114 325" stroke="#09677b" stroke-width="3.1" stroke-linejoin="round" stroke-linecap="round" fill="none"/>
+    <circle cx="78" cy="325" r="3.1" fill="#f7f6ef" stroke="#09677b" stroke-width="2.4"/>
+    <circle cx="114" cy="325" r="3.1" fill="#f7f6ef" stroke="#09677b" stroke-width="2.4"/>
+    <path d="M114 325 H161" stroke="#09677b" stroke-width="2.6" stroke-linejoin="round" stroke-linecap="round" fill="none"/>
+    <text x="96" y="352" font-size="16" text-anchor="middle" fill="#09677b">W 通</text>
+    <path d="M161 325 H194" stroke="#203c37" stroke-width="2.6" stroke-linejoin="round" stroke-linecap="round" fill="none"/>
+    <path d="M194 308 L228 325 L194 342 Z" stroke="#203c37" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round" fill="#e8ede4"/>
+    <circle cx="232.5" cy="325" r="4.5" fill="#f7f6ef" stroke="#203c37" stroke-width="2.2"/>
+    <path d="M237 325 H313" stroke="#203c37" stroke-width="2.6" stroke-linejoin="round" stroke-linecap="round" fill="none"/>
+    <path d="M313 308 L347 325 L313 342 Z" stroke="#203c37" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round" fill="#e8ede4"/>
+    <circle cx="351.5" cy="325" r="4.5" fill="#f7f6ef" stroke="#203c37" stroke-width="2.2"/>
+    <path d="M356 325 H419" stroke="#203c37" stroke-width="2.6" stroke-linejoin="round" stroke-linecap="round" fill="none"/>
+    <path d="M419 325 V371 H283" stroke="#66786f" stroke-width="2.6" stroke-linejoin="round" stroke-linecap="round" fill="none"/>
+    <path d="M246 371 L283 357" stroke="#66786f" stroke-width="3.1" stroke-linejoin="round" stroke-linecap="round" fill="none"/>
+    <circle cx="246" cy="371" r="3.1" fill="#f7f6ef" stroke="#66786f" stroke-width="2.4"/>
+    <circle cx="283" cy="371" r="3.1" fill="#f7f6ef" stroke="#66786f" stroke-width="2.4"/>
+    <path d="M246 371 H161 V325" stroke="#66786f" stroke-width="2.6" stroke-linejoin="round" stroke-linecap="round" fill="none"/>
+    <text x="265" y="392" font-size="16" text-anchor="middle" fill="#66786f">F 断</text>
+    <circle cx="161" cy="325" r="3.7" fill="#203c37" stroke="none" stroke-width="2"/>
+    <circle cx="419" cy="325" r="3.7" fill="#203c37" stroke="none" stroke-width="2"/>
+    <text x="20" y="419" font-size="17" text-anchor="start" fill="#203c37">D 把 X 拉低，第 1 级拉高 Y，第 2 级拉低 Q。</text>
+    <path d="M20 431 H460" stroke="#ced6c9" stroke-width="1.2" stroke-linejoin="round" stroke-linecap="round" fill="none"/>
+    <text x="20" y="464" font-size="20" text-anchor="start" fill="#203c37" font-weight="650">接回反馈，再改变 D  ·  EN = 0</text>
+    <text x="41" y="496" font-size="17" text-anchor="middle" fill="#203c37" font-weight="650">D=1</text>
+    <text x="161" y="496" font-size="17" text-anchor="middle" fill="#203c37" font-weight="650">X=0</text>
+    <text x="280" y="496" font-size="17" text-anchor="middle" fill="#203c37" font-weight="650">Y=1</text>
+    <text x="419" y="496" font-size="17" text-anchor="middle" fill="#203c37" font-weight="650">Q=0</text>
+    <path d="M40 510 H78" stroke="#66786f" stroke-width="2.6" stroke-linejoin="round" stroke-linecap="round" fill="none"/>
+    <path d="M78 510 L114 496" stroke="#66786f" stroke-width="3.1" stroke-linejoin="round" stroke-linecap="round" fill="none"/>
+    <circle cx="78" cy="510" r="3.1" fill="#f7f6ef" stroke="#66786f" stroke-width="2.4"/>
+    <circle cx="114" cy="510" r="3.1" fill="#f7f6ef" stroke="#66786f" stroke-width="2.4"/>
+    <path d="M114 510 H161" stroke="#66786f" stroke-width="2.6" stroke-linejoin="round" stroke-linecap="round" fill="none"/>
+    <text x="96" y="537" font-size="16" text-anchor="middle" fill="#66786f">W 断</text>
+    <path d="M161 510 H194" stroke="#203c37" stroke-width="2.6" stroke-linejoin="round" stroke-linecap="round" fill="none"/>
+    <path d="M194 493 L228 510 L194 527 Z" stroke="#203c37" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round" fill="#e8ede4"/>
+    <circle cx="232.5" cy="510" r="4.5" fill="#f7f6ef" stroke="#203c37" stroke-width="2.2"/>
+    <path d="M237 510 H313" stroke="#203c37" stroke-width="2.6" stroke-linejoin="round" stroke-linecap="round" fill="none"/>
+    <path d="M313 493 L347 510 L313 527 Z" stroke="#203c37" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round" fill="#e8ede4"/>
+    <circle cx="351.5" cy="510" r="4.5" fill="#f7f6ef" stroke="#203c37" stroke-width="2.2"/>
+    <path d="M356 510 H419" stroke="#203c37" stroke-width="2.6" stroke-linejoin="round" stroke-linecap="round" fill="none"/>
+    <path d="M419 510 V556 H283" stroke="#09677b" stroke-width="2.6" stroke-linejoin="round" stroke-linecap="round" fill="none"/>
+    <path d="M246 556 L283 556" stroke="#09677b" stroke-width="3.1" stroke-linejoin="round" stroke-linecap="round" fill="none"/>
+    <circle cx="246" cy="556" r="3.1" fill="#f7f6ef" stroke="#09677b" stroke-width="2.4"/>
+    <circle cx="283" cy="556" r="3.1" fill="#f7f6ef" stroke="#09677b" stroke-width="2.4"/>
+    <path d="M246 556 H161 V510" stroke="#09677b" stroke-width="2.6" stroke-linejoin="round" stroke-linecap="round" fill="none"/>
+    <text x="265" y="577" font-size="16" text-anchor="middle" fill="#09677b">F 通</text>
+    <circle cx="161" cy="510" r="3.7" fill="#203c37" stroke="none" stroke-width="2"/>
+    <circle cx="419" cy="510" r="3.7" fill="#203c37" stroke="none" stroke-width="2"/>
+    <text x="20" y="604" font-size="17" text-anchor="start" fill="#203c37">D 变成 1 时，Q 仍通过反馈维持 X 为 0。</text>
+  </g>
+</svg>

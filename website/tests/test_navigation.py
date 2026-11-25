@@ -95,7 +95,7 @@ class GeneratedNavigationTests(unittest.TestCase):
         titles = {page.parent.name: page.read_text(encoding="utf-8").splitlines()[0].removeprefix("# ")
                   for page in source.glob("*/README.md")}
         self.assertEqual(slugs[:5], ["electrons-to-diode", "bands-to-channel", "cmos-logic-gates",
-                                     "silicon-to-logic", "voltage-to-clock"])
+                                     "latch-and-divider", "transistor-amplifier"])
         self.assertEqual(entries[0][1], "从电子到二极管")
         self.assertCountEqual(slugs, titles.keys())
         for slug, short in entries:
@@ -175,15 +175,21 @@ class GeneratedNavigationTests(unittest.TestCase):
                 self.assertTrue(name)
                 self.assertNotIn(name, ("这里", "点击这里", "interactive.html"))
 
-    def test_mos_and_cmos_articles_open_their_shared_experiments(self):
-        companion = Path("foundations/bands-to-channel/experiments.html")
-        html = (SITE / companion).read_text(encoding="utf-8")
-        for slug, fragment in (("bands-to-channel", "channel"), ("cmos-logic-gates", "gates")):
-            with self.subTest(article=slug):
+    def test_foundation_articles_link_to_their_experiments(self):
+        panels = (
+            ("bands-to-channel", "bands-to-channel/experiments.html", "channel"),
+            ("cmos-logic-gates", "bands-to-channel/experiments.html", "gates"),
+            ("latch-and-divider", "latch-and-divider/experiment.html", "write"),
+            ("latch-and-divider", "latch-and-divider/experiment.html", "edge"),
+        )
+        for slug, filename, fragment in panels:
+            with self.subTest(article=slug, panel=fragment):
                 page = Path("foundations") / slug / "index.html"
+                companion = Path("foundations") / filename
                 article = (SITE / page).read_text(encoding="utf-8").split("<article", 1)[1].split("</article>", 1)[0]
                 targets = {urljoin(page_url(page), unescape(href)) for href in re.findall(r'href="([^"]+)"', article)}
                 self.assertIn(f"https://example.test/{companion}#{fragment}", targets)
+                html = (SITE / companion).read_text(encoding="utf-8")
                 self.assertEqual(html.count(f'id="{fragment}"'), 1)
 
     def test_series_redirect_targets_homepage_section(self):

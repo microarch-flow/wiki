@@ -25,7 +25,11 @@ SOURCE_TOPICS = tuple(name for name in TOPICS if name not in {"RAM", "HBF", "COM
 INTERCONNECT_TOPICS = frozenset({"BUS", "NOC", "D2D", "PCIE", "COHERENCE",
                                 "SCALEUP", "NETWORK", "SERDES", "CPO"})
 BUS_LEGACY_INDEX = "docs/archive/interconnect/BUS/README.md"
-FOUNDATION_COMPANIONS = (Path("electrons-to-diode/interactive.html"), Path("bands-to-channel/experiments.html"))
+FOUNDATION_COMPANIONS = (
+    Path("electrons-to-diode/interactive.html"),
+    Path("bands-to-channel/experiments.html"),
+    Path("latch-and-divider/experiment.html"),
+)
 SILICON_TO_LOGIC_LEGACY_SECTIONS = {
     "circuit-quantities": "用电压电流电阻和电容描述一个节点",
     "silicon-and-doping": "从硅的四个价电子理解-p-型和-n-型掺杂",

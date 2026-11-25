@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="480" height="488" viewBox="0 0 480 488" role="img" aria-labelledby="title desc">
+  <title id="title">两级锁存器在相反的半周期透明</title>
+  <desc id="desc">数据 D 先经过低电平透明的主锁存器，产生内部输出 M，再经过高电平透明的从锁存器产生 Q。开始时 CLK 为低，D 和 M 均为零，Q 为一。第一个上升沿后 Q 变零。高电平期间 D 升为一，M 和 Q 暂时仍为零。随后 CLK 降低，M 跟随 D 变一，Q 保持零。第二个上升沿后 Q 变一。波形为定性示意。</desc>
+  <defs>
+    <marker id="arrow" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="4" markerHeight="4" orient="auto"><path d="M0 0 8 4 0 8Z" fill="#48635c"/></marker>
+    <style>
+      text {font-family:system-ui,'Noto Sans CJK SC',sans-serif; fill:#203c37}
+      .title {font-size:23px;font-weight:650} .label {font-size:19px;font-weight:600}
+      .note {font-size:17px;fill:#48635c} .clock {fill:none;stroke:#48635c;stroke-width:3}
+      .level {fill:none;stroke:#09677b;stroke-width:3.5;stroke-linejoin:round}
+      .data {stroke:#9b4c28} .guide {stroke:#91a39b;stroke-width:1.2;stroke-dasharray:4 4}
+    </style>
+  </defs>
+  <rect x="1" y="1" width="478" height="486" rx="14" fill="#f7f6ef" stroke="#c6cec2"/>
+  <text x="22" y="36" class="title">高电平期间，D 能一直传到 Q 吗？</text>
+  <g text-anchor="middle">
+    <rect x="63" y="56" width="125" height="65" rx="7" fill="#ecf1eb" stroke="#9aac9d"/>
+    <rect x="282" y="56" width="125" height="65" rx="7" fill="#ecf1eb" stroke="#9aac9d"/>
+    <text x="126" y="82" class="label">主锁存器</text><text x="126" y="108" class="note">CLK 低时透明</text>
+    <text x="345" y="82" class="label">从锁存器</text><text x="345" y="108" class="note">CLK 高时透明</text>
+    <text x="27" y="96" class="label">D</text><text x="235" y="96" class="label">M</text><text x="451" y="96" class="label">Q</text>
+  </g>
+  <g fill="none" stroke="#48635c" stroke-width="2" marker-end="url(#arrow)">
+    <path d="M40 89H60"/><path d="M189 89H216"/><path d="M252 89H278"/><path d="M408 89H435"/>
+  </g>
+  <rect x="161" y="163" width="130" height="199" fill="#e7ece1"/>
+  <rect x="401" y="163" width="46" height="199" fill="#e7ece1"/>
+  <g text-anchor="middle" class="note">
+    <text x="161" y="154">第一次上升沿</text><text x="399" y="154">第二次上升沿</text>
+  </g>
+  <path d="M161 160V365 M291 163V365 M401 160V365" class="guide"/>
+  <g class="label" text-anchor="end">
+    <text x="65" y="196">CLK</text><text x="65" y="247">D</text>
+    <text x="65" y="298">M</text><text x="65" y="349">Q</text>
+  </g>
+  <path class="clock" d="M81 205H161V178H291V205H401V178H447"/>
+  <path class="level data" d="M81 256H225V229H447"/>
+  <path class="level" d="M81 307H305V280H447"/>
+  <path class="level" d="M81 331H175V358H415V331H447"/>
+  <path d="M81 383H446" stroke="#48635c" stroke-width="1.6" marker-end="url(#arrow)"/>
+  <text x="447" y="407" class="note" text-anchor="end">时间</text>
+  <line x1="22" y1="419" x2="458" y2="419" stroke="#c6cec2"/>
+  <text x="23" y="447" class="label">D 在第一个高电平变成 1。</text>
+  <text x="23" y="470" class="note">到下一个低电平，主级才将这个 1 传给 M。</text>
+</svg>
