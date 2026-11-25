@@ -1,51 +1,76 @@
-# Peripheral 开销：为什么 ADC/控制电路常常吃掉主要功耗与面积
+# 阵列已经算完，交付一个 23 还要付出多少？
 
-上级：[电路、外围与计算宏](./README.md)
-相关：[ADC/DAC/SA in CIM](./adc-dac-sa-in-cim.md), [Macro Design Tradeoff Framework](./macro-design-tradeoff-framework.md), [FAB: Process Nodes](../../../chip-development/FAB/wiki/02-front-end-fabrication/process-nodes-and-ppa-tradeoffs.md), [BUS: Interconnect Components](../../../interconnect/BUS/04-microarchitecture-integration/interconnect-components.md)
+<span class="micro-legacy-anchor" id="peripheral-开销为什么-adc控制电路常常吃掉主要功耗与面积"></span>
+<span class="micro-legacy-anchor" id="这页在回答什么问题"></span>
 
-## 这页在回答什么问题
+读窗关上时，两列已经各自产生了正确的电压。如果现在切掉整个宏的电源，下一级能拿到 **2 × 4 + 3 × 5 = 23** 吗？它甚至还没收到第一个整数码。两份电压要有人保存、有人转换，两个码要相加，输出寄存器还得等到对方肯接。要知道花了多少，先说清从哪一拍开始算，到哪一拍才算交付。[沿写入和读出检查结果是否正确](./non-idealities-and-error-sources.md#trace-weight-error) · [一条命令的完整时序](./cim-macro-primitives.md#follow-one-command)
 
-为什么一个 array core 看起来极高效，完整 macro 却没有那么亮眼？因为 CIM 的外围不是辅助细节，而是把 cell 计算变成可用数字结果所必须付出的面积、能耗、时序和验证成本。
+<span class="micro-legacy-anchor" id="peripheral-包括什么"></span>
 
-## Peripheral 包括什么
+## 从接收命令到交付结果，哪些电路动过？ {#cost-per-delivered-result}
 
-Peripheral 可能包括 WL driver、precharge、input encoder、DAC 或 pulse generator、SA 或 ADC、reference、sample/hold、local accumulator、shift-add、output buffer、controller、clocking、calibration storage 和 test logic。具体实现不一定同时包含这些电路，SA 与 ADC 也不一定串接。
+沿用本章的两个子阵列、一只共享 ADC（模数转换器）和一个输出槽。权重已经写好，参考已经校准。我们从上升沿 E0 宏接收输入 2、3 和有效命令开始计，到下游在上升沿同时看到 `out_valid=1` 和 `out_ready=1` 收下结果为止。先假设下游一直就绪。为把时间换成秒，本页取 20 ns 一拍，其中有效积分窗占 10 ns，给建立和锁存留下余量。下面的时序、面积与能量都是可复算的教学假设。
 
-不同论文对 peripheral 的统计口径差异很大。有人只报 array energy，有人包含 ADC 但不含 DAC，有人包含 macro control 但不含外部 buffer。没有 breakdown 的 TOPS/W 只能作为局部线索，不能作为架构结论。
+| 经过的区间 | 电路实际做什么 | 区间结束时，什么东西仍要保存？ |
+| --- | --- | --- |
+| E0 到 E1 | 锁存命令和输入，两个积分器复位，建立读偏置。 | 输入 2、3 仍在行驱动器一侧。 |
+| E1 到 E2 | 两行分别用 40、60 mV 驱动 40、50 µS 的权重，1.6、3.0 µA 各在 1 pF 上积分 10 ns。 | E2 两个保持节点各留下 16、30 mV。行线可以结束驱动。 |
+| E2 到 E4 | 选择器先接 A，再接 B。四位 ADC 每拍完成一次转换，每码 2 mV。 | E3 锁存码 8，B 仍须保持电压；E4 再锁存码 15，B 才可释放。 |
+| E4 到 E5 | 两个码扩展到五位后相加，写输出寄存器。 | E5 **之后**结果 23 和有效信号就绪。 |
+| E5 到 E6 | 输出电路保持 23 和有效信号，等接收沿。 | 若下游就绪，E6 交付一次，输出槽腾空。 |
 
-## 三条 Paradigm 的外围重心
+只算单元里 10 ns 的导电耗能，按理想电压和恒定电流得到 **(40 mV × 1.6 µA + 60 mV × 3.0 µA) × 10 ns = 2.44 fJ**。这个计算只看两处单元电压乘电流。它没有告诉我们谁给阵列连线充电、给积分器和参考供电，或把两份样本转换成码。时序表指出了这些电路各自工作的时刻，也指出了 B 等待时仍必须保住的状态。[驱动、感放和转换器各负责什么](./adc-dac-sa-in-cim.md)
 
-Analog CIM 的外围重心是 DAC/ADC/reference/calibration。低比特 ReRAM/Flash MVM 的 array energy 可以很低，但 column ADC、input drive、write-verify 和数字校正会把优势压缩。
+## 同一个宏，为什么面积占六成，能量占比却不同？ {#外围占比如何计算}
 
-Digital CIM 的外围重心是 local logic、popcount、shift-add、accumulator、routing 和 SRAM read stability。它没有高精度 ADC 的压力，但 bit-serial 支持 INT8 时，周期和 partial sum storage 会显著上升。
+给上述单 ADC 宏做一份假设预算。面积按互不重叠的布局区域计。能量分成两部分：有动作才付的事件能量，以及宏保持上电时每个时钟区间都付的背景能量。表内的“阵列”包括单元及内部连线负载；即使由驱动器电源给这些线充电，也只在阵列行记一次。驱动、转换和其余读出电路都归外围。各行事件能量合计一次命令从接收到交付的全部动作，不含随后另加的背景，也不含重新编程权重。
 
-Mixed-signal CIM 的外围最容易被低估，因为它把 analog array、SA/ADC、数字校正和 buffer 分散在多个模块里。评估时必须统一统计到 macro boundary。
+| 宏内区域 | 面积（µm²） | 交付这一份 23 的事件能量（pJ） |
+| --- | ---: | ---: |
+| 两个阵列的单元和内部布线 | 40 | 2，包含上面算过的单元导电和阵列线活动 |
+| 输入编码、行驱动、偏置建立、积分和保持 | 15 | 2，两条输入路径合计 |
+| 选择器、共享 ADC 和转换所需的参考驱动 | 20 | 4，两份样本各转换一次，每次 2 |
+| 命令控制、局部累加、输出寄存器及有效信号 | 15 | 2，含本次命令和交付握手的切换 |
+| 校准参数存储、可测性设计与测试逻辑 | 10 | 0，本次沿用已有校准值，未重新校准或测试 |
+| **全宏** | **100** | **10** |
 
-## 外围占比如何计算
+校准参数静态保持产生的消耗计入背景。再假定在当前供电和 20 ns 周期下，每经过一拍，阵列背景耗 **0.2 pJ**，外围偏置、漏电及持续运行的时钟等共耗 **0.3 pJ**。已经记在转换一行的参考切换不会在这里重复收费。E0 到 E6 有六个区间。算一次交付，阵列用 2 + 6 × 0.2 = **3.2 pJ**，外围用 8 + 6 × 0.3 = **9.8 pJ**，合计 **13 pJ**。
 
-当 cell 面积小、输出列多、转换精度高或 bit-serial 累加次数多时，外围可能成为主要开销。但面积、瞬时功率和一次任务的能耗是不同分母。应分别记录电路块与测量范围，再计算 `E_peripheral / E_macro`、`A_peripheral / A_macro`。这些比例随架构、活动率、工作点和边界变化，不能假设通用数值。
+于是外围占面积 **60/100 = 60%**，占本次任务能量 **9.8/13 ≈ 75.4%**。若只统计事件能量，则会报告 8/10 = 80%。这三个比例都有明确分母。瞬时功率还要看各区间的供电电流波形，凭一次任务的总能量求不出来。
 
-## Macro 指标的最低披露要求
+现在让下游在 E6 撤下就绪，到 E7 才接收，正好是命令篇演示的停顿。两份样本都已转换，输出槽只需稳定保持。按本表假定，这段额外保持不再触发转换或写寄存器，只多付一拍背景，于是每个结果的能量从 13 上升到 **13.5 pJ**。若用整个交付时间算平均功率，却从 13 pJ / 120 ns ≈ **108 µW** 变成 13.5 pJ / 140 ns ≈ **96 µW**。宏用掉更多能量，平均功率仍可下降，因为它占用的时间更长。
 
-| 项目 | 为什么必须披露 |
-| --- | --- |
-| array size | 决定 IR drop、parallelism 和 peripheral amortization |
-| ADC/DAC bit 与共享比 | 决定 analog 路线有效精度和吞吐 |
-| accumulator width | 决定 digital/mixed-signal partial sum 成本 |
-| buffer 容量 | 决定 macro 是否能独立喂饱 |
-| controller/calibration | 决定真实面积、能耗和启动/运行成本 |
-| measured vs simulated | 决定结论成熟度 |
+## 加第二只 ADC，少等的一拍值不值得？
 
-## 与系统互连的边界
+E2 时两份样本已经齐了。一只 ADC 才需要把 B 留到下一拍。如果给 A、B 各配一只同速 ADC，并提供能在同一沿锁存两份码的端口，E2 到 E3 就可同时转换。E3 到 E4 加好，E4 之后结果有效，下游一直就绪时 E5 收下。与原设计相比，命令到交付从六拍缩为五拍，**两次转换一次也没少**。这只是单命令延迟；连续命令能隔多久进入，还受输入槽、结果槽和控制器是否允许重叠制约。[共享 ADC 的转换次数、启动间隔和排队](./adc-dac-sa-in-cim.md#shared-adc-schedule)
 
-Peripheral 不是最后一层开销。macro 输出还要进入 tile buffer、local reduction、NoC、memory-mapped command path 或 host interface。05 章会连接 NoC wiki 的 [memory-centric NoC](../../../interconnect/NOC/06-ai-noc-specifics/memory-centric-noc.md)，解释为什么 macro-level saving 会在系统层继续衰减；BUS wiki 的 interconnect 组件则适合理解 activation/result transfer 和 host-visible movement。
+试着给这次修改定价。只在教学预算里假定，扣除省掉的选择器、加上第二只 ADC 及配套采数端口和布线后，净增 **22 µm²**。宏面积变成 122 µm²，阵列仍为 40 µm²。记每个结果多出的事件能量为 d，宏每拍多出的背景能量为 b。新设计无等待时，每个结果用 **10 pJ + d + 5 拍 × (0.5 pJ/拍 + b)**。它要低于原设计的 13 pJ，需要 **d + 5 拍 × b < 0.5 pJ**。举例取 d = 0.2 pJ、b = 0.1 pJ/拍，新宏交付一次用 13.2 pJ，这次换来了一拍时间，同时增加了面积和能量。真实设计中的 d、b 要在相同输出精度、时钟、供电、温度和活动序列下求取。
 
-工艺节点也会改变 peripheral 口径。Digital SRAM-CIM 更能跟随主流 CMOS scaling；analog/mixed-signal CIM 受 matching、reference、layout parasitic、低电压 headroom 和 analog-friendly node 约束，不能把 digital PPA scaling 直接套到 ADC/DAC 和 reference 上。
+还可以问谁真用得上第二只 ADC。如果多数命令只启用子阵列 A，固定接 B 的 ADC 即使闲着，也不能替 A 提前完成那次转换。它仍占布局面积，待机能量取决于能否关断以及唤醒代价。ISAAC 的架构论文给出了另一种安排：128 个保持电路接住同时产生的列结果，然后顺序交给一只 ADC。作者为那套架构选择了转换速率和流水时序；这里的 20 ns、面积与 pJ 数并非 ISAAC 的测量值。[ISAAC 原论文的阵列、保持与共享转换，第 5 页](https://svivek.com/research/publications/shafiee2016isaac.pdf#page=5)
 
-## 一句话理解
+## 校准一次算一条，还是让八条命令一起分？ {#macro-指标的最低披露要求}
 
-Peripheral overhead 是 CIM 从物理原理走向产品指标的最大过滤器；没有外围口径，array TOPS/W 没有架构意义。
+回到单 ADC 宏。若换一组权重后要编程、写后验证、校准并装入参数，先假设这些动作共需 **24 pJ**，已经包含启动期间的背景。只交付一个 23 就换下一组，这个结果分到 24 + 13 = **37 pJ**。若同一组权重连续用八次，启动每份只分 3 pJ。还剩一个小问题：上一条在 E6 被接走后，控制器才重新给出接收许可，下一条最早 E7 进入。本例不允许输入预取，七个相邻命令间各有一个没有计算的上电区间，也要付背景。
 
-## 研究启示
+仍按表中每份输入的事件预算、消费者总是就绪，八次总能量为 **24 + 8 × 13 + 7 × 0.5 = 131.5 pJ**，平均约 **16.44 pJ/结果**。如果输入预先排队，允许在同一沿交付旧结果并接收下一条，或者停顿时可以断电，空档的算法就会改变。省掉这七段空档需要相应的接口、控制和验证。校准重复的周期也要按工作温度、权重更新时间和目标误差选定。
 
-研究应把 peripheral breakdown 作为主结果，而不是附录。产业实现会优先选择外围可控、测试可闭合、软件可建模的 macro，即使它牺牲一部分理想 array 能效。
+读一个真实宏的预算时，可以把缺的数字接回这道题。阵列行列数和实际启用的行列决定多少输出共用行驱动、哪些列会空闲，以及线阻压降和布线负载；输入 DAC、输出 ADC 的位数、参考、共享关系决定能否在给定时隙量准。局部累加器的位宽、缓冲容量和读写端口决定能否保住中间结果、下一批能否及时进入。控制、时钟、校准存储和测试电路也要列入面积，并区分其启动和每次读出成本。逐项标清来自硅片测量、版图后仿真还是架构估算，才能知道哪一个数字还需要验证。
+
+## 换一种电路，外围还会占这么多吗？ {#三条-paradigm-的外围重心}
+
+模拟 ReRAM 或 Flash 宏可能在列里一次合并很多项，权重驻留期间的单元能量很低。扩大阵列后的行驱动、列转换、参考、写后验证与数字校正仍要付费。列数更多、要求分辨的档位更密，或者阵列单元占得更小，都会改变外围与阵列的比例。输入可选多位 DAC 或定幅脉冲发生器；输出有的用感测放大器（SA）判一位，有的把列量送入 ADC。同一条读出路径未必把 SA 和 ADC 串上一遍。
+
+数字 SRAM-CIM 要把面积和能量分给预充、字线驱动、局部布尔逻辑、计数树（popcount）、移位加法、寄存器和路由。还要验证多行工作时的读稳定性。若为支持 INT8 而把位平面逐拍送入，局部读写和部分和保存会反复发生。混合信号宏则像本文算例那样，模拟积分、转换、数字校正和输出缓冲散在不同电路里；可以逐块归类，最后须用同一个宏边界加总。
+
+工艺改变时，数字逻辑和模拟外围也要分别估。数字 SRAM-CIM 的局部逻辑可以利用 CMOS 逻辑密度的改善，SRAM 单元和长连线仍有自己的限制。ADC、DAC 与参考电路要满足匹配、噪声和摆幅要求；较低电源电压还可能压缩电压余量。例如，Pelgrom 等在其测试工艺中量过成对 MOS 器件，阈值失配的方差随器件面积减小而增大。为了维持比较门槛的误差预算，匹配器件未必能跟着数字门按同一比例缩小；布局寄生也须重新提取。[MOS 晶体管匹配的原始测量](https://ewh.ieee.org/r5/denver/sscs/References/1989_10_Pelgrom.pdf) · [工艺节点对功耗、性能与面积的影响](../../../chip-development/FAB/wiki/02-front-end-fabrication/process-nodes-and-ppa-tradeoffs.md)
+
+<span class="micro-legacy-anchor" id="一句话理解"></span>
+<span class="micro-legacy-anchor" id="研究启示"></span>
+
+## 23 离开宏之后，谁还在为它耗能？ {#与系统互连的边界}
+
+在我们的表里，下一级收下 23 的那个沿就是终点。只计宏内电路和宏侧的握手动作。接收方把结果写入 tile 缓冲的能量属于系统侧；接下来还可能送片上互连做局部归约，再由内存映射命令或主机接口取走。若比较加速器的整次任务，应让两边都从同一输入位置起步，到同一消费者实际收下符合精度要求的输出为止，并纳入映射利用率、权重与激活传输，以及校准按多少结果摊销。引用 TOPS/W 时还要说明操作计数方式，例如一次乘加按一个还是两个操作计。[面向存储的片上互连](../../../interconnect/NOC/06-ai-noc-specifics/memory-centric-noc.md) · [主机可见的数据传输经过哪些互连组件](../../../interconnect/BUS/04-microarchitecture-integration/interconnect-components.md)
+
+真实芯片的作者也会为不同的问题画不同的边界。HERMES 的峰值矩阵向量乘（MVM）测量让 64 核并行，文中计入 PCM 阵列、ADC 和输入脉宽调制；另测一个跨八核的 ResNet-9 层时，才把该层的片上链路归并和局部数字处理也算进去。NeuRRAM 的作者同样标明，所列的峰值能效对应阵列 100% 利用率，未计中间数据传输。把论文中的某个百分比搬到本文的 13 pJ 表里，无法替代这些边界说明。[HERMES 作者稿的功率测量方法，第 10 页](https://arxiv.org/pdf/2212.02872#page=10) · [NeuRRAM 原论文的峰值能效口径](https://pmc.ncbi.nlm.nih.gov/articles/PMC9385482/)
+
+现在可以用工作负载作决定了。如果下游永远赶不上第一个输出，第二只 ADC 节省的那一拍能不能变成更早的一次交付？它占的面积，是否更值得用来放一个输出缓冲，或用来保存校准参数？[下一篇从工作负载选择计算宏的参数](./macro-design-tradeoff-framework.md) · [电路、外围与计算宏](./README.md)

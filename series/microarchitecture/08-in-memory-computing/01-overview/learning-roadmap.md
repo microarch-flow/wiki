@@ -31,7 +31,7 @@
 
 1. [问题定义](./problem-statement.md)
 2. [一条点积命令进了 CIM 宏，结果在哪一拍才算交付？](../04-circuit-and-macro/cim-macro-primitives.md)
-3. [Peripheral 开销](../04-circuit-and-macro/peripheral-overhead.md)
+3. [阵列已经算完，交付一个 23 还要付出多少？](../04-circuit-and-macro/peripheral-overhead.md#cost-per-delivered-result)
 4. [从 Macro 到 System](../05-architecture-and-system/from-macro-to-system.md)
 5. [Dataflow Mapping](../05-architecture-and-system/dataflow-mapping-on-cim.md)
 6. [Memory Hierarchy with CIM](../05-architecture-and-system/memory-hierarchy-with-cim.md)
@@ -49,7 +49,7 @@
 1. [CIM/PIM/NMC taxonomy](./cim-pim-nmc-taxonomy.md)
 2. [同样算出 23，模拟和数字存内计算怎样公平比较？](../03-compute-paradigms/analog-vs-digital-tradeoff-map.md#same-dot-product)
 3. [比较器每次只判一位，ADC 怎样把 16 mV 和 30 mV 读成 8 和 15？](../04-circuit-and-macro/adc-dac-sa-in-cim.md)
-4. [Non-Idealities and Error Sources](../04-circuit-and-macro/non-idealities-and-error-sources.md)
+4. [点积从 23 变成 26，怎样查出偏差发生在哪里？](../04-circuit-and-macro/non-idealities-and-error-sources.md#trace-weight-error)
 5. [Metrics Glossary](../09-research-frontier/metrics-glossary.md)
 6. [Paper Review Template](../09-research-frontier/paper-review-template.md)
 7. [Open Problems](../09-research-frontier/open-problems.md)

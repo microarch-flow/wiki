@@ -1,0 +1,48 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 700 610" role="img" aria-labelledby="title desc">
+  <title id="title">怎样把同一次写入后的读间波动、重写、等待和读扰动分开检查</title>
+  <desc id="desc">第一组实验在同一位置写入相同目标。一次写入后做四次读；重写后，在相同延时、温度与读条件下再做四次读。分别检查同一写入后的读数散布和重复写入后组均值的变化。第二组实验取匹配的初始状态。短等组和长等组都没有中途读，分别在短时与长时做一次相同条件的终读，比较等待时间的影响。长等加读组和长等组等候同样长，到同一时刻才终读，只有长等加读组在其间插入额外读，比较这些读操作的影响。实际估计各组分布需多次重复。</desc>
+  <defs>
+    <g id="insert"><circle r="6" fill="#fafbf6" stroke="#597e63" stroke-width="2.5"/></g>
+    <g id="final"><path d="M0 -7L7 0L0 7L-7 0Z" fill="#8d5c3e"/></g>
+    <g id="clock"><path d="M0 -7V7" stroke="#698473" stroke-width="2"/></g>
+  </defs>
+  <style>
+    text{font-family:system-ui,"Noto Sans CJK SC","PingFang SC",sans-serif;fill:#173c32}
+    .title{font-size:24px;font-weight:680}.heading{font-size:21px;font-weight:660}
+    .label{font-size:19px;font-weight:630}.copy{font-size:18px;fill:#3b5c4f}.mid{text-anchor:middle}
+    .line{stroke:#859d89;stroke-width:2.1;fill:none}
+  </style>
+  <rect width="700" height="610" rx="14" fill="#f2f5ed"/>
+  <text x="18" y="35" class="title">读数变了，怎样分开检查重写、等待和插读？</text>
+
+  <rect x="16" y="54" width="668" height="189" rx="8" fill="#fafbf6" stroke="#afc2b1"/>
+  <text x="30" y="85" class="heading">同一位置写同一目标，每次写后各读四次</text>
+  <text x="30" y="113" class="copy">两批匹配写后延时、读间隔、温度和读条件。</text>
+  <g fill="#e1ebde" stroke="#a7bba6">
+    <rect x="30" y="129" width="140" height="31" rx="4"/><rect x="30" y="169" width="140" height="31" rx="4"/>
+  </g>
+  <text x="100" y="152" class="label mid">一次写入后</text><text x="100" y="192" class="label mid">同目标重写后</text>
+  <g class="copy mid">
+    <text x="218" y="152">读 1</text><text x="284" y="152">读 2</text><text x="350" y="152">读 3</text><text x="416" y="152">读 4</text>
+    <text x="218" y="192">读 1</text><text x="284" y="192">读 2</text><text x="350" y="192">读 3</text><text x="416" y="192">读 4</text>
+  </g>
+  <path d="M460 131V154 M460 172V195" stroke="#b7c8b7" stroke-width="2"/>
+  <text x="478" y="152" class="label">本批读数的均值</text><text x="478" y="192" class="label">新一批读数的均值</text>
+  <text x="30" y="226" class="copy">先看每批内部的散布，再比较多批均值。图中两批只示意取样层次。</text>
+
+  <rect x="16" y="257" width="668" height="266" rx="8" fill="#fafbf6" stroke="#afc2b1"/>
+  <text x="30" y="288" class="heading">延长等待，还是在等待期间多读了几次？</text>
+  <text x="30" y="316" class="copy">每组从匹配的初始状态出发，采用同样的温度、读偏置和终读方式。</text>
+  <text x="173" y="354" class="copy mid">起点</text><text x="337" y="354" class="copy mid">短等待时刻</text><text x="612" y="354" class="copy mid">长等待时刻</text>
+  <path d="M173 364V482 M337 364V482 M612 364V482" stroke="#b9c8b7" stroke-dasharray="3 4" fill="none"/>
+  <text x="30" y="391" class="label">短等</text><text x="30" y="433" class="label">长等</text><text x="30" y="475" class="label">长等＋插读</text>
+  <path class="line" d="M173 384H337 M173 426H612 M173 468H612"/>
+  <use href="#clock" x="173" y="384"/><use href="#clock" x="173" y="426"/><use href="#clock" x="173" y="468"/>
+  <use href="#final" x="337" y="384"/><use href="#final" x="612" y="426"/><use href="#final" x="612" y="468"/>
+  <use href="#insert" x="267" y="468"/><use href="#insert" x="382" y="468"/><use href="#insert" x="497" y="468"/>
+  <use href="#insert" x="182" y="504"/><text x="199" y="511" class="copy">中途插入的读</text>
+  <use href="#final" x="388" y="504"/><text x="405" y="511" class="copy">用于比较的终读</text>
+
+  <text x="18" y="554" class="label">比较短等与长等，两组都不插读，只有等待时长不同。</text>
+  <text x="18" y="586" class="label">比较长等与长等＋插读，两组同时终读，只有额外读次数不同。</text>
+</svg>
