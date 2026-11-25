@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="480" height="530" viewBox="0 0 480 530" role="img" aria-labelledby="title desc">
+  <title id="title">同一时间轴上的负载电流、上游电流与去耦电容电流</title>
+  <desc id="desc">图中给定相对原稳态的电流增量。负载在零至三纳秒额外取用 0.10 A。上游电流到一纳秒才开始增加，在一至二纳秒线性增至 0.10 A，保持至四纳秒，再于五纳秒返回原值。电容向负载送出的电流等于负载和上游的差。正面积和负面积的大小各为 0.15 nC，表示电容放出后又补回的电荷。</desc>
+  <rect x="1" y="1" width="478" height="528" rx="15" fill="#f7f6ef" stroke="#c4d0c4"/>
+  <g font-family="system-ui, 'Noto Sans CJK SC', 'Microsoft YaHei', sans-serif" fill="#203c37">
+    <text x="20" y="34" font-size="23" font-weight="700">上游电流跟上之前，谁来补上差额？</text>
+    <text x="20" y="62" font-size="17" fill="#526861">给定负载、上游两条曲线。三行均画电流增量。</text>
+    <g stroke="#d1dacf" fill="none" stroke-dasharray="3 4">
+      <path d="M82 111v53 M150 111v53 M218 111v53 M286 111v53 M354 111v53 M422 111v53"/>
+      <path d="M82 213v53 M150 213v53 M218 213v53 M286 213v53 M354 213v53 M422 213v53"/>
+      <path d="M82 316v105 M150 316v105 M218 316v105 M286 316v105 M354 316v105 M422 316v105"/>
+    </g>
+    <g fill="none" stroke="#adbdb0">
+      <path d="M63 159H452 M63 261H452 M63 369H452"/>
+    </g>
+    <text x="20" y="95" font-size="19" font-weight="650">负载向本地电源取用的电流</text>
+    <text x="20" y="198" font-size="19" font-weight="650">上游送到本地电源的电流</text>
+    <text x="20" y="300" font-size="19" font-weight="650">电容向负载送出的电流 = 负载 − 上游</text>
+    <g fill="#526861" font-size="15" text-anchor="end">
+      <text x="59" y="122">+0.10 A</text><text x="59" y="164">0</text>
+      <text x="59" y="224">+0.10 A</text><text x="59" y="266">0</text>
+      <text x="59" y="332">+0.10 A</text><text x="59" y="374">0</text><text x="59" y="416">−0.10 A</text>
+    </g>
+    <path id="load" d="M63 159H82V117H286V159H452" fill="none" stroke="#a54a22" stroke-width="3.5" stroke-linejoin="round"/>
+    <path id="upstream" d="M63 261H150L218 219H354L422 261H452" fill="none" stroke="#086a7e" stroke-width="3.5" stroke-linejoin="round"/>
+    <path id="released-charge" d="M82 369V327H150L218 369Z" fill="#d7e9dd"/>
+    <path id="restored-charge" d="M286 369V411H354L422 369Z" fill="#e4e7f1"/>
+    <path id="capacitor" d="M63 369H82V327H150L218 369H286V411H354L422 369H452" fill="none" stroke="#355c4c" stroke-width="3.5" stroke-linejoin="round"/>
+    <g font-size="16" font-weight="650">
+      <text x="98" y="353" fill="#265640">放电</text><text x="301" y="396" fill="#394b72">补回</text>
+    </g>
+    <path d="M68 434H452 M82 430v8 M150 430v8 M218 430v8 M286 430v8 M354 430v8 M422 430v8" fill="none" stroke="#72867a"/>
+    <g text-anchor="middle" font-size="16" fill="#526861">
+      <text x="82" y="457">0</text><text x="150" y="457">1</text><text x="218" y="457">2</text><text x="286" y="457">3</text><text x="354" y="457">4</text><text x="422" y="457">5 ns</text>
+    </g>
+    <path d="M20 474H460" fill="none" stroke="#c4d0c4"/>
+    <text x="20" y="505" font-size="17">两块阴影面积各为 0.15 nC，电容电荷回到起点。</text>
+  </g>
+</svg>
