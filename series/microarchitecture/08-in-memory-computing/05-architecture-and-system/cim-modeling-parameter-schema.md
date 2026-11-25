@@ -127,7 +127,7 @@ N_adc_conv = S
 
 当所有样本可以分配到任意 ADC、且分配均衡时，`rounds = ceil(S / A)`。假设 ADC 的启动间隔相同，没有重试和额外等待，最后一次完成为 `first_start + (rounds - 1) * adc_ii + adc_latency`。这些条件不成立时，应按实际 mux、映射和资源状态逐项调度。
 
-8 个独立样本均衡分配到 2 个 ADC：8 次转换、4 轮；分给 4 个 ADC：仍是 8 次转换、2 轮。反例：4 个有效样本都只能到 ADC 0，即使设备共有 4 个 ADC，也需 4 轮。`S=0` 时没有转换或最后完成事件；`S>0` 且 `A=0` 时不可服务。若 ADC latency 为 3、II 为 1，同一时刻就绪的 8 个样本用 2 个 ADC，从周期 0 启动，到周期 6 最后完成；不能将 4 轮直接乘以 latency。
+8 个独立样本均衡分配到 2 个 ADC：8 次转换、4 轮；分给 4 个 ADC：仍是 8 次转换、2 轮。反例：4 个有效样本都只能到 ADC 0，即使设备共有 4 个 ADC，也需 4 轮。`S=0` 时没有转换或最后完成事件；`S>0` 且 `A=0` 时不可服务。若 ADC latency 为 3、II 为 1，同一时刻就绪的 8 个样本用 2 个 ADC，从周期 0 启动，到周期 6 最后完成；不能将 4 轮直接乘以 latency。[跟踪八个样本各在哪一拍进入 ADC、哪一拍完成](../04-circuit-and-macro/adc-dac-sa-in-cim.md#shared-adc-schedule)
 
 `adc_share` 的单位是列/ADC；均匀整除的例子里 `A=cols/adc_share`，不整除或不规则连接时应描述实际映射。空列是否转换取决于门控。改变共享度也可能改变 ADC、mux、buffer 和 reference 的能耗，不能据此保证总能耗不变。
 
