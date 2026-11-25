@@ -28,4 +28,4 @@ Ethernet 的 MAC 与 PHY 由 [IEEE 802.3](https://standards.ieee.org/ieee/802/10
 
 先问谁提交操作，再问数据经过哪些资源，最后问哪个事件允许消费者继续。比如源端 NIC 已读取发送缓冲区，只能说明该缓冲区的某一生命周期阶段结束；它不证明远端应用已完成计算。
 
-后续用[主机到网卡路径](host-nic-data-path.md)连接这些对象，用[RDMA 完成](../03-rdma-endpoints/completion-ordering-and-lifetime.md)区分具体事件。芯片内部缓存副本的协议仍由[一致性专题](../../COHERENCE/README.md)解释。
+下一篇沿[同一笔 4 KiB 的 TCP 与 RDMA 传输](host-nic-data-path.md)串起应用、网卡和缓冲区，并比较两端各自观察到的完成事件。芯片内部缓存副本的协议仍由[一致性专题](../../COHERENCE/README.md)解释。

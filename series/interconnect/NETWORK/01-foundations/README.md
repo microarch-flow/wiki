@@ -7,7 +7,7 @@
 ## 阅读顺序
 
 1. [对象与分层](objects-and-layers.md)：应用、端点、包与帧分别表示什么。
-2. [主机与 NIC 路径](host-nic-data-path.md)：软件、设备、内存和网络怎样衔接。
+2. [TCP、RDMA 与缓冲区复用](host-nic-data-path.md)：跟踪同一笔 4 KiB 传输，判断两端何时可以使用缓冲区。
 3. [帧、MTU 与包率](frame-mtu-and-rate.md)：把额定速率换算成明确口径的预算。
 
 ## 阅读提示

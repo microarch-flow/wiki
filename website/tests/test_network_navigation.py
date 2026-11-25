@@ -12,7 +12,9 @@ ROOT = Path(__file__).resolve().parents[2]
 SITE = ROOT / ".site-build/site"
 SOURCE = ROOT / "series/interconnect/NETWORK"
 sys.path.insert(0, str(ROOT / "website"))
-from hooks import reading_items  # noqa: E402
+from hooks import NETWORK_COMPLETION_REDIRECT, reading_items  # noqa: E402
+
+COMPLETION_OLD_URL = NETWORK_COMPLETION_REDIRECT.removesuffix(".md") + "/"
 
 
 def location(source):
@@ -40,11 +42,12 @@ class NetworkNavigationTests(unittest.TestCase):
     def test_reading_lists_cover_all_articles(self):
         chapters = sorted(p for p in SOURCE.iterdir() if (p / "README.md").is_file())
         self.assertEqual(len(chapters), 7)
-        self.assertEqual([len(reading_items(p)) for p in chapters], [3, 4, 4, 4, 3, 3, 5])
+        self.assertEqual([len(reading_items(p)) for p in chapters], [3, 4, 3, 4, 3, 3, 5])
         for chapter in chapters:
             items = reading_items(chapter)
             actual = [filename for filename, _ in items]
-            expected = {p.name for p in chapter.glob("*.md") if p.name != "README.md"}
+            expected = {p.name for p in chapter.glob("*.md")
+                        if p.name != "README.md" and location(p) != COMPLETION_OLD_URL}
             self.assertEqual(set(actual), expected, chapter.name)
             self.assertEqual(len(actual), len(expected))
             self.assertIn(f"]({chapter.name}/README.md)", (SOURCE / "README.md").read_text())
@@ -59,6 +62,9 @@ class NetworkNavigationTests(unittest.TestCase):
             loc = location(source)
             page = (SITE / loc / "index.html").read_text()
             with self.subTest(page=loc):
+                if loc == COMPLETION_OLD_URL:
+                    self.assertFalse(any(target.startswith(loc) for target in indexed))
+                    continue
                 self.assertIn(loc, indexed)
                 full = re.search(r"^# (.+)$", source.read_text(), re.M)[1]
                 # Chinese tokenization inserts zero-width word separators.
@@ -86,6 +92,24 @@ class NetworkNavigationTests(unittest.TestCase):
                 self.assertIn(short, unescape(link[1]))
                 positions.append(link.start())
             self.assertEqual(positions, sorted(positions), chapter.name)
+
+    def test_completion_bookmarks_land_on_the_matching_sections(self):
+        page = (SITE / COMPLETION_OLD_URL / "index.html").read_text()
+        menu = re.search(r'<div [^>]*data-article-redirect[^>]*>(.*?)</div>', page, re.S)
+        self.assertIsNotNone(menu)
+        links = re.findall(r'<li><span id="([^"]+)"></span>\s*<a href="([^"]+)">', menu[1])
+        expected = {
+            "排序完成与缓冲区复用哪个事件允许程序继续": "completion",
+            "四个阶段分别允许什么": "completion",
+            "排队顺序不等于任意可见顺序": "queues",
+            "通知之后还有本地消费者": "completion",
+        }
+        self.assertEqual([key for key, _ in links], list(expected))
+        canonical = "/NETWORK/wiki/01-foundations/host-nic-data-path/"
+        for key, href in links:
+            target = urlsplit(urljoin("https://example.test/" + COMPLETION_OLD_URL, unescape(href)))
+            self.assertEqual((target.path, target.fragment), (canonical, expected[key]))
+            self.assertEqual(page.count(f'id="{key}"'), 1)
 
     def test_legacy_ids_are_unique_and_local_article_links_resolve(self):
         fixture = json.loads((ROOT / "website/tests/fixtures/interconnect-legacy-anchors.json").read_text())
