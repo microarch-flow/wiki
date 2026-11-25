@@ -30,8 +30,8 @@
 ## 03 Compute Paradigms — 纵轴
 
 - [章导读](./03-compute-paradigms/README.md)
-- [Analog CIM：用电流/电压代表乘累加结果](./03-compute-paradigms/analog-cim-fundamentals.md)
-- [Analog CIM 深入：非理想性、噪声、Variation、温漂](./03-compute-paradigms/analog-cim-deep-dive.md)
+- [把输入拆成两个位平面，模拟阵列怎样算出 23？](./03-compute-paradigms/analog-cim-fundamentals.md)
+- [同一个输入反复读，怎样找出部分和里的误差？](./03-compute-paradigms/analog-cim-deep-dive.md)
 - [Digital CIM：Bitwise Compute 与 SRAM 阵列的结合](./03-compute-paradigms/digital-cim-fundamentals.md)
 - [Digital CIM 深入：Bit-Serial、Bit-Parallel、Popcount](./03-compute-paradigms/digital-cim-deep-dive.md)
 - [Mixed-Signal CIM：在哪一段切换、为什么切换](./03-compute-paradigms/mixed-signal-cim.md)

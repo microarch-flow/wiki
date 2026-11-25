@@ -1,7 +1,7 @@
 # 非理想性总览：Noise、Mismatch、Variation、Retention
 
 上级：[电路、外围与计算宏](./README.md)
-相关：[Analog CIM 深入](../03-compute-paradigms/analog-cim-deep-dive.md), [ReRAM-CIM 深入](../02-memory-technologies/reram-cim-deep-dive.md), [FAB: Process Nodes and PPA](../../../chip-development/FAB/wiki/02-front-end-fabrication/process-nodes-and-ppa-tradeoffs.md)
+相关：[同一个输入的重复读出](../03-compute-paradigms/analog-cim-deep-dive.md), [ReRAM-CIM 深入](../02-memory-technologies/reram-cim-deep-dive.md), [FAB: Process Nodes and PPA](../../../chip-development/FAB/wiki/02-front-end-fabrication/process-nodes-and-ppa-tradeoffs.md)
 
 ## 这页在回答什么问题
 
@@ -16,6 +16,19 @@
 | circuit | SA offset、ADC quantization、DAC mismatch、reference noise、thermal noise | 判决、量化和有效位数 |
 | temporal | retention、aging、temperature drift、write noise | 校准失效和长期稳定性 |
 | system | mapping mismatch、tile reduction error、model sensitivity | 最终 accuracy 和重训练成本 |
+
+### 读数从 23 变成 26，先量哪一段？ {#trace-weight-error}
+
+先记住这列的标定：每个点积单位对应 0.2 µA。低位窗只打开第二行，高位窗把两行都打开。在这个教学例中，第二行单元的电导从目标 50 µS 写到了 56 µS。两次选通都加 20 mV，因此两个窗各多出 0.12 µA。低位列电流从 1.00 变到 1.12 µA，高位从 1.80 变到 1.92 µA。按最近码舍入，两窗各多报一个码。高位码在数字端乘 2，所以结果共多出 3。
+
+只看到最后的 26，还不能断定单元写偏了。可以先只开第一行，看另一条支路是否也有偏差，再用已知参考电流直接激励读出链，跳过单元和行线。下面这张图只改变第二行电导，把两个 ADC 判决分别画出。想比较另外两种也能产生 26 的原因，可以顺着相同的两个观察点做对照。[逐次读数与对照实验](../03-compute-paradigms/analog-cim-deep-dive.md#repeat-read)
+
+<figure class="micro-diagram" tabindex="0" aria-label="第二行写偏时，低位与高位的电流分别越过各自的判决门槛" markdown="1">
+
+![同一处写入偏差让两次读数分别跨过 1.10 与 1.90 µA 的门槛。两个码都增加 1，按位权合并后结果增加 3。](../03-compute-paradigms/img/analog-error-readout.svg)
+
+<figcaption>与模拟求值深入篇共用此图。两次转换采用相同刻度。最终误差由两次判决及各自的位权共同决定。</figcaption>
+</figure>
 
 ## 三条 Paradigm 的误差形态
 
