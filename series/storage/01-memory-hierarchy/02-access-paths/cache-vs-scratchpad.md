@@ -72,7 +72,19 @@ Cache 也不是本质随机。若初始状态、地址序列、替换与仲裁�
 
 ## 写入与数据生命周期
 
-Cache 写入可以采用不同策略。例如，write-through 会按实现策略将写入传播到下一级；write-back cache 可以先更新本地副本，并在需要时写回脏数据。写入何时对其他参与方可见，还取决于系统的一致性与同步约定。[MIT 的计算机结构课程](https://ocw.mit.edu/courses/6-004/computation-structures-spring-2017/pages/c14/c14s1/)介绍了 cache 命中、替换及 write-back 的基本过程。
+### 执行 `A[0] = 7`，只改 4 B，为什么有时要先取 64 B？ {#store-paths}
+
+沿用[读取数组的例子](./cache-hit-lookup.md#first-fill)。`A[0]` 占一条 64 B 缓存行开头的 4 B。假设页表允许当前程序写这个地址。处理器现在要把这个整数改成 7，同行的另外 15 个整数都应保留原值。沿着这笔写，从 L1 向下看三种情况。
+
+| 写入前的 L1 | 这 4 B 怎样写进去？ |
+| --- | --- |
+| **已有共享副本，只有读权限** | 这 64 B 都在本地，另一核心也持有可读副本。L1 先申请写权限。在这个一致性模型里，另一核心撤销读权限并确认，本核拿到授权后，就能改本地的 4 B。这次升级可以只传权限消息。 |
+| **没有该行，采用写分配（write-allocate）** | L1 为这条缓存行选一个位置。在这个按整行填充的例子里，它取得最新的 64 B 和写权限，再改开头的 4 B，其余 60 B 自然保留下来。行数据可以由下层缓存或持有最新副本的核心提供，都没有副本时再到主存取。 |
+| **没有该行，采用不写分配（no-write-allocate）** | L1 把写入地址、数据和大小送往下一级，本级不为它填入一行。若 L2 能处理这笔部分写入，L1 写缺失也无需立刻向 DRAM 发出写命令。 |
+
+写分配回答的是“本级缺行时，要不要把它装进来”。一旦 L1 有了可写副本，还要回答“新值什么时候向下传”。用**直写（write-through）**，每次本地更新都要向下一级传播，写缓冲可以暂存待发送的数据。用**写回（write-back）**，可以先改本地，把该行标为脏。例如，稍后要替换这条脏行时，L1 才把尚未传下去的数据写回。其他核心或设备何时能读到新值，还取决于一致性与同步约定。[一致性专题中的权限升级过程](../../../interconnect/COHERENCE/01-foundations/coherence-invariants.md#write-permission) · [Cornell 的缓存写策略](https://www.cs.cornell.edu/courses/cs3410/2026sp/notes/caches.html#handling-stores) · [MIT 的缓存填充与写回说明](https://ocw.mit.edu/courses/6-004-computation-structures-spring-2017/pages/c14/c14s1/)
+
+### 写进 scratchpad 后，谁能看到新值？
 
 Scratchpad 的本地写入不会自动等同于更新外部副本。若后续消费者在本地之外，使用方需要按系统接口安排结果写出，并确认对方何时可以看到它。若多个参与方共享同一块数据，还要明确使用权和同步顺序；具体例子见 [DMA 同步与一致性](../../../microarchitecture/05-dma/04-programming-model/synchronization-errors.md)。
 

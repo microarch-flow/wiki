@@ -26,9 +26,9 @@
 
 ### 局部刷新并非统一的“一个 bank”
 
-作用范围取决于协议和命令。[Micron DDR5 技术说明](https://tw.micron.com/content/dam/micron/global/public/products/white-paper/ddr5-new-features-white-paper.pdf)中的 `REFsb` 选择各 bank group **相同编号的 bank**。以该说明中的 16 Gb x4/x8 器件为例，4 个 bank group 各有一个目标 bank，合计 4 个；其他 12 个 bank 不必全部空闲，但仍受适用时序限制。
+DDR5 的同编号 bank 刷新（`REFsb`）在每个 bank group（存储体组）中各选一个编号相同的 bank。以 Micron 的 16 Gb、×8 器件 MT60B2G8（Die Revision D）为例，它有 8 组，每组 4 个 bank。假设这条命令选中 2 号，那么组 0 到组 7 的 2 号 bank 都须处于已预充的空闲状态，**一次共刷新 8 个 bank**。其余 **24 个 bank** 可以保留已经打开的行。若控制器要在非目标 bank 发出新的开行命令 ACT，还须满足从 `REFsb` 到该 ACT 的最小间隔 `tREFSBRD`。[Micron 16 Gb DDR5 器件手册，第 1 页](https://static6.arrow.com/aropdfconversion/315b38de807c111e26056d39f175f3d134429ca8/mt60b1g16hd-56b.pdf#page=1) · [Micron DDR5 产品表，见 Bank groups 与 REFRESH commands](https://www.micron.com/products/memory/dram-components/ddr5-sdram)
 
-该资料的 `REFsb` 用于 fine granularity refresh（FGR）模式：每个 bank 平均每 1.95 μs 需要一次刷新，该器件示例的 `tRFCsb` 为 130 ns。同一说明给出的普通模式 REFab 示例是平均 3.9 μs、`tRFC1` 为 295 ns。两种模式的命令频率、目标范围和限制不同，不能只比较单个 `tRFC` 就断定系统吞吐或尾延迟。其他 DRAM 家族可能提供不同的 per-bank 或其他刷新机制。
+Micron 的早期 DDR5 白皮书在图 3 的说明文字中写了“其余 12 个 bank”，与上述 ×8 器件手册的组织不符。用白皮书理解时序时，还要留意它选取的模式。在它的细粒度刷新（FGR）示例里，每个 bank 平均每 1.95 μs 需要一次刷新，`tRFCsb` 为 130 ns。普通模式的全 bank 刷新（`REFab`）则平均每 3.9 μs 一次，`tRFC1` 为 295 ns。比较两种方案的吞吐和尾延迟，要同时考虑命令频率、每次阻塞哪些 bank，以及请求要访问哪一个。其他 DRAM 家族的 per-bank 刷新还要按各自命令确定范围。[Micron DDR5 白皮书，第 2–3 页](https://www.mouser.com/pdfDocs/ddr5_new_features_white_paper.pdf#page=2)
 
 ## 一句话理解
 
