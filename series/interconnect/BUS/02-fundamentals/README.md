@@ -12,14 +12,14 @@
 
 1. [地址已经收下，数据为什么还没回来？](./transaction-address-data-response.md)
 2. [两个模块同时访问同一目标，谁先走？](./arbitration-ordering-backpressure.md)
-3. [BUS vs NoC vs Point-to-Point](./bus-vs-noc-vs-point-to-point.md)
+3. [一条点到点专线，什么时候需要仲裁和事务标识？](./bus-vs-noc-vs-point-to-point.md)
 4. [位宽、时钟、Burst 与延迟](./width-clock-burst-latency.md)
 
 ## 四个基础判断
 
 用一个物流系统的类比来串起这四个判断：
 
-**第一，先看路网结构（连接关系）。** 两个仓库之间固定走专线卡车（point-to-point），多个仓库共享配送网络需要调度中心（BUS），全国性物流需要分布式中转网络（NoC）。这个边界能防止给两个相邻仓库建一整套物流网络（过度设计），也能防止让全国快递都挤一个配送站（设计不足）。
+**第一，先找出哪些连接被共用。** 只有桥和一个目标时，可以从一条专线讲清请求和返回。加入 DMA 后，两笔读可能在入口、链路或目标出口相遇。把请求分别送往不同出口、再改送同一出口，可以比较[共享总线、交叉开关和多跳 NoC](../../NOC/01-overview/bus-vs-noc-vs-crossbar.md)各自允许的并行度。
 
 **第二，理解一次配送的完整生命周期（transaction）。** 一次配送不是”写个地址贴上就完了”。地址决定路由和合法性（包裹寄往哪里），控制属性决定处理规则（加急？冷链？保价？），数据阶段消耗带宽（实际搬运），response 证明事务闭环（签收确认）。快递公司说”已揽收”（`request accepted`）和收件人说”已签收”（`transaction completed`）之间的时间差，是 outstanding、timeout、backpressure 和性能尾部问题的共同起点。
 
