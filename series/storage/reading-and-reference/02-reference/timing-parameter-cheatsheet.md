@@ -3,7 +3,7 @@
 <span id="dram-timing-参数速查"></span>
 
 上级：[参考资料与工具](./README.md)
-相关：[时序参数的物理来源与完整推导](../../03-dram/protocols/timing-parameters-trcd-trp-tras.md) · [DRAM 命令](../../03-dram/protocols/commands-act-rd-wr-pre.md)
+相关：[时序参数的物理来源与完整推导](../../03-dram/protocols/commands-act-rd-wr-pre.md#命令时序对应的物理等待) · [DRAM 命令](../../03-dram/protocols/commands-act-rd-wr-pre.md)
 
 ## 这页在回答什么问题
 
@@ -46,7 +46,7 @@
 **WL** = AL + CWL
 </div>
 
-所有时间戳、AL、CWL、nRAS、nRTP 和 nWR 使用 CK；BL 是传输次数。例如 AL=0、CWL=9、nWR=12，WR 在周期 0，则 WL=9，写恢复参考沿为周期 13，写约束要求 PRE 不早于周期 25。若 ACT+nRAS 或其他限制更晚，应取更晚时刻。这个例子不是器件的通用时序值。详细条件和数据手册见[完整推导](../../03-dram/protocols/timing-parameters-trcd-trp-tras.md#ddr4-同-bank-显式-pre-的完整下界)。
+所有时间戳、AL、CWL、nRAS、nRTP 和 nWR 使用 CK；BL 是传输次数。例如 AL=0、CWL=9、nWR=12，WR 在周期 0，则 WL=9，写恢复参考沿为周期 13，写约束要求 PRE 不早于周期 25。若 ACT+nRAS 或其他限制更晚，应取更晚时刻。这个例子不是器件的通用时序值。详细条件和数据手册见[完整推导](../../03-dram/protocols/commands-act-rd-wr-pre.md#ddr4-同-bank-显式-pre-的完整下界)。
 
 [Alliance Memory DDR4 手册](https://www.alliancememory.com/wp-content/uploads/AllianceMemory_4Gb_DDR4_AS4C512M8D4A-75BCN_75BIN_Aug2022_Ver1.0.pdf)同时给出 CA parity 模式下包含 PL 的 RL/WL；不能将本页 PL=0 简式直接用于其他模式。
 
