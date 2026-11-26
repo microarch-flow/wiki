@@ -78,6 +78,25 @@ class GeneratedNavigationTests(unittest.TestCase):
         card_links = [href for href, _ in cards]
         self.assertEqual([href for href in tab_links if href in card_links], card_links)
 
+    def test_homepage_knowledge_map_and_reading_routes(self):
+        home = (SITE / "index.html").read_text(encoding="utf-8")
+        body = re.search(r'<article\b[^>]*>(.*?)</article>', home, re.DOTALL).group(1)
+        self.assertLess(body.index('id="knowledge-map"'), body.index('id="reading-paths"'))
+        self.assertLess(body.index('id="reading-paths"'), body.index('id="series"'))
+        self.assertIn('src="assets/images/knowledge-map.svg"', body)
+        self.assertIn('href="#knowledge-map"', body)
+        self.assertIn('href="#reading-paths"', body)
+        self.assertTrue((SITE / "assets/images/knowledge-map.svg").is_file())
+        directory = re.search(r'<nav\b[^>]*id="common-foundations"[^>]*>(.*?)</nav>', body, re.DOTALL).group(1)
+        self.assertEqual(directory.count('class="portal-series-table"'), 3)
+        self.assertEqual(directory.count('class="portal-series-background"'), 8)
+        routes = body.split('id="reading-paths"', 1)[1].split('id="series"', 1)[0]
+        self.assertEqual(set(re.findall(r'href="([^"]+)"', routes)) & {
+            "foundations/", "microarchitecture/", "storage/", "interconnect/", "external/workload-wiki/",
+            "series/inference-runtime/", "series/chip-architectures/", "series/chip-development/",
+        }, {"foundations/", "microarchitecture/", "storage/", "interconnect/", "external/workload-wiki/",
+            "series/inference-runtime/", "series/chip-architectures/", "series/chip-development/"})
+
     def test_renamed_guides_keep_their_published_anchors(self):
         for guide, anchor in [
             ("foundations", "半导体基础"),
@@ -101,6 +120,12 @@ class GeneratedNavigationTests(unittest.TestCase):
         entries = re.findall(r'<li><a href="([^"/]+)/">([^<]+)</a>', listing)
         self.assertEqual([slug for slug, _ in entries], expected)
         self.assertEqual(entries[0][1], "从电子到二极管")
+        overview = guide_body.split('id="文章知识关系"', 1)[1].split("<h2 ", 1)[0]
+        self.assertEqual(re.findall(r'<td>\d+\. <a href="([^"/]+)/">([^<]+)</a>', overview), entries)
+        self.assertIn('建议先掌握', overview)
+        self.assertIn('src="assets/article-map.svg"', overview)
+        self.assertTrue((SITE / "foundations/assets/article-map.svg").is_file())
+        self.assertIn('按学习目标选择', guide_body)
         source = Path(__file__).resolve().parents[2] / "series/semiconductor-foundations"
         redirects = set(FOUNDATION_MERGED_ARTICLES) | set(FOUNDATION_SPLIT_ARTICLES)
         titles = {page.parent.name: page.read_text(encoding="utf-8").splitlines()[0].removeprefix("# ")

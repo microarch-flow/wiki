@@ -145,30 +145,39 @@ def read_series(root, registry=None):
                 raise ValueError(f"Series URL must be an absolute HTTPS URL: {url}")
             href = target = url
         result.append({"title": name, "description": description, "group": item.get("group", "").strip(),
+                       "background": item.get("background", "").strip(),
                        "href": href, "target": target, "source": source, "local": local})
     return result
 
 
 def render_series(entries):
-    """Group homepage cards by reading question, preserving registry order."""
+    """Render grouped series overview tables, preserving registry order."""
     groups = {}
     for entry in entries:
-        groups.setdefault(entry["group"], []).append(
-            f'<li><a class="portal-series-card" href="{escape(entry["href"], quote=True)}">'
-            f'<strong>{escape(entry["title"])}</strong>'
-            f'<span>{escape(entry["description"])}</span></a></li>'
+        group = groups.setdefault(entry["group"], [])
+        description = escape(entry["description"])
+        background = entry.get("background", "")
+        if background:
+            description += f'<span class="portal-series-background"><b>建议基础：</b>{escape(background)}</span>'
+        group.append(
+            f'<tr><th scope="row"><a class="portal-series-card" href="{escape(entry["href"], quote=True)}">'
+            f'<strong>{escape(entry["title"])}</strong></a></th><td>{description}</td></tr>'
         )
     sections = []
-    for number, (question, cards) in enumerate(groups.items(), start=1):
-        grid = '<ul class="portal-series-grid">\n' + "\n".join(cards) + "\n</ul>"
+    for number, (question, rows) in enumerate(groups.items(), start=1):
+        table = (
+            '<table class="portal-series-table"><thead><tr>'
+            '<th scope="col">系列</th><th scope="col">核心问题与建议基础</th>'
+            '</tr></thead><tbody>\n' + "\n".join(rows) + "\n</tbody></table>"
+        )
         if question:
             heading_id = f"series-group-{number}"
             sections.append(
                 f'<section class="portal-series-group" aria-labelledby="{heading_id}">\n'
-                f'<h3 id="{heading_id}">{escape(question)}</h3>\n{grid}\n</section>'
+                f'<h3 id="{heading_id}">{escape(question)}</h3>\n{table}\n</section>'
             )
         else:
-            sections.append(grid)
+            sections.append(table)
     return '<div id="common-foundations-heading">\n' + "\n".join(sections) + "\n</div>"
 
 

@@ -70,7 +70,7 @@ NoC 的十个阅读分组、文章短标题和顺序维护在 `series/interconne
 
 ## 可选：增加来自其他仓库的技术系列
 
-网站使用 `website/series.json` 配置系列。系列可以用 `group` 填写所属阅读问题；省略此字段的系列仍可从首页进入。若以后确需从其他仓库构建，可以在 `series` 数组中添加一个对象，例如：
+网站使用 `website/series.json` 配置系列。系列可以用 `group` 填写所属阅读问题，以 `background` 写明建议阅读基础；两个字段均可省略。系列仍可从首页进入。若以后确需从其他仓库构建，可以在 `series` 数组中添加一个对象，例如：
 
 ```json
 {
@@ -160,7 +160,7 @@ mkdocs build
 ## 内容和图解
 
 - 系列正文位于 `series/`。`wiki.old/`、`task.md`、`seed/` 和 `docs/archive/` 不在网站构建范围内。
-- 首页序章维护在 `website/home.md`。「从哪里读起」使用 `website/series.json` 中的 `group` 按阅读问题排列系列入口。问题和各组内的系列均按配置中首次出现的顺序排列。旧地址 `/series/` 通过 `website/series-redirect.html` 跳转到首页的 `#series`。计算微架构系列首页维护在 `series/microarchitecture/README.md`，存储系统系列首页维护在 `series/storage/README.md`。精选文章列表维护在 `website/articles.md`，互动图解维护在 `website/visuals.md`，图形与脚本位于 `website/assets/`。精选文章直接引用现有正文，后续可逐篇修改原文。
+- 首页序章与推荐阅读路径维护在 `website/home.md`，知识关系图位于 `website/assets/images/knowledge-map.svg`。「从哪里读起」使用 `website/series.json` 中的 `group` 与可选的 `background`，按阅读问题生成系列概览表。问题和各组内的系列均按配置中首次出现的顺序排列。旧地址 `/series/` 通过 `website/series-redirect.html` 跳转到首页的 `#series`。计算微架构系列首页维护在 `series/microarchitecture/README.md`，存储系统系列首页维护在 `series/storage/README.md`。精选文章列表维护在 `website/articles.md`，互动图解维护在 `website/visuals.md`，图形与脚本位于 `website/assets/`。精选文章直接引用现有正文，后续可逐篇修改原文。
 - 各系列首页的封面由 `website/hooks.py` 结合标题、导语和配图生成。该文件指定配图的发布路径、替代文字和图注。「半导体与电路基础」复用《从硅到门电路》目录中的硅共价键图，其余封面图位于 `website/assets/images/series-covers/`。
 - DRAM 图解只表示一次显式 PRE 读流程的逻辑阶段，不给出周期数或替代器件规格。
 - 双缓冲图解假设搬运和计算各占一个周期，且资源访问不冲突。它不代表实际设备的实测性能。

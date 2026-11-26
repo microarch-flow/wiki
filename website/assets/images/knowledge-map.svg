@@ -1,0 +1,59 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 423" role="img" aria-labelledby="title desc">
+  <title id="title">从硅到系统：八个系列的知识关系</title>
+  <desc id="desc">半导体与电路基础支撑计算微架构、存储系统和芯片与系统互连。算法与模型提供工作负载，推理运行时结合这三类硬件机制组织执行。芯片架构实例和芯片开发与实现综合应用这些知识。</desc>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 1 1 L 8 5 L 1 9" fill="none" stroke="#668e75" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+    </marker>
+    <style>
+      text { font-family: -apple-system, BlinkMacSystemFont, 'Noto Sans CJK SC', 'PingFang SC', 'Microsoft YaHei', sans-serif; fill: #193c34; }
+      .label { font-size: 13px; font-weight: 600; fill: #52715e; }
+      .name { font-size: 17px; font-weight: 700; }
+      .detail { font-size: 13px; fill: #4b695b; }
+      .link { fill: none; stroke: #668e75; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; marker-end: url(#arrow); }
+      .join { fill: none; stroke: #668e75; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
+    </style>
+  </defs>
+  <rect x="1" y="1" width="758" height="421" rx="12" fill="#f1f5ed" stroke="#d8e3d7"/>
+
+  <text class="label" x="22" y="27">从物理机制出发</text>
+  <rect x="22" y="40" width="464" height="66" rx="7" fill="#e2eee0" stroke="#a2bfa8"/>
+  <text class="name" x="254" y="66" text-anchor="middle">半导体与电路基础</text>
+  <text class="detail" x="254" y="90" text-anchor="middle">电荷 · 器件 · 逻辑 · 时钟与时序</text>
+  <text class="label" x="510" y="27">从计算需求出发</text>
+  <rect x="510" y="40" width="228" height="66" rx="7" fill="#e6ecd9" stroke="#a8b894"/>
+  <text class="name" x="624" y="66" text-anchor="middle">算法与模型</text>
+  <text class="detail" x="624" y="90" text-anchor="middle">模型结构 · 工作负载</text>
+
+  <path class="link" d="M254 106 V137"/>
+  <path class="link" d="M624 106 V175"/>
+  <text class="label" x="638" y="144">执行需求</text>
+  <rect x="22" y="139" width="464" height="126" rx="8" fill="#f5f7f0" stroke="#b5cbb7"/>
+  <text class="label" x="36" y="162">硬件机制 · 算、存、搬</text>
+  <rect x="35" y="176" width="140" height="73" rx="6" fill="#e6f0e5" stroke="#b7cdb9"/>
+  <text class="name" x="105" y="207" text-anchor="middle">计算微架构</text>
+  <text class="detail" x="105" y="229" text-anchor="middle">运算与控制</text>
+  <rect x="184" y="176" width="140" height="73" rx="6" fill="#e6f0e5" stroke="#b7cdb9"/>
+  <text class="name" x="254" y="207" text-anchor="middle">存储系统</text>
+  <text class="detail" x="254" y="229" text-anchor="middle">数据保存与访问</text>
+  <rect x="333" y="176" width="140" height="73" rx="6" fill="#e6f0e5" stroke="#b7cdb9"/>
+  <text class="name" x="403" y="207" text-anchor="middle">芯片与系统互连</text>
+  <text class="detail" x="403" y="229" text-anchor="middle">事务与通信</text>
+  <path class="link" d="M486 212.5 H508"/>
+  <rect x="510" y="176" width="228" height="73" rx="7" fill="#e6ecd9" stroke="#a8b894"/>
+  <text class="name" x="624" y="207" text-anchor="middle">推理运行时</text>
+  <text class="detail" x="624" y="229" text-anchor="middle">把模型计算组织为服务</text>
+
+  <path class="join" d="M254 265 V298 H624 V249"/>
+  <path class="join" d="M192 298 H254 M568 298 V315"/>
+  <path class="link" d="M192 298 V327"/>
+  <path class="link" d="M568 315 V327"/>
+  <rect x="316" y="274" width="128" height="22" rx="11" fill="#f1f5ed"/>
+  <text class="label" x="380" y="290" text-anchor="middle">综合与工程实践</text>
+  <rect x="22" y="329" width="340" height="73" rx="7" fill="#eceddf" stroke="#baba9f"/>
+  <text class="name" x="192" y="360" text-anchor="middle">芯片架构实例</text>
+  <text class="detail" x="192" y="382" text-anchor="middle">用实际产品理解软硬件取舍</text>
+  <rect x="398" y="329" width="340" height="73" rx="7" fill="#eceddf" stroke="#baba9f"/>
+  <text class="name" x="568" y="360" text-anchor="middle">芯片开发与实现</text>
+  <text class="detail" x="568" y="382" text-anchor="middle">从产品规格、设计到制造和交付</text>
+</svg>

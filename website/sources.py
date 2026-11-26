@@ -34,6 +34,8 @@ def load_series(registry):
         titles.add(name.strip())
         if "group" in item and (not isinstance(item["group"], str) or not item["group"].strip()):
             raise ValueError(f"Series {name!r} needs a non-empty group label when specified")
+        if "background" in item and (not isinstance(item["background"], str) or not item["background"].strip()):
+            raise ValueError(f"Series {name!r} needs a non-empty reading background when specified")
         kinds = [kind for kind in ("page", "url", "source", "local") if kind in item]
         if len(kinds) != 1:
             raise ValueError("Each series needs exactly one of page, url, source, or local")
