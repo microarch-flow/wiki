@@ -1,0 +1,62 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="460" height="701" viewBox="0 0 460 701" role="img" aria-labelledby="title desc" xml:lang="zh-CN">
+  <title id="title">从满价带到可参与导电的两种载流子</title>
+  <desc id="desc">三个静态步骤。第一步，理想本征硅在绝对零度下价带所有态被占据，导带为空。第二步，电子获得能量由价带跃迁至导带，产生一个导带电子和一个价带空穴。这两步的纵向是能量。第三步，横向表示空间方向，电场向右，导带电子净漂移向左；价带电子从右侧填补空位，空位等效地向右移动。电子和空穴的常规电流均向右。第三步上下两栏是不同能带的输运示意，不是硅中两个空间层，也不是准确的单电子轨迹。</desc>
+  <defs>
+    <marker id="arrow-blue" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="4" markerHeight="4" orient="auto"><path d="M0 0 10 5 0 10Z" fill="#09677b"/></marker>
+    <marker id="arrow-orange" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="4" markerHeight="4" orient="auto"><path d="M0 0 10 5 0 10Z" fill="#9b4c28"/></marker>
+    <marker id="arrow-dark" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="4" markerHeight="4" orient="auto"><path d="M0 0 10 5 0 10Z" fill="#203c37"/></marker>
+    <g id="electron"><circle r="10" fill="#09677b"/><path d="M-4 0H4" stroke="#fff" stroke-width="1.8"/></g>
+    <g id="empty-state"><circle r="10" stroke="#76a2a9" stroke-width="1.6" stroke-dasharray="3 3" fill="none"/></g>
+    <g id="hole"><circle r="10" fill="#f7f6ef" stroke="#9b4c28" stroke-width="2.4"/><path d="M-4 0H4M0-4V4" stroke="#9b4c28" stroke-width="1.8"/></g>
+    <g id="energy-panel">
+      <rect x="105" y="55" width="330" height="37" rx="5" fill="#e2eeee"/>
+      <rect x="105" y="124" width="330" height="37" rx="5" fill="#efdfcf"/>
+      <text x="99" y="79" font-size="17" text-anchor="end">导带</text>
+      <text x="99" y="148" font-size="17" text-anchor="end">价带</text>
+      <path d="M27 161V58" fill="none" stroke="#203c37" stroke-width="1.5" marker-end="url(#arrow-dark)"/>
+      <text x="27" y="50" text-anchor="middle" font-size="14">能量</text>
+    </g>
+  </defs>
+  <rect x="1" y="1" width="458" height="699" rx="15" fill="#f7f6ef" stroke="#c9d3c7"/>
+  <g font-family="system-ui,'Noto Sans CJK SC',sans-serif" fill="#203c37">
+    <text x="22" y="30" font-size="21" font-weight="650">① 理想本征硅 · 0 K</text>
+    <use href="#energy-panel"/>
+    <g>
+      <use href="#empty-state" x="138" y="73"/><use href="#empty-state" x="204" y="73"/><use href="#empty-state" x="270" y="73"/><use href="#empty-state" x="336" y="73"/><use href="#empty-state" x="402" y="73"/>
+      <use href="#electron" x="138" y="142"/><use href="#electron" x="204" y="142"/><use href="#electron" x="270" y="142"/><use href="#electron" x="336" y="142"/><use href="#electron" x="402" y="142"/>
+    </g>
+    <text x="230" y="185" font-size="17" text-anchor="middle">价带填满，导带没有电子。</text>
+    <path d="M20 199H440" stroke="#c9d3c7"/>
+    <g transform="translate(0 196)">
+      <text x="22" y="30" font-size="21" font-weight="650">② 电子获得能量，发生跃迁</text>
+      <use href="#energy-panel"/>
+      <use href="#empty-state" x="138" y="73"/><use href="#empty-state" x="204" y="73"/><use href="#electron" x="270" y="73"/><use href="#empty-state" x="336" y="73"/><use href="#empty-state" x="402" y="73"/>
+      <use href="#electron" x="138" y="142"/><use href="#electron" x="204" y="142"/><use href="#hole" x="270" y="142"/><use href="#electron" x="336" y="142"/><use href="#electron" x="402" y="142"/>
+      <path d="M270 128V88" fill="none" stroke="#09677b" stroke-width="2.5" stroke-dasharray="4 3" marker-end="url(#arrow-blue)"/>
+      <text x="285" y="111" font-size="15" fill="#09677b">获得能量</text>
+      <text x="230" y="185" font-size="17" text-anchor="middle">产生一个导带电子，留下一个价带空位。</text>
+    </g>
+    <path d="M20 395H440" stroke="#c9d3c7"/>
+    <g transform="translate(0 395)">
+      <text x="22" y="30" font-size="21" font-weight="650">③ 外加电场，电子与空位移动</text>
+      <text x="106" y="59" font-size="16">电场方向</text>
+      <path d="M187 55H360" fill="none" stroke="#203c37" stroke-width="2" marker-end="url(#arrow-dark)"/>
+      <text x="106" y="83" font-size="15" fill="#597069">下方的横向表示空间方向</text>
+      <rect x="105" y="94" width="330" height="51" rx="5" fill="#e2eeee"/>
+      <text x="99" y="124" font-size="16" text-anchor="end">导带</text>
+      <use href="#electron" x="204" y="120"/>
+      <path d="M267 120H220" fill="none" stroke="#09677b" stroke-width="2.5" marker-end="url(#arrow-blue)"/>
+      <text x="292" y="125" font-size="16" fill="#09677b">电子净向左</text>
+      <rect x="105" y="162" width="330" height="79" rx="5" fill="#efdfcf"/>
+      <text x="99" y="203" font-size="16" text-anchor="end">价带</text>
+      <use href="#electron" x="138" y="192"/><use href="#electron" x="204" y="192"/><use href="#electron" x="270" y="192"/><use href="#hole" x="336" y="192"/><use href="#electron" x="402" y="192"/>
+      <text x="121" y="178" font-size="14" fill="#09677b">价带电子填补空位</text>
+      <path d="M331 174H278" fill="none" stroke="#09677b" stroke-width="2" marker-end="url(#arrow-blue)"/>
+      <path d="M276 219H332" fill="none" stroke="#9b4c28" stroke-width="2" marker-end="url(#arrow-orange)"/>
+      <text x="285" y="236" font-size="14" fill="#9b4c28">空位净向右</text>
+      <text x="230" y="261" font-size="17" font-weight="650" text-anchor="middle">两种运动的电流贡献都向右 →</text>
+      <text x="230" y="279" font-size="13" fill="#597069" text-anchor="middle">上下两栏区分所属能带，不代表硅中的空间层。</text>
+      <text x="230" y="297" font-size="13" fill="#597069" text-anchor="middle">箭头表示净运动方向，不是单电子的精确轨迹。</text>
+    </g>
+  </g>
+</svg>

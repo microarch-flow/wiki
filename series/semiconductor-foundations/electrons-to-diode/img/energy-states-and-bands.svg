@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="480" height="402" viewBox="0 0 480 402" role="img" aria-labelledby="title desc" xml:lang="zh-CN">
+  <title id="title">电子状态、能级与能带的关系</title>
+  <desc id="desc">上图纵轴为电子能量，每个空心圈代表一个允许的电子状态，同一能量高度可以有多个状态。横向排列仅用于区分状态，不是空间位置。下图对比孤立原子、少量相互作用的原子和大量原子构成晶体的情况；相互作用使原有能级分裂，随着规模增加，大量允许状态的能量非常密集，形成能带，相邻能带之间没有允许体电子状态的能量范围称为禁带。图仅表示能量结构，不表示占据情况或硅的实际能级数量与间距。</desc>
+  <defs>
+    <marker id="gray-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="4" markerHeight="4" orient="auto"><path d="M0 0 10 5 0 10 2 5Z" fill="#597069"/></marker>
+    <pattern id="band-lines" width="4" height="3" patternUnits="userSpaceOnUse"><path d="M0 1.5H4" stroke="#09677b" opacity=".65" stroke-width=".8"/></pattern>
+  </defs>
+  <rect x="1" y="1" width="478" height="400" rx="14" fill="#f7f6ef" stroke="#c9d3c7"/>
+  <g font-family="system-ui,'Noto Sans CJK SC',sans-serif" font-size="18" fill="#203c37">
+    <text x="19" y="29" font-size="20" font-weight="650">① 同一能级，可以对应多个状态</text>
+    <path d="M42 166V54" stroke="#597069" stroke-width="1.7" marker-end="url(#gray-arrow)"/>
+    <text x="23" y="48" fill="#597069" font-size="15">能量</text>
+    <g stroke="#9aa99e" stroke-dasharray="4 4" stroke-width="1.5" fill="none"><path d="M62 70H426M62 111H426M62 152H426"/></g>
+    <g fill="#f7f6ef" stroke="#09677b" stroke-width="2.2">
+      <circle cx="111" cy="70" r="7"/><circle cx="290" cy="70" r="7"/>
+      <circle cx="111" cy="111" r="7"/><circle cx="171" cy="111" r="7"/><circle cx="231" cy="111" r="7"/><circle cx="290" cy="111" r="7"/>
+      <circle cx="111" cy="152" r="7"/><circle cx="290" cy="152" r="7"/>
+    </g>
+    <rect x="96" y="98" width="209" height="26" rx="4" stroke="#9b4c28" stroke-width="1.4" fill="#efdfcf" fill-opacity=".14"/>
+    <text x="319" y="105" font-size="14" fill="#854020">能量相同</text><text x="319" y="122" font-size="14" fill="#854020">状态不同</text>
+    <circle cx="78" cy="179" r="6" fill="none" stroke="#09677b" stroke-width="1.8"/>
+    <text x="93" y="185" font-size="15" fill="#597069">一个允许态；图中未表示占据情况</text>
+    <path d="M20 199H460" stroke="#c9d3c7"/>
+
+    <text x="19" y="224" font-size="20" font-weight="650">② 大量能级变得密集，形成能带</text>
+    <path d="M42 369V247" stroke="#597069" stroke-width="1.7" marker-end="url(#gray-arrow)"/>
+    <text x="23" y="243" fill="#597069" font-size="15">能量</text>
+    <g fill="none" stroke="#09677b" stroke-width="2"><path d="M65 269H145M65 337H145"/></g>
+    <g fill="none" stroke="#09677b" stroke-width="1.4"><path d="M192 258H282M192 263.5H282M192 269H282M192 274.5H282M192 280H282M192 326H282M192 331.5H282M192 337H282M192 342.5H282M192 348H282"/></g>
+    <g fill="#e2eeee" stroke="#09677b" stroke-width="1.2"><rect x="329" y="249" width="118" height="40" rx="2"/><rect x="329" y="317" width="118" height="40" rx="2"/></g>
+    <g fill="url(#band-lines)"><rect x="331" y="251" width="114" height="36"/><rect x="331" y="319" width="114" height="36"/></g>
+    <g stroke="#597069" stroke-width="2" fill="none" marker-end="url(#gray-arrow)"><path d="M151 303H183"/><path d="M289 303H319"/></g>
+    <text x="388" y="309" text-anchor="middle" font-size="16" fill="#597069">禁带</text>
+    <g text-anchor="middle" font-size="16"><text x="105" y="385">孤立原子</text><text x="237" y="385">少量原子</text><text x="388" y="385">晶体中的能带</text></g>
+  </g>
+</svg>
