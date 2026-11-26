@@ -1,0 +1,61 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="540" height="420" viewBox="0 0 540 420" xml:lang="zh-CN" role="img" aria-labelledby="title desc">
+<title id="title">二选一多路选择器的门级实现</title>
+<desc id="desc">由非门生成 S 的反相值，两只与门分别产生 X0=非S与D0、X1=S与D1，再由或门得到Y。取 D0=0 和 D1=1。S=0 时保留 D0，X0与X1均为0，Y为0；S=1时保留 D1，X0为0、X1为1、Y为1。保留一路的值并不意味着该路为高电平或与输出物理短接。</desc>
+<style>
+  text {font-family:system-ui,'Noto Sans CJK SC','Microsoft YaHei',sans-serif;fill:#213c36;font-size:18px}
+  .title {font-size:23px;font-weight:700}
+  .sub {font-size:17px;fill:#526860}
+  .label {font-size:17px;font-weight:650}
+  .strong {font-size:18px;font-weight:700}
+  .muted {fill:#526860}
+  .blue {fill:#09677b}
+  .rust {fill:#a65029}
+  .wire {fill:none;stroke:#53675b;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round}
+  .sel {fill:none;stroke:#09677b;stroke-width:3.5;stroke-linecap:round;stroke-linejoin:round}
+  .control {fill:none;stroke:#a65029;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round}
+  .outline {fill:#fbfaf4;stroke:#53675b;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round}
+  .card {fill:#fbfaf4;stroke:#c6cec2;stroke-width:1.2}
+  .small {font-size:16.5px}
+</style>
+<rect x="1" y="1" width="538" height="418" rx="15" fill="#f7f6ef" stroke="#c6cec2" stroke-width="1.2"/>
+<text x="20" y="35" class="title">S 怎样决定选中哪一路？</text>
+<text x="20" y="62" class="sub">同一门级连接；固定 D₀ = 0、D₁ = 1。</text>
+<rect x="14" y="76" width="512" height="216" rx="10" class="card"/>
+<!-- Data inputs, selector branch and inverter -->
+<text x="28" y="112" class="label">D₀</text>
+<path d="M57 108H211" class="wire"/>
+<text x="28" y="188" class="label rust">S</text>
+<path d="M49 183H85V136H113M85 183V226H211" class="control"/>
+<circle cx="85" cy="183" r="3.5" fill="#a65029"/>
+<path d="M113 118L153 136L113 154Z" class="outline"/>
+<circle cx="158" cy="136" r="5" fill="#fbfaf4" stroke="#53675b" stroke-width="2.2"/>
+<path d="M163 136H211" class="wire"/>
+<text x="185" y="129" class="small" text-anchor="middle">¬S</text>
+<text x="28" y="258" class="label">D₁</text>
+<path d="M57 254H211" class="wire"/>
+<!-- 2-input AND gates -->
+<path d="M211 94H244A28 28 0 0 1 244 150H211Z" class="outline"/>
+<path d="M211 212H244A28 28 0 0 1 244 268H211Z" class="outline"/>
+<text x="242" y="86" class="label" text-anchor="middle">与门</text>
+<text x="242" y="204" class="label" text-anchor="middle">与门</text>
+<path d="M272 122H334V166H393M272 240H334V200H393" class="wire"/>
+<text x="302" y="113" class="strong blue" text-anchor="middle">X₀</text>
+<text x="302" y="231" class="strong blue" text-anchor="middle">X₁</text>
+<!-- OR gate -->
+<path d="M382 148Q422 151 457 183Q422 215 382 218Q405 183 382 148Z" class="outline"/>
+<path d="M457 183H494" class="wire"/>
+<text x="503" y="189" class="strong blue">Y</text>
+<text x="422" y="140" class="label" text-anchor="middle">或门</text>
+<!-- Legend / evaluated cases -->
+<text x="25" y="284" class="small muted">橙色标出选择信号 S，不表示高电平。</text>
+<rect x="14" y="302" width="512" height="79" rx="8" class="card"/>
+<rect x="15" y="328" width="510" height="25" fill="#e5efea"/>
+<rect x="15" y="354" width="510" height="25" fill="#e5efea" opacity=".5"/>
+<path d="M26 327H514M26 353H514" stroke="#c6cec2" stroke-width="1.1"/>
+<g text-anchor="middle" class="label">
+<text x="44" y="322">S</text><text x="164" y="322">保留的数据</text><text x="284" y="322">X₀</text><text x="381" y="322">X₁</text><text x="478" y="322">Y</text>
+<text x="44" y="347">0</text><text x="164" y="347" class="blue">D₀ = 0</text><text x="284" y="347">0</text><text x="381" y="347">0</text><text x="478" y="347" class="blue">0</text>
+<text x="44" y="373">1</text><text x="164" y="373" class="blue">D₁ = 1</text><text x="284" y="373">0</text><text x="381" y="373">1</text><text x="478" y="373" class="blue">1</text>
+</g>
+<text x="20" y="404" class="small muted">选中一路仍可为 0；未选中的与门输出被置为 0。</text>
+</svg>

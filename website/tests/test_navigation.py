@@ -133,14 +133,21 @@ class GeneratedNavigationTests(unittest.TestCase):
         self.assertIn('src="assets/article-map.svg"', overview)
         self.assertTrue((SITE / "foundations/assets/article-map.svg").is_file())
         self.assertIn('按学习目标选择', guide_body)
-        # The three planned articles are discoverable but visibly marked as outlines.
-        for slug in ("combinational-logic", "registers-and-sequential-logic", "digital-control"):
+        # The remaining two planned articles are discoverable but visibly marked as outlines.
+        for slug in ("registers-and-sequential-logic", "digital-control"):
             with self.subTest(outline=slug):
                 row = re.search(rf'<tr>\s*<td>\d+\. <a href="{slug}/">.*?</tr>', overview, re.DOTALL)
                 self.assertIsNotNone(row)
                 self.assertIn("待完善", row.group(0))
                 draft = (SITE / "foundations" / slug / "index.html").read_text(encoding="utf-8")
                 self.assertIn("待完善（文章提纲，尚非完整正文）", draft)
+        completed = re.search(r'<tr>\s*<td>4\. <a href="combinational-logic/">.*?</tr>', overview, re.DOTALL)
+        self.assertIsNotNone(completed)
+        self.assertNotIn("待完善", completed.group(0))
+        combinational = (SITE / "foundations/combinational-logic/index.html").read_text(encoding="utf-8")
+        combinational_body = re.search(r'<article\b[^>]*>(.*?)</article>', combinational, re.DOTALL).group(1)
+        self.assertNotIn("待完善（文章提纲，尚非完整正文）", combinational_body)
+        self.assertRegex(combinational_body, r'href="\.\./latch-and-divider/(?:#[^"]+)?"')
         source = Path(__file__).resolve().parents[2] / "series/semiconductor-foundations"
         redirects = set(FOUNDATION_MERGED_ARTICLES) | set(FOUNDATION_SPLIT_ARTICLES)
         titles = {page.parent.name: page.read_text(encoding="utf-8").splitlines()[0].removeprefix("# ")
@@ -321,6 +328,21 @@ class GeneratedNavigationTests(unittest.TestCase):
                 images = re.findall(r'<img\b[^>]*src="([^"]+)"', article)
                 self.assertIn("https://example.test/" + figure, [urljoin(page_url(path), src) for src in images])
                 self.assertTrue((SITE / figure).is_file())
+
+    def test_combinational_logic_figures_and_section_links(self):
+        topic = SITE / "foundations/combinational-logic"
+        page = (topic / "index.html").read_text(encoding="utf-8")
+        article = re.search(r'<article\b[^>]*>(.*?)</article>', page, re.DOTALL).group(1)
+        for anchor in ("logic-function", "mux", "decoder", "propagation", "next"):
+            self.assertEqual(article.count(f'id="{anchor}"'), 1)
+        figures = re.findall(r'<figure\b[^>]*>(.*?)</figure>', article, re.DOTALL)
+        for name in ("xor-from-conditions", "equality-compare", "mux-two-inputs",
+                     "mux-four-inputs", "mux-multibit", "decoder-two-to-four",
+                     "demux-one-to-four", "encoder-four-to-two", "mux-select-glitch"):
+            with self.subTest(figure=name):
+                self.assertTrue(any(f'src="img/{name}.svg"' in figure and
+                                    f'href="img/{name}.svg"' in figure for figure in figures))
+                self.assertTrue((topic / "img" / f"{name}.svg").is_file())
 
     def test_electrons_to_diode_article_search_and_interactive_links(self):
         topic = "foundations/electrons-to-diode/"

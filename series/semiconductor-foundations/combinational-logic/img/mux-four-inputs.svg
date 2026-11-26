@@ -1,0 +1,52 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="540" height="391" viewBox="0 0 540 391" xml:lang="zh-CN" role="img" aria-labelledby="title desc">
+<title id="title">四选一多路选择器的两级选择树</title>
+<desc id="desc">两只第一级二选一MUX共用低位选择信号S0。上面选择D0或D1，下面选择D2或D3。第二级由S1选择上组或下组的结果。此例选择S1S0为10，D0=0、D1=1、D2=1、D3=0。第一级保留D0和D2，第二级保留下组的D2=1作为Y。粗线追踪对最终输出的逻辑数据来源，不表示物理导线直接连接。</desc>
+<style>
+  text {font-family:system-ui,'Noto Sans CJK SC','Microsoft YaHei',sans-serif;fill:#213c36;font-size:18px}
+  .title {font-size:23px;font-weight:700}
+  .sub {font-size:17px;fill:#526860}
+  .label {font-size:17px;font-weight:650}
+  .strong {font-size:18px;font-weight:700}
+  .muted {fill:#526860}
+  .blue {fill:#09677b}
+  .rust {fill:#a65029}
+  .wire {fill:none;stroke:#53675b;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round}
+  .sel {fill:none;stroke:#09677b;stroke-width:3.5;stroke-linecap:round;stroke-linejoin:round}
+  .control {fill:none;stroke:#a65029;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round}
+  .outline {fill:#fbfaf4;stroke:#53675b;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round}
+  .card {fill:#fbfaf4;stroke:#c6cec2;stroke-width:1.2}
+  .small {font-size:16.5px}
+</style>
+<rect x="1" y="1" width="538" height="389" rx="15" fill="#f7f6ef" stroke="#c6cec2" stroke-width="1.2"/>
+<text x="20" y="35" class="title">两位选择信号怎样选中四路之一？</text>
+<text x="20" y="62" class="sub">例：S₁S₀ = 10；低位选组内，高位选哪一组。</text>
+<rect x="14" y="77" width="512" height="253" rx="10" class="card"/>
+<text x="220" y="99" class="label" text-anchor="middle">第一级</text>
+<text x="426" y="143" class="label" text-anchor="middle">第二级</text>
+<!-- first group -->
+<text x="30" y="132" class="label">D₀ = 0</text>
+<text x="30" y="165" class="label">D₁ = 1</text>
+<path d="M99 126H154M99 159H154" class="wire"/>
+<path d="M154 111L254 129V156L154 174Z" class="outline"/>
+<text x="163" y="131" class="label">0</text><text x="163" y="165" class="label">1</text><text x="211" y="148" class="label" text-anchor="middle">MUX</text>
+<path d="M204 165V187" class="control"/><text x="204" y="204" class="label rust" text-anchor="middle">S₀ = 0</text>
+<path d="M254 142.5H311V174H361" class="wire"/>
+<text x="278" y="135" class="label" text-anchor="middle">0</text>
+<!-- second group -->
+<text x="30" y="244" class="label blue">D₂ = 1</text>
+<text x="30" y="277" class="label">D₃ = 0</text>
+<path d="M99 238H154" class="sel"/><path d="M99 271H154" class="wire"/>
+<path d="M154 223L254 241V268L154 286Z" fill="#e5efea" stroke="#09677b" stroke-width="2.4" stroke-linejoin="round"/>
+<text x="163" y="243" class="label blue">0</text><text x="163" y="277" class="label">1</text><text x="211" y="260" class="label blue" text-anchor="middle">MUX</text>
+<path d="M204 277V299" class="control"/><text x="204" y="316" class="label rust" text-anchor="middle">S₀ = 0</text>
+<path d="M254 254.5H311V207H361" class="sel"/>
+<text x="278" y="247" class="label blue" text-anchor="middle">1</text>
+<!-- final stage -->
+<path d="M361 159L461 177V204L361 222Z" fill="#e5efea" stroke="#09677b" stroke-width="2.4" stroke-linejoin="round"/>
+<text x="370" y="180" class="label">0</text><text x="370" y="213" class="label blue">1</text><text x="418" y="196" class="label blue" text-anchor="middle">MUX</text>
+<path d="M411 213V247" class="control"/><text x="411" y="264" class="label rust" text-anchor="middle">S₁ = 1</text>
+<path d="M461 190.5H503" class="sel"/>
+<text x="502" y="181" class="strong blue" text-anchor="end">Y</text><text x="502" y="213" class="strong blue" text-anchor="end">1</text>
+<text x="20" y="354" class="small muted">两个第一级 MUX 共用 S₀；粗线追踪最终选中的数据。</text>
+<text x="20" y="378" class="small muted">两级是门级连接关系，并不表示两个时钟周期。</text>
+</svg>

@@ -1,0 +1,52 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="540" height="540" viewBox="0 0 540 540" xml:lang="zh-CN" role="img" aria-labelledby="title desc">
+<title id="title">逐位比较，再合并相等条件</title>
+<desc id="desc">两个两位输入 A、B，分别以 XNOR 门比较对应位，再将 E1 与 E0 相与。A=10 B=10 时 E1=1 E0=1 Y=1；A=10 B=11 时 E1=1 E0=0 Y=0。蓝色逻辑1，灰色逻辑0。</desc>
+<g font-family="system-ui, Noto Sans CJK SC, Microsoft YaHei, sans-serif">
+<rect x="1" y="1" width="538" height="538" rx="15" fill="#f7f6ef" stroke="#c6cec2" stroke-width="1.2"/>
+<text x="20" y="35" font-size="23" font-weight="700" fill="#213c36" text-anchor="start">怎样判断两组比特是否完全相同？</text>
+<text x="20" y="61" font-size="17" font-weight="500" fill="#526860" text-anchor="start">XNOR 是异或后取反；每一位相等才输出 1。</text>
+<rect x="12" y="76" width="516" height="200" rx="10" fill="#fbfaf4" stroke="#c6cec2" stroke-width="1.2"/>
+<text x="27" y="103" font-size="20" font-weight="700" fill="#213c36" text-anchor="start">①  A = 10，B = 10</text>
+<text x="27" y="145" font-size="18" font-weight="650" fill="#09677b" text-anchor="start">A₁ = 1</text>
+<text x="27" y="171" font-size="18" font-weight="650" fill="#09677b" text-anchor="start">B₁ = 1</text>
+<path d="M97 139H158" stroke="#09677b" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M97 165H158" stroke="#09677b" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+<g transform="translate(150 152)"><path d="M12 -27Q52 -26 73 0Q52 26 12 27Q27 0 12 -27Z" fill="#dbece7" stroke="#213c36" stroke-width="2.2" stroke-linejoin="round" stroke-linecap="round"/></g><path d="M152 125Q167 152 152 179" stroke="#213c36" stroke-width="2.2" fill="none" stroke-linecap="round"/><circle cx="228" cy="152" r="5" fill="#fbfaf4" stroke="#213c36" stroke-width="2.2"/><text x="192" y="157" font-size="13.5" font-weight="650" fill="#213c36" text-anchor="middle">XNOR</text>
+<path d="M233 152H351V172H392" stroke="#09677b" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+<text x="286" y="141" font-size="18" font-weight="650" fill="#09677b" text-anchor="middle">E₁ = 1</text>
+<text x="27" y="215" font-size="18" font-weight="650" fill="#526860" text-anchor="start">A₀ = 0</text>
+<text x="27" y="241" font-size="18" font-weight="650" fill="#526860" text-anchor="start">B₀ = 0</text>
+<path d="M97 209H158" stroke="#929f97" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M97 235H158" stroke="#929f97" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+<g transform="translate(150 222)"><path d="M12 -27Q52 -26 73 0Q52 26 12 27Q27 0 12 -27Z" fill="#dbece7" stroke="#213c36" stroke-width="2.2" stroke-linejoin="round" stroke-linecap="round"/></g><path d="M152 195Q167 222 152 249" stroke="#213c36" stroke-width="2.2" fill="none" stroke-linecap="round"/><circle cx="228" cy="222" r="5" fill="#fbfaf4" stroke="#213c36" stroke-width="2.2"/><text x="192" y="227" font-size="13.5" font-weight="650" fill="#213c36" text-anchor="middle">XNOR</text>
+<path d="M233 222H351V202H392" stroke="#09677b" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+<text x="286" y="245" font-size="18" font-weight="650" fill="#09677b" text-anchor="middle">E₀ = 1</text>
+<g transform="translate(392 187)"><path d="M0 -26H32A26 26 0 0 1 32 26H0Z" fill="#dbece7" stroke="#213c36" stroke-width="2.2" stroke-linejoin="round" stroke-linecap="round"/></g><text x="418" y="192" font-size="14.5" font-weight="650" fill="#213c36" text-anchor="middle">AND</text>
+<path d="M450 187H503" stroke="#09677b" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+<text x="503" y="170" font-size="18" font-weight="650" fill="#09677b" text-anchor="end">Y = 1</text>
+<rect x="12" y="287" width="516" height="200" rx="10" fill="#fbfaf4" stroke="#c6cec2" stroke-width="1.2"/>
+<text x="27" y="314" font-size="20" font-weight="700" fill="#213c36" text-anchor="start">②  A = 10，B = 11</text>
+<text x="27" y="356" font-size="18" font-weight="650" fill="#09677b" text-anchor="start">A₁ = 1</text>
+<text x="27" y="382" font-size="18" font-weight="650" fill="#09677b" text-anchor="start">B₁ = 1</text>
+<path d="M97 350H158" stroke="#09677b" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M97 376H158" stroke="#09677b" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+<g transform="translate(150 363)"><path d="M12 -27Q52 -26 73 0Q52 26 12 27Q27 0 12 -27Z" fill="#dbece7" stroke="#213c36" stroke-width="2.2" stroke-linejoin="round" stroke-linecap="round"/></g><path d="M152 336Q167 363 152 390" stroke="#213c36" stroke-width="2.2" fill="none" stroke-linecap="round"/><circle cx="228" cy="363" r="5" fill="#fbfaf4" stroke="#213c36" stroke-width="2.2"/><text x="192" y="368" font-size="13.5" font-weight="650" fill="#213c36" text-anchor="middle">XNOR</text>
+<path d="M233 363H351V383H392" stroke="#09677b" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+<text x="286" y="352" font-size="18" font-weight="650" fill="#09677b" text-anchor="middle">E₁ = 1</text>
+<text x="27" y="426" font-size="18" font-weight="650" fill="#526860" text-anchor="start">A₀ = 0</text>
+<text x="27" y="452" font-size="18" font-weight="650" fill="#09677b" text-anchor="start">B₀ = 1</text>
+<path d="M97 420H158" stroke="#929f97" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M97 446H158" stroke="#09677b" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+<g transform="translate(150 433)"><path d="M12 -27Q52 -26 73 0Q52 26 12 27Q27 0 12 -27Z" fill="#eeeee8" stroke="#213c36" stroke-width="2.2" stroke-linejoin="round" stroke-linecap="round"/></g><path d="M152 406Q167 433 152 460" stroke="#213c36" stroke-width="2.2" fill="none" stroke-linecap="round"/><circle cx="228" cy="433" r="5" fill="#fbfaf4" stroke="#213c36" stroke-width="2.2"/><text x="192" y="438" font-size="13.5" font-weight="650" fill="#213c36" text-anchor="middle">XNOR</text>
+<path d="M233 433H351V413H392" stroke="#929f97" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+<text x="286" y="456" font-size="18" font-weight="650" fill="#526860" text-anchor="middle">E₀ = 0</text>
+<g transform="translate(392 398)"><path d="M0 -26H32A26 26 0 0 1 32 26H0Z" fill="#eeeee8" stroke="#213c36" stroke-width="2.2" stroke-linejoin="round" stroke-linecap="round"/></g><text x="418" y="403" font-size="14.5" font-weight="650" fill="#213c36" text-anchor="middle">AND</text>
+<path d="M450 398H503" stroke="#929f97" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+<text x="503" y="381" font-size="18" font-weight="650" fill="#526860" text-anchor="end">Y = 0</text>
+<path d="M20 509H43" stroke="#09677b" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+<text x="50" y="515" font-size="17" font-weight="650" fill="#09677b" text-anchor="start">1</text>
+<path d="M83 509H106" stroke="#929f97" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+<text x="113" y="515" font-size="17" font-weight="650" fill="#526860" text-anchor="start">0</text>
+<text x="152" y="515" font-size="16.5" font-weight="400" fill="#526860" text-anchor="start">只有两个比较结果都是 1，Y 才为 1。</text>
+</g>
+</svg>

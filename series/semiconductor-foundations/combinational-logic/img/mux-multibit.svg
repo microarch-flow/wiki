@@ -1,0 +1,56 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="540" height="517" viewBox="0 0 540 517" xml:lang="zh-CN" role="img" aria-labelledby="title desc">
+<title id="title">四位二选一多路选择器共享一个选择信号</title>
+<desc id="desc">两组四位数据 A[3:0]=1010 和 B[3:0]=0110，每个对应位置使用一只二选一MUX，同时接收同一个S=1。图从位3到位0依次排列，选择B的每个对应位，因此Y[3:0]=0110。青色线标示被保留的B路，不代表高电平或持续电流；橙色线仅表示选择控制。</desc>
+<style>
+  text {font-family:system-ui,'Noto Sans CJK SC','Microsoft YaHei',sans-serif;fill:#213c36;font-size:18px}
+  .title {font-size:23px;font-weight:700}
+  .sub {font-size:17px;fill:#526860}
+  .label {font-size:17px;font-weight:650}
+  .strong {font-size:18px;font-weight:700}
+  .muted {fill:#526860}
+  .blue {fill:#09677b}
+  .rust {fill:#a65029}
+  .wire {fill:none;stroke:#53675b;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round}
+  .sel {fill:none;stroke:#09677b;stroke-width:3.5;stroke-linecap:round;stroke-linejoin:round}
+  .control {fill:none;stroke:#a65029;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round}
+  .outline {fill:#fbfaf4;stroke:#53675b;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round}
+  .card {fill:#fbfaf4;stroke:#c6cec2;stroke-width:1.2}
+  .small {font-size:16.5px}
+</style>
+<rect x="1" y="1" width="538" height="515" rx="15" fill="#f7f6ef" stroke="#c6cec2" stroke-width="1.2"/>
+<text x="20" y="35" class="title">多个比特怎样一起被选择？</text>
+<text x="20" y="62" class="sub">每一位用一只 MUX，共用选择信号 S = 1。</text>
+<rect x="14" y="77" width="512" height="374" rx="10" class="card"/>
+<text x="32" y="102" class="label">A[3:0] = 1010</text><text x="204" y="102" class="label blue">B[3:0] = 0110</text><text x="468" y="102" class="label rust" text-anchor="end">S = 1</text>
+<path d="M474 110V432" class="control"/>
+<text x="31" y="151" class="label muted">位 3</text>
+<text x="96" y="136" class="label">A₃ = 1</text><text x="96" y="164" class="label blue">B₃ = 0</text>
+<path d="M168 131H224" class="wire"/><path d="M168 159H224" class="sel"/>
+<path d="M224 121L321 134V156L224 169Z" fill="#e5efea" stroke="#09677b" stroke-width="2.3" stroke-linejoin="round"/>
+<text x="232" y="136" class="label">0</text><text x="232" y="164" class="label blue">1</text><text x="282" y="150" class="label blue" text-anchor="middle">MUX</text>
+<path d="M321 145H365" class="sel"/><text x="378" y="151" class="strong blue">Y₃ = 0</text>
+<path d="M272 162.6V185H474" class="control"/><circle cx="474" cy="185" r="3.4" fill="#a65029"/>
+<text x="31" y="233" class="label muted">位 2</text>
+<text x="96" y="218" class="label">A₂ = 0</text><text x="96" y="246" class="label blue">B₂ = 1</text>
+<path d="M168 213H224" class="wire"/><path d="M168 241H224" class="sel"/>
+<path d="M224 203L321 216V238L224 251Z" fill="#e5efea" stroke="#09677b" stroke-width="2.3" stroke-linejoin="round"/>
+<text x="232" y="218" class="label">0</text><text x="232" y="246" class="label blue">1</text><text x="282" y="232" class="label blue" text-anchor="middle">MUX</text>
+<path d="M321 227H365" class="sel"/><text x="378" y="233" class="strong blue">Y₂ = 1</text>
+<path d="M272 244.6V267H474" class="control"/><circle cx="474" cy="267" r="3.4" fill="#a65029"/>
+<text x="31" y="315" class="label muted">位 1</text>
+<text x="96" y="300" class="label">A₁ = 1</text><text x="96" y="328" class="label blue">B₁ = 1</text>
+<path d="M168 295H224" class="wire"/><path d="M168 323H224" class="sel"/>
+<path d="M224 285L321 298V320L224 333Z" fill="#e5efea" stroke="#09677b" stroke-width="2.3" stroke-linejoin="round"/>
+<text x="232" y="300" class="label">0</text><text x="232" y="328" class="label blue">1</text><text x="282" y="314" class="label blue" text-anchor="middle">MUX</text>
+<path d="M321 309H365" class="sel"/><text x="378" y="315" class="strong blue">Y₁ = 1</text>
+<path d="M272 326.6V349H474" class="control"/><circle cx="474" cy="349" r="3.4" fill="#a65029"/>
+<text x="31" y="397" class="label muted">位 0</text>
+<text x="96" y="382" class="label">A₀ = 0</text><text x="96" y="410" class="label blue">B₀ = 0</text>
+<path d="M168 377H224" class="wire"/><path d="M168 405H224" class="sel"/>
+<path d="M224 367L321 380V402L224 415Z" fill="#e5efea" stroke="#09677b" stroke-width="2.3" stroke-linejoin="round"/>
+<text x="232" y="382" class="label">0</text><text x="232" y="410" class="label blue">1</text><text x="282" y="396" class="label blue" text-anchor="middle">MUX</text>
+<path d="M321 391H365" class="sel"/><text x="378" y="397" class="strong blue">Y₀ = 0</text>
+<path d="M272 408.6V431H474" class="control"/><circle cx="474" cy="431" r="3.4" fill="#a65029"/>
+<text x="20" y="472" class="strong blue">Y[3:0] = 0110</text>
+<text x="20" y="499" class="small muted">青色表示选中的 B 各位（含 0）；橙色 S 只控制选择。</text>
+</svg>

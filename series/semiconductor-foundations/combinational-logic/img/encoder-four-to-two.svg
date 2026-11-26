@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="540" height="493" viewBox="0 0 540 493" xml:lang="zh-CN" role="img" aria-labelledby="title desc">
+<title id="title">四到二普通编码器的门级实现</title>
+<desc id="desc">四条输入按 e0、e1、e2、e3 排列。假设恰好一条是1，此例只有e2=1。高位i1=e2或e3，低位i0=e1或e3，因此i1i0=10，即编号2。e0=1时两个或门均为0，对应编号0。全零或多条输入为1时不承诺唯一有效编号；同名信号标签表示同一根信号线。</desc>
+<rect x="1" y="1" width="538" height="491" rx="15" fill="#f7f6ef" stroke="#c6cec2" stroke-width="1.2"/>
+<g font-family="system-ui, Noto Sans CJK SC, Microsoft YaHei, sans-serif">
+<text x="20" y="35" font-size="24" fill="#213c36" font-weight="700" text-anchor="start">4→2 编码器：选择线变回编号</text>
+<text x="20" y="64" font-size="18" fill="#526861" font-weight="400" text-anchor="start">示例：四条输入恰好 e₂ = 1</text>
+<rect x="16" y="80" width="508" height="82" rx="9" fill="#fffdf7" stroke="#d3dacf" stroke-width="1.2"/>
+<text x="29" y="105" font-size="17" fill="#526861" font-weight="650" text-anchor="start">输入顺序：e₀、e₁、e₂、e₃</text>
+<rect x="30" y="116" width="111" height="33" rx="6" fill="#eeeee8" stroke="#d3dacf" stroke-width="1.2"/>
+<text x="86" y="139" font-size="18" fill="#526861" font-weight="700" text-anchor="middle">e₀ = 0</text>
+<rect x="152" y="116" width="111" height="33" rx="6" fill="#eeeee8" stroke="#d3dacf" stroke-width="1.2"/>
+<text x="208" y="139" font-size="18" fill="#526861" font-weight="700" text-anchor="middle">e₁ = 0</text>
+<rect x="274" y="116" width="111" height="33" rx="6" fill="#dbece7" stroke="#bdd5ca" stroke-width="1.2"/>
+<text x="330" y="139" font-size="18" fill="#09677b" font-weight="700" text-anchor="middle">e₂ = 1</text>
+<rect x="396" y="116" width="111" height="33" rx="6" fill="#eeeee8" stroke="#d3dacf" stroke-width="1.2"/>
+<text x="452" y="139" font-size="18" fill="#526861" font-weight="700" text-anchor="middle">e₃ = 0</text>
+<rect x="16" y="174" width="508" height="166" rx="9" fill="#fffdf7" stroke="#d3dacf" stroke-width="1.2"/>
+<text x="29" y="200" font-size="18" fill="#213c36" font-weight="650" text-anchor="start">两个或门分别判断高位与低位</text>
+<text x="34" y="236" font-size="18" fill="#213c36" font-weight="650" text-anchor="start">高位</text>
+<text x="189" y="223" font-size="18" fill="#09677b" font-weight="650" text-anchor="end">e₂ = 1</text>
+<text x="189" y="247" font-size="18" fill="#8b9a91" font-weight="650" text-anchor="end">e₃ = 0</text>
+<path d="M196 218H248" fill="none" stroke="#09677b" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M196 242H248" fill="none" stroke="#8b9a91" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M240 206Q287 206 318 230Q287 254 240 254Q260 230 240 206Z" fill="#dbece7" stroke="#09677b" stroke-width="2" stroke-linejoin="round"/>
+<path d="M318 230H413" fill="none" stroke="#09677b" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/>
+<text x="420" y="236" font-size="21" fill="#09677b" font-weight="700" text-anchor="start">i₁ = 1</text>
+<text x="34" y="308" font-size="18" fill="#213c36" font-weight="650" text-anchor="start">低位</text>
+<text x="189" y="295" font-size="18" fill="#8b9a91" font-weight="650" text-anchor="end">e₁ = 0</text>
+<text x="189" y="319" font-size="18" fill="#8b9a91" font-weight="650" text-anchor="end">e₃ = 0</text>
+<path d="M196 290H248" fill="none" stroke="#8b9a91" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M196 314H248" fill="none" stroke="#8b9a91" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M240 278Q287 278 318 302Q287 326 240 326Q260 302 240 278Z" fill="#eeeee8" stroke="#526861" stroke-width="2" stroke-linejoin="round"/>
+<path d="M318 302H413" fill="none" stroke="#8b9a91" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+<text x="420" y="308" font-size="21" fill="#526861" font-weight="700" text-anchor="start">i₀ = 0</text>
+<text x="20" y="370" font-size="20" fill="#09677b" font-weight="700" text-anchor="start">得到 i₁i₀ = 10，即编号 2。</text>
+<text x="20" y="400" font-size="17" fill="#526861" font-weight="400" text-anchor="start">e₀ = 1 时，两位均为 0，表示编号 0。</text>
+<text x="20" y="426" font-size="17" fill="#213c36" font-weight="650" text-anchor="start">此编码器要求恰好一条输入为 1。</text>
+<text x="20" y="451" font-size="17" fill="#526861" font-weight="400" text-anchor="start">全零或多条为 1 时，不保证唯一有效编号。</text>
+<text x="20" y="477" font-size="17" fill="#526861" font-weight="400" text-anchor="start">同名信号相连；青色为 1，灰色为 0。</text>
+</g>
+</svg>

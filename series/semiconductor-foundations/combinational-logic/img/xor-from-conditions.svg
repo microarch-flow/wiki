@@ -1,0 +1,64 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="540" height="576" viewBox="0 0 540 576" xml:lang="zh-CN" role="img" aria-labelledby="title desc">
+<title id="title">由两个互斥的条件构造异或</title>
+<desc id="desc">逻辑门电路：先用 NOT 和 AND 识别两种输入情况，X0 等于非 A 与 B，X1 等于 A 与非 B，再用 OR 合并为 Y。第一张图 A=0 B=1，X0=1 X1=0 Y=1。第二张图 A=1 B=0，X0=0 X1=1 Y=1。所有同名输入为同一信号，蓝线表示逻辑1，灰线表示逻辑0，不表示电流。</desc>
+<g font-family="system-ui, Noto Sans CJK SC, Microsoft YaHei, sans-serif">
+<rect x="1" y="1" width="538" height="574" rx="15" fill="#f7f6ef" stroke="#c6cec2" stroke-width="1.2"/>
+<text x="20" y="35" font-size="23" font-weight="700" fill="#213c36" text-anchor="start">怎样判断 A 与 B 是否不同？</text>
+<text x="20" y="62" font-size="18" font-weight="500" fill="#526860" text-anchor="start">X₀ = ¬A ∧ B；X₁ = A ∧ ¬B；Y = X₀ ∨ X₁</text>
+<rect x="12" y="77" width="516" height="218" rx="10" fill="#fbfaf4" stroke="#c6cec2" stroke-width="1.2"/>
+<text x="27" y="105" font-size="20" font-weight="700" fill="#213c36" text-anchor="start">①  A = 0，B = 1</text>
+<text x="26" y="149" font-size="18" font-weight="650" fill="#526860" text-anchor="start">A = 0</text>
+<text x="26" y="179" font-size="18" font-weight="650" fill="#09677b" text-anchor="start">B = 1</text>
+<path d="M85 143H105" stroke="#929f97" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+<g transform="translate(105 143)"><path d="M0 -17L35 0L0 17Z" fill="#dbece7" stroke="#213c36" stroke-width="2.2" stroke-linejoin="round" stroke-linecap="round"/></g><circle cx="144" cy="143" r="4" fill="#fbfaf4" stroke="#213c36" stroke-width="2.2"/>
+<path d="M148 143H240" stroke="#09677b" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+<text x="191" y="133" font-size="16" font-weight="650" fill="#09677b" text-anchor="middle">¬A = 1</text>
+<path d="M85 173H240" stroke="#09677b" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+<g transform="translate(240 158)"><path d="M0 -26H32A26 26 0 0 1 32 26H0Z" fill="#dbece7" stroke="#213c36" stroke-width="2.2" stroke-linejoin="round" stroke-linecap="round"/></g><text x="266" y="163" font-size="14.5" font-weight="650" fill="#213c36" text-anchor="middle">AND</text>
+<path d="M298 158H382V183H410" stroke="#09677b" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+<text x="330" y="147" font-size="18" font-weight="650" fill="#09677b" text-anchor="middle">X₀ = 1</text>
+<text x="26" y="228" font-size="18" font-weight="650" fill="#526860" text-anchor="start">A = 0</text>
+<text x="26" y="258" font-size="18" font-weight="650" fill="#09677b" text-anchor="start">B = 1</text>
+<path d="M85 222H240" stroke="#929f97" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M85 252H105" stroke="#09677b" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+<g transform="translate(105 252)"><path d="M0 -17L35 0L0 17Z" fill="#eeeee8" stroke="#213c36" stroke-width="2.2" stroke-linejoin="round" stroke-linecap="round"/></g><circle cx="144" cy="252" r="4" fill="#fbfaf4" stroke="#213c36" stroke-width="2.2"/>
+<path d="M148 252H240" stroke="#929f97" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+<text x="191" y="242" font-size="16" font-weight="650" fill="#526860" text-anchor="middle">¬B = 0</text>
+<g transform="translate(240 237)"><path d="M0 -26H32A26 26 0 0 1 32 26H0Z" fill="#eeeee8" stroke="#213c36" stroke-width="2.2" stroke-linejoin="round" stroke-linecap="round"/></g><text x="266" y="242" font-size="14.5" font-weight="650" fill="#213c36" text-anchor="middle">AND</text>
+<path d="M298 237H382V211H410" stroke="#929f97" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+<text x="330" y="260" font-size="18" font-weight="650" fill="#526860" text-anchor="middle">X₁ = 0</text>
+<g transform="translate(404 197)"><path d="M0 -28Q38 -27 61 0Q38 27 0 28Q15 0 0 -28Z" fill="#dbece7" stroke="#213c36" stroke-width="2.2" stroke-linejoin="round" stroke-linecap="round"/></g><text x="434" y="202" font-size="14.5" font-weight="650" fill="#213c36" text-anchor="middle">OR</text>
+<path d="M465 197H503" stroke="#09677b" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+<text x="501" y="186" font-size="18" font-weight="650" fill="#09677b" text-anchor="end">Y = 1</text>
+<rect x="12" y="305" width="516" height="218" rx="10" fill="#fbfaf4" stroke="#c6cec2" stroke-width="1.2"/>
+<text x="27" y="333" font-size="20" font-weight="700" fill="#213c36" text-anchor="start">②  A = 1，B = 0</text>
+<text x="26" y="377" font-size="18" font-weight="650" fill="#09677b" text-anchor="start">A = 1</text>
+<text x="26" y="407" font-size="18" font-weight="650" fill="#526860" text-anchor="start">B = 0</text>
+<path d="M85 371H105" stroke="#09677b" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+<g transform="translate(105 371)"><path d="M0 -17L35 0L0 17Z" fill="#eeeee8" stroke="#213c36" stroke-width="2.2" stroke-linejoin="round" stroke-linecap="round"/></g><circle cx="144" cy="371" r="4" fill="#fbfaf4" stroke="#213c36" stroke-width="2.2"/>
+<path d="M148 371H240" stroke="#929f97" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+<text x="191" y="361" font-size="16" font-weight="650" fill="#526860" text-anchor="middle">¬A = 0</text>
+<path d="M85 401H240" stroke="#929f97" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+<g transform="translate(240 386)"><path d="M0 -26H32A26 26 0 0 1 32 26H0Z" fill="#eeeee8" stroke="#213c36" stroke-width="2.2" stroke-linejoin="round" stroke-linecap="round"/></g><text x="266" y="391" font-size="14.5" font-weight="650" fill="#213c36" text-anchor="middle">AND</text>
+<path d="M298 386H382V411H410" stroke="#929f97" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+<text x="330" y="375" font-size="18" font-weight="650" fill="#526860" text-anchor="middle">X₀ = 0</text>
+<text x="26" y="456" font-size="18" font-weight="650" fill="#09677b" text-anchor="start">A = 1</text>
+<text x="26" y="486" font-size="18" font-weight="650" fill="#526860" text-anchor="start">B = 0</text>
+<path d="M85 450H240" stroke="#09677b" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M85 480H105" stroke="#929f97" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+<g transform="translate(105 480)"><path d="M0 -17L35 0L0 17Z" fill="#dbece7" stroke="#213c36" stroke-width="2.2" stroke-linejoin="round" stroke-linecap="round"/></g><circle cx="144" cy="480" r="4" fill="#fbfaf4" stroke="#213c36" stroke-width="2.2"/>
+<path d="M148 480H240" stroke="#09677b" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+<text x="191" y="470" font-size="16" font-weight="650" fill="#09677b" text-anchor="middle">¬B = 1</text>
+<g transform="translate(240 465)"><path d="M0 -26H32A26 26 0 0 1 32 26H0Z" fill="#dbece7" stroke="#213c36" stroke-width="2.2" stroke-linejoin="round" stroke-linecap="round"/></g><text x="266" y="470" font-size="14.5" font-weight="650" fill="#213c36" text-anchor="middle">AND</text>
+<path d="M298 465H382V439H410" stroke="#09677b" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+<text x="330" y="488" font-size="18" font-weight="650" fill="#09677b" text-anchor="middle">X₁ = 1</text>
+<g transform="translate(404 425)"><path d="M0 -28Q38 -27 61 0Q38 27 0 28Q15 0 0 -28Z" fill="#dbece7" stroke="#213c36" stroke-width="2.2" stroke-linejoin="round" stroke-linecap="round"/></g><text x="434" y="430" font-size="14.5" font-weight="650" fill="#213c36" text-anchor="middle">OR</text>
+<path d="M465 425H503" stroke="#09677b" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+<text x="501" y="414" font-size="18" font-weight="650" fill="#09677b" text-anchor="end">Y = 1</text>
+<path d="M20 544H43" stroke="#09677b" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+<text x="50" y="550" font-size="17" font-weight="650" fill="#09677b" text-anchor="start">1</text>
+<path d="M83 544H106" stroke="#929f97" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+<text x="113" y="550" font-size="17" font-weight="650" fill="#526860" text-anchor="start">0</text>
+<text x="152" y="550" font-size="16.5" font-weight="400" fill="#526860" text-anchor="start">同名输入相连；颜色仅表示逻辑值。</text>
+</g>
+</svg>

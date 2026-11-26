@@ -1,0 +1,53 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="540" height="566" viewBox="0 0 540 566" xml:lang="zh-CN" role="img" aria-labelledby="title desc">
+<title id="title">二到四译码器的门级实现（高有效）</title>
+<desc id="desc">输入 i₁ i₀=10，反相得到¬i₁=0、¬i₀=1。四个两输入与门分别判断00、01、10、11，输出按 e₀、e₁、e₂、e₃ 的顺序为0、0、1、0。每个同名信号标签表示同一根逻辑信号线，省略长连线。颜色表示稳态逻辑值。</desc>
+<rect x="1" y="1" width="538" height="564" rx="15" fill="#f7f6ef" stroke="#c6cec2" stroke-width="1.2"/>
+<g font-family="system-ui, Noto Sans CJK SC, Microsoft YaHei, sans-serif">
+<text x="20" y="35" font-size="24" fill="#213c36" font-weight="700" text-anchor="start">2→4 译码器：编号变成四条选择线</text>
+<text x="20" y="64" font-size="18" fill="#526861" font-weight="400" text-anchor="start">示例：i₁i₀ = 10（i₁ 是高位）</text>
+<rect x="16" y="80" width="508" height="103" rx="9" fill="#fffdf7" stroke="#d3dacf" stroke-width="1.2"/>
+<text x="29" y="105" font-size="18" fill="#213c36" font-weight="650" text-anchor="start">先用反相器得到互补信号</text>
+<text x="36" y="132" font-size="17" fill="#09677b" font-weight="650" text-anchor="start">i₁ = 1</text><text x="233" y="132" font-size="17" fill="#8b9a91" font-weight="650" text-anchor="end">¬i₁ = 0</text><path d="M36 156H114" fill="none" stroke="#09677b" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M114 142V170L148 156Z" fill="#eeeee8" stroke="#526861" stroke-width="2.1" stroke-linejoin="round"/><circle cx="153" cy="156" r="5" stroke="#526861" stroke-width="2" fill="#fffdf7"/><path d="M158 156H233" fill="none" stroke="#8b9a91" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"/>
+<text x="293" y="132" font-size="17" fill="#8b9a91" font-weight="650" text-anchor="start">i₀ = 0</text><text x="490" y="132" font-size="17" fill="#09677b" font-weight="650" text-anchor="end">¬i₀ = 1</text><path d="M293 156H371" fill="none" stroke="#8b9a91" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M371 142V170L405 156Z" fill="#dbece7" stroke="#526861" stroke-width="2.1" stroke-linejoin="round"/><circle cx="410" cy="156" r="5" stroke="#526861" stroke-width="2" fill="#fffdf7"/><path d="M415 156H490" fill="none" stroke="#09677b" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"/>
+<rect x="16" y="195" width="508" height="304" rx="9" fill="#fffdf7" stroke="#d3dacf" stroke-width="1.2"/>
+<text x="29" y="222" font-size="17" fill="#526861" font-weight="650" text-anchor="start">编号</text>
+<text x="160" y="222" font-size="17" fill="#526861" font-weight="650" text-anchor="middle">两项条件</text>
+<text x="300" y="222" font-size="17" fill="#526861" font-weight="650" text-anchor="middle">与门</text>
+<text x="450" y="222" font-size="17" fill="#526861" font-weight="650" text-anchor="middle">选择输出</text>
+<text x="42" y="260" font-size="22" fill="#213c36" font-weight="700" text-anchor="start">00</text>
+<text x="199" y="248" font-size="18" fill="#8b9a91" font-weight="650" text-anchor="end">¬i₁ = 0</text>
+<text x="199" y="272" font-size="18" fill="#09677b" font-weight="650" text-anchor="end">¬i₀ = 1</text>
+<path d="M205 244H272" fill="none" stroke="#8b9a91" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M205 266H272" fill="none" stroke="#09677b" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M272 233H305a22 22 0 0 1 0 44H272Z" fill="#eeeee8" stroke="#526861" stroke-width="2" stroke-linejoin="round"/>
+<path d="M327 255H410" fill="none" stroke="#8b9a91" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+<text x="417" y="261" font-size="21" fill="#526861" font-weight="700" text-anchor="start">e₀ = 0</text>
+<text x="42" y="329" font-size="22" fill="#213c36" font-weight="700" text-anchor="start">01</text>
+<text x="199" y="317" font-size="18" fill="#8b9a91" font-weight="650" text-anchor="end">¬i₁ = 0</text>
+<text x="199" y="341" font-size="18" fill="#8b9a91" font-weight="650" text-anchor="end">i₀ = 0</text>
+<path d="M205 313H272" fill="none" stroke="#8b9a91" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M205 335H272" fill="none" stroke="#8b9a91" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M272 302H305a22 22 0 0 1 0 44H272Z" fill="#eeeee8" stroke="#526861" stroke-width="2" stroke-linejoin="round"/>
+<path d="M327 324H410" fill="none" stroke="#8b9a91" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+<text x="417" y="330" font-size="21" fill="#526861" font-weight="700" text-anchor="start">e₁ = 0</text>
+<rect x="25" y="364" width="490" height="58" rx="7" fill="#e9f2ec" stroke="#bed6cb" stroke-width="1.2"/>
+<text x="42" y="398" font-size="22" fill="#213c36" font-weight="700" text-anchor="start">10</text>
+<text x="199" y="386" font-size="18" fill="#09677b" font-weight="650" text-anchor="end">i₁ = 1</text>
+<text x="199" y="410" font-size="18" fill="#09677b" font-weight="650" text-anchor="end">¬i₀ = 1</text>
+<path d="M205 382H272" fill="none" stroke="#09677b" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M205 404H272" fill="none" stroke="#09677b" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M272 371H305a22 22 0 0 1 0 44H272Z" fill="#dbece7" stroke="#09677b" stroke-width="2" stroke-linejoin="round"/>
+<path d="M327 393H410" fill="none" stroke="#09677b" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/>
+<text x="417" y="399" font-size="21" fill="#09677b" font-weight="700" text-anchor="start">e₂ = 1</text>
+<text x="42" y="467" font-size="22" fill="#213c36" font-weight="700" text-anchor="start">11</text>
+<text x="199" y="455" font-size="18" fill="#09677b" font-weight="650" text-anchor="end">i₁ = 1</text>
+<text x="199" y="479" font-size="18" fill="#8b9a91" font-weight="650" text-anchor="end">i₀ = 0</text>
+<path d="M205 451H272" fill="none" stroke="#09677b" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M205 473H272" fill="none" stroke="#8b9a91" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M272 440H305a22 22 0 0 1 0 44H272Z" fill="#eeeee8" stroke="#526861" stroke-width="2" stroke-linejoin="round"/>
+<path d="M327 462H410" fill="none" stroke="#8b9a91" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+<text x="417" y="468" font-size="21" fill="#526861" font-weight="700" text-anchor="start">e₃ = 0</text>
+<text x="20" y="524" font-size="20" fill="#09677b" font-weight="700" text-anchor="start">恰好 e₂ 为 1，选择编号 2。</text>
+<text x="20" y="549" font-size="17" fill="#526861" font-weight="400" text-anchor="start">同名信号相连；青色为 1，灰色为 0。</text>
+</g>
+</svg>

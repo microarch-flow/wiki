@@ -1,0 +1,79 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="540" height="652" viewBox="0 0 540 652" xml:lang="zh-CN" role="img" aria-labelledby="title desc">
+  <title id="title">两个数据输入都为 1 时，MUX 为什么可能出现毛刺？</title>
+  <desc id="desc">两路数据 D₀ 与 D₁ 始终为 1。选择 S 分别经过 NOT 和 AND 以及直接经过 AND，得到 X₀ 与 X₁，两者经 OR 得到 Y。采用示意纯延迟模型，NOT 延迟两个时间单位，AND 和 OR 延迟各一个时间单位。S 在 t=0 从 1 降到 0，X₁ 在 t=1 降到 0，反相后的 S 在 t=2 上升，X₀ 在 t=3 上升。t=1 至 3 两路均为 0，Y 在 t=2 至 4 短暂为 0，随后恢复为 1。实际脉冲可能被门电路滤除。</desc>
+  <defs>
+    <marker id="time" markerWidth="8" markerHeight="8" refX="6.6" refY="4" orient="auto" markerUnits="userSpaceOnUse"><path d="M0 0L7 4L0 8Z" fill="#526860"/></marker>
+  </defs>
+  <rect x="1" y="1" width="538" height="650" rx="15" fill="#f7f6ef" stroke="#c6cec2" stroke-width="1.2"/>
+  <g font-family="system-ui, 'Noto Sans CJK SC', 'Microsoft YaHei', sans-serif" fill="#213c36">
+    <text x="22" y="35" font-size="24" font-weight="700">选择信号变化，为什么会产生毛刺？</text>
+    <text x="22" y="63" font-size="18" fill="#526860">D₀ = D₁ = 1；按稳态逻辑，Y 应一直为 1。</text>
+
+    <rect x="18" y="79" width="504" height="164" rx="9" fill="#fffdf7" stroke="#c6cec2" stroke-width="1.2"/>
+    <g stroke="#536860" stroke-width="2.4" fill="none" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M75 102H190M75 158H111M111 128V184M111 128H122M157 128H190M111 184H190M75 210H190"/>
+      <path d="M244 115H282V143H334M244 197H282V172H334M385 157H483"/>
+    </g>
+    <circle cx="111" cy="158" r="3.4" fill="#536860"/>
+    <g fill="#fffdf7" stroke="#213c36" stroke-width="2.5" stroke-linejoin="round">
+      <path d="M122 115L146 128L122 141Z"/>
+      <circle cx="151" cy="128" r="5.2"/>
+      <path d="M190 89H215A26 26 0 0 1 215 141H190Z"/>
+      <path d="M190 171H215A26 26 0 0 1 215 223H190Z"/>
+      <path d="M327 130Q351 157 327 184Q364 184 385 157Q364 130 327 130Z"/>
+    </g>
+    <g stroke="#213c36" fill="none" stroke-width="2.4" stroke-linecap="round">
+      <path d="M241 115H244M241 197H244"/>
+    </g>
+    <text x="65" y="108" font-size="18" font-weight="650" text-anchor="end">D₀=1</text>
+    <text x="65" y="164" font-size="18" font-weight="650" text-anchor="end">S</text>
+    <text x="65" y="216" font-size="18" font-weight="650" text-anchor="end">D₁=1</text>
+    <text x="170" y="153" font-size="17" fill="#526860" text-anchor="middle">¬S</text>
+    <text x="214" y="121" font-size="20" font-weight="650" text-anchor="middle">∧</text>
+    <text x="214" y="203" font-size="20" font-weight="650" text-anchor="middle">∧</text>
+    <text x="356" y="163" font-size="20" font-weight="650" text-anchor="middle">∨</text>
+    <text x="258" y="105" font-size="18" fill="#09677b" font-weight="650" text-anchor="middle">X₀</text>
+    <text x="258" y="222" font-size="18" fill="#09677b" font-weight="650" text-anchor="middle">X₁</text>
+    <text x="493" y="163" font-size="20" font-weight="700" text-anchor="middle">Y</text>
+    <text x="22" y="266" font-size="17" fill="#526860">假设纯延迟：NOT 为 2，与门、或门各为 1。</text>
+
+    <!-- Timing chart: t=0..4 at x170,237,304,371,438 -->
+    <rect x="18" y="280" width="504" height="319" rx="9" fill="#fffdf7" stroke="#c6cec2" stroke-width="1.2"/>
+    <rect x="237" y="396" width="134" height="102" rx="4" fill="#f4e5d7"/>
+    <rect x="304" y="503" width="134" height="56" rx="4" fill="#f4e5d7"/>
+    <g stroke="#c6cec2" stroke-width="1" fill="none" stroke-dasharray="4 4">
+      <path d="M170 289V572M237 289V572M304 289V572M371 289V572M438 289V572"/>
+    </g>
+    <g font-size="15.5" fill="#526860" text-anchor="end">
+      <text x="92" y="307">1</text><text x="92" y="329">0</text>
+      <text x="92" y="360">1</text><text x="92" y="382">0</text>
+      <text x="92" y="413">1</text><text x="92" y="435">0</text>
+      <text x="92" y="466">1</text><text x="92" y="488">0</text>
+      <text x="92" y="519">1</text><text x="92" y="541">0</text>
+    </g>
+    <g font-size="20" font-weight="650">
+      <text x="35" y="319">S</text>
+      <text x="35" y="372">¬S</text>
+      <text x="35" y="425">X₁</text>
+      <text x="35" y="478">X₀</text>
+      <text x="35" y="531">Y</text>
+    </g>
+    <g stroke="#09677b" stroke-width="3.4" fill="none" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M109 302H170V324H504"/>
+      <path d="M109 377H304V355H504"/>
+      <path d="M109 408H237V430H504"/>
+      <path d="M109 483H371V461H504"/>
+      <path d="M109 514H304M438 514H504"/>
+    </g>
+    <path d="M304 514V536H438V514" stroke="#a65029" stroke-width="3.8" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+    <text x="304" y="449" font-size="17" fill="#a65029" font-weight="700" text-anchor="middle">两路同为 0</text>
+    <text x="371" y="554" font-size="17" fill="#a65029" font-weight="700" text-anchor="middle">短暂毛刺</text>
+    <path d="M109 572H510" stroke="#526860" stroke-width="1.8" marker-end="url(#time)" fill="none"/>
+    <g font-size="16" fill="#526860" text-anchor="middle">
+      <text x="170" y="591">0</text><text x="237" y="591">1</text><text x="304" y="591">2</text><text x="371" y="591">3</text><text x="438" y="591">4</text>
+      <text x="495" y="591">t</text>
+    </g>
+    <text x="23" y="623" font-size="17" fill="#526860">每格为一个示意时间单位，非器件实测。</text>
+    <text x="23" y="644" font-size="17" fill="#526860">真实门电路可能滤除过窄的脉冲。</text>
+  </g>
+</svg>
