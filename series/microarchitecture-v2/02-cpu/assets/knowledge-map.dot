@@ -1,0 +1,22 @@
+digraph knowledge {
+  graph [rankdir=TB, bgcolor="#f5f6ef", pad="0.18", nodesep="0.24", ranksep="0.42", splines=polyline, outputorder=edgesfirst];
+  node [shape=box, style="rounded,filled", color="#82a18e", fillcolor="#e0ebe3", fontcolor="#173d35", penwidth=1.3, fontname="Noto Sans CJK SC", fontsize=15, margin="0.13,0.10"];
+  edge [color="#396b55", penwidth=1.4, arrowsize=.65];
+  B01 [label="B01\n指令与架构状态", fillcolor="#e0ebe3", fontcolor="#173d35"];
+  B02 [label="B02\n顺序流水线", fillcolor="#e0ebe3", fontcolor="#173d35"];
+  B03 [label="B03\n动态发射", fillcolor="#e0ebe3", fontcolor="#173d35"];
+  B04 [label="B04\n提交与异常", fillcolor="#e0ebe3", fontcolor="#173d35"];
+  B05 [label="B05\n寄存器重命名", fillcolor="#e0ebe3", fontcolor="#173d35"];
+  B06 [label="B06\n推测执行与恢复", fillcolor="#e0ebe3", fontcolor="#173d35"];
+  B07 [label="B07\n访存执行", fillcolor="#e0ebe3", fontcolor="#173d35"];
+  B08 [label="B08\n硬件多线程", fillcolor="#e0ebe3", fontcolor="#173d35"];
+  B01 -> B02;
+  B02 -> B03;
+  B03 -> B04;
+  B04 -> B05;
+  B05 -> B06;
+  B04 -> B07;
+  B03 -> B08;
+  B02 -> B06 [style=dashed, color="#738578"];
+  B01 -> B07 [style=dashed, color="#738578"];
+}

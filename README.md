@@ -13,7 +13,7 @@
 | 系列 | 内容 |
 | --- | --- |
 | [半导体与电路基础](./series/semiconductor-foundations/README.md) | 硅、掺杂、晶体管、门电路与寄存器采样 |
-| [计算微架构](./series/microarchitecture/README.md) | 运算、流水线、指令控制、并行执行、异步搬运与资源协作 |
+| [计算微架构](./series/microarchitecture-v2/README.md) | 运算、流水线、指令控制、并行执行、异步搬运与资源协作（新版逐步发布；[旧版资料](./series/microarchitecture/README.md)） |
 | [存储系统](./series/storage/README.md) | SRAM、DRAM、HBM 和高带宽闪存 |
 | [芯片与系统互连](./series/interconnect/README.md) | 片上总线、网络、PCIe、SerDes 和光互连 |
 

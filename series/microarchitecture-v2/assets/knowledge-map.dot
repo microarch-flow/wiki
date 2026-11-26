@@ -1,0 +1,30 @@
+digraph knowledge {
+  graph [rankdir=TB, bgcolor="#f5f6ef", pad="0.18", nodesep="0.24", ranksep="0.42", splines=polyline, outputorder=edgesfirst];
+  node [shape=box, style="rounded,filled", color="#82a18e", fillcolor="#e0ebe3", fontcolor="#173d35", penwidth=1.3, fontname="Noto Sans CJK SC", fontsize=15, margin="0.13,0.10"];
+  edge [color="#396b55", penwidth=1.4, arrowsize=.65];
+  A [label="A 共同计算基础\n8 篇", fillcolor="#173d35", fontcolor="#ffffff"];
+  B [label="B CPU\n8 篇", fillcolor="#e0ebe3", fontcolor="#173d35"];
+  C [label="C GPU\n3 篇", fillcolor="#e0ebe3", fontcolor="#173d35"];
+  D [label="D 计算阵列\n3 篇", fillcolor="#e0ebe3", fontcolor="#173d35"];
+  E [label="E 数据搬运\n3 篇", fillcolor="#e0ebe3", fontcolor="#173d35"];
+  F [label="F 多资源协作\n3 篇", fillcolor="#dbece1", fontcolor="#173d35"];
+  G [label="G 专用与稀疏\n2 篇", fillcolor="#edf1df", fontcolor="#173d35"];
+  H [label="H 综合性能分析\n2 篇", fillcolor="#d7e8db", fontcolor="#173d35"];
+  I [label="I 其他计算范式\n5 篇", fillcolor="#f3eddf", fontcolor="#173d35"];
+  A -> B;
+  A -> C;
+  A -> D;
+  A -> E;
+  A -> I [style=dashed, color="#738578"];
+  B -> F;
+  C -> F;
+  D -> F;
+  E -> F;
+  C -> G;
+  D -> G;
+  F -> H;
+  {rank=same; B; C; D; E;}
+  {rank=same; F; G;}
+  B -> C -> D -> E [style=invis, weight=20];
+  F -> G [style=invis, weight=10];
+}

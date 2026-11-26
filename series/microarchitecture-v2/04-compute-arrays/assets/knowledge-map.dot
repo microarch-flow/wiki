@@ -1,0 +1,16 @@
+digraph knowledge {
+  graph [rankdir=TB, bgcolor="#f5f6ef", pad="0.18", nodesep="0.24", ranksep="0.42", splines=polyline, outputorder=edgesfirst];
+  node [shape=box, style="rounded,filled", color="#82a18e", fillcolor="#e0ebe3", fontcolor="#173d35", penwidth=1.3, fontname="Noto Sans CJK SC", fontsize=15, margin="0.13,0.10"];
+  edge [color="#396b55", penwidth=1.4, arrowsize=.65];
+  A [label="乘加与部分和", fillcolor="#edf1df", fontcolor="#173d35"];
+  C [label="D01\nPE 与数据传递", fillcolor="#e0ebe3", fontcolor="#173d35"];
+  B [label="并行执行资源", fillcolor="#edf1df", fontcolor="#173d35"];
+  D [label="D02\n数据驻留与复用", fillcolor="#e0ebe3", fontcolor="#173d35"];
+  E [label="D03\n供数与利用率", fillcolor="#e0ebe3", fontcolor="#173d35"];
+  F [label="局部缓冲与端口", fillcolor="#edf1df", fontcolor="#173d35"];
+  A -> C;
+  B -> C;
+  C -> D;
+  D -> E;
+  F -> E;
+}

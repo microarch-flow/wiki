@@ -13,9 +13,12 @@
     {
       "group": "硬件怎样工作？",
       "title": "计算微架构",
-      "description": "两个矩阵相乘时，阵列里的乘加单元按什么顺序开始工作？为什么有的还在等？",
+      "description": "从简单运算电路到 CPU、GPU、计算阵列和资源协作：芯片怎样执行工作，又为什么有时必须等待？",
       "background": "逻辑门、寄存器和基本时序；按需查阅电路基础。",
-      "page": "microarchitecture.md"
+      "local": {
+        "directory": "series/microarchitecture-v2",
+        "publish": "microarchitecture-v2"
+      }
     },
     {
       "group": "硬件怎样工作？",

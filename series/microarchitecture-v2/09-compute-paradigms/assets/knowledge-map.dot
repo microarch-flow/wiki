@@ -1,0 +1,16 @@
+digraph knowledge {
+  graph [rankdir=TB, bgcolor="#f5f6ef", pad="0.18", nodesep="0.24", ranksep="0.42", splines=polyline, outputorder=edgesfirst];
+  node [shape=box, style="rounded,filled", color="#82a18e", fillcolor="#e0ebe3", fontcolor="#173d35", penwidth=1.3, fontname="Noto Sans CJK SC", fontsize=15, margin="0.13,0.10"];
+  edge [color="#396b55", penwidth=1.4, arrowsize=.65];
+  A [label="共同计算基础", fillcolor="#edf1df", fontcolor="#173d35"];
+  B [label="I01\n可重构与空间计算", fillcolor="#e0ebe3", fontcolor="#173d35"];
+  C [label="I02\n近存与数字存内", fillcolor="#e0ebe3", fontcolor="#173d35"];
+  D [label="I03\n模拟存内计算", fillcolor="#e0ebe3", fontcolor="#173d35"];
+  E [label="I04\n光子计算", fillcolor="#e0ebe3", fontcolor="#173d35"];
+  F [label="I05\n神经形态计算", fillcolor="#e0ebe3", fontcolor="#173d35"];
+  A -> B [style=dashed, color="#738578"];
+  A -> C [style=dashed, color="#738578"];
+  C -> D;
+  A -> E [style=dashed, color="#738578"];
+  A -> F [style=dashed, color="#738578"];
+}

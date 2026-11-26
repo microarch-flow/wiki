@@ -35,9 +35,9 @@ hide:
 
 | 如果你想…… | 建议从这里读起 |
 | --- | --- |
-| 从零理解芯片为什么能工作 | [半导体与电路基础](foundations/README.md) → 按兴趣进入[计算微架构](microarchitecture.md)、[存储系统](storage.md)或[芯片与系统互连](interconnect.md)。 |
+| 从零理解芯片为什么能工作 | [半导体与电路基础](foundations/README.md) → 按兴趣进入[计算微架构](microarchitecture-v2/README.md)、[存储系统](storage.md)或[芯片与系统互连](interconnect.md)。 |
 | 理解大模型怎样计算、怎样部署 | [算法与模型](external/workload-wiki/README.md) → [推理运行时](series/inference-runtime/README.md)。遇到带宽、延迟、计算利用率问题时，再回到相关硬件系列。 |
-| 学习 AI 芯片架构、比较设计方案 | 并行学习[计算微架构](microarchitecture.md)、[存储系统](storage.md)与[芯片与系统互连](interconnect.md)，结合模型的计算和数据需求，再阅读[芯片架构实例](series/chip-architectures/README.md)。 |
+| 学习 AI 芯片架构、比较设计方案 | 并行学习[计算微架构](microarchitecture-v2/README.md)、[存储系统](storage.md)与[芯片与系统互连](interconnect.md)，结合模型的计算和数据需求，再阅读[芯片架构实例](series/chip-architectures/README.md)。 |
 | 了解一颗芯片如何从规格走到量产 | 从[芯片开发与实现](series/chip-development/README.md)建立完整流程，再根据设计、时序、功耗、封装等问题查阅电路基础和架构知识。 |
 
 也可以直接从一个具体问题开始。例如，几张 GPU 算完之后都在等同一次求和，可以读[两台服务器上哪块网卡最忙](SCALEUP/wiki/04-software-and-collectives/four-gpu-allreduce-egress.md)这个算例。

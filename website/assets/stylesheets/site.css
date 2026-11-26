@@ -184,6 +184,15 @@ body { background: var(--paper); }
 .series-home-content { margin-top: 2.2rem; scroll-margin-top: 4.5rem; }
 
 /* Center the foundations knowledge map within the article, not the viewport. */
+/* Microarchitecture learning maps remain centered and available without JavaScript. */
+.md-typeset figure.micro-v2-map { width: fit-content; max-width: 100%; margin: 1.2rem auto 1.5rem; }
+.md-typeset .micro-v2-map p { margin: 0; text-align: center; }
+.md-typeset .micro-v2-map img { display: block; width: auto; max-width: 100%; height: auto; margin: 0 auto; border: 1px solid #c4d0c4; border-radius: .55rem; }
+.md-typeset .micro-v2-map figcaption { max-width: 100%; margin: .6rem 0 0; color: #4f695a; font-size: .68rem; line-height: 1.7; text-align: center; }
+@media (max-width: 38em) {
+  .md-typeset .micro-v2-map p { overflow-x: auto; }
+  .md-typeset .micro-v2-map-wide img { min-width: 520px; max-width: none; }
+}
 .md-typeset figure.foundation-article-map { width: min(100%, 600px); max-width: 100%; margin: 1.2rem auto; }
 .md-typeset .foundation-article-map p { margin: 0; }
 .md-typeset .foundation-article-map img { display: block; width: 100%; height: auto; }

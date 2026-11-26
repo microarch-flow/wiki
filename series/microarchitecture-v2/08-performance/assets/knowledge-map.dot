@@ -1,0 +1,18 @@
+digraph knowledge {
+  graph [rankdir=TB, bgcolor="#f5f6ef", pad="0.18", nodesep="0.24", ranksep="0.42", splines=polyline, outputorder=edgesfirst];
+  node [shape=box, style="rounded,filled", color="#82a18e", fillcolor="#e0ebe3", fontcolor="#173d35", penwidth=1.3, fontname="Noto Sans CJK SC", fontsize=15, margin="0.13,0.10"];
+  edge [color="#396b55", penwidth=1.4, arrowsize=.65];
+  A [label="运算路径与依赖", fillcolor="#edf1df", fontcolor="#173d35"];
+  C [label="H01\n执行时间与瓶颈", fillcolor="#e0ebe3", fontcolor="#173d35"];
+  B [label="资源与数据供给", fillcolor="#edf1df", fontcolor="#173d35"];
+  D [label="面积与性能", fillcolor="#edf1df", fontcolor="#173d35"];
+  E [label="电压、频率与活动率", fillcolor="#edf1df", fontcolor="#173d35"];
+  F [label="功耗与任务能量", fillcolor="#edf1df", fontcolor="#173d35"];
+  G [label="H02\n设计比较", fillcolor="#e0ebe3", fontcolor="#173d35"];
+  A -> C;
+  B -> C;
+  C -> D;
+  E -> F;
+  D -> G;
+  F -> G;
+}

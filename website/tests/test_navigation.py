@@ -50,7 +50,7 @@ class GeneratedNavigationTests(unittest.TestCase):
         self.assertIn('id="common-foundations-heading"', directory)
         expected_groups = [
             ("硬件怎样工作？", [
-                ("foundations/", "半导体与电路基础"), ("microarchitecture/", "计算微架构"),
+                ("foundations/", "半导体与电路基础"), ("microarchitecture-v2/", "计算微架构"),
                 ("storage/", "存储系统"), ("interconnect/", "芯片与系统互连"),
             ]),
             ("模型怎样计算，一次推理怎样跑起来？", [
@@ -92,9 +92,9 @@ class GeneratedNavigationTests(unittest.TestCase):
         self.assertEqual(directory.count('class="portal-series-background"'), 8)
         routes = body.split('id="reading-paths"', 1)[1].split('id="series"', 1)[0]
         self.assertEqual(set(re.findall(r'href="([^"]+)"', routes)) & {
-            "foundations/", "microarchitecture/", "storage/", "interconnect/", "external/workload-wiki/",
+            "foundations/", "microarchitecture-v2/", "storage/", "interconnect/", "external/workload-wiki/",
             "series/inference-runtime/", "series/chip-architectures/", "series/chip-development/",
-        }, {"foundations/", "microarchitecture/", "storage/", "interconnect/", "external/workload-wiki/",
+        }, {"foundations/", "microarchitecture-v2/", "storage/", "interconnect/", "external/workload-wiki/",
             "series/inference-runtime/", "series/chip-architectures/", "series/chip-development/"})
 
     def test_renamed_guides_keep_their_published_anchors(self):
@@ -999,7 +999,10 @@ class GeneratedNavigationTests(unittest.TestCase):
                 breadcrumb = BREADCRUMB.search(html)
                 self.assertIsNotNone(breadcrumb)
                 labels = [unescape(x) for x in re.findall(r'<(?:a\s[^>]*|span(?:\s[^>]*)?)>(.*?)</(?:a|span)>', breadcrumb.group(1))]
-                self.assertEqual(labels[1:3], [series, topic])
+                expected = [series, topic]
+                if series == "计算微架构":
+                    expected.insert(1, "旧版资料")
+                self.assertEqual(labels[1:1 + len(expected)], expected)
 
     def test_serdes_chapter_order_and_figures(self):
         counts = {
@@ -1331,7 +1334,7 @@ class GeneratedNavigationTests(unittest.TestCase):
                 "完整论文卡", "完整卡：CPO status, challenges, and solutions",
             ],
             "electrical-timing-foundations/index.html": [
-                "首页", "计算微架构", "流水线、时序与时钟域", "从电荷到芯片时序：一条可手算的路径",
+                "首页", "计算微架构", "旧版资料", "流水线、时序与时钟域", "从电荷到芯片时序：一条可手算的路径",
             ],
             "SERDES/wiki/05-signaling-and-metrics/ber-confidence-and-fec/index.html": [
                 "首页", "芯片与系统互连", "高速电链路（SerDes）", "05 信号与指标",

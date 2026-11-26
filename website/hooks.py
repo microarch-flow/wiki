@@ -59,6 +59,10 @@ SERIES_COVERS = {
         "assets/images/series-covers/microarchitecture.svg", f"{MICRO} / 系列首页", "执行、搬运、同步与资源",
         "计算、存储、互连与外部存储构成芯片的数据路径。", "",
     ),
+    "microarchitecture-v2/README.md": (
+        "assets/images/series-covers/microarchitecture.svg", f"{MICRO} / 系列首页", "执行、搬运、同步与资源",
+        "计算、存储、互连与外部存储构成芯片的数据路径。", "",
+    ),
     "storage.md": (
         "assets/images/series-covers/storage.svg", "存储系统 / 系列首页", "一次需要访问主存的读取",
         "当缓存无法提供数据时，读取可经控制器到达 DRAM，数据沿路径返回。", "",
@@ -664,7 +668,9 @@ def breadcrumb_ancestors(page):
     parent = page.parent
     while parent:
         index = next((item for item in parent.children if item.is_page and item.is_index), None)
-        landing = {MICRO: "microarchitecture.md", STORAGE: "storage.md", INTERCONNECT: "interconnect.md"}.get(parent.title)
+        landing = {"旧版资料": "microarchitecture.md", STORAGE: "storage.md", INTERCONNECT: "interconnect.md"}.get(parent.title)
+        if parent.title == MICRO and index is None:
+            landing = "microarchitecture.md"
         if landing:
             index = next((item for item in parent.children if item.is_page and item.file.src_uri == landing), None)
         if index is None or index.file.src_uri != page.file.src_uri:
@@ -903,6 +909,12 @@ def on_config(config, **kwargs):
                 tree = inference_tree(root, directory, config.extra["storage_sidebar_labels"])
             elif entry["local"]["publish"] == "foundations":
                 tree = foundations_tree(root, directory, config.extra["storage_sidebar_labels"])
+            elif entry["local"]["publish"] == "microarchitecture-v2":
+                # Present the current guides first; retain every legacy article and URL
+                # under a distinct section while the new series is being written.
+                tree = make_tree(directory, root, ("README.md", "index.md"), order_subdirs=True)
+                legacy = built_in_sections.pop("microarchitecture.md")[MICRO]
+                tree.append({"旧版资料": legacy})
             elif entry["local"]["publish"] == CHIP_ARCHITECTURES:
                 tree = chip_architecture_tree(root, directory, config.extra["storage_sidebar_labels"])
             else:
@@ -967,6 +979,10 @@ def on_page_markdown(markdown, page, **kwargs):
         markdown = strip_duplicate_parent(markdown, page, Path(kwargs["config"].docs_dir))
         markdown = label_noc_original_parent(markdown, page, Path(kwargs["config"].docs_dir),
                                              kwargs["config"].extra.get("noc_legacy_pages", set()))
+    if page.file.src_uri == "microarchitecture.md" and (Path(kwargs["config"].docs_dir) / "microarchitecture-v2/README.md").is_file():
+        notice = "> **旧版资料。** 新版正在逐步重构和发布；可前往[新版计算微架构导读](microarchitecture-v2/README.md)。本页与原有文章仍可阅读。\n\n"
+        # Preserve the legacy intro/cover and all of its original headings and anchors.
+        markdown = re.sub(r"^## ", lambda match: notice + match.group(0), markdown, count=1, flags=re.MULTILINE)
     if page.file.src_uri == "README.md":
         config = kwargs["config"]
         markdown = markdown.replace("<!-- site-series -->", render_series(read_series(Path(config.docs_dir))))

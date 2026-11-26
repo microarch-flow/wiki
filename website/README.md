@@ -66,6 +66,8 @@ NoC 的十个阅读分组、文章短标题和顺序维护在 `series/interconne
 
 芯片开发与实现沿用流程与 FAB 两组源码。归属由 `website/ownership.py` 维护，侧栏的顺序和短标题来自章导读中的编号阅读列表。跨专题文章显示在主归属中，原章节导读可继续提供正文链接。源码目录的首页不属于当前专题时，侧栏直接显示其中相关的文章。`website/tests/fixtures/chip-development-legacy.json` 保存 144 个公开路径和 1,756 个旧正文锚点。改名或合并小节后，把兼容锚点放在同页对应的阅读位置，并随网站测试检查旧链接及搜索。
 
+新版计算微架构的正文与专题导读维护在 `series/microarchitecture-v2/`，通过 `website/series.json` 的本地系列配置发布到 `microarchitecture-v2/`。首页与顶栏进入新版；旧版 `series/microarchitecture/` 保持历史 URL，在同一系列的「旧版资料」分组中可访问。新版九个编号目录按目录顺序导航，正文文件名使用计划书中的稳定编号前缀；专题导读中的未发布条目是纯文本，实际发表后再加链接。知识关系图使用 SVG（可直接查看），同目录下的 Graphviz `.dot` 源可用于更新图形：`dot -Tsvg knowledge-map.dot -o knowledge-map.svg`。重构依据见 [计算微架构重构计划书](../docs/microarchitecture-v2-plan.md)。
+
 当前生产配置只使用本仓库的正文，不需要检出或联网读取旧来源仓库。仓内内容变更随主仓 `main` 推送发布。
 
 ## 可选：增加来自其他仓库的技术系列
