@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="460" height="299" viewBox="0 0 460 299" role="img" aria-labelledby="title desc" xml:lang="zh-CN">
+<title id="title">状态二：电源右端为正</title><desc id="desc">电源右端为正，左端为负。绿色路径由正输入端经上方二极管到达用电器上端，从上向下流过用电器，再经另一侧下方二极管返回负输入端。灰色的另两只二极管反向截止。</desc>
+<defs><marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="4.7" markerHeight="4.7" orient="auto"><path d="M0 0 L10 5 L0 10Z" fill="#24724d"/></marker></defs>
+<rect x="1" y="1" width="458" height="297" rx="15" fill="#f7f6ef" stroke="#c9d3c7"/>
+<g font-family="system-ui, 'Noto Sans CJK SC', sans-serif" fill="#203c37">
+  <text x="230" y="26" text-anchor="middle" font-size="19" font-weight="650">状态二：电源右端为正</text>
+  <g fill="none" stroke="#24724d" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M95 137 V249 H210 M250 249 H365 V137"/>
+    <circle cx="230" cy="249" r="20" fill="#f7f6ef" stroke="#203c37"/>
+    <path d="M216 249 Q223 235 230 249 T244 249" stroke="#203c37" stroke-width="1.8"/>
+    <path d="M230 65 V106 M230 168 V209"/>
+    <path d="M230 78 V100" marker-end="url(#arrow)"/><path d="M230 176 V199" marker-end="url(#arrow)"/>
+    <rect x="199" y="106" width="62" height="62" rx="4" fill="#e8f1e4" stroke="#24724d" stroke-width="2.3"/>
+  </g>
+  <g stroke="#9ba8a1" stroke-width="2.1" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M95 137 L151.03 107.12 M173.97 94.88 L230 65"/><path d="M146.32 98.29 L171.32 96.29 L155.74 115.94 Z" fill="#9ba8a1"/><path d="M168.32 84.29 L179.62 105.47"/></g><g stroke="#24724d" stroke-width="3.0" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M365 137 L308.97 107.12 M286.03 94.88 L230 65"/><path d="M304.26 115.94 L288.68 96.29 L313.68 98.29 Z" fill="#24724d"/><path d="M280.38 105.47 L291.68 84.29"/><path d="M280.74 92.06 L262.21 82.18" stroke="#24724d" stroke-width="3.0" marker-end="url(#arrow)"/></g><g stroke="#24724d" stroke-width="3.0" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M230 209 L173.97 179.12 M151.03 166.88 L95 137"/><path d="M169.26 187.94 L153.68 168.29 L178.68 170.29 Z" fill="#24724d"/><path d="M145.38 177.47 L156.68 156.29"/><path d="M145.74 164.06 L127.21 154.18" stroke="#24724d" stroke-width="3.0" marker-end="url(#arrow)"/></g><g stroke="#9ba8a1" stroke-width="2.1" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M230 209 L286.03 179.12 M308.97 166.88 L365 137"/><path d="M281.32 170.29 L306.32 168.29 L290.74 187.94 Z" fill="#9ba8a1"/><path d="M303.32 156.29 L314.62 177.47"/></g>
+  <g fill="#24724d"><circle cx="95" cy="137" r="3.5"/><circle cx="365" cy="137" r="3.5"/><circle cx="230" cy="65" r="3.5"/><circle cx="230" cy="209" r="3.5"/></g>
+  <g font-size="20" font-weight="650" text-anchor="middle">
+    <text x="77" y="140">−</text><text x="383" y="140">+</text>
+    <text x="247" y="65" fill="#24724d">+</text><text x="247" y="211" fill="#24724d">−</text>
+  </g>
+  <text x="230" y="139" text-anchor="middle" font-size="16" font-weight="600">用电器</text>
+  <text x="269" y="143" font-size="13" fill="#24724d">电流向下</text>
+  <text x="230" y="282" text-anchor="middle" font-size="15">交流电源</text>
+  <path d="M23 25 H43" stroke="#24724d" stroke-width="3" stroke-linecap="round"/>
+  <text x="47" y="30" font-size="12" fill="#24724d">导通路径</text>
+</g></svg>
