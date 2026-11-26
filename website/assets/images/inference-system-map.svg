@@ -1,0 +1,56 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 486" role="img" aria-labelledby="title desc">
+  <title id="title">一次 AI 推理背后的技术抽象层次</title>
+  <desc id="desc">从用户输入的文字、图像或语音向下看，算法与模型定义计算需求，编译器与运行时负责计算转换、组织及执行；芯片与系统硬件包含计算微架构、存储系统及芯片与系统互连，最终建立在半导体器件和电路之上。箭头表示抽象层次从高到低，不表示每次推理的实际执行时间顺序。</desc>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+      <path d="M1 1 L8 5 L1 9" fill="none" stroke="#668e75" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+    </marker>
+    <style>
+      text { font-family: -apple-system, BlinkMacSystemFont, 'Noto Sans CJK SC', 'PingFang SC', 'Microsoft YaHei', sans-serif; fill: #193c34; }
+      .name { font-size: 21px; font-weight: 700; }
+      .detail { font-size: 16px; fill: #4b695b; }
+      .group { font-size: 17px; font-weight: 600; }
+      .peer-name { font-size: 17px; font-weight: 700; }
+      .peer-detail { font-size: 15px; fill: #4b695b; }
+      .light-name { fill: #fff; }
+      .light-detail { fill: #d6e8da; }
+      .link { fill: none; stroke: #668e75; stroke-width: 1.8; stroke-linecap: round; marker-end: url(#arrow); }
+    </style>
+  </defs>
+  <rect x="1" y="1" width="558" height="484" rx="10" fill="#f1f5ed" stroke="#d8e3d7"/>
+
+  <rect x="86" y="17" width="388" height="57" rx="7" fill="#f5f7f0" stroke="#b5cbb7"/>
+  <text class="name" x="280" y="41" text-anchor="middle">用户输入</text>
+  <text class="detail" x="280" y="61" text-anchor="middle">文字、图像、语音</text>
+  <path class="link" d="M280 74 V94"/>
+
+  <rect x="86" y="96" width="388" height="66" rx="7" fill="#e6ecd9" stroke="#a8b894"/>
+  <text class="name" x="280" y="124" text-anchor="middle">算法与模型</text>
+  <text class="detail" x="280" y="147" text-anchor="middle">需要进行什么计算？</text>
+  <path class="link" d="M280 162 V182"/>
+
+  <rect x="86" y="184" width="388" height="66" rx="7" fill="#e6ecd9" stroke="#a8b894"/>
+  <text class="name" x="280" y="212" text-anchor="middle">编译器与运行时</text>
+  <text class="detail" x="280" y="235" text-anchor="middle">怎样组织和执行这些计算？</text>
+  <path class="link" d="M280 250 V270"/>
+
+  <rect x="16" y="272" width="528" height="111" rx="8" fill="#f5f7f0" stroke="#b5cbb7"/>
+  <text class="group" x="280" y="296" text-anchor="middle">芯片与系统硬件</text>
+
+  <rect x="28" y="307" width="161" height="64" rx="6" fill="#e6f0e5" stroke="#b7cdb9"/>
+  <text class="peer-name" x="108.5" y="333" text-anchor="middle">计算微架构</text>
+  <text class="peer-detail" x="108.5" y="355" text-anchor="middle">执行运算</text>
+
+  <rect x="199" y="307" width="161" height="64" rx="6" fill="#e6f0e5" stroke="#b7cdb9"/>
+  <text class="peer-name" x="279.5" y="333" text-anchor="middle">存储系统</text>
+  <text class="peer-detail" x="279.5" y="355" text-anchor="middle">保存和访问数据</text>
+
+  <rect x="370" y="307" width="162" height="64" rx="6" fill="#e6f0e5" stroke="#b7cdb9"/>
+  <text class="peer-name" x="451" y="333" text-anchor="middle">芯片与系统互连</text>
+  <text class="peer-detail" x="451" y="355" text-anchor="middle">交换数据</text>
+  <path class="link" d="M280 383 V403"/>
+
+  <rect x="86" y="405" width="388" height="64" rx="7" fill="#193c34" stroke="#193c34"/>
+  <text class="name light-name" x="280" y="433" text-anchor="middle">半导体与电路基础</text>
+  <text class="detail light-detail" x="280" y="456" text-anchor="middle">硬件为什么能够工作？</text>
+</svg>

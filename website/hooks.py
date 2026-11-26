@@ -171,7 +171,7 @@ def render_series(entries):
     for number, (question, rows) in enumerate(groups.items(), start=1):
         table = (
             '<table class="portal-series-table"><thead><tr>'
-            '<th scope="col">系列</th><th scope="col">核心问题与建议基础</th>'
+            '<th scope="col">系列</th><th scope="col">研究内容与建议基础</th>'
             '</tr></thead><tbody>\n' + "\n".join(rows) + "\n</tbody></table>"
         )
         if question:

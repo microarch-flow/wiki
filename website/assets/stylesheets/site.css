@@ -125,6 +125,10 @@ body { background: var(--paper); }
 .md-typeset .portal-page > p { max-width: 37rem; line-height: 1.9; }
 .md-typeset .portal-page > p:first-of-type { color: var(--note-ink); font-size: .95rem; }
 .md-typeset .portal-page h2 { margin: 2rem 0 .6rem; }
+/* System abstraction diagram: compact and centered, with a full-size link. */
+.md-typeset figure.portal-system-map { width: min(100%, 600px); max-width: 100%; margin: 1.2rem auto 1.5rem; }
+.portal-system-map img { display: block; width: 100%; height: auto; }
+.md-typeset .portal-system-map figcaption { text-align: center; max-width: none; margin: .7rem 0 0; color: #4f695a; font-size: .68rem; line-height: 1.7; }
 /* A responsive, self-contained knowledge map. */
 .md-typeset .portal-knowledge-map { margin: 1rem 0 1.5rem; }
 .portal-knowledge-map-scroll { overflow-x: auto; border-radius: .5rem; }

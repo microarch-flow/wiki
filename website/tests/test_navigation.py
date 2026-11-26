@@ -82,7 +82,11 @@ class GeneratedNavigationTests(unittest.TestCase):
         home = (SITE / "index.html").read_text(encoding="utf-8")
         body = re.search(r'<article\b[^>]*>(.*?)</article>', home, re.DOTALL).group(1)
         self.assertLess(body.index('id="knowledge-map"'), body.index('id="reading-paths"'))
-        self.assertLess(body.index('id="reading-paths"'), body.index('id="series"'))
+        self.assertLess(body.index('id="system-overview"'), body.index('id="series"'))
+        self.assertLess(body.index('id="series"'), body.index('id="knowledge-map"'))
+        self.assertIn('src="assets/images/inference-system-map.svg"', body)
+        self.assertIn('href="#system-overview"', body)
+        self.assertTrue((SITE / "assets/images/inference-system-map.svg").is_file())
         self.assertIn('src="assets/images/knowledge-map.svg"', body)
         self.assertIn('href="#knowledge-map"', body)
         self.assertIn('href="#reading-paths"', body)
@@ -90,7 +94,7 @@ class GeneratedNavigationTests(unittest.TestCase):
         directory = re.search(r'<nav\b[^>]*id="common-foundations"[^>]*>(.*?)</nav>', body, re.DOTALL).group(1)
         self.assertEqual(directory.count('class="portal-series-table"'), 3)
         self.assertEqual(directory.count('class="portal-series-background"'), 8)
-        routes = body.split('id="reading-paths"', 1)[1].split('id="series"', 1)[0]
+        routes = body.split('id="reading-paths"', 1)[1]
         self.assertEqual(set(re.findall(r'href="([^"]+)"', routes)) & {
             "foundations/", "microarchitecture-v2/", "storage/", "interconnect/", "external/workload-wiki/",
             "series/inference-runtime/", "series/chip-architectures/", "series/chip-development/",

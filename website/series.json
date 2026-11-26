@@ -3,7 +3,7 @@
     {
       "group": "硬件怎样工作？",
       "title": "半导体与电路基础",
-      "description": "一只逻辑门怎样工作？从硅里的电荷读到时钟、功耗和时序，再看电路怎样做成芯片。",
+      "description": "从电子、硅和晶体管出发，理解逻辑门、时钟、电路功耗与时序。",
       "background": "无需芯片专业基础；从电子和硅开始。",
       "local": {
         "directory": "series/semiconductor-foundations",
@@ -13,7 +13,7 @@
     {
       "group": "硬件怎样工作？",
       "title": "计算微架构",
-      "description": "从简单运算电路到 CPU、GPU、计算阵列和资源协作：芯片怎样执行工作，又为什么有时必须等待？",
+      "description": "研究芯片内部如何组织运算单元、执行指令，以及怎样提高计算效率。",
       "background": "逻辑门、寄存器和基本时序；按需查阅电路基础。",
       "local": {
         "directory": "series/microarchitecture-v2",
@@ -23,21 +23,21 @@
     {
       "group": "硬件怎样工作？",
       "title": "存储系统",
-      "description": "SRAM 和 DRAM 各自怎样存住一个比特？几笔读请求同时到达，控制器先处理哪一笔？",
+      "description": "研究数据如何保存、访问和管理，以及为什么芯片需要不同类型和层级的存储器。",
       "background": "基本数字电路、地址和数据读写；器件篇可从电路基础读起。",
       "page": "storage.md"
     },
     {
       "group": "硬件怎样工作？",
       "title": "芯片与系统互连",
-      "description": "两笔请求争用同一个出口时，谁先走？跟着一块数据，从片上网络读到服务器之间的通信。",
+      "description": "研究数据如何在芯片内部、芯片之间以及服务器之间传输。",
       "background": "基本请求与响应、地址和数据移动；按需结合微架构、存储系统。",
       "page": "interconnect.md"
     },
     {
       "group": "模型怎样计算，一次推理怎样跑起来？",
       "title": "算法与模型",
-      "description": "语言模型逐步生成回答，扩散模型逐步生成图像。每一步要做多少计算、搬多少数据？",
+      "description": "研究 AI 模型如何处理信息、完成任务，以及这些过程需要怎样的计算和数据。",
       "background": "基本数学和编程；不要求先了解芯片内部实现。",
       "local": {
         "directory": "series/workload",
@@ -47,7 +47,7 @@
     {
       "group": "模型怎样计算，一次推理怎样跑起来？",
       "title": "推理运行时",
-      "description": "一份回答刚生成一半，又来了一个长问题。推理引擎怎样安排下一轮计算？",
+      "description": "研究如何将模型中的计算组织为硬件能够执行的任务，并提高整个推理系统的效率。",
       "background": "模型的计算与数据需求；遇到性能问题时查阅计算、存储与互连。",
       "local": {
         "directory": "series/inference-runtime",
@@ -57,7 +57,7 @@
     {
       "group": "一颗真实芯片怎样设计、实现和交付？",
       "title": "芯片架构实例",
-      "description": "看 H100 怎样在计算时准备下一块数据，再看 TPU v4 怎样分工处理矩阵乘法和查表。",
+      "description": "结合真实芯片，理解不同的计算、存储和互连设计，以及背后的设计取舍。",
       "background": "微架构、存储、互连和工作负载；也可直接按产品查阅。",
       "local": {
         "directory": "series/chip-architectures",
@@ -67,7 +67,7 @@
     {
       "group": "一颗真实芯片怎样设计、实现和交付？",
       "title": "芯片开发与实现",
-      "description": "架构图怎样变成硅片？跟着一颗芯片走过设计、制造和测试，再看首批样片怎样走向量产。",
+      "description": "研究一颗芯片如何从产品构想出发，经过设计、验证、制造、封装和测试，最终成为可以交付的产品。",
       "background": "可直接读开发流程；具体环节按需结合电路、架构和工艺知识。",
       "local": {
         "directory": "series/chip-development/process",
