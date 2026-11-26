@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="460" height="218" viewBox="0 0 460 218" role="img" aria-labelledby="title desc" xml:lang="zh-CN">
+  <title id="title">PN 结二极管的结构与电路符号</title>
+  <desc id="desc">同一块硅内左侧为 P 型区，右侧为 N 型区。中间虚线表示两种掺杂区域的交界位置，不表示耗尽区宽度。两端金属接触分别引出阳极 A 和阴极 K；下方电路符号的竖线在阴极一侧。</desc>
+  <g font-family="system-ui, 'Noto Sans CJK SC', sans-serif" fill="#203c37">
+    <rect x="1" y="1" width="458" height="216" rx="15" fill="#f7f6ef" stroke="#c9d3c7"/>
+    <text x="230" y="28" text-anchor="middle" font-size="19" font-weight="650">普通硅 PN 结二极管</text>
+    <g stroke="#203c37" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M35 82 H100 M360 82 H425" fill="none" stroke-width="2.6"/>
+      <rect x="100" y="50" width="10" height="64" rx="1" fill="#8f9e98"/>
+      <rect x="110" y="50" width="120" height="64" fill="#f1d5c7"/>
+      <rect x="230" y="50" width="120" height="64" fill="#d1e5ed"/>
+      <rect x="350" y="50" width="10" height="64" rx="1" fill="#8f9e98"/>
+      <path d="M230 46 V118" stroke-dasharray="3 4"/>
+    </g>
+    <g font-size="17" text-anchor="middle">
+      <text x="170" y="87" fill="#74402d">P 型硅</text>
+      <text x="290" y="87" fill="#285c72">N 型硅</text>
+      <text x="230" y="135" font-size="15">PN 结位置</text>
+      <text x="61" y="69">A</text>
+      <text x="399" y="69">K</text>
+      <text x="61" y="103" font-size="14">阳极</text>
+      <text x="399" y="103" font-size="14">阴极</text>
+    </g>
+    <g fill="none" stroke="#203c37" stroke-width="2.7" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M60 169 H216 M244 169 H400"/>
+      <path d="M216 154 L242 169 L216 184 Z" fill="#203c37"/>
+      <path d="M244 153 V185"/>
+    </g>
+    <g font-size="16" text-anchor="middle">
+      <text x="61" y="158">A</text>
+      <text x="399" y="158">K</text>
+      <text x="230" y="204" fill="#597069">电路符号</text>
+    </g>
+  </g>
+</svg>
