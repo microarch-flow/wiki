@@ -116,7 +116,8 @@ class GeneratedNavigationTests(unittest.TestCase):
         body = re.search(r'<article\b[^>]*>(.*?)</article>', home, re.DOTALL).group(1)
         guide = (SITE / "foundations/index.html").read_text(encoding="utf-8")
         guide_body = re.search(r'<article\b[^>]*>(.*?)</article>', guide, re.DOTALL).group(1)
-        expected = ["electrons-to-diode", "bands-to-channel", "cmos-logic-gates", "latch-and-divider",
+        expected = ["electrons-to-diode", "bands-to-channel", "cmos-logic-gates", "combinational-logic",
+                    "latch-and-divider", "registers-and-sequential-logic", "digital-control",
                     "transistor-amplifier", "quartz-oscillator", "integer-pll", "fanout-and-wire-delay",
                     "supply-voltage-and-frequency", "pvt-and-path-delay"]
         overview = guide_body.split('id="文章知识关系"', 1)[1].split("<h2 ", 1)[0]
@@ -132,6 +133,14 @@ class GeneratedNavigationTests(unittest.TestCase):
         self.assertIn('src="assets/article-map.svg"', overview)
         self.assertTrue((SITE / "foundations/assets/article-map.svg").is_file())
         self.assertIn('按学习目标选择', guide_body)
+        # The three planned articles are discoverable but visibly marked as outlines.
+        for slug in ("combinational-logic", "registers-and-sequential-logic", "digital-control"):
+            with self.subTest(outline=slug):
+                row = re.search(rf'<tr>\s*<td>\d+\. <a href="{slug}/">.*?</tr>', overview, re.DOTALL)
+                self.assertIsNotNone(row)
+                self.assertIn("待完善", row.group(0))
+                draft = (SITE / "foundations" / slug / "index.html").read_text(encoding="utf-8")
+                self.assertIn("待完善（文章提纲，尚非完整正文）", draft)
         source = Path(__file__).resolve().parents[2] / "series/semiconductor-foundations"
         redirects = set(FOUNDATION_MERGED_ARTICLES) | set(FOUNDATION_SPLIT_ARTICLES)
         titles = {page.parent.name: page.read_text(encoding="utf-8").splitlines()[0].removeprefix("# ")

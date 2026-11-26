@@ -1,6 +1,6 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="600" height="500" viewBox="0 0 600 500" role="img" aria-labelledby="title desc">
-  <title id="title">半导体与电路基础：十篇文章的知识关系</title>
-  <desc id="desc">从电子与二极管，到 MOS 管，再到逻辑门。逻辑门向下分出三条线：晶体管放大、石英振荡器、PLL 倍频；锁存器与触发器；门延迟与翻转能量、本地供电与频率、建立与保持。锁存器与触发器另有虚线连到 PLL 倍频和建立与保持，表示分频、采样的相关知识。</desc>
+<svg xmlns="http://www.w3.org/2000/svg" width="780" height="590" viewBox="0 0 780 590" role="img" aria-labelledby="title desc">
+  <title id="title">半导体与电路基础：十三篇文章的知识关系</title>
+  <desc id="desc">从电子与二极管、MOS 管到 CMOS 逻辑门。逻辑门分出组合逻辑电路与锁存器和触发器，两者共同承接到寄存器与时序逻辑，再到状态反馈与数字控制；另有晶体管小信号放大、石英振荡器、PLL 倍频路线，以及门延迟与翻转能量、本地供电与频率、建立与保持路线。锁存器与触发器虚线连接至 PLL 倍频和建立与保持。第 4、6、7 篇为待完善的规划文章。</desc>
   <defs>
     <marker id="arrow" markerWidth="6" markerHeight="6" refX="6" refY="3" orient="auto">
       <path d="M0 0L6 3L0 6Z" fill="#396b55"/>
@@ -10,64 +10,96 @@
     </marker>
   </defs>
 
-  <rect x="1" y="1" width="598" height="498" rx="15" fill="#f5f6ef" stroke="#c4d0c4"/>
+  <rect x="1" y="1" width="778" height="588" rx="15" fill="#f5f6ef" stroke="#c4d0c4"/>
 
-  <!-- Shared foundations and three conceptual branches. -->
+  <!-- The shared foundations branch independently into logic, state,
+       clock generation, and the physical performance route. -->
   <g fill="none" stroke="#396b55" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-    <path d="M300 60V80" marker-end="url(#arrow)"/>
-    <path d="M300 126V146" marker-end="url(#arrow)"/>
-    <path d="M300 192V218 M101 218H499"/>
-    <path d="M101 218V246" marker-end="url(#arrow)"/>
-    <path d="M300 218V246" marker-end="url(#arrow)"/>
-    <path d="M499 218V246" marker-end="url(#arrow)"/>
-    <circle cx="300" cy="218" r="4" fill="#396b55" stroke="none"/>
-    <path d="M101 304V334" marker-end="url(#arrow)"/>
-    <path d="M101 392V422" marker-end="url(#arrow)"/>
-    <path d="M499 304V334" marker-end="url(#arrow)"/>
-    <path d="M499 392V422" marker-end="url(#arrow)"/>
+    <path d="M390 60V80" marker-end="url(#arrow)"/>
+    <path d="M390 126V146" marker-end="url(#arrow)"/>
+    <path d="M390 192V216 M101 216H679"/>
+    <path d="M101 216V242" marker-end="url(#arrow)"/>
+    <path d="M291 216V242" marker-end="url(#arrow)"/>
+    <path d="M489 216V242" marker-end="url(#arrow)"/>
+    <path d="M679 216V242" marker-end="url(#arrow)"/>
+    <circle cx="390" cy="216" r="4" fill="#396b55" stroke="none"/>
+
+    <path d="M101 304V356" marker-end="url(#arrow)"/>
+    <path d="M101 418V470" marker-end="url(#arrow)"/>
+    <path d="M679 304V356" marker-end="url(#arrow)"/>
+    <path d="M679 418V470" marker-end="url(#arrow)"/>
+
+    <!-- Both the combinational-function abstraction and single-bit
+         storage are needed for register-level reasoning. -->
+    <path d="M291 304V336H489V304"/>
+    <circle cx="390" cy="336" r="4" fill="#396b55" stroke="none"/>
+    <path d="M390 336V356" marker-end="url(#arrow)"/>
+    <path d="M390 418V470" marker-end="url(#arrow)"/>
   </g>
 
-  <!-- Frequency division and sampling connect the state branch to the other two. -->
-  <g fill="none" stroke="#637a6f" stroke-width="2" stroke-dasharray="5 5" stroke-linecap="round" stroke-linejoin="round">
-    <path d="M215 275H201V451H186" marker-end="url(#cross-arrow)"/>
-    <path d="M385 275H399V451H414" marker-end="url(#cross-arrow)"/>
+  <!-- The state-device branch also supplies frequency division and
+       sampling prerequisites. A crossover is not a junction. -->
+  <g fill="none" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M404 274H390V322H299" stroke="#637a6f" stroke-width="2" stroke-dasharray="5 5"/>
+    <path d="M283 322H200V501H182" stroke="#637a6f" stroke-width="2" stroke-dasharray="5 5" marker-end="url(#cross-arrow)"/>
+    <path d="M574 274H586V501H598" stroke="#637a6f" stroke-width="2" stroke-dasharray="5 5" marker-end="url(#cross-arrow)"/>
   </g>
 
   <g font-family="system-ui, 'Noto Sans CJK SC', 'Microsoft YaHei', sans-serif" text-anchor="middle" font-weight="650">
     <g fill="#173d35" stroke="#173d35" stroke-width="1.5">
-      <rect x="203" y="14" width="194" height="46" rx="9"/>
-      <rect x="203" y="80" width="194" height="46" rx="9"/>
-      <rect x="203" y="146" width="194" height="46" rx="9"/>
+      <rect x="286" y="14" width="208" height="46" rx="9"/>
+      <rect x="286" y="80" width="208" height="46" rx="9"/>
+      <rect x="286" y="146" width="208" height="46" rx="9"/>
     </g>
     <g fill="#ffffff" font-size="22">
-      <text x="300" y="44">1 电子与二极管</text>
-      <text x="300" y="110">2 MOS 管</text>
-      <text x="300" y="176">3 CMOS 逻辑门</text>
+      <text x="390" y="44">1 电子与二极管</text>
+      <text x="390" y="110">2 MOS 管</text>
+      <text x="390" y="176">3 CMOS 逻辑门</text>
     </g>
 
     <g fill="#e0ebe3" stroke="#82a18e" stroke-width="1.5">
-      <rect x="16" y="246" width="170" height="58" rx="9"/>
-      <rect x="16" y="334" width="170" height="58" rx="9"/>
-      <rect x="16" y="422" width="170" height="58" rx="9"/>
+      <rect x="20" y="242" width="162" height="62" rx="9"/>
+      <rect x="20" y="356" width="162" height="62" rx="9"/>
+      <rect x="20" y="470" width="162" height="62" rx="9"/>
     </g>
-    <rect x="215" y="246" width="170" height="58" rx="9" fill="#e8f0e5" stroke="#6d9c7c" stroke-width="1.5"/>
+    <rect x="404" y="242" width="170" height="62" rx="9" fill="#e8f0e5" stroke="#6d9c7c" stroke-width="1.5"/>
+    <g fill="#e8f0e5" stroke="#548264" stroke-width="2" stroke-dasharray="5 4">
+      <rect x="206" y="242" width="170" height="62" rx="9"/>
+      <rect x="282" y="356" width="216" height="62" rx="9"/>
+      <rect x="282" y="470" width="216" height="62" rx="9"/>
+    </g>
     <g fill="#edf1df" stroke="#93aa75" stroke-width="1.5">
-      <rect x="414" y="246" width="170" height="58" rx="9"/>
-      <rect x="414" y="334" width="170" height="58" rx="9"/>
-      <rect x="414" y="422" width="170" height="58" rx="9"/>
+      <rect x="598" y="242" width="162" height="62" rx="9"/>
+      <rect x="598" y="356" width="162" height="62" rx="9"/>
+      <rect x="598" y="470" width="162" height="62" rx="9"/>
     </g>
 
-    <g fill="#173d35" font-size="21">
-      <text x="101" y="282">5 小信号放大</text>
-      <text x="101" y="370">6 石英振荡器</text>
-      <text x="101" y="458">7 PLL 倍频</text>
-      <text x="300" y="269">4 锁存器</text>
-      <text x="300" y="293">与触发器</text>
-      <text x="499" y="269">8 门延迟</text>
-      <text x="499" y="293">与翻转能量</text>
-      <text x="499" y="357">9 本地供电</text>
-      <text x="499" y="381">与频率</text>
-      <text x="499" y="458">10 建立与保持</text>
+    <g fill="#173d35" font-size="20">
+      <text x="101" y="280">8 小信号放大</text>
+      <text x="101" y="394">9 石英振荡器</text>
+      <text x="101" y="508">10 PLL 倍频</text>
+      <text x="291" y="267">4 组合逻辑</text>
+      <text x="291" y="291">电路</text>
+      <text x="489" y="267">5 锁存器</text>
+      <text x="489" y="291">与触发器</text>
+      <text x="390" y="381">6 寄存器</text>
+      <text x="390" y="405">与时序逻辑</text>
+      <text x="390" y="495">7 状态反馈</text>
+      <text x="390" y="519">与数字控制</text>
+      <text x="679" y="267">11 门延迟</text>
+      <text x="679" y="291">与翻转能量</text>
+      <text x="679" y="381">12 本地供电</text>
+      <text x="679" y="405">与频率</text>
+      <text x="679" y="508">13 建立与保持</text>
+    </g>
+
+    <g fill="#526a60" font-size="15" font-weight="500" text-anchor="start">
+      <path d="M123 560H151" stroke="#396b55" stroke-width="2.5" fill="none" marker-end="url(#arrow)"/>
+      <text x="160" y="565">知识承接</text>
+      <path d="M287 560H315" stroke="#637a6f" stroke-width="2" stroke-dasharray="5 5" fill="none" marker-end="url(#cross-arrow)"/>
+      <text x="324" y="565">跨路线联系</text>
+      <rect x="483" y="549" width="31" height="22" rx="4" fill="#e8f0e5" stroke="#548264" stroke-width="2" stroke-dasharray="5 4"/>
+      <text x="524" y="565">规划中，待完善</text>
     </g>
   </g>
 </svg>
