@@ -326,8 +326,14 @@ class GeneratedNavigationTests(unittest.TestCase):
         self.assertLess(article.index('id="field"'), article.index('id="contacts"'))
         self.assertLess(article.index('id="contacts"'), article.index('id="forward"'))
         self.assertEqual(article.count('id="fermi"'), 1)
+        for anchor in ("depletion-width", "同样加-1-v电子在每处受到的力一样大吗",
+                       "结面处的场最强电子到那里就爬完了坡吗",
+                       "平衡时两边的电子浓度为什么仍然不同", "跨到-p-区的那个电子会立刻掉进价带吗"):
+            with self.subTest(legacy_anchor=anchor):
+                self.assertEqual(article.count(f'id="{anchor}"'), 1)
         for figure in ("diffusion-count", "junction-equilibrium", "junction-field-barrier",
-                       "pn-forward-stages", "pn-reverse-stages", "diode-breakdown-mechanisms",
+                       "pn-forward-stages", "pn-reverse-stages", "forward-recombination-paths",
+                       "reverse-generation-paths", "diode-breakdown-mechanisms",
                        "diode-recovery-stages", "bjt-transport"):
             with self.subTest(figure=figure):
                 self.assertRegex(article, rf'<img\b[^>]*src="img/{figure}\.svg"')
