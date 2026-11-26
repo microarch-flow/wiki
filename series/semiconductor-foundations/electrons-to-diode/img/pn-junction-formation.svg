@@ -1,103 +1,198 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="560" height="755" viewBox="0 0 560 755" role="img" aria-labelledby="title desc" xml:lang="zh-CN">
-  <title id="title">P 型硅与 N 型硅相邻后，为什么会形成内建电场？</title>
-  <desc id="desc">三个阶段的定性示意。第一步，左侧 P 区与右侧 N 区各自近似电中性，固定负受主与移动空穴的电荷互相补偿，固定正施主与移动导带电子的电荷互相补偿。第二步，允许载流子跨过结面后，导带电子净扩散向左，空穴净扩散向右，靠近结面的多数载流子减少，固定离子的电荷不再被充分补偿。第三步，结区形成内建电场，由右侧 N 区的正空间电荷指向左侧 P 区的负空间电荷，电子受力向右；热平衡时，每种载流子的漂移通量和扩散通量分别相抵，微观运动仍在继续。方框表示固定离子，圆表示可移动载流子。图中省略少数载流子，符号数目及空间尺度不是实际比例；虚线表示结面的位置，不是物理屏障。</desc>
+<svg xmlns="http://www.w3.org/2000/svg" width="560" height="982" viewBox="0 0 560 982" role="img" aria-labelledby="title desc" xml:lang="zh-CN">
+  <title id="title">PN 结形成过程：分别追踪导带、价带电子与固定掺杂离子</title>
+  <desc id="desc">用选定的状态和固定离子进行电荷记账。第一步，左侧 P 区三个固定负硼受主的电荷由三个价带空穴补偿，右侧 N 区三个固定正磷施主的电荷由三个导带电子补偿。第二步，一个导带电子与一个价带电子分别从 N 侧净输运到 P 侧，固定离子不动。P 侧有三个负受主、两个空穴和一个导带电子，净电荷为负二个元电荷；N 侧有三个正施主、两个导带电子和一个空穴，净电荷为正二个元电荷。第三步，两侧各有一对电子空穴复合；净电荷不变，交界附近多数载流子减少。净正电荷到净负电荷的内建电场指向 P 侧。图中状态槽和原子仅作定性电荷记账，并非空间局域的实际能态或真实占据比例。普通价带电子与未显示的晶格背景电荷相抵，价带空穴按正元电荷计入净电荷。</desc>
   <defs>
-    <g id="acceptor">
-      <rect x="-10" y="-10" width="20" height="20" rx="2" fill="#e9e9dc" stroke="#597069" stroke-width="2"/>
-      <path d="M-5 0H5" stroke="#203c37" stroke-width="2.2"/>
+    <g id="conduction-empty">
+      <circle r="9" fill="#f7f6ef" stroke="#6f8985" stroke-width="1.5" stroke-dasharray="2.7 2.1"/>
     </g>
-    <g id="donor">
-      <rect x="-10" y="-10" width="20" height="20" rx="2" fill="#e9e9dc" stroke="#597069" stroke-width="2"/>
-      <path d="M-5 0H5M0-5V5" stroke="#203c37" stroke-width="2.2"/>
+    <g id="conduction-electron">
+      <circle r="9" fill="#09677b" stroke="#09677b"/><path d="M-4 0H4" stroke="#fff" stroke-width="1.8" stroke-linecap="round"/>
     </g>
-    <g id="electron">
-      <circle r="10" fill="#09677b"/><path d="M-4.5 0H4.5" stroke="#fff" stroke-width="2"/>
+    <g id="valence-electron">
+      <circle r="9" fill="#706394" stroke="#706394"/><path d="M-4 0H4" stroke="#fff" stroke-width="1.8" stroke-linecap="round"/>
     </g>
     <g id="hole">
-      <circle r="10" fill="#f7f6ef" stroke="#9b4c28" stroke-width="2.3"/>
-      <path d="M-4.5 0H4.5M0-4.5V4.5" stroke="#9b4c28" stroke-width="2"/>
+      <circle r="9" fill="#fff8ee" stroke="#a65029" stroke-width="2"/>
+      <path d="M-4 0H4M0-4V4" stroke="#a65029" stroke-width="1.8" stroke-linecap="round"/>
     </g>
-    <marker id="electron-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5.2" markerHeight="5.2" orient="auto">
+    <g id="acceptor">
+      <rect x="-14.5" y="-11" width="29" height="22" rx="4" fill="#f3dfca" stroke="#9b673b" stroke-width="1.4"/>
+      <text x="0" y="5" font-size="14" text-anchor="middle" font-weight="700" fill="#623b21">B⁻</text>
+    </g>
+    <g id="donor">
+      <rect x="-14.5" y="-11" width="29" height="22" rx="4" fill="#f1dddf" stroke="#9a6068" stroke-width="1.4"/>
+      <text x="0" y="5" font-size="14" text-anchor="middle" font-weight="700" fill="#703940">P⁺</text>
+    </g>
+    <g id="silicon">
+      <rect x="-14.5" y="-11" width="29" height="22" rx="4" fill="#f1f2ed" stroke="#a3ada5" stroke-width="1.3"/>
+      <text x="0" y="5" font-size="14" text-anchor="middle" fill="#687a73">Si</text>
+    </g>
+    <marker id="conduction-arrow" viewBox="0 0 10 10" refX="8.6" refY="5" markerWidth="5.5" markerHeight="5.5" orient="auto">
       <path d="M0 0L10 5 0 10Z" fill="#09677b"/>
     </marker>
-    <marker id="hole-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5.2" markerHeight="5.2" orient="auto">
-      <path d="M0 0L10 5 0 10Z" fill="#9b4c28"/>
+    <marker id="valence-arrow" viewBox="0 0 10 10" refX="8.6" refY="5" markerWidth="5.5" markerHeight="5.5" orient="auto">
+      <path d="M0 0L10 5 0 10Z" fill="#706394"/>
     </marker>
-    <marker id="field-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5.2" markerHeight="5.2" orient="auto">
+    <marker id="field-arrow" viewBox="0 0 10 10" refX="8.6" refY="5" markerWidth="5.5" markerHeight="5.5" orient="auto">
       <path d="M0 0L10 5 0 10Z" fill="#2f6f62"/>
     </marker>
-    <g id="region-background">
-      <rect x="24" y="58" width="256" height="88" fill="#f2e5d1"/>
-      <rect x="280" y="58" width="256" height="88" fill="#dceadc"/>
-      <text x="152" y="50" font-size="19" font-weight="700" text-anchor="middle">P 型硅</text>
-      <text x="408" y="50" font-size="19" font-weight="700" text-anchor="middle">N 型硅</text>
+    <g id="background">
+      <rect x="74" y="62" width="231" height="118" fill="#f3e9d9"/>
+      <rect x="305" y="62" width="231" height="118" fill="#e0e9ec"/>
+      <text x="189.5" y="51" font-size="19" text-anchor="middle" font-weight="700">P 型硅</text>
+      <text x="420.5" y="51" font-size="19" text-anchor="middle" font-weight="700">N 型硅</text>
+      <text x="17" y="90" font-size="16">导带</text>
+      <text x="17" y="130" font-size="16">价带</text>
+      <text x="10" y="166" font-size="14">晶格位置</text>
     </g>
-    <g id="region-edge">
-      <rect x="24" y="58" width="512" height="88" fill="none" stroke="#6d8677" stroke-width="1.6"/>
-      <path d="M280 58V146" fill="none" stroke="#597069" stroke-width="1.5" stroke-dasharray="4 5"/>
+    <g id="grid">
+      <rect x="74" y="62" width="462" height="118" fill="none" stroke="#85948c" stroke-width="1.3"/>
+      <path d="M74 104H536M74 144H536" fill="none" stroke="#8f9c96" stroke-width="1" opacity=".64"/>
+      <path d="M305 62V180" fill="none" stroke="#5d776c" stroke-width="1.5" stroke-dasharray="4 4"/>
     </g>
-    <g id="ions">
-      <use href="#acceptor" x="62" y="83"/><use href="#acceptor" x="120" y="83"/>
-      <use href="#acceptor" x="178" y="83"/><use href="#acceptor" x="236" y="83"/>
-      <use href="#donor" x="324" y="83"/><use href="#donor" x="382" y="83"/>
-      <use href="#donor" x="440" y="83"/><use href="#donor" x="498" y="83"/>
-    </g>
-    <g id="neutral-carriers">
-      <use href="#hole" x="62" y="122"/><use href="#hole" x="120" y="122"/>
-      <use href="#hole" x="178" y="122"/><use href="#hole" x="236" y="122"/>
-      <use href="#electron" x="324" y="122"/><use href="#electron" x="382" y="122"/>
-      <use href="#electron" x="440" y="122"/><use href="#electron" x="498" y="122"/>
-    </g>
-    <g id="initial-depletion">
-      <rect x="207" y="58" width="73" height="88" fill="#e6ccae"/>
-      <rect x="280" y="58" width="73" height="88" fill="#bddbc9"/>
-      <use href="#hole" x="62" y="122"/><use href="#hole" x="120" y="122"/><use href="#hole" x="178" y="122"/>
-      <use href="#electron" x="382" y="122"/><use href="#electron" x="440" y="122"/><use href="#electron" x="498" y="122"/>
-    </g>
-    <g id="near-junction-depleted">
-      <rect x="148" y="58" width="132" height="88" fill="#e6ccae"/>
-      <rect x="280" y="58" width="132" height="88" fill="#bddbc9"/>
-      <use href="#hole" x="62" y="122"/><use href="#hole" x="120" y="122"/>
-      <use href="#electron" x="440" y="122"/><use href="#electron" x="498" y="122"/>
-      <text x="210" y="128" font-size="17" fill="#6c4933" text-anchor="middle">负空间电荷</text>
-      <text x="350" y="128" font-size="17" fill="#315c46" text-anchor="middle">正空间电荷</text>
+    <g id="lattice">
+      <use href="#acceptor" x="96" y="162"/>
+      <use href="#silicon" x="129" y="162"/>
+      <use href="#acceptor" x="162" y="162"/>
+      <use href="#silicon" x="195" y="162"/>
+      <use href="#silicon" x="228" y="162"/>
+      <use href="#acceptor" x="261" y="162"/>
+      <use href="#donor" x="349" y="162"/>
+      <use href="#silicon" x="382" y="162"/>
+      <use href="#donor" x="415" y="162"/>
+      <use href="#silicon" x="448" y="162"/>
+      <use href="#silicon" x="481" y="162"/>
+      <use href="#donor" x="514" y="162"/>
     </g>
   </defs>
-  <rect x="1" y="1" width="558" height="753" rx="15" fill="#f7f6ef" stroke="#c9d3c7"/>
+  <rect x="1" y="1" width="558" height="980" rx="15" fill="#f7f6ef" stroke="#c9d3c7"/>
   <g font-family="system-ui, 'Noto Sans CJK SC', sans-serif" fill="#203c37">
-    <g>
-      <text x="22" y="28" font-size="22" font-weight="700">① 初始：两侧均近似电中性</text>
-      <use href="#region-background"/><use href="#neutral-carriers"/><use href="#ions"/><use href="#region-edge"/>
-      <text x="280" y="174" text-anchor="middle" font-size="19">固定离子的电荷被多数载流子补偿。</text>
+    <g font-size="16">
+      <use href="#conduction-electron" x="27" y="25"/><text x="44" y="31">导带电子</text>
+      <use href="#valence-electron" x="206" y="25"/><text x="223" y="31">价带电子</text>
+      <use href="#hole" x="390" y="25"/><text x="407" y="31">价带空穴</text>
+      <use href="#conduction-empty" x="27" y="50"/><text x="44" y="56">导带空态</text>
+      <use href="#acceptor" x="206" y="50"/><text x="225" y="56">硼受主离子</text>
+      <use href="#donor" x="390" y="50"/><text x="409" y="56">磷施主离子</text>
     </g>
-    <path d="M20 190H540" stroke="#c9d3c7"/>
-    <g transform="translate(0 194)">
-      <text x="22" y="28" font-size="22" font-weight="700">② 形成 PN 结：载流子开始净扩散</text>
-      <use href="#region-background"/><use href="#initial-depletion"/><use href="#ions"/><use href="#region-edge"/>
-      <text x="25" y="172" font-size="19" fill="#09677b">导带电子净扩散</text>
-      <path d="M360 166H202" fill="none" stroke="#09677b" stroke-width="3" marker-end="url(#electron-arrow)"/>
-      <text x="25" y="199" font-size="19" fill="#9b4c28">空穴净扩散</text>
-      <path d="M202 193H360" fill="none" stroke="#9b4c28" stroke-width="3" marker-end="url(#hole-arrow)"/>
-      <text x="280" y="228" text-anchor="middle" font-size="19">失去载流子补偿，电荷分离开始建立电场。</text>
+    <g transform="translate(0 73)">
+      <text x="20" y="23" font-size="21" font-weight="700">① 初始：两侧近似电中性</text>
+      <use href="#background"/>
+      <use href="#grid"/>
+      <use href="#conduction-empty" x="96" y="84"/>
+      <use href="#hole" x="96" y="124"/>
+      <use href="#conduction-empty" x="129" y="84"/>
+      <use href="#valence-electron" x="129" y="124"/>
+      <use href="#conduction-empty" x="162" y="84"/>
+      <use href="#hole" x="162" y="124"/>
+      <use href="#conduction-empty" x="195" y="84"/>
+      <use href="#valence-electron" x="195" y="124"/>
+      <use href="#conduction-empty" x="228" y="84"/>
+      <use href="#valence-electron" x="228" y="124"/>
+      <use href="#conduction-empty" x="261" y="84"/>
+      <use href="#hole" x="261" y="124"/>
+      <use href="#conduction-electron" x="349" y="84"/>
+      <use href="#valence-electron" x="349" y="124"/>
+      <use href="#conduction-empty" x="382" y="84"/>
+      <use href="#valence-electron" x="382" y="124"/>
+      <use href="#conduction-electron" x="415" y="84"/>
+      <use href="#valence-electron" x="415" y="124"/>
+      <use href="#conduction-empty" x="448" y="84"/>
+      <use href="#valence-electron" x="448" y="124"/>
+      <use href="#conduction-empty" x="481" y="84"/>
+      <use href="#valence-electron" x="481" y="124"/>
+      <use href="#conduction-electron" x="514" y="84"/>
+      <use href="#valence-electron" x="514" y="124"/>
+      <use href="#lattice"/>
+      <text x="189.5" y="204" text-anchor="middle" font-size="19" font-weight="650" fill="#8e4b30">−3 + 3 = 0</text>
+      <text x="420.5" y="204" text-anchor="middle" font-size="19" font-weight="650" fill="#235e51">+3 − 3 = 0</text>
+      <text x="280" y="232" text-anchor="middle" font-size="17.5">每侧固定离子的电荷均被多数载流子补偿。</text>
     </g>
-    <path d="M20 435H540" stroke="#c9d3c7"/>
-    <g transform="translate(0 439)">
-      <text x="22" y="28" font-size="22" font-weight="700">③ 热平衡：内建电场与耗尽区</text>
-      <use href="#region-background"/><use href="#near-junction-depleted"/><use href="#ions"/><use href="#region-edge"/>
-      <text x="25" y="172" font-size="19" fill="#2f6f62">内建电场方向</text>
-      <path d="M360 166H202" fill="none" stroke="#2f6f62" stroke-width="3" marker-end="url(#field-arrow)"/>
-      <text x="25" y="199" font-size="19" fill="#09677b">电子受力方向</text>
-      <path d="M202 193H360" fill="none" stroke="#09677b" stroke-width="3" marker-end="url(#electron-arrow)"/>
-      <text x="280" y="224" text-anchor="middle" font-size="19" font-weight="650">电子和空穴各自的漂移与扩散相抵</text>
-      <text x="280" y="247" text-anchor="middle" font-size="18">净通量为零，但微观运动仍在继续。</text>
+    <path d="M20 319H540" stroke="#c9d3c7"/>
+    <g transform="translate(0 328)">
+      <text x="20" y="23" font-size="21" font-weight="700">② 刚跨结：分别追踪两种电子</text>
+      <use href="#background"/>
+      <rect x="244" y="62" width="61" height="118" fill="#e5c9ad" opacity=".8"/>
+      <rect x="305" y="62" width="61" height="118" fill="#c2d8c8" opacity=".9"/>
+      <use href="#grid"/>
+      <use href="#conduction-empty" x="96" y="84"/>
+      <use href="#hole" x="96" y="124"/>
+      <use href="#conduction-empty" x="129" y="84"/>
+      <use href="#valence-electron" x="129" y="124"/>
+      <use href="#conduction-empty" x="162" y="84"/>
+      <use href="#hole" x="162" y="124"/>
+      <use href="#conduction-empty" x="195" y="84"/>
+      <use href="#valence-electron" x="195" y="124"/>
+      <use href="#conduction-empty" x="228" y="84"/>
+      <use href="#valence-electron" x="228" y="124"/>
+      <use href="#conduction-electron" x="261" y="84"/>
+      <use href="#valence-electron" x="261" y="124"/>
+      <use href="#conduction-empty" x="349" y="84"/>
+      <use href="#hole" x="349" y="124"/>
+      <use href="#conduction-empty" x="382" y="84"/>
+      <use href="#valence-electron" x="382" y="124"/>
+      <use href="#conduction-electron" x="415" y="84"/>
+      <use href="#valence-electron" x="415" y="124"/>
+      <use href="#conduction-empty" x="448" y="84"/>
+      <use href="#valence-electron" x="448" y="124"/>
+      <use href="#conduction-empty" x="481" y="84"/>
+      <use href="#valence-electron" x="481" y="124"/>
+      <use href="#conduction-electron" x="514" y="84"/>
+      <use href="#valence-electron" x="514" y="124"/>
+      <use href="#lattice"/>
+      <path d="M338 84H274" fill="none" stroke="#09677b" stroke-width="2.6" marker-end="url(#conduction-arrow)"/>
+      <path d="M338 124H274" fill="none" stroke="#706394" stroke-width="2.6" marker-end="url(#valence-arrow)"/>
+      <text x="189.5" y="204" text-anchor="middle" font-size="19" font-weight="650" fill="#8e4b30">−3 + 2 − 1 = −2</text>
+      <text x="420.5" y="204" text-anchor="middle" font-size="19" font-weight="650" fill="#235e51">+3 − 2 + 1 = +2</text>
+      <text x="280" y="232" text-anchor="middle" font-size="17.5">导带、价带各有一个电子从右向左跨结。</text>
+      <text x="280" y="256" text-anchor="middle" font-size="17.5">价带电子填补左侧空态，相当于空穴向右移动。</text>
     </g>
-    <path d="M20 697H540" stroke="#c9d3c7"/>
-    <g font-size="17">
-      <use href="#acceptor" x="31" y="718"/><text x="46" y="724">固定受主</text>
-      <use href="#donor" x="161" y="718"/><text x="176" y="724">固定施主</text>
-      <use href="#hole" x="291" y="718"/><text x="306" y="724">空穴</text>
-      <use href="#electron" x="421" y="718"/><text x="436" y="724">导带电子</text>
+    <path d="M20 594H540" stroke="#c9d3c7"/>
+    <g transform="translate(0 603)">
+      <text x="20" y="23" font-size="21" font-weight="700">③ 复合后：近结区多数载流子减少</text>
+      <use href="#background"/>
+      <rect x="145" y="62" width="160" height="118" fill="#e5c9ad" opacity=".8"/>
+      <rect x="305" y="62" width="160" height="118" fill="#c2d8c8" opacity=".9"/>
+      <use href="#grid"/>
+      <use href="#conduction-empty" x="96" y="84"/>
+      <use href="#hole" x="96" y="124"/>
+      <use href="#conduction-empty" x="129" y="84"/>
+      <use href="#valence-electron" x="129" y="124"/>
+      <use href="#conduction-empty" x="162" y="84"/>
+      <use href="#valence-electron" x="162" y="124"/>
+      <use href="#conduction-empty" x="195" y="84"/>
+      <use href="#valence-electron" x="195" y="124"/>
+      <use href="#conduction-empty" x="228" y="84"/>
+      <use href="#valence-electron" x="228" y="124"/>
+      <use href="#conduction-empty" x="261" y="84"/>
+      <use href="#valence-electron" x="261" y="124"/>
+      <use href="#conduction-empty" x="349" y="84"/>
+      <use href="#valence-electron" x="349" y="124"/>
+      <use href="#conduction-empty" x="382" y="84"/>
+      <use href="#valence-electron" x="382" y="124"/>
+      <use href="#conduction-empty" x="415" y="84"/>
+      <use href="#valence-electron" x="415" y="124"/>
+      <use href="#conduction-empty" x="448" y="84"/>
+      <use href="#valence-electron" x="448" y="124"/>
+      <use href="#conduction-empty" x="481" y="84"/>
+      <use href="#valence-electron" x="481" y="124"/>
+      <use href="#conduction-electron" x="514" y="84"/>
+      <use href="#valence-electron" x="514" y="124"/>
+      <use href="#lattice"/>
+      <text x="189.5" y="204" text-anchor="middle" font-size="19" font-weight="650" fill="#8e4b30">−3 + 1 = −2</text>
+      <text x="420.5" y="204" text-anchor="middle" font-size="19" font-weight="650" fill="#235e51">+3 − 1 = +2</text>
+      <text x="280" y="232" text-anchor="middle" font-size="17.5">两侧各有一对电子与空穴复合，净电荷不变。</text>
     </g>
-    <text x="280" y="744" text-anchor="middle" font-size="15.5" fill="#597069">省略少数载流子；数量与尺度仅示意。虚线是结面位置。</text>
+    <g font-size="18">
+      <text x="28" y="867" fill="#2f6f62" font-weight="650">内建电场</text>
+      <path d="M440 861H132" stroke="#2f6f62" stroke-width="3" marker-end="url(#field-arrow)"/>
+      <text x="280" y="891" text-anchor="middle" font-size="17.5">分离的正负电荷建立了内建电场。</text>
+    </g>
+    <path d="M20 906H540" stroke="#c9d3c7"/>
+    <g font-size="15.5" fill="#597069" text-anchor="middle">
+      <text x="280" y="927">电荷以元电荷 q 为单位；以满价带和中性晶格为参照。</text>
+      <text x="280" y="950">状态槽与晶格位置不一一对应，均只画少部分。</text>
+      <text x="280" y="972">数目与空间尺度均为示意，虚线表示结面。</text>
+    </g>
   </g>
 </svg>
