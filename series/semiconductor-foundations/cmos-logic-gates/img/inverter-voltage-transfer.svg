@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="540" height="518" viewBox="0 0 540 518" xml:lang="zh-CN" role="img" aria-labelledby="title desc">
+<title id="title">反相器的直流传输特性示意</title>
+<desc id="desc">0至0.8 V的输入电压与稳态输出电压关系示意，低输入时输出接近高电源轨，高输入时输出接近地。转换区内输出随输入迅速下降。虚线表示输出等于输入，二者交点为直流翻转点。图形不代表特定器件的实测数据，没有标定输入保证阈值。</desc>
+<defs><marker id="ink" markerWidth="7" markerHeight="7" refX="5.5" refY="3.5" orient="auto" markerUnits="userSpaceOnUse"><path d="M0 0L6 3.5L0 7Z" fill="#213c36"/></marker><marker id="muted" markerWidth="7" markerHeight="7" refX="5.5" refY="3.5" orient="auto" markerUnits="userSpaceOnUse"><path d="M0 0L6 3.5L0 7Z" fill="#526860"/></marker><marker id="teal" markerWidth="7" markerHeight="7" refX="5.5" refY="3.5" orient="auto" markerUnits="userSpaceOnUse"><path d="M0 0L6 3.5L0 7Z" fill="#09677b"/></marker><marker id="rust" markerWidth="7" markerHeight="7" refX="5.5" refY="3.5" orient="auto" markerUnits="userSpaceOnUse"><path d="M0 0L6 3.5L0 7Z" fill="#a65029"/></marker></defs>
+<rect x="1" y="1" width="538" height="516" rx="15" fill="#f7f6ef" stroke="#c6cec2" stroke-width="1.2"/>
+<g font-family="system-ui, &#x27;Noto Sans CJK SC&#x27;, &#x27;Microsoft YaHei&#x27;, sans-serif">
+<text x="21" y="35" font-size="24" fill="#213c36" font-weight="700" text-anchor="start">输入电压与输出电压怎样对应？</text>
+<text x="21" y="62" font-size="17" fill="#526860" font-weight="400" text-anchor="start">反相器直流传输曲线（示意，非实测）</text>
+<rect x="224" y="106" width="108" height="287" rx="0" fill="#eee8dd" stroke="none" stroke-width="1.2"/>
+<path d="M79 106H477M477 106V393" stroke="#c6cec2" stroke-width="1.2" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="4 4"/>
+<path d="M79 393H489" stroke="#536860" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#muted)"/>
+<path d="M79 393V96" stroke="#536860" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#muted)"/>
+<text x="70" y="112" font-size="17" fill="#526860" font-weight="400" text-anchor="end">0.8</text>
+<text x="70" y="398" font-size="17" fill="#526860" font-weight="400" text-anchor="end">0</text>
+<text x="79" y="416" font-size="17" fill="#526860" font-weight="400" text-anchor="middle">0</text>
+<text x="477" y="416" font-size="17" fill="#526860" font-weight="400" text-anchor="middle">0.8</text>
+<text x="77" y="91" font-size="17" fill="#526860" font-weight="400" text-anchor="start">Vout (V)</text>
+<text x="415" y="439" font-size="17" fill="#526860" font-weight="400" text-anchor="start">Vin (V)</text>
+<text x="278.0" y="99" font-size="17" fill="#526860" font-weight="650" text-anchor="middle">转换区</text>
+<path d="M79 393L477 106" stroke="#aebbb0" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="7 5"/>
+<path d="M79 106C150 106 195 109 224 128C252 150 257 213 278.0 249.5C299 286 304 349 332 371C361 390 407 393 477 393" stroke="#09677b" stroke-width="4.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+<text x="91" y="138" font-size="18" fill="#213c36" font-weight="700" text-anchor="start">低输入</text>
+<text x="91" y="162" font-size="17" fill="#a65029" font-weight="400" text-anchor="start">输出接近 0.8 V</text>
+<text x="347" y="354" font-size="18" fill="#213c36" font-weight="700" text-anchor="start">高输入</text>
+<text x="347" y="378" font-size="17" fill="#09677b" font-weight="400" text-anchor="start">输出接近 0 V</text>
+<circle cx="278.0" cy="249.5" r="5.6" fill="#fbfaf4" stroke="#09677b" stroke-width="2.4"/>
+<path d="M285.0 256.5L334 280H346" stroke="#526860" stroke-width="1.7" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+<text x="353" y="277" font-size="19" fill="#213c36" font-weight="700" text-anchor="start">翻转点</text>
+<text x="353" y="299" font-size="16" fill="#526860" font-weight="400" text-anchor="start">Vout = Vin</text>
+<rect x="20" y="459" width="500" height="39" rx="8" fill="#fbfaf4" stroke="#c6cec2" stroke-width="1.2"/>
+<text x="31" y="484" font-size="16" fill="#526860" font-weight="400" text-anchor="start">曲线与翻转点取决于器件；本图不标定输入阈值。</text>
+</g>
+</svg>

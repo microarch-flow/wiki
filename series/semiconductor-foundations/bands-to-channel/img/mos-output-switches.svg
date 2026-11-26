@@ -12,7 +12,7 @@
     <text x="20" y="33" font-size="23" font-weight="700">用 MOS 管给输出充放电</text>
     <text x="20" y="60" fill="#526861">以导通开关等效表示，两幅电路独立观察。</text>
     <rect x="16" y="78" width="488" height="210" rx="9" fill="#fffdf7" stroke="#d3dacf"/>
-    <text x="30" y="105" font-size="20" font-weight="700">① NMOS 导通 · 下拉</text>
+    <text x="30" y="105" font-size="20" font-weight="700">① NMOS：高电平导通 · 下拉</text>
     <g stroke="#53675b" stroke-width="2.4" fill="none" stroke-linejoin="round">
       <path d="M245 133H426V150M245 133V157M245 202V224M426 202V224"/>
       <rect x="206" y="157" width="78" height="45" rx="5" fill="#e0ece7" stroke="#587a72"/>
@@ -30,7 +30,7 @@
     <text x="38" y="252" fill="#09677b" font-weight="600">Y 侧得到电子</text>
     <text x="256" y="266" font-weight="600">净正电荷减少，电压下降</text>
     <rect x="16" y="302" width="488" height="210" rx="9" fill="#fffdf7" stroke="#d3dacf"/>
-    <text x="30" y="329" font-size="20" font-weight="700">② PMOS 导通 · 上拉</text>
+    <text x="30" y="329" font-size="20" font-weight="700">② PMOS：低电平导通 · 上拉</text>
     <g stroke="#53675b" stroke-width="2.4" fill="none" stroke-linejoin="round">
       <path d="M245 358V375M245 420V438H426V444M426 488V496"/>
       <path d="M222 358H268" stroke-width="3"/>

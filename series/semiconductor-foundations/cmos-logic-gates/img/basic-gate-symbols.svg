@@ -1,0 +1,52 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="540" height="386" viewBox="0 0 540 386" xml:lang="zh-CN" role="img" aria-labelledby="title desc">
+<title id="title">与非门接非门等效于与门，或非门接非门等效于或门</title>
+<desc id="desc">第一行 A 和 B 输入与非门，该门输出接反相器，最终输出 Y；等效为 A 与 B 直接输入与门。第二行 A 和 B 输入或非门，该门输出接反相器，最终输出 Y；等效为 A 与 B 直接输入或门。门采用 ANSI 区别形状逻辑符号，圆圈表示输出取反。等价只表示逻辑功能，不表示内部电路相同。</desc>
+<g font-family="system-ui, &apos;Noto Sans CJK SC&apos;, &apos;Microsoft YaHei&apos;, sans-serif">
+<rect x="1" y="1" width="538" height="384" rx="15" fill="#f7f6ef" stroke="#c6cec2" stroke-width="1.2"/>
+<text x="20" y="36" fill="#213c36" font-size="23" font-weight="700" text-anchor="start">怎样用反相器得到与门、或门？</text>
+<text x="20" y="64" fill="#526860" font-size="17" font-weight="500" text-anchor="start">小圆圈表示对该输出取反；每一行比较两种接法。</text>
+<rect x="11" y="77" width="518" height="126" rx="10" fill="#fbfaf4" stroke="#c6cec2" stroke-width="1.2"/>
+<text x="107" y="112" fill="#213c36" font-size="17" font-weight="700" text-anchor="middle">NAND</text>
+<text x="212" y="112" fill="#213c36" font-size="17" font-weight="700" text-anchor="middle">NOT</text>
+<text x="429" y="112" fill="#09677b" font-size="17" font-weight="700" text-anchor="middle">AND</text>
+<path d="M68 126H104A29 29 0 0 1 104 184H68Z" stroke="#213c36" stroke-width="2.5" fill="#fbfaf4" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M43 140H68M43 170H68" stroke="#536860" stroke-width="2.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+<text x="37" y="146" fill="#213c36" font-size="18" font-weight="650" text-anchor="end">A</text>
+<text x="37" y="176" fill="#213c36" font-size="18" font-weight="650" text-anchor="end">B</text>
+<circle cx="138.6" cy="155" r="5.6" stroke="#213c36" stroke-width="2.4" fill="#fbfaf4"/>
+<path d="M144.2 155H187" stroke="#536860" stroke-width="2.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M187 130L236 155L187 180Z" stroke="#213c36" stroke-width="2.5" fill="#fbfaf4" stroke-linecap="round" stroke-linejoin="round"/>
+<circle cx="241.6" cy="155" r="5.6" stroke="#213c36" stroke-width="2.4" fill="#fbfaf4"/>
+<path d="M247.2 155H267" stroke="#536860" stroke-width="2.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+<text x="274" y="161" fill="#213c36" font-size="18" font-weight="650" text-anchor="start">Y</text>
+<text x="315" y="164" fill="#09677b" font-size="28" font-weight="550" text-anchor="middle">≡</text>
+<path d="M388 126H424A29 29 0 0 1 424 184H388Z" stroke="#213c36" stroke-width="2.5" fill="#fbfaf4" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M363 140H388M363 170H388" stroke="#536860" stroke-width="2.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+<text x="357" y="146" fill="#213c36" font-size="18" font-weight="650" text-anchor="end">A</text>
+<text x="357" y="176" fill="#213c36" font-size="18" font-weight="650" text-anchor="end">B</text>
+<path d="M453 155H488" stroke="#536860" stroke-width="2.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+<text x="497" y="161" fill="#213c36" font-size="18" font-weight="650" text-anchor="start">Y</text>
+<rect x="11" y="210" width="518" height="126" rx="10" fill="#fbfaf4" stroke="#c6cec2" stroke-width="1.2"/>
+<text x="107" y="245" fill="#213c36" font-size="17" font-weight="700" text-anchor="middle">NOR</text>
+<text x="212" y="245" fill="#213c36" font-size="17" font-weight="700" text-anchor="middle">NOT</text>
+<text x="429" y="245" fill="#09677b" font-size="17" font-weight="700" text-anchor="middle">OR</text>
+<path d="M68 259Q109 262 139 288Q109 314 68 317Q87 288 68 259Z" stroke="#213c36" stroke-width="2.5" fill="#fbfaf4" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M43 273H75.0M43 303H75.0" stroke="#536860" stroke-width="2.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+<text x="37" y="279" fill="#213c36" font-size="18" font-weight="650" text-anchor="end">A</text>
+<text x="37" y="309" fill="#213c36" font-size="18" font-weight="650" text-anchor="end">B</text>
+<circle cx="144.6" cy="288" r="5.6" stroke="#213c36" stroke-width="2.4" fill="#fbfaf4"/>
+<path d="M150.2 288H187" stroke="#536860" stroke-width="2.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M187 263L236 288L187 313Z" stroke="#213c36" stroke-width="2.5" fill="#fbfaf4" stroke-linecap="round" stroke-linejoin="round"/>
+<circle cx="241.6" cy="288" r="5.6" stroke="#213c36" stroke-width="2.4" fill="#fbfaf4"/>
+<path d="M247.2 288H267" stroke="#536860" stroke-width="2.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+<text x="274" y="294" fill="#213c36" font-size="18" font-weight="650" text-anchor="start">Y</text>
+<text x="315" y="297" fill="#09677b" font-size="28" font-weight="550" text-anchor="middle">≡</text>
+<path d="M388 259Q429 262 459 288Q429 314 388 317Q407 288 388 259Z" stroke="#213c36" stroke-width="2.5" fill="#fbfaf4" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M363 273H395.0M363 303H395.0" stroke="#536860" stroke-width="2.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+<text x="357" y="279" fill="#213c36" font-size="18" font-weight="650" text-anchor="end">A</text>
+<text x="357" y="309" fill="#213c36" font-size="18" font-weight="650" text-anchor="end">B</text>
+<path d="M459 288H488" stroke="#536860" stroke-width="2.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+<text x="497" y="294" fill="#213c36" font-size="18" font-weight="650" text-anchor="start">Y</text>
+<text x="20" y="361" fill="#526860" font-size="17" font-weight="500" text-anchor="start">≡ 表示逻辑功能相同，不表示内部电路完全相同。</text>
+</g>
+</svg>

@@ -1,0 +1,60 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="520" height="566" viewBox="0 0 520 566" role="img" aria-labelledby="title desc" xml:lang="zh-CN">
+  <title id="title">单只 NMOS 的输出可能取决于先前状态</title>
+  <desc id="desc">两次实验都先将输出预充到 0.8 V 并移开预充线，源极接地。第一次 A 一直低，Y 保持 0.8 V；第二次 A 高时放电，然后 A 恢复到 0 V，Y 保持接近 0 V。最终 A 相同而 Y 不同。图为理想化开关等效，忽略漏电和电容耦合。</desc>
+  <defs>
+    <marker id="electron" markerWidth="8" markerHeight="8" refX="7.2" refY="4" orient="auto"><path d="M0 0L8 4 0 8Z" fill="#09677b"/></marker>
+    <marker id="current" markerWidth="8" markerHeight="8" refX="7.2" refY="4" orient="auto"><path d="M0 0L8 4 0 8Z" fill="#a65029"/></marker>
+    <marker id="muted" markerWidth="8" markerHeight="8" refX="7.2" refY="4" orient="auto"><path d="M0 0L8 4 0 8Z" fill="#526861"/></marker>
+    <g id="ground" stroke="#53675b" stroke-width="2.3" fill="none"><path d="M0 -7V0M-12 0H12M-8 4H8M-3.5 8H3.5"/></g>
+    <g id="cap" stroke="#53675b" stroke-width="2.5" fill="none"><path d="M0 -26V-6M-17 -6H17M-17 6H17M0 6V26"/></g>
+  </defs>
+  <rect x="1" y="1" width="518" height="564" rx="15" fill="#f7f6ef" stroke="#c9d3c7"/>
+  <g font-family="system-ui, 'Noto Sans CJK SC', 'Microsoft YaHei', sans-serif" fill="#203c37">
+  <text x="20" y="35" font-size="23" fill="#203c37" font-weight="700" text-anchor="start">只有 NMOS，输出由历史决定</text>
+<text x="20" y="61" font-size="17" fill="#526861" font-weight="400" text-anchor="start">每次均先将 Y 预充到 0.8 V，再移开预充导线。</text>
+<rect x="16" y="80" width="488" height="200" rx="10" fill="#fffdf7" stroke="#d3dacf"/>
+<text x="30" y="110" font-size="20" fill="#203c37" font-weight="700" text-anchor="start">① 第一次：始终保持 A 为低电平</text>
+<text x="32" y="148" font-size="17.5" fill="#203c37" font-weight="400" text-anchor="start">A 的变化：</text>
+<text x="32" y="174" font-size="19" fill="#203c37" font-weight="650" text-anchor="start">0 V 始终不变</text>
+<text x="32" y="204" font-size="17.5" fill="#526861" font-weight="400" text-anchor="start">未发生放电</text>
+<rect x="31" y="220" width="167" height="42" rx="7" fill="#f5e8df" stroke="#cbd5cb"/>
+<text x="43" y="246" font-size="17.5" fill="#203c37" font-weight="650" text-anchor="start">Y = 0.8 V · 高电平</text>
+<path d="M342 164H433V180M342 164V183M342 229V238M433 232V238" stroke="#53675b" stroke-width="2.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+<circle cx="342" cy="164" r="3.5" fill="#203c37" stroke="none" stroke-width="1.8"/>
+<circle cx="342" cy="183" r="3" fill="#fffdf7" stroke="#53675b" stroke-width="1.8"/>
+<circle cx="342" cy="229" r="3" fill="#fffdf7" stroke="#53675b" stroke-width="1.8"/>
+<path d="M342 229L318 198" stroke="#53675b" stroke-width="2.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M254 206H321" stroke="#526861" stroke-width="1.9" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="5 4"/>
+<text x="254" y="197" font-size="16.5" fill="#203c37" font-weight="600" text-anchor="start">A = 0 V</text>
+<text x="348" y="153" font-size="18" fill="#203c37" font-weight="700" text-anchor="start">Y = 0.8 V</text>
+<text x="355" y="211" font-size="17.5" fill="#526861" font-weight="650" text-anchor="start">断</text>
+<use href="#cap" x="433" y="206"/>
+<text x="458" y="212" font-size="18" fill="#203c37" font-weight="600" text-anchor="start">Cₗ</text>
+<use href="#ground" x="342" y="245"/>
+<use href="#ground" x="433" y="245"/>
+<text x="350" y="270" font-size="16.5" fill="#526861" font-weight="650" text-anchor="middle">输出悬空</text>
+<rect x="16" y="295" width="488" height="200" rx="10" fill="#fffdf7" stroke="#d3dacf"/>
+<text x="30" y="325" font-size="20" fill="#203c37" font-weight="700" text-anchor="start">② 第二次：先导通，再关断</text>
+<text x="32" y="363" font-size="17.5" fill="#203c37" font-weight="400" text-anchor="start">A 的变化：</text>
+<text x="32" y="389" font-size="19" fill="#203c37" font-weight="650" text-anchor="start">0 → 0.8 → 0 V</text>
+<text x="32" y="419" font-size="17.5" fill="#526861" font-weight="400" text-anchor="start">导通时 Y 放电</text>
+<rect x="31" y="435" width="167" height="42" rx="7" fill="#e0ece7" stroke="#cbd5cb"/>
+<text x="43" y="461" font-size="17.5" fill="#203c37" font-weight="650" text-anchor="start">Y ≈ 0 V · 低电平</text>
+<path d="M342 379H433V395M342 379V398M342 444V453M433 447V453" stroke="#53675b" stroke-width="2.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+<circle cx="342" cy="379" r="3.5" fill="#203c37" stroke="none" stroke-width="1.8"/>
+<circle cx="342" cy="398" r="3" fill="#fffdf7" stroke="#53675b" stroke-width="1.8"/>
+<circle cx="342" cy="444" r="3" fill="#fffdf7" stroke="#53675b" stroke-width="1.8"/>
+<path d="M342 444L318 413" stroke="#53675b" stroke-width="2.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M254 421H321" stroke="#526861" stroke-width="1.9" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="5 4"/>
+<text x="254" y="412" font-size="16.5" fill="#203c37" font-weight="600" text-anchor="start">A = 0 V</text>
+<text x="348" y="368" font-size="18" fill="#203c37" font-weight="700" text-anchor="start">Y ≈ 0 V</text>
+<text x="355" y="426" font-size="17.5" fill="#526861" font-weight="650" text-anchor="start">断</text>
+<use href="#cap" x="433" y="421"/>
+<text x="458" y="427" font-size="18" fill="#203c37" font-weight="600" text-anchor="start">Cₗ</text>
+<use href="#ground" x="342" y="460"/>
+<use href="#ground" x="433" y="460"/>
+<text x="350" y="485" font-size="16.5" fill="#526861" font-weight="650" text-anchor="middle">输出悬空</text>
+<text x="21" y="522" font-size="19" fill="#203c37" font-weight="700" text-anchor="start">两次最终 A 都为 0 V，但 Y 不同。</text>
+<text x="21" y="548" font-size="17" fill="#526861" font-weight="400" text-anchor="start">理想开关等效：忽略漏电和电容耦合。</text>
+  </g>
+</svg>

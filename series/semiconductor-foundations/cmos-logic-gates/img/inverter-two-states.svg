@@ -1,0 +1,77 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="520" height="700" viewBox="0 0 520 700" role="img" aria-labelledby="title desc" xml:lang="zh-CN">
+  <title id="title">CMOS 反相器的充放电与电子运动</title>
+  <desc id="desc">两幅图均使用 0.8 V 供电、下端接地、Y 接负载电容的理想开关等效。A 由高变低，PMOS 导通，NMOS 关断，电子从 Y 转向电源，约定电流反向，电容充电使 Y 上升；A 由低变高，NMOS 导通、PMOS 关断，电子由地向 Y 转移、约定电流反向，输出电容放电。箭头表示输出变化期间的净输运，稳定后充放电电流趋于零。</desc>
+  <defs>
+    <marker id="electron" markerWidth="8" markerHeight="8" refX="7.2" refY="4" orient="auto"><path d="M0 0L8 4 0 8Z" fill="#09677b"/></marker>
+    <marker id="current" markerWidth="8" markerHeight="8" refX="7.2" refY="4" orient="auto"><path d="M0 0L8 4 0 8Z" fill="#a65029"/></marker>
+    <marker id="muted" markerWidth="8" markerHeight="8" refX="7.2" refY="4" orient="auto"><path d="M0 0L8 4 0 8Z" fill="#526861"/></marker>
+    <g id="ground" stroke="#53675b" stroke-width="2.3" fill="none"><path d="M0 -7V0M-12 0H12M-8 4H8M-3.5 8H3.5"/></g>
+    <g id="cap" stroke="#53675b" stroke-width="2.5" fill="none"><path d="M0 -26V-6M-17 -6H17M-17 6H17M0 6V26"/></g>
+  </defs>
+  <rect x="1" y="1" width="518" height="698" rx="15" fill="#f7f6ef" stroke="#c9d3c7"/>
+  <g font-family="system-ui, 'Noto Sans CJK SC', 'Microsoft YaHei', sans-serif" fill="#203c37">
+  <text x="20" y="34" font-size="23" fill="#203c37" font-weight="700" text-anchor="start">同一个输入控制两条互补通路</text>
+<text x="20" y="60" font-size="17" fill="#526861" font-weight="400" text-anchor="start">开关等效图；只画输出充、放电期间的净电流。</text>
+<rect x="16" y="78" width="488" height="264" rx="10" fill="#fffdf7" stroke="#d3dacf"/>
+<text x="30" y="109" font-size="20" fill="#203c37" font-weight="700" text-anchor="start">① A 变低：0.8 → 0 V</text>
+<text x="482" y="109" font-size="23" fill="#a65029" font-weight="700" text-anchor="end">Y ↑</text>
+<text x="236" y="132" font-size="17" fill="#203c37" font-weight="650" text-anchor="middle">VDD</text>
+<path d="M217 139H255" stroke="#53675b" stroke-width="2.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M236 139V145" stroke="#346c59" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M236 179V206V231" stroke="#53675b" stroke-width="2.7" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M236 264V282" stroke="#99a49b" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+<use href="#ground" x="236" y="289"/>
+<path d="M236 145V179" stroke="#346c59" stroke-width="3.4" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M236 231L213 258" stroke="#99a49b" stroke-width="3.4" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+<circle cx="236" cy="145" r="3.1" fill="#fffdf7" stroke="#346c59" stroke-width="1.8"/>
+<circle cx="236" cy="179" r="3.1" fill="#fffdf7" stroke="#346c59" stroke-width="1.8"/>
+<circle cx="236" cy="231" r="3.1" fill="#fffdf7" stroke="#99a49b" stroke-width="1.8"/>
+<circle cx="236" cy="264" r="3.1" fill="#fffdf7" stroke="#99a49b" stroke-width="1.8"/>
+<path d="M236 179V206H435V228" stroke="#346c59" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+<circle cx="236" cy="206" r="4" fill="#346c59" stroke="none" stroke-width="1.8"/>
+<use href="#cap" x="435" y="254"/>
+<path d="M435 280V282" stroke="#53675b" stroke-width="2.4" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+<use href="#ground" x="435" y="289"/>
+<text x="458" y="260" font-size="18" fill="#203c37" font-weight="600" text-anchor="start">Cₗ</text>
+<text x="435" y="195" font-size="19" fill="#203c37" font-weight="700" text-anchor="middle">Y</text>
+<text x="34" y="170" font-size="19" fill="#203c37" font-weight="650" text-anchor="start">PMOS 导通</text>
+<text x="34" y="255" font-size="19" fill="#526861" font-weight="650" text-anchor="start">NMOS 关断</text>
+<path d="M286 194V146" stroke="#09677b" stroke-width="2.8" fill="none" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#electron)"/>
+<path d="M322 146V194" stroke="#a65029" stroke-width="2.8" fill="none" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#current)"/>
+<text x="31" y="320" font-size="18" fill="#09677b" font-weight="650" text-anchor="start">Y 侧失去电子</text>
+<text x="490" y="320" font-size="18" fill="#203c37" font-weight="650" text-anchor="end">电压升至 0.8 V</text>
+<rect x="16" y="358" width="488" height="264" rx="10" fill="#fffdf7" stroke="#d3dacf"/>
+<text x="30" y="389" font-size="20" fill="#203c37" font-weight="700" text-anchor="start">② A 变高：0 → 0.8 V</text>
+<text x="482" y="389" font-size="23" fill="#09677b" font-weight="700" text-anchor="end">Y ↓</text>
+<text x="236" y="412" font-size="17" fill="#203c37" font-weight="650" text-anchor="middle">VDD</text>
+<path d="M217 419H255" stroke="#53675b" stroke-width="2.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M236 419V425" stroke="#99a49b" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M236 459V486V511" stroke="#53675b" stroke-width="2.7" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M236 544V562" stroke="#346c59" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+<use href="#ground" x="236" y="569"/>
+<path d="M236 459L213 430" stroke="#99a49b" stroke-width="3.4" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M236 511V544" stroke="#346c59" stroke-width="3.4" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+<circle cx="236" cy="425" r="3.1" fill="#fffdf7" stroke="#99a49b" stroke-width="1.8"/>
+<circle cx="236" cy="459" r="3.1" fill="#fffdf7" stroke="#99a49b" stroke-width="1.8"/>
+<circle cx="236" cy="511" r="3.1" fill="#fffdf7" stroke="#346c59" stroke-width="1.8"/>
+<circle cx="236" cy="544" r="3.1" fill="#fffdf7" stroke="#346c59" stroke-width="1.8"/>
+<path d="M236 511V486H435V508" stroke="#346c59" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+<circle cx="236" cy="486" r="4" fill="#346c59" stroke="none" stroke-width="1.8"/>
+<use href="#cap" x="435" y="534"/>
+<path d="M435 560V562" stroke="#53675b" stroke-width="2.4" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+<use href="#ground" x="435" y="569"/>
+<text x="458" y="540" font-size="18" fill="#203c37" font-weight="600" text-anchor="start">Cₗ</text>
+<text x="435" y="475" font-size="19" fill="#203c37" font-weight="700" text-anchor="middle">Y</text>
+<text x="34" y="450" font-size="19" fill="#526861" font-weight="650" text-anchor="start">PMOS 关断</text>
+<text x="34" y="535" font-size="19" fill="#203c37" font-weight="650" text-anchor="start">NMOS 导通</text>
+<path d="M286 553V496" stroke="#09677b" stroke-width="2.8" fill="none" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#electron)"/>
+<path d="M322 496V553" stroke="#a65029" stroke-width="2.8" fill="none" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#current)"/>
+<text x="31" y="600" font-size="18" fill="#09677b" font-weight="650" text-anchor="start">Y 侧得到电子</text>
+<text x="490" y="600" font-size="18" fill="#203c37" font-weight="650" text-anchor="end">电压降至约 0 V</text>
+<path d="M22 651H55" stroke="#09677b" stroke-width="2.8" fill="none" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#electron)"/>
+<text x="65" y="657" font-size="18" fill="#203c37" font-weight="400" text-anchor="start">电子净转移</text>
+<path d="M280 651H313" stroke="#a65029" stroke-width="2.8" fill="none" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#current)"/>
+<text x="323" y="657" font-size="18" fill="#203c37" font-weight="400" text-anchor="start">常规电流</text>
+<text x="20" y="684" font-size="17" fill="#526861" font-weight="400" text-anchor="start">输出到达对应电源轨后，充放电电流趋近于零。</text>
+  </g>
+</svg>
