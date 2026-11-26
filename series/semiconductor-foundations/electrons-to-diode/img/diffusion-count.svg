@@ -1,0 +1,60 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="500" height="378" viewBox="0 0 500 378" role="img" aria-labelledby="title desc" xml:lang="zh-CN">
+<title id="title">即使没有电场，浓度差也会造成净扩散</title>
+<desc id="desc">假设等大的两区分别有 10 个和 100 个电子，观察最初一小段时间，两区各有一半电子向对面运动。100 个的右侧有 50 个向左，10 个的左侧有 5 个向右。结果是向左净输运 45 个电子。图中圆点为随机运动电子的示例，不代表完整数量；给定比例仅为思想实验。</desc>
+
+<style>
+text {font-family:system-ui,"Noto Sans CJK SC","Microsoft YaHei",sans-serif;fill:#203c37;font-size:17px}
+.title {font-size:22px;font-weight:700}
+.sub {font-size:19px;font-weight:650}
+.strong {font-size:18px;font-weight:650}
+.muted {fill:#526861;font-size:16px}
+.small {font-size:15px}
+.axis {stroke:#71857b;stroke-width:1.45;fill:none}
+.guide {stroke:#b7c2b9;stroke-width:1;stroke-dasharray:4 4;fill:none}
+</style>
+
+<rect x="1" y="1" width="498" height="376" rx="15" fill="#f7f6ef" stroke="#c9d3c7"/>
+
+<defs>
+  <g id="electron"><circle r="6.5" fill="#09677b"/><path d="M-3 0H3" stroke="white" stroke-width="1.6" stroke-linecap="round"/></g>
+  <marker id="blue-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto">
+    <path d="M0 0L10 5 0 10Z" fill="#09677b"/>
+  </marker>
+</defs>
+<text x="20" y="33" class="title">为何浓度高的一侧会净失去电子？</text>
+<text x="20" y="61" class="muted">无电场、相同时间，每侧假设有一半电子跨过截面。</text>
+<rect x="24" y="77" width="452" height="148" rx="8" fill="#e9f0ef" stroke="#a5bbb8"/>
+<path d="M250 77V225" stroke="#537268" stroke-width="1.6" stroke-dasharray="4 4"/>
+<g text-anchor="middle">
+  <text x="137" y="102" class="strong">低浓度：10 个</text>
+  <text x="363" y="102" class="strong">高浓度：100 个</text>
+</g>
+<use href="#electron" x="67" y="119"/>
+<use href="#electron" x="131" y="131"/>
+<use href="#electron" x="100" y="209"/>
+<use href="#electron" x="293" y="119"/>
+<use href="#electron" x="326" y="119"/>
+<use href="#electron" x="358" y="129"/>
+<use href="#electron" x="390" y="117"/>
+<use href="#electron" x="427" y="133"/>
+<use href="#electron" x="453" y="116"/>
+<use href="#electron" x="352" y="165"/>
+<use href="#electron" x="389" y="153"/>
+<use href="#electron" x="437" y="157"/>
+<use href="#electron" x="356" y="208"/>
+<use href="#electron" x="403" y="200"/>
+<use href="#electron" x="451" y="207"/>
+
+<path d="M335 153H155" stroke="#09677b" stroke-width="6" stroke-linecap="round" marker-end="url(#blue-arrow)"/>
+<path d="M155 190H335" stroke="#09677b" stroke-width="2.5" stroke-linecap="round" marker-end="url(#blue-arrow)"/>
+<rect x="219" y="127" width="62" height="20" rx="4" fill="#f7f6ef" opacity=".95"/>
+<text x="250" y="143" text-anchor="middle" class="strong" fill="#09677b">50 个</text>
+<rect x="226" y="165" width="48" height="20" rx="4" fill="#f7f6ef" opacity=".95"/>
+<text x="250" y="181" text-anchor="middle" class="strong" fill="#09677b">5 个</text>
+<text x="250" y="249" text-anchor="middle" class="muted">观察同一截面两种方向的累计穿越数</text>
+<rect x="24" y="265" width="452" height="69" rx="9" fill="#dfebe7" stroke="#abc4b9"/>
+<text x="48" y="294" class="strong">净输运：50 − 5 = 45 个</text>
+<path d="M435 289H300" stroke="#09677b" stroke-width="3.5" stroke-linecap="round" marker-end="url(#blue-arrow)"/>
+<text x="250" y="321" text-anchor="middle">电子仍双向运动，但向左的更多。</text>
+<text x="250" y="359" text-anchor="middle" class="muted">假设用于解释扩散；圆点仅画部分电子。</text>
+</svg>

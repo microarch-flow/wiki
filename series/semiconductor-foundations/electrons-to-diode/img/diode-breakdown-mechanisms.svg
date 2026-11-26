@@ -1,0 +1,84 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="560" height="612" viewBox="0 0 560 612" role="img" aria-labelledby="title desc" xml:lang="zh-CN">
+<title id='title'>反向击穿的两种载流子产生机制</title><desc id='desc'>上半部分：碰撞电离前一个导带电子、一个价带电子，碰撞电离后两个导带电子和一个价带空穴；下半部分能量和空间示意，P 侧价带占据态到 N 侧导带空态有隧穿概率，留下空穴并形成导带电子。硅的实际间接带隙跃迁可涉及声子。</desc>
+<defs>
+<marker id="blue" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5.5" markerHeight="5.5" orient="auto"><path d="M0 0L10 5 0 10Z" fill="#09677b"/></marker>
+<marker id="purple" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5.5" markerHeight="5.5" orient="auto"><path d="M0 0L10 5 0 10Z" fill="#706394"/></marker>
+<marker id="orange" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5.5" markerHeight="5.5" orient="auto"><path d="M0 0L10 5 0 10Z" fill="#a65029"/></marker>
+<marker id="green" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5.5" markerHeight="5.5" orient="auto"><path d="M0 0L10 5 0 10Z" fill="#2f6f62"/></marker>
+<marker id="ink" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5.5" markerHeight="5.5" orient="auto"><path d="M0 0L10 5 0 10Z" fill="#203c37"/></marker>
+</defs>
+<rect x="1" y="1" width="558" height="610" rx="14" fill="#f7f6ef" stroke="#c9d3c7" opacity="1"/>
+<g font-family="system-ui, Noto Sans CJK SC, sans-serif" fill="#203c37">
+<circle cx="26" cy="27" r="8" fill="#09677b" stroke="#09677b" stroke-width="1.7"/>
+<path d="M22 27L30 27" fill="none" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+<text x="38" y="32" font-size="15" fill="#203c37" text-anchor="start">导带电子</text>
+<circle cx="156" cy="27" r="8" fill="#706394" stroke="#706394" stroke-width="1.7"/>
+<path d="M152 27L160 27" fill="none" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+<text x="168" y="32" font-size="15" fill="#203c37" text-anchor="start">价带电子</text>
+<circle cx="288" cy="27" r="8" fill="#fff8ee" stroke="#a65029" stroke-width="1.7"/>
+<path d="M284 27L292 27" fill="none" stroke="#a65029" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M288 23L288 31" fill="none" stroke="#a65029" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+<text x="300" y="32" font-size="15" fill="#203c37" text-anchor="start">价带空穴</text>
+<circle cx="416" cy="27" r="8" fill="#f7f6ef" stroke="#6f8985" stroke-width="1.5" stroke-dasharray="2.7 2.1"/>
+<text x="428" y="32" font-size="15" fill="#203c37" text-anchor="start">导带空态</text>
+<path d="M20 45L540 45" fill="none" stroke="#c9d3c7" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"/>
+<text x="20" y="76" font-size="22" fill="#203c37" text-anchor="start" font-weight="650">① 雪崩倍增：碰撞激发出一对载流子</text>
+<text x="171" y="105" font-size="17" fill="#203c37" text-anchor="middle" font-weight="650">碰撞前</text>
+<text x="417" y="105" font-size="17" fill="#203c37" text-anchor="middle" font-weight="650">碰撞后</text>
+<rect x="72" y="117" width="198" height="100" rx="4" fill="#e0e9ec" stroke="#c9d3c7" opacity="1"/>
+<path d="M72 166L270 166" fill="none" stroke="#c9d3c7" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"/>
+<rect x="315" y="117" width="218" height="100" rx="4" fill="#e0e9ec" stroke="#c9d3c7" opacity="1"/>
+<path d="M315 166L533 166" fill="none" stroke="#c9d3c7" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"/>
+<text x="20" y="145" font-size="17" fill="#203c37" text-anchor="start">导带</text>
+<text x="20" y="195" font-size="17" fill="#203c37" text-anchor="start">价带</text>
+<circle cx="112" cy="142" r="9" fill="#09677b" stroke="#09677b" stroke-width="1.7"/>
+<path d="M108 142L116 142" fill="none" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+<circle cx="206" cy="142" r="9" fill="#f7f6ef" stroke="#6f8985" stroke-width="1.5" stroke-dasharray="2.7 2.1"/>
+<circle cx="112" cy="191" r="9" fill="#706394" stroke="#706394" stroke-width="1.7"/>
+<path d="M108 191L116 191" fill="none" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+<circle cx="206" cy="191" r="9" fill="#706394" stroke="#706394" stroke-width="1.7"/>
+<path d="M202 191L210 191" fill="none" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+<circle cx="361" cy="142" r="9" fill="#09677b" stroke="#09677b" stroke-width="1.7"/>
+<path d="M357 142L365 142" fill="none" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+<circle cx="475" cy="142" r="9" fill="#09677b" stroke="#09677b" stroke-width="1.7"/>
+<path d="M471 142L479 142" fill="none" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+<circle cx="361" cy="191" r="9" fill="#706394" stroke="#706394" stroke-width="1.7"/>
+<path d="M357 191L365 191" fill="none" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+<circle cx="475" cy="191" r="9" fill="#fff8ee" stroke="#a65029" stroke-width="1.7"/>
+<path d="M471 191L479 191" fill="none" stroke="#a65029" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M475 187L475 195" fill="none" stroke="#a65029" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M126 142L185 142" fill="none" stroke="#09677b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#blue)"/>
+<path d="M205 177L205 156" fill="none" stroke="#a65029" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#orange)"/>
+<path d="M275 168L309 168" fill="none" stroke="#203c37" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#ink)"/>
+<text x="171" y="242" font-size="17" fill="#09677b" text-anchor="middle">1 个导带电子</text>
+<text x="417" y="242" font-size="16" fill="#09677b" text-anchor="middle" font-weight="650">2 个导带电子 + 1 个空穴</text>
+<text x="280" y="268" font-size="16" fill="#203c37" text-anchor="middle">新载流子继续加速并电离，反向电流迅速增大。</text>
+<path d="M20 284L540 284" fill="none" stroke="#c9d3c7" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"/>
+<text x="20" y="315" font-size="22" fill="#203c37" text-anchor="start" font-weight="650">② 齐纳击穿：带间隧穿</text>
+<path d="M56 501L56 350" fill="none" stroke="#597069" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#ink)"/>
+<path d="M56 501L531 501" fill="none" stroke="#597069" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#ink)"/>
+<text x="20" y="342" font-size="14" fill="#203c37" text-anchor="start">能量</text>
+<text x="503" y="519" font-size="14" fill="#203c37" text-anchor="start">位置 x</text>
+<text x="130" y="343" font-size="16" fill="#203c37" text-anchor="middle" font-weight="650">P 区</text>
+<text x="447" y="343" font-size="16" fill="#203c37" text-anchor="middle" font-weight="650">N 区</text>
+<path d="M67 351H165L380 421H531" fill="none" stroke="#09677b" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M67 421H165L380 491H531" fill="none" stroke="#706394" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+<text x="71" y="373" font-size="15" fill="#09677b" text-anchor="start">导带底</text>
+<text x="71" y="445" font-size="15" fill="#706394" text-anchor="start">价带顶</text>
+<text x="531" y="385" font-size="15" fill="#597069" text-anchor="end">带边弯曲</text>
+<path d="M275 350L275 500" fill="none" stroke="#c9d3c7" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="4 4"/>
+<circle cx="152" cy="421" r="9" fill="#706394" stroke="#706394" stroke-width="1.7"/>
+<path d="M148 421L156 421" fill="none" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+<circle cx="402" cy="421" r="9" fill="#f7f6ef" stroke="#6f8985" stroke-width="1.5" stroke-dasharray="2.7 2.1"/>
+<path d="M165 421L390 421" fill="none" stroke="#706394" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="5 3" marker-end="url(#purple)"/>
+<text x="278" y="410" font-size="15" fill="#706394" text-anchor="middle" font-weight="650">隧穿 →</text>
+<circle cx="106" cy="550" r="9" fill="#fff8ee" stroke="#a65029" stroke-width="1.7"/>
+<path d="M102 550L110 550" fill="none" stroke="#a65029" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M106 546L106 554" fill="none" stroke="#a65029" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+<text x="120" y="555" font-size="16" fill="#203c37" text-anchor="start">P 区留下空穴</text>
+<circle cx="331" cy="550" r="9" fill="#09677b" stroke="#09677b" stroke-width="1.7"/>
+<path d="M327 550L335 550" fill="none" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+<text x="345" y="555" font-size="16" fill="#203c37" text-anchor="start">N 区获得电子</text>
+<text x="280" y="583" font-size="14" fill="#597069" text-anchor="middle">上图只做状态记账；下图横轴为位置、纵轴为能量。</text>
+<text x="280" y="603" font-size="14" fill="#597069" text-anchor="middle">带边与距离均为定性示意。</text>
+</g></svg>

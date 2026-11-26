@@ -1,0 +1,105 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="560" height="434" viewBox="0 0 560 434" role="img" aria-labelledby="title desc" xml:lang="zh-CN">
+<title id='title'>NPN 三极管：正偏注入、薄基区扩散和反偏收集</title><desc id='desc'>在正向放大区，左侧 N 型发射区通过正偏发射结向 P 型基区注入导带电子；少部分电子在薄基区与空穴复合，多数扩散到集电结并被其电场收集。基极补充空穴，集电极常规电流从外部进入集电端。示意非实际电子个数及几何尺寸。</desc>
+<defs>
+<marker id="blue" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5.5" markerHeight="5.5" orient="auto"><path d="M0 0L10 5 0 10Z" fill="#09677b"/></marker>
+<marker id="purple" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5.5" markerHeight="5.5" orient="auto"><path d="M0 0L10 5 0 10Z" fill="#706394"/></marker>
+<marker id="orange" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5.5" markerHeight="5.5" orient="auto"><path d="M0 0L10 5 0 10Z" fill="#a65029"/></marker>
+<marker id="green" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5.5" markerHeight="5.5" orient="auto"><path d="M0 0L10 5 0 10Z" fill="#2f6f62"/></marker>
+<marker id="ink" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5.5" markerHeight="5.5" orient="auto"><path d="M0 0L10 5 0 10Z" fill="#203c37"/></marker>
+</defs>
+<rect x="1" y="1" width="558" height="432" rx="14" fill="#f7f6ef" stroke="#c9d3c7" opacity="1"/>
+<g font-family="system-ui, Noto Sans CJK SC, sans-serif" fill="#203c37">
+<circle cx="26" cy="27" r="8" fill="#09677b" stroke="#09677b" stroke-width="1.7"/>
+<path d="M22 27L30 27" fill="none" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+<text x="38" y="32" font-size="15" fill="#203c37" text-anchor="start">导带电子</text>
+<circle cx="156" cy="27" r="8" fill="#706394" stroke="#706394" stroke-width="1.7"/>
+<path d="M152 27L160 27" fill="none" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+<text x="168" y="32" font-size="15" fill="#203c37" text-anchor="start">价带电子</text>
+<circle cx="288" cy="27" r="8" fill="#fff8ee" stroke="#a65029" stroke-width="1.7"/>
+<path d="M284 27L292 27" fill="none" stroke="#a65029" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M288 23L288 31" fill="none" stroke="#a65029" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+<text x="300" y="32" font-size="15" fill="#203c37" text-anchor="start">价带空穴</text>
+<circle cx="416" cy="27" r="8" fill="#f7f6ef" stroke="#6f8985" stroke-width="1.5" stroke-dasharray="2.7 2.1"/>
+<text x="428" y="32" font-size="15" fill="#203c37" text-anchor="start">导带空态</text>
+<path d="M20 45L540 45" fill="none" stroke="#c9d3c7" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"/>
+<text x="20" y="73" font-size="21" fill="#203c37" text-anchor="start" font-weight="650">基极与发射极间电压调节注入量</text>
+<text x="140" y="102" font-size="17" fill="#203c37" text-anchor="middle" font-weight="650">N 型发射区</text>
+<text x="290" y="102" font-size="17" fill="#203c37" text-anchor="middle" font-weight="650">P 型薄基区</text>
+<text x="449" y="102" font-size="17" fill="#203c37" text-anchor="middle" font-weight="650">N 型集电区</text>
+<rect x="64" y="114" width="157" height="120" rx="3" fill="#e0e9ec" stroke="#c9d3c7" opacity="1"/>
+<rect x="221" y="114" width="134" height="120" rx="0" fill="#f3e9d9" stroke="#c9d3c7" opacity="1"/>
+<rect x="355" y="114" width="181" height="120" rx="3" fill="#e0e9ec" stroke="#c9d3c7" opacity="1"/>
+<rect x="215" y="114" width="12" height="120" rx="0" fill="#d8dfc7" stroke="none" opacity="0.8"/>
+<rect x="337" y="114" width="44" height="120" rx="0" fill="#d8dfc7" stroke="none" opacity="0.8"/>
+<path d="M221 114L221 234" fill="none" stroke="#597069" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="4 4"/>
+<path d="M355 114L355 234" fill="none" stroke="#597069" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="4 4"/>
+<path d="M64 180L536 180" fill="none" stroke="#c9d3c7" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"/>
+<text x="18" y="153" font-size="16" fill="#203c37" text-anchor="start">导带</text>
+<text x="18" y="210" font-size="16" fill="#203c37" text-anchor="start">价带</text>
+<circle cx="87" cy="139" r="9" fill="#09677b" stroke="#09677b" stroke-width="1.7"/>
+<path d="M83 139L91 139" fill="none" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+<circle cx="124" cy="139" r="9" fill="#09677b" stroke="#09677b" stroke-width="1.7"/>
+<path d="M120 139L128 139" fill="none" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+<circle cx="159" cy="139" r="9" fill="#09677b" stroke="#09677b" stroke-width="1.7"/>
+<path d="M155 139L163 139" fill="none" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+<circle cx="198" cy="139" r="9" fill="#09677b" stroke="#09677b" stroke-width="1.7"/>
+<path d="M194 139L202 139" fill="none" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+<circle cx="249" cy="139" r="9" fill="#09677b" stroke="#09677b" stroke-width="1.7"/>
+<path d="M245 139L253 139" fill="none" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+<circle cx="289" cy="139" r="9" fill="#09677b" stroke="#09677b" stroke-width="1.7"/>
+<path d="M285 139L293 139" fill="none" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+<circle cx="324" cy="139" r="9" fill="#f7f6ef" stroke="#6f8985" stroke-width="1.5" stroke-dasharray="2.7 2.1"/>
+<circle cx="377" cy="139" r="9" fill="#09677b" stroke="#09677b" stroke-width="1.7"/>
+<path d="M373 139L381 139" fill="none" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+<circle cx="421" cy="139" r="9" fill="#09677b" stroke="#09677b" stroke-width="1.7"/>
+<path d="M417 139L425 139" fill="none" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+<circle cx="463" cy="139" r="9" fill="#09677b" stroke="#09677b" stroke-width="1.7"/>
+<path d="M459 139L467 139" fill="none" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+<circle cx="510" cy="139" r="9" fill="#09677b" stroke="#09677b" stroke-width="1.7"/>
+<path d="M506 139L514 139" fill="none" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M184 161L266 161" fill="none" stroke="#09677b" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#blue)"/>
+<path d="M270 161L328 161" fill="none" stroke="#09677b" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#blue)"/>
+<path d="M335 161L424 161" fill="none" stroke="#09677b" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#blue)"/>
+<circle cx="87" cy="206" r="9" fill="#706394" stroke="#706394" stroke-width="1.7"/>
+<path d="M83 206L91 206" fill="none" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+<circle cx="124" cy="206" r="9" fill="#706394" stroke="#706394" stroke-width="1.7"/>
+<path d="M120 206L128 206" fill="none" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+<circle cx="159" cy="206" r="9" fill="#706394" stroke="#706394" stroke-width="1.7"/>
+<path d="M155 206L163 206" fill="none" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+<circle cx="198" cy="206" r="9" fill="#706394" stroke="#706394" stroke-width="1.7"/>
+<path d="M194 206L202 206" fill="none" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+<circle cx="249" cy="206" r="9" fill="#706394" stroke="#706394" stroke-width="1.7"/>
+<path d="M245 206L253 206" fill="none" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+<circle cx="289" cy="206" r="9" fill="#fff8ee" stroke="#a65029" stroke-width="1.7"/>
+<path d="M285 206L293 206" fill="none" stroke="#a65029" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M289 202L289 210" fill="none" stroke="#a65029" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+<circle cx="324" cy="206" r="9" fill="#fff8ee" stroke="#a65029" stroke-width="1.7"/>
+<path d="M320 206L328 206" fill="none" stroke="#a65029" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M324 202L324 210" fill="none" stroke="#a65029" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+<circle cx="387" cy="206" r="9" fill="#706394" stroke="#706394" stroke-width="1.7"/>
+<path d="M383 206L391 206" fill="none" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+<circle cx="421" cy="206" r="9" fill="#706394" stroke="#706394" stroke-width="1.7"/>
+<path d="M417 206L425 206" fill="none" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+<circle cx="463" cy="206" r="9" fill="#706394" stroke="#706394" stroke-width="1.7"/>
+<path d="M459 206L467 206" fill="none" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+<circle cx="510" cy="206" r="9" fill="#706394" stroke="#706394" stroke-width="1.7"/>
+<path d="M506 206L514 206" fill="none" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M289 150Q274 174 287 194" fill="none" stroke="#a65029" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="4 3" marker-end="url(#orange)"/>
+<text x="218" y="258" font-size="14" fill="#a65029" text-anchor="end">正偏</text>
+<text x="355" y="258" font-size="14" fill="#a65029" text-anchor="start">反偏</text>
+<path d="M79 234L79 278" fill="none" stroke="#597069" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M289 234L289 278" fill="none" stroke="#597069" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M513 234L513 278" fill="none" stroke="#597069" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+<text x="79" y="298" font-size="16" fill="#203c37" text-anchor="middle" font-weight="650">E = 0 V</text>
+<text x="289" y="298" font-size="16" fill="#203c37" text-anchor="middle" font-weight="650">B = +0.70 V</text>
+<text x="513" y="298" font-size="16" fill="#203c37" text-anchor="middle" font-weight="650">C = +2.30 V</text>
+<path d="M289 274L289 237" fill="none" stroke="#a65029" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#orange)"/>
+<text x="289" y="371" font-size="15" fill="#a65029" text-anchor="middle">基极补充空穴</text>
+<text x="104" y="326" font-size="16" fill="#09677b" text-anchor="middle" font-weight="650">注入</text>
+<text x="289" y="326" font-size="16" fill="#09677b" text-anchor="middle" font-weight="650">扩散</text>
+<text x="459" y="326" font-size="16" fill="#09677b" text-anchor="middle" font-weight="650">收集</text>
+<path d="M136 321L245 321" fill="none" stroke="#09677b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#blue)"/>
+<path d="M334 321L422 321" fill="none" stroke="#09677b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#blue)"/>
+<text x="280" y="399" font-size="16" fill="#09677b" text-anchor="middle">多数注入电子沿导带向右；少量电子在基区复合。</text>
+<text x="280" y="421" font-size="14" fill="#597069" text-anchor="middle">状态、区域宽度与箭头均为示意，不表示真实比例。</text>
+</g></svg>

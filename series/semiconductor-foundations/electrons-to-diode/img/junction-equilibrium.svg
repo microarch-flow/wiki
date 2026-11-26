@@ -1,0 +1,97 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="560" height="824" viewBox="0 0 560 824" role="img" aria-labelledby="title desc" xml:lang="zh-CN">
+<title id="title">内建电场怎样阻止净扩散</title>
+<desc id="desc">同一个 PN 结随电荷分离建立内建电场。导带电子和价带电子的扩散净输运贡献都向左，漂移净输运贡献都向右；价带空穴的运动方向与价带电子相反。初期扩散占主导，中间电场增强使漂移贡献增加，热平衡时每种载流子的两种贡献分别抵消。箭头长度仅为定性示意，不是实际测量，也不表示两群不同的电子。</desc>
+
+<style>
+text {font-family:system-ui,"Noto Sans CJK SC","Microsoft YaHei",sans-serif;fill:#203c37;font-size:17px}
+.title {font-size:22px;font-weight:700}
+.sub {font-size:19px;font-weight:650}
+.strong {font-size:18px;font-weight:650}
+.muted {fill:#526861;font-size:16px}
+.small {font-size:15px}
+.axis {stroke:#71857b;stroke-width:1.45;fill:none}
+.guide {stroke:#b7c2b9;stroke-width:1;stroke-dasharray:4 4;fill:none}
+</style>
+
+<rect x="1" y="1" width="558" height="822" rx="15" fill="#f7f6ef" stroke="#c9d3c7"/>
+
+<defs>
+<marker id="ce-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="4.5" markerHeight="4.5" orient="auto"><path d="M0 0L10 5 0 10Z" fill="#09677b"/></marker>
+<marker id="ve-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="4.5" markerHeight="4.5" orient="auto"><path d="M0 0L10 5 0 10Z" fill="#706394"/></marker>
+<marker id="field-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="4.5" markerHeight="4.5" orient="auto"><path d="M0 0L10 5 0 10Z" fill="#2f6f62"/></marker>
+<g id="c-electron"><circle r="8" fill="#09677b"/><path d="M-4 0H4" stroke="#fff" stroke-width="1.8" stroke-linecap="round"/></g>
+<g id="v-electron"><circle r="8" fill="#706394"/><path d="M-4 0H4" stroke="#fff" stroke-width="1.8" stroke-linecap="round"/></g>
+</defs>
+<text x="20" y="34" class="title">电场逐渐抵消浓度差造成的净输运</text>
+<text x="22" y="65">实线：扩散贡献</text><text x="305" y="65">虚线：漂移贡献</text>
+<path d="M166 58H231" stroke="#526861" stroke-width="3"/>
+<path d="M450 58H515" stroke="#526861" stroke-width="3" stroke-dasharray="7 4"/>
+<g transform="translate(0 79)">
+<text x="20" y="25" class="sub">① 初期：扩散占主导</text>
+<rect x="74" y="35" width="231" height="151" fill="#f3e9d9"/>
+<rect x="305" y="35" width="231" height="151" fill="#e0e9ec"/>
+<rect x="279" y="35" width="26" height="151" fill="#e5c9ad" opacity=".65"/>
+<rect x="305" y="35" width="26" height="151" fill="#cce4df" opacity=".8"/>
+<rect x="74" y="35" width="462" height="151" fill="none" stroke="#a4b7aa"/>
+<path d="M305 35V186" stroke="#647e71" stroke-width="1.4" stroke-dasharray="4 4"/>
+<path d="M74 77H536 M74 131H536" stroke="#b7c2b9" stroke-width="1"/>
+<text x="111" y="61" class="strong" text-anchor="middle">P 区</text>
+<text x="499" y="61" class="strong" text-anchor="middle">N 区</text>
+<path d="M335.0 62H275.0" stroke="#2f6f62" stroke-width="2.7" marker-end="url(#field-arrow)"/>
+<text x="305" y="49" text-anchor="middle" class="small" style="fill:#2f6f62">内建电场</text>
+<use href="#c-electron" x="23" y="95"/><text x="15" y="121" class="small">导带</text>
+<path d="M389.0 89H221.0" stroke="#09677b" stroke-width="3.5" stroke-linecap="round" marker-end="url(#ce-arrow)"/>
+<path d="M277.5 114H332.5" stroke="#09677b" stroke-width="3" stroke-dasharray="7 4" stroke-linecap="round" marker-end="url(#ce-arrow)"/>
+<use href="#v-electron" x="23" y="149"/><text x="15" y="175" class="small">价带</text>
+<path d="M370.52 143H239.48000000000002" stroke="#706394" stroke-width="3.5" stroke-linecap="round" marker-end="url(#ve-arrow)"/>
+<path d="M283.55 168H326.45" stroke="#706394" stroke-width="3" stroke-dasharray="7 4" stroke-linecap="round" marker-end="url(#ve-arrow)"/>
+<text x="280" y="212" text-anchor="middle" class="strong">净电荷继续分离。</text>
+</g>
+<path d="M20 302H540" stroke="#d3d9cf"/>
+<g transform="translate(0 307)">
+<text x="20" y="25" class="sub">② 内建电场增强</text>
+<rect x="74" y="35" width="231" height="151" fill="#f3e9d9"/>
+<rect x="305" y="35" width="231" height="151" fill="#e0e9ec"/>
+<rect x="256" y="35" width="49" height="151" fill="#e5c9ad" opacity=".65"/>
+<rect x="305" y="35" width="49" height="151" fill="#cce4df" opacity=".8"/>
+<rect x="74" y="35" width="462" height="151" fill="none" stroke="#a4b7aa"/>
+<path d="M305 35V186" stroke="#647e71" stroke-width="1.4" stroke-dasharray="4 4"/>
+<path d="M74 77H536 M74 131H536" stroke="#b7c2b9" stroke-width="1"/>
+<text x="111" y="61" class="strong" text-anchor="middle">P 区</text>
+<text x="499" y="61" class="strong" text-anchor="middle">N 区</text>
+<path d="M367.0 62H243.0" stroke="#2f6f62" stroke-width="2.7" marker-end="url(#field-arrow)"/>
+<text x="305" y="49" text-anchor="middle" class="small" style="fill:#2f6f62">内建电场</text>
+<use href="#c-electron" x="23" y="95"/><text x="15" y="121" class="small">导带</text>
+<path d="M375.5 89H234.5" stroke="#09677b" stroke-width="3.5" stroke-linecap="round" marker-end="url(#ce-arrow)"/>
+<path d="M259.5 114H350.5" stroke="#09677b" stroke-width="3" stroke-dasharray="7 4" stroke-linecap="round" marker-end="url(#ce-arrow)"/>
+<use href="#v-electron" x="23" y="149"/><text x="15" y="175" class="small">价带</text>
+<path d="M359.99 143H250.01" stroke="#706394" stroke-width="3.5" stroke-linecap="round" marker-end="url(#ve-arrow)"/>
+<path d="M269.51 168H340.49" stroke="#706394" stroke-width="3" stroke-dasharray="7 4" stroke-linecap="round" marker-end="url(#ve-arrow)"/>
+<text x="280" y="212" text-anchor="middle" class="strong">漂移逐渐抵消扩散，净输运减少。</text>
+</g>
+<path d="M20 530H540" stroke="#d3d9cf"/>
+<g transform="translate(0 535)">
+<text x="20" y="25" class="sub">③ 热平衡</text>
+<rect x="74" y="35" width="231" height="151" fill="#f3e9d9"/>
+<rect x="305" y="35" width="231" height="151" fill="#e0e9ec"/>
+<rect x="240" y="35" width="65" height="151" fill="#e5c9ad" opacity=".65"/>
+<rect x="305" y="35" width="65" height="151" fill="#cce4df" opacity=".8"/>
+<rect x="74" y="35" width="462" height="151" fill="none" stroke="#a4b7aa"/>
+<path d="M305 35V186" stroke="#647e71" stroke-width="1.4" stroke-dasharray="4 4"/>
+<path d="M74 77H536 M74 131H536" stroke="#b7c2b9" stroke-width="1"/>
+<text x="111" y="61" class="strong" text-anchor="middle">P 区</text>
+<text x="499" y="61" class="strong" text-anchor="middle">N 区</text>
+<path d="M395.0 62H215.0" stroke="#2f6f62" stroke-width="2.7" marker-end="url(#field-arrow)"/>
+<text x="305" y="49" text-anchor="middle" class="small" style="fill:#2f6f62">内建电场</text>
+<use href="#c-electron" x="23" y="95"/><text x="15" y="121" class="small">导带</text>
+<path d="M361.0 89H249.0" stroke="#09677b" stroke-width="3.5" stroke-linecap="round" marker-end="url(#ce-arrow)"/>
+<path d="M249.0 114H361.0" stroke="#09677b" stroke-width="3" stroke-dasharray="7 4" stroke-linecap="round" marker-end="url(#ce-arrow)"/>
+<use href="#v-electron" x="23" y="149"/><text x="15" y="175" class="small">价带</text>
+<path d="M348.68 143H261.32" stroke="#706394" stroke-width="3.5" stroke-linecap="round" marker-end="url(#ve-arrow)"/>
+<path d="M261.32 168H348.68" stroke="#706394" stroke-width="3" stroke-dasharray="7 4" stroke-linecap="round" marker-end="url(#ve-arrow)"/>
+<text x="280" y="212" text-anchor="middle" class="strong">每一条带的电子净输运均为零。</text>
+</g>
+
+<text x="280" y="781" text-anchor="middle" class="muted">同一条带，两箭头是同一批电子的两种净输运贡献。</text>
+<text x="280" y="805" text-anchor="middle" class="muted">价带空穴净输运方向与价带电子相反；长度仅为示意。</text>
+</svg>

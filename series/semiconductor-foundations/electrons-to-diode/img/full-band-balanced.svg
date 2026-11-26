@@ -2,8 +2,8 @@
   <title id="title">填满的能带中，相反速度的电子态贡献相抵</title>
   <desc id="desc">选取一个满带中的三对代表性电子态。每对中两态的速度大小相同、方向相反，全部被占据时其电流贡献两两抵消。横向排列用于比较相反的速度方向，不表示电子的实际位置。</desc>
   <defs>
-    <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="4" markerHeight="4" orient="auto"><path d="M0 0 10 5 0 10Z" fill="#09677b"/></marker>
-    <g id="electron"><circle r="9" fill="#09677b"/><path d="M-4 0H4" stroke="#fff" stroke-width="1.8"/></g>
+    <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="4" markerHeight="4" orient="auto"><path d="M0 0 10 5 0 10Z" fill="#706394"/></marker>
+    <g id="electron"><circle r="9" fill="#706394"/><path d="M-4 0H4" stroke="#fff" stroke-width="1.8"/></g>
   </defs>
   <rect x="1" y="1" width="458" height="268" rx="15" fill="#f7f6ef" stroke="#c9d3c7"/>
   <g font-family="system-ui,'Noto Sans CJK SC',sans-serif" fill="#203c37">
@@ -12,7 +12,7 @@
     <text x="332" y="58" font-size="17" text-anchor="middle">向右运动的态</text>
     <rect x="20" y="69" width="420" height="120" rx="7" fill="#f0f2e9" stroke="#c9d3c7"/>
     <g stroke="#bdc8bd" stroke-width="1.25" stroke-dasharray="3 4"><path d="M150 89H310M150 128H310M150 167H310"/></g>
-    <g stroke="#09677b" stroke-width="2.3" fill="none" stroke-linecap="round" marker-end="url(#arrow)">
+    <g stroke="#706394" stroke-width="2.3" fill="none" stroke-linecap="round" marker-end="url(#arrow)">
       <path d="M117 89H82"/><path d="M343 89H378"/>
       <path d="M117 128H67"/><path d="M343 128H393"/>
       <path d="M117 167H52"/><path d="M343 167H408"/>

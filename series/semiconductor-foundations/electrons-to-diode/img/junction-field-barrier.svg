@@ -1,0 +1,87 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="560" height="826" viewBox="0 0 560 826" role="img" aria-labelledby="title desc" xml:lang="zh-CN">
+<title id="title">空间电荷、电场、电子静电势能和能带的关系</title>
+<desc id="desc">在热平衡对称突变 PN 结的耗尽近似中，P 侧靠近结面有负空间电荷，N 侧有等量正空间电荷，结外近似电中性。取 x 向右为正，内建电场指向 P 侧，电场分量为负，绝对值在结面最大。电子从 N 侧移向 P 侧时，其静电势能升高，势垒是两侧势能之差。电子静电势能的空间变化同时抬高导带底和价带顶，带隙保持不变。全部曲线使用同一位置坐标，但纵轴尺度各自示意。</desc>
+
+<style>
+text {font-family:system-ui,"Noto Sans CJK SC","Microsoft YaHei",sans-serif;fill:#203c37;font-size:17px}
+.title {font-size:22px;font-weight:700}
+.sub {font-size:19px;font-weight:650}
+.strong {font-size:18px;font-weight:650}
+.muted {fill:#526861;font-size:16px}
+.small {font-size:15px}
+.axis {stroke:#71857b;stroke-width:1.45;fill:none}
+.guide {stroke:#b7c2b9;stroke-width:1;stroke-dasharray:4 4;fill:none}
+</style>
+
+<rect x="1" y="1" width="558" height="824" rx="15" fill="#f7f6ef" stroke="#c9d3c7"/>
+
+<defs>
+<marker id="farr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="4.2" markerHeight="4.2" orient="auto-start-reverse"><path d="M0 0L10 5 0 10Z" fill="#2f6f62"/></marker>
+<marker id="aarr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="4.2" markerHeight="4.2" orient="auto-start-reverse"><path d="M0 0L10 5 0 10Z" fill="#71857b"/></marker>
+</defs>
+<text x="20" y="33" class="title">从空间电荷，到电子势垒，再到能带</text>
+<text x="20" y="61" class="muted">对称突变结的耗尽近似；各图使用相同位置坐标。</text>
+<!-- vertical coordinate guides, all panels -->
+<path class="guide" d="M188 76V758 M306 76V758 M424 76V758"/>
+<text x="188" y="84" text-anchor="middle" class="small">耗尽边缘</text>
+<text x="306" y="84" text-anchor="middle" class="small">结面</text>
+<text x="424" y="84" text-anchor="middle" class="small">耗尽边缘</text>
+<!-- spatial charge density -->
+<text x="20" y="114" class="sub">① 空间电荷</text>
+<text x="137" y="137" text-anchor="middle" class="strong">P 区</text>
+<text x="475" y="137" text-anchor="middle" class="strong">N 区</text>
+<rect x="86" y="149" width="220" height="76" fill="#f3e9d9" opacity=".65"/>
+<rect x="306" y="149" width="220" height="76" fill="#e0e9ec" opacity=".8"/>
+<rect x="188" y="149" width="118" height="76" fill="#e5c9ad" opacity=".85"/>
+<rect x="306" y="149" width="118" height="76" fill="#cce4df" opacity=".9"/>
+<text x="137" y="190" text-anchor="middle">近似</text><text x="137" y="212" text-anchor="middle">电中性</text>
+<text x="475" y="190" text-anchor="middle">近似</text><text x="475" y="212" text-anchor="middle">电中性</text>
+<g text-anchor="middle" font-weight="650">
+  <text x="247" y="169" style="fill:#a65029">固定负电荷</text>
+  <text x="365" y="169" style="fill:#2f6f62">固定正电荷</text>
+<text x="218" y="184" style="fill:#a65029;font-size:21px">−</text><text x="336" y="184" style="fill:#2f6f62;font-size:21px">+</text>
+<text x="218" y="209" style="fill:#a65029;font-size:21px">−</text><text x="336" y="209" style="fill:#2f6f62;font-size:21px">+</text>
+<text x="247" y="184" style="fill:#a65029;font-size:21px">−</text><text x="365" y="184" style="fill:#2f6f62;font-size:21px">+</text>
+<text x="247" y="209" style="fill:#a65029;font-size:21px">−</text><text x="365" y="209" style="fill:#2f6f62;font-size:21px">+</text>
+<text x="276" y="184" style="fill:#a65029;font-size:21px">−</text><text x="394" y="184" style="fill:#2f6f62;font-size:21px">+</text>
+<text x="276" y="209" style="fill:#a65029;font-size:21px">−</text><text x="394" y="209" style="fill:#2f6f62;font-size:21px">+</text>
+
+</g>
+<path d="M424 238H188" stroke="#2f6f62" stroke-width="2.8" marker-end="url(#farr)"/>
+<text x="306" y="260" text-anchor="middle" class="small" style="fill:#2f6f62">内建电场指向 P 侧</text>
+<!-- signed electric field -->
+<path d="M20 274H540" stroke="#d3d9cf"/>
+<text x="20" y="302" class="sub">② 电场分量 E</text>
+<text x="20" y="325" class="muted">右为正方向</text>
+<path class="axis" d="M86 314V426 M86 342H526" marker-end="url(#aarr)"/>
+<text x="65" y="347" text-anchor="end" class="small">0</text>
+<text x="65" y="393" text-anchor="end" class="small">E&lt;0</text>
+<path d="M188 342L306 403L424 342Z" fill="#cce4df" opacity=".75"/>
+<path d="M86 342H188L306 403L424 342H526" stroke="#2f6f62" stroke-width="3" fill="none" stroke-linejoin="round"/>
+<circle cx="306" cy="403" r="3.2" fill="#2f6f62"/>
+<text x="317" y="423" class="small" style="fill:#2f6f62">|E| 在结面最大</text>
+<!-- potential energy U -->
+<path d="M20 440H540" stroke="#d3d9cf"/>
+<text x="20" y="468" class="sub">③ 电子的静电势能 U</text>
+<text x="20" y="491" class="muted">U = −qφ；电子向左爬坡</text>
+<path class="axis" d="M86 593V500" marker-end="url(#aarr)"/>
+<path class="axis" d="M86 593H526" marker-end="url(#aarr)"/>
+<path d="M86 516H188Q247 516 306 543Q365 570 424 570H526" fill="none" stroke="#a65029" stroke-width="3.1"/>
+<path d="M86 516H542 M424 570H542" stroke="#a65029" stroke-width=".9" stroke-dasharray="4 4" opacity=".5"/>
+<path d="M497 519V567" stroke="#a65029" stroke-width="1.5"/>
+<path d="M493 522L497 516L501 522 M493 564L497 570L501 564" fill="none" stroke="#a65029" stroke-width="1.5"/>
+<text x="490" y="548" text-anchor="end" class="small" style="fill:#a65029">势垒</text>
+<!-- Energy bands -->
+<path d="M20 610H540" stroke="#d3d9cf"/>
+<text x="20" y="638" class="sub">④ 能带：带边一起随 U 改变</text>
+<path class="axis" d="M86 758V650" marker-end="url(#aarr)"/>
+<path class="axis" d="M86 758H526" marker-end="url(#aarr)"/>
+<path d="M86 653H188Q247 653 306 675Q365 697 424 697H526" fill="none" stroke="#09677b" stroke-width="3.2"/>
+<path d="M86 709H188Q247 709 306 731Q365 753 424 753H526" fill="none" stroke="#706394" stroke-width="3.2"/>
+<text x="111" y="674" class="strong" style="fill:#09677b">导带底</text>
+<text x="111" y="731" class="strong" style="fill:#706394">价带顶</text>
+<path d="M455 701V749 M451 703L455 697L459 703 M451 747L455 753L459 747" stroke="#71857b" stroke-width="1.3" fill="none"/>
+<text x="465" y="720" class="small">带隙</text><text x="465" y="738" class="small">不变</text>
+<text x="518" y="779" text-anchor="end" class="small">位置 x</text>
+<text x="280" y="806" text-anchor="middle" class="muted">势垒来自跨越整个结区的势能变化，不仅由结面决定。</text>
+</svg>

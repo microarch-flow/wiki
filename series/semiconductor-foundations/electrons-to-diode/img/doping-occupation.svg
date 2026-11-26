@@ -6,7 +6,9 @@
       <path d="M0 0 10 5 0 10 2 5Z" fill="#09677b"/>
     </marker>
     <g id="electron"><circle r="9" fill="#09677b"/><path d="M-4 0H4" stroke="white" stroke-width="2"/></g>
-    <g id="hole"><circle r="9" fill="#f7f6ef" stroke="#9b4c28" stroke-width="2.4"/><path d="M-4 0H4M0-4V4" stroke="#9b4c28" stroke-width="1.8"/></g>
+    <g id="valence-electron"><circle r="9" fill="#706394"/><path d="M-4 0H4" stroke="white" stroke-width="2"/></g>
+    <marker id="valence-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="3.5" markerHeight="3.5" orient="auto"><path d="M0 0 10 5 0 10 2 5Z" fill="#706394"/></marker>
+    <g id="hole"><circle r="9" fill="#f7f6ef" stroke="#a65029" stroke-width="2.4"/><path d="M-4 0H4M0-4V4" stroke="#a65029" stroke-width="1.8"/></g>
   </defs>
   <rect x="1" y="1" width="458" height="398" rx="15" fill="#f7f6ef" stroke="#c9d3c7"/>
   <g font-family="system-ui, 'Noto Sans CJK SC', sans-serif" fill="#203c37" font-size="19">
@@ -24,8 +26,8 @@
 
     <use href="#electron" x="274" y="116"/>
     <text x="293" y="123">可移动的电子</text>
-    <rect x="264" y="149" width="20" height="20" rx="2" fill="#e9e9dc" stroke="#597069" stroke-width="2"/>
-    <path d="M269 159H279M274 154V164" stroke="#203c37" stroke-width="2"/>
+    <rect x="260" y="148" width="28" height="22" rx="4" fill="#f1dddf" stroke="#9a6068" stroke-width="1.4"/>
+    <text x="274" y="164" text-anchor="middle" font-size="14" font-weight="700" fill="#703940">P⁺</text>
     <text x="293" y="166">固定的正施主</text>
 
     <path d="M25 209H435" stroke="#c9d3c7" stroke-width="1.5"/>
@@ -35,11 +37,11 @@
     <rect x="26" y="334" width="205" height="38" fill="#efdfcf"/>
     <path d="M26 334H231" fill="none" stroke="#597069" stroke-width="2"/>
     <text x="37" y="360">价带</text>
-    <use href="#electron" x="171" y="350"/>
-    <path d="M171 337V294" fill="none" stroke="#09677b" stroke-width="3" marker-end="url(#up-arrow)"/>
+    <use href="#valence-electron" x="171" y="350"/>
+    <path d="M171 337V294" fill="none" stroke="#706394" stroke-width="3" marker-end="url(#valence-arrow)"/>
 
-    <rect x="264" y="282" width="20" height="20" rx="2" fill="#e9e9dc" stroke="#597069" stroke-width="2"/>
-    <path d="M269 292H279" stroke="#203c37" stroke-width="2"/>
+    <rect x="260" y="281" width="28" height="22" rx="4" fill="#f3dfca" stroke="#9b673b" stroke-width="1.4"/>
+    <text x="274" y="297" text-anchor="middle" font-size="14" font-weight="700" fill="#623b21">B⁻</text>
     <text x="293" y="299">固定的负受主</text>
     <use href="#hole" x="274" y="350"/>
     <text x="293" y="357">可移动的空穴</text>

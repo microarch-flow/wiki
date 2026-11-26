@@ -1,0 +1,74 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="560" height="1128" viewBox="0 0 560 1128" role="img" aria-labelledby="title desc" xml:lang="zh-CN">
+  <title id="title">反向偏置时的电子占据与电荷重新分布</title>
+  <desc id="desc">反向偏置。平衡时左侧 P 区、右侧 N 区各有两个未补偿的离子电荷；接通电源后负极向 P 端补充价带电子，正极从 N 端取走导带电子，更多离子电荷失去多数载流子补偿，耗尽区变宽，结区电场和势垒增高。稳态下 P 侧的少数导带电子可向右跨结，N 侧少数空穴可向左跨结，相当于价带电子向右净输运。热激发等提供少数载流子，端口多数载流子交换不等于提供了大量少数载流子；传统电流朝左。图中状态槽和晶格位置不一一对应，第一二阶段为选定符号的电荷记账，第三阶段只画净输运路径，数量与空间尺度非定量。</desc>
+  <defs>
+    <g id="ce0"><circle r="9" fill="#f7f6ef" stroke="#6f8985" stroke-width="1.5" stroke-dasharray="2.7 2.1"/></g>
+    <g id="ce"><circle r="9" fill="#09677b"/><path d="M-4 0H4" stroke="#fff" stroke-width="1.8" stroke-linecap="round"/></g>
+    <g id="ve"><circle r="9" fill="#706394"/><path d="M-4 0H4" stroke="#fff" stroke-width="1.8" stroke-linecap="round"/></g>
+    <g id="h"><circle r="9" fill="#fff8ee" stroke="#a65029" stroke-width="2"/><path d="M-4 0H4M0-4V4" stroke="#a65029" stroke-width="1.8" stroke-linecap="round"/></g>
+    <g id="B"><rect x="-14.5" y="-11" width="29" height="22" rx="4" fill="#f3dfca" stroke="#9b673b" stroke-width="1.4"/><text x="0" y="5" font-size="14" text-anchor="middle" font-weight="700" fill="#623b21">B⁻</text></g>
+    <g id="P"><rect x="-14.5" y="-11" width="29" height="22" rx="4" fill="#f1dddf" stroke="#9a6068" stroke-width="1.4"/><text x="0" y="5" font-size="14" text-anchor="middle" font-weight="700" fill="#703940">P⁺</text></g>
+    <g id="Si"><rect x="-14.5" y="-11" width="29" height="22" rx="4" fill="#f1f2ed" stroke="#a3ada5" stroke-width="1.3"/><text x="0" y="5" font-size="14" text-anchor="middle" fill="#687a73">Si</text></g>
+    <marker id="b-arrow" viewBox="0 0 10 10" refX="8.6" refY="5" markerWidth="5.5" markerHeight="5.5" orient="auto"><path d="M0 0L10 5 0 10Z" fill="#09677b"/></marker>
+    <marker id="v-arrow" viewBox="0 0 10 10" refX="8.6" refY="5" markerWidth="5.5" markerHeight="5.5" orient="auto"><path d="M0 0L10 5 0 10Z" fill="#706394"/></marker>
+    <marker id="f-arrow" viewBox="0 0 10 10" refX="8.6" refY="5" markerWidth="5.5" markerHeight="5.5" orient="auto"><path d="M0 0L10 5 0 10Z" fill="#2f6f62"/></marker>
+    <marker id="c-arrow" viewBox="0 0 10 10" refX="8.6" refY="5" markerWidth="5.5" markerHeight="5.5" orient="auto"><path d="M0 0L10 5 0 10Z" fill="#203c37"/></marker>
+  </defs>
+<rect x="1" y="1" width="558" height="1126" rx="15" fill="#f7f6ef" stroke="#c9d3c7" opacity="1"/>
+<g font-family="system-ui, 'Noto Sans CJK SC', sans-serif">
+<use href="#ce" x="27" y="25"/><text x="44" y="31" font-size="16" text-anchor="start" fill="#203c37" font-weight="400">导带电子</text><use href="#ve" x="206" y="25"/><text x="223" y="31" font-size="16" text-anchor="start" fill="#203c37" font-weight="400">价带电子</text><use href="#h" x="390" y="25"/><text x="407" y="31" font-size="16" text-anchor="start" fill="#203c37" font-weight="400">价带空穴</text><use href="#ce0" x="27" y="50"/><text x="44" y="56" font-size="16" text-anchor="start" fill="#203c37" font-weight="400">导带空态</text><use href="#B" x="206" y="50"/><text x="225" y="56" font-size="16" text-anchor="start" fill="#203c37" font-weight="400">硼受主离子</text><use href="#P" x="390" y="50"/><text x="409" y="56" font-size="16" text-anchor="start" fill="#203c37" font-weight="400">磷施主离子</text><text x="280" y="80" font-size="15.5" text-anchor="middle" fill="#597069" font-weight="400">状态数仅用于示意；不代表真实占据比例。</text>
+<g transform="translate(0 96)"><text x="20" y="23" font-size="21" text-anchor="start" fill="#203c37" font-weight="700">① 接电源前：PN 结处于热平衡</text>
+<rect x="74" y="66" width="231" height="118" rx="0" fill="#f3e9d9" stroke="none" opacity="1"/><rect x="305" y="66" width="231" height="118" rx="0" fill="#e0e9ec" stroke="none" opacity="1"/><rect x="178" y="66" width="127" height="118" rx="0" fill="#e5c9ad" stroke="none" opacity="0.85"/><rect x="305" y="66" width="127" height="118" rx="0" fill="#c2d8c8" stroke="none" opacity="0.9"/><text x="189.5" y="54" font-size="19" text-anchor="middle" fill="#203c37" font-weight="700">P 型硅</text><text x="420.5" y="54" font-size="19" text-anchor="middle" fill="#203c37" font-weight="700">N 型硅</text><text x="17" y="94" font-size="16" text-anchor="start" fill="#203c37" font-weight="400">导带</text><text x="17" y="134" font-size="16" text-anchor="start" fill="#203c37" font-weight="400">价带</text><text x="10" y="170" font-size="14" text-anchor="start" fill="#203c37" font-weight="400">晶格位置</text><rect x="74" y="66" width="462" height="118" rx="0" fill="none" stroke="#85948c" opacity="1"/><path d="M74 108H536M74 148H536" fill="none" stroke="#8f9c96" opacity=".64"/><path d="M305 66V184" stroke="#5d776c" stroke-width="1.4" stroke-dasharray="4 4"/><use href="#B" x="96" y="166"/><use href="#Si" x="129" y="166"/><use href="#B" x="162" y="166"/><use href="#B" x="195" y="166"/><use href="#Si" x="228" y="166"/><use href="#B" x="261" y="166"/><use href="#P" x="349" y="166"/><use href="#Si" x="382" y="166"/><use href="#P" x="415" y="166"/><use href="#P" x="448" y="166"/><use href="#Si" x="481" y="166"/><use href="#P" x="514" y="166"/>
+<use href="#ce0" x="96" y="88"/><use href="#h" x="96" y="128"/><use href="#ce0" x="129" y="88"/><use href="#ve" x="129" y="128"/><use href="#ce0" x="162" y="88"/><use href="#h" x="162" y="128"/><use href="#ce0" x="195" y="88"/><use href="#ve" x="195" y="128"/><use href="#ce0" x="228" y="88"/><use href="#ve" x="228" y="128"/><use href="#ce0" x="261" y="88"/><use href="#ve" x="261" y="128"/><use href="#ce0" x="349" y="88"/><use href="#ve" x="349" y="128"/><use href="#ce0" x="382" y="88"/><use href="#ve" x="382" y="128"/><use href="#ce0" x="415" y="88"/><use href="#ve" x="415" y="128"/><use href="#ce" x="448" y="88"/><use href="#ve" x="448" y="128"/><use href="#ce0" x="481" y="88"/><use href="#ve" x="481" y="128"/><use href="#ce" x="514" y="88"/><use href="#ve" x="514" y="128"/>
+<text x="189.5" y="207" font-size="19" text-anchor="middle" fill="#8e4b30" font-weight="650">−4 + 2 = −2</text>
+<text x="420.5" y="207" font-size="19" text-anchor="middle" fill="#235e51" font-weight="650">+4 − 2 = +2</text>
+<text x="24" y="235" font-size="17" text-anchor="start" fill="#2f6f62" font-weight="650">结区电场</text><path d="M394 229 L215 229" fill="none" stroke="#2f6f62" stroke-width="3" marker-end="url(#f-arrow)"/><text x="530" y="235" font-size="16" text-anchor="end" fill="#2f6f62" font-weight="650">内建势垒</text>
+<text x="280" y="257" font-size="17.5" text-anchor="middle" fill="#203c37" font-weight="400">耗尽区已经形成，端子净电流为零。</text>
+</g>
+<path d="M20 363H540" stroke="#c9d3c7"/>
+<g transform="translate(0 376)">
+<text x="19" y="23" font-size="21" text-anchor="start" fill="#203c37" font-weight="700">② 反向偏置：电荷重新分布</text>
+<rect x="74" y="66" width="231" height="118" rx="0" fill="#f3e9d9" stroke="none" opacity="1"/><rect x="305" y="66" width="231" height="118" rx="0" fill="#e0e9ec" stroke="none" opacity="1"/><rect x="145" y="66" width="160" height="118" rx="0" fill="#e5c9ad" stroke="none" opacity="0.85"/><rect x="305" y="66" width="160" height="118" rx="0" fill="#c2d8c8" stroke="none" opacity="0.9"/><text x="189.5" y="54" font-size="19" text-anchor="middle" fill="#203c37" font-weight="700">P 端接负极 (−)</text><text x="420.5" y="54" font-size="19" text-anchor="middle" fill="#203c37" font-weight="700">N 端接正极 (+)</text><text x="17" y="94" font-size="16" text-anchor="start" fill="#203c37" font-weight="400">导带</text><text x="17" y="134" font-size="16" text-anchor="start" fill="#203c37" font-weight="400">价带</text><text x="10" y="170" font-size="14" text-anchor="start" fill="#203c37" font-weight="400">晶格位置</text><rect x="74" y="66" width="462" height="118" rx="0" fill="none" stroke="#85948c" opacity="1"/><path d="M74 108H536M74 148H536" fill="none" stroke="#8f9c96" opacity=".64"/><path d="M305 66V184" stroke="#5d776c" stroke-width="1.4" stroke-dasharray="4 4"/><use href="#B" x="96" y="166"/><use href="#Si" x="129" y="166"/><use href="#B" x="162" y="166"/><use href="#B" x="195" y="166"/><use href="#Si" x="228" y="166"/><use href="#B" x="261" y="166"/><use href="#P" x="349" y="166"/><use href="#Si" x="382" y="166"/><use href="#P" x="415" y="166"/><use href="#P" x="448" y="166"/><use href="#Si" x="481" y="166"/><use href="#P" x="514" y="166"/>
+<use href="#ce0" x="96" y="88"/><use href="#h" x="96" y="128"/><use href="#ce0" x="129" y="88"/><use href="#ve" x="129" y="128"/><use href="#ce0" x="162" y="88"/><use href="#ve" x="162" y="128"/><use href="#ce0" x="195" y="88"/><use href="#ve" x="195" y="128"/><use href="#ce0" x="228" y="88"/><use href="#ve" x="228" y="128"/><use href="#ce0" x="261" y="88"/><use href="#ve" x="261" y="128"/><use href="#ce0" x="349" y="88"/><use href="#ve" x="349" y="128"/><use href="#ce0" x="382" y="88"/><use href="#ve" x="382" y="128"/><use href="#ce0" x="415" y="88"/><use href="#ve" x="415" y="128"/><use href="#ce0" x="448" y="88"/><use href="#ve" x="448" y="128"/><use href="#ce0" x="481" y="88"/><use href="#ve" x="481" y="128"/><use href="#ce" x="514" y="88"/><use href="#ve" x="514" y="128"/>
+<path d="M57 128 L84 128" fill="none" stroke="#706394" stroke-width="2.3" marker-end="url(#v-arrow)"/>
+<path d="M527 88 L553 88" fill="none" stroke="#09677b" stroke-width="2.3" marker-end="url(#b-arrow)"/>
+<text x="189.5" y="208" font-size="19" text-anchor="middle" fill="#8e4b30" font-weight="650">−4 + 1 = −3</text>
+<text x="420.5" y="208" font-size="19" text-anchor="middle" fill="#235e51" font-weight="650">+4 − 1 = +3</text>
+<text x="189.5" y="235" font-size="17" text-anchor="middle" fill="#706394" font-weight="650">负极补给价带电子</text>
+<text x="420.5" y="235" font-size="17" text-anchor="middle" fill="#09677b" font-weight="650">正极抽走导带电子</text>
+<text x="24" y="261" font-size="17" text-anchor="start" fill="#2f6f62" font-weight="650">结区电场</text><path d="M430 255 L185 255" fill="none" stroke="#2f6f62" stroke-width="3" marker-end="url(#f-arrow)"/><text x="530" y="261" font-size="16" text-anchor="end" fill="#2f6f62" font-weight="650">势垒升高</text>
+<text x="280" y="285" font-size="17.5" text-anchor="middle" fill="#203c37" font-weight="400">更多固定离子失去载流子补偿，耗尽区变宽。</text>
+</g>
+<path d="M20 672H540" stroke="#c9d3c7"/>
+<g transform="translate(0 685)"><text x="20" y="23" font-size="21" text-anchor="start" fill="#203c37" font-weight="700">③ 偏置稳定后：少数载流子形成漏电</text>
+<rect x="74" y="66" width="231" height="118" rx="0" fill="#f3e9d9" stroke="none" opacity="1"/><rect x="305" y="66" width="231" height="118" rx="0" fill="#e0e9ec" stroke="none" opacity="1"/><rect x="145" y="66" width="160" height="118" rx="0" fill="#e5c9ad" stroke="none" opacity="0.85"/><rect x="305" y="66" width="160" height="118" rx="0" fill="#c2d8c8" stroke="none" opacity="0.9"/><text x="189.5" y="54" font-size="19" text-anchor="middle" fill="#203c37" font-weight="700">P 端接负极 (−)</text><text x="420.5" y="54" font-size="19" text-anchor="middle" fill="#203c37" font-weight="700">N 端接正极 (+)</text><text x="17" y="94" font-size="16" text-anchor="start" fill="#203c37" font-weight="400">导带</text><text x="17" y="134" font-size="16" text-anchor="start" fill="#203c37" font-weight="400">价带</text><text x="10" y="170" font-size="14" text-anchor="start" fill="#203c37" font-weight="400">晶格位置</text><rect x="74" y="66" width="462" height="118" rx="0" fill="none" stroke="#85948c" opacity="1"/><path d="M74 108H536M74 148H536" fill="none" stroke="#8f9c96" opacity=".64"/><path d="M305 66V184" stroke="#5d776c" stroke-width="1.4" stroke-dasharray="4 4"/><use href="#B" x="96" y="166"/><use href="#Si" x="129" y="166"/><use href="#B" x="162" y="166"/><use href="#B" x="195" y="166"/><use href="#Si" x="228" y="166"/><use href="#B" x="261" y="166"/><use href="#P" x="349" y="166"/><use href="#Si" x="382" y="166"/><use href="#P" x="415" y="166"/><use href="#P" x="448" y="166"/><use href="#Si" x="481" y="166"/><use href="#P" x="514" y="166"/>
+<use href="#ce" x="115" y="88"/>
+<use href="#ce0" x="495" y="88"/>
+<path d="M128 88 L480 88" fill="none" stroke="#09677b" stroke-width="2.1" marker-end="url(#b-arrow)"/>
+<use href="#ve" x="115" y="128"/>
+<use href="#h" x="495" y="128"/>
+<path d="M128 128 L480 128" fill="none" stroke="#706394" stroke-width="2.1" marker-end="url(#v-arrow)"/>
+<rect x="213" y="78" width="184" height="20" rx="4" fill="#f7f6ef" stroke="none" opacity="1"/>
+<text x="305" y="93" font-size="15.5" text-anchor="middle" fill="#09677b" font-weight="650">导带电子净跨结</text>
+<rect x="213" y="118" width="184" height="20" rx="4" fill="#f7f6ef" stroke="none" opacity="1"/>
+<text x="305" y="133" font-size="15.5" text-anchor="middle" fill="#706394" font-weight="650">价带电子净跨结</text>
+<text x="280" y="210" font-size="17.5" text-anchor="middle" fill="#203c37" font-weight="400">N 侧空穴向左；等效价带电子向右。</text>
+<text x="280" y="232" font-size="17.5" text-anchor="middle" fill="#203c37" font-weight="400">少子来源受限，端子交换不直接产生大量少子。</text>
+<rect x="18" y="245" width="524" height="56" rx="8" fill="#f0eee4" stroke="#c9d3c7" opacity="1"/>
+<text x="30" y="277" font-size="16.5" text-anchor="start" fill="#203c37" font-weight="650">热激发示意</text>
+<use href="#ve" x="148" y="272"/>
+<path d="M167 272 L198 272" fill="none" stroke="#203c37" stroke-width="2" marker-end="url(#c-arrow)"/>
+<use href="#ce" x="219" y="272"/>
+<text x="239" y="278" font-size="16" text-anchor="middle" fill="#203c37" font-weight="400">+</text>
+<use href="#h" x="258" y="272"/>
+<text x="280" y="278" font-size="15.5" text-anchor="start" fill="#203c37" font-weight="400">P 侧提供电子，N 侧提供空穴</text>
+<text x="20" y="330" font-size="17" text-anchor="start" fill="#203c37" font-weight="650">常规电流</text>
+<path d="M505 324 L140 324" fill="none" stroke="#203c37" stroke-width="2" marker-end="url(#c-arrow)"/>
+</g>
+<path d="M20 1034H540" stroke="#c9d3c7"/>
+<text x="280" y="1055" font-size="16" text-anchor="middle" fill="#597069" font-weight="400">①②按选定状态记账：净电荷以元电荷 q 为单位。</text>
+<text x="280" y="1077" font-size="15.5" text-anchor="middle" fill="#597069" font-weight="400">③箭头只表示统计净输运路径，不是一颗电子的完整轨迹。</text>
+<text x="280" y="1099" font-size="15.5" text-anchor="middle" fill="#597069" font-weight="400">状态槽与晶格位置不一一对应；遮色区是示意耗尽范围。</text>
+<text x="280" y="1120" font-size="15.5" text-anchor="middle" fill="#597069" font-weight="400">固定施主、受主离子位置不变。</text>
+</g>
+</svg>

@@ -297,7 +297,7 @@ class GeneratedNavigationTests(unittest.TestCase):
 
     def test_split_foundations_figures_render_in_their_receiving_articles(self):
         figures = {
-            "foundations/electrons-to-diode/": "foundations/silicon-to-logic/img/npn-injection.svg",
+            "foundations/electrons-to-diode/": "foundations/electrons-to-diode/img/bjt-transport.svg",
             "foundations/transistor-amplifier/": "foundations/transistor-amplifier/img/bjt-load-line.svg",
             "foundations/cmos-logic-gates/": "foundations/inverter-to-package/img/planar-inverter.png",
             "foundations/fanout-and-wire-delay/": "img/electrical-timing-rc.svg",
@@ -319,6 +319,19 @@ class GeneratedNavigationTests(unittest.TestCase):
         article = re.search(r'<article\b[^>]*>(.*?)</article>', page, re.DOTALL).group(1)
         self.assertEqual(article.count('id="bjt"'), 1)
         self.assertIn('href="../transistor-amplifier/#bjt-load"', article)
+        # The new state-based diagram replaces the older NPN illustration in the
+        # article, but keep the original linked asset available to old readers.
+        self.assertIn('href="../silicon-to-logic/img/npn-injection.svg"', article)
+        self.assertTrue((SITE / "foundations/silicon-to-logic/img/npn-injection.svg").is_file())
+        self.assertLess(article.index('id="field"'), article.index('id="contacts"'))
+        self.assertLess(article.index('id="contacts"'), article.index('id="forward"'))
+        self.assertEqual(article.count('id="fermi"'), 1)
+        for figure in ("diffusion-count", "junction-equilibrium", "junction-field-barrier",
+                       "pn-forward-stages", "pn-reverse-stages", "diode-breakdown-mechanisms",
+                       "diode-recovery-stages", "bjt-transport"):
+            with self.subTest(figure=figure):
+                self.assertRegex(article, rf'<img\b[^>]*src="img/{figure}\.svg"')
+                self.assertTrue((SITE / topic / "img" / f"{figure}.svg").is_file())
         amplifier = (SITE / "foundations/transistor-amplifier/index.html").read_text(encoding="utf-8")
         self.assertEqual(amplifier.count('id="bjt-load"'), 1)
         self.assertIn('href="../electrons-to-diode/#bjt"', amplifier)

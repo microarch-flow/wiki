@@ -1,0 +1,208 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="560" height="752" viewBox="0 0 560 752" role="img" aria-labelledby="title desc" xml:lang="zh-CN">
+<title id='title'>二极管反向恢复中的载流子状态变化</title><desc id='desc'>限流驱动的三阶段。正向时 P 区过剩电子、N 区过剩空穴；外部电源反向后，反向电流抽取部分载流子，另一部分复合，结端电压可能仍为正；当过剩载流子基本消退，耗尽区扩展并恢复反向阻断。颜色表示带内电子或空穴，符号数量并非实际浓度。</desc>
+<defs>
+<marker id="blue" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5.5" markerHeight="5.5" orient="auto"><path d="M0 0L10 5 0 10Z" fill="#09677b"/></marker>
+<marker id="purple" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5.5" markerHeight="5.5" orient="auto"><path d="M0 0L10 5 0 10Z" fill="#706394"/></marker>
+<marker id="orange" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5.5" markerHeight="5.5" orient="auto"><path d="M0 0L10 5 0 10Z" fill="#a65029"/></marker>
+<marker id="green" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5.5" markerHeight="5.5" orient="auto"><path d="M0 0L10 5 0 10Z" fill="#2f6f62"/></marker>
+<marker id="ink" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5.5" markerHeight="5.5" orient="auto"><path d="M0 0L10 5 0 10Z" fill="#203c37"/></marker>
+</defs>
+<rect x="1" y="1" width="558" height="750" rx="14" fill="#f7f6ef" stroke="#c9d3c7" opacity="1"/>
+<g font-family="system-ui, Noto Sans CJK SC, sans-serif" fill="#203c37">
+<circle cx="26" cy="27" r="8" fill="#09677b" stroke="#09677b" stroke-width="1.7"/>
+<path d="M22 27L30 27" fill="none" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+<text x="38" y="32" font-size="15" fill="#203c37" text-anchor="start">导带电子</text>
+<circle cx="156" cy="27" r="8" fill="#706394" stroke="#706394" stroke-width="1.7"/>
+<path d="M152 27L160 27" fill="none" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+<text x="168" y="32" font-size="15" fill="#203c37" text-anchor="start">价带电子</text>
+<circle cx="288" cy="27" r="8" fill="#fff8ee" stroke="#a65029" stroke-width="1.7"/>
+<path d="M284 27L292 27" fill="none" stroke="#a65029" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M288 23L288 31" fill="none" stroke="#a65029" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+<text x="300" y="32" font-size="15" fill="#203c37" text-anchor="start">价带空穴</text>
+<circle cx="416" cy="27" r="8" fill="#f7f6ef" stroke="#6f8985" stroke-width="1.5" stroke-dasharray="2.7 2.1"/>
+<text x="428" y="32" font-size="15" fill="#203c37" text-anchor="start">导带空态</text>
+<text x="20" y="65" font-size="21" fill="#203c37" text-anchor="start" font-weight="650">① 正向稳态</text>
+<text x="20" y="89" font-size="16" fill="#597069" text-anchor="start">电源正接，耗尽区较窄</text>
+<rect x="72" y="118" width="232" height="87" rx="3" fill="#f3e9d9" stroke="#c9d3c7" opacity="1"/>
+<rect x="304" y="118" width="232" height="87" rx="3" fill="#e0e9ec" stroke="#c9d3c7" opacity="1"/>
+<rect x="287.0" y="118" width="34" height="87" rx="0" fill="#d8dfc7" stroke="none" opacity="0.78"/>
+<path d="M304 118L304 205" fill="none" stroke="#597069" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="4 4"/>
+<path d="M72 161L536 161" fill="none" stroke="#c9d3c7" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"/>
+<text x="83" y="112" font-size="15" fill="#203c37" text-anchor="start">P 区</text>
+<text x="528" y="112" font-size="15" fill="#203c37" text-anchor="end">N 区</text>
+<text x="20" y="145" font-size="16" fill="#203c37" text-anchor="start">导带</text>
+<text x="20" y="188" font-size="16" fill="#203c37" text-anchor="start">价带</text>
+<circle cx="95" cy="140" r="8" fill="#f7f6ef" stroke="#6f8985" stroke-width="1.5" stroke-dasharray="2.7 2.1"/>
+<circle cx="135" cy="140" r="8" fill="#09677b" stroke="#09677b" stroke-width="1.7"/>
+<path d="M131 140L139 140" fill="none" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+<circle cx="175" cy="140" r="8" fill="#f7f6ef" stroke="#6f8985" stroke-width="1.5" stroke-dasharray="2.7 2.1"/>
+<circle cx="215" cy="140" r="8" fill="#09677b" stroke="#09677b" stroke-width="1.7"/>
+<path d="M211 140L219 140" fill="none" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+<circle cx="255" cy="140" r="8" fill="#f7f6ef" stroke="#6f8985" stroke-width="1.5" stroke-dasharray="2.7 2.1"/>
+<circle cx="283" cy="140" r="8" fill="#f7f6ef" stroke="#6f8985" stroke-width="1.5" stroke-dasharray="2.7 2.1"/>
+<circle cx="325" cy="140" r="8" fill="#f7f6ef" stroke="#6f8985" stroke-width="1.5" stroke-dasharray="2.7 2.1"/>
+<circle cx="353" cy="140" r="8" fill="#09677b" stroke="#09677b" stroke-width="1.7"/>
+<path d="M349 140L357 140" fill="none" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+<circle cx="393" cy="140" r="8" fill="#09677b" stroke="#09677b" stroke-width="1.7"/>
+<path d="M389 140L397 140" fill="none" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+<circle cx="433" cy="140" r="8" fill="#09677b" stroke="#09677b" stroke-width="1.7"/>
+<path d="M429 140L437 140" fill="none" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+<circle cx="473" cy="140" r="8" fill="#09677b" stroke="#09677b" stroke-width="1.7"/>
+<path d="M469 140L477 140" fill="none" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+<circle cx="513" cy="140" r="8" fill="#09677b" stroke="#09677b" stroke-width="1.7"/>
+<path d="M509 140L517 140" fill="none" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+<circle cx="95" cy="183" r="8" fill="#706394" stroke="#706394" stroke-width="1.7"/>
+<path d="M91 183L99 183" fill="none" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+<circle cx="135" cy="183" r="8" fill="#fff8ee" stroke="#a65029" stroke-width="1.7"/>
+<path d="M131 183L139 183" fill="none" stroke="#a65029" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M135 179L135 187" fill="none" stroke="#a65029" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+<circle cx="175" cy="183" r="8" fill="#706394" stroke="#706394" stroke-width="1.7"/>
+<path d="M171 183L179 183" fill="none" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+<circle cx="215" cy="183" r="8" fill="#fff8ee" stroke="#a65029" stroke-width="1.7"/>
+<path d="M211 183L219 183" fill="none" stroke="#a65029" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M215 179L215 187" fill="none" stroke="#a65029" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+<circle cx="255" cy="183" r="8" fill="#706394" stroke="#706394" stroke-width="1.7"/>
+<path d="M251 183L259 183" fill="none" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+<circle cx="283" cy="183" r="8" fill="#fff8ee" stroke="#a65029" stroke-width="1.7"/>
+<path d="M279 183L287 183" fill="none" stroke="#a65029" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M283 179L283 187" fill="none" stroke="#a65029" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+<circle cx="325" cy="183" r="8" fill="#706394" stroke="#706394" stroke-width="1.7"/>
+<path d="M321 183L329 183" fill="none" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+<circle cx="353" cy="183" r="8" fill="#fff8ee" stroke="#a65029" stroke-width="1.7"/>
+<path d="M349 183L357 183" fill="none" stroke="#a65029" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M353 179L353 187" fill="none" stroke="#a65029" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+<circle cx="393" cy="183" r="8" fill="#706394" stroke="#706394" stroke-width="1.7"/>
+<path d="M389 183L397 183" fill="none" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+<circle cx="433" cy="183" r="8" fill="#fff8ee" stroke="#a65029" stroke-width="1.7"/>
+<path d="M429 183L437 183" fill="none" stroke="#a65029" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M433 179L433 187" fill="none" stroke="#a65029" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+<circle cx="473" cy="183" r="8" fill="#706394" stroke="#706394" stroke-width="1.7"/>
+<path d="M469 183L477 183" fill="none" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+<circle cx="513" cy="183" r="8" fill="#706394" stroke="#706394" stroke-width="1.7"/>
+<path d="M509 183L517 183" fill="none" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+<text x="76" y="228" font-size="16" fill="#203c37" text-anchor="start" font-weight="650">电源 +</text>
+<text x="535" y="228" font-size="16" fill="#203c37" text-anchor="end" font-weight="650">电源 −</text>
+<text x="280" y="251" font-size="16" fill="#597069" text-anchor="middle">耗尽区外仍有未复合的注入电子和空穴。</text>
+<path d="M20 261L540 261" fill="none" stroke="#c9d3c7" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"/>
+<text x="20" y="289" font-size="21" fill="#203c37" text-anchor="start" font-weight="650">② 电源反向，抽取储存载流子</text>
+<text x="20" y="313" font-size="16" fill="#597069" text-anchor="start">串联阻抗限流：结电压此刻仍可能为正</text>
+<rect x="72" y="342" width="232" height="87" rx="3" fill="#f3e9d9" stroke="#c9d3c7" opacity="1"/>
+<rect x="304" y="342" width="232" height="87" rx="3" fill="#e0e9ec" stroke="#c9d3c7" opacity="1"/>
+<rect x="287.0" y="342" width="34" height="87" rx="0" fill="#d8dfc7" stroke="none" opacity="0.78"/>
+<path d="M304 342L304 429" fill="none" stroke="#597069" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="4 4"/>
+<path d="M72 385L536 385" fill="none" stroke="#c9d3c7" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"/>
+<text x="83" y="336" font-size="15" fill="#203c37" text-anchor="start">P 区</text>
+<text x="528" y="336" font-size="15" fill="#203c37" text-anchor="end">N 区</text>
+<text x="20" y="369" font-size="16" fill="#203c37" text-anchor="start">导带</text>
+<text x="20" y="412" font-size="16" fill="#203c37" text-anchor="start">价带</text>
+<circle cx="95" cy="364" r="8" fill="#f7f6ef" stroke="#6f8985" stroke-width="1.5" stroke-dasharray="2.7 2.1"/>
+<circle cx="135" cy="364" r="8" fill="#f7f6ef" stroke="#6f8985" stroke-width="1.5" stroke-dasharray="2.7 2.1"/>
+<circle cx="175" cy="364" r="8" fill="#09677b" stroke="#09677b" stroke-width="1.7"/>
+<path d="M171 364L179 364" fill="none" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+<circle cx="215" cy="364" r="8" fill="#f7f6ef" stroke="#6f8985" stroke-width="1.5" stroke-dasharray="2.7 2.1"/>
+<circle cx="255" cy="364" r="8" fill="#09677b" stroke="#09677b" stroke-width="1.7"/>
+<path d="M251 364L259 364" fill="none" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+<circle cx="283" cy="364" r="8" fill="#f7f6ef" stroke="#6f8985" stroke-width="1.5" stroke-dasharray="2.7 2.1"/>
+<circle cx="325" cy="364" r="8" fill="#f7f6ef" stroke="#6f8985" stroke-width="1.5" stroke-dasharray="2.7 2.1"/>
+<circle cx="353" cy="364" r="8" fill="#09677b" stroke="#09677b" stroke-width="1.7"/>
+<path d="M349 364L357 364" fill="none" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+<circle cx="393" cy="364" r="8" fill="#f7f6ef" stroke="#6f8985" stroke-width="1.5" stroke-dasharray="2.7 2.1"/>
+<circle cx="433" cy="364" r="8" fill="#09677b" stroke="#09677b" stroke-width="1.7"/>
+<path d="M429 364L437 364" fill="none" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+<circle cx="473" cy="364" r="8" fill="#09677b" stroke="#09677b" stroke-width="1.7"/>
+<path d="M469 364L477 364" fill="none" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+<circle cx="513" cy="364" r="8" fill="#09677b" stroke="#09677b" stroke-width="1.7"/>
+<path d="M509 364L517 364" fill="none" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+<circle cx="95" cy="407" r="8" fill="#706394" stroke="#706394" stroke-width="1.7"/>
+<path d="M91 407L99 407" fill="none" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+<circle cx="135" cy="407" r="8" fill="#fff8ee" stroke="#a65029" stroke-width="1.7"/>
+<path d="M131 407L139 407" fill="none" stroke="#a65029" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M135 403L135 411" fill="none" stroke="#a65029" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+<circle cx="175" cy="407" r="8" fill="#706394" stroke="#706394" stroke-width="1.7"/>
+<path d="M171 407L179 407" fill="none" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+<circle cx="215" cy="407" r="8" fill="#fff8ee" stroke="#a65029" stroke-width="1.7"/>
+<path d="M211 407L219 407" fill="none" stroke="#a65029" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M215 403L215 411" fill="none" stroke="#a65029" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+<circle cx="255" cy="407" r="8" fill="#706394" stroke="#706394" stroke-width="1.7"/>
+<path d="M251 407L259 407" fill="none" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+<circle cx="283" cy="407" r="8" fill="#fff8ee" stroke="#a65029" stroke-width="1.7"/>
+<path d="M279 407L287 407" fill="none" stroke="#a65029" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M283 403L283 411" fill="none" stroke="#a65029" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+<circle cx="325" cy="407" r="8" fill="#706394" stroke="#706394" stroke-width="1.7"/>
+<path d="M321 407L329 407" fill="none" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+<circle cx="353" cy="407" r="8" fill="#fff8ee" stroke="#a65029" stroke-width="1.7"/>
+<path d="M349 407L357 407" fill="none" stroke="#a65029" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M353 403L353 411" fill="none" stroke="#a65029" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+<circle cx="393" cy="407" r="8" fill="#706394" stroke="#706394" stroke-width="1.7"/>
+<path d="M389 407L397 407" fill="none" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+<circle cx="433" cy="407" r="8" fill="#706394" stroke="#706394" stroke-width="1.7"/>
+<path d="M429 407L437 407" fill="none" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+<circle cx="473" cy="407" r="8" fill="#706394" stroke="#706394" stroke-width="1.7"/>
+<path d="M469 407L477 407" fill="none" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+<circle cx="513" cy="407" r="8" fill="#706394" stroke="#706394" stroke-width="1.7"/>
+<path d="M509 407L517 407" fill="none" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M266 375L339 375" fill="none" stroke="#09677b" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#blue)"/>
+<path d="M266 418L339 418" fill="none" stroke="#706394" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#purple)"/>
+<text x="76" y="452" font-size="16" fill="#203c37" text-anchor="start" font-weight="650">电源 −</text>
+<text x="535" y="452" font-size="16" fill="#203c37" text-anchor="end" font-weight="650">电源 +</text>
+<text x="280" y="475" font-size="16" fill="#597069" text-anchor="middle">反向电流已出现；部分载流子被抽走或复合。</text>
+<path d="M20 485L540 485" fill="none" stroke="#c9d3c7" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"/>
+<text x="20" y="513" font-size="21" fill="#203c37" text-anchor="start" font-weight="650">③ 恢复反向阻断</text>
+<text x="20" y="537" font-size="16" fill="#597069" text-anchor="start">结边过剩载流子基本消退</text>
+<rect x="72" y="566" width="232" height="87" rx="3" fill="#f3e9d9" stroke="#c9d3c7" opacity="1"/>
+<rect x="304" y="566" width="232" height="87" rx="3" fill="#e0e9ec" stroke="#c9d3c7" opacity="1"/>
+<rect x="222.0" y="566" width="164" height="87" rx="0" fill="#d8dfc7" stroke="none" opacity="0.78"/>
+<path d="M304 566L304 653" fill="none" stroke="#597069" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="4 4"/>
+<path d="M72 609L536 609" fill="none" stroke="#c9d3c7" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"/>
+<text x="83" y="560" font-size="15" fill="#203c37" text-anchor="start">P 区</text>
+<text x="528" y="560" font-size="15" fill="#203c37" text-anchor="end">N 区</text>
+<text x="20" y="593" font-size="16" fill="#203c37" text-anchor="start">导带</text>
+<text x="20" y="636" font-size="16" fill="#203c37" text-anchor="start">价带</text>
+<circle cx="95" cy="588" r="8" fill="#f7f6ef" stroke="#6f8985" stroke-width="1.5" stroke-dasharray="2.7 2.1"/>
+<circle cx="135" cy="588" r="8" fill="#f7f6ef" stroke="#6f8985" stroke-width="1.5" stroke-dasharray="2.7 2.1"/>
+<circle cx="175" cy="588" r="8" fill="#f7f6ef" stroke="#6f8985" stroke-width="1.5" stroke-dasharray="2.7 2.1"/>
+<circle cx="215" cy="588" r="8" fill="#f7f6ef" stroke="#6f8985" stroke-width="1.5" stroke-dasharray="2.7 2.1"/>
+<circle cx="255" cy="588" r="8" fill="#f7f6ef" stroke="#6f8985" stroke-width="1.5" stroke-dasharray="2.7 2.1"/>
+<circle cx="283" cy="588" r="8" fill="#f7f6ef" stroke="#6f8985" stroke-width="1.5" stroke-dasharray="2.7 2.1"/>
+<circle cx="325" cy="588" r="8" fill="#f7f6ef" stroke="#6f8985" stroke-width="1.5" stroke-dasharray="2.7 2.1"/>
+<circle cx="353" cy="588" r="8" fill="#f7f6ef" stroke="#6f8985" stroke-width="1.5" stroke-dasharray="2.7 2.1"/>
+<circle cx="393" cy="588" r="8" fill="#f7f6ef" stroke="#6f8985" stroke-width="1.5" stroke-dasharray="2.7 2.1"/>
+<circle cx="433" cy="588" r="8" fill="#09677b" stroke="#09677b" stroke-width="1.7"/>
+<path d="M429 588L437 588" fill="none" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+<circle cx="473" cy="588" r="8" fill="#09677b" stroke="#09677b" stroke-width="1.7"/>
+<path d="M469 588L477 588" fill="none" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+<circle cx="513" cy="588" r="8" fill="#09677b" stroke="#09677b" stroke-width="1.7"/>
+<path d="M509 588L517 588" fill="none" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+<circle cx="95" cy="631" r="8" fill="#fff8ee" stroke="#a65029" stroke-width="1.7"/>
+<path d="M91 631L99 631" fill="none" stroke="#a65029" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M95 627L95 635" fill="none" stroke="#a65029" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+<circle cx="135" cy="631" r="8" fill="#706394" stroke="#706394" stroke-width="1.7"/>
+<path d="M131 631L139 631" fill="none" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+<circle cx="175" cy="631" r="8" fill="#706394" stroke="#706394" stroke-width="1.7"/>
+<path d="M171 631L179 631" fill="none" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+<circle cx="215" cy="631" r="8" fill="#fff8ee" stroke="#a65029" stroke-width="1.7"/>
+<path d="M211 631L219 631" fill="none" stroke="#a65029" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M215 627L215 635" fill="none" stroke="#a65029" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+<circle cx="255" cy="631" r="8" fill="#706394" stroke="#706394" stroke-width="1.7"/>
+<path d="M251 631L259 631" fill="none" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+<circle cx="283" cy="631" r="8" fill="#706394" stroke="#706394" stroke-width="1.7"/>
+<path d="M279 631L287 631" fill="none" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+<circle cx="325" cy="631" r="8" fill="#706394" stroke="#706394" stroke-width="1.7"/>
+<path d="M321 631L329 631" fill="none" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+<circle cx="353" cy="631" r="8" fill="#706394" stroke="#706394" stroke-width="1.7"/>
+<path d="M349 631L357 631" fill="none" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+<circle cx="393" cy="631" r="8" fill="#706394" stroke="#706394" stroke-width="1.7"/>
+<path d="M389 631L397 631" fill="none" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+<circle cx="433" cy="631" r="8" fill="#706394" stroke="#706394" stroke-width="1.7"/>
+<path d="M429 631L437 631" fill="none" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+<circle cx="473" cy="631" r="8" fill="#706394" stroke="#706394" stroke-width="1.7"/>
+<path d="M469 631L477 631" fill="none" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+<circle cx="513" cy="631" r="8" fill="#706394" stroke="#706394" stroke-width="1.7"/>
+<path d="M509 631L517 631" fill="none" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+<text x="76" y="676" font-size="16" fill="#203c37" text-anchor="start" font-weight="650">电源 −</text>
+<text x="535" y="676" font-size="16" fill="#203c37" text-anchor="end" font-weight="650">电源 +</text>
+<text x="280" y="699" font-size="16" fill="#597069" text-anchor="middle">耗尽区扩展，结端电压转负，电流趋近漏电水平。</text>
+<path d="M20 709L540 709" fill="none" stroke="#c9d3c7" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"/>
+<text x="280" y="729" font-size="15" fill="#597069" text-anchor="middle">浅绿：耗尽区。电源极性 ≠ 瞬时二极管端电压。</text>
+<text x="280" y="747" font-size="14" fill="#597069" text-anchor="middle">状态选取、载流子数量与耗尽区宽度仅为示意。</text>
+</g></svg>
