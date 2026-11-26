@@ -1,0 +1,148 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="560" height="1102" viewBox="0 0 560 1102" role="img" aria-labelledby="title desc" xml:lang="zh-CN">
+  <title id="title">固定栅压后的四种 NMOS 漏压与沟道状态</title>
+  <desc id="desc">理想长沟道增强型 NMOS，源和体固定 0 伏、栅固定 0.8 伏、阈值取 0.3 伏。漏压 0 伏时反型电子面密度近似均匀而没有净源漏电流；漏压 0.1 伏时，局部过驱动由源端 0.5 伏降至漏端 0.4 伏，电子净向漏端移动；漏压 0.5 伏时末端的强反型近似到零，达到夹断起点；漏压 0.8 伏时，额外漏压主要落在漏侧高场区，沟道输运的电子继续被扫进漏极。电子符号的密度示意反型电荷变化，并非反型层物理厚度；画中的几何尺度及粒子数都不是定量分布。</desc>
+  <defs><g id="ce"><circle r="6.8" fill="#09677b"/><path d="M-3.2 0H3.2" stroke="#fff" stroke-width="1.6" stroke-linecap="round"/></g><g id="h"><circle r="6.8" fill="#fff8ee" stroke="#a65029" stroke-width="1.7"/><path d="M-3 0H3M0 -3V3" stroke="#a65029" stroke-width="1.6" stroke-linecap="round"/></g><g id="donor"><rect x="-12.4" y="-9.5" width="24.8" height="19" rx="3.5" fill="#f1dddf" stroke="#9a6068"/><text x="0" y="4.5" font-size="13.5" fill="#703940" font-weight="700" text-anchor="middle">P⁺</text></g><marker id="e-arrow" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="4.6" markerHeight="4.6" orient="auto"><path d="M0 0L9.5 5 0 10Z" fill="#09677b"/></marker><marker id="h-arrow" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="4.6" markerHeight="4.6" orient="auto"><path d="M0 0L9.5 5 0 10Z" fill="#a65029"/></marker><marker id="v-arrow" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="4.6" markerHeight="4.6" orient="auto"><path d="M0 0L9.5 5 0 10Z" fill="#706394"/></marker><marker id="i-arrow" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="4.6" markerHeight="4.6" orient="auto"><path d="M0 0L9.5 5 0 10Z" fill="#203c37"/></marker></defs>
+  <rect x="1" y="1" width="558" height="1100" rx="15" fill="#f7f6ef" stroke="#c9d3c7" />
+  <g font-family="system-ui, Noto Sans CJK SC, Microsoft YaHei, sans-serif">
+<text x="20" y="35" font-size="23" text-anchor="start" fill="#203c37" font-weight="700">栅压固定后，漏压怎样改变沟道？</text>
+<text x="20" y="63" font-size="18" text-anchor="start" fill="#526861" font-weight="400">源和体均为 0 V；栅 0.8 V，阈值 0.3 V。</text>
+<text x="20" y="89" font-size="18" text-anchor="start" fill="#203c37" font-weight="500">强反型区的局部过驱动 = 0.8 V − V(x) − 0.3 V</text>
+<g transform="translate(0 104)">
+<text x="20" y="24" font-size="21" text-anchor="start" fill="#203c37" font-weight="700">①  漏源等电压：沟道已建立</text>
+<text x="85" y="55" font-size="18" text-anchor="middle" fill="#203c37" font-weight="500">源 0 V</text>
+<text x="280" y="48" font-size="18" text-anchor="middle" fill="#203c37" font-weight="500">栅 0.8 V</text>
+<text x="475" y="55" font-size="18" text-anchor="middle" fill="#203c37" font-weight="500">漏 0 V</text>
+<rect x="146" y="56" width="268" height="25" rx="3" fill="#61776d" stroke="none" />
+<text x="280" y="76" font-size="17" text-anchor="middle" fill="#ffffff" font-weight="600">+      +      +      +      +</text>
+<rect x="146" y="81" width="268" height="10" rx="0" fill="#f5e1a5" stroke="#cabd9d" />
+<rect x="24" y="91" width="512" height="72" rx="2" fill="#f3e9d9" stroke="#85948c" />
+<rect x="24" y="91" width="122" height="43" rx="0" fill="#e0e9ec" stroke="#85948c" />
+<rect x="414" y="91" width="122" height="43" rx="0" fill="#e0e9ec" stroke="#85948c" />
+<text x="85" y="127" font-size="17.5" text-anchor="middle" fill="#203c37" font-weight="500">n⁺ 源区</text>
+<text x="475" y="127" font-size="17.5" text-anchor="middle" fill="#203c37" font-weight="500">n⁺ 漏区</text>
+<rect x="146" y="92" width="268" height="16" rx="0" fill="#bfdcdf" stroke="none" />
+<use href="#ce" x="154.0" y="101.0"/>
+<use href="#ce" x="170.5" y="101.0"/>
+<use href="#ce" x="187.0" y="101.0"/>
+<use href="#ce" x="203.5" y="101.0"/>
+<use href="#ce" x="220.0" y="101.0"/>
+<use href="#ce" x="236.5" y="101.0"/>
+<use href="#ce" x="253.0" y="101.0"/>
+<use href="#ce" x="269.5" y="101.0"/>
+<use href="#ce" x="286.0" y="101.0"/>
+<use href="#ce" x="302.5" y="101.0"/>
+<use href="#ce" x="319.0" y="101.0"/>
+<use href="#ce" x="335.5" y="101.0"/>
+<use href="#ce" x="352.0" y="101.0"/>
+<use href="#ce" x="368.5" y="101.0"/>
+<use href="#ce" x="385.0" y="101.0"/>
+<use href="#ce" x="401.5" y="101.0"/>
+<text x="280" y="151" font-size="17" text-anchor="middle" fill="#526861" font-weight="400">p 型体区（0 V）</text>
+<text x="280" y="185" font-size="17.5" text-anchor="middle" fill="#203c37" font-weight="600">源漏两端过驱动都是 0.5 V</text>
+<text x="280" y="212" font-size="17.5" text-anchor="middle" fill="#526861" font-weight="400">左右电子通量相抵，稳态净电流为零。</text>
+</g>
+<path d="M20 329H540" fill="none" stroke="#c9d3c7" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"  />
+<g transform="translate(0 338)">
+<text x="20" y="24" font-size="21" text-anchor="start" fill="#203c37" font-weight="700">②  提高漏压：越靠漏端，电子越少</text>
+<text x="85" y="55" font-size="18" text-anchor="middle" fill="#203c37" font-weight="500">源 0 V</text>
+<text x="280" y="48" font-size="18" text-anchor="middle" fill="#203c37" font-weight="500">栅 0.8 V</text>
+<text x="475" y="55" font-size="18" text-anchor="middle" fill="#203c37" font-weight="500">漏 0.1 V</text>
+<rect x="146" y="56" width="268" height="25" rx="3" fill="#61776d" stroke="none" />
+<text x="280" y="76" font-size="17" text-anchor="middle" fill="#ffffff" font-weight="600">+      +      +      +      +</text>
+<rect x="146" y="81" width="268" height="10" rx="0" fill="#f5e1a5" stroke="#cabd9d" />
+<rect x="24" y="91" width="512" height="72" rx="2" fill="#f3e9d9" stroke="#85948c" />
+<rect x="24" y="91" width="122" height="43" rx="0" fill="#e0e9ec" stroke="#85948c" />
+<rect x="414" y="91" width="122" height="43" rx="0" fill="#e0e9ec" stroke="#85948c" />
+<text x="85" y="127" font-size="17.5" text-anchor="middle" fill="#203c37" font-weight="500">n⁺ 源区</text>
+<text x="475" y="127" font-size="17.5" text-anchor="middle" fill="#203c37" font-weight="500">n⁺ 漏区</text>
+<rect x="146" y="92" width="268" height="16" rx="0" fill="#bfdcdf" stroke="none" />
+<use href="#ce" x="154.0" y="101.0"/>
+<use href="#ce" x="170.6" y="101.0"/>
+<use href="#ce" x="187.4" y="101.0"/>
+<use href="#ce" x="204.3" y="101.0"/>
+<use href="#ce" x="221.5" y="101.0"/>
+<use href="#ce" x="238.9" y="101.0"/>
+<use href="#ce" x="256.6" y="101.0"/>
+<use href="#ce" x="274.5" y="101.0"/>
+<use href="#ce" x="292.6" y="101.0"/>
+<use href="#ce" x="311.0" y="101.0"/>
+<use href="#ce" x="329.7" y="101.0"/>
+<use href="#ce" x="348.7" y="101.0"/>
+<use href="#ce" x="368.1" y="101.0"/>
+<use href="#ce" x="387.8" y="101.0"/>
+<use href="#ce" x="407.8" y="101.0"/>
+<text x="280" y="151" font-size="17" text-anchor="middle" fill="#526861" font-weight="400">p 型体区（0 V）</text>
+<text x="280" y="184" font-size="17.5" text-anchor="middle" fill="#203c37" font-weight="600">过驱动：源端 0.5 V → 漏端 0.4 V</text>
+<text x="90" y="213" font-size="17" text-anchor="start" fill="#09677b" font-weight="600">电子净移动</text>
+<path d="M203 207H470" fill="none" stroke="#09677b" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#e-arrow)" />
+</g>
+<path d="M20 563H540" fill="none" stroke="#c9d3c7" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"  />
+<g transform="translate(0 572)">
+<text x="20" y="24" font-size="21" text-anchor="start" fill="#203c37" font-weight="700">③  漏压升到 0.5 V：强反型开始夹断</text>
+<text x="85" y="55" font-size="18" text-anchor="middle" fill="#203c37" font-weight="500">源 0 V</text>
+<text x="280" y="48" font-size="18" text-anchor="middle" fill="#203c37" font-weight="500">栅 0.8 V</text>
+<text x="475" y="55" font-size="18" text-anchor="middle" fill="#203c37" font-weight="500">漏 0.5 V</text>
+<rect x="146" y="56" width="268" height="25" rx="3" fill="#61776d" stroke="none" />
+<text x="280" y="76" font-size="17" text-anchor="middle" fill="#ffffff" font-weight="600">+      +      +      +      +</text>
+<rect x="146" y="81" width="268" height="10" rx="0" fill="#f5e1a5" stroke="#cabd9d" />
+<rect x="24" y="91" width="512" height="72" rx="2" fill="#f3e9d9" stroke="#85948c" />
+<rect x="24" y="91" width="122" height="43" rx="0" fill="#e0e9ec" stroke="#85948c" />
+<rect x="414" y="91" width="122" height="43" rx="0" fill="#e0e9ec" stroke="#85948c" />
+<text x="85" y="127" font-size="17.5" text-anchor="middle" fill="#203c37" font-weight="500">n⁺ 源区</text>
+<text x="475" y="127" font-size="17.5" text-anchor="middle" fill="#203c37" font-weight="500">n⁺ 漏区</text>
+<rect x="146" y="92" width="268" height="16" rx="0" fill="#bfdcdf" stroke="none" />
+<use href="#ce" x="154.0" y="101.0"/>
+<use href="#ce" x="170.8" y="101.0"/>
+<use href="#ce" x="188.1" y="101.0"/>
+<use href="#ce" x="206.0" y="101.0"/>
+<use href="#ce" x="224.8" y="101.0"/>
+<use href="#ce" x="244.4" y="101.0"/>
+<use href="#ce" x="265.2" y="101.0"/>
+<use href="#ce" x="287.3" y="101.0"/>
+<use href="#ce" x="311.3" y="101.0"/>
+<use href="#ce" x="337.9" y="101.0"/>
+<use href="#ce" x="368.9" y="101.0"/>
+<text x="280" y="151" font-size="17" text-anchor="middle" fill="#526861" font-weight="400">p 型体区（0 V）</text>
+<text x="280" y="184" font-size="17.5" text-anchor="middle" fill="#203c37" font-weight="600">过驱动：源端 0.5 V → 漏端 0 V</text>
+<text x="90" y="213" font-size="17" text-anchor="start" fill="#09677b" font-weight="600">电子仍净移动</text>
+<path d="M220 207H470" fill="none" stroke="#09677b" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#e-arrow)" />
+</g>
+<path d="M20 797H540" fill="none" stroke="#c9d3c7" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"  />
+<g transform="translate(0 806)">
+<text x="20" y="24" font-size="21" text-anchor="start" fill="#203c37" font-weight="700">④  继续升漏压：电子仍能穿过高场区</text>
+<text x="85" y="55" font-size="18" text-anchor="middle" fill="#203c37" font-weight="500">源 0 V</text>
+<text x="280" y="48" font-size="18" text-anchor="middle" fill="#203c37" font-weight="500">栅 0.8 V</text>
+<text x="475" y="55" font-size="18" text-anchor="middle" fill="#203c37" font-weight="500">漏 0.8 V</text>
+<rect x="146" y="56" width="268" height="25" rx="3" fill="#61776d" stroke="none" />
+<text x="280" y="76" font-size="17" text-anchor="middle" fill="#ffffff" font-weight="600">+      +      +      +      +</text>
+<rect x="146" y="81" width="268" height="10" rx="0" fill="#f5e1a5" stroke="#cabd9d" />
+<rect x="24" y="91" width="512" height="72" rx="2" fill="#f3e9d9" stroke="#85948c" />
+<rect x="24" y="91" width="122" height="43" rx="0" fill="#e0e9ec" stroke="#85948c" />
+<rect x="414" y="91" width="122" height="43" rx="0" fill="#e0e9ec" stroke="#85948c" />
+<text x="85" y="127" font-size="17.5" text-anchor="middle" fill="#203c37" font-weight="500">n⁺ 源区</text>
+<text x="475" y="127" font-size="17.5" text-anchor="middle" fill="#203c37" font-weight="500">n⁺ 漏区</text>
+<rect x="146" y="92" width="220" height="16" rx="0" fill="#bfdcdf" stroke="none" />
+<use href="#ce" x="154.0" y="101.0"/>
+<use href="#ce" x="170.8" y="101.0"/>
+<use href="#ce" x="188.3" y="101.0"/>
+<use href="#ce" x="206.7" y="101.0"/>
+<use href="#ce" x="226.1" y="101.0"/>
+<use href="#ce" x="246.8" y="101.0"/>
+<use href="#ce" x="269.2" y="101.0"/>
+<use href="#ce" x="294.0" y="101.0"/>
+<use href="#ce" x="322.9" y="101.0"/>
+<use href="#ce" x="360.2" y="101.0"/>
+<path d="M366 92H413V134Q386 132 370 118Q366 112 366 92Z" fill="#f2d2ae" stroke="#c08751" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"  stroke-dasharray="4 3"/>
+<use href="#ce" x="380.0" y="101.0"/>
+<path d="M389 101H436" fill="none" stroke="#09677b" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#e-arrow)" />
+<text x="280" y="151" font-size="17" text-anchor="middle" fill="#526861" font-weight="400">p 型体区（0 V）</text>
+<text x="280" y="184" font-size="17.1" text-anchor="middle" fill="#203c37" font-weight="500">额外的 0.3 V 主要落在浅橙色漏侧高场区。</text>
+<text x="90" y="213" font-size="17" text-anchor="start" fill="#09677b" font-weight="600">电子净移动</text>
+<path d="M203 207H470" fill="none" stroke="#09677b" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#e-arrow)" />
+</g>
+<path d="M20 1031H540" fill="none" stroke="#c9d3c7" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"  />
+<use href="#ce" x="28.0" y="1052.0"/>
+<text x="44" y="1058" font-size="17" text-anchor="start" fill="#203c37" font-weight="400">导带电子（同一深度的符号密度示意反型电荷）</text>
+<text x="280" y="1086" font-size="16" text-anchor="middle" fill="#526861" font-weight="400">粒子数和几何尺度均非实测；夹断不等于电子流断开。</text>
+  </g>
+</svg>

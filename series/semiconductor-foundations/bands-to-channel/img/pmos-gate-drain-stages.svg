@@ -1,0 +1,141 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="560" height="896" viewBox="0 0 560 896" role="img" aria-labelledby="title desc" xml:lang="zh-CN">
+  <title id="title">从栅压到漏压的 PMOS 三个阶段</title>
+  <desc id="desc">增强型 PMOS 源和体端固定 1.2 伏，p+ 源漏在 n 型阱中。初始栅漏均为 1.2 伏，没有空穴反型沟道。栅极降为零伏后，相对源为负 1.2 伏，表面导带电子退开，显露出固定正施主； p+ 源漏补充价带空穴，形成反型层。此时源漏等电位，稳定之后净源漏电流为零；图中朝内的空穴箭头表示建立沟道的暂态补充。漏极降到 0.8 伏，空穴与常规电流从源到漏，价带电子的净转移方向相反。图中电子、空穴和离子并非定量计数，最后一步假定未发生夹断。</desc>
+  <defs><g id="ce"><circle r="6.8" fill="#09677b"/><path d="M-3.2 0H3.2" stroke="#fff" stroke-width="1.6" stroke-linecap="round"/></g><g id="h"><circle r="6.8" fill="#fff8ee" stroke="#a65029" stroke-width="1.7"/><path d="M-3 0H3M0 -3V3" stroke="#a65029" stroke-width="1.6" stroke-linecap="round"/></g><g id="donor"><rect x="-12.4" y="-9.5" width="24.8" height="19" rx="3.5" fill="#f1dddf" stroke="#9a6068"/><text x="0" y="4.5" font-size="13.5" fill="#703940" font-weight="700" text-anchor="middle">P⁺</text></g><marker id="e-arrow" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="4.6" markerHeight="4.6" orient="auto"><path d="M0 0L9.5 5 0 10Z" fill="#09677b"/></marker><marker id="h-arrow" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="4.6" markerHeight="4.6" orient="auto"><path d="M0 0L9.5 5 0 10Z" fill="#a65029"/></marker><marker id="v-arrow" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="4.6" markerHeight="4.6" orient="auto"><path d="M0 0L9.5 5 0 10Z" fill="#706394"/></marker><marker id="i-arrow" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="4.6" markerHeight="4.6" orient="auto"><path d="M0 0L9.5 5 0 10Z" fill="#203c37"/></marker></defs>
+  <rect x="1" y="1" width="558" height="894" rx="15" fill="#f7f6ef" stroke="#c9d3c7" />
+  <g font-family="system-ui, Noto Sans CJK SC, Microsoft YaHei, sans-serif">
+<text x="20" y="35" font-size="23" text-anchor="start" fill="#203c37" font-weight="700">PMOS：降低栅电压，再降低漏电压</text>
+<text x="20" y="63" font-size="18" text-anchor="start" fill="#526861" font-weight="400">源和体固定 1.2 V；增强型 PMOS。</text>
+<g transform="translate(0 81)">
+<text x="20" y="24" font-size="21" text-anchor="start" fill="#203c37" font-weight="700">①  栅极与源极同电压：关断</text>
+<text x="85" y="55" font-size="18" text-anchor="middle" fill="#203c37" font-weight="500">源 1.2 V</text>
+<text x="280" y="48" font-size="18" text-anchor="middle" fill="#203c37" font-weight="500">栅 1.2 V</text>
+<text x="475" y="55" font-size="18" text-anchor="middle" fill="#203c37" font-weight="500">漏 1.2 V</text>
+<rect x="146" y="56" width="268" height="25" rx="3" fill="#61776d" stroke="none" />
+<text x="280" y="76" font-size="17" text-anchor="middle" fill="#ffffff" font-weight="600">栅极</text>
+<rect x="146" y="81" width="268" height="10" rx="0" fill="#f5e1a5" stroke="#cabd9d" />
+<rect x="24" y="91" width="512" height="72" rx="2" fill="#e0e9ec" stroke="#85948c" />
+<rect x="24" y="91" width="122" height="43" rx="0" fill="#f3e9d9" stroke="#85948c" />
+<rect x="414" y="91" width="122" height="43" rx="0" fill="#f3e9d9" stroke="#85948c" />
+<text x="85" y="127" font-size="17.5" text-anchor="middle" fill="#203c37" font-weight="500">p⁺ 源区</text>
+<text x="475" y="127" font-size="17.5" text-anchor="middle" fill="#203c37" font-weight="500">p⁺ 漏区</text>
+<use href="#ce" x="162.0" y="101.0"/>
+<use href="#ce" x="196.0" y="101.0"/>
+<use href="#ce" x="230.0" y="101.0"/>
+<use href="#ce" x="264.0" y="101.0"/>
+<use href="#ce" x="298.0" y="101.0"/>
+<use href="#ce" x="332.0" y="101.0"/>
+<use href="#ce" x="366.0" y="101.0"/>
+<use href="#ce" x="400.0" y="101.0"/>
+<use href="#donor" x="162.0" y="129.0"/>
+<use href="#donor" x="196.0" y="129.0"/>
+<use href="#donor" x="230.0" y="129.0"/>
+<use href="#donor" x="264.0" y="129.0"/>
+<use href="#donor" x="298.0" y="129.0"/>
+<use href="#donor" x="332.0" y="129.0"/>
+<use href="#donor" x="366.0" y="129.0"/>
+<use href="#donor" x="400.0" y="129.0"/>
+<text x="280" y="155" font-size="17" text-anchor="middle" fill="#526861" font-weight="500">n 型阱（1.2 V）</text>
+<text x="280" y="186" font-size="17.5" text-anchor="middle" fill="#203c37" font-weight="500">栅极与源极同电位，VSG = 0 V。</text>
+<text x="280" y="211" font-size="17" text-anchor="middle" fill="#526861" font-weight="400">多数载流子为导带电子；没有贯通源漏的空穴沟道。</text>
+</g>
+<path d="M20 305H540" fill="none" stroke="#c9d3c7" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"  />
+<g transform="translate(0 314)">
+<text x="20" y="24" font-size="21" text-anchor="start" fill="#203c37" font-weight="700">②  栅极降为 0 V：空穴沟道建立</text>
+<text x="85" y="55" font-size="18" text-anchor="middle" fill="#203c37" font-weight="500">源 1.2 V</text>
+<text x="280" y="48" font-size="18" text-anchor="middle" fill="#203c37" font-weight="500">栅 0 V</text>
+<text x="475" y="55" font-size="18" text-anchor="middle" fill="#203c37" font-weight="500">漏 1.2 V</text>
+<rect x="146" y="56" width="268" height="25" rx="3" fill="#61776d" stroke="none" />
+<text x="280" y="76" font-size="17" text-anchor="middle" fill="#ffffff" font-weight="600">−      −      −      −      −</text>
+<rect x="146" y="81" width="268" height="10" rx="0" fill="#f5e1a5" stroke="#cabd9d" />
+<rect x="24" y="91" width="512" height="72" rx="2" fill="#e0e9ec" stroke="#85948c" />
+<rect x="24" y="91" width="122" height="43" rx="0" fill="#f3e9d9" stroke="#85948c" />
+<rect x="414" y="91" width="122" height="43" rx="0" fill="#f3e9d9" stroke="#85948c" />
+<text x="85" y="127" font-size="17.5" text-anchor="middle" fill="#203c37" font-weight="500">p⁺ 源区</text>
+<text x="475" y="127" font-size="17.5" text-anchor="middle" fill="#203c37" font-weight="500">p⁺ 漏区</text>
+<rect x="146" y="92" width="268" height="16" rx="0" fill="#f1d5bb" stroke="none" />
+<use href="#h" x="154.0" y="101.0"/>
+<use href="#h" x="170.5" y="101.0"/>
+<use href="#h" x="187.0" y="101.0"/>
+<use href="#h" x="203.5" y="101.0"/>
+<use href="#h" x="220.0" y="101.0"/>
+<use href="#h" x="236.5" y="101.0"/>
+<use href="#h" x="253.0" y="101.0"/>
+<use href="#h" x="269.5" y="101.0"/>
+<use href="#h" x="286.0" y="101.0"/>
+<use href="#h" x="302.5" y="101.0"/>
+<use href="#h" x="319.0" y="101.0"/>
+<use href="#h" x="335.5" y="101.0"/>
+<use href="#h" x="352.0" y="101.0"/>
+<use href="#h" x="368.5" y="101.0"/>
+<use href="#h" x="385.0" y="101.0"/>
+<use href="#h" x="401.5" y="101.0"/>
+<path d="M97 101H140" fill="none" stroke="#a65029" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#h-arrow)" />
+<path d="M461 101H420" fill="none" stroke="#a65029" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#h-arrow)" />
+<use href="#donor" x="162.0" y="129.0"/>
+<use href="#donor" x="196.0" y="129.0"/>
+<use href="#donor" x="230.0" y="129.0"/>
+<use href="#donor" x="264.0" y="129.0"/>
+<use href="#donor" x="298.0" y="129.0"/>
+<use href="#donor" x="332.0" y="129.0"/>
+<use href="#donor" x="366.0" y="129.0"/>
+<use href="#donor" x="400.0" y="129.0"/>
+<text x="280" y="155" font-size="17" text-anchor="middle" fill="#526861" font-weight="500">n 型阱（1.2 V）</text>
+<text x="280" y="184" font-size="17" text-anchor="middle" fill="#203c37" font-weight="500">VSG = 1.2 V：表面多数电子退开，留下正施主。</text>
+<text x="280" y="209" font-size="17" text-anchor="middle" fill="#526861" font-weight="400">降栅压时，两侧 p⁺ 区提供空穴；稳态净电流为零。</text>
+</g>
+<path d="M20 538H540" fill="none" stroke="#c9d3c7" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"  />
+<g transform="translate(0 547)">
+<text x="20" y="24" font-size="21" text-anchor="start" fill="#203c37" font-weight="700">③  漏极降为 0.8 V：形成净输运</text>
+<text x="85" y="55" font-size="18" text-anchor="middle" fill="#203c37" font-weight="500">源 1.2 V</text>
+<text x="280" y="48" font-size="18" text-anchor="middle" fill="#203c37" font-weight="500">栅 0 V</text>
+<text x="475" y="55" font-size="18" text-anchor="middle" fill="#203c37" font-weight="500">漏 0.8 V</text>
+<rect x="146" y="56" width="268" height="25" rx="3" fill="#61776d" stroke="none" />
+<text x="280" y="76" font-size="17" text-anchor="middle" fill="#ffffff" font-weight="600">−      −      −      −      −</text>
+<rect x="146" y="81" width="268" height="10" rx="0" fill="#f5e1a5" stroke="#cabd9d" />
+<rect x="24" y="91" width="512" height="72" rx="2" fill="#e0e9ec" stroke="#85948c" />
+<rect x="24" y="91" width="122" height="43" rx="0" fill="#f3e9d9" stroke="#85948c" />
+<rect x="414" y="91" width="122" height="43" rx="0" fill="#f3e9d9" stroke="#85948c" />
+<text x="85" y="127" font-size="17.5" text-anchor="middle" fill="#203c37" font-weight="500">p⁺ 源区</text>
+<text x="475" y="127" font-size="17.5" text-anchor="middle" fill="#203c37" font-weight="500">p⁺ 漏区</text>
+<rect x="146" y="92" width="268" height="16" rx="0" fill="#f1d5bb" stroke="none" />
+<use href="#h" x="154.0" y="101.0"/>
+<use href="#h" x="170.7" y="101.0"/>
+<use href="#h" x="187.8" y="101.0"/>
+<use href="#h" x="205.3" y="101.0"/>
+<use href="#h" x="223.4" y="101.0"/>
+<use href="#h" x="242.1" y="101.0"/>
+<use href="#h" x="261.4" y="101.0"/>
+<use href="#h" x="281.4" y="101.0"/>
+<use href="#h" x="302.3" y="101.0"/>
+<use href="#h" x="324.3" y="101.0"/>
+<use href="#h" x="347.7" y="101.0"/>
+<use href="#h" x="372.7" y="101.0"/>
+<use href="#h" x="399.9" y="101.0"/>
+<use href="#donor" x="162.0" y="129.0"/>
+<use href="#donor" x="196.0" y="129.0"/>
+<use href="#donor" x="230.0" y="129.0"/>
+<use href="#donor" x="264.0" y="129.0"/>
+<use href="#donor" x="298.0" y="129.0"/>
+<use href="#donor" x="332.0" y="129.0"/>
+<use href="#donor" x="366.0" y="129.0"/>
+<use href="#donor" x="400.0" y="129.0"/>
+<text x="280" y="155" font-size="17" text-anchor="middle" fill="#526861" font-weight="500">n 型阱（1.2 V）</text>
+<text x="280" y="183" font-size="17.5" text-anchor="middle" fill="#203c37" font-weight="600">VSG = 1.2 V，VSD = 0.4 V</text>
+<text x="72" y="210" font-size="17.5" text-anchor="start" fill="#a65029" font-weight="600">空穴净移动</text>
+<path d="M225 204H475" fill="none" stroke="#a65029" stroke-width="2.7" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#h-arrow)" />
+<text x="72" y="238" font-size="17.5" text-anchor="start" fill="#706394" font-weight="600">价带电子净转移</text>
+<path d="M475 232H225" fill="none" stroke="#706394" stroke-width="2.7" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#v-arrow)" />
+<text x="72" y="266" font-size="17.5" text-anchor="start" fill="#203c37" font-weight="600">常规电流</text>
+<path d="M225 260H475" fill="none" stroke="#203c37" stroke-width="2.7" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#i-arrow)" />
+</g>
+<path d="M20 825H540" fill="none" stroke="#c9d3c7" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"  />
+<use href="#ce" x="30.0" y="846.0"/>
+<text x="45" y="852" font-size="17" text-anchor="start" fill="#203c37" font-weight="400">导带电子</text>
+<use href="#h" x="171.0" y="846.0"/>
+<text x="186" y="852" font-size="17" text-anchor="start" fill="#203c37" font-weight="400">价带空穴</text>
+<use href="#donor" x="325.0" y="846.0"/>
+<text x="345" y="852" font-size="17" text-anchor="start" fill="#203c37" font-weight="400">固定正施主</text>
+<text x="280" y="879" font-size="16" text-anchor="middle" fill="#526861" font-weight="400">粒子数与尺度均为示意；③假定沟道未夹断。</text>
+  </g>
+</svg>

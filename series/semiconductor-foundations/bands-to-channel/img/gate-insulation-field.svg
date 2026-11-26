@@ -1,0 +1,63 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="480" height="402" viewBox="0 0 480 402" role="img" aria-labelledby="title desc" xml:lang="zh-CN">
+<title id="title">绝缘层隔绝导电，但可以存在静电场</title>
+<desc id="desc">用两块金属极板夹二氧化硅做电容示意。充电时电源抽走上极板电子并向下极板供给电子；面对的极板表面出现相反的净电荷。介质中的电场向下。电压稳定后理想氧化层没有持续穿过的导电电流，但电场仍然存在。介质极化与边缘场不单独绘制。</desc>
+<defs>
+  <marker id="axis" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="4.5" markerHeight="4.5" orient="auto-start-reverse"><path d="M0 0L10 5L0 10Z" fill="#597069"/></marker>
+  <marker id="electron-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="4" markerHeight="4" orient="auto"><path d="M0 0L10 5L0 10Z" fill="#09677b"/></marker>
+  <marker id="field-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="4" markerHeight="4" orient="auto"><path d="M0 0L10 5L0 10Z" fill="#a65029"/></marker>
+</defs>
+<rect x="1" y="1" width="478" height="400" rx="15" fill="#f7f6ef" stroke="#c9d3c7"/>
+<g font-family="system-ui, 'Noto Sans CJK SC', 'Microsoft YaHei', sans-serif">
+  <text x="240" y="33" font-size="23" font-weight="700" fill="#203c37" text-anchor="middle">绝缘层可以阻挡导电，却仍有电场</text>
+  <text x="240" y="58" font-size="17" font-weight="400" fill="#597069" text-anchor="middle">用两块金属极板夹住二氧化硅来观察</text>
+  <rect x="133" y="77" width="319" height="48" rx="3" fill="#61776d" stroke="#50675e"/>
+  <rect x="133" y="125" width="319" height="120" rx="0" fill="#f5e1a5" stroke="#cbb98c"/>
+  <rect x="133" y="245" width="319" height="48" rx="3" fill="#61776d" stroke="#50675e"/>
+  <text x="293" y="99" font-size="18" font-weight="600" fill="#fff" text-anchor="middle">上极板</text>
+  <text x="293" y="280" font-size="18" font-weight="600" fill="#fff" text-anchor="middle">下极板</text>
+  <text x="155" y="119" font-size="19" font-weight="700" fill="#fff" text-anchor="middle">+</text>
+  <text x="155" y="262" font-size="19" font-weight="700" fill="#fff" text-anchor="middle">−</text>
+  <text x="183" y="119" font-size="19" font-weight="700" fill="#fff" text-anchor="middle">+</text>
+  <text x="183" y="262" font-size="19" font-weight="700" fill="#fff" text-anchor="middle">−</text>
+  <text x="211" y="119" font-size="19" font-weight="700" fill="#fff" text-anchor="middle">+</text>
+  <text x="211" y="262" font-size="19" font-weight="700" fill="#fff" text-anchor="middle">−</text>
+  <text x="239" y="119" font-size="19" font-weight="700" fill="#fff" text-anchor="middle">+</text>
+  <text x="239" y="262" font-size="19" font-weight="700" fill="#fff" text-anchor="middle">−</text>
+  <text x="267" y="119" font-size="19" font-weight="700" fill="#fff" text-anchor="middle">+</text>
+  <text x="267" y="262" font-size="19" font-weight="700" fill="#fff" text-anchor="middle">−</text>
+  <text x="295" y="119" font-size="19" font-weight="700" fill="#fff" text-anchor="middle">+</text>
+  <text x="295" y="262" font-size="19" font-weight="700" fill="#fff" text-anchor="middle">−</text>
+  <text x="323" y="119" font-size="19" font-weight="700" fill="#fff" text-anchor="middle">+</text>
+  <text x="323" y="262" font-size="19" font-weight="700" fill="#fff" text-anchor="middle">−</text>
+  <text x="351" y="119" font-size="19" font-weight="700" fill="#fff" text-anchor="middle">+</text>
+  <text x="351" y="262" font-size="19" font-weight="700" fill="#fff" text-anchor="middle">−</text>
+  <text x="379" y="119" font-size="19" font-weight="700" fill="#fff" text-anchor="middle">+</text>
+  <text x="379" y="262" font-size="19" font-weight="700" fill="#fff" text-anchor="middle">−</text>
+  <text x="407" y="119" font-size="19" font-weight="700" fill="#fff" text-anchor="middle">+</text>
+  <text x="407" y="262" font-size="19" font-weight="700" fill="#fff" text-anchor="middle">−</text>
+  <text x="435" y="119" font-size="19" font-weight="700" fill="#fff" text-anchor="middle">+</text>
+  <text x="435" y="262" font-size="19" font-weight="700" fill="#fff" text-anchor="middle">−</text>
+  <path d="M164 136V234" stroke="#a65029" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#field-arrow)"/>
+  <path d="M199 136V234" stroke="#a65029" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#field-arrow)"/>
+  <path d="M386 136V234" stroke="#a65029" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#field-arrow)"/>
+  <path d="M421 136V234" stroke="#a65029" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#field-arrow)"/>
+  <text x="292" y="173" font-size="23" font-weight="700" fill="#203c37" text-anchor="middle">SiO₂</text>
+  <text x="292" y="200" font-size="18" font-weight="600" fill="#a65029" text-anchor="middle">电场向下</text>
+  <path d="M133 101H59V155" stroke="#203c37" stroke-width="2.3" fill="none" stroke-linecap="round" stroke-linejoin="round" />
+  <path d="M59 205V269H133" stroke="#203c37" stroke-width="2.3" fill="none" stroke-linecap="round" stroke-linejoin="round" />
+  <circle cx="59" cy="180" r="25" fill="#f7f6ef" stroke="#203c37" stroke-width="2.3"/>
+  <text x="59" y="174" font-size="21" font-weight="700" fill="#a65029" text-anchor="middle">+</text>
+  <text x="59" y="197" font-size="20" font-weight="700" fill="#09677b" text-anchor="middle">−</text>
+  <text x="108" y="186" font-size="16" font-weight="600" fill="#203c37" text-anchor="middle">电源</text>
+  <path d="M111 88H72" stroke="#09677b" stroke-width="2.3" fill="none" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#electron-arrow)"/>
+  <path d="M72 282H111" stroke="#09677b" stroke-width="2.3" fill="none" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#electron-arrow)"/>
+  <circle cx="118" cy="88" r="6.5" fill="#09677b"/><path d="M115 88h6" stroke="white" stroke-width="1.5" stroke-linecap="round"/>
+  <circle cx="65" cy="282" r="6.5" fill="#09677b"/><path d="M62 282h6" stroke="white" stroke-width="1.5" stroke-linecap="round"/>
+  <path d="M22 309H458" stroke="#c9d3c7" stroke-width="1.3" fill="none" stroke-linecap="round" stroke-linejoin="round" />
+  <circle cx="34" cy="331" r="6.5" fill="#09677b"/><path d="M31 331h6" stroke="white" stroke-width="1.5" stroke-linecap="round"/>
+  <path d="M47 331H68" stroke="#09677b" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#electron-arrow)"/>
+  <text x="82" y="337" font-size="17" font-weight="400" fill="#203c37" text-anchor="start">充电时，电子沿外部导线转移</text>
+  <text x="240" y="362" font-size="17" font-weight="400" fill="#597069" text-anchor="middle">电压稳定后，绝缘层不需有持续导电电流，</text>
+  <text x="240" y="385" font-size="17" font-weight="400" fill="#597069" text-anchor="middle">电场仍然存在。</text>
+</g>
+</svg>

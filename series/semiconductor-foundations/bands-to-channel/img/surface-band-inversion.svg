@@ -1,0 +1,70 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="520" height="661" viewBox="0 0 520 661" role="img" aria-labelledby="title desc" xml:lang="zh-CN">
+<title id="title">栅压降低源漏电子进入表面导带的势垒</title>
+<desc id="desc">源、漏、体等电势，分别观察低栅压和栅压足够高时从源区经过栅下硅表面到漏区的电子能量。栅压降低中间导带底和价带顶的能量，二者间的带隙保持不变；n+源漏为电子提供已有的导带载流子，电子不需要在栅下从价带跨过禁带。硅的费米能级在稳态水平。箭头表示建立反型层的重排过程，不代表最终稳态的净源漏电流。示意不按实际能量或空间比例。</desc>
+<defs>
+  <marker id="axis" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="4.5" markerHeight="4.5" orient="auto-start-reverse"><path d="M0 0L10 5L0 10Z" fill="#597069"/></marker>
+  <marker id="electron-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="4" markerHeight="4" orient="auto"><path d="M0 0L10 5L0 10Z" fill="#09677b"/></marker>
+  <marker id="field-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="4" markerHeight="4" orient="auto"><path d="M0 0L10 5L0 10Z" fill="#a65029"/></marker>
+</defs>
+<rect x="1" y="1" width="518" height="659" rx="15" fill="#f7f6ef" stroke="#c9d3c7"/>
+<g font-family="system-ui, 'Noto Sans CJK SC', 'Microsoft YaHei', sans-serif">
+  <text x="260" y="30" font-size="21" font-weight="700" fill="#203c37" text-anchor="middle">源漏已有电子，栅压改变中间的能量势垒</text>
+  <text x="260" y="55" font-size="16" font-weight="400" fill="#597069" text-anchor="middle">源、漏、体等电势；沿硅表面从源向漏观察</text>
+  <text x="23" y="92" font-size="20" font-weight="650" fill="#203c37" text-anchor="start">1 · 栅压低，电子难以经过栅下表面</text>
+  <path d="M58 199H108C141 199 151 122 203 122H312C364 122 374 199 407 199H457V108H58Z" stroke="none" stroke-width="0" fill="#e2eeee" stroke-linecap="round" stroke-linejoin="round" />
+  <path d="M58 276H108C141 276 151 199 203 199H312C364 199 374 276 407 276H457V289H58Z" stroke="none" stroke-width="0" fill="#e8e1ef" stroke-linecap="round" stroke-linejoin="round" />
+  <path d="M58 199H108C141 199 151 122 203 122H312C364 122 374 199 407 199H457" stroke="#09677b" stroke-width="2.4" fill="none" stroke-linecap="round" stroke-linejoin="round" />
+  <path d="M58 276H108C141 276 151 199 203 199H312C364 199 374 276 407 276H457" stroke="#706394" stroke-width="2.4" fill="none" stroke-linecap="round" stroke-linejoin="round" />
+  <path d="M58 192H457" stroke="#a65029" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="6 4"/>
+  <path d="M47 289V108" stroke="#597069" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#axis)"/>
+  <text x="14" y="117" font-size="16" font-weight="400" fill="#597069" text-anchor="start">E</text>
+  <text x="466" y="204" font-size="17" font-weight="650" fill="#09677b" text-anchor="start">E꜀</text>
+  <text x="466" y="183" font-size="17" font-weight="650" fill="#a65029" text-anchor="start">Eꜰ</text>
+  <text x="466" y="281" font-size="17" font-weight="650" fill="#706394" text-anchor="start">Eᵥ</text>
+  <path d="M58 289H457" stroke="#597069" stroke-width="1.1" fill="none" stroke-linecap="round" stroke-linejoin="round" />
+  <path d="M148 289v5M368 289v5" stroke="#597069" stroke-width="1.1" fill="none" stroke-linecap="round" stroke-linejoin="round" />
+  <text x="102" y="310" font-size="16" font-weight="600" fill="#203c37" text-anchor="middle">n⁺ 源区</text>
+  <text x="258" y="310" font-size="16" font-weight="600" fill="#203c37" text-anchor="middle">栅下 p 区</text>
+  <text x="413" y="310" font-size="16" font-weight="600" fill="#203c37" text-anchor="middle">n⁺ 漏区</text>
+  <circle cx="81" cy="168" r="6.5" fill="#09677b"/><path d="M78 168h6" stroke="white" stroke-width="1.5" stroke-linecap="round"/>
+  <circle cx="106" cy="156" r="6.5" fill="#09677b"/><path d="M103 156h6" stroke="white" stroke-width="1.5" stroke-linecap="round"/>
+  <circle cx="432" cy="168" r="6.5" fill="#09677b"/><path d="M429 168h6" stroke="white" stroke-width="1.5" stroke-linecap="round"/>
+  <circle cx="407" cy="156" r="6.5" fill="#09677b"/><path d="M404 156h6" stroke="white" stroke-width="1.5" stroke-linecap="round"/>
+  <circle cx="219" cy="219" r="6.5" fill="#f7f6ef" stroke="#a65029" stroke-width="1.8"/><path d="M216.2 219h5.6M219 216.2v5.6" stroke="#a65029" stroke-width="1.2" stroke-linecap="round"/>
+  <circle cx="258" cy="219" r="6.5" fill="#f7f6ef" stroke="#a65029" stroke-width="1.8"/><path d="M255.2 219h5.6M258 216.2v5.6" stroke="#a65029" stroke-width="1.2" stroke-linecap="round"/>
+  <circle cx="297" cy="219" r="6.5" fill="#f7f6ef" stroke="#a65029" stroke-width="1.8"/><path d="M294.2 219h5.6M297 216.2v5.6" stroke="#a65029" stroke-width="1.2" stroke-linecap="round"/>
+  <text x="258" y="148" font-size="17" font-weight="600" fill="#597069" text-anchor="middle">导带势垒高</text>
+  <text x="258" y="170" font-size="16" font-weight="400" fill="#597069" text-anchor="middle">电子不易进入</text>
+  <text x="23" y="352" font-size="20" font-weight="650" fill="#203c37" text-anchor="start">2 · 栅压足够高，表面容易获得电子</text>
+  <path d="M58 459H108C141 459 151 443 203 443H312C364 443 374 459 407 459H457V368H58Z" stroke="none" stroke-width="0" fill="#e2eeee" stroke-linecap="round" stroke-linejoin="round" />
+  <path d="M58 536H108C141 536 151 520 203 520H312C364 520 374 536 407 536H457V549H58Z" stroke="none" stroke-width="0" fill="#e8e1ef" stroke-linecap="round" stroke-linejoin="round" />
+  <path d="M58 459H108C141 459 151 443 203 443H312C364 443 374 459 407 459H457" stroke="#09677b" stroke-width="2.4" fill="none" stroke-linecap="round" stroke-linejoin="round" />
+  <path d="M58 536H108C141 536 151 520 203 520H312C364 520 374 536 407 536H457" stroke="#706394" stroke-width="2.4" fill="none" stroke-linecap="round" stroke-linejoin="round" />
+  <path d="M58 452H457" stroke="#a65029" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="6 4"/>
+  <path d="M47 549V368" stroke="#597069" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#axis)"/>
+  <text x="14" y="377" font-size="16" font-weight="400" fill="#597069" text-anchor="start">E</text>
+  <text x="466" y="464" font-size="17" font-weight="650" fill="#09677b" text-anchor="start">E꜀</text>
+  <text x="466" y="443" font-size="17" font-weight="650" fill="#a65029" text-anchor="start">Eꜰ</text>
+  <text x="466" y="541" font-size="17" font-weight="650" fill="#706394" text-anchor="start">Eᵥ</text>
+  <path d="M58 549H457" stroke="#597069" stroke-width="1.1" fill="none" stroke-linecap="round" stroke-linejoin="round" />
+  <path d="M148 549v5M368 549v5" stroke="#597069" stroke-width="1.1" fill="none" stroke-linecap="round" stroke-linejoin="round" />
+  <text x="102" y="570" font-size="16" font-weight="600" fill="#203c37" text-anchor="middle">n⁺ 源区</text>
+  <text x="258" y="570" font-size="16" font-weight="600" fill="#203c37" text-anchor="middle">栅下 p 区</text>
+  <text x="413" y="570" font-size="16" font-weight="600" fill="#203c37" text-anchor="middle">n⁺ 漏区</text>
+  <circle cx="81" cy="428" r="6.5" fill="#09677b"/><path d="M78 428h6" stroke="white" stroke-width="1.5" stroke-linecap="round"/>
+  <circle cx="106" cy="416" r="6.5" fill="#09677b"/><path d="M103 416h6" stroke="white" stroke-width="1.5" stroke-linecap="round"/>
+  <circle cx="432" cy="428" r="6.5" fill="#09677b"/><path d="M429 428h6" stroke="white" stroke-width="1.5" stroke-linecap="round"/>
+  <circle cx="407" cy="416" r="6.5" fill="#09677b"/><path d="M404 416h6" stroke="white" stroke-width="1.5" stroke-linecap="round"/>
+  <circle cx="213" cy="428" r="6.5" fill="#09677b"/><path d="M210 428h6" stroke="white" stroke-width="1.5" stroke-linecap="round"/>
+  <circle cx="258" cy="428" r="6.5" fill="#09677b"/><path d="M255 428h6" stroke="white" stroke-width="1.5" stroke-linecap="round"/>
+  <circle cx="302" cy="428" r="6.5" fill="#09677b"/><path d="M299 428h6" stroke="white" stroke-width="1.5" stroke-linecap="round"/>
+  <path d="M119 428H197" stroke="#09677b" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#electron-arrow)"/>
+  <path d="M397 428H318" stroke="#09677b" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#electron-arrow)"/>
+  <text x="258" y="411" font-size="16" font-weight="650" fill="#09677b" text-anchor="middle">升压时两侧补入导带电子</text>
+  <text x="258" y="482" font-size="17" font-weight="600" fill="#597069" text-anchor="middle">硅的禁带并没有缩小</text>
+  <path d="M22 323H498" stroke="#c9d3c7" stroke-width="1.3" fill="none" stroke-linecap="round" stroke-linejoin="round" />
+  <text x="260" y="601" font-size="16" font-weight="400" fill="#597069" text-anchor="middle">E꜀：导带底　Eᵥ：价带顶　Eꜰ：费米能级</text>
+  <text x="260" y="624" font-size="16" font-weight="400" fill="#597069" text-anchor="middle">箭头表示升压时的电荷重排；不是稳态净电流。</text>
+  <text x="260" y="645" font-size="15" font-weight="400" fill="#597069" text-anchor="middle">能量与位置均为示意，带间距保持不变。</text>
+</g>
+</svg>
