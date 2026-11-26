@@ -183,6 +183,13 @@ body { background: var(--paper); }
 .series-cover-art figcaption span { margin-right: .6rem; color: #39715d; font-weight: 800; }
 .series-home-content { margin-top: 2.2rem; scroll-margin-top: 4.5rem; }
 
+/* Center the foundations knowledge map within the article, not the viewport. */
+.md-typeset figure.foundation-article-map { width: min(100%, 600px); max-width: 100%; margin: 1.2rem auto; }
+.md-typeset .foundation-article-map p { margin: 0; }
+.md-typeset .foundation-article-map img { display: block; width: 100%; height: auto; }
+.md-typeset .foundation-article-map figcaption { max-width: none; margin: .6rem 0 0; color: #4f695a; font-size: .68rem; line-height: 1.7; text-align: center; }
+.md-typeset #阅读顺序 { scroll-margin-top: 5rem; }
+
 .intro-band { display: grid; grid-template-columns: .8fr 1.2fr; gap: 2rem; align-items: start; padding: 3.4rem 0; border-bottom: 1px solid var(--line); }
 .md-typeset .intro-band h2, .md-typeset .section-heading h2 { margin: .65rem 0 0; font-size: 1.42rem; line-height: 1.35; }
 .md-typeset .intro-band p { max-width: 34rem; margin: 0; color: #657b6e; font-size: .74rem; }

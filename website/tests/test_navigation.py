@@ -115,13 +115,15 @@ class GeneratedNavigationTests(unittest.TestCase):
         expected = ["electrons-to-diode", "bands-to-channel", "cmos-logic-gates", "latch-and-divider",
                     "transistor-amplifier", "quartz-oscillator", "integer-pll", "fanout-and-wire-delay",
                     "supply-voltage-and-frequency", "pvt-and-path-delay"]
-        section = guide_body.split('id="阅读顺序"', 1)[1].split("<h2 ", 1)[0]
-        listing = re.search(r"<ol>(.*?)</ol>", section, re.DOTALL).group(1)
-        entries = re.findall(r'<li><a href="([^"/]+)/">([^<]+)</a>', listing)
+        overview = guide_body.split('id="文章知识关系"', 1)[1].split("<h2 ", 1)[0]
+        entries = re.findall(r'<td>\d+\. <a href="([^"/]+)/">([^<]+)</a>', overview)
         self.assertEqual([slug for slug, _ in entries], expected)
         self.assertEqual(entries[0][1], "从电子到二极管")
-        overview = guide_body.split('id="文章知识关系"', 1)[1].split("<h2 ", 1)[0]
-        self.assertEqual(re.findall(r'<td>\d+\. <a href="([^"/]+)/">([^<]+)</a>', overview), entries)
+        self.assertEqual(guide_body.count('id="阅读顺序"'), 1)
+        self.assertIn('id="阅读顺序"', overview)
+        self.assertNotRegex(guide_body, r'<h2[^>]*id="阅读顺序"')
+        self.assertNotIn("<ol>", overview)
+        self.assertIn('class="foundation-article-map"', overview)
         self.assertIn('建议先掌握', overview)
         self.assertIn('src="assets/article-map.svg"', overview)
         self.assertTrue((SITE / "foundations/assets/article-map.svg").is_file())

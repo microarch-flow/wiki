@@ -633,17 +633,19 @@ def chip_architecture_tree(root, directory, labels):
 
 
 def foundations_tree(root, directory, labels):
-    """Use the series guide's numbered list for sidebar order and short titles."""
+    """Use the series guide's numbered overview table for sidebar order and short titles."""
     landing = directory / "README.md"
     tree = [landing.relative_to(root).as_posix()]
     remaining = {page.relative_to(directory).as_posix() for page in directory.rglob("*.md") if page != landing}
-    reading_order = False
+    article_overview = False
     for line in landing.read_text(encoding="utf-8").splitlines():
         if line.startswith("## "):
-            reading_order = line.strip() == "## 阅读顺序"
-        item = re.match(r"^\d+\. \[([^\]]+)\]\(([^)]+)\)", line) if reading_order else None
+            article_overview = line.strip() == "## 文章知识关系"
+        item = re.match(r"^\|\s*(\d+)\.\s+\[([^\]]+)\]\(([^)]+)\)\s*\|", line) if article_overview else None
         if item:
-            short, target = item.groups()
+            number, short, target = item.groups()
+            if int(number) != len(tree):
+                raise ValueError(f"Foundations article numbers must be consecutive: {number}")
             article = urlsplit(target).path
             if article not in remaining:
                 raise ValueError(f"Invalid or repeated foundations article: {article}")
