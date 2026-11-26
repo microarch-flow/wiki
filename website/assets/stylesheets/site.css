@@ -579,3 +579,9 @@ body { background: var(--paper); }
   .fab-industry-chain li > ul > li:first-child::before { inset-block-start: 50%; }
   .fab-industry-chain li > ul > li:last-child::before { inset-block-end: 50%; block-size: auto; }
 }
+
+/* Article comments are deliberately kept separate from the article body. */
+.md-typeset .site-comments { margin: 3rem 0 1rem; padding-top: 1.25rem; border-top: 1px solid var(--line); }
+.md-typeset .site-comments h2 { margin: 0 0 .7rem; }
+.md-typeset .site-comments-intro { color: var(--muted); font-size: .72rem; line-height: 1.8; margin: 0 0 1.1rem; }
+.site-comments .giscus, .site-comments .giscus-frame { width: 100%; max-width: 100%; }

@@ -29,6 +29,7 @@ not_in_nav: |
 hooks:
   - website/hooks.py
   - website/inference_math.py
+  - website/comments.py
 theme:
   name: material
   language: zh
@@ -80,3 +81,9 @@ extra_javascript:
   - assets/javascripts/fab-diagrams.js
 extra:
   generator: false
+  comments:
+    enabled: true
+    repo: microarch-flow/wiki
+    repo_id: R_kgDOSVwCkw
+    category: "文章评论"
+    category_id: DIC_kwDOSVwCk84DMAKo

@@ -170,3 +170,11 @@ mkdocs build
 - 6T SRAM 文章通过 `website/hooks.py` 在正文标记处插入读写图解；模板位于 `website/partials/sram-demo.html`，状态与控制逻辑位于 `website/assets/javascripts/sram.js`。结构图和操作步骤都是教学示意，不是电路仿真。
 - RAM 概览通过正文标记插入 cache miss 与后续复用图解；模板为 `website/partials/ram-overview-demo.html`，状态与控制逻辑为 `website/assets/javascripts/ram-overview.js`。图解采用文章中的两次顺序读取示例；路径示意图分别提供桌面和窄屏版本。
 - 修改图解时，同步检查状态文案、相关约束、链接，以及键盘操作和减少动态效果的设置。
+
+## 文章评论
+
+具体文章底部的 Giscus 评论由 `website/comments.py` 在静态 HTML 生成后添加，不参与正文、目录和搜索索引。系列首页、专题导读、知识地图、归档和未加入主导航的旧页面不加载评论组件。需要临时关闭某篇文章的评论时，可在该篇 Markdown 的 YAML 元数据中设置 `comments: false`。
+
+Giscus 使用 `mkdocs.yml` 的 `extra.comments` 配置。启用前需要为公开仓库开启 Discussions、安装 [Giscus GitHub App](https://github.com/apps/giscus)，并从 [Giscus 配置页](https://giscus.app/zh-CN) 获取真实的 `repo_id`、`category` 和 `category_id`。启用时将 `enabled` 设为 `true`，若配置不完整，构建会明确报错。关闭评论功能只需将 `enabled` 改为 `false`，GitHub 中既有讨论不会因此删除。
+
+讨论按 `site_url` 对应的公开文章 URL 路径匹配，标题或仓库内的源码目录变化不会产生新的讨论；如果确需改变公开 URL，须保留原讨论映射（或迁移 GitHub 中对应讨论）。读者接近文章底部时加载评论框，发表评论需要 GitHub 账号。
