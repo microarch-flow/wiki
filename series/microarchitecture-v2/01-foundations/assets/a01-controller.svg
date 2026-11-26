@@ -1,0 +1,104 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 605" width="600" height="605" role="img" aria-labelledby="controller-title controller-desc">
+  <title id="controller-title">操作数选择与状态控制的电路结构</title>
+  <desc id="controller-desc">四组 x 与四组 w 分别经过四选一 MUX，由同一个两位组号 i 选择后送到四位寄存器 X 和 W；共同写入使能 EN_XW 决定是否采入。组合控制逻辑读取 START、当前状态 S 和当前组号 i，比较 i=3 并产生下一状态；IDLE 且 START 有效时组号清零，RUN 且 i 不等于 3 时组号加一，否则保持。S 为 RUN 时输出写入使能，S 为 DONE 时输出 DONE。状态寄存器和组号寄存器的结果反馈到组合控制逻辑。以同名端口表示共享信号，所有寄存器共用时钟和优先同步复位。</desc>
+  <defs>
+    <marker id="data-arrow" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto" markerUnits="strokeWidth">
+      <path d="M0 0 L7 3.5 L0 7 Z" fill="#376a55"/>
+    </marker>
+    <marker id="control-arrow" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto" markerUnits="strokeWidth">
+      <path d="M0 0 L7 3.5 L0 7 Z" fill="#8a6c3c"/>
+    </marker>
+    <style>
+      text {font-family: Arial,"Noto Sans CJK SC","PingFang SC","Microsoft YaHei",sans-serif; fill:#173d35; font-size:17px}
+      .heading {font-size:19px;font-weight:700}
+      .symbol {font-size:20px;font-weight:700}
+      .note {font-size:15px;fill:#4f695a}
+      .ctrl {font-size:15px;fill:#765a2f;font-weight:600}
+      .block {fill:#e0ebe3;stroke:#82a18e;stroke-width:1.6}
+      .reg {fill:#edf1df;stroke:#82a18e;stroke-width:1.6}
+      .data {fill:none;stroke:#376a55;stroke-width:2;marker-end:url(#data-arrow)}
+      .control {fill:none;stroke:#8a6c3c;stroke-width:1.8;stroke-dasharray:5 3;marker-end:url(#control-arrow)}
+    </style>
+  </defs>
+  <rect x="1" y="1" width="598" height="603" rx="13" fill="#f5f6ef" stroke="#c4d0c4" stroke-width="1.3"/>
+  <rect x="12" y="12" width="576" height="270" rx="10" fill="#f9faf5" stroke="#c4d0c4"/>
+  <text class="heading" x="27" y="39">数据通路</text>
+  <!-- First operand lane. Source bank represents four distinct 4-bit inputs. -->
+  <g text-anchor="middle">
+    <rect class="block" x="26" y="57" width="146" height="66" rx="8"/>
+    <text x="99" y="83">x₀、x₁、x₂、x₃</text>
+    <text class="note" x="99" y="106">各 4 位</text>
+    <rect class="block" x="223" y="57" width="112" height="66" rx="8"/>
+    <text x="279" y="84">4 选 1</text>
+    <text class="symbol" x="279" y="108">MUX</text>
+    <rect class="reg" x="405" y="57" width="168" height="66" rx="8"/>
+    <text class="symbol" x="489" y="84">X 寄存器</text>
+    <text class="note" x="489" y="108">4 位 · 输入 D，输出 Q</text>
+  </g>
+  <path class="data" d="M172 90 H219"/>
+  <path class="data" d="M335 90 H401"/>
+  <text class="note" x="370" y="80" text-anchor="middle">xᵢ</text>
+  <path class="control" d="M279 143 V127"/>
+  <text class="ctrl" x="279" y="159" text-anchor="middle">i[1:0]</text>
+  <path class="control" d="M489 143 V127"/>
+  <text class="ctrl" x="489" y="159" text-anchor="middle">EN_XW</text>
+  <!-- Second operand lane. The same net names mean the same selector and enable. -->
+  <g text-anchor="middle">
+    <rect class="block" x="26" y="166" width="146" height="66" rx="8"/>
+    <text x="99" y="192">w₀、w₁、w₂、w₃</text>
+    <text class="note" x="99" y="215">各 4 位</text>
+    <rect class="block" x="223" y="166" width="112" height="66" rx="8"/>
+    <text x="279" y="193">4 选 1</text>
+    <text class="symbol" x="279" y="217">MUX</text>
+    <rect class="reg" x="405" y="166" width="168" height="66" rx="8"/>
+    <text class="symbol" x="489" y="193">W 寄存器</text>
+    <text class="note" x="489" y="217">4 位 · 输入 D，输出 Q</text>
+  </g>
+  <path class="data" d="M172 199 H219"/>
+  <path class="data" d="M335 199 H401"/>
+  <text class="note" x="370" y="189" text-anchor="middle">wᵢ</text>
+  <path class="control" d="M279 252 V236"/>
+  <text class="ctrl" x="279" y="269" text-anchor="middle">i[1:0]</text>
+  <path class="control" d="M489 252 V236"/>
+  <text class="ctrl" x="489" y="269" text-anchor="middle">EN_XW</text>
+  <!-- State logic and its state/selector feedback. -->
+  <rect x="12" y="292" width="576" height="254" rx="10" fill="#f9faf5" stroke="#c4d0c4"/>
+  <text class="heading" x="27" y="318">控制通路</text>
+  <rect class="block" x="98" y="330" width="315" height="105" rx="9"/>
+  <g text-anchor="middle">
+    <text class="symbol" x="255.5" y="355">组合控制逻辑</text>
+    <text x="255.5" y="379">比较 i = 3，产生下一状态 S′</text>
+    <text class="note" x="255.5" y="402">IDLE 且 START = 1：i′ = 0</text>
+    <text class="note" x="255.5" y="422">RUN 且 i ≠ 3：i′ = i + 1；否则保持</text>
+  </g>
+  <text class="ctrl" x="26" y="357">START</text>
+  <path class="control" d="M25 369 H94"/>
+  <path class="control" d="M413 351 H466"/>
+  <text class="ctrl" x="474" y="348">EN_XW</text>
+  <text class="note" x="474" y="367">S = RUN</text>
+  <path class="control" d="M413 388 H466"/>
+  <text class="ctrl" x="474" y="385">DONE</text>
+  <text class="note" x="474" y="404">S = DONE</text>
+  <rect class="reg" x="44" y="462" width="192" height="62" rx="8"/>
+  <text class="symbol" x="140" y="488" text-anchor="middle">S 状态寄存器</text>
+  <text class="note" x="140" y="510" text-anchor="middle">2 位</text>
+  <rect class="reg" x="262" y="462" width="175" height="62" rx="8"/>
+  <text class="symbol" x="349.5" y="488" text-anchor="middle">i 组号寄存器</text>
+  <text class="note" x="349.5" y="510" text-anchor="middle">2 位</text>
+  <path class="control" d="M122 435 V458"/>
+  <text class="ctrl" x="114" y="453" text-anchor="end">S′</text>
+  <path class="control" d="M192 462 V439"/>
+  <text class="ctrl" x="200" y="453">S</text>
+  <path class="control" d="M294 435 V458"/>
+  <text class="ctrl" x="286" y="453" text-anchor="end">i′</text>
+  <path class="control" d="M376 462 V439"/>
+  <text class="ctrl" x="384" y="453">i</text>
+  <path class="control" d="M437 493 H467"/>
+  <text class="ctrl" x="475" y="499">i[1:0]</text>
+  <!-- Legend and explicit omitted wires. -->
+  <path class="data" d="M26 564 H55"/>
+  <text class="note" x="65" y="569">操作数</text>
+  <path class="control" d="M135 564 H165"/>
+  <text class="note" x="175" y="569">控制 / 状态信号；同名信号相连</text>
+  <text class="note" x="26" y="590">各寄存器共用 CLK，并同步复位（连线省略；RST 优先）。</text>
+</svg>

@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 490 452" width="490" height="452" role="img" aria-labelledby="fsm-title fsm-desc">
+  <title id="fsm-title">四组操作数控制器的有限状态机</title>
+  <desc id="fsm-desc">在 RST 为零的前提下，IDLE 在 START 为零时保持，START 为一时下一边沿进入 RUN；RUN 在沿前 i 不等于三时自循环，i 等于三时下一边沿进入 DONE；DONE 总是在下一边沿回 IDLE。RUN 状态使能 X/W 写入，DONE 状态输出 DONE。同步复位优先，RST 为一时任意状态在下一上升沿回到 IDLE；非法编码 11 在下一沿回 IDLE，且不写数据。</desc>
+  <defs>
+    <marker id="arrow" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto" markerUnits="strokeWidth">
+      <path d="M0 0 L7 3.5 L0 7 Z" fill="#396b55"/>
+    </marker>
+    <style>
+      text {font-family:Arial,"Noto Sans CJK SC","PingFang SC","Microsoft YaHei",sans-serif;fill:#173d35;font-size:17px}
+      .note {font-size:15px;fill:#4f695a}
+      .state {font-size:22px;font-weight:700}
+      .condition {font-size:16px;font-weight:600;fill:#396b55}
+      .node {fill:#e0ebe3;stroke:#82a18e;stroke-width:1.7}
+      .transition {stroke:#396b55;stroke-width:2;fill:none;marker-end:url(#arrow);stroke-linejoin:round;stroke-linecap:round}
+    </style>
+  </defs>
+  <rect x="1" y="1" width="488" height="450" rx="13" fill="#f5f6ef" stroke="#c4d0c4" stroke-width="1.3"/>
+  <rect x="13" y="12" width="464" height="31" rx="7" fill="#eae9d7" stroke="#cec8ac"/>
+  <text x="245" y="33" text-anchor="middle" font-size="15" fill="#6d552e">同步 RST=1：任意状态下一上升沿回 IDLE（优先）</text>
+  <text class="note" x="245" y="63" text-anchor="middle">以下转移均假设 RST=0</text>
+  <g text-anchor="middle">
+    <rect class="node" x="163" y="76" width="164" height="73" rx="11"/>
+    <text class="state" x="245" y="103">IDLE · 00</text>
+    <text x="245" y="130">等待任务</text>
+    <rect class="node" x="163" y="196" width="164" height="73" rx="11"/>
+    <text class="state" x="245" y="224">RUN · 01</text>
+    <text x="245" y="251">EN_XW = 1</text>
+    <rect class="node" x="163" y="316" width="164" height="73" rx="11"/>
+    <text class="state" x="245" y="344">DONE · 10</text>
+    <text x="245" y="371">DONE = 1</text>
+  </g>
+  <!-- Edges point from the current state to the state captured at the next edge. -->
+  <path class="transition" d="M245 149 V192"/>
+  <text class="condition" x="255" y="177">START = 1</text>
+  <path class="transition" d="M245 269 V312"/>
+  <text class="condition" x="255" y="297">i = 3</text>
+  <path class="transition" d="M327 91 C410 68 427 111 398 129 C377 142 350 140 331 133"/>
+  <text class="condition" x="403" y="80" text-anchor="middle">START = 0</text>
+  <path class="transition" d="M327 211 C410 188 427 231 398 249 C377 262 350 260 331 253"/>
+  <text class="condition" x="403" y="200" text-anchor="middle">i ≠ 3</text>
+  <path class="transition" d="M163 352 H73 Q60 352 60 337 V126 Q60 112 74 112 H159"/>
+  <text class="condition" x="69" y="221">无条件</text>
+  <text class="note" x="69" y="241">下一沿</text>
+  <text class="note" x="21" y="417">只有 RUN 写入 X/W；只有 DONE 输出 1。</text>
+  <text class="note" x="21" y="438">未使用的状态编码 11：下一沿回 IDLE，不写入。</text>
+</svg>

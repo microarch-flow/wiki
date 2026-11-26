@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 680 560" role="img" aria-labelledby="title desc">
+  <title id="title">二选一多路选择器与寄存器写使能</title>
+  <desc id="desc">上：A 和非 S 相与，B 和 S 相与，两路再相或得到 Y。下：U 与旧 Q 进入四位多路选择器，EN 决定 D 的来源，寄存器在时钟上升沿采样 D。</desc>
+  <defs>
+    <marker id="arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0 0 L8 4 L0 8z" fill="#376650"/></marker>
+    <style>
+      text{font-family:"Noto Sans CJK SC","Microsoft YaHei",sans-serif;fill:#173d35;font-size:20px}
+      .heading{font-size:23px;font-weight:700}.small{font-size:17px}.block{fill:#e0ebe3;stroke:#82a18e;stroke-width:1.6}.wire{fill:none;stroke:#376650;stroke-width:2.6;stroke-linecap:round;stroke-linejoin:round}.control{fill:none;stroke:#9b6c27;stroke-width:2.2;stroke-dasharray:6 4}.accent{fill:#8a5d1c}
+    </style>
+  </defs>
+  <rect width="680" height="560" rx="14" fill="#f5f6ef"/>
+  <text x="24" y="36" class="heading">1. 一位 MUX：选择一条数据支路</text>
+  <text x="38" y="90">A</text><text x="38" y="135" class="accent">¬S</text>
+  <text x="38" y="184">B</text><text x="38" y="229" class="accent">S</text>
+  <rect x="160" y="73" width="84" height="76" rx="9" class="block"/><text x="202" y="118" text-anchor="middle" font-size="30">AND</text>
+  <rect x="160" y="167" width="84" height="76" rx="9" class="block"/><text x="202" y="212" text-anchor="middle">AND</text>
+  <path d="M65 84H160 M65 178H160" class="wire"/>
+  <path d="M75 129H160 M65 223H160" class="control"/>
+  <path d="M244 111H306V144H365 M244 205H306V178H365" class="wire"/>
+  <rect x="365" y="132" width="85" height="60" rx="9" class="block"/><text x="408" y="169" text-anchor="middle">OR</text>
+  <path d="M450 162H565" class="wire" marker-end="url(#arrow)"/><text x="580" y="170">Y</text>
+  <text x="495" y="94" class="small">S=0：Y=A</text><text x="495" y="119" class="small">S=1：Y=B</text><text x="495" y="143" class="small">¬S 由 S 取反得到</text>
+  <path d="M24 263H656" stroke="#d4ddd2" stroke-width="1.5"/>
+  <text x="24" y="298" class="heading">2. 四位寄存器：选择新值或原值</text>
+  <rect x="220" y="351" width="94" height="101" rx="10" class="block"/>
+  <text x="267" y="392" text-anchor="middle">MUX</text><text x="267" y="415" text-anchor="middle" class="small">4 位</text>
+  <text x="229" y="371" class="small">1</text><text x="229" y="443" class="small">0</text>
+  <rect x="389" y="363" width="125" height="77" rx="8" class="block"/>
+  <text x="450" y="392" text-anchor="middle">寄存器 X</text><text x="450" y="419" text-anchor="middle" class="small">4 位</text>
+  <text x="37" y="363">新值 U</text>
+  <path d="M110 369H220" class="wire" marker-end="url(#arrow)"/>
+  <path d="M314 402H389" class="wire" marker-end="url(#arrow)"/><text x="351" y="390" text-anchor="middle" class="small">D</text>
+  <path d="M514 402H642" class="wire" marker-end="url(#arrow)"/><text x="595" y="390" class="small">Q</text>
+  <circle cx="563" cy="402" r="4" fill="#376650"/>
+  <path d="M563 402V484H146V434H220" class="wire" marker-end="url(#arrow)"/>
+  <text x="329" y="507" text-anchor="middle" class="small">旧值反馈：EN=0 时保留</text>
+  <text x="267" y="330" text-anchor="middle" class="small accent">EN</text><path d="M267 334V351" class="control"/>
+  <path d="M450 440V466" stroke="#718079" stroke-width="2.2"/><path d="M443 440L450 432L457 440" fill="none" stroke="#718079" stroke-width="1.4"/><text x="465" y="462" class="small">CLK ↑</text>
+  <rect x="24" y="523" width="632" height="27" rx="5" fill="#edf1df"/><text x="340" y="544" text-anchor="middle" class="small">EN=1：采入 U　　EN=0：采回旧 Q</text>
+</svg>

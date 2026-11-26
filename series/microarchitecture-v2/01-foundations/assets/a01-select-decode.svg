@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 680 356" role="img" aria-labelledby="title desc">
+  <title id="title">四选一多路选择器</title>
+  <desc id="desc">选择编号为二进制 10 时，两个第一级 MUX 都根据 i0 等于 0 选择输入 0。第二级 MUX 根据 i1 等于 1 选择第二组，最终输出 x2 等于 3。</desc>
+  <defs>
+    <marker id="a" markerWidth="5" markerHeight="5" refX="4.5" refY="2.5" orient="auto"><path d="M0 0L5 2.5L0 5z" fill="#376650"/></marker>
+    <style>
+      text{font-family:"Noto Sans CJK SC","Microsoft YaHei",sans-serif;fill:#173d35;font-size:20px}
+      .heading{font-size:23px;font-weight:700}.small{font-size:17px}.muted{fill:#688079}.block{fill:#e0ebe3;stroke:#82a18e;stroke-width:1.7}.wire{fill:none;stroke:#9baaa0;stroke-width:2.3;stroke-linecap:round;stroke-linejoin:round}.selected{fill:none;stroke:#376650;stroke-width:4;stroke-linecap:round;stroke-linejoin:round}.control{fill:none;stroke:#9b6c27;stroke-width:2;stroke-dasharray:5 4}.accent{fill:#8a5d1c}
+    </style>
+  </defs>
+  <rect width="680" height="356" rx="14" fill="#f5f6ef"/>
+  <text x="24" y="33" class="heading">选第 2 组：i₁i₀ = 10</text>
+  <text x="33" y="91">x₀ = 2</text><text x="33" y="135" class="muted">x₁ = 1</text>
+  <text x="33" y="221">x₂ = 3</text><text x="33" y="265" class="muted">x₃ = 4</text>
+  <rect x="173" y="67" width="106" height="86" rx="9" class="block"/>
+  <rect x="173" y="197" width="106" height="86" rx="9" class="block"/>
+  <text x="226" y="116" text-anchor="middle">MUX</text><text x="226" y="246" text-anchor="middle">MUX</text>
+  <text x="180" y="93" class="small">0</text><text x="180" y="139" class="small">1</text>
+  <text x="180" y="223" class="small">0</text><text x="180" y="269" class="small">1</text>
+  <path d="M105 85H173" class="selected"/><path d="M105 129H173" class="wire"/>
+  <path d="M105 215H173" class="selected"/><path d="M105 259H173" class="wire"/>
+  <path d="M279 110H333V153H398" class="wire"/><text x="292" y="101" class="small">2</text>
+  <path d="M279 240H333V207H398" class="selected"/><text x="292" y="230" class="small">3</text>
+  <rect x="398" y="135" width="106" height="91" rx="9" class="block"/>
+  <text x="451" y="186" text-anchor="middle">MUX</text><text x="406" y="158" class="small">0</text><text x="406" y="214" class="small">1</text>
+  <path d="M504 180H619" class="selected" marker-end="url(#a)"/><text x="557" y="167" class="small">x = 3</text>
+  <path d="M226 67V60 M226 197V190" class="control"/>
+  <text x="226" y="56" text-anchor="middle" class="small accent">i₀ = 0</text><text x="226" y="185" text-anchor="middle" class="small accent">i₀ = 0</text>
+  <path d="M451 135V103" class="control"/><text x="451" y="91" text-anchor="middle" class="small accent">i₁ = 1</text>
+  <rect x="24" y="302" width="632" height="38" rx="6" fill="#edf1df"/>
+  <text x="340" y="327" text-anchor="middle" class="small">低位先选每对中的 0 路，高位再选第 1 对</text>
+</svg>
