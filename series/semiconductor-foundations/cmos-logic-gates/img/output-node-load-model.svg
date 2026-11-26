@@ -1,0 +1,56 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="520" height="520" viewBox="0 0 520 520" role="img" aria-labelledby="title desc" xml:lang="zh-CN">
+  <title id="title">将输出节点上的多处电容合并成一只理想负载电容</title>
+  <desc id="desc">从输出 NMOS 漏端连接的输出节点 Y 看，三种示意电容分别连到体区、邻近导体、接收端。如果假设 Y 电位均匀且其他端电位固定，忽略电容随电压变化，那么三种电容对 Y 电压变化的电荷响应可以相加，C L 近似为 C d 加 C w 加 C g。为分析 Y 的电压改变量，把它们改画成一只连接 Y 与参考地的等效负载电容。这并非令实际其他端短接到地。</desc>
+  <defs>
+    <marker id="arrow" markerWidth="8" markerHeight="8" refX="7.2" refY="4" orient="auto"><path d="M0 0L8 4 0 8Z" fill="#526861"/></marker>
+    <g id="ground" stroke="#53675b" stroke-width="2.2" fill="none"><path d="M0 -8V0M-12 0H12M-8 4H8M-3.5 8H3.5"/></g>
+    <g id="cap" stroke="#53675b" stroke-width="2.4" fill="none" stroke-linecap="round"><path d="M0 -23V-6M-17 -6H17M-17 6H17M0 6V23"/></g>
+    <g id="nm" stroke="#53675b" stroke-width="2.6" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M-18 -22V22M-6 -22V22M-6 -22H12V-57M-6 22H12V48M-60 0H-18"/><use href="#ground" x="12" y="56"/></g>
+  </defs>
+  <rect x="1" y="1" width="518" height="518" rx="15" fill="#f7f6ef" stroke="#c9d3c7"/>
+  <g font-family="system-ui, 'Noto Sans CJK SC', 'Microsoft YaHei', sans-serif" fill="#203c37" stroke-linejoin="round" stroke-linecap="round">
+    <text x="20" y="34" font-size="23" font-weight="700">把多处电容合并为一个负载</text>
+    <text x="20" y="61" font-size="17" fill="#526861">假设 Y 沿线同电位，电容的其他端电位固定。</text>
+    <rect x="16" y="80" width="488" height="219" rx="10" fill="#fffdf7" stroke="#d3dacf"/>
+    <text x="30" y="109" font-size="20" font-weight="700">① 分别画出每处对 Y 的电容</text>
+    <use href="#nm" x="90" y="198"/>
+    <text x="30" y="190" font-size="18" font-weight="700">A</text>
+    <text x="111" y="202" font-size="17" font-weight="650" fill="#09677b">NMOS</text>
+    <text x="31" y="282" font-size="16" fill="#526861">源、体接地</text>
+    <path d="M102 141H474" stroke="#09677b" stroke-width="3.2" fill="none"/>
+    <text x="474" y="130" font-size="19" fill="#09677b" font-weight="700" text-anchor="end">输出 Y</text>
+    <circle cx="215" cy="141" r="3.8" fill="#09677b"/>
+    <circle cx="335" cy="141" r="3.8" fill="#09677b"/>
+    <circle cx="455" cy="141" r="3.8" fill="#09677b"/>
+    <path d="M215 141V175M335 141V175M455 141V175" fill="none" stroke="#09677b" stroke-width="2.7"/>
+    <use href="#cap" x="215" y="198"/>
+    <use href="#cap" x="335" y="198"/>
+    <use href="#cap" x="455" y="198"/>
+    <text x="239" y="203" font-size="18" font-weight="700">C<tspan baseline-shift="sub" font-size="13">d</tspan></text>
+    <text x="359" y="203" font-size="18" font-weight="700">C<tspan baseline-shift="sub" font-size="13">w</tspan></text>
+    <text x="479" y="203" font-size="17" font-weight="700">C<tspan baseline-shift="sub" font-size="12">g</tspan></text>
+    <path d="M215 221V239M335 221V239M455 221V239" stroke="#53675b" stroke-width="2.4" fill="none"/>
+    <path d="M203 239H227M323 239H347M443 239H467" stroke="#53675b" stroke-width="2.4" fill="none"/>
+    <text x="215" y="260" text-anchor="middle" font-size="16">体端</text>
+    <text x="335" y="260" text-anchor="middle" font-size="16">邻近导体</text>
+    <text x="455" y="260" text-anchor="middle" font-size="16">接收端</text>
+    <text x="335" y="282" text-anchor="middle" font-size="16" fill="#526861">另一端电位固定，不必实际接地</text>
+    <path d="M260 304V331" stroke="#526861" stroke-width="2.2" fill="none" marker-end="url(#arrow)"/>
+    <rect x="16" y="340" width="488" height="153" rx="10" fill="#fffdf7" stroke="#d3dacf"/>
+    <text x="30" y="369" font-size="20" font-weight="700">② 等效为一只负载电容 C<tspan baseline-shift="sub" font-size="15">L</tspan></text>
+    <g transform="translate(0 6)">
+      <use href="#nm" transform="translate(90 437) scale(.7)"/>
+      <text x="39" y="430" font-size="17" font-weight="700">A</text>
+      <text x="108" y="443" font-size="17" font-weight="650" fill="#09677b">NMOS</text>
+      <path d="M98.4 397H232V414" stroke="#09677b" stroke-width="2.8" fill="none"/>
+      <text x="231" y="392" font-size="17" fill="#09677b" font-weight="700" text-anchor="end">Y</text>
+      <use href="#cap" x="232" y="437"/>
+      <use href="#ground" x="232" y="468"/>
+      <text x="255" y="443" font-size="18" font-weight="700">C<tspan baseline-shift="sub" font-size="13">L</tspan></text>
+      <rect x="291" y="399" width="198" height="73" rx="8" fill="#e0ece7" stroke="#b3c4b8"/>
+      <text x="390" y="425" font-size="19" font-weight="700" text-anchor="middle">C<tspan baseline-shift="sub" font-size="13">L</tspan> ≈ C<tspan baseline-shift="sub" font-size="13">d</tspan> + C<tspan baseline-shift="sub" font-size="13">w</tspan> + C<tspan baseline-shift="sub" font-size="13">g</tspan></text>
+      <text x="390" y="451" font-size="17.5" text-anchor="middle">ΔQ = C<tspan baseline-shift="sub" font-size="13">L</tspan> ΔV</text>
+    </g>
+    <text x="20" y="512" font-size="15" fill="#526861">集中模型：忽略连线电阻，并近似使用恒定电容。</text>
+  </g>
+</svg>
