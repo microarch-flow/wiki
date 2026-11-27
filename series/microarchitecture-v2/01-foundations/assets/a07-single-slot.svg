@@ -1,0 +1,63 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 660 559" width="660" height="559" role="img" aria-labelledby="title desc">
+  <title id="title">单项弹性缓冲槽：同时取出与写入可以保持满载</title>
+  <desc id="desc">单项缓冲槽包含数据寄存器和占用位 V。out_valid 等于 V，out_data 来自已保存的数据，in_ready 等于非 V 或 out_ready。输入交接 push 为 in_valid 与 in_ready，输出交接 pop 为 V 与 out_ready。此处没有组合数据旁路。在 V 为零且下游不 ready 时，槽可接纳一个新项，但该边沿无输出交接。V 为一且下游不 ready 时，不接纳任何新项，旧数据保持。当 V 为一且下游 ready 同时输入 valid 时，接收端在同一边沿取走旧数据并将新数据写入槽；旧数据在沿前已经稳定，新数据在沿后出现。满槽下游 ready 但输入 invalid 时只弹出，槽变空。</desc>
+  <defs>
+    <marker id="data-arrow" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0 0L7 3.5L0 7z" fill="#376650"/></marker>
+    <marker id="ctrl-arrow" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0 0L7 3.5L0 7z" fill="#9b6c27"/></marker>
+    <style>
+      text{font-family:"Noto Sans CJK SC","Microsoft YaHei",sans-serif;fill:#173d35;font-size:18px}
+      .heading{font-size:22px;font-weight:700}.small{font-size:16px}.tiny{font-size:14.5px}.label{font-weight:700}
+      .accent{fill:#8a5d1c}.panel{fill:#fafbf8;stroke:#c7d3c7;stroke-width:1.3}
+      .reg{fill:#edf1df;stroke:#82a18e;stroke-width:1.4}.block{fill:#e0ebe3;stroke:#82a18e;stroke-width:1.4}
+      .data{stroke:#376650;stroke-width:2.3;fill:none;stroke-linejoin:round;stroke-linecap:round;marker-end:url(#data-arrow)}
+      .ctrl{stroke:#9b6c27;stroke-width:1.9;stroke-dasharray:5 4;fill:none;stroke-linejoin:round;stroke-linecap:round;marker-end:url(#ctrl-arrow)}
+      .header{fill:#e0ebe3;stroke:#c7d3c7;stroke-width:1.1}.row{fill:#fafbf8}.wait{fill:#eee6d5}.fire{fill:#d2e6d7}
+    </style>
+  </defs>
+  <rect x="1" y="1" width="658" height="557" rx="13" fill="#f5f6ef" stroke="#c4d0c4"/>
+  <text x="20" y="35" class="heading">一个带占用状态的寄存器槽</text>
+  <rect x="216" y="59" width="227" height="134" rx="8" class="panel"/>
+  <text x="329.5" y="80" class="label small" text-anchor="middle">单项缓冲槽</text>
+  <rect x="239" y="92" width="181" height="38" rx="6" class="reg"/>
+  <rect x="239" y="145" width="181" height="34" rx="6" class="reg"/>
+  <text x="329.5" y="107" class="small label" text-anchor="middle">数据寄存器</text>
+  <text x="329.5" y="123" class="tiny" text-anchor="middle">push = 1 时写入</text>
+  <text x="329.5" y="168" class="label" text-anchor="middle">占用位 V</text>
+  <path d="M35 111H239" class="data"/><text x="44" y="101" class="small">in_data</text>
+  <path d="M420 111H625" class="data"/><text x="614" y="101" text-anchor="end" class="small">out_data</text>
+  <path d="M35 163H239" class="ctrl"/><text x="44" y="153" class="small accent">V′（状态更新逻辑）</text>
+  <path d="M420 163H625" class="ctrl"/><text x="614" y="153" text-anchor="end" class="small accent">out_valid = V</text>
+  <!-- Ready combinational function, independent of data bypass -->
+  <path d="M625 213H432" class="ctrl"/><text x="614" y="204" text-anchor="end" class="small accent">out_ready</text>
+  <rect x="230" y="200" width="202" height="30" rx="6" class="block"/>
+  <text x="331" y="221" text-anchor="middle" class="small label">¬V ∨ out_ready</text>
+  <path d="M230 215H35" class="ctrl"/><text x="44" y="206" class="small accent">in_ready</text>
+  <path d="M330 179V200" class="ctrl"/>
+  <rect x="18" y="244" width="624" height="63" rx="7" fill="#edf1df"/>
+  <text x="30" y="263" class="small">push = in_valid ∧ in_ready；pop = V ∧ out_ready</text>
+  <text x="30" y="282" class="small">V′ = push ∨ (V ∧ ¬pop)；V=0 表示空。</text>
+  <text x="30" y="302" class="tiny">数据只经寄存器传到输出，没有数据组合旁路。</text>
+
+  <g transform="translate(0 20)">
+  <text x="20" y="313" class="small">四种典型边沿（依据沿前 V、ready、valid 决定）：</text>
+  <rect x="18" y="326" width="624" height="49" rx="6" class="header"/>
+  <g text-anchor="middle" class="tiny label">
+    <text x="50" y="356">旧 V</text>
+    <text x="109" y="346">out</text><text x="109" y="364">ready</text>
+    <text x="173" y="346">in</text><text x="173" y="364">valid</text>
+    <text x="237" y="346">in</text><text x="237" y="364">ready</text>
+    <text x="405" y="356">采样沿动作</text><text x="607" y="356">新 V</text>
+  </g>
+  <rect x="18" y="381" width="624" height="29" rx="4" class="fire"/>
+  <rect x="18" y="414" width="624" height="29" rx="4" class="wait"/>
+  <rect x="18" y="447" width="624" height="29" rx="4" class="fire"/>
+  <rect x="18" y="480" width="624" height="29" rx="4" class="row"/>
+  <g text-anchor="middle" class="small">
+    <text x="50" y="402">0</text><text x="109" y="402">0</text><text x="173" y="402">1</text><text x="237" y="402">1</text><text x="405" y="402">只写入新项，不输出</text><text x="607" y="402">1</text>
+    <text x="50" y="435">1</text><text x="109" y="435">0</text><text x="173" y="435">任意</text><text x="237" y="435">0</text><text x="405" y="435" class="accent">保持旧数据</text><text x="607" y="435">1</text>
+    <text x="50" y="468">1</text><text x="109" y="468">1</text><text x="173" y="468">1</text><text x="237" y="468">1</text><text x="405" y="468" font-weight="700">取出旧项，同时写入新项</text><text x="607" y="468">1</text>
+    <text x="50" y="501">1</text><text x="109" y="501">1</text><text x="173" y="501">0</text><text x="237" y="501">1</text><text x="405" y="501">只取出旧项，槽变空</text><text x="607" y="501">0</text>
+  </g>
+  <text x="20" y="528" class="tiny">同沿取旧项、写新项时，输出采样的是沿前的旧数据，新数据沿后可见。</text>
+  </g>
+</svg>

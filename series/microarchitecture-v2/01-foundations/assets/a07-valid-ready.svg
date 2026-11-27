@@ -1,0 +1,50 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 660 481" width="660" height="481" role="img" aria-labelledby="title desc">
+  <title id="title">valid/ready 握手：双方都同意才在采样沿交接</title>
+  <desc id="desc">源端向接收端发送 payload 和 valid 信号，接收端向源端返回 ready。双方使用共同的采样边沿，仅在 valid 与 ready 都为一时发生一次交接。E0 和 E1 边沿前源端 valid 为一并提供 J0 的数据及目标 WA，接收端 ready 为零，没有交接。源端保持整个 payload 与 valid 不变。E2 时 ready 变为一，源端仍提供 J0，完成一次交接。E3 时双方 valid 与 ready 均为一，交接 J1。E4 时 valid 为零且 ready 为一，不交接。表格显示各边沿前的稳定信号值，不是请求次数。</desc>
+  <defs>
+    <marker id="data-arrow" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0 0L7 3.5L0 7z" fill="#376650"/></marker>
+    <marker id="ctrl-arrow" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0 0L7 3.5L0 7z" fill="#9b6c27"/></marker>
+    <style>
+      text{font-family:"Noto Sans CJK SC","Microsoft YaHei",sans-serif;fill:#173d35;font-size:18px}
+      .heading{font-size:22px;font-weight:700}.small{font-size:16px}.tiny{font-size:14.5px}.label{font-weight:700}
+      .accent{fill:#8a5d1c}.block{fill:#e0ebe3;stroke:#82a18e;stroke-width:1.4}
+      .data{stroke:#376650;stroke-width:2.4;fill:none;stroke-linecap:round;marker-end:url(#data-arrow)}
+      .ctrl{stroke:#9b6c27;stroke-width:1.9;stroke-dasharray:5 4;fill:none;stroke-linecap:round;marker-end:url(#ctrl-arrow)}
+      .header{fill:#e0ebe3;stroke:#c7d3c7;stroke-width:1.1}.row{fill:#fafbf8}.wait{fill:#eee6d5}.fire{fill:#d2e6d7}
+    </style>
+  </defs>
+  <rect x="1" y="1" width="658" height="479" rx="13" fill="#f5f6ef" stroke="#c4d0c4"/>
+  <text x="20" y="35" class="heading">valid/ready：在共同的采样沿完成交接</text>
+  <rect x="30" y="56" width="120" height="87" rx="8" class="block"/>
+  <rect x="510" y="56" width="120" height="87" rx="8" class="block"/>
+  <text x="90" y="93" class="label" text-anchor="middle">发送端</text>
+  <text x="90" y="117" class="small" text-anchor="middle">Source</text>
+  <text x="570" y="93" class="label" text-anchor="middle">接收端</text>
+  <text x="570" y="117" class="small" text-anchor="middle">Sink</text>
+  <path d="M150 77H510" class="data"/><text x="330" y="70" text-anchor="middle" class="small">payload：任务数据与 WA</text>
+  <path d="M150 105H510" class="ctrl"/><text x="330" y="99" text-anchor="middle" class="tiny accent">valid：发送端提供有效数据</text>
+  <path d="M510 130H150" class="ctrl"/><text x="330" y="124" text-anchor="middle" class="tiny accent">ready：接收端可以接收</text>
+  <rect x="18" y="153" width="624" height="45" rx="7" fill="#edf1df"/>
+  <text x="330" y="172" text-anchor="middle" font-weight="700">采样沿发生交接（fire）⇔ valid = 1 且 ready = 1</text>
+  <text x="330" y="191" text-anchor="middle" class="tiny">沿前信号稳定；只有沿上 fire 才表示一次成功交接。</text>
+  <!-- edge trace -->
+  <text x="20" y="226" class="small">以下为每个采样沿之前的稳定信号：</text>
+  <rect x="18" y="238" width="624" height="34" rx="6" class="header"/>
+  <g text-anchor="middle" class="small label">
+    <text x="64" y="260">边沿</text><text x="216" y="260">payload（含 WA）</text>
+    <text x="359" y="260">valid</text><text x="441" y="260">ready</text><text x="555" y="260">沿上动作</text>
+  </g>
+  <rect x="18" y="278" width="624" height="30" rx="4" class="wait"/>
+  <rect x="18" y="312" width="624" height="30" rx="4" class="wait"/>
+  <rect x="18" y="346" width="624" height="30" rx="4" class="fire"/>
+  <rect x="18" y="380" width="624" height="30" rx="4" class="fire"/>
+  <rect x="18" y="414" width="624" height="30" rx="4" class="row"/>
+  <g text-anchor="middle" class="small">
+    <text x="64" y="299">E₀</text><text x="216" y="299">J₀（WA=5）</text><text x="359" y="299">1</text><text x="441" y="299">0</text><text x="555" y="299" class="accent">等待</text>
+    <text x="64" y="333">E₁</text><text x="216" y="333">J₀（WA=5）</text><text x="359" y="333">1</text><text x="441" y="333">0</text><text x="555" y="333" class="accent">保持 J₀</text>
+    <text x="64" y="367">E₂</text><text x="216" y="367">J₀（WA=5）</text><text x="359" y="367">1</text><text x="441" y="367">1</text><text x="555" y="367" font-weight="700">交接 J₀</text>
+    <text x="64" y="401">E₃</text><text x="216" y="401">J₁（WA=6）</text><text x="359" y="401">1</text><text x="441" y="401">1</text><text x="555" y="401" font-weight="700">交接 J₁</text>
+    <text x="64" y="435">E₄</text><text x="216" y="435">—（无有效数据）</text><text x="359" y="435">0</text><text x="441" y="435">1</text><text x="555" y="435">不交接</text>
+  </g>
+  <text x="20" y="467" class="small">J₀ 等待时保持 valid 和完整 payload 不变，直到成功交接。</text>
+</svg>

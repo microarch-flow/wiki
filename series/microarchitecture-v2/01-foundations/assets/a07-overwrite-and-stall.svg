@@ -1,0 +1,64 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 660 606" width="660" height="606" role="img" aria-labelledby="stall-title stall-desc">
+<title id="stall-title">写回端暂停时，盲目推进会覆盖尚未写回的任务</title>
+<desc id="stall-desc">同一个 E3 沿前状态：READ 保存任务 J2 的 RA1、RB0、WA7，MUL 保存 J1 的 X1、W5、WA6，WB 保存 J0 的 P6、WA5。写回端 ready 为 0，WE 为 0。若沿 E3 仍推进所有级且无新输入，J1 占据 WB，J0 未写回便被覆盖，结果丢失；独立的正确分支为全部级保持原状态，禁止新命令接收。若 E4 写回端恢复 ready 为 1，则可同时写回 J0 的 R5 为 6，并将 J1 和 J2 向后推进。示例在 E3 到 E4 无新命令进入。各行表示对应边沿后的寄存器状态，两条 E3 分支不是顺序运行。</desc>
+<style>
+text{font-family:"Noto Sans CJK SC","PingFang SC","Microsoft YaHei",sans-serif;fill:#173d35;font-size:18px}
+.head{font-size:22px;font-weight:700}.strong{font-size:19px;font-weight:700}.note{font-size:16px;fill:#4f695a}
+.slot{fill:#e0ebe3;stroke:#82a18e;stroke-width:1.4}.empty{fill:#f9faf5;stroke:#c4d0c4;stroke-width:1.3;stroke-dasharray:5 4}
+.warn{fill:#f2e8d3;stroke:#b6a073;stroke-width:1.5}.warntext{fill:#795a2e;font-weight:700}
+.good{fill:#d2e6d7;stroke:#82a18e;stroke-width:1.5}
+</style>
+<rect x="1" y="1" width="658" height="604" rx="13" fill="#f5f6ef" stroke="#c4d0c4" stroke-width="1.3"/>
+<text x="22" y="34" class="head">写回端不能接收时，前面的流水级还能前进吗？</text>
+<text x="22" y="61" class="note">比较同一 E3 沿的两种处理方式；假设 E3、E4 无新命令。</text>
+
+<text x="123" y="89" text-anchor="middle" class="strong">READ</text>
+<text x="330" y="89" text-anchor="middle" class="strong">MUL</text>
+<text x="537" y="89" text-anchor="middle" class="strong">WB</text>
+<text x="22" y="116" class="strong">E3 沿前：写回端 ready = 0</text>
+<rect x="22" y="128" width="202" height="57" rx="8" class="slot"/>
+<text x="123" y="151" text-anchor="middle" class="strong">J2</text>
+<text x="123" y="173" text-anchor="middle" class="note">RA1，RB0，WA7</text>
+<rect x="229" y="128" width="202" height="57" rx="8" class="slot"/>
+<text x="330" y="151" text-anchor="middle" class="strong">J1</text>
+<text x="330" y="173" text-anchor="middle" class="note">X1，W5，WA6</text>
+<rect x="436" y="128" width="202" height="57" rx="8" class="slot"/>
+<text x="537" y="151" text-anchor="middle" class="strong">J0</text>
+<text x="537" y="173" text-anchor="middle" class="note">P6，WA5</text>
+<rect x="22" y="199" width="616" height="143" rx="9" class="warn"/>
+<text x="35" y="225" class="strong warntext">分支 A：E3 仍推进（错误）</text>
+<text x="35" y="247" class="note">WE = 0，J0 未写回；但 WB 仍被 J1 改写。</text>
+<rect x="22" y="261" width="202" height="57" rx="8" class="empty"/>
+<text x="123" y="284" text-anchor="middle" class="strong">空</text>
+<text x="123" y="306" text-anchor="middle" class="note">V=0</text>
+<rect x="229" y="261" width="202" height="57" rx="8" class="slot"/>
+<text x="330" y="284" text-anchor="middle" class="strong">J2</text>
+<text x="330" y="306" text-anchor="middle" class="note">X3，W2，WA7</text>
+<rect x="436" y="261" width="202" height="57" rx="8" class="slot"/>
+<text x="537" y="284" text-anchor="middle" class="strong">J1</text>
+<text x="537" y="306" text-anchor="middle" class="note">P5，WA6</text>
+<text x="35" y="334" class="warntext">J0 不再存在于任何级：P6、WA5 丢失。</text>
+<rect x="22" y="355" width="616" height="124" rx="9" class="good"/>
+<text x="35" y="382" class="strong">分支 B：E3 全部保持（正确）</text>
+<text x="35" y="404" class="note">WE = 0，不接收新命令，三个有效任务都不移动。</text>
+<rect x="22" y="414" width="202" height="57" rx="8" class="slot"/>
+<text x="123" y="437" text-anchor="middle" class="strong">J2</text>
+<text x="123" y="459" text-anchor="middle" class="note">RA1，RB0，WA7</text>
+<rect x="229" y="414" width="202" height="57" rx="8" class="slot"/>
+<text x="330" y="437" text-anchor="middle" class="strong">J1</text>
+<text x="330" y="459" text-anchor="middle" class="note">X1，W5，WA6</text>
+<rect x="436" y="414" width="202" height="57" rx="8" class="slot"/>
+<text x="537" y="437" text-anchor="middle" class="strong">J0</text>
+<text x="537" y="459" text-anchor="middle" class="note">P6，WA5</text>
+<text x="22" y="505" class="strong">仅沿分支 B：E4 写回端 ready = 1</text>
+<text x="22" y="524" class="note">WE = 1，写 R5 = 6；J1、J2 同一沿推进到后一级。</text>
+<rect x="22" y="534" width="202" height="57" rx="8" class="empty"/>
+<text x="123" y="557" text-anchor="middle" class="strong">空</text>
+<text x="123" y="579" text-anchor="middle" class="note">V=0</text>
+<rect x="229" y="534" width="202" height="57" rx="8" class="slot"/>
+<text x="330" y="557" text-anchor="middle" class="strong">J2</text>
+<text x="330" y="579" text-anchor="middle" class="note">X3，W2，WA7</text>
+<rect x="436" y="534" width="202" height="57" rx="8" class="slot"/>
+<text x="537" y="557" text-anchor="middle" class="strong">J1</text>
+<text x="537" y="579" text-anchor="middle" class="note">P5，WA6</text>
+</svg>

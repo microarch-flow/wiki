@@ -1,0 +1,138 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 768 622" width="768" height="622" role="img" aria-labelledby="elastic-title elastic-desc">
+<title id="elastic-title">带本地暂停条件的三级弹性流水线</title>
+<desc id="elastic-desc">每行表示某个上升沿。沿前记录源提出的新任务、写回端 ready、READ、MUL、WB 三个寄存器的自身 ready；沿后记录三个级中的任务。E0 接收 J0，E1 无新任务，E2 接收 J1，沿后 READ 为 J1、MUL 为空、WB 为 J0。写回端 E3、E4 不可接收。E3 的 ready 从 READ 到 WB 为 1、1、0，J1 可进入空 MUL，同时接收 J2 到 READ，WB 保持 J0。E4 ready 均为零，源保持 J3，三个级不变。E5 写回端 ready 恢复，三个级 ready 均为一，接收之前等待的 J3，J2 进 MUL，J1 进 WB，同时 J0 写回 R5 等于六。E6、E7、E8 分别写回 J1、J2、J3。J3 计算 4 乘 1 得到 4，目标为 R5，按序写回在 J0 之后，因而有意覆盖 R5 中旧结果。WA 是随任务传递的目标编号，不由级的位置决定。</desc>
+<style>
+text{font-family:"Noto Sans CJK SC","PingFang SC","Microsoft YaHei",sans-serif;fill:#173d35;font-size:18px}
+.head{font-size:22px;font-weight:700}.strong{font-size:19px;font-weight:700}.note{font-size:16px;fill:#4f695a}.bold{font-weight:700}
+.small{font-size:16px}.edge{stroke:#c4d0c4;stroke-width:1}.notready{fill:#795a2e;font-weight:700}.ready{fill:#376a55;font-weight:700}
+</style>
+<rect x="1" y="1" width="766" height="620" rx="13" fill="#f5f6ef" stroke="#c4d0c4" stroke-width="1.3"/>
+<text x="22" y="34" class="head">有空位时仍可推进；空位用完才向前反压</text>
+<text x="22" y="61" class="note">每一级的 ready 表示其当前寄存器能在本沿采入新任务。</text>
+<text x="22" y="87" class="note">数据：READ → MUL → WB → 写回端；ready 沿相反方向返回。</text>
+
+<rect x="16" y="103" width="736" height="387" rx="8" fill="#f9faf5" stroke="#82a18e" stroke-width="1.4"/>
+<rect x="17" y="104" width="735" height="30" rx="7" fill="#e0ebe3"/>
+<text x="46" y="124" text-anchor="middle" class="strong">边沿</text>
+<text x="213" y="124" text-anchor="middle" class="strong">沿前：输入与接收条件</text>
+<text x="486.5" y="124" text-anchor="middle" class="strong">沿后：各级保存的任务</text>
+<text x="687.5" y="124" text-anchor="middle" class="strong">本沿写回</text>
+<rect x="17" y="134" width="735" height="32" fill="#edf1df"/>
+<text x="46.0" y="155" text-anchor="middle" class="small"></text>
+<text x="128.0" y="155" text-anchor="middle" class="small">源任务</text>
+<text x="212.5" y="155" text-anchor="middle" class="small">端 ready</text>
+<text x="297.5" y="155" text-anchor="middle" class="small">各级 ready¹</text>
+<text x="395.5" y="155" text-anchor="middle" class="small">READ</text>
+<text x="486.5" y="155" text-anchor="middle" class="small">MUL</text>
+<text x="577.5" y="155" text-anchor="middle" class="small">WB</text>
+<text x="687.5" y="155" text-anchor="middle" class="small">RF 更新</text>
+<rect x="17" y="166" width="734" height="36" fill="#e8eee6"/>
+<text x="46.0" y="190" text-anchor="middle" class="bold">E0</text>
+<text x="128.0" y="190" text-anchor="middle" class="small">J0 / 接收</text>
+<text x="212.5" y="190" text-anchor="middle" class="ready">1</text>
+<text x="297.5" y="190" text-anchor="middle" class="bold">1 1 1</text>
+<rect x="360" y="171" width="71" height="26" rx="6" fill="#d2e6d7" stroke="#82a18e"/>
+<text x="395.5" y="190" text-anchor="middle" class="bold">J0</text>
+<text x="486.5" y="190" text-anchor="middle" class="">空</text>
+<text x="577.5" y="190" text-anchor="middle" class="">空</text>
+<text x="687.5" y="190" text-anchor="middle" class="small">—</text>
+<rect x="17" y="202" width="734" height="36" fill="#fafbf8"/>
+<text x="46.0" y="226" text-anchor="middle" class="bold">E1</text>
+<text x="128.0" y="226" text-anchor="middle" class="small">空闲</text>
+<text x="212.5" y="226" text-anchor="middle" class="ready">1</text>
+<text x="297.5" y="226" text-anchor="middle" class="bold">1 1 1</text>
+<text x="395.5" y="226" text-anchor="middle" class="">空</text>
+<rect x="451" y="207" width="71" height="26" rx="6" fill="#d2e6d7" stroke="#82a18e"/>
+<text x="486.5" y="226" text-anchor="middle" class="bold">J0</text>
+<text x="577.5" y="226" text-anchor="middle" class="">空</text>
+<text x="687.5" y="226" text-anchor="middle" class="small">—</text>
+<rect x="17" y="238" width="734" height="36" fill="#e8eee6"/>
+<text x="46.0" y="262" text-anchor="middle" class="bold">E2</text>
+<text x="128.0" y="262" text-anchor="middle" class="small">J1 / 接收</text>
+<text x="212.5" y="262" text-anchor="middle" class="ready">1</text>
+<text x="297.5" y="262" text-anchor="middle" class="bold">1 1 1</text>
+<rect x="360" y="243" width="71" height="26" rx="6" fill="#d2e6d7" stroke="#82a18e"/>
+<text x="395.5" y="262" text-anchor="middle" class="bold">J1</text>
+<text x="486.5" y="262" text-anchor="middle" class="">空</text>
+<rect x="542" y="243" width="71" height="26" rx="6" fill="#d2e6d7" stroke="#82a18e"/>
+<text x="577.5" y="262" text-anchor="middle" class="bold">J0</text>
+<text x="687.5" y="262" text-anchor="middle" class="small">—</text>
+<rect x="17" y="274" width="734" height="36" fill="#f2e8d3"/>
+<text x="46.0" y="298" text-anchor="middle" class="bold">E3</text>
+<text x="128.0" y="298" text-anchor="middle" class="small">J2 / 接收</text>
+<text x="212.5" y="298" text-anchor="middle" class="notready">0</text>
+<text x="297.5" y="298" text-anchor="middle" class="notready">1 1 0</text>
+<rect x="360" y="279" width="71" height="26" rx="6" fill="#d2e6d7" stroke="#82a18e"/>
+<text x="395.5" y="298" text-anchor="middle" class="bold">J2</text>
+<rect x="451" y="279" width="71" height="26" rx="6" fill="#d2e6d7" stroke="#82a18e"/>
+<text x="486.5" y="298" text-anchor="middle" class="bold">J1</text>
+<rect x="542" y="279" width="71" height="26" rx="6" fill="#d2e6d7" stroke="#82a18e"/>
+<text x="577.5" y="298" text-anchor="middle" class="bold">J0</text>
+<text x="687.5" y="298" text-anchor="middle" class="small">—</text>
+<rect x="17" y="310" width="734" height="36" fill="#f2e8d3"/>
+<text x="46.0" y="334" text-anchor="middle" class="bold">E4</text>
+<text x="128.0" y="334" text-anchor="middle" class="small">J3 / 等待</text>
+<text x="212.5" y="334" text-anchor="middle" class="notready">0</text>
+<text x="297.5" y="334" text-anchor="middle" class="notready">0 0 0</text>
+<rect x="360" y="315" width="71" height="26" rx="6" fill="#d2e6d7" stroke="#82a18e"/>
+<text x="395.5" y="334" text-anchor="middle" class="bold">J2</text>
+<rect x="451" y="315" width="71" height="26" rx="6" fill="#d2e6d7" stroke="#82a18e"/>
+<text x="486.5" y="334" text-anchor="middle" class="bold">J1</text>
+<rect x="542" y="315" width="71" height="26" rx="6" fill="#d2e6d7" stroke="#82a18e"/>
+<text x="577.5" y="334" text-anchor="middle" class="bold">J0</text>
+<text x="687.5" y="334" text-anchor="middle" class="small">—</text>
+<rect x="17" y="346" width="734" height="36" fill="#d2e6d7"/>
+<text x="46.0" y="370" text-anchor="middle" class="bold">E5</text>
+<text x="128.0" y="370" text-anchor="middle" class="small">J3 / 接收</text>
+<text x="212.5" y="370" text-anchor="middle" class="ready">1</text>
+<text x="297.5" y="370" text-anchor="middle" class="ready">1 1 1</text>
+<rect x="360" y="351" width="71" height="26" rx="6" fill="#d2e6d7" stroke="#82a18e"/>
+<text x="395.5" y="370" text-anchor="middle" class="bold">J3</text>
+<rect x="451" y="351" width="71" height="26" rx="6" fill="#d2e6d7" stroke="#82a18e"/>
+<text x="486.5" y="370" text-anchor="middle" class="bold">J2</text>
+<rect x="542" y="351" width="71" height="26" rx="6" fill="#d2e6d7" stroke="#82a18e"/>
+<text x="577.5" y="370" text-anchor="middle" class="bold">J1</text>
+<text x="687.5" y="370" text-anchor="middle" class="small">J0→R5=6</text>
+<rect x="17" y="382" width="734" height="36" fill="#e8eee6"/>
+<text x="46.0" y="406" text-anchor="middle" class="bold">E6</text>
+<text x="128.0" y="406" text-anchor="middle" class="small">空闲</text>
+<text x="212.5" y="406" text-anchor="middle" class="ready">1</text>
+<text x="297.5" y="406" text-anchor="middle" class="bold">1 1 1</text>
+<text x="395.5" y="406" text-anchor="middle" class="">空</text>
+<rect x="451" y="387" width="71" height="26" rx="6" fill="#d2e6d7" stroke="#82a18e"/>
+<text x="486.5" y="406" text-anchor="middle" class="bold">J3</text>
+<rect x="542" y="387" width="71" height="26" rx="6" fill="#d2e6d7" stroke="#82a18e"/>
+<text x="577.5" y="406" text-anchor="middle" class="bold">J2</text>
+<text x="687.5" y="406" text-anchor="middle" class="small">J1→R6=5</text>
+<rect x="17" y="418" width="734" height="36" fill="#fafbf8"/>
+<text x="46.0" y="442" text-anchor="middle" class="bold">E7</text>
+<text x="128.0" y="442" text-anchor="middle" class="small">空闲</text>
+<text x="212.5" y="442" text-anchor="middle" class="ready">1</text>
+<text x="297.5" y="442" text-anchor="middle" class="bold">1 1 1</text>
+<text x="395.5" y="442" text-anchor="middle" class="">空</text>
+<text x="486.5" y="442" text-anchor="middle" class="">空</text>
+<rect x="542" y="423" width="71" height="26" rx="6" fill="#d2e6d7" stroke="#82a18e"/>
+<text x="577.5" y="442" text-anchor="middle" class="bold">J3</text>
+<text x="687.5" y="442" text-anchor="middle" class="small">J2→R7=6</text>
+<rect x="17" y="454" width="734" height="36" fill="#e8eee6"/>
+<text x="46.0" y="478" text-anchor="middle" class="bold">E8</text>
+<text x="128.0" y="478" text-anchor="middle" class="small">空闲</text>
+<text x="212.5" y="478" text-anchor="middle" class="ready">1</text>
+<text x="297.5" y="478" text-anchor="middle" class="bold">1 1 1</text>
+<text x="395.5" y="478" text-anchor="middle" class="">空</text>
+<text x="486.5" y="478" text-anchor="middle" class="">空</text>
+<text x="577.5" y="478" text-anchor="middle" class="">空</text>
+<text x="687.5" y="478" text-anchor="middle" class="small">J3→R5=4</text>
+<path d="M76 103V490" stroke="#82a18e" stroke-width="1.3"/>
+<path d="M350 103V490" stroke="#82a18e" stroke-width="1.3"/>
+<path d="M623 103V490" stroke="#82a18e" stroke-width="1.3"/>
+<path d="M180 134V490" class="edge"/>
+<path d="M245 134V490" class="edge"/>
+<path d="M441 134V490" class="edge"/>
+<path d="M532 134V490" class="edge"/>
+<text x="22" y="512" class="note">¹ ready 顺序：READ、MUL、WB（不是写回端的 ready）。</text>
+<text x="22" y="536" class="strong">E3：MUL 有空位，J1 前进；WB 停住。</text>
+<text x="22" y="561" class="strong">E4：三级全满，J3 等待并保持；E5：写回恢复，同时推进。</text>
+<text x="22" y="586" class="note">J3：4 × 1 = 4，WA = 5；按序写回，故 E8 有意覆盖 J0 写入的 R5。</text>
+<text x="22" y="608" class="note">各 J 包含其数据、WA（J0/J1/J2/J3 分别为 5/6/7/5）及有效状态。</text>
+</svg>
