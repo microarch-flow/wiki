@@ -1,0 +1,122 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 860 695" width="860" height="695" role="img" aria-labelledby="title desc">
+  <title id="title">教学 RLE 编码及数据依赖的压缩长度</title>
+  <desc id="desc">保持 3×4 布局，但把元素改为第一行 1、1、1、1，第二行 5、5、5、5，第三行 9、9、9、9。教学 RLE 格式的头部为 0C 06，分别记录原元素数 12 和载荷字节数 6；三个 count/value 对分别为 04 01、04 05、04 09，每对 2 B。总输出为 8 B，在 2 B 每拍的接口上占 4 个数据拍。解码器按 count 重复 value，恢复 12 B 原数据。若仍使用先前相邻元素不同的序列 1 至 12，则每元素产生一对，载荷 24 B，加头部 2 B 共 26 B，反而增加。</desc>
+  <defs>
+    <marker id="data-arrow" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0 0L7 3.5L0 7z" fill="#376650"/></marker>
+    <style>
+      text{font-family:"Noto Sans CJK SC","Microsoft YaHei",sans-serif;fill:#173d35;font-size:18px}
+      .heading{font-size:23px;font-weight:700}.label{font-weight:700}.small{font-size:16px}.tiny{font-size:14px}.accent{fill:#8a5d1c}.muted{fill:#58736a}
+      .panel{fill:#fafbf8;stroke:#c7d3c7;stroke-width:1.3}.block{fill:#e0ebe3;stroke:#82a18e;stroke-width:1.4}.control{fill:#f3ebdb;stroke:#c6aa79;stroke-width:1.3}
+      .slot{fill:#fafbf8;stroke:#92ad9d;stroke-width:1.1}.zero{fill:#f3ebdb;stroke:#c6aa79;stroke-width:1.1}
+      .data{stroke:#376650;stroke-width:2.2;fill:none;stroke-linecap:round;stroke-linejoin:round;marker-end:url(#data-arrow)}
+      .divider{stroke:#c7d3c7;stroke-width:1.1}
+    </style>
+  </defs>
+  <rect x="1" y="1" width="858" height="693" rx="13" fill="#f5f6ef" stroke="#c4d0c4"/>
+  <text x="20" y="36" class="heading" text-anchor="start">RLE 的输出长度取决于数据</text>
+  <text x="20" y="61" class="small muted" text-anchor="start">教学格式：2 B 头部 + 若干 (count, value) 对，各字段占 1 B。</text>
+  <rect x="20" y="82" width="820" height="329" rx="8" class="panel"/>
+  <text x="36" y="111" class="label" text-anchor="start">输入：</text>
+  <text x="36" y="136" class="label" text-anchor="start">12 B</text>
+  <text x="36" y="160" class="tiny muted" text-anchor="start">6 个读数据拍</text>
+  <text x="285" y="111" class="small label" text-anchor="middle">第 0 行</text>
+  <rect x="210" y="124" width="35" height="34" rx="4" class="slot"/>
+  <text x="227.5" y="147.0" class="small label" text-anchor="middle">1</text>
+  <rect x="249" y="124" width="35" height="34" rx="4" class="slot"/>
+  <text x="266.5" y="147.0" class="small label" text-anchor="middle">1</text>
+  <rect x="288" y="124" width="35" height="34" rx="4" class="slot"/>
+  <text x="305.5" y="147.0" class="small label" text-anchor="middle">1</text>
+  <rect x="327" y="124" width="35" height="34" rx="4" class="slot"/>
+  <text x="344.5" y="147.0" class="small label" text-anchor="middle">1</text>
+  <path d="M285 168V196" class="data"/>
+  <text x="297" y="187" class="tiny muted" text-anchor="start">连续 4 次</text>
+  <text x="285" y="213" class="small label" text-anchor="middle">第 1 对</text>
+  <rect x="208" y="221" width="154" height="80" rx="7" class="block"/>
+  <text x="248" y="243" class="tiny muted" text-anchor="middle">次数</text>
+  <text x="322" y="243" class="tiny muted" text-anchor="middle">数值</text>
+  <rect x="221" y="253" width="54" height="35" rx="4" class="slot"/>
+  <text x="248.0" y="276.5" class="small label" text-anchor="middle">04</text>
+  <rect x="295" y="253" width="54" height="35" rx="4" class="slot"/>
+  <text x="322.0" y="276.5" class="small label" text-anchor="middle">01</text>
+  <text x="491" y="111" class="small label" text-anchor="middle">第 1 行</text>
+  <rect x="416" y="124" width="35" height="34" rx="4" class="slot"/>
+  <text x="433.5" y="147.0" class="small label" text-anchor="middle">5</text>
+  <rect x="455" y="124" width="35" height="34" rx="4" class="slot"/>
+  <text x="472.5" y="147.0" class="small label" text-anchor="middle">5</text>
+  <rect x="494" y="124" width="35" height="34" rx="4" class="slot"/>
+  <text x="511.5" y="147.0" class="small label" text-anchor="middle">5</text>
+  <rect x="533" y="124" width="35" height="34" rx="4" class="slot"/>
+  <text x="550.5" y="147.0" class="small label" text-anchor="middle">5</text>
+  <path d="M491 168V196" class="data"/>
+  <text x="503" y="187" class="tiny muted" text-anchor="start">连续 4 次</text>
+  <text x="491" y="213" class="small label" text-anchor="middle">第 2 对</text>
+  <rect x="414" y="221" width="154" height="80" rx="7" class="block"/>
+  <text x="454" y="243" class="tiny muted" text-anchor="middle">次数</text>
+  <text x="528" y="243" class="tiny muted" text-anchor="middle">数值</text>
+  <rect x="427" y="253" width="54" height="35" rx="4" class="slot"/>
+  <text x="454.0" y="276.5" class="small label" text-anchor="middle">04</text>
+  <rect x="501" y="253" width="54" height="35" rx="4" class="slot"/>
+  <text x="528.0" y="276.5" class="small label" text-anchor="middle">05</text>
+  <text x="697" y="111" class="small label" text-anchor="middle">第 2 行</text>
+  <rect x="622" y="124" width="35" height="34" rx="4" class="slot"/>
+  <text x="639.5" y="147.0" class="small label" text-anchor="middle">9</text>
+  <rect x="661" y="124" width="35" height="34" rx="4" class="slot"/>
+  <text x="678.5" y="147.0" class="small label" text-anchor="middle">9</text>
+  <rect x="700" y="124" width="35" height="34" rx="4" class="slot"/>
+  <text x="717.5" y="147.0" class="small label" text-anchor="middle">9</text>
+  <rect x="739" y="124" width="35" height="34" rx="4" class="slot"/>
+  <text x="756.5" y="147.0" class="small label" text-anchor="middle">9</text>
+  <path d="M697 168V196" class="data"/>
+  <text x="709" y="187" class="tiny muted" text-anchor="start">连续 4 次</text>
+  <text x="697" y="213" class="small label" text-anchor="middle">第 3 对</text>
+  <rect x="620" y="221" width="154" height="80" rx="7" class="block"/>
+  <text x="660" y="243" class="tiny muted" text-anchor="middle">次数</text>
+  <text x="734" y="243" class="tiny muted" text-anchor="middle">数值</text>
+  <rect x="633" y="253" width="54" height="35" rx="4" class="slot"/>
+  <text x="660.0" y="276.5" class="small label" text-anchor="middle">04</text>
+  <rect x="707" y="253" width="54" height="35" rx="4" class="slot"/>
+  <text x="734.0" y="276.5" class="small label" text-anchor="middle">09</text>
+  <text x="105" y="213" class="small label" text-anchor="middle">头部</text>
+  <rect x="34" y="221" width="142" height="80" rx="7" class="control"/>
+  <text x="68" y="243" class="tiny muted" text-anchor="middle">原元素数</text>
+  <text x="141" y="243" class="tiny muted" text-anchor="middle">载荷字节</text>
+  <rect x="42" y="253" width="54" height="35" rx="4" class="slot"/>
+  <text x="69.0" y="276.5" class="small label" text-anchor="middle">0C</text>
+  <rect x="113" y="253" width="54" height="35" rx="4" class="slot"/>
+  <text x="140.0" y="276.5" class="small label" text-anchor="middle">06</text>
+  <text x="35" y="326" class="label" text-anchor="start">压缩后（十六进制）： 0C 06 04 01 04 05 04 09</text>
+  <text x="35" y="354" class="small" text-anchor="start">共 2 B 头部 + 6 B 载荷 = 8 B（4 个写数据拍）。</text>
+  <text x="35" y="385" class="small muted" text-anchor="start">编码器需报告实际输出长度；以上不是实际标准格式。</text>
+  <rect x="20" y="427" width="820" height="123" rx="8" class="panel"/>
+  <text x="36" y="455" class="label" text-anchor="start">解码：按 count 重复 value</text>
+  <text x="36" y="483" class="small" text-anchor="start">04 01 生成四个 1，04 05 生成四个 5，04 09 生成四个 9。</text>
+  <rect x="210" y="500" width="35" height="34" rx="4" class="slot"/>
+  <text x="227.5" y="523.0" class="small label" text-anchor="middle">1</text>
+  <rect x="249" y="500" width="35" height="34" rx="4" class="slot"/>
+  <text x="266.5" y="523.0" class="small label" text-anchor="middle">1</text>
+  <rect x="288" y="500" width="35" height="34" rx="4" class="slot"/>
+  <text x="305.5" y="523.0" class="small label" text-anchor="middle">1</text>
+  <rect x="327" y="500" width="35" height="34" rx="4" class="slot"/>
+  <text x="344.5" y="523.0" class="small label" text-anchor="middle">1</text>
+  <rect x="416" y="500" width="35" height="34" rx="4" class="slot"/>
+  <text x="433.5" y="523.0" class="small label" text-anchor="middle">5</text>
+  <rect x="455" y="500" width="35" height="34" rx="4" class="slot"/>
+  <text x="472.5" y="523.0" class="small label" text-anchor="middle">5</text>
+  <rect x="494" y="500" width="35" height="34" rx="4" class="slot"/>
+  <text x="511.5" y="523.0" class="small label" text-anchor="middle">5</text>
+  <rect x="533" y="500" width="35" height="34" rx="4" class="slot"/>
+  <text x="550.5" y="523.0" class="small label" text-anchor="middle">5</text>
+  <rect x="622" y="500" width="35" height="34" rx="4" class="slot"/>
+  <text x="639.5" y="523.0" class="small label" text-anchor="middle">9</text>
+  <rect x="661" y="500" width="35" height="34" rx="4" class="slot"/>
+  <text x="678.5" y="523.0" class="small label" text-anchor="middle">9</text>
+  <rect x="700" y="500" width="35" height="34" rx="4" class="slot"/>
+  <text x="717.5" y="523.0" class="small label" text-anchor="middle">9</text>
+  <rect x="739" y="500" width="35" height="34" rx="4" class="slot"/>
+  <text x="756.5" y="523.0" class="small label" text-anchor="middle">9</text>
+  <text x="37" y="523" class="small label" text-anchor="start">恢复 12 B</text>
+  <rect x="20" y="566" width="820" height="111" rx="8" class="control"/>
+  <text x="36" y="597" class="label" text-anchor="start">如果输入仍是 1，2，…，12（无相邻重复）</text>
+  <text x="36" y="625" class="small" text-anchor="start">每个元素都必须编码为 (1, value) 对：2 B + 12 × 2 B = 26 B。</text>
+  <text x="36" y="653" class="small accent" text-anchor="start">原始 12 B 反而变长；头部与计数同样占据存储空间。</text>
+</svg>

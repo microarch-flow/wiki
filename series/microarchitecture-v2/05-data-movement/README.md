@@ -15,22 +15,22 @@
 <figcaption>知识衔接示意。虚线表示关联或辅助阅读。点击可查看大图。</figcaption>
 </figure>
 
-## 计划阅读顺序
+## 阅读顺序 {#计划阅读顺序}
 
-本路线规划三篇文章。下表按照任务展开、并发推进、数据处理的认知顺序列出正文；尚未完成的条目为后续阅读规划。
+本路线共三篇正文，按照任务展开、并发推进、数据处理的认知顺序阅读。三篇共享同一矩阵算例，逐步构建具有并发与数据处理能力的搬运引擎。
 
 | ID | 文章 | 内容范围 | 状态 |
 | --- | --- | --- | --- |
 | E01 | [一块数据从内存搬到计算单元，DMA 要做哪些工作？](e01-dma-task-and-address-generation.md) | 独立引擎、描述符、地址生成、多维 stride、burst、对齐与边界切分 | 已发布 |
 | E02 | [第一笔请求还没有返回，为什么 DMA 能发出第二笔请求？](e02-outstanding-requests-and-completion.md) | outstanding、ID、内部缓冲、响应匹配/乱序、反压、命令队列、完成通知与可读条件 | 已发布 |
-| E03 | 搬运数据时，能否顺便改变数据的布局和格式？ | gather/scatter、转置、重排、类型转换、打包、压缩/解压、粒度及吞吐 | 未发布 |
+| E03 | [搬运数据时，能否顺便改变数据的布局和格式？](e03-layout-and-format-processing.md) | gather/scatter、转置、重排、类型转换、打包、压缩/解压、粒度及吞吐 | 已发布 |
 
 ## 阅读衔接
 
-- [共同计算基础](../01-foundations/README.md)：重点了解 [A01 的状态与控制](../01-foundations/a01-state-and-control.md)、[A05 的数据通路](../01-foundations/a05-datapath-and-control.md)、[A07 的握手](../01-foundations/a07-handshake-and-backpressure.md)和 [A08 的任务生命周期](../01-foundations/a08-dependencies-and-scheduling.md)。不必先读完整的 CPU 或计算阵列路线。
+- [共同计算基础](../01-foundations/README.md)：格式转换还可参考 [A04 的浮点与低精度格式](../01-foundations/a04-floating-point-and-low-precision.md)。理解搬运控制，重点了解 [A01 的状态与控制](../01-foundations/a01-state-and-control.md)、[A05 的数据通路](../01-foundations/a05-datapath-and-control.md)、[A07 的握手](../01-foundations/a07-handshake-and-backpressure.md)和 [A08 的任务生命周期](../01-foundations/a08-dependencies-and-scheduling.md)。不必先读完整的 CPU 或计算阵列路线。
 - 地址、存储端口和访问粒度可参阅[存储系统](../../storage/README.md)；[NPU 数据路径与存储组织](../../storage/01-memory-hierarchy/04-npu-case/README.md)解释数据如何跨存储层级。总线事务、请求和响应的通信机制可参阅[芯片与系统互连](../../interconnect/README.md)，尤其是[AXI 与 DMA 的系统接口](../../interconnect/BUS/04-microarchitecture-integration/axi-dma-system-interface.md)。
 - 本路线关注搬运和数据处理的硬件机制；驱动编程、软件编排及具体互连协议不在这里展开。
-- 接下来阅读[多执行实体与资源协作](../06-resource-cooperation/README.md)，看看数据准备和计算如何同时进行。
+- 接下来阅读[多执行实体与资源协作](../06-resource-cooperation/README.md)，看看数据准备和计算如何同时进行。也可以继续阅读[专用计算与稀疏计算](../07-specialized-compute/README.md)，了解数据表示如何影响实际运算。
 
 ## 进阶资料
 

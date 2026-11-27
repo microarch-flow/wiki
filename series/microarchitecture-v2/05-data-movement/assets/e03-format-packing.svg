@@ -1,0 +1,125 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 860 685" width="860" height="685" role="img" aria-labelledby="title desc">
+  <title id="title">相同元素在 U8、U16 与紧密 U4 格式中的字节与数据拍数量</title>
+  <desc id="desc">同一 3×4 矩阵保持行顺序，元素 1 至 12。输入 U8 共 12 B，在 2 B 每拍的接口上需要 6 个读数据拍。转换为 U16 时采用零扩展，每个元素占 2 B，目标使用小端字节序，因此第一个元素为 01 00，完整输出 24 B，需要 12 个写数据拍。转换为 U4 时全部元素不超过 15，可无损表示。两个元素压入一个字节，逻辑顺序靠前的元素放低四位，例如 1 和 2 打包为十六进制 21。完整输出为 21 43 65 87 A9 CB，共 6 B，按连续写入需要 3 个数据拍。图中写数据拍数量不包括请求、响应或等待周期。</desc>
+  <defs>
+    <marker id="data-arrow" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0 0L7 3.5L0 7z" fill="#376650"/></marker>
+    <style>
+      text{font-family:"Noto Sans CJK SC","Microsoft YaHei",sans-serif;fill:#173d35;font-size:18px}
+      .heading{font-size:23px;font-weight:700}.label{font-weight:700}.small{font-size:16px}.tiny{font-size:14px}.accent{fill:#8a5d1c}.muted{fill:#58736a}
+      .panel{fill:#fafbf8;stroke:#c7d3c7;stroke-width:1.3}.block{fill:#e0ebe3;stroke:#82a18e;stroke-width:1.4}.control{fill:#f3ebdb;stroke:#c6aa79;stroke-width:1.3}
+      .slot{fill:#fafbf8;stroke:#92ad9d;stroke-width:1.1}.zero{fill:#f3ebdb;stroke:#c6aa79;stroke-width:1.1}
+      .data{stroke:#376650;stroke-width:2.2;fill:none;stroke-linecap:round;stroke-linejoin:round;marker-end:url(#data-arrow)}
+      .divider{stroke:#c7d3c7;stroke-width:1.1}
+    </style>
+  </defs>
+  <rect x="1" y="1" width="858" height="683" rx="13" fill="#f5f6ef" stroke="#c4d0c4"/>
+  <text x="20" y="36" class="heading" text-anchor="start">相同的 12 个数，不同格式占用不同字节</text>
+  <text x="20" y="61" class="small muted" text-anchor="start">保持原行序；数据拍中每格为 1 B，绿色外框为一个 2 B 数据拍。</text>
+  <rect x="20" y="81" width="820" height="124" rx="8" class="panel"/>
+  <text x="35" y="109" class="label" text-anchor="start">输入：U8（每个元素 1 B）</text>
+  <text x="35" y="135" class="small muted" text-anchor="start">12 B · 6 个读数据拍</text>
+  <text x="35" y="163" class="small" text-anchor="start">原值：1，2，…，12</text>
+  <rect x="303" y="121" width="82" height="45" rx="6" class="block"/>
+  <rect x="307" y="126" width="34" height="35" rx="4" class="slot"/>
+  <text x="324.0" y="149.5" class="small label" text-anchor="middle">01</text>
+  <rect x="347" y="126" width="34" height="35" rx="4" class="slot"/>
+  <text x="364.0" y="149.5" class="small label" text-anchor="middle">02</text>
+  <rect x="389" y="121" width="82" height="45" rx="6" class="block"/>
+  <rect x="393" y="126" width="34" height="35" rx="4" class="slot"/>
+  <text x="410.0" y="149.5" class="small label" text-anchor="middle">03</text>
+  <rect x="433" y="126" width="34" height="35" rx="4" class="slot"/>
+  <text x="450.0" y="149.5" class="small label" text-anchor="middle">04</text>
+  <rect x="475" y="121" width="82" height="45" rx="6" class="block"/>
+  <rect x="479" y="126" width="34" height="35" rx="4" class="slot"/>
+  <text x="496.0" y="149.5" class="small label" text-anchor="middle">05</text>
+  <rect x="519" y="126" width="34" height="35" rx="4" class="slot"/>
+  <text x="536.0" y="149.5" class="small label" text-anchor="middle">06</text>
+  <rect x="561" y="121" width="82" height="45" rx="6" class="block"/>
+  <rect x="565" y="126" width="34" height="35" rx="4" class="slot"/>
+  <text x="582.0" y="149.5" class="small label" text-anchor="middle">07</text>
+  <rect x="605" y="126" width="34" height="35" rx="4" class="slot"/>
+  <text x="622.0" y="149.5" class="small label" text-anchor="middle">08</text>
+  <rect x="647" y="121" width="82" height="45" rx="6" class="block"/>
+  <rect x="651" y="126" width="34" height="35" rx="4" class="slot"/>
+  <text x="668.0" y="149.5" class="small label" text-anchor="middle">09</text>
+  <rect x="691" y="126" width="34" height="35" rx="4" class="slot"/>
+  <text x="708.0" y="149.5" class="small label" text-anchor="middle">0A</text>
+  <rect x="733" y="121" width="82" height="45" rx="6" class="block"/>
+  <rect x="737" y="126" width="34" height="35" rx="4" class="slot"/>
+  <text x="754.0" y="149.5" class="small label" text-anchor="middle">0B</text>
+  <rect x="777" y="126" width="34" height="35" rx="4" class="slot"/>
+  <text x="794.0" y="149.5" class="small label" text-anchor="middle">0C</text>
+  <text x="303" y="190" class="tiny muted" text-anchor="start">框内字节以十六进制表示，顺序从低地址到高地址。</text>
+  <rect x="20" y="221" width="820" height="164" rx="8" class="panel"/>
+  <text x="35" y="249" class="label" text-anchor="start">U8 → U16：数值转换（零扩展）</text>
+  <text x="35" y="274" class="small" text-anchor="start">每个元素占 2 B；本例按小端排列，高字节补 00。</text>
+  <rect x="36" y="288" width="82" height="45" rx="6" class="block"/>
+  <rect x="40" y="293" width="34" height="35" rx="4" class="slot"/>
+  <text x="57.0" y="316.5" class="small label" text-anchor="middle">01</text>
+  <rect x="80" y="293" width="34" height="35" rx="4" class="zero"/>
+  <text x="97.0" y="316.5" class="small label" text-anchor="middle">00</text>
+  <rect x="122" y="288" width="82" height="45" rx="6" class="block"/>
+  <rect x="126" y="293" width="34" height="35" rx="4" class="slot"/>
+  <text x="143.0" y="316.5" class="small label" text-anchor="middle">02</text>
+  <rect x="166" y="293" width="34" height="35" rx="4" class="zero"/>
+  <text x="183.0" y="316.5" class="small label" text-anchor="middle">00</text>
+  <rect x="208" y="288" width="82" height="45" rx="6" class="block"/>
+  <rect x="212" y="293" width="34" height="35" rx="4" class="slot"/>
+  <text x="229.0" y="316.5" class="small label" text-anchor="middle">03</text>
+  <rect x="252" y="293" width="34" height="35" rx="4" class="zero"/>
+  <text x="269.0" y="316.5" class="small label" text-anchor="middle">00</text>
+  <rect x="294" y="288" width="82" height="45" rx="6" class="block"/>
+  <rect x="298" y="293" width="34" height="35" rx="4" class="slot"/>
+  <text x="315.0" y="316.5" class="small label" text-anchor="middle">04</text>
+  <rect x="338" y="293" width="34" height="35" rx="4" class="zero"/>
+  <text x="355.0" y="316.5" class="small label" text-anchor="middle">00</text>
+  <text x="420" y="316" class="label" text-anchor="middle">…</text>
+  <rect x="460" y="288" width="82" height="45" rx="6" class="block"/>
+  <rect x="464" y="293" width="34" height="35" rx="4" class="slot"/>
+  <text x="481.0" y="316.5" class="small label" text-anchor="middle">0C</text>
+  <rect x="504" y="293" width="34" height="35" rx="4" class="zero"/>
+  <text x="521.0" y="316.5" class="small label" text-anchor="middle">00</text>
+  <rect x="580" y="283" width="241" height="64" rx="8" class="control"/>
+  <text x="700.5" y="310" class="heading" text-anchor="middle">24 B</text>
+  <text x="700.5" y="334" class="small" text-anchor="middle">12 个写数据拍</text>
+  <text x="35" y="369" class="small muted" text-anchor="start">一个数据拍只容纳 1 个 U16 元素。</text>
+  <rect x="20" y="401" width="820" height="238" rx="8" class="panel"/>
+  <text x="35" y="430" class="label" text-anchor="start">U8 → U4：窄化后再紧密打包</text>
+  <text x="35" y="456" class="small" text-anchor="start">1 至 12 均可用 4 bit 无损表示；逻辑顺序靠前的元素放低四位。</text>
+  <text x="35" y="486" class="small label" text-anchor="start">1 = 0001</text>
+  <text x="35" y="509" class="small label" text-anchor="start">2 = 0010</text>
+  <path d="M139 481H171V493H194" class="data"/>
+  <path d="M139 504H171V493H194" class="data"/>
+  <rect x="202" y="469" width="203" height="48" rx="6" class="control"/>
+  <rect x="207" y="474" width="96" height="38" rx="4" class="slot"/>
+  <rect x="305" y="474" width="95" height="38" rx="4" class="slot"/>
+  <text x="255" y="499" class="label" text-anchor="middle">0010</text>
+  <text x="352.5" y="499" class="label" text-anchor="middle">0001</text>
+  <text x="255" y="535" class="tiny muted" text-anchor="middle">高四位（2）</text>
+  <text x="352.5" y="535" class="tiny muted" text-anchor="middle">低四位（1）</text>
+  <path d="M413 493H447" class="data"/>
+  <rect x="455" y="475" width="87" height="36" rx="6" class="control"/>
+  <text x="498.5" y="500" class="label" text-anchor="middle">0x21</text>
+  <text x="35" y="566" class="small label" text-anchor="start">打包结果（十六进制）</text>
+  <rect x="36" y="578" width="82" height="45" rx="6" class="block"/>
+  <rect x="40" y="583" width="34" height="35" rx="4" class="slot"/>
+  <text x="57.0" y="606.5" class="small label" text-anchor="middle">21</text>
+  <rect x="80" y="583" width="34" height="35" rx="4" class="slot"/>
+  <text x="97.0" y="606.5" class="small label" text-anchor="middle">43</text>
+  <rect x="122" y="578" width="82" height="45" rx="6" class="block"/>
+  <rect x="126" y="583" width="34" height="35" rx="4" class="slot"/>
+  <text x="143.0" y="606.5" class="small label" text-anchor="middle">65</text>
+  <rect x="166" y="583" width="34" height="35" rx="4" class="slot"/>
+  <text x="183.0" y="606.5" class="small label" text-anchor="middle">87</text>
+  <rect x="208" y="578" width="82" height="45" rx="6" class="block"/>
+  <rect x="212" y="583" width="34" height="35" rx="4" class="slot"/>
+  <text x="229.0" y="606.5" class="small label" text-anchor="middle">A9</text>
+  <rect x="252" y="583" width="34" height="35" rx="4" class="slot"/>
+  <text x="269.0" y="606.5" class="small label" text-anchor="middle">CB</text>
+  <rect x="580" y="554" width="241" height="64" rx="8" class="control"/>
+  <text x="700.5" y="581" class="heading" text-anchor="middle">6 B</text>
+  <text x="700.5" y="605" class="small" text-anchor="middle">3 个写数据拍</text>
+  <text x="315" y="592" class="small muted" text-anchor="start">每字节放 2 个元素，</text>
+  <text x="315" y="614" class="small muted" text-anchor="start">每拍写 4 个元素。</text>
+  <text x="20" y="668" class="tiny muted" text-anchor="start">此处只计成功交接的有效数据拍，不含地址、响应及等待周期。</text>
+</svg>

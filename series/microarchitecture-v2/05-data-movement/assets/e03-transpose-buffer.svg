@@ -1,0 +1,137 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 820 639" width="820" height="639" role="img" aria-labelledby="title desc">
+  <title id="title">片内暂存矩阵后合并转置写事务</title>
+  <desc id="desc">图示一个 12 B 可按原矩阵坐标寻址的片内 tile 缓冲。读事务 R0、R1、R2 分别从 0x1000、0x1008、0x1010 取得 4 B，不要求按顺序返回；每笔数据按源行号写入 tile。数据接收完成后可以结束独立的读事务状态，而 tile 数据保留至写完。缓冲收齐后按目标字节偏移递增读取：六个 2 B 数据拍依次为 [1,5]、[9,2]、[6,10]、[3,7]、[11,4]、[8,12]。每两个数据拍组成一笔 4 B 写 burst，起点依次为 0x2000、0x2004、0x2008。相对每元素单独散写的 12 笔 1 B 事务和 12 个数据拍，使用缓冲可组织为 3 笔 4 B 写事务和 6 个数据拍；有效写数据仍是 12 B。散写假设目标支持 1 B 窄写，对照不计地址交接和写应答等等待。</desc>
+  <defs>
+    <marker id="data-arrow" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0 0L7 3.5L0 7z" fill="#376650"/></marker>
+    <style>
+      text{font-family:"Noto Sans CJK SC","Microsoft YaHei",sans-serif;fill:#173d35;font-size:18px}
+      .heading{font-size:23px;font-weight:700}.label{font-weight:700}.small{font-size:16px}.tiny{font-size:14px}.muted{fill:#58736a}.accent{fill:#8a5d1c}.teal{fill:#205b64}
+      .panel{fill:#fafbf8;stroke:#c7d3c7;stroke-width:1.3}.slot{fill:#e0ebe3;stroke:#82a18e;stroke-width:1.4}.amber{fill:#f3ebdb;stroke:#b88a46;stroke-width:1.8}.ocean{fill:#d9ecee;stroke:#5e9098;stroke-width:1.8}
+      .control{fill:#f3ebdb;stroke:#c6aa79;stroke-width:1.3}.block{fill:#e0ebe3;stroke:#82a18e;stroke-width:1.4}.pair{fill:#fafbf8;stroke:#92ad9d;stroke-width:1.1}
+      .data{stroke:#376650;stroke-width:2.4;fill:none;stroke-linejoin:round;stroke-linecap:round;marker-end:url(#data-arrow)}
+    </style>
+  </defs>
+  <rect x="1" y="1" width="818" height="637" rx="13" fill="#f5f6ef" stroke="#c4d0c4"/>
+  <text x="20" y="35" class="heading" text-anchor="start">先把数据暂存在片内，再按目标顺序组成写事务</text>
+  <text x="20" y="62" class="small muted" text-anchor="start">同样的 12 B 有效数据；读接口和写接口均为 2 B/拍。</text>
+  <rect x="18" y="80" width="334" height="227" rx="8" class="panel"/>
+  <rect x="475" y="80" width="327" height="227" rx="8" class="panel"/>
+  <text x="35" y="109" class="label" text-anchor="start">源端读取（3 笔，各 4 B）</text>
+  <text x="492" y="109" class="label" text-anchor="start">12 B tile 缓冲（按 r,c 寻址）</text>
+  <text x="560" y="127" class="tiny muted" text-anchor="middle">c=0</text>
+  <text x="616" y="127" class="tiny muted" text-anchor="middle">c=1</text>
+  <text x="672" y="127" class="tiny muted" text-anchor="middle">c=2</text>
+  <text x="728" y="127" class="tiny muted" text-anchor="middle">c=3</text>
+  <text x="35" y="153" class="small label" text-anchor="start">R0 · 0x1000</text>
+  <rect x="171" y="134" width="35" height="37" rx="4" class="slot"/>
+  <text x="188.5" y="158.5" class="label" text-anchor="middle">1</text>
+  <rect x="211" y="134" width="35" height="37" rx="4" class="slot"/>
+  <text x="228.5" y="158.5" class="label" text-anchor="middle">2</text>
+  <rect x="251" y="134" width="35" height="37" rx="4" class="slot"/>
+  <text x="268.5" y="158.5" class="label" text-anchor="middle">3</text>
+  <rect x="291" y="134" width="35" height="37" rx="4" class="slot"/>
+  <text x="308.5" y="158.5" class="label" text-anchor="middle">4</text>
+  <text x="496" y="153" class="small label" text-anchor="start">r=0</text>
+  <rect x="535" y="134" width="50" height="37" rx="4" class="slot"/>
+  <text x="560.0" y="158.5" class="label" text-anchor="middle">1</text>
+  <rect x="591" y="134" width="50" height="37" rx="4" class="slot"/>
+  <text x="616.0" y="158.5" class="label" text-anchor="middle">2</text>
+  <rect x="647" y="134" width="50" height="37" rx="4" class="slot"/>
+  <text x="672.0" y="158.5" class="label" text-anchor="middle">3</text>
+  <rect x="703" y="134" width="50" height="37" rx="4" class="slot"/>
+  <text x="728.0" y="158.5" class="label" text-anchor="middle">4</text>
+  <path d="M352 153H475" class="data"/>
+  <text x="35" y="203" class="small label" text-anchor="start">R1 · 0x1008</text>
+  <rect x="171" y="184" width="35" height="37" rx="4" class="slot"/>
+  <text x="188.5" y="208.5" class="label" text-anchor="middle">5</text>
+  <rect x="211" y="184" width="35" height="37" rx="4" class="slot"/>
+  <text x="228.5" y="208.5" class="label" text-anchor="middle">6</text>
+  <rect x="251" y="184" width="35" height="37" rx="4" class="slot"/>
+  <text x="268.5" y="208.5" class="label" text-anchor="middle">7</text>
+  <rect x="291" y="184" width="35" height="37" rx="4" class="slot"/>
+  <text x="308.5" y="208.5" class="label" text-anchor="middle">8</text>
+  <text x="496" y="203" class="small label" text-anchor="start">r=1</text>
+  <rect x="535" y="184" width="50" height="37" rx="4" class="slot"/>
+  <text x="560.0" y="208.5" class="label" text-anchor="middle">5</text>
+  <rect x="591" y="184" width="50" height="37" rx="4" class="slot"/>
+  <text x="616.0" y="208.5" class="label" text-anchor="middle">6</text>
+  <rect x="647" y="184" width="50" height="37" rx="4" class="slot"/>
+  <text x="672.0" y="208.5" class="label" text-anchor="middle">7</text>
+  <rect x="703" y="184" width="50" height="37" rx="4" class="slot"/>
+  <text x="728.0" y="208.5" class="label" text-anchor="middle">8</text>
+  <path d="M352 203H475" class="data"/>
+  <text x="35" y="253" class="small label" text-anchor="start">R2 · 0x1010</text>
+  <rect x="171" y="234" width="35" height="37" rx="4" class="slot"/>
+  <text x="188.5" y="258.5" class="label" text-anchor="middle">9</text>
+  <rect x="211" y="234" width="35" height="37" rx="4" class="slot"/>
+  <text x="228.5" y="258.5" class="label" text-anchor="middle">10</text>
+  <rect x="251" y="234" width="35" height="37" rx="4" class="slot"/>
+  <text x="268.5" y="258.5" class="label" text-anchor="middle">11</text>
+  <rect x="291" y="234" width="35" height="37" rx="4" class="slot"/>
+  <text x="308.5" y="258.5" class="label" text-anchor="middle">12</text>
+  <text x="496" y="253" class="small label" text-anchor="start">r=2</text>
+  <rect x="535" y="234" width="50" height="37" rx="4" class="slot"/>
+  <text x="560.0" y="258.5" class="label" text-anchor="middle">9</text>
+  <rect x="591" y="234" width="50" height="37" rx="4" class="slot"/>
+  <text x="616.0" y="258.5" class="label" text-anchor="middle">10</text>
+  <rect x="647" y="234" width="50" height="37" rx="4" class="slot"/>
+  <text x="672.0" y="258.5" class="label" text-anchor="middle">11</text>
+  <rect x="703" y="234" width="50" height="37" rx="4" class="slot"/>
+  <text x="728.0" y="258.5" class="label" text-anchor="middle">12</text>
+  <path d="M352 253H475" class="data"/>
+  <text x="181" y="297" class="small muted" text-anchor="middle">用读响应的身份找到源行</text>
+  <text x="638" y="297" class="tiny muted" text-anchor="middle">读事务可结束，tile 数据仍保留</text>
+  <path d="M638 307V337" class="data"/>
+  <text x="620" y="332" class="small label" text-anchor="end">收齐后按目标偏移递增读出</text>
+  <rect x="18" y="345" width="784" height="170" rx="8" class="panel"/>
+  <text x="36" y="375" class="label" text-anchor="start">目标连续地址流（每格 1 B，两个元素组成一拍）</text>
+  <rect x="33" y="389" width="242" height="113" rx="8" class="block"/>
+  <text x="154" y="415" class="small label" text-anchor="middle">写 burst · 0x2000（4 B）</text>
+  <rect x="44" y="426" width="106" height="63" rx="5" class="pair"/>
+  <text x="97" y="442" class="tiny muted" text-anchor="middle">第 1 拍</text>
+  <rect x="51" y="449" width="44" height="31" rx="4" class="slot"/>
+  <text x="73.0" y="470.5" class="label" text-anchor="middle">1</text>
+  <rect x="98" y="449" width="44" height="31" rx="4" class="slot"/>
+  <text x="120.0" y="470.5" class="label" text-anchor="middle">5</text>
+  <rect x="158" y="426" width="106" height="63" rx="5" class="pair"/>
+  <text x="211" y="442" class="tiny muted" text-anchor="middle">第 2 拍</text>
+  <rect x="165" y="449" width="44" height="31" rx="4" class="slot"/>
+  <text x="187.0" y="470.5" class="label" text-anchor="middle">9</text>
+  <rect x="212" y="449" width="44" height="31" rx="4" class="slot"/>
+  <text x="234.0" y="470.5" class="label" text-anchor="middle">2</text>
+  <rect x="293" y="389" width="242" height="113" rx="8" class="block"/>
+  <text x="414" y="415" class="small label" text-anchor="middle">写 burst · 0x2004（4 B）</text>
+  <rect x="304" y="426" width="106" height="63" rx="5" class="pair"/>
+  <text x="357" y="442" class="tiny muted" text-anchor="middle">第 3 拍</text>
+  <rect x="311" y="449" width="44" height="31" rx="4" class="slot"/>
+  <text x="333.0" y="470.5" class="label" text-anchor="middle">6</text>
+  <rect x="358" y="449" width="44" height="31" rx="4" class="slot"/>
+  <text x="380.0" y="470.5" class="label" text-anchor="middle">10</text>
+  <rect x="418" y="426" width="106" height="63" rx="5" class="pair"/>
+  <text x="471" y="442" class="tiny muted" text-anchor="middle">第 4 拍</text>
+  <rect x="425" y="449" width="44" height="31" rx="4" class="slot"/>
+  <text x="447.0" y="470.5" class="label" text-anchor="middle">3</text>
+  <rect x="472" y="449" width="44" height="31" rx="4" class="slot"/>
+  <text x="494.0" y="470.5" class="label" text-anchor="middle">7</text>
+  <rect x="553" y="389" width="242" height="113" rx="8" class="block"/>
+  <text x="674" y="415" class="small label" text-anchor="middle">写 burst · 0x2008（4 B）</text>
+  <rect x="564" y="426" width="106" height="63" rx="5" class="pair"/>
+  <text x="617" y="442" class="tiny muted" text-anchor="middle">第 5 拍</text>
+  <rect x="571" y="449" width="44" height="31" rx="4" class="slot"/>
+  <text x="593.0" y="470.5" class="label" text-anchor="middle">11</text>
+  <rect x="618" y="449" width="44" height="31" rx="4" class="slot"/>
+  <text x="640.0" y="470.5" class="label" text-anchor="middle">4</text>
+  <rect x="678" y="426" width="106" height="63" rx="5" class="pair"/>
+  <text x="731" y="442" class="tiny muted" text-anchor="middle">第 6 拍</text>
+  <rect x="685" y="449" width="44" height="31" rx="4" class="slot"/>
+  <text x="707.0" y="470.5" class="label" text-anchor="middle">8</text>
+  <rect x="732" y="449" width="44" height="31" rx="4" class="slot"/>
+  <text x="754.0" y="470.5" class="label" text-anchor="middle">12</text>
+  <rect x="18" y="530" width="383" height="76" rx="8" class="control"/>
+  <rect x="419" y="530" width="383" height="76" rx="8" class="block"/>
+  <text x="36" y="556" class="small label" text-anchor="start">逐元素直接散写（1 B 窄写）</text>
+  <text x="36" y="583" class="label accent" text-anchor="start">12 笔写请求 · 12 个数据拍</text>
+  <text x="437" y="556" class="small label" text-anchor="start">转置缓冲后连续写</text>
+  <text x="437" y="583" class="label" text-anchor="start">3 笔写请求 · 6 个数据拍</text>
+  <text x="20" y="628" class="tiny muted" text-anchor="start">假设散写支持 1 B 合法写入；仅比较写侧数据拍与事务数，不是整项任务的耗时。</text>
+</svg>
