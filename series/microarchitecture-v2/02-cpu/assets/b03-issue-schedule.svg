@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 602" width="800" height="602" role="img" aria-labelledby="title desc">
-  <title id="title">同一前缀 I0–I4 的严格顺序发射与最早就绪优先发射时序</title>
-  <desc id="desc">每列 Cn 是 E(n−1) 到 En 的周期；空心圆标登记边沿，实心菱形标发射边沿。两种方式在 E2 到 E6 依次登记 I0 至 I4，I0 E3 发射、C4 执行、E5 写回；I1 E4 发射、C5 算址、C6 至 C9 访存、E10 写回；I2 等待 I1，E11 发射、E13 写回。顺序发射中 I3 E12 发射、E14 写回，I4 E13 发射、E15 写回；最早就绪发射中 I3 E6 发射、E8 写回，I4 等到 I2 读取 x5 后于 E12 发射、E14 写回。比较仅覆盖 I0 至 I4，不是整段程序。</desc>
+  <title id="title">同一前缀 I0–I4 的严格顺序发射与就绪指令中程序顺序较早者优先时序</title>
+  <desc id="desc">每列 Cn 是 E(n−1) 到 En 的周期；空心圆标登记边沿，实心菱形标发射边沿。两种方式在 E2 到 E6 依次登记 I0 至 I4，I0 E3 发射、C4 执行、E5 写回；I1 E4 发射、C5 算址、C6 至 C9 访存、E10 写回；I2 等待 I1，E11 发射、E13 写回。顺序发射中 I3 E12 发射、E14 写回，I4 E13 发射、E15 写回；从就绪指令中选择时 I3 E6 发射、E8 写回，I4 等到 I2 读取 x5 后于 E12 发射、E14 写回。比较仅覆盖 I0 至 I4，不是整段程序。</desc>
   <defs>
     <style>
       text{font-family:"Noto Sans CJK SC","PingFang SC","Microsoft YaHei",sans-serif;fill:#173d35;font-size:16px}
@@ -67,7 +67,7 @@
     <rect x="233.5" y="174" width="41" height="26" rx="4" class="wait"/>
     <text x="254.0" y="191" class="waittext" text-anchor="middle">等</text>
     <rect x="277.5" y="174" width="41" height="26" rx="4" class="exec"/>
-    <text x="298.0" y="191" class="cell" text-anchor="middle">AGU</text>
+    <text x="298.0" y="191" class="cell" text-anchor="middle">算址</text>
     <rect x="321.5" y="174" width="173" height="26" rx="4" class="mem"/>
     <text x="408.0" y="191" class="cell" text-anchor="middle">MEM · 4 拍</text>
     <rect x="497.5" y="174" width="41" height="26" rx="4" class="wb"/>
@@ -103,9 +103,9 @@
     <circle cx="364" cy="260" r="4.2" class="admit"/>
     <path d="M672 255.4L676.6 260L672 264.6L667.4 260Z" class="issue"/>
   <path d="M760 144V282" class="fmark"/>
-  <!-- 最早就绪优先发射 -->
+  <!-- 就绪指令中程序顺序较早者优先 -->
   <rect x="14" y="306" width="772" height="222" rx="10" class="panel"/>
-  <text x="28" y="331" class="label" text-anchor="start">最早就绪优先发射</text>
+  <text x="28" y="331" class="label" text-anchor="start">就绪指令中程序顺序较早者优先</text>
   <text x="28" y="353" class="tiny" text-anchor="start">I0 → I1 → I3 → I2 → I4</text>
   <text x="772" y="331" class="finish" text-anchor="end">前缀完成 E14</text>
   <text x="25" y="372" class="tiny" text-anchor="start">指令</text>
@@ -153,7 +153,7 @@
     <rect x="233.5" y="407" width="41" height="26" rx="4" class="wait"/>
     <text x="254.0" y="424" class="waittext" text-anchor="middle">等</text>
     <rect x="277.5" y="407" width="41" height="26" rx="4" class="exec"/>
-    <text x="298.0" y="424" class="cell" text-anchor="middle">AGU</text>
+    <text x="298.0" y="424" class="cell" text-anchor="middle">算址</text>
     <rect x="321.5" y="407" width="173" height="26" rx="4" class="mem"/>
     <text x="408.0" y="424" class="cell" text-anchor="middle">MEM · 4 拍</text>
     <rect x="497.5" y="407" width="41" height="26" rx="4" class="wb"/>
