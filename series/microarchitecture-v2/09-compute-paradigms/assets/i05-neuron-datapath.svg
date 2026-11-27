@@ -1,0 +1,58 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 680 498" width="680" height="498" role="img" aria-labelledby="title desc">
+<title id="title">N0 的局部状态更新路径：第 4 步</title><desc id="desc">读取上步保存的V=3，衰减后D=2；A、B的权重3、2相加得到I=5。D+I=7，与阈值5比较，发放一次脉冲并选择0写回。</desc>
+<defs><marker id="data" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0 0L7 3.5L0 7Z" fill="#376a55"/></marker><marker id="control" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0 0L7 3.5L0 7Z" fill="#967333"/></marker><style>text{font-family:"Noto Sans CJK SC","PingFang SC","Microsoft YaHei",sans-serif;fill:#173d35;font-size:18px}
+.head{font-size:22px;font-weight:700}.sub{font-size:16px;fill:#58736a}.small{font-size:16px}.strong{font-weight:700}.accent{fill:#815718}
+.panel{fill:#fafbf8;stroke:#c7d3c7;stroke-width:1.3}.block{fill:#e0ebe3;stroke:#82a18e;stroke-width:1.4}
+.reg{fill:#edf1df;stroke:#82a18e;stroke-width:1.3}.config{fill:#f3ebdb;stroke:#c6aa79;stroke-width:1.3}.result{fill:#d2e6d7;stroke:#82a18e;stroke-width:1.3}
+.wire,.ctrl,.event{fill:none;stroke-linecap:round;stroke-linejoin:round;stroke-width:2.2}
+.wire{stroke:#376a55;marker-end:url(#data)}.ctrl{stroke:#967333;stroke-dasharray:5 3;marker-end:url(#control)}
+.event{stroke:#967333;marker-end:url(#control)}.grid{stroke:#dce3d8;stroke-width:1.2;fill:none}</style></defs>
+<rect x="1" y="1" width="678" height="496" rx="13" fill="#f5f6ef" stroke="#c4d0c4"/>
+<text x="21" y="34" class="head" text-anchor="start">第 4 步：累加、比较、发放和写回</text>
+<text x="21" y="59" class="sub" text-anchor="start">示意数据依赖；不限定每个方框占用多少个硬件周期。</text>
+<rect x="24" y="78" width="198" height="58" rx="7" class="reg"/>
+<text x="123" y="101" class="small strong" text-anchor="middle">局部状态存储</text>
+<text x="123" y="124" class="strong" text-anchor="middle">旧 V = 3</text>
+<rect x="237" y="78" width="124" height="58" rx="7" class="config"/>
+<text x="299" y="101" class="small accent" text-anchor="middle">配置衰减量</text>
+<text x="299" y="124" class="strong accent" text-anchor="middle">1</text>
+<rect x="385" y="78" width="271" height="58" rx="7" class="reg"/>
+<text x="520.5" y="101" class="small strong" text-anchor="middle">输入 A、B 均有脉冲</text>
+<text x="520.5" y="124" class="small" text-anchor="middle">读取连接权重 3、2</text>
+<rect x="24" y="164" width="337" height="55" rx="7" class="block"/>
+<text x="192.5" y="187" class="small strong" text-anchor="middle">衰减：max(0, 3 − 1)</text>
+<text x="192.5" y="209" class="strong" text-anchor="middle">D = 2</text>
+<rect x="385" y="164" width="271" height="55" rx="7" class="block"/>
+<text x="520.5" y="187" class="small strong" text-anchor="middle">求本步输入和：3 + 2</text>
+<text x="520.5" y="209" class="strong" text-anchor="middle">I = 5</text>
+<path d="M123 136V160" class="wire" />
+<path d="M299 136V160" class="ctrl" />
+<path d="M520.5 136V160" class="wire" />
+<rect x="223" y="247" width="234" height="51" rx="7" class="block"/>
+<text x="340" y="269" class="strong" text-anchor="middle">D + I = 7</text>
+<text x="340" y="288" class="small" text-anchor="middle">比较前状态 U</text>
+<path d="M192.5 219V234H280V243" class="wire" />
+<path d="M520.5 219V234H400V243" class="wire" />
+<rect x="24" y="325" width="160" height="52" rx="7" class="config"/>
+<text x="104" y="346" class="small accent" text-anchor="middle">阈值</text>
+<text x="104" y="367" class="strong accent" text-anchor="middle">5</text>
+<rect x="223" y="325" width="234" height="52" rx="7" class="block"/>
+<text x="340" y="347" class="strong" text-anchor="middle">U ≥ 5 ?</text>
+<text x="340" y="367" class="strong accent" text-anchor="middle">是</text>
+<path d="M340 298V321" class="wire" />
+<path d="M184 351H219" class="ctrl" />
+<rect x="500" y="325" width="156" height="52" rx="7" class="config"/>
+<text x="578" y="346" class="small strong accent" text-anchor="middle">发放事件</text>
+<text x="578" y="367" class="small accent" text-anchor="middle">1 个脉冲</text>
+<path d="M457 351H496" class="event" />
+<rect x="24" y="408" width="160" height="46" rx="7" class="config"/>
+<text x="104" y="436" class="small accent" text-anchor="middle">配置复位值 = 0</text>
+<rect x="223" y="408" width="234" height="46" rx="7" class="block"/>
+<text x="340" y="437" class="strong" text-anchor="middle">选择写回值：0</text>
+<path d="M340 377V404" class="ctrl" />
+<path d="M184 431H219" class="wire" />
+<path d="M457 431H485" class="wire" />
+<rect x="489" y="408" width="167" height="46" rx="7" class="result"/>
+<text x="572.5" y="437" class="strong" text-anchor="middle">保存 V ← 0</text>
+<text x="21" y="483" class="sub" text-anchor="start">绿色：状态与数据；棕色：配置、发放及控制。</text>
+</svg>

@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 740 465" width="740" height="465" role="img" aria-labelledby="title desc">
+<title id="title">N0 发出的脉冲经互连送给两处目标</title><desc id="desc">核0的神经元N0在模型第4步发放一个脉冲，消息经路由复制后成为核1的N1和核2的N2在第5步的输入。接收侧按本地权重5和2更新；N1发放且清零，N2保存2而没有发放。</desc>
+<defs><marker id="data" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0 0L7 3.5L0 7Z" fill="#376a55"/></marker><marker id="control" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0 0L7 3.5L0 7Z" fill="#967333"/></marker><style>text{font-family:"Noto Sans CJK SC","PingFang SC","Microsoft YaHei",sans-serif;fill:#173d35;font-size:18px}
+.head{font-size:22px;font-weight:700}.sub{font-size:16px;fill:#58736a}.small{font-size:16px}.strong{font-weight:700}.accent{fill:#815718}
+.panel{fill:#fafbf8;stroke:#c7d3c7;stroke-width:1.3}.block{fill:#e0ebe3;stroke:#82a18e;stroke-width:1.4}
+.reg{fill:#edf1df;stroke:#82a18e;stroke-width:1.3}.config{fill:#f3ebdb;stroke:#c6aa79;stroke-width:1.3}.result{fill:#d2e6d7;stroke:#82a18e;stroke-width:1.3}
+.wire,.ctrl,.event{fill:none;stroke-linecap:round;stroke-linejoin:round;stroke-width:2.2}
+.wire{stroke:#376a55;marker-end:url(#data)}.ctrl{stroke:#967333;stroke-dasharray:5 3;marker-end:url(#control)}
+.event{stroke:#967333;marker-end:url(#control)}.grid{stroke:#dce3d8;stroke-width:1.2;fill:none}</style></defs>
+<rect x="1" y="1" width="738" height="463" rx="13" fill="#f5f6ef" stroke="#c4d0c4"/>
+<text x="24" y="34" class="head" text-anchor="start">一个发放事件，触发两个目标的处理</text>
+<text x="24" y="59" class="sub" text-anchor="start">传播延迟设为 1 个模型时间步；两处权重不同。</text>
+<rect x="208" y="76" width="324" height="76" rx="7" class="panel"/>
+<text x="370" y="101" class="strong" text-anchor="middle">核 0 · N0</text>
+<text x="370" y="125" class="small" text-anchor="middle">第 4 步发放一次，V ← 0</text>
+<path d="M370 152V181" class="event" />
+<rect x="206" y="185" width="328" height="48" rx="7" class="config"/>
+<text x="370" y="205" class="strong accent" text-anchor="middle">路由并复制脉冲消息</text>
+<text x="370" y="224" class="small accent" text-anchor="middle">来源 N0；输入归属第 5 步</text>
+<path d="M370 233V248H196V261" class="event" />
+<path d="M370 248H544V261" class="event" />
+<rect x="20" y="265" width="344" height="170" rx="7" class="panel"/>
+<rect x="376" y="265" width="344" height="170" rx="7" class="panel"/>
+<text x="196" y="291" class="strong" text-anchor="middle">核 1 · N1</text>
+<text x="544" y="291" class="strong" text-anchor="middle">核 2 · N2</text>
+<rect x="32" y="306" width="328" height="41" rx="7" class="reg"/>
+<text x="196" y="332" class="small strong" text-anchor="middle">按本地连接查得权重 5</text>
+<rect x="380" y="306" width="328" height="41" rx="7" class="reg"/>
+<text x="544" y="332" class="small strong" text-anchor="middle">按本地连接查得权重 2</text>
+<path d="M196 347V358" class="wire" />
+<path d="M544 347V358" class="wire" />
+<rect x="32" y="362" width="328" height="32" rx="7" class="block"/>
+<text x="196" y="384" class="small strong" text-anchor="middle">U = 0 + 5 = 5</text>
+<rect x="380" y="362" width="328" height="32" rx="7" class="block"/>
+<text x="544" y="384" class="small strong" text-anchor="middle">U = 0 + 2 = 2</text>
+<rect x="32" y="399" width="328" height="29" rx="7" class="config"/>
+<text x="196" y="419" class="small strong accent" text-anchor="middle">达到阈值，发放；V ← 0</text>
+<rect x="380" y="399" width="328" height="29" rx="7" class="result"/>
+<text x="544" y="419" class="small strong" text-anchor="middle">未达到阈值，不发放；V ← 2</text>
+<text x="24" y="454" class="sub" text-anchor="start">事件负载为一次发放；权重和神经元状态保留在接收核。</text>
+</svg>
