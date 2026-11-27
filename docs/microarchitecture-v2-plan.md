@@ -199,7 +199,7 @@ B01 采用真实 RV32I 的 ADD、LW、SW、BEQ 语义和精简的五阶段单条
 
 | ID | 暂定标题 | 内容范围与写作重点 | 状态 |
 |---|---|---|---|
-| G01 | 矩阵乘法算完了，其他运算由谁完成？ | 逐元素、归约树/scan、特殊函数、查表/近似、复杂算子的硬件协作，以 Softmax 为贯穿案例，RMSNorm 为迁移例 | 正文完成（[正文](https://microarch-flow.github.io/wiki/microarchitecture-v2/07-specialized-compute/g01-specialized-functions-and-reduction/)，待发布核验） |
+| G01 | 矩阵乘法算完了，其他运算由谁完成？ | 逐元素、归约树/scan、特殊函数、查表/近似、复杂算子的硬件协作，以 Softmax 为贯穿案例，RMSNorm 为迁移例 | 已发布（[正文](https://microarch-flow.github.io/wiki/microarchitecture-v2/07-specialized-compute/g01-specialized-functions-and-reduction/)，提交 `d3dc927`，已核验） |
 | G02 | 一半的数据都是零，为什么计算未必能快一倍？ | 稀疏表示与元数据、索引解析、跳零、操作数匹配、不规则计算、负载失衡与开销 | 待写 |
 
 ### H. 性能分析与设计权衡（2 篇）
