@@ -1,0 +1,65 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 590" width="760" height="590" role="img" aria-labelledby="title desc">
+  <title id="title">无重命名时，允许改变发射顺序但必须保护源值和目标写入顺序</title>
+  <desc id="desc">I0 写 x6=5，I4 必须读取这个值；I1 写 x5=6，I2 必须读取这个值而非旧值 0；I4 也写 x5=7，所以要等待 I1 写回，并等待 I2 捕获 x5=6 之后才能发射，防止覆盖 I2 尚未读取的旧值。这是无重命名的保守限制。I3 从 x9 和 x10 读取 5 和 4，独立写 x8=9，与前述四条指令没有数据或同名寄存器冲突。</desc>
+  <defs>
+    <marker id="raw-arrow" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0 0L7 3.5L0 7z" fill="#376650"/></marker>
+    <marker id="waw-arrow" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0 0L7 3.5L0 7z" fill="#8a5d1c"/></marker>
+    <marker id="war-arrow" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0 0L7 3.5L0 7z" fill="#5b7680"/></marker>
+    <style>
+      text{font-family:"Noto Sans CJK SC","PingFang SC","Microsoft YaHei",sans-serif;fill:#173d35;font-size:18px}
+      .heading{font-size:22px;font-weight:700}.small{font-size:16px}.tiny{font-size:14.5px}.label{font-weight:700}
+      .panel{fill:#fafbf8;stroke:#c7d3c7;stroke-width:1.3}.block{fill:#e0ebe3;stroke:#82a18e;stroke-width:1.4}
+      .arch{fill:#d2e6d7;stroke:#376650;stroke-width:1.7}
+      .stall{fill:#f2e7d1;stroke:#bd9857;stroke-width:1.5}.dim{fill:#6e8079}.accent{fill:#8a5d1c}.ftext{fill:#496872}
+      .raw{stroke:#376650;stroke-width:2.4;fill:none;stroke-linejoin:round;stroke-linecap:round;marker-end:url(#raw-arrow)}
+      .waw{stroke:#8a5d1c;stroke-width:2.4;fill:none;stroke-linejoin:round;stroke-linecap:round;stroke-dasharray:6 4;marker-end:url(#waw-arrow)}
+      .war{stroke:#5b7680;stroke-width:2.4;fill:none;stroke-linejoin:round;stroke-linecap:round;stroke-dasharray:3 4;marker-end:url(#war-arrow)}
+    </style>
+  </defs>
+  <rect x="1" y="1" width="758" height="588" rx="13" fill="#f5f6ef" stroke="#c4d0c4" stroke-width="1.3"/>
+  <text x="22" y="34" class="heading">哪些较早指令一定要先达到某个状态？</text>
+  <text x="22" y="62" class="small">不重命名：所有目标写入原来的架构寄存器；箭头表示必须满足的先后约束。</text>
+  <rect x="18" y="79" width="724" height="386" rx="9" class="panel"/>
+
+  <!-- First instruction and independent instruction -->
+  <rect x="36" y="94" width="246" height="69" rx="8" class="block"/>
+  <text x="159" y="120" class="label" text-anchor="middle">I0 · ADD x6, x1, x2</text>
+  <text x="159" y="146" text-anchor="middle" class="small">写 x6 = 5</text>
+  <rect x="320" y="94" width="245" height="69" rx="8" class="block"/>
+  <text x="442" y="120" class="label" text-anchor="middle">I1 · LW x5, 0(x4)</text>
+  <text x="442" y="146" text-anchor="middle" class="small">写 x5 = 6</text>
+  <!-- Consumer -->
+  <path d="M442 163V203" class="raw"/>
+  <rect x="320" y="206" width="245" height="69" rx="8" class="block"/>
+  <text x="442" y="232" class="label" text-anchor="middle">I2 · ADD x7, x5, x3</text>
+  <text x="442" y="257" text-anchor="middle" class="small">读取 x5 = 6</text>
+  <text x="455" y="190" class="tiny">RAW · x5</text>
+  <!-- Later writer -->
+  <rect x="320" y="364" width="245" height="76" rx="8" class="stall"/>
+  <text x="442" y="391" class="label accent" text-anchor="middle">I4 · ADD x5, x6, x1</text>
+  <text x="442" y="416" text-anchor="middle" class="small">读 x6 = 5，写 x5 = 7</text>
+  <!-- RAW from I0 -->
+  <path d="M282 146H300V391H317" class="raw"/>
+  <text x="287" y="352" text-anchor="end" class="tiny">RAW · x6</text>
+  <!-- WAW from I1 -->
+  <path d="M565 130H673V390H568" class="waw"/>
+  <text x="661" y="258" class="tiny accent" text-anchor="middle" transform="rotate(-90 661 258)">WAW · 等待 I1 写回 x5</text>
+  <!-- WAR from I2 -->
+  <path d="M442 275V361" class="war"/>
+  <text x="455" y="307" class="tiny ftext">WAR · x5</text>
+  <text x="455" y="330" class="tiny ftext">等待 I2 捕获旧值 6</text>
+  <!-- Independent I3 -->
+  <rect x="36" y="192" width="246" height="95" rx="8" class="arch"/>
+  <text x="159" y="218" class="label" text-anchor="middle">I3 · ADD x8, x9, x10</text>
+  <text x="159" y="244" class="small" text-anchor="middle">读 5、4，写 x8 = 9</text>
+  <text x="159" y="270" class="small label" text-anchor="middle">独立，可越过 I2</text>
+  <text x="36" y="433" class="tiny dim">I4 不得提前覆盖</text>
+  <text x="36" y="451" class="tiny dim">I2 尚未捕获的 x5（6）。</text>
+
+  <!-- Semantics of edges -->
+  <rect x="18" y="478" width="724" height="84" rx="8" class="panel"/>
+  <path d="M34 499H76" class="raw"/><text x="88" y="504" class="small">RAW：老指令的结果是年轻指令所需的真实数据</text>
+  <path d="M34 523H76" class="waw"/><text x="88" y="528" class="small accent">WAW：老写入先完成，年轻写入才获准发射</text>
+  <path d="M34 547H76" class="war"/><text x="88" y="552" class="small ftext">WAR：老读取先捕获，年轻写入才获准发射</text>
+  <text x="380" y="583" text-anchor="middle" class="tiny dim">不同关系需要保护的事件不同，不必让所有指令完全按序执行。</text>
+</svg>

@@ -1,0 +1,87 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 766" width="760" height="766" role="img" aria-labelledby="title desc">
+  <title id="title">I2 等待 Load 时，发射窗口可以选择 I3</title>
+  <desc id="desc">C6 为 E5 到 E6 之间。I0 已写回 x6=5。I1 已发射，LSU 在 C6 至 C9 等待数据内存，E9 保存返回值6，E10 才写回 RF[x5]；目前 RF[x5] 仍为0。等待窗口有 I2 和 I3：I2 需要 I1 的 x5=6 而不能发射；I3 的两个源 x9=5 与 x10=4 均就绪。选择逻辑优先发射最老的可执行指令 I3，E6 锁存其操作数5、4和目标x8进入 ALU；I2 保留。ID 中的 I4 在 E6 才进入窗口，本拍尚不是候选。ALU 与 LSU 共享 RF 的一个写口；两路结果先保存，按写回端口许可写回。</desc>
+  <defs>
+    <marker id="arrow" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0 0L7 3.5L0 7z" fill="#376650"/></marker>
+    <marker id="feedback-arrow" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0 0L7 3.5L0 7z" fill="#5b7680"/></marker>
+    <style>
+      text{font-family:"Noto Sans CJK SC","PingFang SC","Microsoft YaHei",sans-serif;fill:#173d35;font-size:18px}
+      .heading{font-size:22px;font-weight:700}.small{font-size:16px}.tiny{font-size:14.5px}.label{font-weight:700}
+      .panel{fill:#fafbf8;stroke:#c7d3c7;stroke-width:1.3}.reg{fill:#edf1df;stroke:#82a18e;stroke-width:1.5}
+      .block{fill:#e0ebe3;stroke:#82a18e;stroke-width:1.4}.arch{fill:#d2e6d7;stroke:#376650;stroke-width:1.7}
+      .stall{fill:#f2e7d1;stroke:#bd9857;stroke-width:1.5}.future{fill:#f2f3ef;stroke:#d3d9d3;stroke-width:1.2;stroke-dasharray:4 3}
+      .dim{fill:#6e8079}.accent{fill:#8a5d1c}.ftext{fill:#496872}
+      .data{stroke:#376650;stroke-width:2.3;fill:none;stroke-linejoin:round;stroke-linecap:round;marker-end:url(#arrow)}
+      .feedback{stroke:#5b7680;stroke-width:2;fill:none;stroke-linejoin:round;stroke-linecap:round;stroke-dasharray:6 4;marker-end:url(#feedback-arrow)}
+      .plain{stroke:#376650;stroke-width:2.3;fill:none;stroke-linejoin:round;stroke-linecap:round}
+    </style>
+  </defs>
+  <rect x="1" y="1" width="758" height="764" rx="13" fill="#f5f6ef" stroke="#c4d0c4" stroke-width="1.3"/>
+  <text x="22" y="34" class="heading">C6：等待者不占住唯一的发射位置</text>
+  <text x="22" y="62" class="small">E5 已完成 I0：x6 = 5。C6 内进行选择，E6 才接纳发射。</text>
+
+  <!-- Decode and ordered admission -->
+  <rect x="18" y="80" width="724" height="70" rx="8" class="panel"/>
+  <rect x="34" y="94" width="128" height="42" rx="7" class="block"/>
+  <text x="98" y="120" class="label" text-anchor="middle">IF → ID</text>
+  <path d="M162 115H193" class="data"/>
+  <rect x="193" y="94" width="530" height="42" rx="7" class="future"/>
+  <text x="210" y="120" class="small">I4 · ADD x5, x6, x1</text>
+  <text x="705" y="120" text-anchor="end" class="tiny dim">E6 才进入窗口</text>
+  <path d="M380 150V166" class="data"/>
+
+  <!-- Waiting queue and metadata -->
+  <rect x="18" y="168" width="724" height="154" rx="9" class="panel"/>
+  <text x="35" y="194" class="label">等待窗口</text>
+  <text x="725" y="194" text-anchor="end" class="tiny dim">按程序顺序接纳 · 编号、源、目标、类型</text>
+  <rect x="35" y="208" width="337" height="91" rx="8" class="stall"/>
+  <text x="49" y="231" class="label accent">I2 · ADD x7, x5, x3</text>
+  <text x="49" y="255" class="small">缺少 I1 产生的新 x5</text>
+  <text x="49" y="280" class="small accent label">不合格，仍留在窗口</text>
+  <rect x="388" y="208" width="337" height="91" rx="8" class="arch"/>
+  <text x="402" y="231" class="label">I3 · ADD x8, x9, x10</text>
+  <text x="402" y="255" class="small">两个源就绪，无冲突</text>
+  <text x="402" y="280" class="small label">本拍最老的可发射者</text>
+  <path d="M556 299V326H233V343" class="data"/>
+
+  <!-- Selection and reads -->
+  <rect x="35" y="345" width="395" height="94" rx="8" class="block"/>
+  <text x="52" y="371" class="label">发射选择：I3</text>
+  <text x="52" y="395" class="small">核对老指令的读写约束、单元空闲</text>
+  <text x="52" y="420" class="small">输出 rs1=x9、rs2=x10、rd=x8</text>
+  <path d="M430 382H470" class="feedback"/>
+  <rect x="470" y="345" width="238" height="94" rx="8" class="arch"/>
+  <text x="486" y="371" class="label">RF（2 读 / 1 写）</text>
+  <text x="486" y="395" class="small">x9 = 5，x10 = 4</text>
+  <text x="486" y="420" class="small accent">x5 仍为 0（旧值）</text>
+  <!-- Metadata and operands lead to the capture -->
+  <path d="M233 439V463" class="data"/>
+  <path d="M589 439V451H285V463" class="data"/>
+  <rect x="35" y="465" width="332" height="70" rx="8" class="reg"/>
+  <text x="201" y="491" text-anchor="middle" class="label">E6：锁存 I3 的发射信息</text>
+  <text x="201" y="516" text-anchor="middle" class="small">X=5，W=4，rd=x8</text>
+  <path d="M201 535V554" class="data"/>
+
+  <!-- Independent execution paths -->
+  <rect x="35" y="556" width="332" height="79" rx="8" class="block"/>
+  <text x="201" y="582" text-anchor="middle" class="label">ALU</text>
+  <text x="201" y="606" text-anchor="middle" class="small">I3 在 E6 后开始计算，结果 x8=9</text>
+  <text x="201" y="624" text-anchor="middle" class="tiny dim">结果等待写回</text>
+  <rect x="383" y="465" width="325" height="170" rx="8" class="stall"/>
+  <text x="545" y="492" text-anchor="middle" class="label accent">访存单元 LSU：I1 在途</text>
+  <text x="545" y="518" text-anchor="middle" class="small">已发射 LW x5, 0(x4)</text>
+  <text x="545" y="542" text-anchor="middle" class="small">地址 0x200，C6—C9 访问内存</text>
+  <text x="545" y="567" text-anchor="middle" class="small">E9 保存返回值 6</text>
+  <text x="545" y="592" text-anchor="middle" class="small accent label">E10 写回 RF[x5]</text>
+  <text x="545" y="617" text-anchor="middle" class="tiny dim">等待内存时不占住 ALU</text>
+
+  <!-- Single shared write-back path -->
+  <path d="M201 635V648H331V661" class="data"/>
+  <path d="M545 635V648H424V661" class="data"/>
+  <rect x="192" y="663" width="375" height="46" rx="8" class="block"/>
+  <text x="380" y="692" text-anchor="middle" class="label">共享写回 WB · 每拍最多写 RF 一份</text>
+  <path d="M567 686H728V395H708" class="feedback"/>
+  <text x="720" y="555" text-anchor="middle" class="tiny ftext" transform="rotate(-90 720 555)">写回 RF</text>
+  <text x="380" y="734" text-anchor="middle" class="small">发射时才捕获源值；I2 保留，I3 先执行，I4 沿后接纳。</text>
+  <text x="380" y="754" text-anchor="middle" class="tiny dim">仅画本次选择与两条执行路径，未画其他控制反馈。</text>
+</svg>
