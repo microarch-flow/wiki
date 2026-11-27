@@ -1,0 +1,57 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 520" width="760" height="520" role="img" aria-labelledby="title desc">
+  <title id="title">一行 4 B 的数据在源地址跨越教学边界时拆成两段</title>
+  <desc id="desc">在这个教学例子中，每 beat 搬运 2 B，每 burst 最多 2 个 beat，且 burst 不能跨越 8 B 对齐边界。某行的 4 B 数据 1、2、3、4 位于源地址 0x1006、0x1007、0x1008、0x1009，刚好跨越 0x1008 边界，不能放在同一 burst 内。控制器先读取 0x1006 的 2 B 再写入 0x2000 的 2 B，然后读取 0x1008 的 2 B 再写入 0x2002 的 2 B。第二段不跳过数据。目标数据紧凑且未跨越相同粒度边界，本例仍为每个读片段生成一个写片段；实际设计可独立切分或合并写请求。8 B 边界是教学假设，不是 AXI 标准参数。</desc>
+  <defs>
+    <marker id="data-arrow" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0 0L7 3.5L0 7z" fill="#376650"/></marker>
+    <style>
+      text{font-family:"Noto Sans CJK SC","Microsoft YaHei",sans-serif;fill:#173d35;font-size:18px}
+      .heading{font-size:23px;font-weight:700}.label{font-weight:700}.small{font-size:16px}.tiny{font-size:14px}.accent{fill:#8a5d1c}.muted{fill:#58736a}
+      .panel{fill:#fafbf8;stroke:#c7d3c7;stroke-width:1.3}.slot{fill:#e0ebe3;stroke:#82a18e;stroke-width:1.4}
+      .burst{fill:#edf1df;stroke:#82a18e;stroke-width:1.5}.control{fill:#f3ebdb;stroke:#c6aa79;stroke-width:1.3}
+      .data{stroke:#376650;stroke-width:2.4;fill:none;stroke-linejoin:round;stroke-linecap:round;marker-end:url(#data-arrow)}
+      .boundary{stroke:#9b6c27;stroke-width:2;stroke-dasharray:6 5;fill:none}
+    </style>
+  </defs>
+  <rect x="1" y="1" width="758" height="518" rx="13" fill="#f5f6ef" stroke="#c4d0c4"/>
+  <text x="20" y="34" class="heading">跨越请求边界时，数据需要拆成两段搬运</text>
+  <text x="20" y="61" class="small">教学接口：2 B/beat，每 burst 最多 2 beats，不能跨 8 B 边界。</text>
+  <rect x="18" y="79" width="724" height="137" rx="9" class="panel"/>
+  <text x="35" y="104" class="label">源内存</text>
+  <text x="267" y="107" class="tiny muted" text-anchor="middle">0x1000–0x1007 区间</text>
+  <text x="519" y="107" class="tiny muted" text-anchor="middle">0x1008–0x100F 区间</text>
+  <rect x="168" y="125" width="192" height="62" rx="6" class="burst"/>
+  <rect x="400" y="125" width="192" height="62" rx="6" class="burst"/>
+  <g text-anchor="middle">
+    <rect x="173" y="130" width="91" height="52" rx="4" class="slot"/><text x="218.5" y="150" class="tiny">0x1006</text><text x="218.5" y="174" class="label">1</text>
+    <rect x="266" y="130" width="89" height="52" rx="4" class="slot"/><text x="310.5" y="150" class="tiny">0x1007</text><text x="310.5" y="174" class="label">2</text>
+    <rect x="405" y="130" width="91" height="52" rx="4" class="slot"/><text x="450.5" y="150" class="tiny">0x1008</text><text x="450.5" y="174" class="label">3</text>
+    <rect x="498" y="130" width="89" height="52" rx="4" class="slot"/><text x="542.5" y="150" class="tiny">0x1009</text><text x="542.5" y="174" class="label">4</text>
+  </g>
+  <path d="M380 116V195" class="boundary"/>
+  <text x="380" y="209" class="tiny accent label" text-anchor="middle">0x1008 边界</text>
+  <rect x="123" y="231" width="282" height="71" rx="8" class="control"/>
+  <rect x="413" y="231" width="224" height="71" rx="8" class="control"/>
+  <text x="264" y="252" class="small label accent" text-anchor="middle">片段 1（先搬）</text>
+  <text x="264" y="273" class="small" text-anchor="middle">读 0x1006，2 B</text>
+  <text x="264" y="293" class="small" text-anchor="middle">写 0x2000，2 B</text>
+  <text x="525" y="252" class="small label accent" text-anchor="middle">片段 2（后搬）</text>
+  <text x="525" y="273" class="small" text-anchor="middle">读 0x1008，2 B</text>
+  <text x="525" y="293" class="small" text-anchor="middle">写 0x2002，2 B</text>
+  <path d="M264 187V231" class="data"/>
+  <path d="M496 187V231" class="data"/>
+  <rect x="18" y="317" width="724" height="127" rx="9" class="panel"/>
+  <text x="35" y="342" class="label">目标 SRAM</text>
+  <rect x="168" y="355" width="192" height="62" rx="6" class="burst"/>
+  <rect x="362" y="355" width="192" height="62" rx="6" class="burst"/>
+  <g text-anchor="middle">
+    <rect x="173" y="360" width="91" height="52" rx="4" class="slot"/><text x="218.5" y="380" class="tiny">0x2000</text><text x="218.5" y="404" class="label">1</text>
+    <rect x="266" y="360" width="89" height="52" rx="4" class="slot"/><text x="310.5" y="380" class="tiny">0x2001</text><text x="310.5" y="404" class="label">2</text>
+    <rect x="367" y="360" width="91" height="52" rx="4" class="slot"/><text x="412.5" y="380" class="tiny">0x2002</text><text x="412.5" y="404" class="label">3</text>
+    <rect x="460" y="360" width="89" height="52" rx="4" class="slot"/><text x="504.5" y="380" class="tiny">0x2003</text><text x="504.5" y="404" class="label">4</text>
+  </g>
+  <path d="M264 302V355" class="data"/>
+  <path d="M525 302V328H458V355" class="data"/>
+  <text x="361" y="437" class="small label" text-anchor="middle">写后仍然是连续的 4 B</text>
+  <text x="20" y="472" class="small muted">目标端未跨边界，本例仍使用一读片段对应一写片段的简单策略。</text>
+  <text x="20" y="495" class="small accent label">8 B 是教学假设，不是 AXI 协议的规定。</text>
+</svg>

@@ -1,0 +1,112 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 780 445" width="780" height="445" role="img" aria-labelledby="title desc">
+  <title id="title">二维矩阵的源行距与目标行距不相同</title>
+  <desc id="desc">每个矩阵元素占 1 B。三行四列的元素按行分别为 1 至 4、5 至 8、9 至 12。源地址分别从 0x1000、0x1008、0x1010 开始，每行有效数据 4 B。第一行之后的 0x1004 至 0x1007 以及第二行之后的 0x100C 至 0x100F 是两个不需要搬运的 4 B 间隙。目标的三行分别从 0x2000、0x2004、0x2008 开始，连续排列。源数据地址范围覆盖 20 B，有效读取 12 B；目标有效写入 12 B。三个箭头表示三行分别对应搬运，数据及行内顺序未改变。</desc>
+  <defs>
+    <marker id="data-arrow" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0 0L7 3.5L0 7z" fill="#376650"/></marker>
+    <style>
+      text{font-family:"Noto Sans CJK SC","Microsoft YaHei",sans-serif;fill:#173d35;font-size:18px}
+      .heading{font-size:23px;font-weight:700}.label{font-weight:700}.small{font-size:16px}.tiny{font-size:14px}.muted{fill:#58736a}
+      .panel{fill:#fafbf8;stroke:#c7d3c7;stroke-width:1.3}.slot{fill:#e0ebe3;stroke:#82a18e;stroke-width:1.4}.gap{fill:#f3eee3;stroke:#c9b89c;stroke-width:1.2;stroke-dasharray:4 3}
+      .data{stroke:#376650;stroke-width:2.4;fill:none;stroke-linejoin:round;stroke-linecap:round;marker-end:url(#data-arrow)}
+    </style>
+  </defs>
+  <rect x="1" y="1" width="778" height="443" rx="13" fill="#f5f6ef" stroke="#c4d0c4"/>
+  <text x="20" y="35" class="heading">只复制每行有效数据，不复制行间的空位</text>
+  <rect x="17" y="52" width="456" height="303" rx="9" class="panel"/>
+  <rect x="523" y="52" width="240" height="303" rx="9" class="panel"/>
+  <text x="37" y="80" class="label">源内存（行距 8 B）</text>
+  <text x="642" y="80" class="label" text-anchor="middle">目标 SRAM（行距 4 B）</text>
+  <text x="139" y="119" class="tiny muted" text-anchor="end">行首地址</text>
+  <g class="tiny muted" text-anchor="middle">
+    <text x="170" y="119">+0</text><text x="207" y="119">+1</text><text x="244" y="119">+2</text><text x="281" y="119">+3</text>
+    <text x="318" y="119">+4</text><text x="355" y="119">+5</text><text x="392" y="119">+6</text><text x="429" y="119">+7</text>
+    <text x="623" y="119">+0</text><text x="660" y="119">+1</text><text x="697" y="119">+2</text><text x="734" y="119">+3</text>
+  </g>
+  <text x="594" y="119" class="tiny muted" text-anchor="end">行首地址</text>
+  <text x="32" y="163" class="label">R0</text>
+  <text x="139" y="163" class="small label" text-anchor="end">0x1000</text>
+  <text x="595" y="163" class="small label" text-anchor="end">0x2000</text>
+  <rect x="153" y="137" width="34" height="42" rx="4" class="slot"/>
+  <text x="170" y="163" text-anchor="middle" class="label">1</text>
+  <rect x="606" y="137" width="34" height="42" rx="4" class="slot"/>
+  <text x="623" y="163" text-anchor="middle" class="label">1</text>
+  <rect x="190" y="137" width="34" height="42" rx="4" class="slot"/>
+  <text x="207" y="163" text-anchor="middle" class="label">2</text>
+  <rect x="643" y="137" width="34" height="42" rx="4" class="slot"/>
+  <text x="660" y="163" text-anchor="middle" class="label">2</text>
+  <rect x="227" y="137" width="34" height="42" rx="4" class="slot"/>
+  <text x="244" y="163" text-anchor="middle" class="label">3</text>
+  <rect x="680" y="137" width="34" height="42" rx="4" class="slot"/>
+  <text x="697" y="163" text-anchor="middle" class="label">3</text>
+  <rect x="264" y="137" width="34" height="42" rx="4" class="slot"/>
+  <text x="281" y="163" text-anchor="middle" class="label">4</text>
+  <rect x="717" y="137" width="34" height="42" rx="4" class="slot"/>
+  <text x="734" y="163" text-anchor="middle" class="label">4</text>
+  <rect x="301" y="137" width="34" height="42" rx="4" class="gap"/>
+  <text x="318" y="163" text-anchor="middle" class="tiny muted">—</text>
+  <rect x="338" y="137" width="34" height="42" rx="4" class="gap"/>
+  <text x="355" y="163" text-anchor="middle" class="tiny muted">—</text>
+  <rect x="375" y="137" width="34" height="42" rx="4" class="gap"/>
+  <text x="392" y="163" text-anchor="middle" class="tiny muted">—</text>
+  <rect x="412" y="137" width="34" height="42" rx="4" class="gap"/>
+  <text x="429" y="163" text-anchor="middle" class="tiny muted">—</text>
+  <path d="M473 158H523" class="data"/>
+  <text x="32" y="231" class="label">R1</text>
+  <text x="139" y="231" class="small label" text-anchor="end">0x1008</text>
+  <text x="595" y="231" class="small label" text-anchor="end">0x2004</text>
+  <rect x="153" y="205" width="34" height="42" rx="4" class="slot"/>
+  <text x="170" y="231" text-anchor="middle" class="label">5</text>
+  <rect x="606" y="205" width="34" height="42" rx="4" class="slot"/>
+  <text x="623" y="231" text-anchor="middle" class="label">5</text>
+  <rect x="190" y="205" width="34" height="42" rx="4" class="slot"/>
+  <text x="207" y="231" text-anchor="middle" class="label">6</text>
+  <rect x="643" y="205" width="34" height="42" rx="4" class="slot"/>
+  <text x="660" y="231" text-anchor="middle" class="label">6</text>
+  <rect x="227" y="205" width="34" height="42" rx="4" class="slot"/>
+  <text x="244" y="231" text-anchor="middle" class="label">7</text>
+  <rect x="680" y="205" width="34" height="42" rx="4" class="slot"/>
+  <text x="697" y="231" text-anchor="middle" class="label">7</text>
+  <rect x="264" y="205" width="34" height="42" rx="4" class="slot"/>
+  <text x="281" y="231" text-anchor="middle" class="label">8</text>
+  <rect x="717" y="205" width="34" height="42" rx="4" class="slot"/>
+  <text x="734" y="231" text-anchor="middle" class="label">8</text>
+  <rect x="301" y="205" width="34" height="42" rx="4" class="gap"/>
+  <text x="318" y="231" text-anchor="middle" class="tiny muted">—</text>
+  <rect x="338" y="205" width="34" height="42" rx="4" class="gap"/>
+  <text x="355" y="231" text-anchor="middle" class="tiny muted">—</text>
+  <rect x="375" y="205" width="34" height="42" rx="4" class="gap"/>
+  <text x="392" y="231" text-anchor="middle" class="tiny muted">—</text>
+  <rect x="412" y="205" width="34" height="42" rx="4" class="gap"/>
+  <text x="429" y="231" text-anchor="middle" class="tiny muted">—</text>
+  <path d="M473 226H523" class="data"/>
+  <text x="32" y="299" class="label">R2</text>
+  <text x="139" y="299" class="small label" text-anchor="end">0x1010</text>
+  <text x="595" y="299" class="small label" text-anchor="end">0x2008</text>
+  <rect x="153" y="273" width="34" height="42" rx="4" class="slot"/>
+  <text x="170" y="299" text-anchor="middle" class="label">9</text>
+  <rect x="606" y="273" width="34" height="42" rx="4" class="slot"/>
+  <text x="623" y="299" text-anchor="middle" class="label">9</text>
+  <rect x="190" y="273" width="34" height="42" rx="4" class="slot"/>
+  <text x="207" y="299" text-anchor="middle" class="label">10</text>
+  <rect x="643" y="273" width="34" height="42" rx="4" class="slot"/>
+  <text x="660" y="299" text-anchor="middle" class="label">10</text>
+  <rect x="227" y="273" width="34" height="42" rx="4" class="slot"/>
+  <text x="244" y="299" text-anchor="middle" class="label">11</text>
+  <rect x="680" y="273" width="34" height="42" rx="4" class="slot"/>
+  <text x="697" y="299" text-anchor="middle" class="label">11</text>
+  <rect x="264" y="273" width="34" height="42" rx="4" class="slot"/>
+  <text x="281" y="299" text-anchor="middle" class="label">12</text>
+  <rect x="717" y="273" width="34" height="42" rx="4" class="slot"/>
+  <text x="734" y="299" text-anchor="middle" class="label">12</text>
+  <text x="373" y="299" class="tiny muted" text-anchor="middle">本例范围结束</text>
+  <path d="M473 294H523" class="data"/>
+  <text x="245" y="344" class="small label" text-anchor="middle">地址跨度 20 B，有效读 12 B</text>
+  <text x="643" y="344" class="small label" text-anchor="middle">连续写入 12 B</text>
+  <rect x="25" y="373" width="24" height="24" rx="4" class="slot"/>
+  <text x="59" y="392" class="small">有效数据（每格 1 B）</text>
+  <rect x="279" y="373" width="24" height="24" rx="4" class="gap"/>
+  <text x="313" y="392" class="small">不搬运的地址间隙</text>
+  <path d="M539 385H575" class="data"/>
+  <text x="586" y="392" class="small">对应行搬运</text>
+  <text x="20" y="426" class="small muted">每行内地址 = 行首地址 + 列偏移；两端各行的起始地址可以按不同步长递增。</text>
+</svg>

@@ -161,13 +161,21 @@ B01 采用真实 RV32I 的 ADD、LW、SW、BEQ 语义和精简的五阶段单条
 
 ### E. 数据搬运与处理引擎（3 篇）
 
+2026-11-28：核查共同基础、CPU/GPU 的访存知识、D 专题规划和存储/互连相关正文后，保留三篇基线。以 3×4 个 1 B 元素的矩阵贯穿：E01 先建立单任务、单段在途的简单复制模型，再用独立的源/目标行步长和接口约束展开读写事务；E02 沿用源行距 8 B、目标行距 4 B 的矩阵，解除单段在途限制，讨论响应匹配、容量、反压及命令/完成队列；E03 改变地址对应关系或数值表示，解释重排、转换及处理路径。E01 不依赖尚在完善的 D 正文。
+
 | ID | 暂定标题 | 内容范围与写作重点 | 状态 |
 |---|---|---|---|
-| E01 | 一块数据从内存搬到计算单元，DMA 要做哪些工作？ | 独立引擎、描述符、地址生成、多维 stride、burst、对齐与边界切分 | 待写 |
+| E01 | 一块数据从内存搬到计算单元，DMA 要做哪些工作？ | 独立引擎、描述符、地址生成、多维 stride、burst、对齐与边界切分 | 正文完成（[正文](https://microarch-flow.github.io/wiki/microarchitecture-v2/05-data-movement/e01-dma-task-and-address-generation/)，待发布核验） |
 | E02 | 第一笔请求还没有返回，为什么 DMA 能发出第二笔请求？ | outstanding、ID、内部缓冲、响应匹配/乱序、反压、命令队列、完成通知与可读条件 | 待写 |
 | E03 | 搬运数据时，能否顺便改变数据的布局和格式？ | gather/scatter、转置、重排、类型转换、打包、压缩/解压、粒度及吞吐 | 待写 |
 
-复杂 DMA、多通道、虚拟化、商业 IP、系统集成等原有深入资料另行评估、归档或索引；驱动属于软件系列。
+旧版 [DMA 专题](../series/microarchitecture/05-dma/README.md)的进阶资料保留原地址并按以下归属继续查阅；本轮不修改旧目录：
+
+- [多通道、虚拟化](../series/microarchitecture/05-dma/03-dma-microarchitecture/channels-virtualization.md)及复杂队列：E02 建立基本控制机制后作为进阶资料，不强行引入所有产品实现。
+- [系统集成](../series/microarchitecture/05-dma/05-system-integration/README.md)及一致性/地址翻译：接口约束在 E 简述，协议和存储本体由互连与存储系列解释。
+- 双缓冲、资源所有权、计算搬运重叠：F 专题；驱动开发和软件任务编排：软件系列。
+- [性能建模与校准](../series/microarchitecture/05-dma/06-performance-modeling/README.md)：E02 建立基本吞吐约束，综合性能权衡归 H，详细建模、诊断资料保留供进阶查阅。
+- [工作负载案例](../series/microarchitecture/05-dma/07-workloads-case-studies/README.md)、[商业 IP](../series/microarchitecture/05-dma/08-industry-ip/README.md)和[研究参考](../series/microarchitecture/05-dma/09-reference-research/README.md)：继续作为独立实现与研究资料，待新版稳定后评估归档、迁移或索引。
 
 ### F. 多执行实体与资源协作（3 篇）
 

@@ -1,0 +1,76 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 566" width="760" height="566" role="img" aria-labelledby="title desc">
+  <title id="title">独立 DMA 引擎的教学数据路径与控制路径</title>
+  <desc id="desc">提交者交付搬运任务。DMA 保存连续复制任务的源基址、目标基址与总长度，地址生成与控制逻辑依据当前段偏移、已确认字节数和阶段/结果状态生成当前段的读写地址及长度。源内存收到读请求后返回数据，数据经过 DMA 的 4 B 缓冲区写入计算单元的本地 SRAM。写入确认返回给 DMA；缓冲区有效字节数反馈给控制逻辑。这个教学模型在完成整个任务后才允许计算单元从目标 SRAM 读取数据，绿色实线表示数据，棕色虚线表示控制、请求与状态。</desc>
+  <defs>
+    <marker id="data-arrow" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0 0L7 3.5L0 7z" fill="#376650"/></marker>
+    <marker id="ctrl-arrow" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0 0L7 3.5L0 7z" fill="#9b6c27"/></marker>
+    <style>
+      text{font-family:"Noto Sans CJK SC","Microsoft YaHei",sans-serif;fill:#173d35;font-size:18px}
+      .heading{font-size:23px;font-weight:700}.label{font-weight:700}.small{font-size:16px}.tiny{font-size:14px}.accent{fill:#8a5d1c}.muted{fill:#58736a}
+      .panel{fill:#fafbf8;stroke:#c7d3c7;stroke-width:1.3}.reg{fill:#edf1df;stroke:#82a18e;stroke-width:1.4}.block{fill:#e0ebe3;stroke:#82a18e;stroke-width:1.4}.control{fill:#f3ebdb;stroke:#c6aa79;stroke-width:1.3}
+      .data{stroke:#376650;stroke-width:2.4;fill:none;stroke-linejoin:round;stroke-linecap:round;marker-end:url(#data-arrow)}
+      .ctrl{stroke:#9b6c27;stroke-width:1.8;stroke-dasharray:5 4;fill:none;stroke-linejoin:round;stroke-linecap:round;marker-end:url(#ctrl-arrow)}
+      .divider{stroke:#c7d3c7;stroke-width:1.1}.slot{fill:#fafbf8;stroke:#92ad9d;stroke-width:1.1}
+    </style>
+  </defs>
+  <rect x="1" y="1" width="758" height="564" rx="13" fill="#f5f6ef" stroke="#c4d0c4"/>
+  <text x="20" y="34" class="heading">控制任务与移动数据使用不同的路径</text>
+  <rect x="229" y="119" width="302" height="346" rx="11" class="panel"/>
+  <text x="247" y="146" class="label">DMA 引擎</text>
+  <rect x="280" y="55" width="200" height="45" rx="7" class="control"/>
+  <text x="380" y="84" class="label" text-anchor="middle">提交者：搬运任务</text>
+  <path d="M380 100V159" class="ctrl"/>
+  <rect x="246" y="159" width="268" height="69" rx="7" class="reg"/>
+  <text x="380" y="182" class="label" text-anchor="middle">任务参数</text>
+  <text x="380" y="202" class="small" text-anchor="middle">源/目标基址 · 总长度</text>
+  <text x="380" y="220" class="small" text-anchor="middle">0x1000 → 0x2000，12 B</text>
+  <path d="M380 228V244" class="ctrl"/>
+
+  <rect x="246" y="244" width="268" height="74" rx="7" class="control"/>
+  <text x="380" y="266" class="label" text-anchor="middle">地址生成与控制</text>
+  <text x="380" y="288" class="small" text-anchor="middle">当前段偏移 · 本段长度</text>
+  <text x="380" y="308" class="small" text-anchor="middle">阶段/结果状态 · 已确认字节数</text>
+
+  <rect x="20" y="363" width="150" height="79" rx="8" class="block"/>
+  <text x="95" y="390" class="label" text-anchor="middle">源内存</text>
+  <text x="95" y="415" class="small" text-anchor="middle">矩阵源数据</text>
+  <path d="M246 278H95V363" class="ctrl"/>
+  <text x="95" y="255" class="small accent label" text-anchor="middle">读请求</text>
+  <text x="95" y="274" class="tiny accent" text-anchor="middle">地址 / 长度</text>
+
+  <rect x="590" y="363" width="150" height="79" rx="8" class="block"/>
+  <text x="665" y="390" class="label" text-anchor="middle">本地 SRAM</text>
+  <text x="665" y="415" class="small" text-anchor="middle">矩阵目标数据</text>
+  <path d="M514 295H642V363" class="ctrl"/>
+  <text x="642" y="270" class="small accent label" text-anchor="middle">写请求</text>
+  <text x="642" y="289" class="tiny accent" text-anchor="middle">地址 / 长度</text>
+  <path d="M708 363V235H538V256H514" class="ctrl"/>
+  <text x="622" y="222" class="tiny accent" text-anchor="middle">写完成确认</text>
+
+  <rect x="246" y="350" width="268" height="92" rx="7" class="reg"/>
+  <text x="380" y="374" class="label" text-anchor="middle">数据缓冲（4 B）</text>
+  <rect x="284" y="387" width="45" height="34" rx="4" class="slot"/>
+  <rect x="333" y="387" width="45" height="34" rx="4" class="slot"/>
+  <rect x="382" y="387" width="45" height="34" rx="4" class="slot"/>
+  <rect x="431" y="387" width="45" height="34" rx="4" class="slot"/>
+  <g class="small" text-anchor="middle">
+    <text x="306.5" y="409">1</text><text x="355.5" y="409">2</text><text x="404.5" y="409">3</text><text x="453.5" y="409">4</text>
+  </g>
+  <path d="M380 350V318" class="ctrl"/>
+  <text x="391" y="340" class="tiny accent">有效字节数</text>
+  <path d="M170 403H246" class="data"/>
+  <text x="208" y="391" class="tiny label" text-anchor="middle">读数据</text>
+  <path d="M514 403H590" class="data"/>
+  <text x="552" y="391" class="tiny label" text-anchor="middle">写数据</text>
+
+  <rect x="590" y="484" width="150" height="45" rx="7" class="block"/>
+  <text x="665" y="512" class="label" text-anchor="middle">计算单元</text>
+  <path d="M665 442V484" class="data"/>
+  <text x="652" y="472" class="tiny muted" text-anchor="end">任务成功后读取</text>
+
+  <path d="M22 495H56" class="data"/>
+  <text x="68" y="501" class="small">数据</text>
+  <path d="M140 495H174" class="ctrl"/>
+  <text x="186" y="501" class="small">控制、请求与状态</text>
+  <text x="22" y="550" class="tiny muted">教学模型：一次搬运一个片段；图中缓冲内容是第一行读完时的快照，省略具体协议和时钟。</text>
+</svg>
