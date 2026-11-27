@@ -156,7 +156,7 @@ B01 采用真实 RV32I 的 ADD、LW、SW、BEQ 语义和精简的五阶段单条
 | ID | 暂定标题 | 内容范围与写作重点 | 状态 |
 |---|---|---|---|
 | D01 | 多个 MAC 怎样协作完成一次矩阵乘法？ | PE、并行 MAC、广播、邻居传递、部分和归约、脉动阵列与执行时序 | 已发布（[正文](https://microarch-flow.github.io/wiki/microarchitecture-v2/04-compute-arrays/d01-macs-and-array-data-paths/)，提交 `ac50696`，已核验） |
-| D02 | 同一块矩阵，哪些数据应该留在计算单元里？ | 数据驻留/复用，weight/input/output/row-stationary 的数据路径及代价 | 正文完成（[正文](https://microarch-flow.github.io/wiki/microarchitecture-v2/04-compute-arrays/d02-stationary-dataflows-and-reuse/)，待发布核验） |
+| D02 | 同一块矩阵，哪些数据应该留在计算单元里？ | 数据驻留/复用，weight/input/output/row-stationary 的数据路径及代价 | 已发布（[正文](https://microarch-flow.github.io/wiki/microarchitecture-v2/04-compute-arrays/d02-stationary-dataflows-and-reuse/)，提交 `0da1519`，已核验） |
 | D03 | 为什么扩大计算阵列，不一定能同比例提高吞吐？ | 填排、局部缓冲、供数/输出带宽、矩阵形状、阵列尺寸与利用率 | 待写 |
 
 ### E. 数据搬运与处理引擎（3 篇）
