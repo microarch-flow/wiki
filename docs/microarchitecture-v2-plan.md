@@ -224,12 +224,14 @@ B01 采用真实 RV32I 的 ADD、LW、SW、BEQ 语义和精简的五阶段单条
 | ID | 暂定标题 | 内容范围与写作重点 | 状态 |
 |---|---|---|---|
 | I01 | 计算任务改变后，硬件的数据通路也能改变吗？ | 固定与可重构数据通路、空间计算、数据流驱动、FPGA 与 CGRA | 已发布（[正文](https://microarch-flow.github.io/wiki/microarchitecture-v2/09-compute-paradigms/i01-reconfigurable-and-spatial-computing/)，提交 `6684592`，已核验） |
-| I02 | 如果把计算单元放到存储器旁边或内部，会发生什么？ | 传统/近存/数字存内计算对照、搬运成本、存储阵列求值 | 已评审，待发布核验（[正文](../series/microarchitecture-v2/09-compute-paradigms/i02-near-memory-and-digital-cim.md)） |
-| I03 | 怎样利用模拟电路完成矩阵乘加？ | 模拟存内计算、外围电路、ADC/DAC、精度与误差、能耗取舍 | 已评审，待发布核验（[正文](../series/microarchitecture-v2/09-compute-paradigms/i03-analog-computing-in-memory.md)） |
-| I04 | 怎样让光信号参与矩阵运算？ | 光子计算的信息承载、基本机制及计算组织 | 已评审，待发布核验（[正文](../series/microarchitecture-v2/09-compute-paradigms/i04-photonic-computing.md)） |
-| I05 | 当计算由事件触发，硬件怎样更新神经元状态？ | 神经形态计算、神经元状态、脉冲与事件驱动；不暗示所有神经形态芯片都是无时钟实现 | 已评审，待发布核验（[正文](../series/microarchitecture-v2/09-compute-paradigms/i05-neuromorphic-and-event-driven-computing.md)） |
+| I02 | 如果把计算单元放到存储器旁边或内部，会发生什么？ | 传统/近存/数字存内计算对照、搬运成本、存储阵列求值 | 已发布（[正文](https://microarch-flow.github.io/wiki/microarchitecture-v2/09-compute-paradigms/i02-near-memory-and-digital-cim/)，提交 `60430a7`，已核验） |
+| I03 | 怎样利用模拟电路完成矩阵乘加？ | 模拟存内计算、外围电路、ADC/DAC、精度与误差、能耗取舍 | 已发布（[正文](https://microarch-flow.github.io/wiki/microarchitecture-v2/09-compute-paradigms/i03-analog-computing-in-memory/)，提交 `5dff333`，已核验） |
+| I04 | 怎样让光信号参与矩阵运算？ | 光子计算的信息承载、基本机制及计算组织 | 已发布（[正文](https://microarch-flow.github.io/wiki/microarchitecture-v2/09-compute-paradigms/i04-photonic-computing/)，提交 `87dc3a4`，已核验） |
+| I05 | 当计算由事件触发，硬件怎样更新神经元状态？ | 神经形态计算、神经元状态、脉冲与事件驱动；不暗示所有神经形态芯片都是无时钟实现 | 已发布（[正文](https://microarch-flow.github.io/wiki/microarchitecture-v2/09-compute-paradigms/i05-neuromorphic-and-event-driven-computing/)，提交 `2036479`，已核验） |
 
 2026-11-28：I02–I05 首轮正文完成并独立评审。I02/I03 共同使用两位无符号输入 X=(2,3)、三位权重 W=(4,5) 的点积 23：I02 对比传统 PE、bank 旁数字单元与参与求值的阵列，采用冷启动有效载荷 10/6 bit，并以 Ambit 三行判决为例推导位平面 AND、计数、位权与跨阵列归约；I03 由 40/60 mV、40/50 µS 推导 4.6 µA，扩展到双列、分位、差分与 ADC 误差，追踪完整计算宏的资源。I04 以相干场幅的 2×2 和差变换、MZI 相位控制及平衡相干探测推导带符号结果，区分光电域与光互连。I05 用八个模型时间步推导泄漏、阈值、复位、突触事件及路由，再比较逐步状态更新与按时间补偿，区分模型时间、执行触发与电路定时。五篇基线内容范围保持，旧版深入资料仍原样保留。
+
+2026-11-28：I01–I05 五篇首轮正文全部发布并核验。I02–I05 保留独立提交，新增 13 张教学 SVG；统一构建及 155 项网站测试通过，公开页面、图解、导航、搜索和衔接链接已核验。本轮维持五篇基线与知识关系，待后续结合读者反馈及相邻系列统一打磨。旧版资料未删除。
 
 旧版进阶资料保留原地址，不修改旧目录；新版稳定后再评估迁移、归档或保留为关联阅读：
 
