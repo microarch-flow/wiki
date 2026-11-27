@@ -1,0 +1,70 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 740 585" width="740" height="585" role="img" aria-labelledby="title desc">
+<title id="title">同一份点积的三种数据路径</title><desc id="desc">比较三种初始操作数均在内存侧且消费者在计算芯片的独立做法。传统方案存储器跨边界传出2、3、4、5，计算芯片的PE完成乘加。bank旁PE在内部生成23，再传23。数字CIM在阵列内先形成AND结果，数字外围计数和累加生成23，再传23。</desc>
+<defs><marker id="arrow" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0 0L7 3.5L0 7Z" fill="#376a55"/></marker>
+      <style>
+      text{font-family:"Noto Sans CJK SC","PingFang SC","Microsoft YaHei",sans-serif;fill:#173d35;font-size:18px}
+      .head{font-size:22px;font-weight:700}.label{font-weight:700}.small{font-size:16px}.sub{font-size:16px;fill:#4f695a}
+      .panel{fill:#fafbf8;stroke:#c7d3c7;stroke-width:1.3}
+      .mem{fill:#edf1df;stroke:#93a184;stroke-width:1.4}
+      .logic{fill:#e0ebe3;stroke:#82a18e;stroke-width:1.5}
+      .result{fill:#d2e6d7;stroke:#82a18e;stroke-width:1.5}
+      .low{fill:#f5eee2;stroke:#c1a57f;stroke-width:1.3}
+      .wire{fill:none;stroke:#376a55;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round;marker-end:url(#arrow)}
+      .line{fill:none;stroke:#376a55;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+      .boundary{stroke:#7b897f;stroke-width:1.8;stroke-dasharray:7 5}
+      </style></defs>
+<rect x="1" y="1" width="738" height="583" rx="13" fill="#f5f6ef" stroke="#c4d0c4"/>
+<text x="22" y="33" text-anchor="start" class="head">同一个点积，乘积在哪里出现？</text>
+<text x="252" y="64" text-anchor="middle" class="label">内存侧</text>
+<text x="613" y="64" text-anchor="middle" class="label">计算芯片</text>
+<rect x="16" y="78" width="708" height="150" rx="8" class="panel"/>
+<text x="31" y="102" text-anchor="start" class="label">① 传统数字计算</text>
+<rect x="32" y="118" width="171" height="93" rx="8" class="mem"/>
+<text x="117.5" y="147.5" text-anchor="middle" class="label">存储阵列</text>
+<text x="117.5" y="170.5" text-anchor="middle" class="small">X=(2,3)</text>
+<text x="117.5" y="193.5" text-anchor="middle" class="small">W=(4,5)</text>
+<rect x="261" y="118" width="171" height="93" rx="8" class="panel"/>
+<text x="346.5" y="170.5" text-anchor="middle" class="label">局部读出</text>
+<rect x="550" y="118" width="156" height="93" rx="8" class="logic"/>
+<text x="628.0" y="147.5" text-anchor="middle" class="label">PE：乘加</text>
+<text x="628.0" y="170.5" text-anchor="middle" class="small">8 + 15 = 23</text>
+<text x="628.0" y="193.5" text-anchor="middle" class="small">交给消费者</text>
+<path d="M203 164H256" class="wire"/>
+<path d="M432 164H545" class="wire"/>
+<text x="490" y="148" text-anchor="middle" class="small">X、W</text>
+<path d="M500 80V128 M500 178V225" class="boundary"/>
+<rect x="16" y="236" width="708" height="150" rx="8" class="panel"/>
+<text x="31" y="260" text-anchor="start" class="label">② bank 旁独立数字计算</text>
+<rect x="32" y="276" width="171" height="93" rx="8" class="mem"/>
+<text x="117.5" y="305.5" text-anchor="middle" class="label">存储阵列</text>
+<text x="117.5" y="328.5" text-anchor="middle" class="small">X=(2,3)</text>
+<text x="117.5" y="351.5" text-anchor="middle" class="small">W=(4,5)</text>
+<rect x="261" y="276" width="171" height="93" rx="8" class="logic"/>
+<text x="346.5" y="317.0" text-anchor="middle" class="label">本地 PE</text>
+<text x="346.5" y="340.0" text-anchor="middle" class="small">0 → 8 → 23</text>
+<rect x="550" y="276" width="156" height="93" rx="8" class="result"/>
+<text x="628.0" y="317.0" text-anchor="middle" class="label">消费者</text>
+<text x="628.0" y="340.0" text-anchor="middle" class="small">接收 23</text>
+<path d="M203 322H256" class="wire"/>
+<path d="M432 322H545" class="wire"/>
+<text x="490" y="306" text-anchor="middle" class="small">23</text>
+<path d="M500 238V286 M500 336V383" class="boundary"/>
+<rect x="16" y="394" width="708" height="150" rx="8" class="panel"/>
+<text x="31" y="418" text-anchor="start" class="label">③ 阵列内求值 + 数字外围</text>
+<rect x="32" y="434" width="171" height="93" rx="8" class="logic"/>
+<text x="117.5" y="463.5" text-anchor="middle" class="label">存储阵列</text>
+<text x="117.5" y="486.5" text-anchor="middle" class="small">形成 AND</text>
+<text x="117.5" y="509.5" text-anchor="middle" class="small">乘积 bit</text>
+<rect x="261" y="434" width="171" height="93" rx="8" class="logic"/>
+<text x="346.5" y="475.0" text-anchor="middle" class="label">计数与累加</text>
+<text x="346.5" y="498.0" text-anchor="middle" class="small">得到 23</text>
+<rect x="550" y="434" width="156" height="93" rx="8" class="result"/>
+<text x="628.0" y="475.0" text-anchor="middle" class="label">消费者</text>
+<text x="628.0" y="498.0" text-anchor="middle" class="small">接收 23</text>
+<path d="M203 480H256" class="wire"/>
+<path d="M432 480H545" class="wire"/>
+<text x="490" y="464" text-anchor="middle" class="small">23</text>
+<text x="232" y="464" text-anchor="middle" class="small">bit</text>
+<path d="M500 396V444 M500 494V541" class="boundary"/>
+<text x="500" y="568" text-anchor="middle" class="small">外部接口边界（虚线）</text>
+</svg>
