@@ -1,0 +1,72 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="540" height="704" viewBox="0 0 540 704" xml:lang="zh-CN" role="img" aria-labelledby="title desc">
+<title id="title">电阻上拉与受控 PMOS 上拉对比</title>
+<desc id="desc">两种反相器均使用0.8 V电源，在A为高电平时NMOS导通。第一种通过电阻上拉，电源经电阻和NMOS形成持续的通往地的电流路径；实际输出低电平取决于电阻和NMOS的特性。第二种通过受A控制的PMOS上拉，A高时PMOS关断，只有下拉路径完整，忽略漏电无电源到地的持续电流。A为低电平时NMOS关断，两种电路均可将Y拉高。</desc>
+<defs><marker id="current" markerWidth="8" markerHeight="8" refX="7.2" refY="4" orient="auto"><path d="M0 0L8 4L0 8Z" fill="#a65029"/></marker></defs>
+<rect x="1" y="1" width="538" height="702" rx="15" fill="#f7f6ef" stroke="#c6cec2" stroke-width="1.2"/>
+<g font-family="system-ui, &apos;Noto Sans CJK SC&apos;, &apos;Microsoft YaHei&apos;, sans-serif" fill="#213c36">
+<text x="20" y="35" font-size="24" fill="#213c36" font-weight="700" text-anchor="start">为什么要让上拉路径也能关断？</text>
+<text x="20" y="63" font-size="18" fill="#526860" font-weight="400" text-anchor="start">比较 A = 1（0.8 V）时的两种上拉方式。</text>
+<rect x="15" y="77" width="510" height="266" rx="10" fill="#fffdf7" stroke="#d3dacf" stroke-width="1.2"/>
+<text x="30" y="107" font-size="20" fill="#213c36" font-weight="700" text-anchor="start">① 电阻上拉</text>
+<text x="245" y="133" font-size="17" fill="#213c36" font-weight="650" text-anchor="middle">VDD = 0.8 V</text>
+<path d="M228 143H262" fill="none" stroke="#213c36" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M230 290H260M235 295H255M240 300H250" fill="none" stroke="#213c36" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+<text x="268" y="298" font-size="17" fill="#526860" font-weight="400" text-anchor="start">0 V</text>
+<path d="M245 143V154M245 200V217V231M245 277V290" fill="none" stroke="#536860" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M245 143V154L235 160L255 167L235 174L255 181L235 188L245 200V217V231M245 277V290" fill="none" stroke="#a65029" stroke-width="3.8" stroke-linecap="round" stroke-linejoin="round"/>
+<text x="273" y="181" font-size="18" fill="#213c36" font-weight="650" text-anchor="start">上拉电阻 R</text>
+<path d="M160 146V284" fill="none" stroke="#a65029" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#current)"/>
+<text x="145" y="190" font-size="18" fill="#a65029" font-weight="700" text-anchor="end">持续电流</text>
+<text x="145" y="214" font-size="17" fill="#a65029" font-weight="400" text-anchor="end">流向地</text>
+<rect x="224" y="233" width="108" height="42" rx="7" fill="#dbece7" stroke="#09677b" stroke-width="1.5"/>
+<path d="M245 231V242M245 266V277" fill="none" stroke="#536860" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+<circle cx="245" cy="242" r="3.1" fill="#fffdf7" stroke="#536860" stroke-width="1.8"/>
+<circle cx="245" cy="266" r="3.1" fill="#fffdf7" stroke="#536860" stroke-width="1.8"/>
+<path d="M245 245V263" fill="none" stroke="#536860" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M193 254.0H224" fill="none" stroke="#536860" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="4 3"/>
+<text x="190" y="259.0" font-size="17" fill="#213c36" font-weight="650" text-anchor="end">A</text>
+<text x="259" y="252.0" font-size="16" fill="#213c36" font-weight="700" text-anchor="start">NMOS</text>
+<text x="259" y="271.0" font-size="16" fill="#09677b" font-weight="650" text-anchor="start">导通</text>
+<path d="M245 231V242M245 245V263M245 266V277" fill="none" stroke="#a65029" stroke-width="3.8" stroke-linecap="round" stroke-linejoin="round"/>
+<circle cx="245" cy="242" r="3.1" fill="#fffdf7" stroke="#a65029" stroke-width="1.8"/>
+<circle cx="245" cy="266" r="3.1" fill="#fffdf7" stroke="#a65029" stroke-width="1.8"/>
+<path d="M245 217H450" fill="none" stroke="#536860" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>
+<circle cx="245" cy="217" r="4" fill="#a65029" stroke="none" stroke-width="1.8"/>
+<text x="450" y="207" font-size="19" fill="#213c36" font-weight="700" text-anchor="middle">Y（期望为低）</text>
+<text x="30" y="327" font-size="17" fill="#a65029" font-weight="650" text-anchor="start">稳态存在直通电流；实际 Y 取决于上、下拉的强弱。</text>
+<rect x="15" y="354" width="510" height="266" rx="10" fill="#fffdf7" stroke="#d3dacf" stroke-width="1.2"/>
+<text x="30" y="384" font-size="20" fill="#213c36" font-weight="700" text-anchor="start">② 用 PMOS 控制上拉</text>
+<text x="245" y="410" font-size="17" fill="#213c36" font-weight="650" text-anchor="middle">VDD = 0.8 V</text>
+<path d="M228 420H262" fill="none" stroke="#213c36" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M230 567H260M235 572H255M240 577H250" fill="none" stroke="#213c36" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+<text x="268" y="575" font-size="17" fill="#526860" font-weight="400" text-anchor="start">0 V</text>
+<path d="M245 420V431M245 477V494V508M245 554V567" fill="none" stroke="#536860" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>
+<rect x="224" y="433" width="108" height="42" rx="7" fill="#eeeee8" stroke="#abb4ab" stroke-width="1.5"/>
+<path d="M245 431V442M245 466V477" fill="none" stroke="#536860" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+<circle cx="245" cy="442" r="3.1" fill="#fffdf7" stroke="#536860" stroke-width="1.8"/>
+<circle cx="245" cy="466" r="3.1" fill="#fffdf7" stroke="#536860" stroke-width="1.8"/>
+<path d="M245 463L233 445" fill="none" stroke="#526860" stroke-width="2.7" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M193 454.0H214" fill="none" stroke="#536860" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="4 3"/>
+<circle cx="219" cy="454.0" r="4.3" fill="#fffdf7" stroke="#536860" stroke-width="1.8"/>
+<text x="190" y="459.0" font-size="17" fill="#213c36" font-weight="650" text-anchor="end">A</text>
+<text x="259" y="452.0" font-size="16" fill="#213c36" font-weight="700" text-anchor="start">PMOS</text>
+<text x="259" y="471.0" font-size="16" fill="#526860" font-weight="650" text-anchor="start">关断</text>
+<path d="M245 494V508M245 554V567" fill="none" stroke="#09677b" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+<rect x="224" y="510" width="108" height="42" rx="7" fill="#dbece7" stroke="#09677b" stroke-width="1.5"/>
+<path d="M245 508V519M245 543V554" fill="none" stroke="#09677b" stroke-width="3.9" stroke-linecap="round" stroke-linejoin="round"/>
+<circle cx="245" cy="519" r="3.1" fill="#fffdf7" stroke="#09677b" stroke-width="1.8"/>
+<circle cx="245" cy="543" r="3.1" fill="#fffdf7" stroke="#09677b" stroke-width="1.8"/>
+<path d="M245 522V540" fill="none" stroke="#09677b" stroke-width="3.9" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M193 531.0H224" fill="none" stroke="#536860" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="4 3"/>
+<text x="190" y="536.0" font-size="17" fill="#213c36" font-weight="650" text-anchor="end">A</text>
+<text x="259" y="529.0" font-size="16" fill="#213c36" font-weight="700" text-anchor="start">NMOS</text>
+<text x="259" y="548.0" font-size="16" fill="#09677b" font-weight="650" text-anchor="start">导通</text>
+<path d="M245 494H450" fill="none" stroke="#09677b" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+<circle cx="245" cy="494" r="4" fill="#09677b" stroke="none" stroke-width="1.8"/>
+<text x="450" y="484" font-size="20" fill="#09677b" font-weight="700" text-anchor="middle">Y ≈ 0 V</text>
+<text x="30" y="604" font-size="17" fill="#09677b" font-weight="650" text-anchor="start">PMOS 关断，切断从电源到地的持续电流路径。</text>
+<text x="20" y="641" font-size="18" fill="#213c36" font-weight="650" text-anchor="start">A = 0 时，NMOS 关断，两种电路均可将 Y 拉高。</text>
+<text x="20" y="668" font-size="17" fill="#526860" font-weight="400" text-anchor="start">箭头表示常规电流；粗蓝线表示完整下拉路径。</text>
+<text x="20" y="691" font-size="16" fill="#526860" font-weight="400" text-anchor="start">开关等效；同名输入相连；省略体端和负载；忽略漏电。</text>
+</g>
+</svg>
