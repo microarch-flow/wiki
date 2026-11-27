@@ -1,0 +1,63 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 452" width="720" height="452" role="img" aria-labelledby="title desc">
+  <title id="title">RV32I ADD 指令的编码与译码</title>
+  <desc id="desc">ADD x6,x1,x2 的 32 位编码为 0x00208333。由高位到低位分别是 funct7=0000000、rs2=00010、rs1=00001、funct3=000、rd=00110、opcode=0110011。将 rs1、rs2、rd 分别作为寄存器编号 RA=1、RB=2、WA=6，并结合 opcode、funct3 和 funct7 识别 ADD 运算。源寄存器编号用于读取寄存器内容，不是数值操作数本身。</desc>
+  <defs>
+    <marker id="arrow" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0 0L7 3.5L0 7z" fill="#376650"/></marker>
+    <marker id="ctrl-arrow" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0 0L7 3.5L0 7z" fill="#9b6c27"/></marker>
+    <style>
+      text{font-family:"Noto Sans CJK SC","PingFang SC","Microsoft YaHei",sans-serif;fill:#173d35;font-size:18px}
+      .heading{font-size:22px;font-weight:700}.label{font-weight:700}.small{font-size:16px}.tiny{font-size:14px}.mono{font-family:"DejaVu Sans Mono",monospace;font-size:16px;font-weight:600}
+      .panel{fill:#fafbf8;stroke:#c7d3c7;stroke-width:1.4}.reg{fill:#e0ebe3;stroke:#82a18e;stroke-width:1.4}.decode{fill:#f2e7d1;stroke:#bd9857;stroke-width:1.4}
+      .data{stroke:#376650;stroke-width:2.3;fill:none;marker-end:url(#arrow)}.ctrl{stroke:#9b6c27;stroke-width:1.9;stroke-dasharray:5 4;fill:none;marker-end:url(#ctrl-arrow)}.accent{fill:#8a5d1c}
+      .number{fill:#376650;font-weight:700}
+    </style>
+  </defs>
+  <rect x="1" y="1" width="718" height="450" rx="13" fill="#f5f6ef" stroke="#c4d0c4" stroke-width="1.3"/>
+  <text x="20" y="34" class="heading">一条 ADD 指令怎样携带运算与寄存器编号？</text>
+  <text x="20" y="62" class="small">ADD x6, x1, x2　　32 位指令字：<tspan class="mono">0x00208333</tspan></text>
+  <rect x="16" y="77" width="688" height="150" rx="10" class="panel"/>
+  <text x="31" y="101" class="small">高位 ← 指令比特 → 低位</text>
+
+  <g text-anchor="middle">
+    <rect x="32" y="133" width="140" height="72" rx="3" class="decode"/>
+    <rect x="172" y="133" width="102" height="72" rx="3" class="reg"/>
+    <rect x="274" y="133" width="102" height="72" rx="3" class="reg"/>
+    <rect x="376" y="133" width="70" height="72" rx="3" class="decode"/>
+    <rect x="446" y="133" width="102" height="72" rx="3" class="reg"/>
+    <rect x="548" y="133" width="140" height="72" rx="3" class="decode"/>
+    <text x="102" y="124" class="tiny">[31:25]</text>
+    <text x="223" y="124" class="tiny">[24:20]</text>
+    <text x="325" y="124" class="tiny">[19:15]</text>
+    <text x="411" y="124" class="tiny">[14:12]</text>
+    <text x="497" y="124" class="tiny">[11:7]</text>
+    <text x="618" y="124" class="tiny">[6:0]</text>
+    <text x="102" y="156" class="small accent">funct7</text><text x="102" y="184" class="mono">0000000</text>
+    <text x="223" y="156" class="small">rs2</text><text x="223" y="184" class="mono">00010</text>
+    <text x="325" y="156" class="small">rs1</text><text x="325" y="184" class="mono">00001</text>
+    <text x="411" y="156" class="tiny accent">funct3</text><text x="411" y="184" class="mono">000</text>
+    <text x="497" y="156" class="small">rd</text><text x="497" y="184" class="mono">00110</text>
+    <text x="618" y="156" class="small accent">opcode</text><text x="618" y="184" class="mono">0110011</text>
+  </g>
+
+  <!-- Function selection (amber) is distinct from register identification (green). -->
+  <rect x="72" y="247" width="576" height="63" rx="8" class="decode"/>
+  <text x="360" y="271" class="label accent" text-anchor="middle">译码逻辑</text>
+  <text x="360" y="293" class="small" text-anchor="middle">由指令字段产生数据通路所需的操作与寄存器选择</text>
+  <path d="M102 205V247" class="ctrl"/><path d="M223 205V247" class="data"/>
+  <path d="M325 205V247" class="data"/><path d="M411 205V247" class="ctrl"/>
+  <path d="M497 205V247" class="data"/><path d="M618 205V247" class="ctrl"/>
+
+  <g text-anchor="middle">
+    <rect x="32" y="338" width="153" height="67" rx="7" class="decode"/>
+    <rect x="200" y="338" width="153" height="67" rx="7" class="reg"/>
+    <rect x="368" y="338" width="153" height="67" rx="7" class="reg"/>
+    <rect x="536" y="338" width="153" height="67" rx="7" class="reg"/>
+    <path d="M108 310V324H108V338" class="ctrl"/>
+    <path d="M276 310V338" class="data"/><path d="M444 310V338" class="data"/><path d="M612 310V338" class="data"/>
+    <text x="108" y="362" class="label accent">OP = ADD</text><text x="108" y="386" class="small">选择整数加法</text>
+    <text x="276" y="362" class="label">RA = 1</text><text x="276" y="386" class="small">读取 x1 的值</text>
+    <text x="444" y="362" class="label">RB = 2</text><text x="444" y="386" class="small">读取 x2 的值</text>
+    <text x="612" y="362" class="label">WA = 6</text><text x="612" y="386" class="small">指定写入 x6</text>
+  </g>
+  <text x="360" y="433" text-anchor="middle" class="small">编号 1 和 2 用于选择寄存器；相加的是 x1、x2 保存的值。</text>
+</svg>

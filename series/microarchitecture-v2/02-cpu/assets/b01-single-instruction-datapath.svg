@@ -1,0 +1,121 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 960" width="760" height="960" role="img" aria-labelledby="title desc">
+  <title id="title">一次只执行一条指令的教学 CPU</title>
+  <desc id="desc">PC 地址用于 IF 取指并保存至指令寄存器 IR。ID 阶段译码逻辑与阶段状态 S 控制寄存器读写、运算选择和各内部寄存器使能，将 RF 源操作数保存到 X 和 W。EX 阶段由 ALU 取 X、W 或立即数计算，结果或访存地址保存在 R，同时计算下一条指令的地址并保存于 NPC。MEM 阶段由 R 提供地址，Store 使用 W 的数据，Load 返回值保存于 L。WB 阶段由写回选择器选 R 或 L，在按指令需要写回 RF 的同时将 NPC 更新进 PC。并非所有阶段都必须执行访存或写回寄存器；同名信号表示相连的路径，省略共同的时钟和复位。</desc>
+  <defs>
+    <marker id="arrow" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0 0L7 3.5L0 7z" fill="#376650"/></marker>
+    <marker id="ctrl-arrow" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0 0L7 3.5L0 7z" fill="#9b6c27"/></marker>
+    <style>
+      text{font-family:"Noto Sans CJK SC","PingFang SC","Microsoft YaHei",sans-serif;fill:#173d35;font-size:18px}
+      .heading{font-size:22px;font-weight:700}.small{font-size:16px}.tiny{font-size:14.5px}.label{font-weight:700}
+      .accent{fill:#8a5d1c}.panel{fill:#fafbf8;stroke:#c7d3c7;stroke-width:1.3}
+      .reg{fill:#edf1df;stroke:#82a18e;stroke-width:1.5}.block{fill:#e0ebe3;stroke:#82a18e;stroke-width:1.4}
+      .arch{fill:#d2e6d7;stroke:#376650;stroke-width:1.7}.control{fill:#f2e7d1;stroke:#bd9857;stroke-width:1.4}
+      .data{stroke:#376650;stroke-width:2.3;fill:none;stroke-linejoin:round;stroke-linecap:round;marker-end:url(#arrow)}
+      .ctrl{stroke:#9b6c27;stroke-width:1.9;stroke-dasharray:5 4;fill:none;stroke-linejoin:round;stroke-linecap:round;marker-end:url(#ctrl-arrow)}
+      .divider{stroke:#c7d3c7;stroke-width:1.1}
+    </style>
+  </defs>
+  <rect x="1" y="1" width="758" height="958" rx="13" fill="#f5f6ef" stroke="#c4d0c4" stroke-width="1.3"/>
+  <text x="22" y="34" class="heading">一条指令怎样推进 CPU 中的状态？</text>
+  <rect x="23" y="47" width="19" height="15" rx="3" class="arch"/><text x="50" y="60" class="tiny">程序所见状态</text>
+  <rect x="157" y="47" width="19" height="15" rx="3" class="reg"/><text x="184" y="60" class="tiny">内部寄存器</text>
+  <path d="M300 55H333" class="data"/><text x="341" y="60" class="tiny">数据</text>
+  <path d="M409 55H443" class="ctrl"/><text x="452" y="60" class="tiny accent">控制</text>
+  <text x="542" y="60" class="tiny">同名信号相连</text>
+
+  <!-- IF -->
+  <rect x="17" y="76" width="726" height="133" rx="10" class="panel"/>
+  <text x="32" y="106" class="label">IF</text><text x="32" y="129" class="small">取指</text>
+  <rect x="133" y="94" width="130" height="50" rx="7" class="arch"/>
+  <text x="198" y="125" text-anchor="middle" class="label">PC</text>
+  <path d="M263 119H309" class="data"/><text x="286" y="111" text-anchor="middle" class="tiny">地址</text>
+  <rect x="309" y="94" width="188" height="50" rx="7" class="block"/>
+  <text x="403" y="125" text-anchor="middle" class="label">读取指令</text>
+  <path d="M497 119H543" class="data"/><text x="520" y="111" text-anchor="middle" class="tiny">指令</text>
+  <rect x="543" y="94" width="144" height="50" rx="7" class="reg"/>
+  <text x="615" y="125" text-anchor="middle" class="label">IR</text>
+  <text x="133" y="177" class="small">PC 保存当前指令的地址，直至 WB 才更新。</text>
+
+  <!-- ID -->
+  <rect x="17" y="217" width="726" height="206" rx="10" class="panel"/>
+  <text x="32" y="247" class="label">ID</text><text x="32" y="270" class="small">译码</text><text x="32" y="292" class="small">读数</text>
+  <rect x="133" y="271" width="160" height="104" rx="8" class="arch"/>
+  <text x="213" y="295" text-anchor="middle" class="label">RF</text>
+  <text x="213" y="317" text-anchor="middle" class="small">32 × 32 位</text>
+  <path d="M133 327H293" class="divider"/>
+  <text x="145" y="350" class="tiny">写口 WD</text><text x="281" y="350" text-anchor="end" class="tiny">读口 A/B</text>
+  <text x="145" y="369" class="tiny accent">WA、WE</text>
+  <rect x="353" y="271" width="130" height="42" rx="7" class="reg"/><text x="418" y="298" text-anchor="middle" class="label">X</text>
+  <rect x="353" y="333" width="130" height="42" rx="7" class="reg"/><text x="418" y="360" text-anchor="middle" class="label">W</text>
+  <path d="M293 298H353" class="data"/><path d="M293 354H353" class="data"/>
+  <rect x="543" y="229" width="144" height="42" rx="7" class="control"/>
+  <text x="615" y="256" text-anchor="middle" class="label accent">阶段状态 S</text>
+  <rect x="514" y="299" width="202" height="107" rx="8" class="control"/>
+  <text x="615" y="325" text-anchor="middle" class="label accent">译码与控制</text>
+  <text x="615" y="350" text-anchor="middle" class="small">RA / RB / WA / OP</text>
+  <text x="615" y="373" text-anchor="middle" class="tiny">写使能、选择信号</text>
+  <text x="615" y="394" text-anchor="middle" class="tiny">以及下一阶段</text>
+  <path d="M615 271V299" class="ctrl"/>
+  <path d="M687 119H730V319H716" class="data"/>
+  <text x="705" y="203" class="tiny" text-anchor="end">IR</text>
+  <path d="M514 315H499V245H213V271" class="ctrl"/>
+  <text x="219" y="239" class="tiny accent">RA、RB</text>
+  <text x="133" y="403" class="small">X、W 保存两个源寄存器的读值。</text>
+
+  <!-- EX -->
+  <rect x="17" y="431" width="726" height="183" rx="10" class="panel"/>
+  <text x="32" y="461" class="label">EX</text><text x="32" y="484" class="small">执行</text>
+  <rect x="133" y="446" width="194" height="36" rx="7" class="block"/>
+  <text x="230" y="470" text-anchor="middle" class="small label">X / W / 立即数</text>
+  <path d="M230 482V500" class="data"/>
+  <rect x="133" y="500" width="194" height="51" rx="7" class="block"/>
+  <text x="230" y="522" text-anchor="middle" class="label">ALU</text>
+  <text x="230" y="542" text-anchor="middle" class="tiny">算术 / 地址 / 比较</text>
+  <path d="M327 525H380" class="data"/>
+  <rect x="380" y="500" width="110" height="51" rx="7" class="reg"/>
+  <text x="435" y="522" text-anchor="middle" class="label">R</text><text x="435" y="541" text-anchor="middle" class="tiny">结果或地址</text>
+  <rect x="514" y="446" width="202" height="36" rx="7" class="block"/>
+  <text x="615" y="470" text-anchor="middle" class="tiny label">PC、立即数、比较结果</text>
+  <path d="M615 482V500" class="data"/>
+  <rect x="514" y="500" width="202" height="51" rx="7" class="block"/>
+  <text x="615" y="522" text-anchor="middle" class="label">生成下一地址</text>
+  <text x="615" y="542" text-anchor="middle" class="tiny">PC + 4 或 PC + 偏移</text>
+  <path d="M615 551V565" class="data"/>
+  <rect x="557" y="565" width="116" height="35" rx="7" class="reg"/><text x="615" y="588" text-anchor="middle" class="label">NPC</text>
+  <text x="133" y="584" class="small">按指令需要更新 R，并保存 NPC。</text>
+
+  <!-- MEM -->
+  <rect x="17" y="622" width="726" height="138" rx="10" class="panel"/>
+  <text x="32" y="652" class="label">MEM</text><text x="32" y="675" class="small">访存</text>
+  <rect x="133" y="642" width="152" height="37" rx="7" class="reg"/><text x="209" y="666" text-anchor="middle" class="small label">R（地址）</text>
+  <rect x="133" y="690" width="152" height="37" rx="7" class="reg"/><text x="209" y="714" text-anchor="middle" class="small label">W（写数据）</text>
+  <path d="M285 661H335" class="data"/><path d="M285 709H335" class="data"/>
+  <rect x="335" y="642" width="190" height="85" rx="8" class="arch"/>
+  <text x="430" y="672" text-anchor="middle" class="label">数据内存</text>
+  <text x="430" y="699" text-anchor="middle" class="small">经接口 Load / Store</text>
+  <path d="M525 672H572" class="data"/><text x="548" y="664" text-anchor="middle" class="tiny">返回</text>
+  <rect x="572" y="651" width="115" height="43" rx="7" class="reg"/>
+  <text x="630" y="677" text-anchor="middle" class="label">L</text>
+  <text x="630" y="718" text-anchor="middle" class="tiny">Load 结果</text>
+  <text x="133" y="747" class="small">非访存指令在此阶段不修改内存或 L。</text>
+
+  <!-- WB -->
+  <rect x="17" y="768" width="726" height="146" rx="10" class="panel"/>
+  <text x="32" y="798" class="label">WB</text><text x="32" y="821" class="small">写回</text>
+  <text x="32" y="842" class="small">更新</text>
+  <rect x="133" y="788" width="106" height="43" rx="7" class="reg"/>
+  <text x="186" y="814" text-anchor="middle" class="label">R / L</text>
+  <path d="M239 809H278" class="data"/>
+  <rect x="278" y="788" width="148" height="43" rx="7" class="block"/>
+  <text x="352" y="814" text-anchor="middle" class="small label">写回选择器</text>
+  <path d="M426 809H471" class="data"/><text x="448" y="801" text-anchor="middle" class="tiny">WD</text>
+  <rect x="471" y="788" width="216" height="43" rx="7" class="arch"/>
+  <text x="579" y="814" text-anchor="middle" class="label">RF（由 WA、WE 决定）</text>
+  <rect x="133" y="855" width="106" height="43" rx="7" class="reg"/>
+  <text x="186" y="881" text-anchor="middle" class="label">NPC</text>
+  <path d="M239 877H278" class="data"/>
+  <rect x="278" y="855" width="148" height="43" rx="7" class="arch"/>
+  <text x="352" y="881" text-anchor="middle" class="label">PC</text>
+  <text x="471" y="881" class="small">进入下一条指令</text>
+  <text x="380" y="941" text-anchor="middle" class="small">教学结构：只画主要路径；一次仅有一条指令在执行。</text>
+</svg>
