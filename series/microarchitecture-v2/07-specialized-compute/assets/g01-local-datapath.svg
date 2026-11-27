@@ -1,0 +1,81 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 860 686" width="860" height="686" role="img" aria-labelledby="title desc">
+<title id="title">四条向量执行通道、归约、特殊函数与局部状态</title>
+<desc id="desc">矩阵结果交付本地X槽。局部操作数读写与路由可在各阶段连接X、E与标量M、S/r，送向归约、向量算术和单特殊函数资源。向量通路可以得到M或r的四路广播。先max归约X到M，后四通道减法原位覆写X为U；再按索引读U到单SFU，写指数结果E；归约E得到S，SFU求倒数覆写S为r；最终四通道乘法使用E与广播r，输出Y。阶段按依赖执行，不表示所有通路能同时使用。</desc>
+<defs>
+<marker id="data-arrow" markerUnits="userSpaceOnUse" viewBox="0 0 7 7" markerWidth="8" markerHeight="8" refX="6" refY="3.5" orient="auto-start-reverse"><path d="M0 0L7 3.5L0 7Z" fill="#376650"/></marker>
+<marker id="scalar-arrow" markerUnits="userSpaceOnUse" viewBox="0 0 7 7" markerWidth="8" markerHeight="8" refX="6" refY="3.5" orient="auto"><path d="M0 0L7 3.5L0 7Z" fill="#9b6c27"/></marker>
+<style>
+text{font-family:"Noto Sans CJK SC","PingFang SC","Microsoft YaHei",sans-serif;fill:#173d35;font-size:18px}
+.heading{font-size:22px;font-weight:700}.sub{font-size:17px}.label{font-weight:700}.small{font-size:16px}.tiny{font-size:14px}.note{font-size:16px;fill:#4f695a}.accent{fill:#815718}.muted{fill:#58736a}
+.panel{fill:#fafbf8;stroke:#c7d3c7;stroke-width:1.3}.reg{fill:#edf1df;stroke:#82a18e;stroke-width:1.4}.block{fill:#e0ebe3;stroke:#82a18e;stroke-width:1.4}.control{fill:#f3ebdb;stroke:#c6aa79;stroke-width:1.3}
+.sfu{fill:#dbe7f4;stroke:#8ea6c4;stroke-width:1.4}.data,.scalar,.direct,.exchange,.cmd,.bi{stroke-width:2.3;fill:none;stroke-linejoin:round;stroke-linecap:round}
+.data,.direct{stroke:#376650;marker-end:url(#data-arrow)}.scalar,.exchange{stroke:#9b6c27;marker-end:url(#scalar-arrow)}.cmd{stroke:#9b6c27;stroke-dasharray:6 4;marker-end:url(#scalar-arrow)}
+.bi{stroke:#376650;marker-start:url(#data-arrow);marker-end:url(#data-arrow)}.divider{stroke:#c7d3c7;stroke-width:1.2}
+</style>
+</defs>
+<rect x="1" y="1" width="858" height="684" rx="13" fill="#f5f6ef" stroke="#c4d0c4" stroke-width="1.3"/>
+<text x="22" y="35" class="heading" text-anchor="start">矩阵结果怎样在多个局部运算资源之间传递？</text>
+<text x="22" y="62" class="note" text-anchor="start">教学数据通路：各阶段由控制逻辑选择数据来源、运算和写入位置。</text>
+<rect x="36" y="82" width="252" height="45" rx="7" class="block"/>
+<text x="162" y="110" class="label" text-anchor="middle">矩阵结果 x</text>
+<path d="M162 127V156" class="data"/>
+<rect x="22" y="159" width="594" height="142" rx="7" class="panel"/>
+<text x="35" y="181" class="label" text-anchor="start">局部数据状态</text>
+<rect x="36" y="191" width="266" height="52" rx="7" class="reg"/>
+<text x="169.0" y="212" class="label small" text-anchor="middle">X / U（同一槽位）</text>
+<text x="169.0" y="233" class="small" text-anchor="middle">4 个元素</text>
+<rect x="318" y="191" width="266" height="52" rx="7" class="reg"/>
+<text x="451.0" y="212" class="label small" text-anchor="middle">E</text>
+<text x="451.0" y="233" class="small" text-anchor="middle">4 个元素</text>
+<rect x="36" y="253" width="266" height="36" rx="7" class="control"/>
+<text x="169.0" y="277" class="label small" text-anchor="middle">M：最大值</text>
+<rect x="318" y="253" width="266" height="36" rx="7" class="control"/>
+<text x="451.0" y="277" class="label small" text-anchor="middle">S / r：和或倒数</text>
+<rect x="648" y="159" width="190" height="142" rx="7" class="control"/>
+<text x="743" y="185" class="label" text-anchor="middle">执行控制</text>
+<text x="743" y="214" class="small" text-anchor="middle">阶段、索引 i</text>
+<text x="743" y="240" class="small" text-anchor="middle">运算选择</text>
+<text x="743" y="266" class="small" text-anchor="middle">有效与写使能</text>
+<rect x="22" y="331" width="594" height="44" rx="7" class="block"/>
+<text x="319" y="359" class="label" text-anchor="middle">局部操作数读写与路由（逻辑示意）</text>
+<path d="M117 301V331" class="bi"/>
+<path d="M421 301V331" class="bi"/>
+<path d="M731 301V353H620" class="cmd"/>
+<rect x="22" y="414" width="152" height="108" rx="7" class="block"/>
+<text x="98" y="441" class="label" text-anchor="middle">跨通道归约</text>
+<text x="98" y="470" class="small" text-anchor="middle">MAX / ADD</text>
+<text x="98" y="496" class="small" text-anchor="middle">4 → 1</text>
+<path d="M98 375V411" class="bi"/>
+<rect x="190" y="414" width="264" height="108" rx="7" class="block"/>
+<text x="322" y="441" class="label" text-anchor="middle">向量运算 · 四条 lane</text>
+<rect x="203" y="453" width="54" height="34" rx="7" class="reg"/>
+<text x="230" y="475" class="label small" text-anchor="middle">L0</text>
+<rect x="264" y="453" width="54" height="34" rx="7" class="reg"/>
+<text x="291" y="475" class="label small" text-anchor="middle">L1</text>
+<rect x="325" y="453" width="54" height="34" rx="7" class="reg"/>
+<text x="352" y="475" class="label small" text-anchor="middle">L2</text>
+<rect x="386" y="453" width="54" height="34" rx="7" class="reg"/>
+<text x="413" y="475" class="label small" text-anchor="middle">L3</text>
+<text x="322" y="510" class="small" text-anchor="middle">4 × SUB / MUL</text>
+<path d="M322 375V411" class="bi"/>
+<rect x="470" y="414" width="146" height="108" rx="7" class="sfu"/>
+<text x="543" y="441" class="label" text-anchor="middle">特殊函数</text>
+<text x="543" y="470" class="small" text-anchor="middle">EXP / RCP</text>
+<text x="543" y="496" class="small" text-anchor="middle">逐元素接纳</text>
+<path d="M543 375V411" class="bi"/>
+<path d="M616 275H634V395H355V411" class="scalar"/>
+<text x="459" y="391" class="small accent" text-anchor="middle">M / r 广播到四条 lane</text>
+<rect x="648" y="450" width="190" height="58" rx="7" class="reg"/>
+<text x="743" y="474" class="label" text-anchor="middle">最终输出 Y</text>
+<text x="743" y="496" class="small" text-anchor="middle">4 个元素</text>
+<path d="M322 522V538H743V512" class="data"/>
+<path d="M22 552H838" class="divider"/>
+<text x="22" y="575" class="label" text-anchor="start">实际执行时只启用各阶段所需的数据路径：</text>
+<text x="30" y="601" class="small" text-anchor="start">① X → MAX → M</text>
+<text x="30" y="628" class="small" text-anchor="start">② X、M → SUB → X（现为 U）</text>
+<text x="30" y="655" class="small" text-anchor="start">③ U[i] → EXP → E[i]</text>
+<text x="462" y="601" class="small" text-anchor="start">④ E → ADD 归约 → S</text>
+<text x="462" y="628" class="small" text-anchor="start">⑤ S → RCP → r（覆写 S）</text>
+<text x="462" y="655" class="small" text-anchor="start">⑥ E、r → MUL → Y</text>
+<text x="838" y="677" class="tiny muted" text-anchor="end">实线：数据；虚线：控制选择。箭头不表示并发能力。</text>
+</svg>

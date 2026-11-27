@@ -1,0 +1,80 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 860 455" width="860" height="455" role="img" aria-labelledby="title desc">
+<title id="title">四元素的最大值归约和求和归约</title>
+<desc id="desc">左侧将输入0、ln2、2ln2、ln2分成两对，以比较和选择产生ln2、2ln2，再得到最大值2ln2。右侧将指数结果1/4、1/2、1、1/2分成两对，以加法产生3/4和3/2，再得到和9/4。两条树均含两层依赖和三个二输入运算。</desc>
+<defs>
+<marker id="data-arrow" markerUnits="userSpaceOnUse" viewBox="0 0 7 7" markerWidth="8" markerHeight="8" refX="6" refY="3.5" orient="auto-start-reverse"><path d="M0 0L7 3.5L0 7Z" fill="#376650"/></marker>
+<marker id="scalar-arrow" markerUnits="userSpaceOnUse" viewBox="0 0 7 7" markerWidth="8" markerHeight="8" refX="6" refY="3.5" orient="auto"><path d="M0 0L7 3.5L0 7Z" fill="#9b6c27"/></marker>
+<style>
+text{font-family:"Noto Sans CJK SC","PingFang SC","Microsoft YaHei",sans-serif;fill:#173d35;font-size:18px}
+.heading{font-size:22px;font-weight:700}.sub{font-size:17px}.label{font-weight:700}.small{font-size:16px}.tiny{font-size:14px}.note{font-size:16px;fill:#4f695a}.accent{fill:#815718}.muted{fill:#58736a}
+.panel{fill:#fafbf8;stroke:#c7d3c7;stroke-width:1.3}.reg{fill:#edf1df;stroke:#82a18e;stroke-width:1.4}.block{fill:#e0ebe3;stroke:#82a18e;stroke-width:1.4}.control{fill:#f3ebdb;stroke:#c6aa79;stroke-width:1.3}
+.sfu{fill:#dbe7f4;stroke:#8ea6c4;stroke-width:1.4}.data,.scalar,.direct,.exchange,.cmd,.bi{stroke-width:2.3;fill:none;stroke-linejoin:round;stroke-linecap:round}
+.data,.direct{stroke:#376650;marker-end:url(#data-arrow)}.scalar,.exchange{stroke:#9b6c27;marker-end:url(#scalar-arrow)}.cmd{stroke:#9b6c27;stroke-dasharray:6 4;marker-end:url(#scalar-arrow)}
+.bi{stroke:#376650;marker-start:url(#data-arrow);marker-end:url(#data-arrow)}.divider{stroke:#c7d3c7;stroke-width:1.2}
+</style>
+</defs>
+<rect x="1" y="1" width="858" height="453" rx="13" fill="#f5f6ef" stroke="#c4d0c4" stroke-width="1.3"/>
+<text x="22" y="34" class="heading" text-anchor="start">同一棵逻辑归约树，可以合并最大值或部分和</text>
+<text x="22" y="60" class="note" text-anchor="start">第一层的两个运算彼此独立；第二层需要第一层的结果。</text>
+<rect x="18" y="78" width="400" height="322" rx="7" class="panel"/>
+<text x="32" y="107" class="label" text-anchor="start">最大值归约</text>
+<text x="404" y="107" class="note" text-anchor="end">输入 x</text>
+<rect x="43" y="123" width="76" height="40" rx="7" class="reg"/>
+<text x="81" y="149" class="label small" text-anchor="middle">0</text>
+<rect x="134" y="123" width="76" height="40" rx="7" class="reg"/>
+<text x="172" y="149" class="label small" text-anchor="middle">ln 2</text>
+<rect x="225" y="123" width="76" height="40" rx="7" class="reg"/>
+<text x="263" y="149" class="label small" text-anchor="middle">2 ln 2</text>
+<rect x="316" y="123" width="76" height="40" rx="7" class="reg"/>
+<text x="354" y="149" class="label small" text-anchor="middle">ln 2</text>
+<rect x="58.5" y="195" width="136" height="58" rx="7" class="block"/>
+<path d="M81 163V177H98.5V192" class="data"/>
+<path d="M172 163V177H154.5V192" class="data"/>
+<text x="126.5" y="218" class="small" text-anchor="middle">MAX</text>
+<text x="126.5" y="240" class="label" text-anchor="middle">ln 2</text>
+<path d="M126.5 253V269H178V285" class="data"/>
+<rect x="240.5" y="195" width="136" height="58" rx="7" class="block"/>
+<path d="M263 163V177H280.5V192" class="data"/>
+<path d="M354 163V177H336.5V192" class="data"/>
+<text x="308.5" y="218" class="small" text-anchor="middle">MAX</text>
+<text x="308.5" y="240" class="label" text-anchor="middle">2 ln 2</text>
+<path d="M308.5 253V269H258V285" class="data"/>
+<rect x="144" y="288" width="148" height="56" rx="7" class="control"/>
+<text x="218" y="311" class="small" text-anchor="middle">MAX</text>
+<text x="218" y="333" class="label" text-anchor="middle">2 ln 2</text>
+<path d="M218 344V358" class="data"/>
+<rect x="139" y="361" width="158" height="33" rx="7" class="reg"/>
+<text x="218" y="383" class="label" text-anchor="middle">M = 2 ln 2</text>
+<rect x="442" y="78" width="400" height="322" rx="7" class="panel"/>
+<text x="456" y="107" class="label" text-anchor="start">求和归约</text>
+<text x="828" y="107" class="note" text-anchor="end">指数值 e</text>
+<rect x="467" y="123" width="76" height="40" rx="7" class="reg"/>
+<text x="505" y="149" class="label small" text-anchor="middle">1/4</text>
+<rect x="558" y="123" width="76" height="40" rx="7" class="reg"/>
+<text x="596" y="149" class="label small" text-anchor="middle">1/2</text>
+<rect x="649" y="123" width="76" height="40" rx="7" class="reg"/>
+<text x="687" y="149" class="label small" text-anchor="middle">1</text>
+<rect x="740" y="123" width="76" height="40" rx="7" class="reg"/>
+<text x="778" y="149" class="label small" text-anchor="middle">1/2</text>
+<rect x="482.5" y="195" width="136" height="58" rx="7" class="block"/>
+<path d="M505 163V177H522.5V192" class="data"/>
+<path d="M596 163V177H578.5V192" class="data"/>
+<text x="550.5" y="218" class="small" text-anchor="middle">ADD</text>
+<text x="550.5" y="240" class="label" text-anchor="middle">3/4</text>
+<path d="M550.5 253V269H602V285" class="data"/>
+<rect x="664.5" y="195" width="136" height="58" rx="7" class="block"/>
+<path d="M687 163V177H704.5V192" class="data"/>
+<path d="M778 163V177H760.5V192" class="data"/>
+<text x="732.5" y="218" class="small" text-anchor="middle">ADD</text>
+<text x="732.5" y="240" class="label" text-anchor="middle">3/2</text>
+<path d="M732.5 253V269H682V285" class="data"/>
+<rect x="568" y="288" width="148" height="56" rx="7" class="control"/>
+<text x="642" y="311" class="small" text-anchor="middle">ADD</text>
+<text x="642" y="333" class="label" text-anchor="middle">9/4</text>
+<path d="M642 344V358" class="data"/>
+<rect x="563" y="361" width="158" height="33" rx="7" class="reg"/>
+<text x="642" y="383" class="label" text-anchor="middle">S = 9/4</text>
+<text x="22" y="424" class="note" text-anchor="start">各执行步骤中的合并运算：第一层 2 次，第二层 1 次。</text>
+<text x="838" y="424" class="note" text-anchor="end">MAX = 比较并选择较大值</text>
+<text x="22" y="445" class="tiny muted" text-anchor="start">树的两层是数据依赖层次，不代表所有实际硬件都能固定两拍完成。</text>
+</svg>

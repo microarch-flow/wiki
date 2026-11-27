@@ -1,0 +1,77 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 860 490" width="860" height="490" role="img" aria-labelledby="title desc">
+<title id="title">前缀和扫描逐层生成四个前缀</title>
+<desc id="desc">输入指数值为1/4、1/2、1、1/2。距离1阶段生成1/4、3/4、3/2、3/2。距离2阶段生成1/4、3/4、7/4、9/4。绿色箭头沿用上一层自己的值，棕色箭头表示读取上一层左边指定距离的值。每层均从上一层读值。</desc>
+<defs>
+<marker id="data-arrow" markerUnits="userSpaceOnUse" viewBox="0 0 7 7" markerWidth="8" markerHeight="8" refX="6" refY="3.5" orient="auto-start-reverse"><path d="M0 0L7 3.5L0 7Z" fill="#376650"/></marker>
+<marker id="scalar-arrow" markerUnits="userSpaceOnUse" viewBox="0 0 7 7" markerWidth="8" markerHeight="8" refX="6" refY="3.5" orient="auto"><path d="M0 0L7 3.5L0 7Z" fill="#9b6c27"/></marker>
+<style>
+text{font-family:"Noto Sans CJK SC","PingFang SC","Microsoft YaHei",sans-serif;fill:#173d35;font-size:18px}
+.heading{font-size:22px;font-weight:700}.sub{font-size:17px}.label{font-weight:700}.small{font-size:16px}.tiny{font-size:14px}.note{font-size:16px;fill:#4f695a}.accent{fill:#815718}.muted{fill:#58736a}
+.panel{fill:#fafbf8;stroke:#c7d3c7;stroke-width:1.3}.reg{fill:#edf1df;stroke:#82a18e;stroke-width:1.4}.block{fill:#e0ebe3;stroke:#82a18e;stroke-width:1.4}.control{fill:#f3ebdb;stroke:#c6aa79;stroke-width:1.3}
+.sfu{fill:#dbe7f4;stroke:#8ea6c4;stroke-width:1.4}.data,.scalar,.direct,.exchange,.cmd,.bi{stroke-width:2.3;fill:none;stroke-linejoin:round;stroke-linecap:round}
+.data,.direct{stroke:#376650;marker-end:url(#data-arrow)}.scalar,.exchange{stroke:#9b6c27;marker-end:url(#scalar-arrow)}.cmd{stroke:#9b6c27;stroke-dasharray:6 4;marker-end:url(#scalar-arrow)}
+.bi{stroke:#376650;marker-start:url(#data-arrow);marker-end:url(#data-arrow)}.divider{stroke:#c7d3c7;stroke-width:1.2}
+</style>
+</defs>
+<rect x="1" y="1" width="858" height="488" rx="13" fill="#f5f6ef" stroke="#c4d0c4" stroke-width="1.3"/>
+<text x="22" y="34" class="heading" text-anchor="start">前缀和扫描：每个位置需要自身及左边的元素</text>
+<text x="22" y="61" class="note" text-anchor="start">示例：每层读取的是上一层的四个值，不能读到这一层已修改的值。</text>
+<text x="228" y="95" class="small label" text-anchor="middle">i = 0</text>
+<text x="400" y="95" class="small label" text-anchor="middle">i = 1</text>
+<text x="572" y="95" class="small label" text-anchor="middle">i = 2</text>
+<text x="744" y="95" class="small label" text-anchor="middle">i = 3</text>
+<rect x="178" y="110" width="100" height="54" rx="7" class="reg"/>
+<text x="228" y="144" class="label" text-anchor="middle">1/4</text>
+<rect x="350" y="110" width="100" height="54" rx="7" class="reg"/>
+<text x="400" y="144" class="label" text-anchor="middle">1/2</text>
+<rect x="522" y="110" width="100" height="54" rx="7" class="reg"/>
+<text x="572" y="144" class="label" text-anchor="middle">1</text>
+<rect x="694" y="110" width="100" height="54" rx="7" class="reg"/>
+<text x="744" y="144" class="label" text-anchor="middle">1/2</text>
+<text x="25" y="132" class="label" text-anchor="start">输入</text>
+<text x="25" y="154" class="note" text-anchor="start">原始 e</text>
+<rect x="178" y="230" width="100" height="54" rx="7" class="block"/>
+<text x="228" y="264" class="label" text-anchor="middle">1/4</text>
+<rect x="350" y="230" width="100" height="54" rx="7" class="block"/>
+<text x="400" y="264" class="label" text-anchor="middle">3/4</text>
+<rect x="522" y="230" width="100" height="54" rx="7" class="block"/>
+<text x="572" y="264" class="label" text-anchor="middle">3/2</text>
+<rect x="694" y="230" width="100" height="54" rx="7" class="block"/>
+<text x="744" y="264" class="label" text-anchor="middle">3/2</text>
+<text x="25" y="252" class="label" text-anchor="start">第 1 层</text>
+<text x="25" y="274" class="note" text-anchor="start">距离 = 1</text>
+<rect x="178" y="350" width="100" height="54" rx="7" class="reg"/>
+<text x="228" y="384" class="label" text-anchor="middle">1/4</text>
+<rect x="350" y="350" width="100" height="54" rx="7" class="reg"/>
+<text x="400" y="384" class="label" text-anchor="middle">3/4</text>
+<rect x="522" y="350" width="100" height="54" rx="7" class="reg"/>
+<text x="572" y="384" class="label" text-anchor="middle">7/4</text>
+<rect x="694" y="350" width="100" height="54" rx="7" class="reg"/>
+<text x="744" y="384" class="label" text-anchor="middle">9/4</text>
+<text x="25" y="372" class="label" text-anchor="start">第 2 层</text>
+<text x="25" y="394" class="note" text-anchor="start">距离 = 2</text>
+<path d="M228 164V227" class="direct"/>
+<path d="M386 164V227" class="direct"/>
+<path d="M558 164V227" class="direct"/>
+<path d="M730 164V227" class="direct"/>
+<path d="M250 164 C250 190 415 201 415 227" class="exchange"/>
+<text x="440" y="219" class="small accent" text-anchor="middle">+</text>
+<path d="M422 164 C422 190 587 201 587 227" class="exchange"/>
+<text x="612" y="219" class="small accent" text-anchor="middle">+</text>
+<path d="M594 164 C594 190 759 201 759 227" class="exchange"/>
+<text x="784" y="219" class="small accent" text-anchor="middle">+</text>
+<path d="M228 284V347" class="direct"/>
+<path d="M400 284V347" class="direct"/>
+<path d="M558 284V347" class="direct"/>
+<path d="M730 284V347" class="direct"/>
+<path d="M250 284 C250 310 587 321 587 347" class="exchange"/>
+<text x="612" y="339" class="small accent" text-anchor="middle">+</text>
+<path d="M422 284 C422 310 759 321 759 347" class="exchange"/>
+<text x="784" y="339" class="small accent" text-anchor="middle">+</text>
+<path d="M28 441H66" class="direct"/>
+<text x="78" y="446" class="note" text-anchor="start">上一层本位置</text>
+<path d="M260 441H298" class="exchange"/>
+<text x="310" y="446" class="note" text-anchor="start">上一层左侧位置</text>
+<text x="838" y="446" class="note" text-anchor="end">最后一个前缀 = 全部元素之和</text>
+<text x="22" y="474" class="small" text-anchor="start">这里是含当前元素的前缀和；它不是 Softmax 必须执行的步骤。</text>
+</svg>
