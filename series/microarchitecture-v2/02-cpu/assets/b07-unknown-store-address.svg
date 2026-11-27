@@ -1,0 +1,105 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 686" width="800" height="686" role="img" aria-labelledby="title desc">
+  <title id="title">更早 Store 地址尚未知时，让 Load 提前访问并在发现冲突时恢复</title>
+  <desc id="desc">变体程序在原 I7 之前插入 P，即 LW x12, 8(x4)，从 0x208 读出 0x200。I7 改 SW x7, 4(x12)，I8 仍 LW x11, 4(x4)。P、I7、I8 分别在 E8、E12、E15 登记，其中 P 分配 p37，I8 分配 p6。E19 时 I7 的 Store 数据7已就绪而地址未知，I8 地址为 0x204，推测不冲突并发出读请求。E22 P 返回地址基值 0x200，E23 写 p37；同一边沿 I8 返回旧值0，E24 写入 p6。E25 I7 计算得到地址 0x204，E26 检查发现与已经执行的 I8 重叠，因此取消 I8 及之后的指令，恢复 RMT[x11] 为 p11，安全归还 p6，FPC 重定向到 0x124。保留 I7 的地址和数据，E26 确认就绪，E27 提交。重新执行 I8 将从适当路径取得 7。</desc>
+  <defs>
+    <marker id="arrow" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0 0L7 3.5L0 7z" fill="#376650"/></marker>
+    <style>
+      text{font-family:"Noto Sans CJK SC","PingFang SC","Microsoft YaHei",sans-serif;fill:#173d35;font-size:16px}
+      .heading{font-size:22px;font-weight:700}.label{font-size:17px;font-weight:700}.note{font-size:15px;fill:#4f695a}.tiny{font-size:13.5px}
+      .rowlabel{font-size:14px;font-weight:700}.cell{font-size:13.5px;font-weight:700}
+      .panel{fill:#fafbf8;stroke:#c7d3c7;stroke-width:1.3}.grid{stroke:#e3e9df;stroke-width:1}
+      .normal{fill:#e0ebe3;stroke:#82a18e;stroke-width:1.2}.good{fill:#d2e6d7;stroke:#376650;stroke-width:1.5}
+      .unknown{fill:#f2e7d1;stroke:#bca16d;stroke-width:1.2}.discard{fill:#f4e6df;stroke:#b77967;stroke-width:1.5;stroke-dasharray:4 2}
+      .result{fill:#e0eaed;stroke:#72929b;stroke-width:1.5}.muted{fill:#6e8079}.accent{fill:#8a5d1c}.error{fill:#884735}.ftext{fill:#496872}
+      .hl{fill:#f4e6df;opacity:0.55}.data{stroke:#376650;stroke-width:2;fill:none;stroke-linejoin:round;stroke-linecap:round;marker-end:url(#arrow)}
+    </style>
+  </defs>
+  <rect x="1" y="1" width="798" height="684" rx="13" fill="#f5f6ef" stroke="#c4d0c4" stroke-width="1.3"/>
+  <text x="20" y="34" class="heading">先读取未知地址 Store 之后的 Load，为什么要重做？</text>
+  <text x="20" y="61" class="note">沿用 I7/I8，插入 P 提供 Store 的基址；x4 = 0x200，x7 = 7。</text>
+
+  <!-- Program variant and initial data. -->
+  <rect x="14" y="75" width="772" height="144" rx="9" class="panel"/>
+  <text x="28" y="99" class="label">变体程序</text>
+  <text x="772" y="99" class="tiny muted" text-anchor="end">初始 M[0x208] = 0x200，M[0x204] = 0</text>
+  <rect x="28" y="109" width="744" height="29" rx="5" class="result"/>
+  <text x="40" y="129" class="cell">P</text><text x="92" y="129" class="note">LW x12, 8(x4)</text>
+  <text x="380" y="129" class="note">提供指针 → p37</text><text x="754" y="129" class="tiny ftext" text-anchor="end">E8 登记</text>
+  <rect x="28" y="145" width="744" height="29" rx="5" class="unknown"/>
+  <text x="40" y="165" class="cell">I7</text><text x="92" y="165" class="note">SW x7, 4(x12)</text>
+  <text x="380" y="165" class="note">数据 = 7，地址等待 p37</text><text x="754" y="165" class="tiny accent" text-anchor="end">E12 登记</text>
+  <rect x="28" y="181" width="744" height="29" rx="5" class="normal"/>
+  <text x="40" y="201" class="cell">I8</text><text x="92" y="201" class="note">LW x11, 4(x4)</text>
+  <text x="380" y="201" class="note">地址 = 0x204，目标 p6</text><text x="754" y="201" class="tiny muted" text-anchor="end">E15 登记</text>
+
+  <text x="22" y="248" class="label">E19–E27：地址直到 E25 才确认</text>
+  <text x="772" y="248" class="tiny muted" text-anchor="end">仅展示关键事件边沿</text>
+  <rect x="14" y="259" width="772" height="256" rx="9" class="panel"/>
+  <rect x="624" y="286" width="68" height="218" rx="7" class="hl"/>
+  <text x="154" y="281" class="tiny" text-anchor="middle">E19</text>
+  <path d="M119 288V504" class="grid"/>
+  <text x="226" y="281" class="tiny" text-anchor="middle">E20</text>
+  <path d="M191 288V504" class="grid"/>
+  <text x="298" y="281" class="tiny" text-anchor="middle">E21</text>
+  <path d="M263 288V504" class="grid"/>
+  <text x="370" y="281" class="tiny" text-anchor="middle">E22</text>
+  <path d="M335 288V504" class="grid"/>
+  <text x="442" y="281" class="tiny" text-anchor="middle">E23</text>
+  <path d="M407 288V504" class="grid"/>
+  <text x="514" y="281" class="tiny" text-anchor="middle">E24</text>
+  <path d="M479 288V504" class="grid"/>
+  <text x="586" y="281" class="tiny" text-anchor="middle">E25</text>
+  <path d="M551 288V504" class="grid"/>
+  <text x="658" y="281" class="label error" text-anchor="middle">E26</text>
+  <path d="M623 288V504" class="grid"/>
+  <text x="730" y="281" class="tiny" text-anchor="middle">E27</text>
+  <path d="M695 288V504" class="grid"/>
+  <text x="28" y="319" class="rowlabel">P</text><text x="28" y="339" class="tiny muted">读指针</text>
+  <text x="28" y="391" class="rowlabel">I7</text><text x="28" y="411" class="tiny muted">较早的写</text>
+  <text x="28" y="463" class="rowlabel">I8</text><text x="28" y="483" class="tiny muted">较晚的读</text>
+  <rect x="338" y="298" width="64" height="49" rx="6" class="result"/>
+  <text x="370" y="317" class="cell ftext" text-anchor="middle">返回</text>
+  <text x="370" y="336" class="tiny ftext" text-anchor="middle">0x200</text>
+  <rect x="410" y="298" width="64" height="49" rx="6" class="good"/>
+  <text x="442" y="317" class="cell " text-anchor="middle">写 PRF</text>
+  <text x="442" y="336" class="tiny " text-anchor="middle">p37 就绪</text>
+  <rect x="122" y="370" width="64" height="49" rx="6" class="unknown"/>
+  <text x="154" y="389" class="cell accent" text-anchor="middle">值 = 7</text>
+  <text x="154" y="408" class="tiny accent" text-anchor="middle">地址未知</text>
+  <path d="M192 393H546" stroke="#bca16d" stroke-width="2.2" stroke-dasharray="5 4" fill="none"/>
+  <rect x="236" y="382" width="269" height="21" rx="4" fill="#fafbf8"/>
+  <text x="371" y="397" class="tiny accent" text-anchor="middle">等待基址，不能确认与 I8 是否冲突</text>
+  <rect x="554" y="370" width="64" height="49" rx="6" class="good"/>
+  <text x="586" y="389" class="cell " text-anchor="middle">算出地址</text>
+  <text x="586" y="408" class="tiny " text-anchor="middle">0x204</text>
+  <rect x="626" y="370" width="64" height="49" rx="6" class="good"/>
+  <text x="658" y="389" class="cell " text-anchor="middle">查重叠</text>
+  <text x="658" y="408" class="tiny " text-anchor="middle">I7 就绪</text>
+  <rect x="698" y="370" width="64" height="49" rx="6" class="good"/>
+  <text x="730" y="389" class="cell " text-anchor="middle">提交</text>
+  <text x="730" y="408" class="tiny " text-anchor="middle">进入缓冲</text>
+  <rect x="122" y="442" width="64" height="49" rx="6" class="unknown"/>
+  <text x="154" y="461" class="cell accent" text-anchor="middle">推测读</text>
+  <text x="154" y="480" class="tiny accent" text-anchor="middle">0x204</text>
+  <rect x="410" y="442" width="64" height="49" rx="6" class="unknown"/>
+  <text x="442" y="461" class="cell accent" text-anchor="middle">返回</text>
+  <text x="442" y="480" class="tiny accent" text-anchor="middle">旧值 0</text>
+  <rect x="482" y="442" width="64" height="49" rx="6" class="unknown"/>
+  <text x="514" y="461" class="cell accent" text-anchor="middle">写 PRF</text>
+  <text x="514" y="480" class="tiny accent" text-anchor="middle">p6 = 0</text>
+  <rect x="626" y="442" width="64" height="49" rx="6" class="discard"/>
+  <text x="658" y="461" class="cell error" text-anchor="middle">取消</text>
+  <text x="658" y="480" class="tiny error" text-anchor="middle">I8 及之后</text>
+  <text x="22" y="541" class="label">E26：发现 I8 取得了较早写入之前的错误值</text>
+  <rect x="14" y="552" width="772" height="94" rx="9" class="panel"/>
+  <rect x="28" y="563" width="355" height="71" rx="7" class="discard"/>
+  <text x="42" y="589" class="label error">恢复 I8 之前的状态</text>
+  <text x="42" y="611" class="small">RMT[x11] ← p11；安全回收 p6</text>
+  <text x="42" y="628" class="tiny error">取消 I8，不取消更早的 I7</text>
+  <path d="M383 599H418" class="data"/>
+  <rect x="420" y="563" width="352" height="71" rx="7" class="good"/>
+  <text x="434" y="589" class="label">FPC ← 0x124，重新取 I8</text>
+  <text x="434" y="611" class="small">保留 I7 的地址 0x204 与值 7</text>
+  <text x="434" y="628" class="tiny muted">重做的 I8 将获得正确数据 7</text>
+  <text x="22" y="669" class="tiny dim">黄框：地址未知时的推测及旧值。虚线红框：被取消结果。E27 提交不表示内存已对外可见。</text>
+</svg>

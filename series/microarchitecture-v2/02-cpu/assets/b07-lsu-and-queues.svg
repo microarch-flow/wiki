@@ -1,0 +1,85 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 826" width="800" height="826" role="img" aria-labelledby="title desc">
+  <title id="title">访存单元使用独立的地址、数据和队列状态完成 Load 与 Store</title>
+  <desc id="desc">I7 Store 的基址为0x200，偏移为4，AGU 计算出地址0x204；来自物理寄存器 p34 的待写数据为7。两者分别保存在 Store Queue 的地址与数据字段中，各有独立有效位。I8 Load 的地址同为0x204，保存在 Load Queue 中。判断 Load 能否访问内存时要检查在程序次序上更早的 Store Queue 和已提交的 Store Buffer 中的记录，选择覆盖该地址的最新较老 Store 数据；若较老 Store 地址未知或命中但数据未准备好则按本例保守规则等待；没有重叠时可发起内存读取。数据经 Load 结果路径写入物理寄存器文件。队首 Store 已准备好且 Store Buffer 有空位时，经 ROB 提交才从待提交 Store Queue 转入独立的已提交 Store Buffer，之后送往抽象内存，因而提交与可见性不必同时发生。图中不展开地址翻译、Cache 和实际内存系统内部细节。</desc>
+  <defs>
+    <marker id="arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0 0L8 4L0 8Z" fill="#376650"/></marker>
+    <marker id="control" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0 0L8 4L0 8Z" fill="#9b6c27"/></marker>
+    <marker id="forward" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0 0L8 4L0 8Z" fill="#5b7680"/></marker>
+    <style>
+      text{font-family:"Noto Sans CJK SC","PingFang SC","Microsoft YaHei",sans-serif;fill:#173d35;font-size:17px}
+      .heading{font-size:22px;font-weight:700}.label{font-weight:700}.small{font-size:16px}.tiny{font-size:14px}.note{font-size:15px;fill:#4f695a}
+      .accent{fill:#8a5d1c}.ftext{fill:#496872}
+      .panel{fill:#fafbf8;stroke:#c7d3c7;stroke-width:1.3}.block{fill:#e0ebe3;stroke:#82a18e;stroke-width:1.4}.ready{fill:#d2e6d7;stroke:#376650;stroke-width:1.5}
+      .queue{fill:#e0eaed;stroke:#72929b;stroke-width:1.4}.ctrlbox{fill:#f2e7d1;stroke:#bd9857;stroke-width:1.5}
+      .data{stroke:#376650;stroke-width:2.2;fill:none;stroke-linejoin:round;stroke-linecap:round;marker-end:url(#arrow)}
+      .ctl{stroke:#9b6c27;stroke-width:2;stroke-dasharray:5 4;fill:none;stroke-linejoin:round;marker-end:url(#control)}
+      .check{stroke:#5b7680;stroke-width:2.2;stroke-dasharray:5 4;fill:none;stroke-linejoin:round;marker-end:url(#forward)}
+    </style>
+  </defs>
+  <rect x="1" y="1" width="798" height="824" rx="13" fill="#f5f6ef" stroke="#c4d0c4" stroke-width="1.3"/>
+  <text x="20" y="34" class="heading">LSU：地址、数据、执行、提交是不同的条件</text>
+  <text x="20" y="59" class="note">I7 · SW x7, 4(x4)；I8 · LW x11, 4(x4)，两条指令访问同一地址。</text>
+  <rect x="15" y="73" width="770" height="274" rx="10" class="panel"/>
+  <text x="31" y="98" class="small label">1. 先准备每条访存指令的地址、数据</text>
+
+  <rect x="31" y="115" width="232" height="49" rx="7" class="block"/>
+  <text x="147" y="136" class="small label" text-anchor="middle">AGU · I7 地址计算</text><text x="147" y="154" class="tiny" text-anchor="middle">0x200 + 4 → 0x204</text>
+  <rect x="284" y="115" width="232" height="49" rx="7" class="block"/>
+  <text x="400" y="136" class="small label" text-anchor="middle">I7 待写入的数据</text><text x="400" y="154" class="tiny" text-anchor="middle">PRF[p34] = 7</text>
+  <rect x="537" y="115" width="232" height="49" rx="7" class="block"/>
+  <text x="653" y="136" class="small label" text-anchor="middle">AGU · I8 地址计算</text><text x="653" y="154" class="tiny" text-anchor="middle">0x200 + 4 → 0x204</text>
+
+  <rect x="31" y="187" width="485" height="118" rx="8" class="queue"/>
+  <text x="45" y="208" class="small label">SQ · 待提交 Store 队列</text>
+  <rect x="47" y="222" width="220" height="69" rx="6" class="ready"/>
+  <text x="157" y="242" class="small label" text-anchor="middle">I7 地址</text><text x="157" y="262" class="small" text-anchor="middle">0x204</text><text x="157" y="280" class="tiny" text-anchor="middle">地址有效 = 1</text>
+  <rect x="280" y="222" width="220" height="69" rx="6" class="ready"/>
+  <text x="390" y="242" class="small label" text-anchor="middle">I7 数据</text><text x="390" y="262" class="small" text-anchor="middle">7</text><text x="390" y="280" class="tiny" text-anchor="middle">数据有效 = 1</text>
+  <rect x="537" y="187" width="232" height="118" rx="8" class="queue"/>
+  <text x="653" y="208" class="small label" text-anchor="middle">LQ · Load 队列</text>
+  <rect x="553" y="222" width="200" height="69" rx="6" class="ready"/>
+  <text x="653" y="244" class="small label" text-anchor="middle">I8 地址</text><text x="653" y="263" class="small" text-anchor="middle">0x204</text><text x="653" y="280" class="tiny" text-anchor="middle">地址有效 = 1</text>
+  <path d="M147 164V187" class="data"/><path d="M400 164V187" class="data"/><path d="M653 164V187" class="data"/>
+  <text x="31" y="331" class="tiny">本例 Store 地址和数据均就绪；实际可以分别到达，必须独立记录状态。</text>
+
+  <rect x="15" y="360" width="770" height="316" rx="10" class="panel"/>
+  <text x="31" y="385" class="small label">2. 根据程序次序与地址关系，决定 Load 从何处取值</text>
+  <path d="M516 245H525V405H457V422" class="check"/>
+  <path d="M653 305V404H590V422" class="data"/>
+  <rect x="31" y="410" width="278" height="65" rx="7" class="ctrlbox"/>
+  <text x="170" y="433" class="small label accent" text-anchor="middle">ROB 队首提交许可</text>
+  <text x="170" y="453" class="tiny" text-anchor="middle">I7 已准备好，且 SB 有空位</text>
+  <path d="M170 475V508" class="ctl"/>
+  <path d="M31 260H23V548H31" class="data"/>
+  <rect x="31" y="508" width="278" height="76" rx="7" class="ready"/>
+  <text x="170" y="532" class="small label" text-anchor="middle">SB · 已提交 Store Buffer</text>
+  <text x="170" y="553" class="tiny" text-anchor="middle">接收 SQ 的已提交记录</text>
+  <text x="170" y="572" class="tiny" text-anchor="middle">I7：0x204 ← 7</text>
+  <path d="M309 548H340V456H364" class="check"/>
+
+  <rect x="364" y="422" width="405" height="88" rx="8" class="ctrlbox"/>
+  <text x="566.5" y="445" class="small label accent" text-anchor="middle">检查更早的 SQ、SB 记录</text>
+  <text x="566.5" y="465" class="tiny" text-anchor="middle">按程序次序、地址与数据状态判断</text>
+  <text x="566.5" y="487" class="tiny" text-anchor="middle">地址相同的多个 Store 取最近的较老版本</text>
+  <path d="M429 510V534" class="ctl"/><path d="M566 510V534" class="ctl"/><path d="M704 510V534" class="ctl"/>
+  <rect x="364" y="534" width="129" height="78" rx="6" class="ctrlbox"/>
+  <text x="428.5" y="555" class="small label accent" text-anchor="middle">等待</text><text x="428.5" y="575" class="tiny" text-anchor="middle">地址未知 /</text><text x="428.5" y="595" class="tiny" text-anchor="middle">命中数据未好</text>
+  <rect x="500" y="534" width="132" height="78" rx="6" class="ready"/>
+  <text x="566" y="555" class="small label" text-anchor="middle">转发</text><text x="566" y="575" class="tiny" text-anchor="middle">命中已准备好</text><text x="566" y="595" class="tiny" text-anchor="middle">I7 数据 7</text>
+  <rect x="639" y="534" width="130" height="78" rx="6" class="block"/>
+  <text x="704" y="555" class="small label" text-anchor="middle">请求内存</text><text x="704" y="575" class="tiny" text-anchor="middle">没有重叠的</text><text x="704" y="595" class="tiny" text-anchor="middle">较老 Store</text>
+
+  <path d="M170 584V624" class="data"/>
+  <rect x="31" y="624" width="278" height="36" rx="7" class="block"/>
+  <text x="170" y="648" class="small label" text-anchor="middle">抽象内存访问接口</text>
+  <text x="232" y="608" class="tiny" text-anchor="middle">后续写请求</text>
+  <path d="M704 612V642H577Q566 627 555 642H309" class="data"/>
+
+  <path d="M566 612V697H479V714" class="data"/>
+  <path d="M170 660V733H321" class="data"/>
+  <rect x="321" y="714" width="448" height="49" rx="7" class="ready"/>
+  <text x="545" y="735" class="small label" text-anchor="middle">Load 结果 → PRF</text>
+  <text x="545" y="753" class="tiny" text-anchor="middle">可来自较老 Store，也可来自内存读响应</text>
+  <text x="20" y="790" class="note">Store 提交后仍可留在 SB 等待真正写入；转发可以避免 Load 读到旧值。</text>
+  <text x="20" y="810" class="note">图中地址关系与访问完成条件均为抽象模型，不展开 Cache、TLB 细节。</text>
+</svg>
