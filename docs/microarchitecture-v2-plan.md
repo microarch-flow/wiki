@@ -114,7 +114,9 @@ flowchart TD
 | A05 | 一组运算单元怎样连续完成不同的计算？ | ALU/FPU/MAC、寄存器文件、操作数选择、读写端口、数据通路、控制通路、写回与多周期执行 | 已发布（[正文](https://microarch-flow.github.io/wiki/microarchitecture-v2/01-foundations/a05-datapath-and-control/)，提交 `25f9a6b`，已核验） |
 | A06 | 第一份结果还没出来，为什么下一份运算可以开始？ | 关键路径、流水级、延迟、II、吞吐、填排和反馈依赖；独立输入与相关输入对照 | 已发布（[正文](https://microarch-flow.github.io/wiki/microarchitecture-v2/01-foundations/a06-pipeline-and-throughput/)，提交 `a20f155`，已核验） |
 | A07 | 下游来不及接收数据，上游怎样知道何时停止？ | 停顿、气泡、valid/ready、FIFO、反压、弹性流水、跨时钟域交接；不重复物理时序 | 已发布（[正文](https://microarch-flow.github.io/wiki/microarchitecture-v2/01-foundations/a07-handshake-and-backpressure/)，提交 `fad0023`，已核验） |
-| A08 | 多项工作同时就绪，谁先使用计算资源？ | 数据依赖、资源占用、在途任务、就绪、仲裁、发射、完成、结果可用，通用执行语义 | 已评审，待发布核验（`series/microarchitecture-v2/01-foundations/a08-dependencies-and-scheduling.md`） |
+| A08 | 多项工作同时就绪，谁先使用计算资源？ | 数据依赖、资源占用、在途任务、就绪、仲裁、发射、完成、结果可用，通用执行语义 | 已发布（[正文](https://microarch-flow.github.io/wiki/microarchitecture-v2/01-foundations/a08-dependencies-and-scheduling/)，提交 `ec2151a`，已核验） |
+
+2026-11-27：A01–A08 八篇首轮正文均已发布并核验，保持原定八篇基线，阅读顺序和链接已贯通。待半导体与电路基础系列稳定后，按此前协作决定统一复核共同基础的前置知识、边界与表述；当前阶段不改旧版正文。
 
 ### B. 指令执行与 CPU（8 篇）
 
