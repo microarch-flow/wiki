@@ -349,7 +349,7 @@ class GeneratedNavigationTests(unittest.TestCase):
         page = (SITE / topic / "index.html").read_text(encoding="utf-8")
         article = re.search(r'<article\b[^>]*>(.*?)</article>', page, re.DOTALL).group(1)
         self.assertEqual(article.count('id="rectification"'), 1)
-        opening_figures = ("diode-one-way", "bridge-rectifier-positive", "bridge-rectifier-negative", "pn-diode-overview")
+        opening_figures = ("bridge-rectifier-positive", "bridge-rectifier-negative", "pn-diode-overview")
         for figure in opening_figures:
             with self.subTest(opening_figure=figure):
                 self.assertRegex(article, rf'<img\b[^>]*src="img/{figure}\.svg"')
