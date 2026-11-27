@@ -238,6 +238,6 @@
 
 它与 SIMD 可以共享相似的物理通路，区别在于表达和组织工作的方式。参见 [NVIDIA 的 SIMT 执行模型](https://docs.nvidia.com/cuda/cuda-programming-guide/03-advanced/advanced-kernel-programming.html#simt-execution-model)。
 
-[B08](../02-cpu/b08-hardware-multithreading-and-resource-sharing.md) 已经建立了独立执行上下文与共享硬件资源的基础。下一篇 C02 将继续观察 SIMT、线程分组与调度：怎样在保留各线程程序行为的同时共享一次指令发射，以及为什么一组线程等待时另一组可以继续工作。
+[B08](../02-cpu/b08-hardware-multithreading-and-resource-sharing.md) 已经建立了独立执行上下文与共享硬件资源的基础。下一篇 [C02：一组线程还在等待数据，另一组线程能否先执行？](c02-simt-and-warp-scheduling.md) 将继续观察 SIMT、线程分组与调度：怎样在保留各线程程序行为的同时共享一次指令发射，以及为什么一组线程等待时另一组可以继续工作。
 
 [返回并行执行与 GPU 导读](README.md)。

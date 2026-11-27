@@ -142,7 +142,7 @@ B01 采用真实 RV32I 的 ADD、LW、SW、BEQ 语义和精简的五阶段单条
 | ID | 暂定标题 | 内容范围与写作重点 | 状态 |
 |---|---|---|---|
 | C01 | 十个独立的加法，怎样交给四条执行通道？ | 标量、SIMD、向量、物理 lane、分批、掩码与尾部 | 已发布（[正文](https://microarch-flow.github.io/wiki/microarchitecture-v2/03-parallel-execution/c01-scalar-simd-and-vector-execution/)，提交 `3065248`，已核验） |
-| C02 | 一组线程还在等待数据，另一组线程能否先执行？ | SIMT、warp/wavefront、线程上下文、分支发散、谓词执行、硬件发射、延迟隐藏 | 待写 |
+| C02 | 一组线程还在等待数据，另一组线程能否先执行？ | SIMT、warp/wavefront、线程上下文、分支发散、谓词执行、硬件发射、延迟隐藏、组内交换与同步基本语义 | 正文完成（[正文](https://microarch-flow.github.io/wiki/microarchitecture-v2/03-parallel-execution/c02-simt-and-warp-scheduling/)，待发布核验） |
 | C03 | 为什么 GPU 中的线程越多，计算不一定越快？ | 线程块驻留、寄存器容量、occupancy、执行端口、访存合并、bank conflict | 待写 |
 
 ### D. 计算阵列与数据流（3 篇）

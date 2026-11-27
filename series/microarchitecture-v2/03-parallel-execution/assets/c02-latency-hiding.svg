@@ -1,0 +1,149 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 780 590" width="780" height="590" role="img" aria-labelledby="title desc">
+  <title id="title">就绪线程组交错发射可以隐藏一部分数据等待时间</title>
+  <desc id="desc">教学模型每个边沿仅有一个组指令发射机会。G0 的 LOAD rW 在 E0 发射，rW 在 E4 沿后才就绪，依赖 rW 的 ADD 最早在 E5 发射。G1、G2 在 E0 前已准备好各自的 rW。ADD 在发射的下一个边沿完成。固定组顺序：E0 发射 G0 LOAD，E1 至 E4 不发射，E5 发射 G0 ADD，E6 发射 G1 ADD，E7 发射 G2 ADD，E8 全部完成。切换到就绪组：E0 发射 G0 LOAD，E1 发射 G1 ADD，E2 发射 G2 ADD，E3 E4 不发射，E5 发射 G0 ADD，E6 全部完成。两个日程的 G0 LOAD 等待时间完全相同，图中统计发射机会而非实际 ALU 忙闲。</desc>
+  <defs>
+    <marker id="data-arrow" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0 0L7 3.5L0 7z" fill="#376650"/></marker>
+    <marker id="ctrl-arrow" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0 0L7 3.5L0 7z" fill="#9b6c27"/></marker>
+    <style>
+      text{font-family:"Noto Sans CJK SC","Microsoft YaHei",sans-serif;fill:#173d35;font-size:18px}
+      .heading{font-size:22px;font-weight:700}.small{font-size:16px}.tiny{font-size:14px}.label{font-weight:700}
+      .accent{fill:#8a5d1c}.muted{fill:#58736a}.panel{fill:#fafbf8;stroke:#c7d3c7;stroke-width:1.3}
+      .reg{fill:#edf1df;stroke:#82a18e;stroke-width:1.4}.block{fill:#e0ebe3;stroke:#82a18e;stroke-width:1.4}
+      .control{fill:#f3ebdb;stroke:#c6aa79;stroke-width:1.3}
+      .data{stroke:#376650;stroke-width:2.3;fill:none;stroke-linejoin:round;stroke-linecap:round;marker-end:url(#data-arrow)}
+      .ctrl{stroke:#9b6c27;stroke-width:1.8;stroke-dasharray:5 4;fill:none;stroke-linejoin:round;stroke-linecap:round;marker-end:url(#ctrl-arrow)}
+      .ctrl-bus{stroke:#9b6c27;stroke-width:1.8;stroke-dasharray:5 4;fill:none;stroke-linejoin:round}
+      .divider{stroke:#c7d3c7;stroke-width:1.1}
+      .slot{fill:#e0ebe3;stroke:#92ad9d;stroke-width:1.1}
+      .off{fill:#f3eee3;stroke:#c9b89c;stroke-width:1.1;stroke-dasharray:4 3}
+      .edge{stroke:#376650;stroke-width:1.25;stroke-dasharray:4 4}
+    </style>
+  </defs>
+  <rect x="1" y="1" width="778" height="588" rx="13" fill="#f5f6ef" stroke="#c4d0c4"/>
+  <text x="20" y="34" class="heading">等待数据的时间，能让别的线程组使用吗？</text>
+  <text x="20" y="61" class="small">每个边沿最多发射一条组指令；ADD 在下一边沿完成。</text>
+  <text x="20" y="83" class="small">G1、G2 已就绪；G0 在 E0 发射 LOAD，rW 在 E4 沿后就绪。</text>
+  <rect x="18" y="96" width="744" height="193" rx="9" class="panel"/>
+  <text x="31" y="121" class="label">A · 按组顺序发射，不跳过等待组</text>
+  <text x="155" y="146" class="tiny label" text-anchor="middle">E0</text>
+  <text x="225" y="146" class="tiny label" text-anchor="middle">E1</text>
+  <text x="295" y="146" class="tiny label" text-anchor="middle">E2</text>
+  <text x="365" y="146" class="tiny label" text-anchor="middle">E3</text>
+  <text x="435" y="146" class="tiny label" text-anchor="middle">E4</text>
+  <text x="505" y="146" class="tiny label" text-anchor="middle">E5</text>
+  <text x="575" y="146" class="tiny label" text-anchor="middle">E6</text>
+  <text x="645" y="146" class="tiny label" text-anchor="middle">E7</text>
+  <text x="715" y="146" class="tiny label" text-anchor="middle">E8</text>
+  <rect x="30" y="155" width="87" height="49" rx="5" class="reg"/>
+  <text x="73.5" y="185" class="small label" text-anchor="middle">发射</text>
+  <rect x="30" y="210" width="87" height="41" rx="5" class="reg"/>
+  <text x="73.5" y="236" class="tiny label" text-anchor="middle">ADD 完成</text>
+  <rect x="122" y="155" width="66" height="49" rx="5" class="control"/>
+  <text x="155" y="175" class="small label" text-anchor="middle">G0</text>
+  <text x="155" y="194" class="tiny label" text-anchor="middle">LOAD</text>
+  <rect x="122" y="210" width="66" height="41" rx="5" class="panel"/>
+  <text x="155" y="235" class="tiny muted" text-anchor="middle">—</text>
+  <rect x="192" y="155" width="66" height="49" rx="5" class="off"/>
+  <text x="225" y="175" class="tiny accent" text-anchor="middle">空</text>
+  <text x="225" y="194" class="tiny accent" text-anchor="middle">等 G0</text>
+  <rect x="192" y="210" width="66" height="41" rx="5" class="panel"/>
+  <text x="225" y="235" class="tiny muted" text-anchor="middle">—</text>
+  <rect x="262" y="155" width="66" height="49" rx="5" class="off"/>
+  <text x="295" y="175" class="tiny accent" text-anchor="middle">空</text>
+  <text x="295" y="194" class="tiny accent" text-anchor="middle">等 G0</text>
+  <rect x="262" y="210" width="66" height="41" rx="5" class="panel"/>
+  <text x="295" y="235" class="tiny muted" text-anchor="middle">—</text>
+  <rect x="332" y="155" width="66" height="49" rx="5" class="off"/>
+  <text x="365" y="175" class="tiny accent" text-anchor="middle">空</text>
+  <text x="365" y="194" class="tiny accent" text-anchor="middle">等 G0</text>
+  <rect x="332" y="210" width="66" height="41" rx="5" class="panel"/>
+  <text x="365" y="235" class="tiny muted" text-anchor="middle">—</text>
+  <rect x="402" y="155" width="66" height="49" rx="5" class="off"/>
+  <text x="435" y="175" class="tiny accent" text-anchor="middle">空</text>
+  <text x="435" y="194" class="tiny accent" text-anchor="middle">等 G0</text>
+  <rect x="402" y="210" width="66" height="41" rx="5" class="panel"/>
+  <text x="435" y="235" class="tiny muted" text-anchor="middle">—</text>
+  <rect x="472" y="155" width="66" height="49" rx="5" class="slot"/>
+  <text x="505" y="175" class="small label" text-anchor="middle">G0</text>
+  <text x="505" y="194" class="tiny label" text-anchor="middle">ADD</text>
+  <rect x="472" y="210" width="66" height="41" rx="5" class="panel"/>
+  <text x="505" y="235" class="tiny muted" text-anchor="middle">—</text>
+  <rect x="542" y="155" width="66" height="49" rx="5" class="slot"/>
+  <text x="575" y="175" class="small label" text-anchor="middle">G1</text>
+  <text x="575" y="194" class="tiny label" text-anchor="middle">ADD</text>
+  <rect x="542" y="210" width="66" height="41" rx="5" class="slot"/>
+  <text x="575" y="235" class="small label" text-anchor="middle">G0</text>
+  <rect x="612" y="155" width="66" height="49" rx="5" class="slot"/>
+  <text x="645" y="175" class="small label" text-anchor="middle">G2</text>
+  <text x="645" y="194" class="tiny label" text-anchor="middle">ADD</text>
+  <rect x="612" y="210" width="66" height="41" rx="5" class="slot"/>
+  <text x="645" y="235" class="small label" text-anchor="middle">G1</text>
+  <rect x="682" y="155" width="66" height="49" rx="5" class="panel"/>
+  <text x="715" y="175" class="tiny muted" text-anchor="middle">—</text>
+  <rect x="682" y="210" width="66" height="41" rx="5" class="slot"/>
+  <text x="715" y="235" class="small label" text-anchor="middle">G2</text>
+  <text x="30" y="275" class="tiny">E1–E4：本策略不选 G1、G2，发射机会未使用。</text>
+  <text x="745" text-anchor="end" y="275" class="small label">E8 全完成</text>
+  <rect x="18" y="301" width="744" height="193" rx="9" class="panel"/>
+  <text x="31" y="326" class="label">B · 从就绪的组中选择下一条指令</text>
+  <text x="155" y="351" class="tiny label" text-anchor="middle">E0</text>
+  <text x="225" y="351" class="tiny label" text-anchor="middle">E1</text>
+  <text x="295" y="351" class="tiny label" text-anchor="middle">E2</text>
+  <text x="365" y="351" class="tiny label" text-anchor="middle">E3</text>
+  <text x="435" y="351" class="tiny label" text-anchor="middle">E4</text>
+  <text x="505" y="351" class="tiny label" text-anchor="middle">E5</text>
+  <text x="575" y="351" class="tiny label" text-anchor="middle">E6</text>
+  <text x="645" y="351" class="tiny label" text-anchor="middle">E7</text>
+  <text x="715" y="351" class="tiny label" text-anchor="middle">E8</text>
+  <rect x="30" y="360" width="87" height="49" rx="5" class="reg"/>
+  <text x="73.5" y="390" class="small label" text-anchor="middle">发射</text>
+  <rect x="30" y="415" width="87" height="41" rx="5" class="reg"/>
+  <text x="73.5" y="441" class="tiny label" text-anchor="middle">ADD 完成</text>
+  <rect x="122" y="360" width="66" height="49" rx="5" class="control"/>
+  <text x="155" y="380" class="small label" text-anchor="middle">G0</text>
+  <text x="155" y="399" class="tiny label" text-anchor="middle">LOAD</text>
+  <rect x="122" y="415" width="66" height="41" rx="5" class="panel"/>
+  <text x="155" y="440" class="tiny muted" text-anchor="middle">—</text>
+  <rect x="192" y="360" width="66" height="49" rx="5" class="slot"/>
+  <text x="225" y="380" class="small label" text-anchor="middle">G1</text>
+  <text x="225" y="399" class="tiny label" text-anchor="middle">ADD</text>
+  <rect x="192" y="415" width="66" height="41" rx="5" class="panel"/>
+  <text x="225" y="440" class="tiny muted" text-anchor="middle">—</text>
+  <rect x="262" y="360" width="66" height="49" rx="5" class="slot"/>
+  <text x="295" y="380" class="small label" text-anchor="middle">G2</text>
+  <text x="295" y="399" class="tiny label" text-anchor="middle">ADD</text>
+  <rect x="262" y="415" width="66" height="41" rx="5" class="slot"/>
+  <text x="295" y="440" class="small label" text-anchor="middle">G1</text>
+  <rect x="332" y="360" width="66" height="49" rx="5" class="off"/>
+  <text x="365" y="380" class="tiny accent" text-anchor="middle">空</text>
+  <text x="365" y="399" class="tiny accent" text-anchor="middle">无就绪</text>
+  <rect x="332" y="415" width="66" height="41" rx="5" class="slot"/>
+  <text x="365" y="440" class="small label" text-anchor="middle">G2</text>
+  <rect x="402" y="360" width="66" height="49" rx="5" class="off"/>
+  <text x="435" y="380" class="tiny accent" text-anchor="middle">空</text>
+  <text x="435" y="399" class="tiny accent" text-anchor="middle">无就绪</text>
+  <rect x="402" y="415" width="66" height="41" rx="5" class="panel"/>
+  <text x="435" y="440" class="tiny muted" text-anchor="middle">—</text>
+  <rect x="472" y="360" width="66" height="49" rx="5" class="slot"/>
+  <text x="505" y="380" class="small label" text-anchor="middle">G0</text>
+  <text x="505" y="399" class="tiny label" text-anchor="middle">ADD</text>
+  <rect x="472" y="415" width="66" height="41" rx="5" class="panel"/>
+  <text x="505" y="440" class="tiny muted" text-anchor="middle">—</text>
+  <rect x="542" y="360" width="66" height="49" rx="5" class="panel"/>
+  <text x="575" y="380" class="tiny muted" text-anchor="middle">—</text>
+  <rect x="542" y="415" width="66" height="41" rx="5" class="slot"/>
+  <text x="575" y="440" class="small label" text-anchor="middle">G0</text>
+  <rect x="612" y="360" width="66" height="49" rx="5" class="panel"/>
+  <text x="645" y="380" class="tiny muted" text-anchor="middle">—</text>
+  <rect x="612" y="415" width="66" height="41" rx="5" class="panel"/>
+  <text x="645" y="440" class="tiny muted" text-anchor="middle">—</text>
+  <rect x="682" y="360" width="66" height="49" rx="5" class="panel"/>
+  <text x="715" y="380" class="tiny muted" text-anchor="middle">—</text>
+  <rect x="682" y="415" width="66" height="41" rx="5" class="panel"/>
+  <text x="715" y="440" class="tiny muted" text-anchor="middle">—</text>
+  <text x="30" y="480" class="tiny">E1、E2：发射其他组的 ADD；E5：G0 恢复。</text>
+  <text x="745" text-anchor="end" y="480" class="small label">E6 全完成</text>
+  <rect x="18" y="506" width="744" height="66" rx="7" class="control"/>
+  <text x="30" y="530" class="small label">两种日程的 LOAD 返回时刻相同：E4 沿后。</text>
+  <text x="30" y="554" class="small">区别是别的组何时使用发射机会；这不是 ALU 忙闲时序图。</text>
+</svg>

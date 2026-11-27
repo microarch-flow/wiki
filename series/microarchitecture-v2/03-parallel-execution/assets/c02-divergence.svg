@@ -1,0 +1,102 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 548" width="760" height="548" role="img" aria-labelledby="title desc">
+  <title id="title">同组线程的分支发散与重新汇合</title>
+  <desc id="desc">G0 包含四个线程，rY 分别为 11、22、33、44。P1 根据 rY 是否为奇数选择路径。教学模型先执行 P2a ADD 1，掩码为（1,0,1,0），T0、T2 写 rZ=12、34，其他线程等待另一条路径；随后执行 P2b SUB 1，掩码为（0,1,0,1），T1、T3 写 rZ=21、43，而 T0、T2 保存先前结果。所有线程在共同位置 P3 执行 STORE，掩码为（1,1,1,1），存储各自的结果 12、21、34、43。这里仅展示一种按路径串行处理的教学机制，不规定实际 GPU 的分支状态管理方式。</desc>
+  <defs>
+    <marker id="data-arrow" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0 0L7 3.5L0 7z" fill="#376650"/></marker>
+    <marker id="ctrl-arrow" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0 0L7 3.5L0 7z" fill="#9b6c27"/></marker>
+    <style>
+      text{font-family:"Noto Sans CJK SC","Microsoft YaHei",sans-serif;fill:#173d35;font-size:18px}
+      .heading{font-size:22px;font-weight:700}.small{font-size:16px}.tiny{font-size:14px}.label{font-weight:700}
+      .accent{fill:#8a5d1c}.muted{fill:#58736a}.panel{fill:#fafbf8;stroke:#c7d3c7;stroke-width:1.3}
+      .reg{fill:#edf1df;stroke:#82a18e;stroke-width:1.4}.block{fill:#e0ebe3;stroke:#82a18e;stroke-width:1.4}
+      .control{fill:#f3ebdb;stroke:#c6aa79;stroke-width:1.3}
+      .data{stroke:#376650;stroke-width:2.3;fill:none;stroke-linejoin:round;stroke-linecap:round;marker-end:url(#data-arrow)}
+      .ctrl{stroke:#9b6c27;stroke-width:1.8;stroke-dasharray:5 4;fill:none;stroke-linejoin:round;stroke-linecap:round;marker-end:url(#ctrl-arrow)}
+      .ctrl-bus{stroke:#9b6c27;stroke-width:1.8;stroke-dasharray:5 4;fill:none;stroke-linejoin:round}
+      .divider{stroke:#c7d3c7;stroke-width:1.1}
+      .slot{fill:#e0ebe3;stroke:#92ad9d;stroke-width:1.1}
+      .off{fill:#f3eee3;stroke:#c9b89c;stroke-width:1.1;stroke-dasharray:4 3}
+      .edge{stroke:#376650;stroke-width:1.25;stroke-dasharray:4 4}
+    </style>
+  </defs>
+  <rect x="1" y="1" width="758" height="546" rx="13" fill="#f5f6ef" stroke="#c4d0c4"/>
+  <text x="20" y="34" class="heading">分支不同：同一组线程可以分批推进</text>
+  <text x="20" y="61" class="small">观察 G0；本图规定先处理奇数路径，再处理偶数路径。</text>
+  <rect x="18" y="77" width="724" height="407" rx="9" class="panel"/>
+  <rect x="191" y="88" width="122" height="47" rx="5" class="reg"/>
+  <text x="252" y="108" class="label" text-anchor="middle">T0</text>
+  <text x="252" y="127" class="tiny" text-anchor="middle">rY = 11</text>
+  <rect x="326" y="88" width="122" height="47" rx="5" class="reg"/>
+  <text x="387" y="108" class="label" text-anchor="middle">T1</text>
+  <text x="387" y="127" class="tiny" text-anchor="middle">rY = 22</text>
+  <rect x="461" y="88" width="122" height="47" rx="5" class="reg"/>
+  <text x="522" y="108" class="label" text-anchor="middle">T2</text>
+  <text x="522" y="127" class="tiny" text-anchor="middle">rY = 33</text>
+  <rect x="596" y="88" width="122" height="47" rx="5" class="reg"/>
+  <text x="657" y="108" class="label" text-anchor="middle">T3</text>
+  <text x="657" y="127" class="tiny" text-anchor="middle">rY = 44</text>
+  <rect x="28" y="147" width="156" height="58" rx="5" class="reg"/>
+  <text x="106" y="170" class="small label" text-anchor="middle">P1：按奇偶分支</text>
+  <text x="106" y="192" class="tiny" text-anchor="middle">rY 是否为奇数？</text>
+  <rect x="191" y="147" width="122" height="58" rx="5" class="slot"/>
+  <text x="252" y="172" class="label" text-anchor="middle">奇数</text>
+  <text x="252" y="192" class="tiny" text-anchor="middle">转 P2a</text>
+  <rect x="326" y="147" width="122" height="58" rx="5" class="block"/>
+  <text x="387" y="172" class="label" text-anchor="middle">偶数</text>
+  <text x="387" y="192" class="tiny" text-anchor="middle">转 P2b</text>
+  <rect x="461" y="147" width="122" height="58" rx="5" class="slot"/>
+  <text x="522" y="172" class="label" text-anchor="middle">奇数</text>
+  <text x="522" y="192" class="tiny" text-anchor="middle">转 P2a</text>
+  <rect x="596" y="147" width="122" height="58" rx="5" class="block"/>
+  <text x="657" y="172" class="label" text-anchor="middle">偶数</text>
+  <text x="657" y="192" class="tiny" text-anchor="middle">转 P2b</text>
+  <rect x="28" y="218" width="156" height="58" rx="5" class="control"/>
+  <text x="106" y="241" class="small label" text-anchor="middle">P2a：ADD 1</text>
+  <text x="106" y="263" class="tiny accent" text-anchor="middle">m = (1,0,1,0)</text>
+  <rect x="191" y="218" width="122" height="58" rx="5" class="slot"/>
+  <text x="252" y="243" class="label" text-anchor="middle">12</text>
+  <text x="252" y="263" class="tiny" text-anchor="middle">写 rZ</text>
+  <rect x="326" y="218" width="122" height="58" rx="5" class="off"/>
+  <text x="387" y="243" class="label accent" text-anchor="middle">等待</text>
+  <text x="387" y="263" class="tiny accent" text-anchor="middle">P2b 未执行</text>
+  <rect x="461" y="218" width="122" height="58" rx="5" class="slot"/>
+  <text x="522" y="243" class="label" text-anchor="middle">34</text>
+  <text x="522" y="263" class="tiny" text-anchor="middle">写 rZ</text>
+  <rect x="596" y="218" width="122" height="58" rx="5" class="off"/>
+  <text x="657" y="243" class="label accent" text-anchor="middle">等待</text>
+  <text x="657" y="263" class="tiny accent" text-anchor="middle">P2b 未执行</text>
+  <rect x="28" y="289" width="156" height="58" rx="5" class="control"/>
+  <text x="106" y="312" class="small label" text-anchor="middle">P2b：SUB 1</text>
+  <text x="106" y="334" class="tiny accent" text-anchor="middle">m = (0,1,0,1)</text>
+  <rect x="191" y="289" width="122" height="58" rx="5" class="off"/>
+  <text x="252" y="314" class="label accent" text-anchor="middle">保持 12</text>
+  <text x="252" y="334" class="tiny accent" text-anchor="middle">已执行 P2a</text>
+  <rect x="326" y="289" width="122" height="58" rx="5" class="slot"/>
+  <text x="387" y="314" class="label" text-anchor="middle">21</text>
+  <text x="387" y="334" class="tiny" text-anchor="middle">写 rZ</text>
+  <rect x="461" y="289" width="122" height="58" rx="5" class="off"/>
+  <text x="522" y="314" class="label accent" text-anchor="middle">保持 34</text>
+  <text x="522" y="334" class="tiny accent" text-anchor="middle">已执行 P2a</text>
+  <rect x="596" y="289" width="122" height="58" rx="5" class="slot"/>
+  <text x="657" y="314" class="label" text-anchor="middle">43</text>
+  <text x="657" y="334" class="tiny" text-anchor="middle">写 rZ</text>
+  <rect x="28" y="360" width="156" height="58" rx="5" class="reg"/>
+  <text x="106" y="383" class="small label" text-anchor="middle">P3：STORE</text>
+  <text x="106" y="405" class="tiny" text-anchor="middle">m = (1,1,1,1)</text>
+  <rect x="191" y="360" width="122" height="58" rx="5" class="slot"/>
+  <text x="252" y="385" class="label" text-anchor="middle">12</text>
+  <text x="252" y="405" class="tiny" text-anchor="middle">保存</text>
+  <rect x="326" y="360" width="122" height="58" rx="5" class="slot"/>
+  <text x="387" y="385" class="label" text-anchor="middle">21</text>
+  <text x="387" y="405" class="tiny" text-anchor="middle">保存</text>
+  <rect x="461" y="360" width="122" height="58" rx="5" class="slot"/>
+  <text x="522" y="385" class="label" text-anchor="middle">34</text>
+  <text x="522" y="405" class="tiny" text-anchor="middle">保存</text>
+  <rect x="596" y="360" width="122" height="58" rx="5" class="slot"/>
+  <text x="657" y="385" class="label" text-anchor="middle">43</text>
+  <text x="657" y="405" class="tiny" text-anchor="middle">保存</text>
+  <path d="M30 432H730" class="divider"/>
+  <text x="380" y="460" class="small label" text-anchor="middle">共同位置 P3：全部四个线程重新参与同一条指令。</text>
+  <text x="24" y="509" class="small">实线框：本阶段参与；虚线框：本阶段未参与，不覆盖旧状态。</text>
+  <text x="24" y="533" class="small">仅示范按路径串行处理，不规定真实 GPU 的 PC 管理方式。</text>
+</svg>
