@@ -181,7 +181,7 @@ B01 采用真实 RV32I 的 ADD、LW、SW、BEQ 语义和精简的五阶段单条
 
 | ID | 暂定标题 | 内容范围与写作重点 | 状态 |
 |---|---|---|---|
-| F01 | 第一块数据还在计算，第二块数据能开始搬运吗？ | 逐拍对比串行与重叠、双缓冲、多缓冲、资源占用、端口竞争、缓冲复用 | 正文完成（[正文](https://microarch-flow.github.io/wiki/microarchitecture-v2/06-resource-cooperation/f01-overlap-and-buffer-reuse/)，待发布核验） |
+| F01 | 第一块数据还在计算，第二块数据能开始搬运吗？ | 逐拍对比串行与重叠、双缓冲、多缓冲、资源占用、端口竞争、缓冲复用 | 已发布（[正文](https://microarch-flow.github.io/wiki/microarchitecture-v2/06-resource-cooperation/f01-overlap-and-buffer-reuse/)，提交 `3ae28e2`，已核验） |
 | F02 | 多个引擎各自执行，怎样知道下一项工作可以开始？ | 事件、barrier、semaphore、完成与可用、局部消费/全体同步、硬件调度、集中/层级/分布式控制、进展条件 | 待写 |
 | F03 | 把同一块矩阵交给两个计算单元，需要交换哪些数据？ | Core/Tile/Cluster、硬件分发、共享资源、输入复制/部分和归约、负载分发、异构引擎与 CPU/GPU/NPU/DSP 概念对照 | 待写 |
 

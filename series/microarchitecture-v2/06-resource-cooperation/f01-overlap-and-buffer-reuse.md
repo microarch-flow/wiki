@@ -189,7 +189,8 @@ AMD Versal AI Engine 的[存储模块说明（AM009）](https://docs.amd.com/r/e
 
 - [A07：下游来不及接收数据，上游怎样知道何时停止？](../01-foundations/a07-handshake-and-backpressure.md)：理解交接、保存有效数据和反压。
 - [A08：多项工作同时就绪，谁先使用计算资源？](../01-foundations/a08-dependencies-and-scheduling.md)：理解数据依赖和资源竞争是不同的约束。
-- [数据搬运与处理引擎](../05-data-movement/README.md)：继续了解搬运引擎怎样处理命令和数据请求。
+- [D01：多个 MAC 怎样协作完成一次矩阵乘法？](../04-compute-arrays/d01-macs-and-array-data-paths.md)：深入计算引擎内部的数据传递与部分和。
+- [E01：一块数据从内存搬到计算单元，DMA 要做哪些工作？](../05-data-movement/e01-dma-task-and-address-generation.md)：深入搬运引擎内部的命令和数据请求。
 - [激活缓冲与双缓冲](../../storage/01-memory-hierarchy/04-npu-case/activation-buffer-and-double-buffering.md)：从存储容量和供数路径的视角看缓冲区与端口组织。
 
 [返回多执行实体与资源协作](README.md)
