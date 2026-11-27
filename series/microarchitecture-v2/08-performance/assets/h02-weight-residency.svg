@@ -1,0 +1,83 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 840 566" width="840" height="566" role="img" aria-labelledby="title desc">
+  <title id="title">为可复用的权重增加独立驻留区，减少外部存储流量</title>
+  <desc id="desc">原方案有两个320字节物理槽，每槽包含128字节X、128字节W、64字节Y，总容量640字节，八块均需重复搬入W，外部有效载荷为2560字节。新方案保留两个原有槽，另增独立128字节W驻留区，原槽内的W空间闲置，物理总容量768字节。整个任务只预加载W一次，每块只搬入X并写回Y，总有效载荷1664字节。4 MAC 的任务时间仍为552纳秒，8 MAC的任务时间由344降至296纳秒，均为教学模型值。</desc>
+  <defs><style>
+    text{font-family:"Noto Sans CJK SC","Microsoft YaHei",sans-serif;fill:#173d35;font-size:16px}
+    .heading{font-size:23px;font-weight:700}.label{font-size:18px;font-weight:700}.small{font-size:15px}.tiny{font-size:14px}.muted{fill:#58736a}.total{font-size:18px;font-weight:700}
+    .panel{fill:#fafbf8;stroke:#c7d3c7;stroke-width:1.3}.operand{fill:#f3ebdb;stroke:#c6aa79;stroke-width:1.3}.result{fill:#e4edf5;stroke:#8ba6c0;stroke-width:1.3}
+    .frame{fill:#edf1df;stroke:#82a18e;stroke-width:1.4}.unused{fill:url(#unused-pattern);stroke:#aab6ad;stroke-width:1.3}
+  </style>
+    <pattern id="unused-pattern" patternUnits="userSpaceOnUse" width="8" height="8" patternTransform="rotate(45)">
+      <rect width="8" height="8" fill="#edf1ed"/><path d="M0 0V8" stroke="#d0d9d0" stroke-width="2"/>
+    </pattern>
+  </defs>
+  <rect x="1" y="1" width="838" height="564" rx="13" fill="#f5f6ef" stroke="#c4d0c4"/>
+  <text x="24" y="35" class="heading">驻留相同的 W：不再为每一块重新搬入</text>
+  <text x="24" y="62" class="small muted">Y = X × W，共 8 个块 · 数据区宽度按物理容量比例绘制</text>
+
+  <rect x="24" y="80" width="386" height="431" rx="9" class="panel"/>
+  <rect x="430" y="80" width="386" height="431" rx="9" class="panel"/>
+  <text x="45" y="109" class="label">每块都重新搬入 W</text>
+  <text x="451" y="109" class="label">整个任务仅预加载 W 一次</text>
+  <text x="45" y="132" class="small muted">两个物理槽，总容量 640 B</text>
+  <text x="451" y="132" class="small muted">两个原有槽 + 独立 W 区，总容量 768 B</text>
+
+  <!-- Each physical slot comprises 320 B, drawn at 1 px/B -->
+  <g>
+    <rect x="45" y="148" width="344" height="74" rx="6" class="frame"/>
+    <text x="57" y="169" class="small">槽 0 · 320 B</text>
+    <rect x="57" y="179" width="128" height="32" class="operand"/>
+    <rect x="185" y="179" width="128" height="32" class="operand"/>
+    <rect x="313" y="179" width="64" height="32" class="result"/>
+    <text x="121" y="200" text-anchor="middle" class="tiny">X · 128 B</text>
+    <text x="249" y="200" text-anchor="middle" class="tiny">W · 128 B</text>
+    <text x="345" y="200" text-anchor="middle" class="tiny">Y 64 B</text>
+    <rect x="45" y="235" width="344" height="74" rx="6" class="frame"/>
+    <text x="57" y="256" class="small">槽 1 · 320 B</text>
+    <rect x="57" y="266" width="128" height="32" class="operand"/>
+    <rect x="185" y="266" width="128" height="32" class="operand"/>
+    <rect x="313" y="266" width="64" height="32" class="result"/>
+    <text x="121" y="287" text-anchor="middle" class="tiny">X · 128 B</text>
+    <text x="249" y="287" text-anchor="middle" class="tiny">W · 128 B</text>
+    <text x="345" y="287" text-anchor="middle" class="tiny">Y 64 B</text>
+  </g>
+  <g>
+    <rect x="451" y="148" width="344" height="74" rx="6" class="frame"/>
+    <text x="463" y="169" class="small">槽 0 · 320 B</text>
+    <rect x="463" y="179" width="128" height="32" class="operand"/>
+    <rect x="591" y="179" width="128" height="32" class="unused"/>
+    <rect x="719" y="179" width="64" height="32" class="result"/>
+    <text x="527" y="200" text-anchor="middle" class="tiny">X · 128 B</text>
+    <text x="655" y="200" text-anchor="middle" class="tiny muted">闲置 · 128 B</text>
+    <text x="751" y="200" text-anchor="middle" class="tiny">Y 64 B</text>
+    <rect x="451" y="235" width="344" height="74" rx="6" class="frame"/>
+    <text x="463" y="256" class="small">槽 1 · 320 B</text>
+    <rect x="463" y="266" width="128" height="32" class="operand"/>
+    <rect x="591" y="266" width="128" height="32" class="unused"/>
+    <rect x="719" y="266" width="64" height="32" class="result"/>
+    <text x="527" y="287" text-anchor="middle" class="tiny">X · 128 B</text>
+    <text x="655" y="287" text-anchor="middle" class="tiny muted">闲置 · 128 B</text>
+    <text x="751" y="287" text-anchor="middle" class="tiny">Y 64 B</text>
+  </g>
+
+  <rect x="45" y="325" width="344" height="61" rx="5" fill="#f5f6ef" stroke="#d1dad0"/>
+  <text x="57" y="348" class="small">每个块的 W 在对应槽内</text>
+  <text x="57" y="371" class="small muted">槽的写回结束后，下一块重新搬入 W。</text>
+  <rect x="451" y="325" width="344" height="61" rx="5" fill="#f5f6ef" stroke="#d1dad0"/>
+  <rect x="463" y="339" width="128" height="32" rx="3" class="operand"/>
+  <text x="527" y="360" text-anchor="middle" class="tiny">驻留 W · 128 B</text>
+  <text x="606" y="348" class="small">独立驻留区</text>
+  <text x="606" y="369" class="small muted">为各块的计算供数</text>
+
+  <text x="45" y="414" class="small">跨外部存储接口的有效载荷：</text>
+  <text x="45" y="441" class="total">8 × (128 + 128 + 64) = 2,560 B</text>
+  <text x="45" y="468" class="small">4 MAC：552 ns</text>
+  <text x="45" y="492" class="small">8 MAC：344 ns</text>
+  <text x="451" y="414" class="small">跨外部存储接口的有效载荷：</text>
+  <text x="451" y="441" class="total">128 + 8 × (128 + 64) = 1,664 B</text>
+  <text x="451" y="468" class="small">4 MAC：552 ns（不变）</text>
+  <text x="451" y="492" class="small">8 MAC：296 ns</text>
+
+  <text x="24" y="535" class="small muted">模型保留原槽的物理 W 区，不把它改作别的用途；只增设独立驻留区。</text>
+  <text x="24" y="555" class="small muted">容量只计矩阵数据；假设端口与供数路径支持驻留复用。时间为模型值。</text>
+</svg>

@@ -1,0 +1,53 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 840 560" width="840" height="560" role="img" aria-labelledby="title desc">
+  <title id="title">任务平均功耗上升，总任务能量仍可能下降</title>
+  <desc id="desc">A任务时间552 ns，任务能量9958.4个任意能量单位E0，平均功耗约18.04 E0/ns。B任务时间344 ns，任务能量9568 E0，平均功耗约27.81 E0/ns。两图时间和功耗坐标同尺度，矩形高度为各自任务平均功耗，宽度为任务时间，面积为总任务能量。它们是等效平均功耗表示，不是瞬时功耗轨迹，也不是实测芯片数据。</desc>
+  <defs><style>
+    text{font-family:"Noto Sans CJK SC","Microsoft YaHei",sans-serif;fill:#173d35;font-size:16px}
+    .heading{font-size:23px;font-weight:700}.label{font-size:18px;font-weight:700}.small{font-size:15px}.tiny{font-size:14px}.muted{fill:#58736a}
+    .axis{stroke:#45675b;stroke-width:1.6;fill:none}.grid{stroke:#d1dad0;stroke-width:1;stroke-dasharray:4 4}
+  </style></defs>
+  <rect x="1" y="1" width="838" height="558" rx="13" fill="#f5f6ef" stroke="#c4d0c4"/>
+  <text x="24" y="35" class="heading">平均功耗更大，不一定消耗更多任务能量</text>
+  <text x="24" y="62" class="small muted">两图坐标尺度相同 · 高度为平均功耗，宽度为任务时间（ns）</text>
+
+  <rect x="24" y="81" width="792" height="208" rx="9" fill="#fafbf8" stroke="#c7d3c7" stroke-width="1.3"/>
+  <rect x="24" y="301" width="792" height="208" rx="9" fill="#fafbf8" stroke="#c7d3c7" stroke-width="1.3"/>
+  <text x="42" y="107" class="label">A · 4 MAC</text>
+  <text x="42" y="327" class="label">B · 8 MAC</text>
+  <text x="325" y="107" class="small" text-anchor="middle">平均功耗（E₀/ns）</text>
+  <text x="325" y="327" class="small" text-anchor="middle">平均功耗（E₀/ns）</text>
+
+  <!-- Linear horizontal scale 1.08 px/ns; vertical scale 4.0 px/(E0/ns). -->
+  <g class="grid">
+    <path d="M112 218H760 M112 178H760 M112 138H760 M328 258V138 M544 258V138 M760 258V138"/>
+    <path d="M112 438H760 M112 398H760 M112 358H760 M328 478V358 M544 478V358 M760 478V358"/>
+  </g>
+  <rect x="112" y="185.8377" width="596.16" height="72.1623" fill="#e0ebe3" fill-opacity=".94" stroke="#376650" stroke-width="1.8"/>
+  <rect x="112" y="366.7442" width="371.52" height="111.2558" fill="#e4edf5" fill-opacity=".94" stroke="#355679" stroke-width="1.8"/>
+  <g class="axis">
+    <path d="M112 130V258H775"/>
+    <path d="M112 350V478H775"/>
+  </g>
+  <g class="tiny" text-anchor="end">
+    <text x="101" y="263">0</text><text x="101" y="223">10</text><text x="101" y="183">20</text><text x="101" y="143">30</text>
+    <text x="101" y="483">0</text><text x="101" y="443">10</text><text x="101" y="403">20</text><text x="101" y="363">30</text>
+  </g>
+  <g class="tiny" text-anchor="middle">
+    <text x="112" y="279">0</text><text x="328" y="279">200</text><text x="544" y="279">400</text><text x="760" y="279">600</text>
+    <text x="112" y="499">0</text><text x="328" y="499">200</text><text x="544" y="499">400</text><text x="760" y="499">600</text>
+  </g>
+
+  <text x="127" y="176.8377" class="small" fill="#376650">18.04 E₀/ns</text>
+  <text x="410" y="230" class="label" text-anchor="middle" fill="#376650">面积 = 9,958.4 E₀</text>
+  <text x="708.16" y="251" class="small" text-anchor="end" fill="#376650">552 ns</text>
+
+  <text x="127" y="357.7442" class="small" fill="#355679">27.81 E₀/ns</text>
+  <text x="298" y="425" class="label" text-anchor="middle" fill="#355679">面积 = 9,568 E₀</text>
+  <text x="483.52" y="470" class="small" text-anchor="end" fill="#355679">344 ns</text>
+  <text x="549" y="393" class="small muted">任务更早结束</text>
+  <path d="M543 401H489" stroke="#355679" stroke-width="1.6" fill="none"/>
+  <path d="M489 401l7 -4v8z" fill="#355679"/>
+
+  <text x="24" y="534" class="small muted">E₀ 为任意能量单位；平均值按未舍入的 E/T 绘图，不是瞬时功耗轨迹。</text>
+  <text x="24" y="553" class="small muted">图中矩形面积对应同一任务的能量估算，并非芯片实测。</text>
+</svg>

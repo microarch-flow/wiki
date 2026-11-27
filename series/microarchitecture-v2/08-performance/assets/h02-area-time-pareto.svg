@@ -1,0 +1,53 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 840 540" width="840" height="540" role="img" aria-labelledby="title desc">
+  <title id="title">在任务时间和面积代理值两个目标上的非支配设计</title>
+  <desc id="desc">横轴为无量纲面积代理值，纵轴为任务时间纳秒，均越小越好。候选A=(32,552)、B=(40,344)、C=(56,328)、D=(45,344)、E=(34,552)、F=(42,296)、G=(44,276)、H=(32,344)。H、F、G在这组离散候选、这两个目标下不被其他候选支配；H假设2 GHz时序闭合且面积不变。连接虚线仅用于标示这三个离散非支配点，不表示线上的其他点可实现，能量目标未纳入此图。</desc>
+  <defs><style>
+    text{font-family:"Noto Sans CJK SC","Microsoft YaHei",sans-serif;fill:#173d35;font-size:16px}
+    .heading{font-size:23px;font-weight:700}.small{font-size:15px}.tiny{font-size:14px}.muted{fill:#58736a}.label{font-weight:700}
+    .axis{stroke:#45675b;stroke-width:1.6;fill:none}.grid{stroke:#d1dad0;stroke-width:1;stroke-dasharray:4 4}
+    .front{stroke:#376650;stroke-width:2.1;stroke-dasharray:5 5;fill:none}.inactive{fill:#8d9f96;stroke:#fafbf8;stroke-width:1.7}.active{fill:#376650;stroke:#fafbf8;stroke-width:1.5}.hypothesis{fill:#fafbf8;stroke:#376650;stroke-width:2.5}.fronttext{fill:#376650}
+    .leader{stroke:#8d9f96;stroke-width:1.2;fill:none}
+  </style></defs>
+  <rect x="1" y="1" width="838" height="538" rx="13" fill="#f5f6ef" stroke="#c4d0c4"/>
+  <text x="24" y="35" class="heading">性能与面积的非支配设计</text>
+  <text x="24" y="62" class="small muted">同一任务、同一组候选 · 左下方向代表两个目标的数值更小</text>
+  <rect x="24" y="81" width="792" height="385" rx="9" fill="#fafbf8" stroke="#c7d3c7" stroke-width="1.3"/>
+  <!-- Linear axes: x = 96 + (A-30)*24; y = 416 - (T-240)*0.88 -->
+  <text x="38" y="105" class="small">任务时间 T（ns）</text>
+  <path d="M96 134.4H768 M96 204.8H768 M96 275.2H768 M96 345.6H768 M192 416V118 M288 416V118 M384 416V118 M480 416V118 M576 416V118 M672 416V118 M768 416V118" class="grid"/>
+  <path d="M96 118V416H780" class="axis"/>
+  <g class="tiny" text-anchor="end">
+    <text x="86" y="139">560</text><text x="86" y="210">480</text><text x="86" y="280">400</text><text x="86" y="351">320</text><text x="86" y="421">240</text>
+  </g>
+  <g class="tiny" text-anchor="middle">
+    <text x="96" y="437">30</text><text x="192" y="437">34</text><text x="288" y="437">38</text><text x="384" y="437">42</text><text x="480" y="437">46</text><text x="576" y="437">50</text><text x="672" y="437">54</text><text x="768" y="437">58</text>
+  </g>
+  <text x="780" y="457" class="small" text-anchor="end">面积代理值（无量纲）</text>
+
+  <!-- Discrete candidates: H(32,344) F(42,296) G(44,276); dashed line is a guide only -->
+  <path d="M144 324.48L384 366.72L432 384.32" class="front"/>
+  <circle cx="144" cy="141.44" r="5.8" class="inactive"/>
+  <text x="144" y="128" class="small muted" text-anchor="middle">A (32, 552)</text>
+  <circle cx="192" cy="141.44" r="5.8" class="inactive"/>
+  <text x="204" y="145.5" class="small muted">E (34, 552)</text>
+  <circle cx="336" cy="324.48" r="5.8" class="inactive"/>
+  <text x="336" y="311" class="small muted" text-anchor="middle">B (40, 344)</text>
+  <circle cx="720" cy="338.56" r="5.8" class="inactive"/>
+  <text x="720" y="325" class="small muted" text-anchor="middle">C (56, 328)</text>
+  <circle cx="456" cy="324.48" r="5.8" class="inactive"/>
+  <text x="469" y="311" class="small muted">D (45, 344)</text>
+  <circle cx="144" cy="324.48" r="6.4" class="hypothesis"/>
+  <text x="158" y="314" class="small fronttext label">H (32, 344)*</text>
+  <circle cx="384" cy="366.72" r="6.4" class="active"/>
+  <text x="395" y="354" class="small fronttext label">F (42, 296)</text>
+  <circle cx="432" cy="384.32" r="6.4" class="active"/>
+  <text x="445" y="399" class="small fronttext label">G (44, 276)</text>
+
+  <circle cx="31" cy="485" r="5.7" class="inactive"/>
+  <text x="43" y="490" class="small">被支配候选</text>
+  <circle cx="173" cy="485" r="5.8" class="active"/>
+  <text x="185" y="490" class="small">非支配候选</text>
+  <circle cx="330" cy="485" r="5.8" class="hypothesis"/>
+  <text x="342" y="490" class="small">H*：假设 2 GHz 可实现且面积不变</text>
+  <text x="24" y="518" class="small muted">虚线仅连接非支配点，不代表连续可实现方案；能量维度未纳入此图。</text>
+</svg>
