@@ -1,0 +1,161 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 630" width="800" height="630" role="img" aria-labelledby="title desc">
+  <title id="title">分支等待、正确预测和错误预测的同一段程序时序</title>
+  <desc id="desc">每列代表一个上升沿，标记表示该事件发生在这个边沿。三种情况下 I5 均在 E6 取指、E7 登记、E14 发射、E15 比较确定跳转方向和目标、E16 完成、E17 提交。等待策略在 E16 取 I7，E17 登记，E18 发射。正确预测跳转时，E7 取 I7，E8 登记 I7 并取 I8，E12 登记 I8，E15 分支判定之后，E16 才发射 I7 准备访存；I5 在 E17 提交，且实际写内存仍须满足队首提交条件。错误预测不跳转时，E7 取 I6，E8 登记，E9 发射，E11 完成结果 p37=10；E8 取 I7 的第一次实例，E12 登记。E15 清空 I6、第一次 I7 和前端等待中的 I8；E16 从正确目标再次取 I7，E17 登记，E18 发射。仅比较本次分支附近的时序，不计算整个程序的加速比。</desc>
+  <defs>
+    <style>
+      text{font-family:"Noto Sans CJK SC","PingFang SC","Microsoft YaHei",sans-serif;fill:#173d35;font-size:16px}
+      .heading{font-size:22px;font-weight:700}.label{font-size:17px;font-weight:700}.note{font-size:15px;fill:#4f695a}.tiny{font-size:13.5px}
+      .rowlabel{font-size:14px;font-weight:700}.cell{font-size:14px;font-weight:700}
+      .panel{fill:#fafbf8;stroke:#c7d3c7;stroke-width:1.3}.grid{stroke:#e3e9df;stroke-width:1}
+      .normal{fill:#e0ebe3;stroke:#82a18e;stroke-width:1.2}.good{fill:#d2e6d7;stroke:#376650;stroke-width:1.6}
+      .wrong{fill:#f2e7d1;stroke:#bca16d;stroke-width:1.2}.discard{fill:#f4e6df;stroke:#b77967;stroke-width:1.5;stroke-dasharray:4 2}
+      .cp{fill:#e0eaed;stroke:#72929b;stroke-width:1.5}.resolve{fill:#e1e9eb;stroke:#5b7680;stroke-width:1.5}
+      .hl{fill:#e8f0eb}.waittext{fill:#8a5d1c}.error{fill:#884735}.ftext{fill:#496872}
+      .muted{fill:#6e8079}.finish{fill:#376650;font-weight:700;font-size:14px}
+    </style>
+  </defs>
+  <rect x="1" y="1" width="798" height="628" rx="13" fill="#f5f6ef" stroke="#c4d0c4" stroke-width="1.3"/>
+  <text x="20" y="34" class="heading">预测不是改变比较结果，而是改变后继指令何时进入</text>
+  <text x="20" y="61" class="note">同一条 I5：BEQ x7, x5, +8；实际跳转至 I7（0x11C）。</text>
+  <text x="28" y="91" class="tiny" text-anchor="start">上升沿</text>
+  <text x="124" y="91" class="tiny" text-anchor="middle">E6</text>
+  <text x="174" y="91" class="tiny" text-anchor="middle">E7</text>
+  <text x="224" y="91" class="tiny" text-anchor="middle">E8</text>
+  <text x="274" y="91" class="tiny" text-anchor="middle">E9</text>
+  <text x="324" y="91" class="tiny" text-anchor="middle">E10</text>
+  <text x="374" y="91" class="tiny" text-anchor="middle">E11</text>
+  <text x="424" y="91" class="tiny" text-anchor="middle">E12</text>
+  <text x="474" y="91" class="tiny" text-anchor="middle">E13</text>
+  <text x="524" y="91" class="tiny" text-anchor="middle">E14</text>
+  <text x="574" y="91" class="label ftext" text-anchor="middle">E15</text>
+  <text x="624" y="91" class="tiny" text-anchor="middle">E16</text>
+  <text x="674" y="91" class="tiny" text-anchor="middle">E17</text>
+  <text x="724" y="91" class="tiny" text-anchor="middle">E18</text>
+  <rect x="14" y="103" width="772" height="75" rx="9" class="panel"/>
+  <rect x="551" y="133" width="46" height="39" rx="5" class="hl"/>
+  <path d="M100 134V172" class="grid"/>
+  <path d="M150 134V172" class="grid"/>
+  <path d="M200 134V172" class="grid"/>
+  <path d="M250 134V172" class="grid"/>
+  <path d="M300 134V172" class="grid"/>
+  <path d="M350 134V172" class="grid"/>
+  <path d="M400 134V172" class="grid"/>
+  <path d="M450 134V172" class="grid"/>
+  <path d="M500 134V172" class="grid"/>
+  <path d="M550 134V172" class="grid"/>
+  <path d="M600 134V172" class="grid"/>
+  <path d="M650 134V172" class="grid"/>
+  <path d="M700 134V172" class="grid"/>
+  <text x="28" y="126" class="label" text-anchor="start">共同部分：I5 真实执行时序</text>
+  <text x="28" y="158" class="rowlabel" text-anchor="start">I5</text>
+  <rect x="102" y="137" width="44" height="29" rx="5" class="normal"/>
+  <text x="124" y="157" class="cell " text-anchor="middle">取</text>
+  <rect x="152" y="137" width="44" height="29" rx="5" class="normal"/>
+  <text x="174" y="157" class="cell " text-anchor="middle">登</text>
+  <rect x="502" y="137" width="44" height="29" rx="5" class="normal"/>
+  <text x="524" y="157" class="cell " text-anchor="middle">发</text>
+  <rect x="552" y="137" width="44" height="29" rx="5" class="resolve"/>
+  <text x="574" y="157" class="cell ftext" text-anchor="middle">判</text>
+  <rect x="602" y="137" width="44" height="29" rx="5" class="normal"/>
+  <text x="624" y="157" class="cell " text-anchor="middle">完</text>
+  <rect x="652" y="137" width="44" height="29" rx="5" class="good"/>
+  <text x="674" y="157" class="cell " text-anchor="middle">交</text>
+  <rect x="14" y="187" width="772" height="75" rx="9" class="panel"/>
+  <rect x="551" y="217" width="46" height="39" rx="5" class="hl"/>
+  <path d="M100 218V256" class="grid"/>
+  <path d="M150 218V256" class="grid"/>
+  <path d="M200 218V256" class="grid"/>
+  <path d="M250 218V256" class="grid"/>
+  <path d="M300 218V256" class="grid"/>
+  <path d="M350 218V256" class="grid"/>
+  <path d="M400 218V256" class="grid"/>
+  <path d="M450 218V256" class="grid"/>
+  <path d="M500 218V256" class="grid"/>
+  <path d="M550 218V256" class="grid"/>
+  <path d="M600 218V256" class="grid"/>
+  <path d="M650 218V256" class="grid"/>
+  <path d="M700 218V256" class="grid"/>
+  <text x="28" y="210" class="label" text-anchor="start">① 不预测：等实际方向和目标确定</text>
+  <text x="772" y="210" class="finish" text-anchor="end">I7 E17 有效登记</text>
+  <text x="28" y="242" class="rowlabel" text-anchor="start">I7</text>
+  <rect x="602" y="221" width="44" height="29" rx="5" class="normal"/>
+  <text x="624" y="241" class="cell " text-anchor="middle">取</text>
+  <rect x="652" y="221" width="44" height="29" rx="5" class="good"/>
+  <text x="674" y="241" class="cell " text-anchor="middle">登</text>
+  <rect x="702" y="221" width="44" height="29" rx="5" class="normal"/>
+  <text x="724" y="241" class="cell " text-anchor="middle">发</text>
+  <rect x="14" y="271" width="772" height="112" rx="9" class="panel"/>
+  <rect x="551" y="301" width="46" height="76" rx="5" class="hl"/>
+  <path d="M100 302V377" class="grid"/>
+  <path d="M150 302V377" class="grid"/>
+  <path d="M200 302V377" class="grid"/>
+  <path d="M250 302V377" class="grid"/>
+  <path d="M300 302V377" class="grid"/>
+  <path d="M350 302V377" class="grid"/>
+  <path d="M400 302V377" class="grid"/>
+  <path d="M450 302V377" class="grid"/>
+  <path d="M500 302V377" class="grid"/>
+  <path d="M550 302V377" class="grid"/>
+  <path d="M600 302V377" class="grid"/>
+  <path d="M650 302V377" class="grid"/>
+  <path d="M700 302V377" class="grid"/>
+  <text x="28" y="294" class="label" text-anchor="start">② 预测跳转，且实际目标匹配</text>
+  <text x="772" y="294" class="finish" text-anchor="end">I7 E8 有效登记</text>
+  <text x="28" y="326" class="rowlabel" text-anchor="start">I7</text>
+  <rect x="152" y="305" width="44" height="29" rx="5" class="normal"/>
+  <text x="174" y="325" class="cell " text-anchor="middle">取</text>
+  <rect x="202" y="305" width="44" height="29" rx="5" class="good"/>
+  <text x="224" y="325" class="cell " text-anchor="middle">登</text>
+  <rect x="602" y="305" width="44" height="29" rx="5" class="normal"/>
+  <text x="624" y="325" class="cell " text-anchor="middle">发</text>
+  <text x="28" y="361" class="rowlabel" text-anchor="start">I8</text>
+  <rect x="202" y="340" width="44" height="29" rx="5" class="normal"/>
+  <text x="224" y="360" class="cell " text-anchor="middle">取</text>
+  <rect x="402" y="340" width="44" height="29" rx="5" class="normal"/>
+  <text x="424" y="360" class="cell " text-anchor="middle">登</text>
+  <rect x="14" y="392" width="772" height="148" rx="9" class="panel"/>
+  <rect x="551" y="422" width="46" height="112" rx="5" class="hl"/>
+  <path d="M100 423V534" class="grid"/>
+  <path d="M150 423V534" class="grid"/>
+  <path d="M200 423V534" class="grid"/>
+  <path d="M250 423V534" class="grid"/>
+  <path d="M300 423V534" class="grid"/>
+  <path d="M350 423V534" class="grid"/>
+  <path d="M400 423V534" class="grid"/>
+  <path d="M450 423V534" class="grid"/>
+  <path d="M500 423V534" class="grid"/>
+  <path d="M550 423V534" class="grid"/>
+  <path d="M600 423V534" class="grid"/>
+  <path d="M650 423V534" class="grid"/>
+  <path d="M700 423V534" class="grid"/>
+  <text x="28" y="415" class="label" text-anchor="start">③ 预测不跳转，实际却跳转</text>
+  <text x="772" y="415" class="finish" text-anchor="end">I7 E17 重新登记</text>
+  <text x="28" y="447" class="rowlabel" text-anchor="start">I6</text>
+  <rect x="152" y="426" width="44" height="29" rx="5" class="wrong"/>
+  <text x="174" y="446" class="cell waittext" text-anchor="middle">取</text>
+  <rect x="202" y="426" width="44" height="29" rx="5" class="wrong"/>
+  <text x="224" y="446" class="cell waittext" text-anchor="middle">登</text>
+  <rect x="252" y="426" width="44" height="29" rx="5" class="wrong"/>
+  <text x="274" y="446" class="cell waittext" text-anchor="middle">发</text>
+  <rect x="352" y="426" width="44" height="29" rx="5" class="wrong"/>
+  <text x="374" y="446" class="cell waittext" text-anchor="middle">完</text>
+  <rect x="552" y="426" width="44" height="29" rx="5" class="discard"/>
+  <text x="574" y="446" class="cell error" text-anchor="middle">×</text>
+  <text x="28" y="482" class="rowlabel" text-anchor="start">I7（原）</text>
+  <rect x="202" y="461" width="44" height="29" rx="5" class="wrong"/>
+  <text x="224" y="481" class="cell waittext" text-anchor="middle">取</text>
+  <rect x="402" y="461" width="44" height="29" rx="5" class="wrong"/>
+  <text x="424" y="481" class="cell waittext" text-anchor="middle">登</text>
+  <rect x="552" y="461" width="44" height="29" rx="5" class="discard"/>
+  <text x="574" y="481" class="cell error" text-anchor="middle">×</text>
+  <text x="28" y="517" class="rowlabel" text-anchor="start">I7（重取）</text>
+  <rect x="602" y="496" width="44" height="29" rx="5" class="normal"/>
+  <text x="624" y="516" class="cell " text-anchor="middle">取</text>
+  <rect x="652" y="496" width="44" height="29" rx="5" class="good"/>
+  <text x="674" y="516" class="cell " text-anchor="middle">登</text>
+  <rect x="702" y="496" width="44" height="29" rx="5" class="normal"/>
+  <text x="724" y="516" class="cell " text-anchor="middle">发</text>
+  <text x="20" y="563" class="tiny dim">取：取指接受　登：登记　发：发射　判：判定实际下一地址　完：完成　交：提交　×：取消</text>
+  <text x="20" y="584" class="tiny dim">黄框：错误路径相关工作，I6 在 E11 产生 p37=10；E15 同时清除未登记的年轻前端指令。</text>
+  <text x="20" y="608" class="note">I5 于 E15 判定、E17 提交；正确路径 I7 于 E16 发射，仅准备访存，不能提前写内存。</text>
+</svg>

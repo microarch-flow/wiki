@@ -1,0 +1,63 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 590" width="800" height="590" role="img" aria-labelledby="title desc">
+  <title id="title">在分支真正执行前预测下一个取指地址</title>
+  <desc id="desc">当 FPC 为 I5 的地址 0x114，方向预测器给出是否跳转，BTB 命中并提供目标 0x11C，顺序地址计算为 FPC 加 4 即 0x118。方向选择 MUX 在两个地址间选择预测的下一地址。随后 I5 的 BEQ 执行，从物理寄存器 p34 和 p36 读出 7，比较相等，得到实际的下一地址 0x11C。将保存的预测地址和实际地址比较：相同则继续，不同则重定向 FPC 并取消比 I5 年轻的错误路径状态。这是 BTB 命中的教学例。</desc>
+  <defs>
+    <marker id="arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0 0L8 4L0 8Z" fill="#376650"/></marker>
+    <marker id="ctrl" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0 0L8 4L0 8Z" fill="#9b6c27"/></marker>
+    <marker id="feedback" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0 0L8 4L0 8Z" fill="#5b7680"/></marker>
+    <style>
+      text{font-family:"Noto Sans CJK SC","PingFang SC","Microsoft YaHei",sans-serif;fill:#173d35;font-size:17px}
+      .heading{font-size:22px;font-weight:700}.label{font-weight:700}.small{font-size:16px}.tiny{font-size:14px}.note{font-size:15px;fill:#4f695a}.accent{fill:#8a5d1c}.ftext{fill:#496872}.faulttext{fill:#99493e}
+      .panel{fill:#fafbf8;stroke:#c7d3c7;stroke-width:1.3}.reg{fill:#d2e6d7;stroke:#376650;stroke-width:1.5}.block{fill:#e0ebe3;stroke:#82a18e;stroke-width:1.4}.pred{fill:#e0eaed;stroke:#72929b;stroke-width:1.4}.select{fill:#f2e7d1;stroke:#bd9857;stroke-width:1.5}.fault{fill:#f4e0dc;stroke:#bd7c70;stroke-width:1.5}
+      .data{stroke:#376650;stroke-width:2.2;fill:none;stroke-linejoin:round;stroke-linecap:round;marker-end:url(#arrow)}
+      .control{stroke:#9b6c27;stroke-width:2;stroke-dasharray:5 4;fill:none;stroke-linejoin:round;marker-end:url(#ctrl)}
+      .saved{stroke:#5b7680;stroke-width:2;stroke-dasharray:5 4;fill:none;stroke-linejoin:round;marker-end:url(#feedback)}
+    </style>
+  </defs>
+  <rect x="1" y="1" width="798" height="588" rx="13" fill="#f5f6ef" stroke="#c4d0c4" stroke-width="1.3"/>
+  <text x="20" y="34" class="heading">分支尚未执行，前端先决定下一次取指的位置</text>
+  <text x="20" y="59" class="note">I5 · BEQ，地址为 0x114，假设 BTB 中已有匹配的分支记录。</text>
+  <rect x="15" y="72" width="770" height="258" rx="10" class="panel"/>
+  <text x="31" y="96" class="small label">取指时：从分支的地址获得方向预测与目标</text>
+  <rect x="31" y="116" width="156" height="49" rx="7" class="reg"/>
+  <text x="109" y="137" class="label" text-anchor="middle">FPC</text><text x="109" y="155" class="tiny" text-anchor="middle">0x114</text>
+  <path d="M187 140H225" class="data"/>
+  <rect x="225" y="109" width="192" height="62" rx="7" class="pred"/><text x="321" y="132" class="small label" text-anchor="middle">方向预测器</text><text x="321" y="154" class="tiny" text-anchor="middle">跳转 / 不跳转？</text>
+  <path d="M187 149H202V208H225" class="data"/>
+  <rect x="225" y="181" width="192" height="60" rx="7" class="pred"/><text x="321" y="204" class="small label" text-anchor="middle">BTB · 目标记录</text><text x="321" y="227" class="tiny" text-anchor="middle">命中，目标 0x11C</text>
+  <path d="M187 157H195V276H225" class="data"/>
+  <rect x="225" y="253" width="192" height="47" rx="7" class="block"/><text x="321" y="272" class="small label" text-anchor="middle">顺序地址 FPC + 4</text><text x="321" y="290" class="tiny" text-anchor="middle">0x118</text>
+  <rect x="511" y="189" width="105" height="102" rx="9" class="select"/>
+  <text x="563.5" y="228" class="label" text-anchor="middle">MUX</text><text x="563.5" y="251" class="tiny" text-anchor="middle">选择地址</text>
+  <path d="M417 140H563.5V189" class="control"/>
+  <text x="490" y="130" class="tiny accent" text-anchor="middle">方向</text>
+  <path d="M417 211H511" class="data"/><text x="464" y="203" text-anchor="middle" class="tiny">跳转</text>
+  <path d="M417 276H511" class="data"/><text x="464" y="268" text-anchor="middle" class="tiny">不跳转</text>
+  <path d="M616 240H638" class="data"/>
+  <rect x="638" y="197" width="131" height="86" rx="7" class="reg"/>
+  <text x="703.5" y="222" text-anchor="middle" class="small label">预测地址</text>
+  <text x="703.5" y="244" text-anchor="middle" class="tiny">0x118 或</text><text x="703.5" y="262" text-anchor="middle" class="tiny">0x11C</text>
+  <text x="31" y="318" class="tiny ftext">前端据此继续取指，同时为 I5 保存预测的下一地址，供以后核对。</text>
+  <rect x="15" y="343" width="770" height="169" rx="10" class="panel"/>
+  <text x="31" y="368" class="small label">分支实际执行时：核对预测与真实结果</text>
+  <rect x="31" y="385" width="192" height="76" rx="7" class="block"/>
+  <text x="127" y="408" class="small label" text-anchor="middle">I5 · BEQ</text><text x="127" y="429" class="tiny" text-anchor="middle">p34 = 7，p36 = 7</text><text x="127" y="448" class="tiny" text-anchor="middle">比较结果：相等</text>
+  <path d="M223 423H250" class="data"/>
+  <rect x="250" y="385" width="185" height="76" rx="7" class="reg"/>
+  <text x="342.5" y="408" class="small label" text-anchor="middle">实际下一地址</text>
+  <text x="342.5" y="432" class="tiny" text-anchor="middle">0x114 + 8</text><text x="342.5" y="451" class="small label" text-anchor="middle">0x11C</text>
+  <path d="M435 423H469" class="data"/>
+  <rect x="469" y="385" width="140" height="76" rx="7" class="select"/>
+  <text x="539" y="408" class="small label" text-anchor="middle">比较地址</text><text x="539" y="432" class="tiny" text-anchor="middle">预测 = 实际？</text><text x="539" y="451" class="tiny" text-anchor="middle">核对 I5 记录</text>
+  <path d="M703.5 283V347H539V385" class="saved"/>
+  <path d="M609 410H627V386H644" class="data"/>
+  <rect x="644" y="372" width="125" height="44" rx="7" class="block"/><text x="706.5" y="389" class="tiny label" text-anchor="middle">相同</text><text x="706.5" y="405" class="tiny" text-anchor="middle">继续推进</text>
+  <path d="M609 445H627V464H644" class="data"/>
+  <rect x="644" y="434" width="125" height="62" rx="7" class="fault"/><text x="706.5" y="452" class="tiny faulttext label" text-anchor="middle">不同</text><text x="706.5" y="469" class="tiny faulttext" text-anchor="middle">修正取指</text><text x="706.5" y="485" class="tiny faulttext" text-anchor="middle">取消年轻状态</text>
+  <text x="31" y="494" class="tiny ftext">本例实际跳转：若先前选择了 0x118，就需要重定向到 0x11C。</text>
+  <text x="20" y="539" class="note">方向预测回答“是否跳转”，目标预测回答“跳到哪里”，两者作用不同。</text>
+  <rect x="20" y="552" width="23" height="17" rx="3" class="pred"/><text x="51" y="566" class="tiny">预测结构</text>
+  <path d="M150 560H188" class="data"/><text x="199" y="566" class="tiny">地址 / 数值</text>
+  <path d="M318 560H356" class="control"/><text x="367" y="566" class="tiny">选择控制</text>
+  <path d="M482 560H520" class="saved"/><text x="531" y="566" class="tiny">保存的预测</text>
+</svg>
