@@ -401,6 +401,26 @@ class GeneratedNavigationTests(unittest.TestCase):
                 self.assertTrue(name)
                 self.assertNotIn(name, ("这里", "点击这里", "interactive.html"))
 
+    def test_mos_channel_article_explains_electrostatics_before_inversion(self):
+        topic = SITE / "foundations/bands-to-channel"
+        page = (topic / "index.html").read_text(encoding="utf-8")
+        article = re.search(r'<article\b[^>]*>(.*?)</article>', page, re.DOTALL).group(1)
+        for anchor in ("从能带到沟道栅极怎样控制硅中的电荷", "gate-insulator",
+                       "先看能量再数载流子", "隔着绝缘层加电压", "第二步降低导带电子进入表面的势垒",
+                       "加上源极和漏极", "pinch-off", "pmos", "output-node"):
+            self.assertEqual(article.count(f'id="{anchor}"'), 1)
+        figures = ("nmos-overview-junctions", "gate-insulation-field", "depletion-field-potential",
+                   "surface-band-inversion", "gate-charge")
+        positions = []
+        centered = re.findall(r'<figure\b[^>]*>(.*?)</figure>', article, re.DOTALL)
+        for name in figures:
+            with self.subTest(figure=name):
+                src = f'img/{name}.svg'
+                positions.append(article.index(f'src="{src}"'))
+                self.assertTrue(any(f'src="{src}"' in figure and f'href="{src}"' in figure for figure in centered))
+                self.assertTrue((topic / src).is_file())
+        self.assertEqual(positions, sorted(positions))
+
     def test_foundation_articles_link_to_their_experiments(self):
         panels = (
             ("bands-to-channel", "bands-to-channel/experiments.html", "channel"),

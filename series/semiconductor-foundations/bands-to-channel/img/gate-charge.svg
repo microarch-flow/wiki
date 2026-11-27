@@ -1,129 +1,109 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="480" height="601" viewBox="0 0 480 601" role="img" aria-labelledby="title desc" xml:lang="zh-CN">
+<svg xmlns="http://www.w3.org/2000/svg" width="480" height="791" viewBox="0 0 480 791" role="img" aria-labelledby="title desc" xml:lang="zh-CN">
 <title id="title">栅压升高时的硅表面电荷重排</title>
-<desc id="desc">源、漏、体接地。三幅图中的负受主保持原来的晶格位置。平带附近示意多数空穴补偿负受主；升高栅压后空穴退向体内，留下未补偿的负受主；进一步升压时两侧n+源漏沿硅供给电子，在表面建立反型层。蓝色横向箭头仅表示调栅压重排电荷的过程，不是稳态净电流。各区尺寸与符号数量为示意。</desc>
+<desc id="desc">理想化的增强型 NMOS，源、漏、体均接零伏。三幅图中固定负受主的位置不变。平带附近，多数空穴补偿负受主；升高栅压，表面空穴退向体内，留下未补偿的负受主；进一步升压，两侧 n⁺ 源漏沿硅提供电子，在表面形成反型层。三幅图的深部 P 型体区始终由多数空穴补偿负受主，仍接近电中性。示意的符号排列并不表示空穴和受主一一成对。所有箭头只表示升压过程中载流子重排，不表示稳态源漏净电流；省略源漏与体区两个 PN 结的耗尽区和边缘场。符号数量及各区尺度均非定量。</desc>
 <defs>
-  <marker id="axis" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="4.5" markerHeight="4.5" orient="auto-start-reverse"><path d="M0 0L10 5L0 10Z" fill="#597069"/></marker>
   <marker id="electron-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="4" markerHeight="4" orient="auto"><path d="M0 0L10 5L0 10Z" fill="#09677b"/></marker>
-  <marker id="field-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="4" markerHeight="4" orient="auto"><path d="M0 0L10 5L0 10Z" fill="#a65029"/></marker>
+  <marker id="hole-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="4" markerHeight="4" orient="auto"><path d="M0 0L10 5L0 10Z" fill="#a65029"/></marker>
+  <g id="e"><circle r="6.5" fill="#09677b"/><path d="M-3 0H3" stroke="#fff" stroke-width="1.5" stroke-linecap="round"/></g>
+  <g id="h"><circle r="6.5" fill="#f7f6ef" stroke="#a65029" stroke-width="1.8"/><path d="M-2.8 0H2.8M0 -2.8V2.8" stroke="#a65029" stroke-width="1.2" stroke-linecap="round"/></g>
+  <g id="a"><rect x="-6" y="-6" width="12" height="12" rx="1" fill="#ede8dc" stroke="#6a7467"/><path d="M-3 0H3" stroke="#203c37" stroke-width="1.6" stroke-linecap="round"/></g>
+  <g id="geometry">
+    <rect x="114" y="32" width="251" height="22" rx="3" fill="#61776d"/>
+    <rect x="114" y="54" width="251" height="10" fill="#f5e1a5" stroke="#cbb98c"/>
+    <rect x="25" y="64" width="430" height="108" rx="2" fill="#ecdfcf" stroke="#b9c6b7"/>
+    <rect x="25" y="64" width="89" height="37" fill="#d9e9e6" stroke="#a4bbb3"/>
+    <rect x="365" y="64" width="90" height="37" fill="#d9e9e6" stroke="#a4bbb3"/>
+    <text x="70" y="88" font-size="17" font-weight="600" fill="#203c37" text-anchor="middle">n⁺ 源区</text>
+    <text x="410" y="88" font-size="17" font-weight="600" fill="#203c37" text-anchor="middle">n⁺ 漏区</text>
+  </g>
+  <g id="bulk">
+    <use href="#h" x="65" y="131"/><use href="#a" x="85" y="131"/>
+    <use href="#h" x="140" y="131"/><use href="#a" x="160" y="131"/>
+    <use href="#h" x="215" y="131"/><use href="#a" x="235" y="131"/>
+    <use href="#h" x="290" y="131"/><use href="#a" x="310" y="131"/>
+    <use href="#h" x="365" y="131"/><use href="#a" x="385" y="131"/>
+    <text x="240" y="156" font-size="17" text-anchor="middle" fill="#597069" font-weight="400">深部 P 型硅：仍近电中性</text>
+  </g>
 </defs>
-<rect x="1" y="1" width="478" height="599" rx="15" fill="#f7f6ef" stroke="#c9d3c7"/>
-<g font-family="system-ui, 'Noto Sans CJK SC', 'Microsoft YaHei', sans-serif">
-  <text x="20" y="32" font-size="22" font-weight="700" fill="#203c37" text-anchor="start">栅压升高时，硅表面的电荷怎样改变？</text>
-  <text x="20" y="59" font-size="17" font-weight="400" fill="#597069" text-anchor="start">源、漏、体均接 0 V；只观察靠近栅下的硅。</text>
-  <text x="20" y="97" font-size="20" font-weight="700" fill="#203c37" text-anchor="start">1 · 平带附近</text>
-  <rect x="114" y="107" width="251" height="22" rx="3" fill="#61776d" stroke="none"/>
-  <rect x="114" y="129" width="251" height="10" rx="0" fill="#f5e1a5" stroke="#cbb98c"/>
-  <rect x="25" y="139" width="430" height="83" rx="2" fill="#ecdfcf" stroke="#b9c6b7"/>
-  <rect x="25" y="139" width="89" height="37" rx="0" fill="#d9e9e6" stroke="#a4bbb3"/>
-  <rect x="365" y="139" width="90" height="37" rx="0" fill="#d9e9e6" stroke="#a4bbb3"/>
-  <text x="70" y="163" font-size="17" font-weight="600" fill="#203c37" text-anchor="middle">n⁺ 源区</text>
-  <text x="410" y="163" font-size="17" font-weight="600" fill="#203c37" text-anchor="middle">n⁺ 漏区</text>
-  <text x="240" y="123" font-size="17" font-weight="600" fill="#fff" text-anchor="middle">栅极</text>
-  <rect x="141" y="168" width="12" height="12" rx="1" fill="#ede8dc" stroke="#6a7467"/>
-  <path d="M144 174h6" stroke="#203c37" stroke-width="1.6" fill="none" stroke-linecap="round" stroke-linejoin="round" />
-  <rect x="178" y="168" width="12" height="12" rx="1" fill="#ede8dc" stroke="#6a7467"/>
-  <path d="M181 174h6" stroke="#203c37" stroke-width="1.6" fill="none" stroke-linecap="round" stroke-linejoin="round" />
-  <rect x="215" y="168" width="12" height="12" rx="1" fill="#ede8dc" stroke="#6a7467"/>
-  <path d="M218 174h6" stroke="#203c37" stroke-width="1.6" fill="none" stroke-linecap="round" stroke-linejoin="round" />
-  <rect x="252" y="168" width="12" height="12" rx="1" fill="#ede8dc" stroke="#6a7467"/>
-  <path d="M255 174h6" stroke="#203c37" stroke-width="1.6" fill="none" stroke-linecap="round" stroke-linejoin="round" />
-  <rect x="289" y="168" width="12" height="12" rx="1" fill="#ede8dc" stroke="#6a7467"/>
-  <path d="M292 174h6" stroke="#203c37" stroke-width="1.6" fill="none" stroke-linecap="round" stroke-linejoin="round" />
-  <rect x="326" y="168" width="12" height="12" rx="1" fill="#ede8dc" stroke="#6a7467"/>
-  <path d="M329 174h6" stroke="#203c37" stroke-width="1.6" fill="none" stroke-linecap="round" stroke-linejoin="round" />
-  <circle cx="147" cy="152" r="6.5" fill="#f7f6ef" stroke="#a65029" stroke-width="1.8"/><path d="M144.2 152h5.6M147 149.2v5.6" stroke="#a65029" stroke-width="1.2" stroke-linecap="round"/>
-  <circle cx="184" cy="152" r="6.5" fill="#f7f6ef" stroke="#a65029" stroke-width="1.8"/><path d="M181.2 152h5.6M184 149.2v5.6" stroke="#a65029" stroke-width="1.2" stroke-linecap="round"/>
-  <circle cx="221" cy="152" r="6.5" fill="#f7f6ef" stroke="#a65029" stroke-width="1.8"/><path d="M218.2 152h5.6M221 149.2v5.6" stroke="#a65029" stroke-width="1.2" stroke-linecap="round"/>
-  <circle cx="258" cy="152" r="6.5" fill="#f7f6ef" stroke="#a65029" stroke-width="1.8"/><path d="M255.2 152h5.6M258 149.2v5.6" stroke="#a65029" stroke-width="1.2" stroke-linecap="round"/>
-  <circle cx="295" cy="152" r="6.5" fill="#f7f6ef" stroke="#a65029" stroke-width="1.8"/><path d="M292.2 152h5.6M295 149.2v5.6" stroke="#a65029" stroke-width="1.2" stroke-linecap="round"/>
-  <circle cx="332" cy="152" r="6.5" fill="#f7f6ef" stroke="#a65029" stroke-width="1.8"/><path d="M329.2 152h5.6M332 149.2v5.6" stroke="#a65029" stroke-width="1.2" stroke-linecap="round"/>
-  <text x="240" y="211" font-size="17" font-weight="400" fill="#597069" text-anchor="middle">p 型硅：空穴补偿负受主</text>
-  <path d="M20 232H460" stroke="#c9d3c7" stroke-width="1.2" fill="none" stroke-linecap="round" stroke-linejoin="round" />
-  <text x="20" y="254" font-size="20" font-weight="700" fill="#203c37" text-anchor="start">2 · 耗尽</text>
-  <rect x="114" y="264" width="251" height="22" rx="3" fill="#61776d" stroke="none"/>
-  <rect x="114" y="286" width="251" height="10" rx="0" fill="#f5e1a5" stroke="#cbb98c"/>
-  <rect x="25" y="296" width="430" height="83" rx="2" fill="#ecdfcf" stroke="#b9c6b7"/>
-  <rect x="25" y="296" width="89" height="37" rx="0" fill="#d9e9e6" stroke="#a4bbb3"/>
-  <rect x="365" y="296" width="90" height="37" rx="0" fill="#d9e9e6" stroke="#a4bbb3"/>
-  <text x="70" y="320" font-size="17" font-weight="600" fill="#203c37" text-anchor="middle">n⁺ 源区</text>
-  <text x="410" y="320" font-size="17" font-weight="600" fill="#203c37" text-anchor="middle">n⁺ 漏区</text>
-  <rect x="115" y="296" width="249" height="45" rx="0" fill="#deded0" stroke="none"/>
-  <text x="146" y="280" font-size="16" font-weight="700" fill="#fff" text-anchor="middle">+</text>
-  <text x="184" y="280" font-size="16" font-weight="700" fill="#fff" text-anchor="middle">+</text>
-  <text x="221" y="280" font-size="16" font-weight="700" fill="#fff" text-anchor="middle">+</text>
-  <text x="258" y="280" font-size="16" font-weight="700" fill="#fff" text-anchor="middle">+</text>
-  <text x="295" y="280" font-size="16" font-weight="700" fill="#fff" text-anchor="middle">+</text>
-  <text x="333" y="280" font-size="16" font-weight="700" fill="#fff" text-anchor="middle">+</text>
-  <rect x="141" y="325" width="12" height="12" rx="1" fill="#ede8dc" stroke="#6a7467"/>
-  <path d="M144 331h6" stroke="#203c37" stroke-width="1.6" fill="none" stroke-linecap="round" stroke-linejoin="round" />
-  <rect x="178" y="325" width="12" height="12" rx="1" fill="#ede8dc" stroke="#6a7467"/>
-  <path d="M181 331h6" stroke="#203c37" stroke-width="1.6" fill="none" stroke-linecap="round" stroke-linejoin="round" />
-  <rect x="215" y="325" width="12" height="12" rx="1" fill="#ede8dc" stroke="#6a7467"/>
-  <path d="M218 331h6" stroke="#203c37" stroke-width="1.6" fill="none" stroke-linecap="round" stroke-linejoin="round" />
-  <rect x="252" y="325" width="12" height="12" rx="1" fill="#ede8dc" stroke="#6a7467"/>
-  <path d="M255 331h6" stroke="#203c37" stroke-width="1.6" fill="none" stroke-linecap="round" stroke-linejoin="round" />
-  <rect x="289" y="325" width="12" height="12" rx="1" fill="#ede8dc" stroke="#6a7467"/>
-  <path d="M292 331h6" stroke="#203c37" stroke-width="1.6" fill="none" stroke-linecap="round" stroke-linejoin="round" />
-  <rect x="326" y="325" width="12" height="12" rx="1" fill="#ede8dc" stroke="#6a7467"/>
-  <path d="M329 331h6" stroke="#203c37" stroke-width="1.6" fill="none" stroke-linecap="round" stroke-linejoin="round" />
-  <circle cx="151" cy="351" r="6.5" fill="#f7f6ef" stroke="#a65029" stroke-width="1.8"/><path d="M148.2 351h5.6M151 348.2v5.6" stroke="#a65029" stroke-width="1.2" stroke-linecap="round"/>
-  <circle cx="205" cy="351" r="6.5" fill="#f7f6ef" stroke="#a65029" stroke-width="1.8"/><path d="M202.2 351h5.6M205 348.2v5.6" stroke="#a65029" stroke-width="1.2" stroke-linecap="round"/>
-  <circle cx="259" cy="351" r="6.5" fill="#f7f6ef" stroke="#a65029" stroke-width="1.8"/><path d="M256.2 351h5.6M259 348.2v5.6" stroke="#a65029" stroke-width="1.2" stroke-linecap="round"/>
-  <circle cx="313" cy="351" r="6.5" fill="#f7f6ef" stroke="#a65029" stroke-width="1.8"/><path d="M310.2 351h5.6M313 348.2v5.6" stroke="#a65029" stroke-width="1.2" stroke-linecap="round"/>
-  <path d="M350 320V354" stroke="#a65029" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#field-arrow)"/>
-  <text x="240" y="372" font-size="17" font-weight="400" fill="#597069" text-anchor="middle">空穴退向体内</text>
-  <path d="M20 389H460" stroke="#c9d3c7" stroke-width="1.2" fill="none" stroke-linecap="round" stroke-linejoin="round" />
-  <text x="20" y="411" font-size="20" font-weight="700" fill="#203c37" text-anchor="start">3 · 强反型</text>
-  <rect x="114" y="421" width="251" height="22" rx="3" fill="#61776d" stroke="none"/>
-  <rect x="114" y="443" width="251" height="10" rx="0" fill="#f5e1a5" stroke="#cbb98c"/>
-  <rect x="25" y="453" width="430" height="83" rx="2" fill="#ecdfcf" stroke="#b9c6b7"/>
-  <rect x="25" y="453" width="89" height="37" rx="0" fill="#d9e9e6" stroke="#a4bbb3"/>
-  <rect x="365" y="453" width="90" height="37" rx="0" fill="#d9e9e6" stroke="#a4bbb3"/>
-  <text x="70" y="477" font-size="17" font-weight="600" fill="#203c37" text-anchor="middle">n⁺ 源区</text>
-  <text x="410" y="477" font-size="17" font-weight="600" fill="#203c37" text-anchor="middle">n⁺ 漏区</text>
-  <rect x="115" y="453" width="249" height="45" rx="0" fill="#deded0" stroke="none"/>
-  <text x="135" y="437" font-size="14" font-weight="700" fill="#fff" text-anchor="middle">+</text>
-  <text x="154" y="437" font-size="14" font-weight="700" fill="#fff" text-anchor="middle">+</text>
-  <text x="173" y="437" font-size="14" font-weight="700" fill="#fff" text-anchor="middle">+</text>
-  <text x="192" y="437" font-size="14" font-weight="700" fill="#fff" text-anchor="middle">+</text>
-  <text x="211" y="437" font-size="14" font-weight="700" fill="#fff" text-anchor="middle">+</text>
-  <text x="230" y="437" font-size="14" font-weight="700" fill="#fff" text-anchor="middle">+</text>
-  <text x="249" y="437" font-size="14" font-weight="700" fill="#fff" text-anchor="middle">+</text>
-  <text x="268" y="437" font-size="14" font-weight="700" fill="#fff" text-anchor="middle">+</text>
-  <text x="287" y="437" font-size="14" font-weight="700" fill="#fff" text-anchor="middle">+</text>
-  <text x="306" y="437" font-size="14" font-weight="700" fill="#fff" text-anchor="middle">+</text>
-  <text x="325" y="437" font-size="14" font-weight="700" fill="#fff" text-anchor="middle">+</text>
-  <text x="344" y="437" font-size="14" font-weight="700" fill="#fff" text-anchor="middle">+</text>
-  <rect x="141" y="482" width="12" height="12" rx="1" fill="#ede8dc" stroke="#6a7467"/>
-  <path d="M144 488h6" stroke="#203c37" stroke-width="1.6" fill="none" stroke-linecap="round" stroke-linejoin="round" />
-  <rect x="178" y="482" width="12" height="12" rx="1" fill="#ede8dc" stroke="#6a7467"/>
-  <path d="M181 488h6" stroke="#203c37" stroke-width="1.6" fill="none" stroke-linecap="round" stroke-linejoin="round" />
-  <rect x="215" y="482" width="12" height="12" rx="1" fill="#ede8dc" stroke="#6a7467"/>
-  <path d="M218 488h6" stroke="#203c37" stroke-width="1.6" fill="none" stroke-linecap="round" stroke-linejoin="round" />
-  <rect x="252" y="482" width="12" height="12" rx="1" fill="#ede8dc" stroke="#6a7467"/>
-  <path d="M255 488h6" stroke="#203c37" stroke-width="1.6" fill="none" stroke-linecap="round" stroke-linejoin="round" />
-  <rect x="289" y="482" width="12" height="12" rx="1" fill="#ede8dc" stroke="#6a7467"/>
-  <path d="M292 488h6" stroke="#203c37" stroke-width="1.6" fill="none" stroke-linecap="round" stroke-linejoin="round" />
-  <rect x="326" y="482" width="12" height="12" rx="1" fill="#ede8dc" stroke="#6a7467"/>
-  <path d="M329 488h6" stroke="#203c37" stroke-width="1.6" fill="none" stroke-linecap="round" stroke-linejoin="round" />
-  <circle cx="147" cy="464" r="6.5" fill="#09677b"/><path d="M144 464h6" stroke="white" stroke-width="1.5" stroke-linecap="round"/>
-  <circle cx="184" cy="464" r="6.5" fill="#09677b"/><path d="M181 464h6" stroke="white" stroke-width="1.5" stroke-linecap="round"/>
-  <circle cx="221" cy="464" r="6.5" fill="#09677b"/><path d="M218 464h6" stroke="white" stroke-width="1.5" stroke-linecap="round"/>
-  <circle cx="258" cy="464" r="6.5" fill="#09677b"/><path d="M255 464h6" stroke="white" stroke-width="1.5" stroke-linecap="round"/>
-  <circle cx="295" cy="464" r="6.5" fill="#09677b"/><path d="M292 464h6" stroke="white" stroke-width="1.5" stroke-linecap="round"/>
-  <circle cx="332" cy="464" r="6.5" fill="#09677b"/><path d="M329 464h6" stroke="white" stroke-width="1.5" stroke-linecap="round"/>
-  <path d="M105 464H137" stroke="#09677b" stroke-width="2.3" fill="none" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#electron-arrow)"/>
-  <path d="M375 464H342" stroke="#09677b" stroke-width="2.3" fill="none" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#electron-arrow)"/>
-  <text x="240" y="526" font-size="18" font-weight="600" fill="#09677b" text-anchor="middle">升压时，源漏向表面补充电子</text>
-  <circle cx="28" cy="556" r="6.5" fill="#09677b"/><path d="M25 556h6" stroke="white" stroke-width="1.5" stroke-linecap="round"/>
-  <text x="41" y="562" font-size="16" font-weight="400" fill="#203c37" text-anchor="start">电子</text>
-  <circle cx="113" cy="556" r="6.5" fill="#f7f6ef" stroke="#a65029" stroke-width="1.8"/><path d="M110.2 556h5.6M113 553.2v5.6" stroke="#a65029" stroke-width="1.2" stroke-linecap="round"/>
-  <text x="126" y="562" font-size="16" font-weight="400" fill="#203c37" text-anchor="start">空穴</text>
-  <rect x="186" y="550" width="12" height="12" rx="1" fill="#ede8dc" stroke="#6a7467"/>
-  <path d="M189 556h6" stroke="#203c37" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round" />
-  <text x="205" y="562" font-size="16" font-weight="400" fill="#203c37" text-anchor="start">固定负受主</text>
-  <rect x="326" y="550" width="18" height="12" rx="0" fill="#f5e1a5" stroke="#cbb98c"/>
-  <text x="353" y="562" font-size="16" font-weight="400" fill="#203c37" text-anchor="start">栅绝缘层</text>
-  <text x="240" y="587" font-size="15" font-weight="400" fill="#597069" text-anchor="middle">符号数量与各区尺寸均为示意，并非实际比例。</text>
+<rect x="1" y="1" width="478" height="789" rx="15" fill="#f7f6ef" stroke="#c9d3c7"/>
+<g font-family="system-ui, Noto Sans CJK SC, Microsoft YaHei, sans-serif">
+<text x="20" y="32" font-size="22" text-anchor="start" fill="#203c37" font-weight="700">栅压升高时，硅表面的电荷怎样改变？</text>
+<text x="20" y="59" font-size="17" text-anchor="start" fill="#597069" font-weight="400">源、漏、体均接 0 V；只改变栅压。</text>
+<g transform="translate(0 76)">
+<text x="20" y="24" font-size="20" text-anchor="start" fill="#203c37" font-weight="700">1 · 平带附近</text>
+<use href="#geometry" x="0" y="0"/>
+<text x="240" y="48" font-size="17" text-anchor="middle" fill="#fff" font-weight="600">栅极</text>
+<use href="#h" x="147" y="75"/>
+<use href="#a" x="147" y="99"/>
+<use href="#h" x="184" y="75"/>
+<use href="#a" x="184" y="99"/>
+<use href="#h" x="221" y="75"/>
+<use href="#a" x="221" y="99"/>
+<use href="#h" x="258" y="75"/>
+<use href="#a" x="258" y="99"/>
+<use href="#h" x="295" y="75"/>
+<use href="#a" x="295" y="99"/>
+<use href="#h" x="332" y="75"/>
+<use href="#a" x="332" y="99"/>
+<use href="#bulk" x="0" y="0"/>
+<text x="240" y="194" font-size="17" text-anchor="middle" fill="#597069" font-weight="400">表面与体内均由空穴补偿负受主。</text>
 </g>
-</svg>
+<path d="M20 284H460" stroke="#c9d3c7" stroke-width="1.2" fill="none" stroke-linecap="round" stroke-linejoin="round" />
+<g transform="translate(0 296)">
+<text x="20" y="24" font-size="20" text-anchor="start" fill="#203c37" font-weight="700">2 · 耗尽</text>
+<use href="#geometry" x="0" y="0"/>
+<rect x="115" y="64" width="249" height="47" rx="0" fill="#deded0" stroke="none"/>
+<use href="#a" x="147" y="99"/>
+<use href="#a" x="184" y="99"/>
+<use href="#a" x="221" y="99"/>
+<use href="#a" x="258" y="99"/>
+<use href="#a" x="295" y="99"/>
+<use href="#a" x="332" y="99"/>
+<text x="147" y="48" font-size="16" text-anchor="middle" fill="#fff" font-weight="700">+</text>
+<text x="184" y="48" font-size="16" text-anchor="middle" fill="#fff" font-weight="700">+</text>
+<text x="221" y="48" font-size="16" text-anchor="middle" fill="#fff" font-weight="700">+</text>
+<text x="258" y="48" font-size="16" text-anchor="middle" fill="#fff" font-weight="700">+</text>
+<text x="295" y="48" font-size="16" text-anchor="middle" fill="#fff" font-weight="700">+</text>
+<text x="332" y="48" font-size="16" text-anchor="middle" fill="#fff" font-weight="700">+</text>
+<path d="M350 80V108" stroke="#a65029" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#hole-arrow)"/>
+<use href="#bulk" x="0" y="0"/>
+<text x="240" y="194" font-size="17" text-anchor="middle" fill="#597069" font-weight="400">升压时，空穴退离表面，留下负受主。</text>
+</g>
+<path d="M20 504H460" stroke="#c9d3c7" stroke-width="1.2" fill="none" stroke-linecap="round" stroke-linejoin="round" />
+<g transform="translate(0 516)">
+<text x="20" y="24" font-size="20" text-anchor="start" fill="#203c37" font-weight="700">3 · 强反型</text>
+<use href="#geometry" x="0" y="0"/>
+<rect x="115" y="64" width="249" height="47" rx="0" fill="#deded0" stroke="none"/>
+<use href="#a" x="147" y="99"/>
+<use href="#a" x="184" y="99"/>
+<use href="#a" x="221" y="99"/>
+<use href="#a" x="258" y="99"/>
+<use href="#a" x="295" y="99"/>
+<use href="#a" x="332" y="99"/>
+<text x="135" y="48" font-size="14" text-anchor="middle" fill="#fff" font-weight="700">+</text>
+<text x="154" y="48" font-size="14" text-anchor="middle" fill="#fff" font-weight="700">+</text>
+<text x="173" y="48" font-size="14" text-anchor="middle" fill="#fff" font-weight="700">+</text>
+<text x="192" y="48" font-size="14" text-anchor="middle" fill="#fff" font-weight="700">+</text>
+<text x="211" y="48" font-size="14" text-anchor="middle" fill="#fff" font-weight="700">+</text>
+<text x="230" y="48" font-size="14" text-anchor="middle" fill="#fff" font-weight="700">+</text>
+<text x="249" y="48" font-size="14" text-anchor="middle" fill="#fff" font-weight="700">+</text>
+<text x="268" y="48" font-size="14" text-anchor="middle" fill="#fff" font-weight="700">+</text>
+<text x="287" y="48" font-size="14" text-anchor="middle" fill="#fff" font-weight="700">+</text>
+<text x="306" y="48" font-size="14" text-anchor="middle" fill="#fff" font-weight="700">+</text>
+<text x="325" y="48" font-size="14" text-anchor="middle" fill="#fff" font-weight="700">+</text>
+<text x="344" y="48" font-size="14" text-anchor="middle" fill="#fff" font-weight="700">+</text>
+<use href="#e" x="147" y="75"/>
+<use href="#e" x="184" y="75"/>
+<use href="#e" x="221" y="75"/>
+<use href="#e" x="258" y="75"/>
+<use href="#e" x="295" y="75"/>
+<use href="#e" x="332" y="75"/>
+<path d="M105 75H137" stroke="#09677b" stroke-width="2.3" fill="none" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#electron-arrow)"/>
+<path d="M375 75H342" stroke="#09677b" stroke-width="2.3" fill="none" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#electron-arrow)"/>
+<use href="#bulk" x="0" y="0"/>
+<text x="240" y="194" font-size="17" text-anchor="middle" fill="#09677b" font-weight="600">进一步升压，源漏向表面补充电子。</text>
+</g>
+<use href="#e" x="28" y="729"/><text x="41" y="735" font-size="16" text-anchor="start" fill="#203c37" font-weight="400">电子</text><use href="#h" x="113" y="729"/><text x="126" y="735" font-size="16" text-anchor="start" fill="#203c37" font-weight="400">空穴</text><use href="#a" x="192" y="729"/><text x="205" y="735" font-size="16" text-anchor="start" fill="#203c37" font-weight="400">固定负受主</text><rect x="326" y="723" width="18" height="12" rx="0" fill="#f5e1a5" stroke="#cbb98c"/><text x="353" y="735" font-size="16" text-anchor="start" fill="#203c37" font-weight="400">栅绝缘层</text>
+<text x="240" y="757" font-size="15.5" text-anchor="middle" fill="#597069" font-weight="400">箭头仅示意升压时电荷重排，不是稳态电流。</text>
+<text x="240" y="779" font-size="15" text-anchor="middle" fill="#597069" font-weight="400">省略左右 PN 结耗尽区及边缘场；尺寸与数量为示意。</text>
+</g></svg>

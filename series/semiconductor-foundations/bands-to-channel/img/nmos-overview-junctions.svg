@@ -1,0 +1,62 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="560" height="786" viewBox="0 0 560 786" role="img" aria-labelledby="title desc" xml:lang="zh-CN">
+  <title id="title">增强型 NMOS：两个 PN 结与栅压控制的电子沟道</title>
+  <desc id="desc">同一只平面增强型 NMOS 的两幅剖面。源极、漏极和体端都保持零伏。左右两个 N⁺ 掺杂区分别和 P 型体区形成 PN 结，两条橙色虚线 U 形边界标明固定的掺杂交界面，不表示耗尽区的宽度。低栅压时两个 N⁺ 区之间没有连续电子沟道，高栅压时紧贴栅绝缘层下方出现电子沟道，以绿色区域示意；两条 PN 结的掺杂交界面始终不变。源漏等电势，因此两图均未绘制单向净电子流动。几何尺度不是实际比例。</desc>
+  <defs>
+    <g id="section">
+      <!-- The same fixed dopant geometry and terminals in both panels. -->
+      <rect x="40" y="140" width="480" height="105" rx="3" fill="#f3e9d9" stroke="#85948c" stroke-width="1.3"/>
+      <path d="M62 140 H169 V177 Q169 190 156 190 H75 Q62 190 62 177 Z M391 140 H498 V177 Q498 190 485 190 H404 Q391 190 391 177 Z" fill="#e0e9ec"/>
+      <rect x="166" y="91" width="228" height="29" rx="3" fill="#61776d"/>
+      <rect x="166" y="120" width="228" height="20" fill="#f5e1a5" stroke="#cabd9d" stroke-width="1.1"/>
+      <path d="M115.5 73V140 M444.5 73V140 M280 71V91" fill="none" stroke="#203c37" stroke-width="2" stroke-linecap="round"/>
+      <rect x="257" y="245" width="46" height="6" rx="1.5" fill="#61776d"/>
+      <path d="M280 251V269 M265 269H295 M270 275H290 M276 281H284" fill="none" stroke="#203c37" stroke-width="2.1" stroke-linecap="round"/>
+      <g fill="#203c37" font-size="18" font-weight="500" text-anchor="middle">
+        <text x="115.5" y="65">源极 S · 0 V</text>
+        <text x="444.5" y="65">漏极 D · 0 V</text>
+        <text x="280" y="112" fill="#ffffff" font-weight="600">栅极 G</text>
+        <text x="280" y="136" font-size="15.5" fill="#574b29" font-weight="650">栅绝缘层</text>
+        <text x="115.5" y="170" font-weight="650">N⁺ 源区</text>
+        <text x="444.5" y="170" font-weight="650">N⁺ 漏区</text>
+        <text x="280" y="222">P 型体区</text>
+        <text x="308" y="267" text-anchor="start">体端 B · 0 V</text>
+      </g>
+    </g>
+    <g id="junctions">
+      <!-- U-shaped dopant junction boundaries: neither measured nor depletion widths. -->
+      <path d="M62 140 V177 Q62 190 75 190 H156 Q169 190 169 177 V140 M391 140 V177 Q391 190 404 190 H485 Q498 190 498 177 V140" fill="none" stroke="#b56431" stroke-width="2.7" stroke-dasharray="6 4" stroke-linecap="round"/>
+      <path d="M115.5 191V204 M444.5 191V204" fill="none" stroke="#a65029" stroke-width="1.5"/>
+      <g fill="#8e4b30" font-size="17" font-weight="600" text-anchor="middle">
+        <text x="115.5" y="222">源—体 PN 结</text>
+        <text x="444.5" y="222">漏—体 PN 结</text>
+      </g>
+    </g>
+  </defs>
+  <rect x="1" y="1" width="558" height="784" rx="15" fill="#f7f6ef" stroke="#c9d3c7"/>
+  <g font-family="system-ui, Noto Sans CJK SC, Microsoft YaHei, sans-serif" fill="#203c37">
+    <text x="20" y="35" font-size="23" font-weight="700">NMOS：两个 PN 结与电子沟道</text>
+    <text x="20" y="63" font-size="18" fill="#526861">源、漏、体保持 0 V，只改变栅压。</text>
+    <g transform="translate(0 78)">
+      <text x="20" y="25" font-size="21" font-weight="700">① 低栅压：关断</text>
+      <use href="#section"/>
+      <use href="#junctions"/>
+      <text x="280" y="65" font-size="17.5" font-weight="600" text-anchor="middle" fill="#526861">低栅压</text>
+      <text x="280" y="307" font-size="18" text-anchor="middle">两个 N⁺ 区之间没有连续的电子沟道。</text>
+    </g>
+    <path d="M20 397H540" fill="none" stroke="#c9d3c7" stroke-width="1.2"/>
+    <g transform="translate(0 408)">
+      <text x="20" y="25" font-size="21" font-weight="700">② 高栅压：形成电子沟道</text>
+      <use href="#section"/>
+      <rect x="169" y="140" width="222" height="20" fill="#b2d8c1"/>
+      <text x="280" y="156" text-anchor="middle" font-size="16.6" font-weight="650" fill="#235e51">电子沟道</text>
+      <!-- Draw the same junctions again above the inversion layer. -->
+      <use href="#junctions"/>
+      <text x="280" y="65" font-size="17.5" font-weight="600" text-anchor="middle" fill="#526861">高栅压</text>
+      <text x="280" y="307" font-size="18" text-anchor="middle">硅表面形成沟道，两个 PN 结的掺杂边界不变。</text>
+    </g>
+    <path d="M20 728H540" fill="none" stroke="#c9d3c7" stroke-width="1.2"/>
+    <path d="M24 747H62" fill="none" stroke="#b56431" stroke-width="2.7" stroke-dasharray="6 4" stroke-linecap="round"/>
+    <text x="72" y="753" font-size="16.5" fill="#526861">橙色虚线表示掺杂交界面，不表示耗尽区宽度。</text>
+    <text x="280" y="775" font-size="15.5" fill="#526861" text-anchor="middle">剖面几何尺度仅作示意。</text>
+  </g>
+</svg>

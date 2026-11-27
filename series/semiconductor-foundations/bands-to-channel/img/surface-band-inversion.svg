@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="520" height="661" viewBox="0 0 520 661" role="img" aria-labelledby="title desc" xml:lang="zh-CN">
 <title id="title">栅压降低源漏电子进入表面导带的势垒</title>
-<desc id="desc">源、漏、体等电势，分别观察低栅压和栅压足够高时从源区经过栅下硅表面到漏区的电子能量。栅压降低中间导带底和价带顶的能量，二者间的带隙保持不变；n+源漏为电子提供已有的导带载流子，电子不需要在栅下从价带跨过禁带。硅的费米能级在稳态水平。箭头表示建立反型层的重排过程，不代表最终稳态的净源漏电流。示意不按实际能量或空间比例。</desc>
+<desc id="desc">源、漏、体均接 0 V，分别观察低栅压和栅压足够高时从源区经过栅下硅表面到漏区的电子能量。栅压降低中间导带底和价带顶的能量，二者间的带隙保持不变；n+源漏为电子提供已有的导带载流子，电子不需要在栅下从价带跨过禁带。硅的费米能级在稳态水平。箭头表示建立反型层的重排过程，不代表最终稳态的净源漏电流。示意不按实际能量或空间比例。</desc>
 <defs>
   <marker id="axis" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="4.5" markerHeight="4.5" orient="auto-start-reverse"><path d="M0 0L10 5L0 10Z" fill="#597069"/></marker>
   <marker id="electron-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="4" markerHeight="4" orient="auto"><path d="M0 0L10 5L0 10Z" fill="#09677b"/></marker>
@@ -9,7 +9,7 @@
 <rect x="1" y="1" width="518" height="659" rx="15" fill="#f7f6ef" stroke="#c9d3c7"/>
 <g font-family="system-ui, 'Noto Sans CJK SC', 'Microsoft YaHei', sans-serif">
   <text x="260" y="30" font-size="21" font-weight="700" fill="#203c37" text-anchor="middle">源漏已有电子，栅压改变中间的能量势垒</text>
-  <text x="260" y="55" font-size="16" font-weight="400" fill="#597069" text-anchor="middle">源、漏、体等电势；沿硅表面从源向漏观察</text>
+  <text x="260" y="55" font-size="16" font-weight="400" fill="#597069" text-anchor="middle">源、漏、体均接 0 V；沿硅表面从源向漏观察</text>
   <text x="23" y="92" font-size="20" font-weight="650" fill="#203c37" text-anchor="start">1 · 栅压低，电子难以经过栅下表面</text>
   <path d="M58 199H108C141 199 151 122 203 122H312C364 122 374 199 407 199H457V108H58Z" stroke="none" stroke-width="0" fill="#e2eeee" stroke-linecap="round" stroke-linejoin="round" />
   <path d="M58 276H108C141 276 151 199 203 199H312C364 199 374 276 407 276H457V289H58Z" stroke="none" stroke-width="0" fill="#e8e1ef" stroke-linecap="round" stroke-linejoin="round" />
