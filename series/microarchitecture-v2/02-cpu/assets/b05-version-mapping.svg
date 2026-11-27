@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 335" width="800" height="335" role="img" aria-labelledby="title desc">
+  <title id="title">将逻辑寄存器 x5 的不同值映射到不同物理寄存器</title>
+  <desc id="desc">物理寄存器文件有 p0 至 p37，初始 xN 映射到 pN。按程序顺序登记时，I0 将 x6 映射至 p32；I1 将 x5 映射至 p33；I2 取得源编号 p33 和 p3，并将 x7 映射至 p34；I3 将 x8 映射至 p35；I4 读取 p32 和 p1，将 x5 再映射至 p36。从 E6 沿后，RMT 中 x5 指向 p36，但 I2 保留此前的源编号 p33。I1 向 p33 写值 6，I2 必须在该值就绪后取得 6，计算 7 写入 p34；I4 可将 7 写 p36，不再与 I1 共用写目标，也不覆盖 I2 所需的旧版本。示例中的数值代表正常执行最终得到的结果，不是同一时刻的状态。</desc>
+  <defs>
+    <marker id="arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0 0L8 4L0 8Z" fill="#376650"/></marker>
+    <marker id="maparrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0 0L8 4L0 8Z" fill="#9b6c27"/></marker>
+    <style>
+      text{font-family:"Noto Sans CJK SC","PingFang SC","Microsoft YaHei",sans-serif;fill:#173d35;font-size:17px}
+      .heading{font-size:22px;font-weight:700}.label{font-weight:700}.small{font-size:16px}.tiny{font-size:14px}.note{font-size:15px;fill:#4f695a}.accent{fill:#8a5d1c}.ftext{fill:#496872}
+      .panel{fill:#fafbf8;stroke:#c7d3c7;stroke-width:1.3}.header{fill:#e0ebe3}.sep{stroke:#dbe4da;stroke-width:1}
+      .reg{fill:#d2e6d7;stroke:#376650;stroke-width:1.5}.inst{fill:#e0eaed;stroke:#72929b;stroke-width:1.4}
+      .map{fill:#f2e7d1;stroke:#bd9857;stroke-width:1.5}.data{stroke:#376650;stroke-width:2.2;fill:none;stroke-linejoin:round;stroke-linecap:round;marker-end:url(#arrow)}
+      .mapping{stroke:#9b6c27;stroke-width:2;stroke-dasharray:5 4;fill:none;stroke-linejoin:round;marker-end:url(#maparrow)}
+    </style>
+  </defs>
+  <rect x="1" y="1" width="798" height="333" rx="13" fill="#f5f6ef" stroke="#c4d0c4" stroke-width="1.3"/>
+  <text x="20" y="34" class="heading">同一个 x5，不同的新值保存在不同物理位置</text>
+  <text x="20" y="59" class="note">PRF 有 p0～p37；初始 xN → pN。只画本次涉及的编号。</text>
+  <g transform="translate(0 -243)">
+  <rect x="15" y="315" width="770" height="200" rx="10" class="panel"/>
+  <text x="31" y="342" class="small label">E6 沿后：I2 已保留 p33；查 RMT 的 x5 则得到 p36</text>
+  <!-- Data flow I1 -> p33 -> I2, independent separate path I4 -> p36. -->
+  <rect x="31" y="357" width="166" height="58" rx="7" class="inst"/>
+  <text x="114" y="379" text-anchor="middle" class="small label">I1 · LW x5</text><text x="114" y="398" text-anchor="middle" class="tiny">产生值 6</text>
+  <rect x="240" y="357" width="133" height="58" rx="7" class="reg"/>
+  <text x="306.5" y="379" text-anchor="middle" class="label">p33</text><text x="306.5" y="398" text-anchor="middle" class="tiny">最终值 = 6</text>
+  <path d="M197 386H240" class="data"/>
+  <path d="M373 386H424" class="data"/>
+  <rect x="424" y="357" width="343" height="58" rx="7" class="inst"/>
+  <text x="595.5" y="379" text-anchor="middle" class="small label">I2 · ADD x7</text>
+  <text x="595.5" y="399" text-anchor="middle" class="tiny">等待 p33 就绪；读 p33、p3，写 p34</text>
+
+  <rect x="31" y="440" width="166" height="58" rx="7" class="inst"/>
+  <text x="114" y="462" text-anchor="middle" class="small label">I4 · ADD x5</text><text x="114" y="481" text-anchor="middle" class="tiny">产生值 7</text>
+  <rect x="240" y="440" width="133" height="58" rx="7" class="reg"/>
+  <text x="306.5" y="462" text-anchor="middle" class="label">p36</text><text x="306.5" y="481" text-anchor="middle" class="tiny">最终值 = 7</text>
+  <path d="M197 469H240" class="data"/>
+  <rect x="488" y="440" width="279" height="58" rx="7" class="map"/>
+  <text x="627.5" y="462" text-anchor="middle" class="small label accent">当前 RMT：x5 → p36</text><text x="627.5" y="481" text-anchor="middle" class="tiny">不改变 I2 已保存的源编号</text>
+  <path d="M488 469H373" class="mapping"/>
+  <text x="431" y="459" text-anchor="middle" class="tiny accent">映射</text>
+  <text x="20" y="540" class="note">地址分开：I1、I4 不再争写同一位置，I4 也不覆盖 I2 仍需的 p33。</text>
+  <text x="20" y="562" class="note">数据不独立：I2 必须等到 I1 产生新值。图中数值为正常执行最终结果。</text>
+  </g>
+</svg>
