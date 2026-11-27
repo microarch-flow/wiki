@@ -1,0 +1,63 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 611" width="800" height="611" role="img" aria-labelledby="title desc">
+  <title id="title">保持同一 ALU 和 AGU，比较单线程、细粒度交错与同时多线程的发射</title>
+  <desc id="desc">只比较前四个发射边沿。三种方案共用同样的一条 ALU 和一条 AGU，每个线程每个边沿最多发射一条指令，为教学约束。单线程 A 方案在 E1 ALU 接收 A0，E2 AGU 接收 A1，E3 与 E4 都为空，共发射2条。细粒度交错方案每个边沿只选一个线程，E1 ALU 接收 A0，E2 ALU 接收 B0，E3 AGU 接收 A1，E4 AGU 接收 B1，共4条。同时多线程方案在 E1 同时将 A0 发射给 ALU、B1 发射给 AGU；E2 同时将 B0 发射给 ALU、A1 发射给 AGU；E3 与 E4 后续工作等待真实数据依赖，共4条，但两个单元在前两个边沿都得到工作。这只是给定候选、资源容量和数据就绪条件的教学局部比较，不是实际处理器性能或总执行时间。AGU 发射表示接受地址计算，不表示 Load 已经完成。</desc>
+  <defs>
+    <style>
+      text{font-family:"Noto Sans CJK SC","PingFang SC","Microsoft YaHei",sans-serif;fill:#173d35;font-size:17px}
+      .heading{font-size:22px;font-weight:700}.label{font-weight:700}.small{font-size:16px}.tiny{font-size:14px}.note{font-size:15px;fill:#4f695a}.accent{fill:#8a5d1c}.muted{fill:#6e8079}.ftext{fill:#496872}
+      .panel{fill:#fafbf8;stroke:#c7d3c7;stroke-width:1.3}.header{fill:#e0ebe3}.a{fill:#d2e6d7;stroke:#376650;stroke-width:1.5}.b{fill:#e0eaed;stroke:#72929b;stroke-width:1.5}.idle{fill:#f7f8f3;stroke:#d3d9d3;stroke-width:1.1;stroke-dasharray:4 3}
+      .highlight{fill:#f2e7d1;stroke:#bd9857;stroke-width:1.3}
+    </style>
+  </defs>
+  <rect x="1" y="1" width="798" height="609" rx="13" fill="#f5f6ef" stroke="#c4d0c4" stroke-width="1.3"/>
+  <text x="20" y="34" class="heading">同样的两个执行入口，可以怎样安排工作？</text>
+  <text x="20" y="59" class="note">一套 ALU + 一套 AGU；每线程每边沿最多发射一条（教学约束）。</text>
+
+  <rect x="15" y="73" width="770" height="145" rx="10" class="panel"/>
+  <text x="31" y="98" class="small label">1. 单线程 A：只有 A 可以提供工作</text>
+  <rect x="125" y="109" width="485" height="25" rx="5" class="header"/>
+  <g text-anchor="middle" class="small label"><text x="183" y="127">E1</text><text x="305" y="127">E2</text><text x="427" y="127">E3</text><text x="549" y="127">E4</text></g>
+  <text x="31" y="160" class="small label">ALU</text><text x="31" y="198" class="small label">AGU</text>
+  <rect x="125" y="139" width="116" height="33" rx="5" class="a"/><text x="183" y="161" class="label" text-anchor="middle">A0</text>
+  <rect x="247" y="139" width="116" height="33" rx="5" class="idle"/><rect x="369" y="139" width="116" height="33" rx="5" class="idle"/><rect x="491" y="139" width="116" height="33" rx="5" class="idle"/>
+  <rect x="125" y="177" width="116" height="33" rx="5" class="idle"/>
+  <rect x="247" y="177" width="116" height="33" rx="5" class="a"/><text x="305" y="199" class="label" text-anchor="middle">A1</text>
+  <rect x="369" y="177" width="116" height="33" rx="5" class="idle"/><rect x="491" y="177" width="116" height="33" rx="5" class="idle"/>
+  <rect x="628" y="139" width="141" height="71" rx="7" class="header"/>
+  <text x="698.5" y="163" class="tiny" text-anchor="middle">4 周期内发射</text><text x="698.5" y="190" class="label" text-anchor="middle">2 条</text>
+
+  <rect x="15" y="229" width="770" height="145" rx="10" class="panel"/>
+  <text x="31" y="254" class="small label">2. 细粒度交错：每边沿只选一个线程</text>
+  <rect x="125" y="265" width="485" height="25" rx="5" class="header"/>
+  <g text-anchor="middle" class="small label"><text x="183" y="283">E1</text><text x="305" y="283">E2</text><text x="427" y="283">E3</text><text x="549" y="283">E4</text></g>
+  <text x="31" y="316" class="small label">ALU</text><text x="31" y="354" class="small label">AGU</text>
+  <rect x="125" y="295" width="116" height="33" rx="5" class="a"/><text x="183" y="317" class="label" text-anchor="middle">A0</text>
+  <rect x="247" y="295" width="116" height="33" rx="5" class="b"/><text x="305" y="317" class="label" text-anchor="middle">B0</text>
+  <rect x="369" y="295" width="116" height="33" rx="5" class="idle"/><rect x="491" y="295" width="116" height="33" rx="5" class="idle"/>
+  <rect x="125" y="333" width="116" height="33" rx="5" class="idle"/><rect x="247" y="333" width="116" height="33" rx="5" class="idle"/>
+  <rect x="369" y="333" width="116" height="33" rx="5" class="a"/><text x="427" y="355" class="label" text-anchor="middle">A1</text>
+  <rect x="491" y="333" width="116" height="33" rx="5" class="b"/><text x="549" y="355" class="label" text-anchor="middle">B1</text>
+  <rect x="628" y="295" width="141" height="71" rx="7" class="header"/>
+  <text x="698.5" y="319" class="tiny" text-anchor="middle">4 周期内发射</text><text x="698.5" y="346" class="label" text-anchor="middle">4 条</text>
+
+  <rect x="15" y="385" width="770" height="166" rx="10" class="panel"/>
+  <text x="31" y="410" class="small label">3. SMT：同一边沿可从两个线程共同选择</text>
+  <rect x="125" y="421" width="485" height="25" rx="5" class="header"/>
+  <rect x="125" y="421" width="238" height="25" rx="5" class="highlight"/>
+  <g text-anchor="middle" class="small label"><text x="183" y="439" class="accent">E1</text><text x="305" y="439" class="accent">E2</text><text x="427" y="439">E3</text><text x="549" y="439">E4</text></g>
+  <text x="31" y="472" class="small label">ALU</text><text x="31" y="510" class="small label">AGU</text>
+  <rect x="125" y="451" width="116" height="33" rx="5" class="a"/><text x="183" y="473" class="label" text-anchor="middle">A0</text>
+  <rect x="247" y="451" width="116" height="33" rx="5" class="b"/><text x="305" y="473" class="label" text-anchor="middle">B0</text>
+  <rect x="369" y="451" width="116" height="33" rx="5" class="idle"/><rect x="491" y="451" width="116" height="33" rx="5" class="idle"/>
+  <rect x="125" y="489" width="116" height="33" rx="5" class="b"/><text x="183" y="511" class="label" text-anchor="middle">B1</text>
+  <rect x="247" y="489" width="116" height="33" rx="5" class="a"/><text x="305" y="511" class="label" text-anchor="middle">A1</text>
+  <rect x="369" y="489" width="116" height="33" rx="5" class="idle"/><rect x="491" y="489" width="116" height="33" rx="5" class="idle"/>
+  <rect x="628" y="451" width="141" height="71" rx="7" class="header"/>
+  <text x="698.5" y="475" class="tiny" text-anchor="middle">4 周期内发射</text><text x="698.5" y="502" class="label" text-anchor="middle">4 条</text>
+  <text x="125" y="542" class="tiny accent">E1、E2 同时占两个入口</text><text x="369" y="542" class="tiny muted">等待后续真实数据依赖</text>
+
+  <rect x="20" y="563" width="21" height="17" rx="3" class="a"/><text x="49" y="577" class="tiny">A 指令</text>
+  <rect x="133" y="563" width="21" height="17" rx="3" class="b"/><text x="162" y="577" class="tiny">B 指令</text>
+  <rect x="246" y="563" width="21" height="17" rx="3" class="idle"/><text x="275" y="577" class="tiny">该边沿未接收工作</text>
+  <text x="20" y="597" class="note">每格只表示发射，AGU 接收地址计算不等于 Load 已完成；不是总耗时比较。</text>
+</svg>

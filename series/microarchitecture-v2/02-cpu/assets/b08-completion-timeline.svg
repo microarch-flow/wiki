@@ -1,0 +1,113 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 542" width="800" height="542" role="img" aria-labelledby="title desc">
+  <title id="title">串行、交错多线程与 SMT 的六条指令提交边沿对照</title>
+  <desc id="desc">同一教学模型中，线程 A 和 B 分别有前三条指令 A0 至 A2、B0 至 B2。串行方式的 A 提交边沿为 E4、E10、E13，B 为 E17、E23、E26，共 26 拍。交错多线程方式的 A 提交边沿为 E4、E11、E14，B 为 E5、E12、E15，共 15 拍。SMT 方式的 A 提交边沿为 E4、E10、E13，B 为 E5、E9、E12，共 13 拍。圆点标记指令提交到各自架构状态的上升沿，虚线标记两个线程都已提交指定前缀的边沿。三种方式各正常提交六条指令，仅为此算例的对比，不是实际 CPU 性能。</desc>
+  <defs>
+    <style>
+      text{font-family:"Noto Sans CJK SC","PingFang SC","Microsoft YaHei",sans-serif;fill:#173d35;font-size:16px}
+      .heading{font-size:22px;font-weight:700}.label{font-size:17px;font-weight:700}
+      .note{font-size:15px;fill:#4f695a}.tiny{font-size:13.5px}.edge{font-size:13px;fill:#6e8079}
+      .panel{fill:#fafbf8;stroke:#c7d3c7;stroke-width:1.3}.grid{stroke:#e3e9df;stroke-width:1}
+      .lane{stroke:#98aa9c;stroke-width:1.25;fill:none}
+      .a{fill:#d2e6d7;stroke:#376650;stroke-width:1.9}.b{fill:#e0eaed;stroke:#72929b;stroke-width:1.9}
+      .at{fill:#376650;font-weight:700;font-size:14px}.bt{fill:#496872;font-weight:700;font-size:14px}
+      .end{stroke:#8a5d1c;stroke-width:1.8;stroke-dasharray:5 4}.finish{fill:#8a5d1c;font-size:15px;font-weight:700}
+    </style>
+  </defs>
+  <rect x="1" y="1" width="798" height="540" rx="13" fill="#f5f6ef" stroke="#c4d0c4" stroke-width="1.3"/>
+  <text x="20" y="34" class="heading">两条线程的提交仍各自按序，整体结束时间可以不同</text>
+  <text x="20" y="61" class="note">同一算例：A、B 各提交 3 条指令，共 6 条；从 E0 开始计时。</text>
+  <text x="24" y="88" class="tiny" text-anchor="start">上升沿</text>
+  <text x="105.0" y="88" class="edge" text-anchor="middle">E0</text>
+  <text x="206.0" y="88" class="edge" text-anchor="middle">E4</text>
+  <text x="307.0" y="88" class="edge" text-anchor="middle">E8</text>
+  <text x="408.0" y="88" class="edge" text-anchor="middle">E12</text>
+  <text x="509.0" y="88" class="edge" text-anchor="middle">E16</text>
+  <text x="610.0" y="88" class="edge" text-anchor="middle">E20</text>
+  <text x="711.0" y="88" class="edge" text-anchor="middle">E24</text>
+  <text x="761.5" y="88" class="edge" text-anchor="middle">E26</text>
+  <rect x="14" y="99" width="772" height="130" rx="9" class="panel"/>
+  <text x="28" y="123" class="label" text-anchor="start">① 先执行 A、再执行 B</text>
+  <text x="772" y="123" class="finish" text-anchor="end">均完成 E26 · 26 拍</text>
+  <path d="M105.0 130V219" class="grid"/>
+  <path d="M206.0 130V219" class="grid"/>
+  <path d="M307.0 130V219" class="grid"/>
+  <path d="M408.0 130V219" class="grid"/>
+  <path d="M509.0 130V219" class="grid"/>
+  <path d="M610.0 130V219" class="grid"/>
+  <path d="M711.0 130V219" class="grid"/>
+  <path d="M761.5 130V219" class="grid"/>
+  <path d="M761.5 133V219" class="end"/>
+  <text x="28" y="169" class="at" text-anchor="start">A 线程</text>
+  <path d="M105.0 165H761.5" class="lane"/>
+  <circle cx="206.0" cy="165" r="5.2" class="a"/>
+  <text x="206.0" y="154" class="at" text-anchor="middle">A0·E4</text>
+  <circle cx="357.5" cy="165" r="5.2" class="a"/>
+  <text x="357.5" y="154" class="at" text-anchor="middle">A1·E10</text>
+  <circle cx="433.25" cy="165" r="5.2" class="a"/>
+  <text x="433.25" y="154" class="at" text-anchor="middle">A2·E13</text>
+  <text x="28" y="214" class="bt" text-anchor="start">B 线程</text>
+  <path d="M105.0 210H761.5" class="lane"/>
+  <circle cx="534.25" cy="210" r="5.2" class="b"/>
+  <text x="534.25" y="199" class="bt" text-anchor="middle">B0·E17</text>
+  <circle cx="685.75" cy="210" r="5.2" class="b"/>
+  <text x="685.75" y="199" class="bt" text-anchor="middle">B1·E23</text>
+  <circle cx="761.5" cy="210" r="5.2" class="b"/>
+  <text x="773" y="225" class="bt" text-anchor="end">B2·E26</text>
+  <rect x="14" y="240" width="772" height="130" rx="9" class="panel"/>
+  <text x="28" y="264" class="label" text-anchor="start">② 交错多线程</text>
+  <text x="772" y="264" class="finish" text-anchor="end">均完成 E15 · 15 拍</text>
+  <path d="M105.0 271V360" class="grid"/>
+  <path d="M206.0 271V360" class="grid"/>
+  <path d="M307.0 271V360" class="grid"/>
+  <path d="M408.0 271V360" class="grid"/>
+  <path d="M509.0 271V360" class="grid"/>
+  <path d="M610.0 271V360" class="grid"/>
+  <path d="M711.0 271V360" class="grid"/>
+  <path d="M761.5 271V360" class="grid"/>
+  <path d="M483.75 274V360" class="end"/>
+  <text x="28" y="310" class="at" text-anchor="start">A 线程</text>
+  <path d="M105.0 306H761.5" class="lane"/>
+  <circle cx="206.0" cy="306" r="5.2" class="a"/>
+  <text x="206.0" y="295" class="at" text-anchor="middle">A0·E4</text>
+  <circle cx="382.75" cy="306" r="5.2" class="a"/>
+  <text x="382.75" y="295" class="at" text-anchor="middle">A1·E11</text>
+  <circle cx="458.5" cy="306" r="5.2" class="a"/>
+  <text x="458.5" y="295" class="at" text-anchor="middle">A2·E14</text>
+  <text x="28" y="355" class="bt" text-anchor="start">B 线程</text>
+  <path d="M105.0 351H761.5" class="lane"/>
+  <circle cx="231.25" cy="351" r="5.2" class="b"/>
+  <text x="231.25" y="340" class="bt" text-anchor="middle">B0·E5</text>
+  <circle cx="408.0" cy="351" r="5.2" class="b"/>
+  <text x="408.0" y="340" class="bt" text-anchor="middle">B1·E12</text>
+  <circle cx="483.75" cy="351" r="5.2" class="b"/>
+  <text x="483.75" y="340" class="bt" text-anchor="middle">B2·E15</text>
+  <rect x="14" y="381" width="772" height="130" rx="9" class="panel"/>
+  <text x="28" y="405" class="label" text-anchor="start">③ 同时多线程（SMT）</text>
+  <text x="772" y="405" class="finish" text-anchor="end">均完成 E13 · 13 拍</text>
+  <path d="M105.0 412V501" class="grid"/>
+  <path d="M206.0 412V501" class="grid"/>
+  <path d="M307.0 412V501" class="grid"/>
+  <path d="M408.0 412V501" class="grid"/>
+  <path d="M509.0 412V501" class="grid"/>
+  <path d="M610.0 412V501" class="grid"/>
+  <path d="M711.0 412V501" class="grid"/>
+  <path d="M761.5 412V501" class="grid"/>
+  <path d="M433.25 415V501" class="end"/>
+  <text x="28" y="451" class="at" text-anchor="start">A 线程</text>
+  <path d="M105.0 447H761.5" class="lane"/>
+  <circle cx="206.0" cy="447" r="5.2" class="a"/>
+  <text x="206.0" y="436" class="at" text-anchor="middle">A0·E4</text>
+  <circle cx="357.5" cy="447" r="5.2" class="a"/>
+  <text x="357.5" y="436" class="at" text-anchor="middle">A1·E10</text>
+  <circle cx="433.25" cy="447" r="5.2" class="a"/>
+  <text x="433.25" y="436" class="at" text-anchor="middle">A2·E13</text>
+  <text x="28" y="496" class="bt" text-anchor="start">B 线程</text>
+  <path d="M105.0 492H761.5" class="lane"/>
+  <circle cx="231.25" cy="492" r="5.2" class="b"/>
+  <text x="231.25" y="481" class="bt" text-anchor="middle">B0·E5</text>
+  <circle cx="332.25" cy="492" r="5.2" class="b"/>
+  <text x="332.25" y="481" class="bt" text-anchor="middle">B1·E9</text>
+  <circle cx="408.0" cy="492" r="5.2" class="b"/>
+  <text x="408.0" y="481" class="bt" text-anchor="middle">B2·E12</text>
+  <text x="20" y="531" class="tiny note">圆点：按各线程提交的边沿；棕色虚线：所有 6 条均提交。只比较本例拍数，不代表实测性能。</text>
+</svg>
