@@ -1,0 +1,77 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 860 447" width="860" height="447" role="img" aria-labelledby="title desc">
+<title id="title">相同总稀疏率下两种非零元素分布的时间差</title>
+<desc id="desc">两行权重分别固定在两条MAC通路。两行各4项非零，理想条件4拍，8项有效乘加占8时隙；同为50%总权重稀疏但分别6和2项非零时，6拍，8项有效乘加占12时隙，比例为2/3。假设每条通路每拍一个有效乘加、没有额外开销，禁止跨行转移。</desc>
+<defs><marker id="data-arrow" markerUnits="userSpaceOnUse" viewBox="0 0 7 7" markerWidth="8" markerHeight="8" refX="6" refY="3.5" orient="auto"><path d="M0 0L7 3.5L0 7Z" fill="#376650"/></marker>
+<marker id="meta-arrow" markerUnits="userSpaceOnUse" viewBox="0 0 7 7" markerWidth="8" markerHeight="8" refX="6" refY="3.5" orient="auto"><path d="M0 0L7 3.5L0 7Z" fill="#9b6c27"/></marker>
+<style>
+text{font-family:"Noto Sans CJK SC","PingFang SC","Microsoft YaHei",sans-serif;fill:#173d35;font-size:18px}
+.heading{font-size:22px;font-weight:700}.sub{font-size:17px}.label{font-weight:700}.small{font-size:16px}.tiny{font-size:14px}.note{font-size:16px;fill:#4f695a}.accent{fill:#815718}.muted{fill:#58736a}.blue{fill:#395e89}
+.panel{fill:#fafbf8;stroke:#c7d3c7;stroke-width:1.3}.reg{fill:#edf1df;stroke:#82a18e;stroke-width:1.4}.block{fill:#e0ebe3;stroke:#82a18e;stroke-width:1.4}.control{fill:#f3ebdb;stroke:#c6aa79;stroke-width:1.3}.sfu{fill:#dbe7f4;stroke:#8ea6c4;stroke-width:1.4}.idle{fill:#f3f3ef;stroke:#b2c0b6;stroke-width:1.4;stroke-dasharray:5 4}.match{fill:#e0ebe3;stroke:#376650;stroke-width:2}.divider{stroke:#c7d3c7;stroke-width:1.2}
+.data,.meta{stroke-width:2.3;fill:none;stroke-linejoin:round;stroke-linecap:round}.data{stroke:#376650;marker-end:url(#data-arrow)}.meta{stroke:#9b6c27;marker-end:url(#meta-arrow)}
+</style></defs>
+<rect x="1" y="1" width="858" height="445" rx="13" fill="#f5f6ef" stroke="#c4d0c4" stroke-width="1.3"/>
+<text x="22" y="34" class="heading" text-anchor="start">同样是 50% 权重稀疏，分到每条通路上的工作量可以不同</text>
+<text x="22" y="61" class="note" text-anchor="start">两条 MAC 分别固定给两行，每拍接纳一项非零乘加；仅比较理想执行时间。</text>
+<text x="240.5" y="89" class="small label" text-anchor="middle">第 1 拍</text>
+<text x="344.5" y="89" class="small label" text-anchor="middle">第 2 拍</text>
+<text x="448.5" y="89" class="small label" text-anchor="middle">第 3 拍</text>
+<text x="552.5" y="89" class="small label" text-anchor="middle">第 4 拍</text>
+<text x="656.5" y="89" class="small label" text-anchor="middle">第 5 拍</text>
+<text x="760.5" y="89" class="small label" text-anchor="middle">第 6 拍</text>
+<rect x="22" y="102" width="816" height="129" rx="7" class="panel"/>
+<text x="35" y="127" class="label" text-anchor="start">① 两行工作量均衡</text>
+<text x="822" y="127" class="small note" text-anchor="end">4 拍；8 / 8 时隙有效（100%）</text>
+<text x="35" y="162" class="small label" text-anchor="start">MAC0：4 项</text>
+<rect x="194" y="138" width="93" height="38" rx="7" class="block"/>
+<text x="240.5" y="163.0" class="small label" text-anchor="middle">有效</text>
+<rect x="298" y="138" width="93" height="38" rx="7" class="block"/>
+<text x="344.5" y="163.0" class="small label" text-anchor="middle">有效</text>
+<rect x="402" y="138" width="93" height="38" rx="7" class="block"/>
+<text x="448.5" y="163.0" class="small label" text-anchor="middle">有效</text>
+<rect x="506" y="138" width="93" height="38" rx="7" class="block"/>
+<text x="552.5" y="163.0" class="small label" text-anchor="middle">有效</text>
+<rect x="610" y="138" width="197" height="38" rx="7" class="idle"/>
+<text x="708.5" y="162" class="small muted" text-anchor="middle">任务已结束</text>
+<text x="35" y="206" class="small label" text-anchor="start">MAC1：4 项</text>
+<rect x="194" y="182" width="93" height="38" rx="7" class="block"/>
+<text x="240.5" y="207.0" class="small label" text-anchor="middle">有效</text>
+<rect x="298" y="182" width="93" height="38" rx="7" class="block"/>
+<text x="344.5" y="207.0" class="small label" text-anchor="middle">有效</text>
+<rect x="402" y="182" width="93" height="38" rx="7" class="block"/>
+<text x="448.5" y="207.0" class="small label" text-anchor="middle">有效</text>
+<rect x="506" y="182" width="93" height="38" rx="7" class="block"/>
+<text x="552.5" y="207.0" class="small label" text-anchor="middle">有效</text>
+<rect x="610" y="182" width="197" height="38" rx="7" class="idle"/>
+<text x="708.5" y="206" class="small muted" text-anchor="middle">任务已结束</text>
+<rect x="22" y="240" width="816" height="129" rx="7" class="panel"/>
+<text x="35" y="265" class="label" text-anchor="start">② 两行工作量不均</text>
+<text x="822" y="265" class="small note" text-anchor="end">6 拍；8 / 12 时隙有效（≈ 66.7%）</text>
+<text x="35" y="300" class="small label" text-anchor="start">MAC0：6 项</text>
+<rect x="194" y="276" width="93" height="38" rx="7" class="block"/>
+<text x="240.5" y="301.0" class="small label" text-anchor="middle">有效</text>
+<rect x="298" y="276" width="93" height="38" rx="7" class="block"/>
+<text x="344.5" y="301.0" class="small label" text-anchor="middle">有效</text>
+<rect x="402" y="276" width="93" height="38" rx="7" class="block"/>
+<text x="448.5" y="301.0" class="small label" text-anchor="middle">有效</text>
+<rect x="506" y="276" width="93" height="38" rx="7" class="block"/>
+<text x="552.5" y="301.0" class="small label" text-anchor="middle">有效</text>
+<rect x="610" y="276" width="93" height="38" rx="7" class="block"/>
+<text x="656.5" y="301.0" class="small label" text-anchor="middle">有效</text>
+<rect x="714" y="276" width="93" height="38" rx="7" class="block"/>
+<text x="760.5" y="301.0" class="small label" text-anchor="middle">有效</text>
+<text x="35" y="344" class="small label" text-anchor="start">MAC1：2 项</text>
+<rect x="194" y="320" width="93" height="38" rx="7" class="block"/>
+<text x="240.5" y="345.0" class="small label" text-anchor="middle">有效</text>
+<rect x="298" y="320" width="93" height="38" rx="7" class="block"/>
+<text x="344.5" y="345.0" class="small label" text-anchor="middle">有效</text>
+<rect x="402" y="320" width="93" height="38" rx="7" class="idle"/>
+<text x="448.5" y="345.0" class="small muted" text-anchor="middle">空闲</text>
+<rect x="506" y="320" width="93" height="38" rx="7" class="idle"/>
+<text x="552.5" y="345.0" class="small muted" text-anchor="middle">空闲</text>
+<rect x="610" y="320" width="93" height="38" rx="7" class="idle"/>
+<text x="656.5" y="345.0" class="small muted" text-anchor="middle">空闲</text>
+<rect x="714" y="320" width="93" height="38" rx="7" class="idle"/>
+<text x="760.5" y="345.0" class="small muted" text-anchor="middle">空闲</text>
+<text x="22" y="407" class="label" text-anchor="start">两种分布总共都是 8 项有效乘加，但最忙的通路决定完成时间。</text>
+<text x="22" y="434" class="small accent" text-anchor="start">实际执行还需满足索引供给与数据读取；若能重新分配工作，可能改善负载不均。</text>
+</svg>

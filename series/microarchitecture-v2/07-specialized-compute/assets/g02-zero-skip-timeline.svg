@@ -1,0 +1,165 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 860 625" width="860" height="625" role="img" aria-labelledby="title desc">
+<title id="title">稠密、门控、跳过：三种方式计算相同点积</title>
+<desc id="desc">两个MAC分别负责输出0、1。稠密执行各占8拍，零乘加也在原时隙执行；零门控保留8拍但在零值的交替位置抑制乘加。压紧非零操作后，在索引与供数无额外停顿的条件下两行各4拍完成。三个方案得到相同的66、60。</desc>
+<defs><marker id="data-arrow" markerUnits="userSpaceOnUse" viewBox="0 0 7 7" markerWidth="8" markerHeight="8" refX="6" refY="3.5" orient="auto"><path d="M0 0L7 3.5L0 7Z" fill="#376650"/></marker>
+<marker id="meta-arrow" markerUnits="userSpaceOnUse" viewBox="0 0 7 7" markerWidth="8" markerHeight="8" refX="6" refY="3.5" orient="auto"><path d="M0 0L7 3.5L0 7Z" fill="#9b6c27"/></marker>
+<style>
+text{font-family:"Noto Sans CJK SC","PingFang SC","Microsoft YaHei",sans-serif;fill:#173d35;font-size:18px}
+.heading{font-size:22px;font-weight:700}.sub{font-size:17px}.label{font-weight:700}.small{font-size:16px}.tiny{font-size:14px}.note{font-size:16px;fill:#4f695a}.accent{fill:#815718}.muted{fill:#58736a}.blue{fill:#395e89}
+.panel{fill:#fafbf8;stroke:#c7d3c7;stroke-width:1.3}.reg{fill:#edf1df;stroke:#82a18e;stroke-width:1.4}.block{fill:#e0ebe3;stroke:#82a18e;stroke-width:1.4}.control{fill:#f3ebdb;stroke:#c6aa79;stroke-width:1.3}.sfu{fill:#dbe7f4;stroke:#8ea6c4;stroke-width:1.4}.idle{fill:#f3f3ef;stroke:#b2c0b6;stroke-width:1.4;stroke-dasharray:5 4}.match{fill:#e0ebe3;stroke:#376650;stroke-width:2}.divider{stroke:#c7d3c7;stroke-width:1.2}
+.data,.meta{stroke-width:2.3;fill:none;stroke-linejoin:round;stroke-linecap:round}.data{stroke:#376650;marker-end:url(#data-arrow)}.meta{stroke:#9b6c27;marker-end:url(#meta-arrow)}
+</style></defs>
+<rect x="1" y="1" width="858" height="623" rx="13" fill="#f5f6ef" stroke="#c4d0c4" stroke-width="1.3"/>
+<text x="22" y="34" class="heading" text-anchor="start">零值不必产生有效乘加，但不一定能释放时间槽</text>
+<text x="22" y="61" class="note" text-anchor="start">教学模型：两个 MAC 分别固定给两行；每条通路每拍至多接纳一项。</text>
+<text x="203.0" y="89" class="small label" text-anchor="middle">第 1 拍</text>
+<text x="284.0" y="89" class="small label" text-anchor="middle">第 2 拍</text>
+<text x="365.0" y="89" class="small label" text-anchor="middle">第 3 拍</text>
+<text x="446.0" y="89" class="small label" text-anchor="middle">第 4 拍</text>
+<text x="527.0" y="89" class="small label" text-anchor="middle">第 5 拍</text>
+<text x="608.0" y="89" class="small label" text-anchor="middle">第 6 拍</text>
+<text x="689.0" y="89" class="small label" text-anchor="middle">第 7 拍</text>
+<text x="770.0" y="89" class="small label" text-anchor="middle">第 8 拍</text>
+<rect x="22" y="101" width="816" height="138" rx="7" class="panel"/>
+<text x="35" y="126" class="label" text-anchor="start">① 稠密：固定遍历 k = 0…7</text>
+<text x="822" y="126" class="small note" text-anchor="end">16 个时隙均被接纳，8 项乘积为零</text>
+<text x="35" y="162" class="small label" text-anchor="start">MAC0（y0）</text>
+<rect x="166" y="137" width="74" height="43" rx="7" class="block"/>
+<text x="203.0" y="154" class="small" text-anchor="middle">k0</text>
+<text x="203.0" y="172" class="small label" text-anchor="middle">+2</text>
+<rect x="247" y="137" width="74" height="43" rx="7" class="sfu"/>
+<text x="284.0" y="154" class="small muted" text-anchor="middle">k1</text>
+<text x="284.0" y="172" class="small muted" text-anchor="middle">+0</text>
+<rect x="328" y="137" width="74" height="43" rx="7" class="block"/>
+<text x="365.0" y="154" class="small" text-anchor="middle">k2</text>
+<text x="365.0" y="172" class="small label" text-anchor="middle">+9</text>
+<rect x="409" y="137" width="74" height="43" rx="7" class="sfu"/>
+<text x="446.0" y="154" class="small muted" text-anchor="middle">k3</text>
+<text x="446.0" y="172" class="small muted" text-anchor="middle">+0</text>
+<rect x="490" y="137" width="74" height="43" rx="7" class="block"/>
+<text x="527.0" y="154" class="small" text-anchor="middle">k4</text>
+<text x="527.0" y="172" class="small label" text-anchor="middle">+20</text>
+<rect x="571" y="137" width="74" height="43" rx="7" class="sfu"/>
+<text x="608.0" y="154" class="small muted" text-anchor="middle">k5</text>
+<text x="608.0" y="172" class="small muted" text-anchor="middle">+0</text>
+<rect x="652" y="137" width="74" height="43" rx="7" class="block"/>
+<text x="689.0" y="154" class="small" text-anchor="middle">k6</text>
+<text x="689.0" y="172" class="small label" text-anchor="middle">+35</text>
+<rect x="733" y="137" width="74" height="43" rx="7" class="sfu"/>
+<text x="770.0" y="154" class="small muted" text-anchor="middle">k7</text>
+<text x="770.0" y="172" class="small muted" text-anchor="middle">+0</text>
+<text x="35" y="209" class="small label" text-anchor="start">MAC1（y1）</text>
+<rect x="166" y="184" width="74" height="43" rx="7" class="sfu"/>
+<text x="203.0" y="201" class="small muted" text-anchor="middle">k0</text>
+<text x="203.0" y="219" class="small muted" text-anchor="middle">+0</text>
+<rect x="247" y="184" width="74" height="43" rx="7" class="block"/>
+<text x="284.0" y="201" class="small" text-anchor="middle">k1</text>
+<text x="284.0" y="219" class="small label" text-anchor="middle">+2</text>
+<rect x="328" y="184" width="74" height="43" rx="7" class="sfu"/>
+<text x="365.0" y="201" class="small muted" text-anchor="middle">k2</text>
+<text x="365.0" y="219" class="small muted" text-anchor="middle">+0</text>
+<rect x="409" y="184" width="74" height="43" rx="7" class="block"/>
+<text x="446.0" y="201" class="small" text-anchor="middle">k3</text>
+<text x="446.0" y="219" class="small label" text-anchor="middle">+8</text>
+<rect x="490" y="184" width="74" height="43" rx="7" class="sfu"/>
+<text x="527.0" y="201" class="small muted" text-anchor="middle">k4</text>
+<text x="527.0" y="219" class="small muted" text-anchor="middle">+0</text>
+<rect x="571" y="184" width="74" height="43" rx="7" class="block"/>
+<text x="608.0" y="201" class="small" text-anchor="middle">k5</text>
+<text x="608.0" y="219" class="small label" text-anchor="middle">+18</text>
+<rect x="652" y="184" width="74" height="43" rx="7" class="sfu"/>
+<text x="689.0" y="201" class="small muted" text-anchor="middle">k6</text>
+<text x="689.0" y="219" class="small muted" text-anchor="middle">+0</text>
+<rect x="733" y="184" width="74" height="43" rx="7" class="block"/>
+<text x="770.0" y="201" class="small" text-anchor="middle">k7</text>
+<text x="770.0" y="219" class="small label" text-anchor="middle">+32</text>
+<rect x="22" y="248" width="816" height="138" rx="7" class="panel"/>
+<text x="35" y="273" class="label" text-anchor="start">② 零门控：零值占用原来的时隙</text>
+<text x="822" y="273" class="small note" text-anchor="end">8 项有效乘加；任务仍需 8 拍</text>
+<text x="35" y="309" class="small label" text-anchor="start">MAC0（y0）</text>
+<rect x="166" y="284" width="74" height="43" rx="7" class="block"/>
+<text x="203.0" y="301" class="small" text-anchor="middle">k0</text>
+<text x="203.0" y="319" class="small label" text-anchor="middle">+2</text>
+<rect x="247" y="284" width="74" height="43" rx="7" class="idle"/>
+<text x="284.0" y="301" class="small muted" text-anchor="middle">k1</text>
+<text x="284.0" y="319" class="small muted" text-anchor="middle">门控</text>
+<rect x="328" y="284" width="74" height="43" rx="7" class="block"/>
+<text x="365.0" y="301" class="small" text-anchor="middle">k2</text>
+<text x="365.0" y="319" class="small label" text-anchor="middle">+9</text>
+<rect x="409" y="284" width="74" height="43" rx="7" class="idle"/>
+<text x="446.0" y="301" class="small muted" text-anchor="middle">k3</text>
+<text x="446.0" y="319" class="small muted" text-anchor="middle">门控</text>
+<rect x="490" y="284" width="74" height="43" rx="7" class="block"/>
+<text x="527.0" y="301" class="small" text-anchor="middle">k4</text>
+<text x="527.0" y="319" class="small label" text-anchor="middle">+20</text>
+<rect x="571" y="284" width="74" height="43" rx="7" class="idle"/>
+<text x="608.0" y="301" class="small muted" text-anchor="middle">k5</text>
+<text x="608.0" y="319" class="small muted" text-anchor="middle">门控</text>
+<rect x="652" y="284" width="74" height="43" rx="7" class="block"/>
+<text x="689.0" y="301" class="small" text-anchor="middle">k6</text>
+<text x="689.0" y="319" class="small label" text-anchor="middle">+35</text>
+<rect x="733" y="284" width="74" height="43" rx="7" class="idle"/>
+<text x="770.0" y="301" class="small muted" text-anchor="middle">k7</text>
+<text x="770.0" y="319" class="small muted" text-anchor="middle">门控</text>
+<text x="35" y="356" class="small label" text-anchor="start">MAC1（y1）</text>
+<rect x="166" y="331" width="74" height="43" rx="7" class="idle"/>
+<text x="203.0" y="348" class="small muted" text-anchor="middle">k0</text>
+<text x="203.0" y="366" class="small muted" text-anchor="middle">门控</text>
+<rect x="247" y="331" width="74" height="43" rx="7" class="block"/>
+<text x="284.0" y="348" class="small" text-anchor="middle">k1</text>
+<text x="284.0" y="366" class="small label" text-anchor="middle">+2</text>
+<rect x="328" y="331" width="74" height="43" rx="7" class="idle"/>
+<text x="365.0" y="348" class="small muted" text-anchor="middle">k2</text>
+<text x="365.0" y="366" class="small muted" text-anchor="middle">门控</text>
+<rect x="409" y="331" width="74" height="43" rx="7" class="block"/>
+<text x="446.0" y="348" class="small" text-anchor="middle">k3</text>
+<text x="446.0" y="366" class="small label" text-anchor="middle">+8</text>
+<rect x="490" y="331" width="74" height="43" rx="7" class="idle"/>
+<text x="527.0" y="348" class="small muted" text-anchor="middle">k4</text>
+<text x="527.0" y="366" class="small muted" text-anchor="middle">门控</text>
+<rect x="571" y="331" width="74" height="43" rx="7" class="block"/>
+<text x="608.0" y="348" class="small" text-anchor="middle">k5</text>
+<text x="608.0" y="366" class="small label" text-anchor="middle">+18</text>
+<rect x="652" y="331" width="74" height="43" rx="7" class="idle"/>
+<text x="689.0" y="348" class="small muted" text-anchor="middle">k6</text>
+<text x="689.0" y="366" class="small muted" text-anchor="middle">门控</text>
+<rect x="733" y="331" width="74" height="43" rx="7" class="block"/>
+<text x="770.0" y="348" class="small" text-anchor="middle">k7</text>
+<text x="770.0" y="366" class="small label" text-anchor="middle">+32</text>
+<rect x="22" y="395" width="816" height="138" rx="7" class="panel"/>
+<text x="35" y="420" class="label" text-anchor="start">③ 压紧：每行只发送自己的非零操作</text>
+<text x="822" y="420" class="small note" text-anchor="end">8 项有效乘加；理想情况下仅 4 拍</text>
+<text x="35" y="456" class="small label" text-anchor="start">MAC0（y0）</text>
+<rect x="166" y="431" width="74" height="43" rx="7" class="block"/>
+<text x="203.0" y="448" class="small" text-anchor="middle">k0</text>
+<text x="203.0" y="466" class="small label" text-anchor="middle">+2</text>
+<rect x="247" y="431" width="74" height="43" rx="7" class="block"/>
+<text x="284.0" y="448" class="small" text-anchor="middle">k2</text>
+<text x="284.0" y="466" class="small label" text-anchor="middle">+9</text>
+<rect x="328" y="431" width="74" height="43" rx="7" class="block"/>
+<text x="365.0" y="448" class="small" text-anchor="middle">k4</text>
+<text x="365.0" y="466" class="small label" text-anchor="middle">+20</text>
+<rect x="409" y="431" width="74" height="43" rx="7" class="block"/>
+<text x="446.0" y="448" class="small" text-anchor="middle">k6</text>
+<text x="446.0" y="466" class="small label" text-anchor="middle">+35</text>
+<rect x="490" y="431" width="317" height="43" rx="7" class="idle"/>
+<text x="649" y="457" class="small muted" text-anchor="middle">该行已完成，不需占用这些拍</text>
+<text x="35" y="503" class="small label" text-anchor="start">MAC1（y1）</text>
+<rect x="166" y="478" width="74" height="43" rx="7" class="block"/>
+<text x="203.0" y="495" class="small" text-anchor="middle">k1</text>
+<text x="203.0" y="513" class="small label" text-anchor="middle">+2</text>
+<rect x="247" y="478" width="74" height="43" rx="7" class="block"/>
+<text x="284.0" y="495" class="small" text-anchor="middle">k3</text>
+<text x="284.0" y="513" class="small label" text-anchor="middle">+8</text>
+<rect x="328" y="478" width="74" height="43" rx="7" class="block"/>
+<text x="365.0" y="495" class="small" text-anchor="middle">k5</text>
+<text x="365.0" y="513" class="small label" text-anchor="middle">+18</text>
+<rect x="409" y="478" width="74" height="43" rx="7" class="block"/>
+<text x="446.0" y="495" class="small" text-anchor="middle">k7</text>
+<text x="446.0" y="513" class="small label" text-anchor="middle">+32</text>
+<rect x="490" y="478" width="317" height="43" rx="7" class="idle"/>
+<text x="649" y="504" class="small muted" text-anchor="middle">该行已完成，不需占用这些拍</text>
+<text x="22" y="563" class="label" text-anchor="start">三种方式的结果相同：y0 = 66，y1 = 60。</text>
+<text x="22" y="589" class="small note" text-anchor="start">绿色：非零有效乘加；蓝色：接受零值；虚线：受门控或不需要的时隙。</text>
+<text x="22" y="612" class="small accent" text-anchor="start">压紧需要按行解析索引，并独立提供不同 k 的 x；未计额外处理与供数停顿。</text>
+</svg>

@@ -1,0 +1,102 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 860 598" width="860" height="598" role="img" aria-labelledby="title desc">
+<title id="title">对两个压缩向量进行操作数索引匹配</title>
+<desc id="desc">W0保存索引和值(0,2),(2,3),(4,4),(6,5)，X撇(0,1),(2,3),(3,4),(5,6),(6,7)。有序索引比较，六次比较依次匹配0、2，不等推进较小索引3、4、5，再匹配6。仅共同索引产生乘法，乘积2、9、35，和46。比较轮不等于实际周期。</desc>
+<defs><marker id="data-arrow" markerUnits="userSpaceOnUse" viewBox="0 0 7 7" markerWidth="8" markerHeight="8" refX="6" refY="3.5" orient="auto"><path d="M0 0L7 3.5L0 7Z" fill="#376650"/></marker>
+<marker id="meta-arrow" markerUnits="userSpaceOnUse" viewBox="0 0 7 7" markerWidth="8" markerHeight="8" refX="6" refY="3.5" orient="auto"><path d="M0 0L7 3.5L0 7Z" fill="#9b6c27"/></marker>
+<style>
+text{font-family:"Noto Sans CJK SC","PingFang SC","Microsoft YaHei",sans-serif;fill:#173d35;font-size:18px}
+.heading{font-size:22px;font-weight:700}.sub{font-size:17px}.label{font-weight:700}.small{font-size:16px}.tiny{font-size:14px}.note{font-size:16px;fill:#4f695a}.accent{fill:#815718}.muted{fill:#58736a}.blue{fill:#395e89}
+.panel{fill:#fafbf8;stroke:#c7d3c7;stroke-width:1.3}.reg{fill:#edf1df;stroke:#82a18e;stroke-width:1.4}.block{fill:#e0ebe3;stroke:#82a18e;stroke-width:1.4}.control{fill:#f3ebdb;stroke:#c6aa79;stroke-width:1.3}.sfu{fill:#dbe7f4;stroke:#8ea6c4;stroke-width:1.4}.idle{fill:#f3f3ef;stroke:#b2c0b6;stroke-width:1.4;stroke-dasharray:5 4}.match{fill:#e0ebe3;stroke:#376650;stroke-width:2}.divider{stroke:#c7d3c7;stroke-width:1.2}
+.data,.meta{stroke-width:2.3;fill:none;stroke-linejoin:round;stroke-linecap:round}.data{stroke:#376650;marker-end:url(#data-arrow)}.meta{stroke:#9b6c27;marker-end:url(#meta-arrow)}
+</style></defs>
+<rect x="1" y="1" width="858" height="596" rx="13" fill="#f5f6ef" stroke="#c4d0c4" stroke-width="1.3"/>
+<text x="22" y="34" class="heading" text-anchor="start">两个压缩向量不能直接把第 j 个非零值相乘</text>
+<text x="22" y="61" class="note" text-anchor="start">只有原始索引相等的两个值才属于同一项乘积。示意两个有序索引流。</text>
+<rect x="22" y="76" width="816" height="123" rx="7" class="panel"/>
+<text x="35" y="110" class="label" text-anchor="start">W0</text>
+<text x="35" y="166" class="label" text-anchor="start">X′</text>
+<rect x="125" y="90" width="54" height="38" rx="7" class="match"/>
+<text x="152.0" y="115.0" class="small label" text-anchor="middle">k0</text>
+<rect x="183" y="90" width="58" height="38" rx="7" class="reg"/>
+<text x="212.0" y="115.0" class="small label" text-anchor="middle">2</text>
+<rect x="262" y="90" width="54" height="38" rx="7" class="match"/>
+<text x="289.0" y="115.0" class="small label" text-anchor="middle">k2</text>
+<rect x="320" y="90" width="58" height="38" rx="7" class="reg"/>
+<text x="349.0" y="115.0" class="small label" text-anchor="middle">3</text>
+<rect x="399" y="90" width="54" height="38" rx="7" class="control"/>
+<text x="426.0" y="115.0" class="small label" text-anchor="middle">k4</text>
+<rect x="457" y="90" width="58" height="38" rx="7" class="reg"/>
+<text x="486.0" y="115.0" class="small label" text-anchor="middle">4</text>
+<rect x="536" y="90" width="54" height="38" rx="7" class="match"/>
+<text x="563.0" y="115.0" class="small label" text-anchor="middle">k6</text>
+<rect x="594" y="90" width="58" height="38" rx="7" class="reg"/>
+<text x="623.0" y="115.0" class="small label" text-anchor="middle">5</text>
+<rect x="125" y="146" width="54" height="38" rx="7" class="match"/>
+<text x="152.0" y="171.0" class="small label" text-anchor="middle">k0</text>
+<rect x="183" y="146" width="58" height="38" rx="7" class="reg"/>
+<text x="212.0" y="171.0" class="small label" text-anchor="middle">1</text>
+<rect x="262" y="146" width="54" height="38" rx="7" class="match"/>
+<text x="289.0" y="171.0" class="small label" text-anchor="middle">k2</text>
+<rect x="320" y="146" width="58" height="38" rx="7" class="reg"/>
+<text x="349.0" y="171.0" class="small label" text-anchor="middle">3</text>
+<rect x="399" y="146" width="54" height="38" rx="7" class="control"/>
+<text x="426.0" y="171.0" class="small label" text-anchor="middle">k3</text>
+<rect x="457" y="146" width="58" height="38" rx="7" class="reg"/>
+<text x="486.0" y="171.0" class="small label" text-anchor="middle">4</text>
+<rect x="536" y="146" width="54" height="38" rx="7" class="control"/>
+<text x="563.0" y="171.0" class="small label" text-anchor="middle">k5</text>
+<rect x="594" y="146" width="58" height="38" rx="7" class="reg"/>
+<text x="623.0" y="171.0" class="small label" text-anchor="middle">6</text>
+<rect x="673" y="146" width="54" height="38" rx="7" class="match"/>
+<text x="700.0" y="171.0" class="small label" text-anchor="middle">k6</text>
+<rect x="731" y="146" width="58" height="38" rx="7" class="reg"/>
+<text x="760.0" y="171.0" class="small label" text-anchor="middle">7</text>
+<text x="822" y="113" class="tiny muted" text-anchor="end">绿色边框：共有索引</text>
+<rect x="22" y="211" width="816" height="307" rx="7" class="panel"/>
+<text x="35" y="238" class="label" text-anchor="start">有序双指针比较：相等则计算并推进两端；不等只推进较小索引端。</text>
+<text x="72" y="264" class="small label" text-anchor="middle">比较轮</text>
+<text x="180" y="264" class="small label" text-anchor="middle">W0 的 k</text>
+<text x="287" y="264" class="small label" text-anchor="middle">X′ 的 k</text>
+<text x="481" y="264" class="small label" text-anchor="middle">比较后的动作</text>
+<text x="715" y="264" class="small label" text-anchor="middle">乘积</text>
+<path d="M35 274H824" class="divider"/>
+<rect x="35" y="278" width="788" height="32" rx="5" class="block"/>
+<text x="72" y="300" class="small label" text-anchor="middle">1</text>
+<text x="180" y="300" class="small label" text-anchor="middle">0</text>
+<text x="287" y="300" class="small label" text-anchor="middle">0</text>
+<text x="481" y="300" class="small label" text-anchor="middle">相等 → 两端前进</text>
+<text x="715" y="300" class="small label" text-anchor="middle">2 × 1 = 2</text>
+<rect x="35" y="314" width="788" height="32" rx="5" class="block"/>
+<text x="72" y="336" class="small label" text-anchor="middle">2</text>
+<text x="180" y="336" class="small label" text-anchor="middle">2</text>
+<text x="287" y="336" class="small label" text-anchor="middle">2</text>
+<text x="481" y="336" class="small label" text-anchor="middle">相等 → 两端前进</text>
+<text x="715" y="336" class="small label" text-anchor="middle">3 × 3 = 9</text>
+<path d="M35 383H824" class="divider"/>
+<text x="72" y="372" class="small" text-anchor="middle">3</text>
+<text x="180" y="372" class="small" text-anchor="middle">4</text>
+<text x="287" y="372" class="small" text-anchor="middle">3</text>
+<text x="481" y="372" class="small" text-anchor="middle">3 较小 → X′ 前进</text>
+<text x="715" y="372" class="small" text-anchor="middle">—</text>
+<path d="M35 419H824" class="divider"/>
+<text x="72" y="408" class="small" text-anchor="middle">4</text>
+<text x="180" y="408" class="small" text-anchor="middle">4</text>
+<text x="287" y="408" class="small" text-anchor="middle">5</text>
+<text x="481" y="408" class="small" text-anchor="middle">4 较小 → W0 前进</text>
+<text x="715" y="408" class="small" text-anchor="middle">—</text>
+<path d="M35 455H824" class="divider"/>
+<text x="72" y="444" class="small" text-anchor="middle">5</text>
+<text x="180" y="444" class="small" text-anchor="middle">6</text>
+<text x="287" y="444" class="small" text-anchor="middle">5</text>
+<text x="481" y="444" class="small" text-anchor="middle">5 较小 → X′ 前进</text>
+<text x="715" y="444" class="small" text-anchor="middle">—</text>
+<rect x="35" y="458" width="788" height="32" rx="5" class="block"/>
+<text x="72" y="480" class="small label" text-anchor="middle">6</text>
+<text x="180" y="480" class="small label" text-anchor="middle">6</text>
+<text x="287" y="480" class="small label" text-anchor="middle">6</text>
+<text x="481" y="480" class="small label" text-anchor="middle">相等 → 两端前进</text>
+<text x="715" y="480" class="small label" text-anchor="middle">5 × 7 = 35</text>
+<text x="35" y="510" class="small note" text-anchor="start">注意：比较轮数描述索引判断过程，并不等同于实际执行周期数。</text>
+<text x="22" y="548" class="label" text-anchor="start">最终匹配 k = 0、2、6：累加 2 + 9 + 35 = 46。</text>
+<text x="22" y="574" class="small accent" text-anchor="start">索引解析、比较、移动和控制都有成本；压缩元素数量不等于有效乘加数。</text>
+</svg>

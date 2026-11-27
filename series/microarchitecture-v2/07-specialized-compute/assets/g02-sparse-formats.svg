@@ -1,0 +1,133 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 860 586" width="860" height="586" role="img" aria-labelledby="title desc">
+<title id="title">同一条权重行的索引、位图、2:4元数据及块稀疏变体</title>
+<desc id="desc">权重W0具有8个8位无符号元素，2、0、3、0、4、0、5、0。索引格式保存四个数及原索引0、2、4、6；位图按k0至k7顺序为10101010；2:4格式每4项位置为局部0、2。最后另用改变非零位置后的权重行W0撇展示2元素块，保留b0和b2。</desc>
+<defs><marker id="data-arrow" markerUnits="userSpaceOnUse" viewBox="0 0 7 7" markerWidth="8" markerHeight="8" refX="6" refY="3.5" orient="auto"><path d="M0 0L7 3.5L0 7Z" fill="#376650"/></marker>
+<marker id="meta-arrow" markerUnits="userSpaceOnUse" viewBox="0 0 7 7" markerWidth="8" markerHeight="8" refX="6" refY="3.5" orient="auto"><path d="M0 0L7 3.5L0 7Z" fill="#9b6c27"/></marker>
+<style>
+text{font-family:"Noto Sans CJK SC","PingFang SC","Microsoft YaHei",sans-serif;fill:#173d35;font-size:18px}
+.heading{font-size:22px;font-weight:700}.sub{font-size:17px}.label{font-weight:700}.small{font-size:16px}.tiny{font-size:14px}.note{font-size:16px;fill:#4f695a}.accent{fill:#815718}.muted{fill:#58736a}.blue{fill:#395e89}
+.panel{fill:#fafbf8;stroke:#c7d3c7;stroke-width:1.3}.reg{fill:#edf1df;stroke:#82a18e;stroke-width:1.4}.block{fill:#e0ebe3;stroke:#82a18e;stroke-width:1.4}.control{fill:#f3ebdb;stroke:#c6aa79;stroke-width:1.3}.sfu{fill:#dbe7f4;stroke:#8ea6c4;stroke-width:1.4}.idle{fill:#f3f3ef;stroke:#b2c0b6;stroke-width:1.4;stroke-dasharray:5 4}.match{fill:#e0ebe3;stroke:#376650;stroke-width:2}.divider{stroke:#c7d3c7;stroke-width:1.2}
+.data,.meta{stroke-width:2.3;fill:none;stroke-linejoin:round;stroke-linecap:round}.data{stroke:#376650;marker-end:url(#data-arrow)}.meta{stroke:#9b6c27;marker-end:url(#meta-arrow)}
+</style></defs>
+<rect x="1" y="1" width="858" height="584" rx="13" fill="#f5f6ef" stroke="#c4d0c4" stroke-width="1.3"/>
+<text x="22" y="34" class="heading" text-anchor="start">保留哪些值？还必须说明它们原来在哪儿</text>
+<text x="22" y="61" class="note" text-anchor="start">绿色表示非零值，棕色表示位置元数据。以下为教学编码，不是产品格式。</text>
+<rect x="22" y="76" width="816" height="86" rx="7" class="panel"/>
+<text x="35" y="102" class="label" text-anchor="start">稠密 W0</text>
+<text x="35" y="128" class="small note" text-anchor="start">8 × uint8</text>
+<text x="204" y="98" class="small muted" text-anchor="middle">k0</text>
+<rect x="170" y="106" width="68" height="42" rx="7" class="reg"/>
+<text x="204.0" y="133.0" class="label" text-anchor="middle">2</text>
+<text x="285" y="98" class="small muted" text-anchor="middle">k1</text>
+<rect x="251" y="106" width="68" height="42" rx="7" class="idle"/>
+<text x="285.0" y="133.0" class="label" text-anchor="middle">0</text>
+<text x="366" y="98" class="small muted" text-anchor="middle">k2</text>
+<rect x="332" y="106" width="68" height="42" rx="7" class="reg"/>
+<text x="366.0" y="133.0" class="label" text-anchor="middle">3</text>
+<text x="447" y="98" class="small muted" text-anchor="middle">k3</text>
+<rect x="413" y="106" width="68" height="42" rx="7" class="idle"/>
+<text x="447.0" y="133.0" class="label" text-anchor="middle">0</text>
+<text x="528" y="98" class="small muted" text-anchor="middle">k4</text>
+<rect x="494" y="106" width="68" height="42" rx="7" class="reg"/>
+<text x="528.0" y="133.0" class="label" text-anchor="middle">4</text>
+<text x="609" y="98" class="small muted" text-anchor="middle">k5</text>
+<rect x="575" y="106" width="68" height="42" rx="7" class="idle"/>
+<text x="609.0" y="133.0" class="label" text-anchor="middle">0</text>
+<text x="690" y="98" class="small muted" text-anchor="middle">k6</text>
+<rect x="656" y="106" width="68" height="42" rx="7" class="reg"/>
+<text x="690.0" y="133.0" class="label" text-anchor="middle">5</text>
+<text x="771" y="98" class="small muted" text-anchor="middle">k7</text>
+<rect x="737" y="106" width="68" height="42" rx="7" class="idle"/>
+<text x="771.0" y="133.0" class="label" text-anchor="middle">0</text>
+<rect x="22" y="174" width="816" height="91" rx="7" class="panel"/>
+<text x="35" y="200" class="label" text-anchor="start">索引 + 数值</text>
+<text x="35" y="228" class="small note" text-anchor="start">任意非零位置</text>
+<rect x="170" y="186" width="66" height="34" rx="7" class="control"/>
+<text x="203.0" y="209.0" class="small label" text-anchor="middle">k=0</text>
+<rect x="240" y="186" width="72" height="34" rx="7" class="reg"/>
+<text x="276.0" y="209.0" class="label" text-anchor="middle">2</text>
+<text x="241" y="244" class="small muted" text-anchor="middle">索引、数值</text>
+<rect x="328" y="186" width="66" height="34" rx="7" class="control"/>
+<text x="361.0" y="209.0" class="small label" text-anchor="middle">k=2</text>
+<rect x="398" y="186" width="72" height="34" rx="7" class="reg"/>
+<text x="434.0" y="209.0" class="label" text-anchor="middle">3</text>
+<text x="399" y="244" class="small muted" text-anchor="middle">索引、数值</text>
+<rect x="486" y="186" width="66" height="34" rx="7" class="control"/>
+<text x="519.0" y="209.0" class="small label" text-anchor="middle">k=4</text>
+<rect x="556" y="186" width="72" height="34" rx="7" class="reg"/>
+<text x="592.0" y="209.0" class="label" text-anchor="middle">4</text>
+<text x="557" y="244" class="small muted" text-anchor="middle">索引、数值</text>
+<rect x="644" y="186" width="66" height="34" rx="7" class="control"/>
+<text x="677.0" y="209.0" class="small label" text-anchor="middle">k=6</text>
+<rect x="714" y="186" width="72" height="34" rx="7" class="reg"/>
+<text x="750.0" y="209.0" class="label" text-anchor="middle">5</text>
+<text x="715" y="244" class="small muted" text-anchor="middle">索引、数值</text>
+<rect x="22" y="277" width="816" height="86" rx="7" class="panel"/>
+<text x="35" y="303" class="label" text-anchor="start">位图 + 数值</text>
+<text x="35" y="328" class="small note" text-anchor="start">位序 k0 → k7</text>
+<rect x="170" y="293" width="36" height="39" rx="7" class="control"/>
+<text x="188.0" y="318.5" class="label" text-anchor="middle">1</text>
+<rect x="210" y="293" width="36" height="39" rx="7" class="idle"/>
+<text x="228.0" y="318.5" class="label" text-anchor="middle">0</text>
+<rect x="250" y="293" width="36" height="39" rx="7" class="control"/>
+<text x="268.0" y="318.5" class="label" text-anchor="middle">1</text>
+<rect x="290" y="293" width="36" height="39" rx="7" class="idle"/>
+<text x="308.0" y="318.5" class="label" text-anchor="middle">0</text>
+<rect x="330" y="293" width="36" height="39" rx="7" class="control"/>
+<text x="348.0" y="318.5" class="label" text-anchor="middle">1</text>
+<rect x="370" y="293" width="36" height="39" rx="7" class="idle"/>
+<text x="388.0" y="318.5" class="label" text-anchor="middle">0</text>
+<rect x="410" y="293" width="36" height="39" rx="7" class="control"/>
+<text x="428.0" y="318.5" class="label" text-anchor="middle">1</text>
+<rect x="450" y="293" width="36" height="39" rx="7" class="idle"/>
+<text x="468.0" y="318.5" class="label" text-anchor="middle">0</text>
+<text x="327" y="351" class="small muted" text-anchor="middle">位图 10101010</text>
+<path d="M497 312H526" class="meta"/>
+<rect x="539" y="293" width="64" height="39" rx="7" class="reg"/>
+<text x="571.0" y="318.5" class="label" text-anchor="middle">2</text>
+<rect x="609" y="293" width="64" height="39" rx="7" class="reg"/>
+<text x="641.0" y="318.5" class="label" text-anchor="middle">3</text>
+<rect x="679" y="293" width="64" height="39" rx="7" class="reg"/>
+<text x="711.0" y="318.5" class="label" text-anchor="middle">4</text>
+<rect x="749" y="293" width="64" height="39" rx="7" class="reg"/>
+<text x="781.0" y="318.5" class="label" text-anchor="middle">5</text>
+<text x="674" y="351" class="small muted" text-anchor="middle">按位图位置顺序存数</text>
+<rect x="22" y="375" width="816" height="86" rx="7" class="panel"/>
+<text x="35" y="401" class="label" text-anchor="start">结构化 2:4</text>
+<text x="35" y="426" class="small note" text-anchor="start">每四项两位置</text>
+<text x="320" y="399" class="small muted" text-anchor="middle">组 0：k0…k3</text>
+<rect x="170" y="409" width="145" height="37" rx="7" class="control"/>
+<text x="242.5" y="433.5" class="small label" text-anchor="middle">局部位置 0、2</text>
+<rect x="319" y="409" width="76" height="37" rx="7" class="reg"/>
+<text x="357.0" y="433.5" class="label" text-anchor="middle">2</text>
+<rect x="399" y="409" width="76" height="37" rx="7" class="reg"/>
+<text x="437.0" y="433.5" class="label" text-anchor="middle">3</text>
+<text x="646" y="399" class="small muted" text-anchor="middle">组 1：k4…k7</text>
+<rect x="496" y="409" width="145" height="37" rx="7" class="control"/>
+<text x="568.5" y="433.5" class="small label" text-anchor="middle">局部位置 0、2</text>
+<rect x="645" y="409" width="76" height="37" rx="7" class="reg"/>
+<text x="683.0" y="433.5" class="label" text-anchor="middle">4</text>
+<rect x="725" y="409" width="76" height="37" rx="7" class="reg"/>
+<text x="763.0" y="433.5" class="label" text-anchor="middle">5</text>
+<rect x="22" y="473" width="816" height="89" rx="7" class="panel"/>
+<text x="35" y="497" class="label" text-anchor="start">块稀疏变体</text>
+<text x="35" y="522" class="small note" text-anchor="start">W0′（改位置）</text>
+<text x="170" y="497" class="small note" text-anchor="start">每块 2 项；非零块内部完整保存</text>
+<rect x="170" y="507" width="64" height="36" rx="7" class="control"/>
+<text x="202.0" y="531.0" class="small label" text-anchor="middle">b0</text>
+<rect x="238" y="507" width="82" height="36" rx="7" class="reg"/>
+<text x="279.0" y="531.0" class="small label" text-anchor="middle">(2, 3)</text>
+<rect x="332" y="507" width="64" height="36" rx="7" class="idle"/>
+<text x="364.0" y="531.0" class="small label" text-anchor="middle">b1</text>
+<rect x="400" y="507" width="82" height="36" rx="7" class="idle"/>
+<text x="441.0" y="531.0" class="small label" text-anchor="middle">(0, 0)</text>
+<rect x="494" y="507" width="64" height="36" rx="7" class="control"/>
+<text x="526.0" y="531.0" class="small label" text-anchor="middle">b2</text>
+<rect x="562" y="507" width="82" height="36" rx="7" class="reg"/>
+<text x="603.0" y="531.0" class="small label" text-anchor="middle">(4, 5)</text>
+<rect x="656" y="507" width="64" height="36" rx="7" class="idle"/>
+<text x="688.0" y="531.0" class="small label" text-anchor="middle">b3</text>
+<rect x="724" y="507" width="82" height="36" rx="7" class="idle"/>
+<text x="765.0" y="531.0" class="small label" text-anchor="middle">(0, 0)</text>
+<text x="22" y="577" class="small accent" text-anchor="start">W0′ = (2,3,0,0,4,5,0,0)，与 W0 的非零位置不同；只需记录 b0、b2。</text>
+</svg>
