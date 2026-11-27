@@ -1,0 +1,64 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 428" width="600" height="428" role="img" aria-labelledby="title desc">
+  <title id="title">有符号乘法的部分积：最高位带负权重</title>
+  <desc id="desc">四位二进制补码的 A 为 0010 即二，B 为 1101 即负三。B 从低位到高位的权重依次为一、二、四、负八。逐位处理，B0 为 1 贡献正二，B1 为 0 贡献零，B2 为 1 贡献正八，B3 为 1 贡献负十六。将这些部分积以八位补码表示并相加，保留低八位，结果 11111010 即负六。</desc>
+  <defs>
+    <style>
+      text{font-family:"Noto Sans CJK SC","Microsoft YaHei",sans-serif;fill:#173d35;font-size:18px}
+      .heading{font-size:22px;font-weight:700}.small{font-size:16px}
+      .muted{fill:#476654}.accent{fill:#8a5d1c}
+      .bit{font-family:"Noto Sans Mono CJK SC",monospace;font-size:22px;font-weight:700}
+      .line{stroke:#c7d3c7;stroke-width:1.2}
+      .neg{fill:#eee6d5;stroke:#c7a977;stroke-width:1.4}
+      .box{fill:#e0ebe3;stroke:#82a18e;stroke-width:1.4}
+    </style>
+  </defs>
+  <rect x="1" y="1" width="598" height="426" rx="13" fill="#f5f6ef" stroke="#c4d0c4"/>
+  <text x="20" y="34" class="heading">补码部分积：最高位的权重是负数</text>
+  <text x="20" y="65">A = <tspan class="bit">0010</tspan> = 2，B = <tspan class="bit">1101</tspan> = −3</text>
+  <text x="31" y="104" class="small">B 的位号</text>
+  <text x="31" y="131" class="small">比特值</text>
+  <text x="31" y="158" class="small">位权</text>
+  <rect x="183" y="81" width="87" height="86" rx="7" class="neg"/>
+  <rect x="275" y="81" width="87" height="86" rx="7" class="box"/>
+  <rect x="367" y="81" width="87" height="86" rx="7" class="box"/>
+  <rect x="459" y="81" width="87" height="86" rx="7" class="box"/>
+  <g text-anchor="middle">
+    <text x="226.5" y="104" class="accent" style="font-size:14px">b₃（最高位）</text>
+    <text x="318.5" y="104" class="small">b₂</text>
+    <text x="410.5" y="104" class="small">b₁</text>
+    <text x="502.5" y="104" class="small">b₀</text>
+    <text x="226.5" y="132" class="bit accent">1</text>
+    <text x="318.5" y="132" class="bit">1</text>
+    <text x="410.5" y="132" class="bit">0</text>
+    <text x="502.5" y="132" class="bit">1</text>
+    <text x="226.5" y="157" class="accent">−8</text>
+    <text x="318.5" y="157">4</text>
+    <text x="410.5" y="157">2</text>
+    <text x="502.5" y="157">1</text>
+  </g>
+  <rect x="18" y="182" width="564" height="29" rx="6" fill="#e0ebe3"/>
+  <text x="29" y="202" class="small">对应位</text>
+  <text x="124" y="202" class="small">A × 比特 × 位权</text>
+  <text x="341" y="202" class="small">部分积（8 位补码）</text>
+  <g>
+    <text x="47" y="238">b₀</text>
+    <text x="129" y="238">2 × 1 × 1 = 2</text>
+    <text x="354" y="238" class="bit">00000010</text>
+    <path class="line" d="M18 246H582"/>
+    <text x="47" y="270">b₁</text>
+    <text x="129" y="270">2 × 0 × 2 = 0</text>
+    <text x="354" y="270" class="bit">00000000</text>
+    <path class="line" d="M18 278H582"/>
+    <text x="47" y="302">b₂</text>
+    <text x="129" y="302">2 × 1 × 4 = 8</text>
+    <text x="354" y="302" class="bit">00001000</text>
+    <rect x="18" y="311" width="564" height="35" rx="5" fill="#eee6d5"/>
+    <text x="47" y="335" class="accent">b₃</text>
+    <text x="129" y="335" class="accent">2 × 1 × (−8) = −16</text>
+    <text x="354" y="335" class="bit accent">11110000</text>
+    <path d="M18 354H582" stroke="#52735d" stroke-width="1.6"/>
+    <text x="25" y="381" font-weight="700">相加：2 + 0 + 8 − 16 = −6</text>
+    <text x="354" y="381" class="bit">11111010</text>
+  </g>
+  <text x="20" y="410" class="small muted">结果保留低 8 位；图中按位权写出数学上的部分积。</text>
+</svg>

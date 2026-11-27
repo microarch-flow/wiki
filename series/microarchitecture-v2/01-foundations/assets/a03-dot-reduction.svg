@@ -1,0 +1,58 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 620 590" width="620" height="590" role="img" aria-labelledby="reduction-title reduction-desc">
+  <title id="reduction-title">四项点积的串行累加与平衡归约树</title>
+  <desc id="reduction-desc">四项乘积 6、5、6、4 均已准备好。串行累加路径复用同一个加法器，从 ACC 初值 0 开始，依次加 6、5、6、4，状态变换为 0、6、11、17、21，四次更新依赖前一次的结果。平衡归约树在第一层独立地把第 0 与 1 项相加得到 11、第 2 与 3 项相加得到 10，第二层相加得到 21。一共三次加法、两层逻辑加法依赖，可用独立加法器实现。图示只比较数据依赖和加法组织方式，不表示时钟周期或真实延迟、吞吐量。</desc>
+  <defs>
+    <marker id="red-arrow" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0 0L7 3.5L0 7Z" fill="#567b69"/></marker>
+    <style>
+      text{font-family:"Noto Sans CJK SC","PingFang SC","Microsoft YaHei",sans-serif;fill:#173d35;font-size:18px}
+      .head{font-size:23px;font-weight:700}.subhead{font-size:21px;font-weight:700}.key{font-size:24px;font-weight:700}
+      .note{font-size:16px;fill:#4f695a}.tag{font-size:16px;font-weight:600;fill:#765a2f}.math{font-size:21px;font-weight:700}
+      .panel{fill:#f0f3e9;stroke:#c4d0c4;stroke-width:1.4}.value{fill:#e0ebe3;stroke:#82a18e;stroke-width:1.6}
+      .adder{fill:#edf1df;stroke:#94ad99;stroke-width:1.7}.last{fill:#d8e8d9;stroke:#7a9c83;stroke-width:1.8}
+      .wire{stroke:#567b69;stroke-width:2.1;fill:none;stroke-linejoin:round;marker-end:url(#red-arrow)}
+    </style>
+  </defs>
+  <rect x="1" y="1" width="618" height="588" rx="13" fill="#f5f6ef" stroke="#c4d0c4" stroke-width="1.3"/>
+  <text class="head" x="22" y="34">同样四项乘积，怎样把它们加起来？</text>
+  <text x="22" y="65">已准备好的乘积：p₀ = 6，p₁ = 5，p₂ = 6，p₃ = 4</text>
+  <!-- Serial state trajectory: labels are arithmetic updates, not distinct adders. -->
+  <rect class="panel" x="17" y="87" width="586" height="164" rx="10"/>
+  <text class="subhead" x="30" y="115">1. 串行累加：每次依赖前一次的结果</text>
+  <text class="note" x="30" y="139">累加寄存器 ACC 的更新顺序</text>
+  <g class="math" text-anchor="middle">
+    <rect class="value" x="33" y="171" width="58" height="40" rx="7"/><text x="62" y="198">0</text>
+    <rect class="value" x="155" y="171" width="58" height="40" rx="7"/><text x="184" y="198">6</text>
+    <rect class="value" x="277" y="171" width="58" height="40" rx="7"/><text x="306" y="198">11</text>
+    <rect class="value" x="399" y="171" width="58" height="40" rx="7"/><text x="428" y="198">17</text>
+    <rect class="last" x="521" y="171" width="65" height="40" rx="7"/><text x="553.5" y="198">21</text>
+  </g>
+  <g class="wire"><path d="M94 191H151"/><path d="M216 191H273"/><path d="M338 191H395"/><path d="M460 191H517"/></g>
+  <g class="tag" text-anchor="middle"><text x="123" y="183">+6</text><text x="245" y="183">+5</text><text x="367" y="183">+6</text><text x="489" y="183">+4</text></g>
+  <text class="note" x="30" y="235">同一个加法器复用四次，后一次需要前一次的累加值。</text>
+  <!-- Tree: distinct nodes can be implemented with separate adders. -->
+  <rect class="panel" x="17" y="267" width="586" height="278" rx="10"/>
+  <text class="subhead" x="30" y="295">2. 平衡归约树：先独立求两组的和</text>
+  <g class="math" text-anchor="middle">
+    <rect class="value" x="42" y="313" width="78" height="35" rx="6"/><text x="81" y="338">6</text>
+    <rect class="value" x="166" y="313" width="78" height="35" rx="6"/><text x="205" y="338">5</text>
+    <rect class="value" x="290" y="313" width="78" height="35" rx="6"/><text x="329" y="338">6</text>
+    <rect class="value" x="414" y="313" width="78" height="35" rx="6"/><text x="453" y="338">4</text>
+  </g>
+  <path class="wire" d="M81 348V361H113V376"/><path class="wire" d="M205 348V361H173V376"/>
+  <path class="wire" d="M329 348V361H361V376"/><path class="wire" d="M453 348V361H421V376"/>
+  <rect class="adder" x="75" y="379" width="136" height="43" rx="8"/>
+  <rect class="adder" x="323" y="379" width="136" height="43" rx="8"/>
+  <text class="math" x="143" y="407" text-anchor="middle">6 + 5 = 11</text>
+  <text class="math" x="391" y="407" text-anchor="middle">6 + 4 = 10</text>
+  <text class="tag" x="575" y="391" text-anchor="end">第 1 层</text>
+  <text class="note" x="575" y="413" text-anchor="end">彼此独立</text>
+  <!-- One final sum requires both first-level results. -->
+  <path class="wire" d="M143 422V438H229V456"/>
+  <path class="wire" d="M391 422V438H305V456"/>
+  <rect class="last" x="183" y="459" width="168" height="44" rx="8"/>
+  <text class="key" x="267" y="489" text-anchor="middle">11 + 10 = 21</text>
+  <text class="tag" x="575" y="473" text-anchor="end">第 2 层</text>
+  <text class="note" x="575" y="495" text-anchor="end">合并两组</text>
+  <text class="note" x="30" y="528">三次加法、两层逻辑依赖；若用独立加法器，首层可并行。</text>
+  <text class="note" x="22" y="572">仅比较依赖和组织方式，不代表实际时钟周期、延迟或吞吐量。</text>
+</svg>

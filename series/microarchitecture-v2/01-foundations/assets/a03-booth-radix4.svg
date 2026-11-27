@@ -1,0 +1,49 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 382" width="600" height="382" role="img" aria-labelledby="title desc">
+  <title id="title">基数四 Booth 编码：相邻三位形成重叠分组</title>
+  <desc id="desc">四位补码乘数 B 为 1101 即负三，在最低位右侧补入 b[-1] 等于零。高组三位 b3 b2 b1 为 110，编码系数负一，组权重四。低组三位 b1 b0 b[-1] 为 010，编码系数正一，组权重一。两组共享 b1。被乘数 A 为二，高组部分积为负八，低组部分积为正二，两组之和为负六。</desc>
+  <defs>
+    <style>
+      text{font-family:"Noto Sans CJK SC","Microsoft YaHei",sans-serif;fill:#173d35;font-size:18px}
+      .heading{font-size:22px;font-weight:700}.small{font-size:16px}.tiny{font-size:15px}
+      .bit{font-family:"Noto Sans Mono CJK SC",monospace;font-size:24px;font-weight:700}
+      .box{fill:#e0ebe3;stroke:#82a18e;stroke-width:1.4}
+      .accent{fill:#8a5d1c}.shared{fill:#a87932}
+    </style>
+  </defs>
+  <rect x="1" y="1" width="598" height="380" rx="13" fill="#f5f6ef" stroke="#c4d0c4"/>
+  <text x="20" y="34" class="heading">基数 4 Booth：每次步进两位，读取三位</text>
+  <text x="20" y="65">乘数 B = <tspan class="bit" font-size="20">1101</tspan> = −3，最低位右侧补 0</text>
+  <!-- Bit positions, including one appended bit and shared b1 -->
+  <g text-anchor="middle">
+    <text x="100" y="96" class="small">b₃</text>
+    <text x="198" y="96" class="small">b₂</text>
+    <text x="296" y="96" class="small accent">b₁（重叠）</text>
+    <text x="394" y="96" class="small">b₀</text>
+    <text x="492" y="96" class="small">b₋₁</text>
+  </g>
+  <rect x="58" y="108" width="84" height="48" rx="7" class="box"/>
+  <rect x="156" y="108" width="84" height="48" rx="7" class="box"/>
+  <rect x="254" y="108" width="84" height="48" rx="7" fill="#eee6d5" stroke="#a87932" stroke-width="1.6"/>
+  <rect x="352" y="108" width="84" height="48" rx="7" class="box"/>
+  <rect x="450" y="108" width="84" height="48" rx="7" fill="#fbfcf9" stroke="#82a18e" stroke-dasharray="4 3" stroke-width="1.6"/>
+  <g text-anchor="middle" class="bit">
+    <text x="100" y="141">1</text><text x="198" y="141">1</text>
+    <text x="296" y="141" class="accent">0</text><text x="394" y="141">1</text>
+    <text x="492" y="141">0</text>
+  </g>
+  <!-- Brackets at different heights show overlapping contiguous triples -->
+  <path d="M58 165V178H338V165" fill="none" stroke="#376650" stroke-width="2.4" stroke-linejoin="round"/>
+  <text x="198" y="200" text-anchor="middle" class="small" font-weight="700">高组：110</text>
+  <path d="M254 205V218H534V205" fill="none" stroke="#9b6c27" stroke-width="2.4" stroke-linejoin="round"/>
+  <text x="394" y="240" text-anchor="middle" class="small accent" font-weight="700">低组：010</text>
+  <!-- shared-bit guide to lower bracket; keep clear of high group name -->
+  <path d="M296 158V204" stroke="#a87932" stroke-width="1.8" stroke-dasharray="4 4"/>
+  <rect x="18" y="253" width="277" height="69" rx="7" class="box"/>
+  <rect x="305" y="253" width="277" height="69" rx="7" fill="#eee6d5" stroke="#c7a977" stroke-width="1.4"/>
+  <text x="32" y="276" class="small">高组 110：系数 −1，权重 4</text>
+  <text x="32" y="306" font-weight="700">2 × (−1) × 4 = −8</text>
+  <text x="319" y="276" class="small accent">低组 010：系数 +1，权重 1</text>
+  <text x="319" y="306" font-weight="700">2 × (+1) × 1 = 2</text>
+  <rect x="18" y="336" width="564" height="30" rx="6" fill="#edf1df"/>
+  <text x="300" y="357" text-anchor="middle">被乘数 A=2，两组部分积相加：−8 + 2 = −6</text>
+</svg>

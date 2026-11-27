@@ -109,7 +109,7 @@ flowchart TD
 |---|---|---|---|
 | A01 | 怎样让电路按照要求保存、选择和更新数据？ | 寄存器、MUX、译码器、计数器、使能、复位、FSM；沿状态和信号推导控制 | 已发布（[正文](https://microarch-flow.github.io/wiki/microarchitecture-v2/01-foundations/a01-state-and-control/)，初次发布 `3a0a2c5`；2026-11-27 按新版写作原则打磨） |
 | A02 | 有限个比特，怎样表示一个数并完成加减运算？ | 二进制、补码、定点、半加/全加、进位、减法、比较、移位、溢出；从小位宽 ALU 推导快进位 | 已发布（[正文](https://microarch-flow.github.io/wiki/microarchitecture-v2/01-foundations/a02-number-representation-and-arithmetic/)，提交 `b86d5ac`，已核验） |
-| A03 | 从部分积到 MAC：芯片怎样完成一次乘加？ | 乘法部分积与符号、Booth、压缩树、MAC、累加位宽、反馈、点积与归约 | 待写 |
+| A03 | 从部分积到 MAC：芯片怎样完成一次乘加？ | 乘法部分积与符号、Booth、压缩树、MAC、累加位宽、反馈、点积与归约 | 已评审，待发布核验（`series/microarchitecture-v2/01-foundations/a03-multiplication-and-accumulation.md`） |
 | A04 | 浮点与低精度运算：芯片怎样计算不同格式的数？ | 指数、尾数、对齐、规格化、舍入、特殊值、FMA、BF16/FP8/MX、混合精度；不讲模型量化选择 | 待写 |
 | A05 | 一组运算单元怎样连续完成不同的计算？ | ALU/FPU/MAC、寄存器文件、操作数选择、读写端口、数据通路、控制通路、写回与多周期执行 | 待写 |
 | A06 | 第一份结果还没出来，为什么下一份运算可以开始？ | 关键路径、流水级、延迟、II、吞吐、填排和反馈依赖；独立输入与相关输入对照 | 待写 |

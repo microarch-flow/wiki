@@ -1,0 +1,73 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 660 408" width="660" height="408" role="img" aria-labelledby="partial-title partial-desc">
+  <title id="partial-title">四位无符号乘法的部分积：2 乘 3</title>
+  <desc id="partial-desc">被乘数 A 为 0010，乘数 B 为 0011，两者都是四位无符号整数。对乘数的每一位 b_j，将 A 的各位 a_i 与 b_j 做与运算，得到四位部分积，并按 b_j 的位权左移 j 位。八位对齐结果从 j 等于零到三分别为 00000010、00000100、00000000、00000000，相加得到 00000110，即 6。</desc>
+  <defs>
+    <marker id="partial-arrow" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0 0L7 3.5L0 7Z" fill="#376a55"/></marker>
+    <style>
+      text{font-family:"Noto Sans CJK SC","PingFang SC","Microsoft YaHei",sans-serif;fill:#173d35;font-size:18px}
+      .head{font-size:22px;font-weight:700}.note{font-size:16px;fill:#4f695a}.strong{font-size:19px;font-weight:700}
+      .bit{font-size:23px;font-weight:700;font-family:"Noto Sans Mono CJK SC",monospace}
+      .grid{fill:#e0ebe3;stroke:#82a18e;stroke-width:1}.pad{fill:#f9faf5;stroke:#c4d0c4;stroke-width:1}
+      .sum{fill:#d2e6d7;stroke:#82a18e;stroke-width:1.3}.wire{stroke:#376a55;stroke-width:2;fill:none;marker-end:url(#partial-arrow)}
+    </style>
+  </defs>
+  <rect x="1" y="1" width="658" height="406" rx="13" fill="#f5f6ef" stroke="#c4d0c4" stroke-width="1.3"/>
+  <text x="22" y="35" class="head">0010 × 0011：先形成部分积，再相加</text>
+  <text x="22" y="64" class="strong">A = 0010（2），B = 0011（3）</text>
+  <text x="22" y="90" class="note">每一行：A 的各位 aᵢ 与 bⱼ 做 AND，再按位权左移 j 位。</text>
+  <rect x="22" y="106" width="615" height="32" rx="7" fill="#e9edde" stroke="#c4d0c4"/>
+  <text x="37" y="128">例如 b₁ = 1：0010 AND 1111 = 0010</text>
+  <path class="wire" d="M447 122H480"/>
+  <text x="496" y="128" class="strong">左移 1 位</text>
+
+  <text x="22" y="164" class="note">来源</text>
+  <text x="124" y="164" class="note">左移</text>
+  <text x="578" y="164" class="note">数值</text>
+  <!-- Bit positions are fixed: k=7 at x=202 and k=0 at x=510. -->
+  <g text-anchor="middle" class="note">
+    <text x="209" y="164">7</text><text x="253" y="164">6</text><text x="297" y="164">5</text><text x="341" y="164">4</text>
+    <text x="385" y="164">3</text><text x="429" y="164">2</text><text x="473" y="164">1</text><text x="517" y="164">0</text>
+  </g>
+  <g transform="translate(0 176)">
+    <text x="22" y="25" class="strong">b₀ = 1</text><text x="124" y="25">0 位</text><text x="578" y="25">2</text>
+    <rect class="pad" x="188" y="0" width="42" height="35" rx="4"/><rect class="pad" x="232" y="0" width="42" height="35" rx="4"/>
+    <rect class="pad" x="276" y="0" width="42" height="35" rx="4"/><rect class="pad" x="320" y="0" width="42" height="35" rx="4"/>
+    <rect class="grid" x="364" y="0" width="42" height="35" rx="4"/><rect class="grid" x="408" y="0" width="42" height="35" rx="4"/>
+    <rect class="grid" x="452" y="0" width="42" height="35" rx="4"/><rect class="grid" x="496" y="0" width="42" height="35" rx="4"/>
+    <g class="bit" text-anchor="middle"><text x="209" y="25">0</text><text x="253" y="25">0</text><text x="297" y="25">0</text><text x="341" y="25">0</text><text x="385" y="25">0</text><text x="429" y="25">0</text><text x="473" y="25">1</text><text x="517" y="25">0</text></g>
+  </g>
+  <g transform="translate(0 216)">
+    <text x="22" y="25" class="strong">b₁ = 1</text><text x="124" y="25">1 位</text><text x="578" y="25">4</text>
+    <rect class="pad" x="188" y="0" width="42" height="35" rx="4"/><rect class="pad" x="232" y="0" width="42" height="35" rx="4"/>
+    <rect class="pad" x="276" y="0" width="42" height="35" rx="4"/><rect class="grid" x="320" y="0" width="42" height="35" rx="4"/>
+    <rect class="grid" x="364" y="0" width="42" height="35" rx="4"/><rect class="grid" x="408" y="0" width="42" height="35" rx="4"/>
+    <rect class="grid" x="452" y="0" width="42" height="35" rx="4"/><rect class="pad" x="496" y="0" width="42" height="35" rx="4"/>
+    <g class="bit" text-anchor="middle"><text x="209" y="25">0</text><text x="253" y="25">0</text><text x="297" y="25">0</text><text x="341" y="25">0</text><text x="385" y="25">0</text><text x="429" y="25">1</text><text x="473" y="25">0</text><text x="517" y="25">0</text></g>
+  </g>
+  <g transform="translate(0 256)">
+    <text x="22" y="25" class="strong">b₂ = 0</text><text x="124" y="25">2 位</text><text x="578" y="25">0</text>
+    <rect class="pad" x="188" y="0" width="42" height="35" rx="4"/><rect class="pad" x="232" y="0" width="42" height="35" rx="4"/>
+    <rect class="grid" x="276" y="0" width="42" height="35" rx="4"/><rect class="grid" x="320" y="0" width="42" height="35" rx="4"/>
+    <rect class="grid" x="364" y="0" width="42" height="35" rx="4"/><rect class="grid" x="408" y="0" width="42" height="35" rx="4"/>
+    <rect class="pad" x="452" y="0" width="42" height="35" rx="4"/><rect class="pad" x="496" y="0" width="42" height="35" rx="4"/>
+    <g class="bit" text-anchor="middle"><text x="209" y="25">0</text><text x="253" y="25">0</text><text x="297" y="25">0</text><text x="341" y="25">0</text><text x="385" y="25">0</text><text x="429" y="25">0</text><text x="473" y="25">0</text><text x="517" y="25">0</text></g>
+  </g>
+  <g transform="translate(0 296)">
+    <text x="22" y="25" class="strong">b₃ = 0</text><text x="124" y="25">3 位</text><text x="578" y="25">0</text>
+    <rect class="pad" x="188" y="0" width="42" height="35" rx="4"/><rect class="grid" x="232" y="0" width="42" height="35" rx="4"/>
+    <rect class="grid" x="276" y="0" width="42" height="35" rx="4"/><rect class="grid" x="320" y="0" width="42" height="35" rx="4"/>
+    <rect class="grid" x="364" y="0" width="42" height="35" rx="4"/><rect class="pad" x="408" y="0" width="42" height="35" rx="4"/>
+    <rect class="pad" x="452" y="0" width="42" height="35" rx="4"/><rect class="pad" x="496" y="0" width="42" height="35" rx="4"/>
+    <g class="bit" text-anchor="middle"><text x="209" y="25">0</text><text x="253" y="25">0</text><text x="297" y="25">0</text><text x="341" y="25">0</text><text x="385" y="25">0</text><text x="429" y="25">0</text><text x="473" y="25">0</text><text x="517" y="25">0</text></g>
+  </g>
+  <path d="M22 340H638" stroke="#82a18e" stroke-width="2"/>
+  <g transform="translate(0 348)">
+    <text x="22" y="25" class="strong">相加结果</text><text x="578" y="25" class="strong">6</text>
+    <rect class="sum" x="188" y="0" width="350" height="35" rx="4"/>
+    <g class="bit" text-anchor="middle"><text x="209" y="25">0</text><text x="253" y="25">0</text><text x="297" y="25">0</text><text x="341" y="25">0</text><text x="385" y="25">0</text><text x="429" y="25">1</text><text x="473" y="25">1</text><text x="517" y="25">0</text></g>
+  </g>
+  <rect x="22" y="389" width="12" height="12" rx="2" class="grid"/>
+  <text x="42" y="401" class="note">AND 产生的四位</text>
+  <rect x="205" y="389" width="12" height="12" rx="2" class="pad"/>
+  <text x="225" y="401" class="note">对齐时补 0，列号表示二进制位权的位置</text>
+</svg>

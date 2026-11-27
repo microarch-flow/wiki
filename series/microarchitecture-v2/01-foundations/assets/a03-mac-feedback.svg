@@ -1,0 +1,47 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 573" width="600" height="573" role="img" aria-labelledby="mac-title mac-desc">
+  <title id="mac-title">乘加单元的累加反馈路径与第一次更新</title>
+  <desc id="mac-desc">E2 之后，两个四位无符号操作数寄存器 X 和 W 分别保存 2 和 3。组合乘法器产生完整八位乘积 P=6，经高位补零扩展为十位，送入组合加法器。十位累加寄存器 ACC 的沿前输出 Q=0 通过反馈进入加法器的另一个输入，产生新的十位 D=6。E3 上升沿写入使能 EN_ACC=1 时，ACC 采样 D，沿后 Q 为 6。初始 ACC=0；所有寄存器共用时钟，假设一拍组合乘加路径满足时序。本示意不画复位和使能生成电路。</desc>
+  <defs>
+    <marker id="mac-arrow" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0 0L7 3.5L0 7Z" fill="#376a55"/></marker>
+    <marker id="mac-control-arrow" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto"><path d="M0 0L6 3L0 6Z" fill="#8a6c3c"/></marker>
+    <style>
+      text{font-family:"Noto Sans CJK SC","PingFang SC","Microsoft YaHei",sans-serif;fill:#173d35;font-size:19px}
+      .heading{font-size:22px;font-weight:700}.note{font-size:16px;fill:#4f695a}.symbol{font-size:19px;font-weight:700}.ctrl{font-size:15px;fill:#765a2f;font-weight:600}
+      .block{fill:#e0ebe3;stroke:#82a18e;stroke-width:1.7}.reg{fill:#edf1df;stroke:#82a18e;stroke-width:1.7}
+      .wire{stroke:#376a55;stroke-width:2.4;fill:none;stroke-linejoin:round;stroke-linecap:round;marker-end:url(#mac-arrow)}
+      .control{stroke:#8a6c3c;stroke-width:1.9;stroke-dasharray:5 3;fill:none;marker-end:url(#mac-control-arrow)}
+    </style>
+  </defs>
+  <rect x="1" y="1" width="598" height="571" rx="13" fill="#f5f6ef" stroke="#c4d0c4" stroke-width="1.3"/>
+  <text class="heading" x="23" y="35">第一项乘加：E₂ → E₃</text>
+  <text class="note" x="23" y="61">输入和旧累加值从寄存器的 Q 端取得</text>
+  <g text-anchor="middle">
+    <rect class="reg" x="53" y="79" width="160" height="65" rx="8"/><text class="symbol" x="133" y="106">X 寄存器</text><text x="133" y="130">2（4 位）</text>
+    <rect class="reg" x="245" y="79" width="160" height="65" rx="8"/><text class="symbol" x="325" y="106">W 寄存器</text><text x="325" y="130">3（4 位）</text>
+  </g>
+  <path class="wire" d="M133 144V158H151V171"/><path class="wire" d="M325 144V158H307V171"/>
+  <rect class="block" x="88" y="175" width="282" height="63" rx="9"/>
+  <g text-anchor="middle"><text class="symbol" x="229" y="203">组合乘法器</text><text x="229" y="226">4 位 × 4 位</text></g>
+  <path class="wire" d="M229 238V267"/><text class="note" x="240" y="260">P = 6（8 位）</text>
+  <rect class="block" x="88" y="271" width="282" height="46" rx="8"/>
+  <text x="229" y="300" text-anchor="middle">高位补零：8 位 → 10 位</text>
+  <path class="wire" d="M229 317V347"/>
+  <rect class="block" x="88" y="351" width="282" height="62" rx="9"/>
+  <g text-anchor="middle"><text class="symbol" x="229" y="379">组合加法器（10 位）</text><text x="229" y="401">旧 ACC + P = 0 + 6</text></g>
+  <path class="wire" d="M229 413V446"/><text class="note" x="240" y="435">D = 6</text>
+  <rect class="reg" x="88" y="450" width="282" height="69" rx="9"/>
+  <g text-anchor="middle"><text class="symbol" x="229" y="477">ACC 累加寄存器</text><text x="229" y="502">10 位 · 沿前 Q = 0</text></g>
+  <!-- The feedback path carries old Q to the second adder input; it does not bypass register timing. -->
+  <path class="wire" d="M370 484H532V382H374"/>
+  <text class="symbol" x="392" y="376">旧 ACC</text>
+  <text class="note" x="402" y="405">10 位反馈</text>
+  <text class="note" x="403" y="426">沿前 Q = 0</text>
+  <!-- EN and clock go into the register, not the adder. -->
+  <text class="ctrl" x="17" y="444">EN_ACC</text><text class="ctrl" x="23" y="463">= 1</text>
+  <path class="control" d="M24 473H84"/>
+  <text class="ctrl" x="23" y="498">CLK ↑</text><path d="M24 506H88M88 499L96 506L88 513" fill="none" stroke="#8a6c3c" stroke-width="1.8"/>
+  <rect x="420" y="81" width="165" height="110" rx="7" fill="#e9edde" stroke="#ced9c7"/>
+  <g text-anchor="middle"><text class="note" x="502.5" y="107">初始 ACC = 0</text><text class="symbol" x="502.5" y="140">E₃ 上升沿</text><text class="note" x="502.5" y="166">采入新值 6</text></g>
+  <text class="note" x="23" y="543">假设乘法、加法及反馈路径在 E₃ 前满足采样时序。</text>
+  <text class="note" x="23" y="564">教学示意：无符号整数，省略复位及使能生成逻辑。</text>
+</svg>

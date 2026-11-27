@@ -1,0 +1,62 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 660 710" width="660" height="710" role="img" aria-labelledby="csa-title csa-desc">
+  <title id="csa-title">四行部分积的进位保存压缩与最后的加法</title>
+  <desc id="csa-desc">四位无符号乘法 1111 乘 1111 产生八位对齐部分积 00001111、00011110、00111100、01111000，分别为 15、30、60、120。第一层用每列并行全加器压缩前三行，产生和 S 等于 00101101 即 45、已左移并对齐的进位 K 等于 00111100 即 60；第四行 120 不经过该层。第二层压缩这两行与第四行，得到 S 等于 01101001 即 105、已对齐的 K 等于 01111000 即 120。最后两个操作数经进位传播加法器得到 11100001 即 225。每层内部进位不继续串入相邻列的全加器；层级表示组合逻辑依赖，不表示时钟周期。</desc>
+  <defs>
+    <marker id="csa-arrow" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0 0L7 3.5L0 7Z" fill="#376a55"/></marker>
+    <marker id="csa-carry-arrow" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0 0L7 3.5L0 7Z" fill="#967333"/></marker>
+    <style>
+      text{font-family:"Noto Sans CJK SC","PingFang SC","Microsoft YaHei",sans-serif;fill:#173d35;font-size:18px}
+      .head{font-size:22px;font-weight:700}.note{font-size:16px;fill:#4f695a}.label{font-size:19px;font-weight:700}
+      .bit{font-family:"Noto Sans Mono CJK SC",monospace;font-size:19px;font-weight:700}
+      .row{fill:#e0ebe3;stroke:#82a18e;stroke-width:1.6}
+      .carryrow{fill:#f2e8d3;stroke:#b6a073;stroke-width:1.6}
+      .compress{fill:#edf1df;stroke:#82a18e;stroke-width:1.7}
+      .wire{fill:none;stroke:#376a55;stroke-width:2.5;stroke-linejoin:round;marker-end:url(#csa-arrow)}
+      .carry{fill:none;stroke:#967333;stroke-width:2.5;stroke-linejoin:round;marker-end:url(#csa-carry-arrow)}
+      .carrytext{fill:#765a2f;font-size:19px;font-weight:700}
+    </style>
+  </defs>
+  <rect x="1" y="1" width="658" height="708" rx="13" fill="#f5f6ef" stroke="#c4d0c4" stroke-width="1.3"/>
+  <text x="22" y="35" class="head">1111 × 1111：将四行压缩成两行</text>
+  <text x="22" y="62" class="note">从 4 个部分积开始，组合逻辑分层逐步减少行数。</text>
+
+  <g text-anchor="middle">
+    <rect x="22" y="77" width="145" height="60" rx="8" class="row"/><text x="94.5" y="100" class="label">P₀ = 15</text><text x="94.5" y="125" class="bit">00001111</text>
+    <rect x="179" y="77" width="145" height="60" rx="8" class="row"/><text x="251.5" y="100" class="label">P₁ = 30</text><text x="251.5" y="125" class="bit">00011110</text>
+    <rect x="336" y="77" width="145" height="60" rx="8" class="row"/><text x="408.5" y="100" class="label">P₂ = 60</text><text x="408.5" y="125" class="bit">00111100</text>
+    <rect x="493" y="77" width="145" height="60" rx="8" class="row"/><text x="565.5" y="100" class="label">P₃ = 120</text><text x="565.5" y="125" class="bit">01111000</text>
+  </g>
+  <path class="wire" d="M94.5 137V160"/><path class="wire" d="M251.5 137V160"/><path class="wire" d="M408.5 137V160"/>
+  <rect x="22" y="164" width="459" height="80" rx="9" class="compress"/>
+  <text x="251.5" y="189" class="label" text-anchor="middle">第一层 3:2 压缩：每列一个全加器</text>
+  <text x="251.5" y="214" class="note" text-anchor="middle">例如第 2 位：1 + 1 + 1 → S₂ = 1，K₃ = 1</text>
+  <text x="251.5" y="234" class="note" text-anchor="middle">进位保存到高一位，不串入本层的相邻全加器。</text>
+  <path class="wire" d="M565.5 137V269"/>
+  <rect x="508" y="193" width="116" height="28" rx="5" fill="#f5f6ef"/>
+  <text x="565.5" y="213" class="note" text-anchor="middle">第四行直通</text>
+
+  <path class="wire" d="M120 244V269"/>
+  <path class="carry" d="M346 244V269"/>
+  <g text-anchor="middle">
+    <rect x="22" y="273" width="196" height="64" rx="8" class="row"/><text x="120" y="298" class="label">S = 45</text><text x="120" y="324" class="bit">00101101</text>
+    <rect x="248" y="273" width="196" height="64" rx="8" class="carryrow"/><text x="346" y="298" class="carrytext">K = 60（已左移）</text><text x="346" y="324" class="bit">00111100</text>
+    <rect x="493" y="273" width="145" height="64" rx="8" class="row"/><text x="565.5" y="298" class="label">P₃ = 120</text><text x="565.5" y="324" class="bit">01111000</text>
+  </g>
+  <path class="wire" d="M120 337V361"/><path class="carry" d="M346 337V361"/><path class="wire" d="M565.5 337V361"/>
+  <rect x="22" y="365" width="616" height="62" rx="9" class="compress"/>
+  <text x="330" y="390" class="label" text-anchor="middle">第二层 3:2 压缩：仍以各列为单位并行计算</text>
+  <text x="330" y="414" class="note" text-anchor="middle">45 + 60 + 120 = 105 + 120</text>
+  <path class="wire" d="M190 427V450"/><path class="carry" d="M470 427V450"/>
+  <g text-anchor="middle">
+    <rect x="90" y="454" width="200" height="64" rx="8" class="row"/><text x="190" y="479" class="label">S = 105</text><text x="190" y="505" class="bit">01101001</text>
+    <rect x="370" y="454" width="200" height="64" rx="8" class="carryrow"/><text x="470" y="479" class="carrytext">K = 120（已左移）</text><text x="470" y="505" class="bit">01111000</text>
+  </g>
+  <path class="wire" d="M190 518V543"/><path class="carry" d="M470 518V543"/>
+  <rect x="90" y="547" width="480" height="60" rx="9" class="compress"/>
+  <text x="330" y="572" class="label" text-anchor="middle">最后用一次进位传播加法器（CPA）</text>
+  <text x="330" y="595" class="note" text-anchor="middle">将两行相加，得到唯一的二进制结果。</text>
+  <path class="wire" d="M330 607V629"/>
+  <rect x="170" y="633" width="320" height="42" rx="8" fill="#d2e6d7" stroke="#82a18e" stroke-width="1.7"/>
+  <text x="330" y="659" class="label" text-anchor="middle">11100001 = 225</text>
+  <text x="22" y="696" class="note">所有层的数值总和保持为 225；层级不表示时钟周期。</text>
+</svg>

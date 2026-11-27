@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 750 367" width="750" height="367" role="img" aria-labelledby="time-title time-desc">
+  <title id="time-title">四项点积的输入、组合乘积与累加寄存器逐拍更新</title>
+  <desc id="time-desc">E2 后 X,W 是2,3，E3 后是1,5，E4 后是3,2，E5 后是4,1，E6 后仍为4,1。四组操作数分别在E2到E3、E3到E4、E4到E5、E5到E6之间产生乘积6、5、6和4。ACC 在E2至E6之后依次保存0、6、11、17、21。A01控制器在E5后进入DONE，表示末组已送到入口寄存器；最后一组的累加在E6才采样完成。E6后A01控制器回IDLE；ACC不再更新。统一采用上升沿采样，省略传播延迟，假设组合乘加路径一拍满足时序。</desc>
+  <style>
+    text{font-family:"Noto Sans CJK SC","PingFang SC","Microsoft YaHei",sans-serif;fill:#173d35;font-size:19px}
+    .heading{font-size:22px;font-weight:700}.note{font-size:16px;fill:#4f695a}.label{font-size:18px;font-weight:600}.value{font-size:22px;font-weight:700}
+    .edge{stroke:#849c8c;stroke-width:1.5;stroke-dasharray:5 4;fill:none}.clock{stroke:#376a55;stroke-width:2.3;fill:none;stroke-linejoin:round}
+  </style>
+  <rect x="1" y="1" width="748" height="365" rx="13" fill="#f5f6ef" stroke="#c4d0c4" stroke-width="1.3"/>
+  <text class="heading" x="23" y="33">每一列：上升沿之后，到下一上升沿之前</text>
+  <g text-anchor="middle" class="note"><text x="147" y="55">E₂</text><text x="261" y="55">E₃</text><text x="375" y="55">E₄</text><text x="489" y="55">E₅</text><text x="603" y="55">E₆</text></g>
+  <text class="label" x="22" y="79">CLK</text>
+  <path class="clock" d="M122 85H147V63H197V85H261V63H311V85H375V63H425V85H489V63H539V85H603V63H653V85H718"/>
+  <rect x="15" y="95" width="720" height="45" rx="6" fill="#e8eee6"/>
+  <text class="label" x="22" y="124">X、W</text>
+  <g text-anchor="middle"><text x="204" y="124">(2, 3)</text><text x="318" y="124">(1, 5)</text><text x="432" y="124">(3, 2)</text><text x="546" y="124">(4, 1)</text><text x="660" y="124">(4, 1)</text></g>
+  <rect x="15" y="142" width="720" height="49" rx="6" fill="#fafbf8"/>
+  <text class="label" x="22" y="161">组合乘积</text><text class="label" x="22" y="181">P</text>
+  <g text-anchor="middle"><text class="value" x="204" y="174">6</text><text class="value" x="318" y="174">5</text><text class="value" x="432" y="174">6</text><text class="value" x="546" y="174">4</text><text x="660" y="161">4</text><text class="note" x="660" y="181">不再累加</text></g>
+  <rect x="15" y="193" width="720" height="50" rx="6" fill="#edf1df"/>
+  <text class="label" x="22" y="214">ACC</text><text class="note" x="22" y="235">沿后稳定值</text>
+  <rect x="264" y="197" width="108" height="42" rx="6" fill="#d2e6d7"/>
+  <rect x="378" y="197" width="108" height="42" rx="6" fill="#d2e6d7"/>
+  <rect x="492" y="197" width="108" height="42" rx="6" fill="#d2e6d7"/>
+  <rect x="606" y="197" width="108" height="42" rx="6" fill="#c0dfc8" stroke="#719e81" stroke-width="1.6"/>
+  <g text-anchor="middle" class="value"><text x="204" y="225">0</text><text x="318" y="225">6</text><text x="432" y="225">11</text><text x="546" y="225">17</text><text x="660" y="225">21</text></g>
+  <rect x="15" y="245" width="720" height="44" rx="6" fill="#e8eee6"/>
+  <text class="label" x="22" y="265">A01 阶段</text><text class="note" x="22" y="283">（供数）</text>
+  <rect x="492" y="249" width="108" height="36" rx="6" fill="#e6dcc4" stroke="#cebb96"/>
+  <g text-anchor="middle"><text x="204" y="273">RUN</text><text x="318" y="273">RUN</text><text x="432" y="273">RUN</text><text x="546" y="273">DONE</text><text x="660" y="273">IDLE</text></g>
+  <path class="edge" d="M147 58V292M261 58V292M375 58V292M489 58V292M603 58V292"/>
+  <text x="22" y="314" font-weight="600" font-size="17">E₅ 沿后：最后一组已送入；E₆ 沿后：最后一次累加已写回，结果 21。</text>
+  <text class="note" x="22" y="339">每个乘积在本列的区间内形成，累加结果在下一上升沿采样。</text>
+  <text class="note" x="22" y="358">教学示意：同一时钟、乘加路径一拍满足时序，省略传播延迟。</text>
+</svg>
