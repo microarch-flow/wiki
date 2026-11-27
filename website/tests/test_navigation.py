@@ -348,6 +348,16 @@ class GeneratedNavigationTests(unittest.TestCase):
         topic = "foundations/electrons-to-diode/"
         page = (SITE / topic / "index.html").read_text(encoding="utf-8")
         article = re.search(r'<article\b[^>]*>(.*?)</article>', page, re.DOTALL).group(1)
+        self.assertEqual(article.count('id="rectification"'), 1)
+        opening_figures = ("diode-one-way", "bridge-rectifier-positive", "bridge-rectifier-negative", "pn-diode-overview")
+        for figure in opening_figures:
+            with self.subTest(opening_figure=figure):
+                self.assertRegex(article, rf'<img\b[^>]*src="img/{figure}\.svg"')
+                self.assertTrue((SITE / topic / "img" / f"{figure}.svg").is_file())
+        positions = [article.index('id="rectification"')]
+        positions.extend(article.index(f'src="img/{figure}.svg"') for figure in opening_figures)
+        positions.append(article.index('id="states"'))
+        self.assertEqual(positions, sorted(positions))
         self.assertEqual(article.count('id="bjt"'), 1)
         self.assertIn('href="../transistor-amplifier/#bjt-load"', article)
         # The new state-based diagram replaces the older NPN illustration in the

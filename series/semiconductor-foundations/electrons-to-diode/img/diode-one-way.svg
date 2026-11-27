@@ -1,0 +1,55 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="460" height="537" viewBox="0 0 460 537" role="img" aria-labelledby="title desc" xml:lang="zh-CN">
+  <title id="title">二极管的单向导通特性：正接与反接</title>
+  <desc id="desc">两幅电路中的二极管、用电器及连线完全相同，只有电源的正负极交换。上方正接时，电源正极接阳极，负极通过用电器接阴极，绿色箭头表示常规电流经过二极管和用电器。下方反接时，电源负极接阳极，正极通过用电器接阴极，电流很小，以灰色连线表示。在正向电压足够、反向电压未达击穿的条件下作示意，未画出微小漏电。</desc>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="8.4" refY="5" markerWidth="4.8" markerHeight="4.8" orient="auto"><path d="M0 0 L10 5 L0 10Z" fill="#24724d"/></marker>
+    <g id="circuit" fill="none" stroke="currentColor" stroke-width="2.7" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M88 84 H189 M217 84 H367 V112 M367 166 V199 H274 M224 199 H88 V84"/>
+      <path d="M189 70 L215 84 L189 98Z" fill="currentColor"/>
+      <path d="M217 69 V99"/>
+      <rect x="329" y="112" width="76" height="54" rx="4" stroke-width="2.3"/>
+    </g>
+    <g id="source">
+      <circle cx="249" cy="199" r="25" fill="#f7f6ef" stroke="#203c37" stroke-width="2.3"/>
+      <text x="249" y="240" text-anchor="middle" font-size="16" fill="#203c37">电源</text>
+    </g>
+  </defs>
+  <rect x="1" y="1" width="458" height="535" rx="15" fill="#f7f6ef" stroke="#c9d3c7"/>
+  <g font-family="system-ui, 'Noto Sans CJK SC', sans-serif" fill="#203c37" font-size="16">
+    <g>
+      <text x="230" y="29" text-anchor="middle" font-size="20" font-weight="650">① 正接：二极管导通</text>
+      <text x="171" y="62" text-anchor="end" font-size="15">阳极</text>
+      <text x="233" y="62" font-size="15">阴极</text>
+      <rect x="329" y="112" width="76" height="54" rx="4" fill="#e8f1e4"/>
+      <use href="#circuit" color="#24724d"/>
+      <g fill="none" stroke="#24724d" stroke-width="3.0" stroke-linecap="round" marker-end="url(#arrow)">
+        <path d="M88 156 V123"/>
+        <path d="M265 84 H304"/>
+        <path d="M367 173 V189"/>
+        <path d="M185 199 H149"/>
+      </g>
+      <text x="367" y="144" text-anchor="middle" font-weight="600" fill="#24724d">用电器</text>
+      <text x="107" y="137" fill="#24724d">常规电流</text>
+      <text x="107" y="160" fill="#24724d">流过用电器</text>
+      <use href="#source"/>
+      <text x="237" y="205" text-anchor="middle" font-size="21" font-weight="650">+</text>
+      <text x="261" y="205" text-anchor="middle" font-size="21" font-weight="650">−</text>
+    </g>
+    <path d="M20 250H440" stroke="#c9d3c7" stroke-width="1.3"/>
+    <g transform="translate(0 252)">
+      <text x="230" y="29" text-anchor="middle" font-size="20" font-weight="650">② 反接：二极管阻碍电流</text>
+      <text x="171" y="62" text-anchor="end" font-size="15">阳极</text>
+      <text x="233" y="62" font-size="15">阴极</text>
+      <rect x="329" y="112" width="76" height="54" rx="4" fill="#e9ece7"/>
+      <use href="#circuit" color="#798780"/>
+      <text x="367" y="144" text-anchor="middle" fill="#597069" font-weight="600">用电器</text>
+      <text x="107" y="137" fill="#597069">几乎没有电流</text>
+      <text x="107" y="160" fill="#597069">流过用电器</text>
+      <use href="#source"/>
+      <text x="237" y="205" text-anchor="middle" font-size="21" font-weight="650">−</text>
+      <text x="261" y="205" text-anchor="middle" font-size="21" font-weight="650">+</text>
+    </g>
+    <path d="M20 502H440" stroke="#c9d3c7" stroke-width="1.3"/>
+    <text x="230" y="524" text-anchor="middle" font-size="15" fill="#597069">正向电压足够，反向电压在正常范围内。</text>
+  </g>
+</svg>
