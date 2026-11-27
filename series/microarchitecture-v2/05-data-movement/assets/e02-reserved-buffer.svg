@@ -1,0 +1,133 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 820 516" width="820" height="516" role="img" aria-labelledby="title desc">
+  <title id="title">已保留的缓冲容量不等于已接收的有效数据量</title>
+  <desc id="desc">两槽各四字节。E2 后，S0 为 R0 保留，S1 为 R1 保留，已保留 8 B 但有效 0 B。E5 后，S0 仍等待，S1 已保存 5 至 8，已保留 8 B，有效 4 B。E7 后，S0 保存 1 至 4，S1 仍保存 5 至 8（首个写数据拍已送出但本例保留数据到写确认），已保留 8 B，有效 8 B。E9 后，W1 应答释放 S1，S0 保存 1 至 4，已保留 4 B，有效 4 B。R2 最早 E10 使用已释放的 S1。</desc>
+  <defs>
+    <marker id="data-arrow" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0 0L7 3.5L0 7z" fill="#376650"/></marker>
+    <marker id="ctrl-arrow" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0 0L7 3.5L0 7z" fill="#9b6c27"/></marker>
+    <style>
+      text{font-family:"Noto Sans CJK SC","Microsoft YaHei",sans-serif;fill:#173d35;font-size:18px}
+      .heading{font-size:23px;font-weight:700}.label{font-weight:700}.small{font-size:16px}.tiny{font-size:14px}.beatvals{font-size:12px}.accent{fill:#8a5d1c}.muted{fill:#58736a}
+      .panel{fill:#fafbf8;stroke:#c7d3c7;stroke-width:1.3}.block{fill:#e0ebe3;stroke:#82a18e;stroke-width:1.4}.control{fill:#f3ebdb;stroke:#c6aa79;stroke-width:1.3}
+      .reserve{fill:#f3ebdb;stroke:#c6aa79;stroke-width:1.2;stroke-dasharray:4 3}.empty{fill:#edf0ed;stroke:#c7d3c7;stroke-width:1.2;stroke-dasharray:4 3}
+      .data{stroke:#376650;stroke-width:2.4;fill:none;stroke-linejoin:round;stroke-linecap:round;marker-end:url(#data-arrow)}
+      .ctrl{stroke:#9b6c27;stroke-width:1.8;stroke-dasharray:5 4;fill:none;stroke-linejoin:round;stroke-linecap:round;marker-end:url(#ctrl-arrow)}
+      .grid{stroke:#d1dad0;stroke-width:.9}.divider{stroke:#c7d3c7;stroke-width:1.1}.slot{fill:#fafbf8;stroke:#92ad9d;stroke-width:1.1}
+    </style>
+  </defs>
+  <rect x="1" y="1" width="818" height="514" rx="13" fill="#f5f6ef" stroke="#c4d0c4"/>
+  <text x="20" y="35" class="heading" text-anchor="start">没有返回数据，也可能已经占用了缓冲容量</text>
+  <text x="20" y="61" class="small muted" text-anchor="start">两个槽 S0、S1，每槽 4 B；一个格子代表 1 B。</text>
+  <text x="57" y="101" class="small label" text-anchor="middle">时刻</text>
+  <text x="241" y="101" class="small label" text-anchor="middle">S0</text>
+  <text x="467" y="101" class="small label" text-anchor="middle">S1</text>
+  <text x="637" y="101" class="small label" text-anchor="middle">已保留</text>
+  <text x="744" y="101" class="small label" text-anchor="middle">有效</text>
+  <rect x="19" y="112" width="782" height="67" rx="6" class="panel"/>
+  <text x="56" y="140" class="label" text-anchor="middle">E2</text>
+  <text x="56" y="160" class="tiny muted" text-anchor="middle">沿后</text>
+  <rect x="134" y="118" width="214" height="55" rx="5" class="reserve"/>
+  <text x="145" y="137" class="tiny label" text-anchor="start">R0 · 等待读返回</text>
+  <rect x="145" y="143" width="43" height="23" rx="3" class="reserve"/>
+  <text x="166.5" y="159" class="tiny muted" text-anchor="middle">—</text>
+  <rect x="193" y="143" width="43" height="23" rx="3" class="reserve"/>
+  <text x="214.5" y="159" class="tiny muted" text-anchor="middle">—</text>
+  <rect x="241" y="143" width="43" height="23" rx="3" class="reserve"/>
+  <text x="262.5" y="159" class="tiny muted" text-anchor="middle">—</text>
+  <rect x="289" y="143" width="43" height="23" rx="3" class="reserve"/>
+  <text x="310.5" y="159" class="tiny muted" text-anchor="middle">—</text>
+  <rect x="360" y="118" width="214" height="55" rx="5" class="reserve"/>
+  <text x="371" y="137" class="tiny label" text-anchor="start">R1 · 等待读返回</text>
+  <rect x="371" y="143" width="43" height="23" rx="3" class="reserve"/>
+  <text x="392.5" y="159" class="tiny muted" text-anchor="middle">—</text>
+  <rect x="419" y="143" width="43" height="23" rx="3" class="reserve"/>
+  <text x="440.5" y="159" class="tiny muted" text-anchor="middle">—</text>
+  <rect x="467" y="143" width="43" height="23" rx="3" class="reserve"/>
+  <text x="488.5" y="159" class="tiny muted" text-anchor="middle">—</text>
+  <rect x="515" y="143" width="43" height="23" rx="3" class="reserve"/>
+  <text x="536.5" y="159" class="tiny muted" text-anchor="middle">—</text>
+  <text x="637" y="153" class="label" text-anchor="middle">8 B</text>
+  <text x="744" y="153" class="label" text-anchor="middle">0 B</text>
+  <rect x="19" y="187" width="782" height="67" rx="6" class="panel"/>
+  <text x="56" y="215" class="label" text-anchor="middle">E5</text>
+  <text x="56" y="235" class="tiny muted" text-anchor="middle">沿后</text>
+  <rect x="134" y="193" width="214" height="55" rx="5" class="reserve"/>
+  <text x="145" y="212" class="tiny label" text-anchor="start">R0 · 等待读返回</text>
+  <rect x="145" y="218" width="43" height="23" rx="3" class="reserve"/>
+  <text x="166.5" y="234" class="tiny muted" text-anchor="middle">—</text>
+  <rect x="193" y="218" width="43" height="23" rx="3" class="reserve"/>
+  <text x="214.5" y="234" class="tiny muted" text-anchor="middle">—</text>
+  <rect x="241" y="218" width="43" height="23" rx="3" class="reserve"/>
+  <text x="262.5" y="234" class="tiny muted" text-anchor="middle">—</text>
+  <rect x="289" y="218" width="43" height="23" rx="3" class="reserve"/>
+  <text x="310.5" y="234" class="tiny muted" text-anchor="middle">—</text>
+  <rect x="360" y="193" width="214" height="55" rx="5" class="block"/>
+  <text x="371" y="212" class="tiny label" text-anchor="start">R1 · 可写</text>
+  <rect x="371" y="218" width="43" height="23" rx="3" class="slot"/>
+  <text x="392.5" y="234" class="tiny label" text-anchor="middle">5</text>
+  <rect x="419" y="218" width="43" height="23" rx="3" class="slot"/>
+  <text x="440.5" y="234" class="tiny label" text-anchor="middle">6</text>
+  <rect x="467" y="218" width="43" height="23" rx="3" class="slot"/>
+  <text x="488.5" y="234" class="tiny label" text-anchor="middle">7</text>
+  <rect x="515" y="218" width="43" height="23" rx="3" class="slot"/>
+  <text x="536.5" y="234" class="tiny label" text-anchor="middle">8</text>
+  <text x="637" y="228" class="label" text-anchor="middle">8 B</text>
+  <text x="744" y="228" class="label" text-anchor="middle">4 B</text>
+  <rect x="19" y="262" width="782" height="67" rx="6" class="panel"/>
+  <text x="56" y="290" class="label" text-anchor="middle">E7</text>
+  <text x="56" y="310" class="tiny muted" text-anchor="middle">沿后</text>
+  <rect x="134" y="268" width="214" height="55" rx="5" class="block"/>
+  <text x="145" y="287" class="tiny label" text-anchor="start">R0 · 可写</text>
+  <rect x="145" y="293" width="43" height="23" rx="3" class="slot"/>
+  <text x="166.5" y="309" class="tiny label" text-anchor="middle">1</text>
+  <rect x="193" y="293" width="43" height="23" rx="3" class="slot"/>
+  <text x="214.5" y="309" class="tiny label" text-anchor="middle">2</text>
+  <rect x="241" y="293" width="43" height="23" rx="3" class="slot"/>
+  <text x="262.5" y="309" class="tiny label" text-anchor="middle">3</text>
+  <rect x="289" y="293" width="43" height="23" rx="3" class="slot"/>
+  <text x="310.5" y="309" class="tiny label" text-anchor="middle">4</text>
+  <rect x="360" y="268" width="214" height="55" rx="5" class="block"/>
+  <text x="371" y="287" class="tiny label" text-anchor="start">R1 · 写入中*</text>
+  <rect x="371" y="293" width="43" height="23" rx="3" class="slot"/>
+  <text x="392.5" y="309" class="tiny label" text-anchor="middle">5</text>
+  <rect x="419" y="293" width="43" height="23" rx="3" class="slot"/>
+  <text x="440.5" y="309" class="tiny label" text-anchor="middle">6</text>
+  <rect x="467" y="293" width="43" height="23" rx="3" class="slot"/>
+  <text x="488.5" y="309" class="tiny label" text-anchor="middle">7</text>
+  <rect x="515" y="293" width="43" height="23" rx="3" class="slot"/>
+  <text x="536.5" y="309" class="tiny label" text-anchor="middle">8</text>
+  <text x="637" y="303" class="label" text-anchor="middle">8 B</text>
+  <text x="744" y="303" class="label" text-anchor="middle">8 B</text>
+  <rect x="19" y="337" width="782" height="67" rx="6" class="panel"/>
+  <text x="56" y="365" class="label" text-anchor="middle">E9</text>
+  <text x="56" y="385" class="tiny muted" text-anchor="middle">沿后</text>
+  <rect x="134" y="343" width="214" height="55" rx="5" class="block"/>
+  <text x="145" y="362" class="tiny label" text-anchor="start">R0 · 可写</text>
+  <rect x="145" y="368" width="43" height="23" rx="3" class="slot"/>
+  <text x="166.5" y="384" class="tiny label" text-anchor="middle">1</text>
+  <rect x="193" y="368" width="43" height="23" rx="3" class="slot"/>
+  <text x="214.5" y="384" class="tiny label" text-anchor="middle">2</text>
+  <rect x="241" y="368" width="43" height="23" rx="3" class="slot"/>
+  <text x="262.5" y="384" class="tiny label" text-anchor="middle">3</text>
+  <rect x="289" y="368" width="43" height="23" rx="3" class="slot"/>
+  <text x="310.5" y="384" class="tiny label" text-anchor="middle">4</text>
+  <rect x="360" y="343" width="214" height="55" rx="5" class="empty"/>
+  <text x="371" y="362" class="tiny label" text-anchor="start">空闲</text>
+  <rect x="371" y="368" width="43" height="23" rx="3" class="empty"/>
+  <text x="392.5" y="384" class="tiny muted" text-anchor="middle">—</text>
+  <rect x="419" y="368" width="43" height="23" rx="3" class="empty"/>
+  <text x="440.5" y="384" class="tiny muted" text-anchor="middle">—</text>
+  <rect x="467" y="368" width="43" height="23" rx="3" class="empty"/>
+  <text x="488.5" y="384" class="tiny muted" text-anchor="middle">—</text>
+  <rect x="515" y="368" width="43" height="23" rx="3" class="empty"/>
+  <text x="536.5" y="384" class="tiny muted" text-anchor="middle">—</text>
+  <text x="637" y="378" class="label" text-anchor="middle">4 B</text>
+  <text x="744" y="378" class="label" text-anchor="middle">4 B</text>
+  <rect x="21" y="420" width="24" height="21" rx="4" class="reserve"/>
+  <text x="55" y="436" class="small" text-anchor="start">已保留、无有效数据</text>
+  <rect x="293" y="420" width="24" height="21" rx="4" class="block"/>
+  <text x="327" y="436" class="small" text-anchor="start">已有有效数据</text>
+  <rect x="533" y="420" width="24" height="21" rx="4" class="empty"/>
+  <text x="567" y="436" class="small" text-anchor="start">空闲、可分配</text>
+  <text x="20" y="468" class="tiny muted" text-anchor="start">* 本模型发送写数据后仍保留整槽，直至成功写应答。</text>
+  <text x="20" y="494" class="small accent label" text-anchor="start">R2 到 E9 沿前仍没有可分配的槽；S1 释放后，最早在 E10 接纳 R2。</text>
+</svg>

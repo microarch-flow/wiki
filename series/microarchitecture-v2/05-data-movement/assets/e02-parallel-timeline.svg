@@ -1,0 +1,231 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 940 530" width="940" height="530" role="img" aria-labelledby="title desc">
+  <title id="title">独立读写通路的逐沿握手时序</title>
+  <desc id="desc">E0 接纳任务。E1 接纳 R0，E2 接纳 R1。R1 数据于 E4、E5 返回，R0 数据于 E6、E7 返回。写地址和写数据、应答分别发生在 W1 的 E6、E7/E8、E9；W0 的 E10、E11/E12、E13；W2 的 E14、E15/E16、E17。R2 使用 E9 应答后释放的槽，E10 接纳，E12/E13 返回数据。每个数据拍传两个字节。E9、E13、E17 的累计确认字节数分别是四、八、十二。对照同样首拍延迟的串行模型，依次确认三行的边沿为 E11、E19、E27，耗时 27 拍；并发模型耗时 17 拍。</desc>
+  <defs>
+    <marker id="data-arrow" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0 0L7 3.5L0 7z" fill="#376650"/></marker>
+    <marker id="ctrl-arrow" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0 0L7 3.5L0 7z" fill="#9b6c27"/></marker>
+    <style>
+      text{font-family:"Noto Sans CJK SC","Microsoft YaHei",sans-serif;fill:#173d35;font-size:18px}
+      .heading{font-size:23px;font-weight:700}.label{font-weight:700}.small{font-size:16px}.tiny{font-size:14px}.beatvals{font-size:12px}.accent{fill:#8a5d1c}.muted{fill:#58736a}
+      .panel{fill:#fafbf8;stroke:#c7d3c7;stroke-width:1.3}.block{fill:#e0ebe3;stroke:#82a18e;stroke-width:1.4}.control{fill:#f3ebdb;stroke:#c6aa79;stroke-width:1.3}
+      .reserve{fill:#f3ebdb;stroke:#c6aa79;stroke-width:1.2;stroke-dasharray:4 3}.empty{fill:#edf0ed;stroke:#c7d3c7;stroke-width:1.2;stroke-dasharray:4 3}
+      .data{stroke:#376650;stroke-width:2.4;fill:none;stroke-linejoin:round;stroke-linecap:round;marker-end:url(#data-arrow)}
+      .ctrl{stroke:#9b6c27;stroke-width:1.8;stroke-dasharray:5 4;fill:none;stroke-linejoin:round;stroke-linecap:round;marker-end:url(#ctrl-arrow)}
+      .grid{stroke:#d1dad0;stroke-width:.9}.divider{stroke:#c7d3c7;stroke-width:1.1}.slot{fill:#fafbf8;stroke:#92ad9d;stroke-width:1.1}
+    </style>
+  </defs>
+  <rect x="1" y="1" width="938" height="528" rx="13" fill="#f5f6ef" stroke="#c4d0c4"/>
+  <text x="20" y="35" class="heading" text-anchor="start">同样的 12 B 数据，读写请求可以重叠</text>
+  <text x="20" y="61" class="small muted" text-anchor="start">E0 接纳任务；每格表示该沿实际交接，空白表示无交接；每个数据拍 2 B。</text>
+  <text x="144.0" y="96" class="tiny muted" text-anchor="middle">E0</text>
+  <text x="188.0" y="96" class="tiny muted" text-anchor="middle">E1</text>
+  <text x="232.0" y="96" class="tiny muted" text-anchor="middle">E2</text>
+  <text x="276.0" y="96" class="tiny muted" text-anchor="middle">E3</text>
+  <text x="320.0" y="96" class="tiny muted" text-anchor="middle">E4</text>
+  <text x="364.0" y="96" class="tiny muted" text-anchor="middle">E5</text>
+  <text x="408.0" y="96" class="tiny muted" text-anchor="middle">E6</text>
+  <text x="452.0" y="96" class="tiny muted" text-anchor="middle">E7</text>
+  <text x="496.0" y="96" class="tiny muted" text-anchor="middle">E8</text>
+  <text x="540.0" y="96" class="small label" text-anchor="middle">E9</text>
+  <text x="584.0" y="96" class="small label" text-anchor="middle">E10</text>
+  <text x="628.0" y="96" class="tiny muted" text-anchor="middle">E11</text>
+  <text x="672.0" y="96" class="tiny muted" text-anchor="middle">E12</text>
+  <text x="716.0" y="96" class="small label" text-anchor="middle">E13</text>
+  <text x="760.0" y="96" class="tiny muted" text-anchor="middle">E14</text>
+  <text x="804.0" y="96" class="tiny muted" text-anchor="middle">E15</text>
+  <text x="848.0" y="96" class="tiny muted" text-anchor="middle">E16</text>
+  <text x="892.0" y="96" class="small label" text-anchor="middle">E17</text>
+  <rect x="19" y="104" width="95" height="42" rx="4" class="panel"/>
+  <text x="66.5" y="131" class="small label" text-anchor="middle">读请求</text>
+  <rect x="122" y="104" width="792" height="42" rx="4" class="panel"/>
+  <path d="M166 104V146" class="grid" fill="none"/>
+  <path d="M210 104V146" class="grid" fill="none"/>
+  <path d="M254 104V146" class="grid" fill="none"/>
+  <path d="M298 104V146" class="grid" fill="none"/>
+  <path d="M342 104V146" class="grid" fill="none"/>
+  <path d="M386 104V146" class="grid" fill="none"/>
+  <path d="M430 104V146" class="grid" fill="none"/>
+  <path d="M474 104V146" class="grid" fill="none"/>
+  <path d="M518 104V146" class="grid" fill="none"/>
+  <path d="M562 104V146" class="grid" fill="none"/>
+  <path d="M606 104V146" class="grid" fill="none"/>
+  <path d="M650 104V146" class="grid" fill="none"/>
+  <path d="M694 104V146" class="grid" fill="none"/>
+  <path d="M738 104V146" class="grid" fill="none"/>
+  <path d="M782 104V146" class="grid" fill="none"/>
+  <path d="M826 104V146" class="grid" fill="none"/>
+  <path d="M870 104V146" class="grid" fill="none"/>
+  <rect x="19" y="149" width="95" height="42" rx="4" class="panel"/>
+  <text x="66.5" y="176" class="small label" text-anchor="middle">读数据</text>
+  <rect x="122" y="149" width="792" height="42" rx="4" class="panel"/>
+  <path d="M166 149V191" class="grid" fill="none"/>
+  <path d="M210 149V191" class="grid" fill="none"/>
+  <path d="M254 149V191" class="grid" fill="none"/>
+  <path d="M298 149V191" class="grid" fill="none"/>
+  <path d="M342 149V191" class="grid" fill="none"/>
+  <path d="M386 149V191" class="grid" fill="none"/>
+  <path d="M430 149V191" class="grid" fill="none"/>
+  <path d="M474 149V191" class="grid" fill="none"/>
+  <path d="M518 149V191" class="grid" fill="none"/>
+  <path d="M562 149V191" class="grid" fill="none"/>
+  <path d="M606 149V191" class="grid" fill="none"/>
+  <path d="M650 149V191" class="grid" fill="none"/>
+  <path d="M694 149V191" class="grid" fill="none"/>
+  <path d="M738 149V191" class="grid" fill="none"/>
+  <path d="M782 149V191" class="grid" fill="none"/>
+  <path d="M826 149V191" class="grid" fill="none"/>
+  <path d="M870 149V191" class="grid" fill="none"/>
+  <rect x="19" y="194" width="95" height="42" rx="4" class="panel"/>
+  <text x="66.5" y="221" class="small label" text-anchor="middle">写请求</text>
+  <rect x="122" y="194" width="792" height="42" rx="4" class="panel"/>
+  <path d="M166 194V236" class="grid" fill="none"/>
+  <path d="M210 194V236" class="grid" fill="none"/>
+  <path d="M254 194V236" class="grid" fill="none"/>
+  <path d="M298 194V236" class="grid" fill="none"/>
+  <path d="M342 194V236" class="grid" fill="none"/>
+  <path d="M386 194V236" class="grid" fill="none"/>
+  <path d="M430 194V236" class="grid" fill="none"/>
+  <path d="M474 194V236" class="grid" fill="none"/>
+  <path d="M518 194V236" class="grid" fill="none"/>
+  <path d="M562 194V236" class="grid" fill="none"/>
+  <path d="M606 194V236" class="grid" fill="none"/>
+  <path d="M650 194V236" class="grid" fill="none"/>
+  <path d="M694 194V236" class="grid" fill="none"/>
+  <path d="M738 194V236" class="grid" fill="none"/>
+  <path d="M782 194V236" class="grid" fill="none"/>
+  <path d="M826 194V236" class="grid" fill="none"/>
+  <path d="M870 194V236" class="grid" fill="none"/>
+  <rect x="19" y="239" width="95" height="42" rx="4" class="panel"/>
+  <text x="66.5" y="266" class="small label" text-anchor="middle">写数据</text>
+  <rect x="122" y="239" width="792" height="42" rx="4" class="panel"/>
+  <path d="M166 239V281" class="grid" fill="none"/>
+  <path d="M210 239V281" class="grid" fill="none"/>
+  <path d="M254 239V281" class="grid" fill="none"/>
+  <path d="M298 239V281" class="grid" fill="none"/>
+  <path d="M342 239V281" class="grid" fill="none"/>
+  <path d="M386 239V281" class="grid" fill="none"/>
+  <path d="M430 239V281" class="grid" fill="none"/>
+  <path d="M474 239V281" class="grid" fill="none"/>
+  <path d="M518 239V281" class="grid" fill="none"/>
+  <path d="M562 239V281" class="grid" fill="none"/>
+  <path d="M606 239V281" class="grid" fill="none"/>
+  <path d="M650 239V281" class="grid" fill="none"/>
+  <path d="M694 239V281" class="grid" fill="none"/>
+  <path d="M738 239V281" class="grid" fill="none"/>
+  <path d="M782 239V281" class="grid" fill="none"/>
+  <path d="M826 239V281" class="grid" fill="none"/>
+  <path d="M870 239V281" class="grid" fill="none"/>
+  <rect x="19" y="284" width="95" height="42" rx="4" class="panel"/>
+  <text x="66.5" y="311" class="small label" text-anchor="middle">写应答</text>
+  <rect x="122" y="284" width="792" height="42" rx="4" class="panel"/>
+  <path d="M166 284V326" class="grid" fill="none"/>
+  <path d="M210 284V326" class="grid" fill="none"/>
+  <path d="M254 284V326" class="grid" fill="none"/>
+  <path d="M298 284V326" class="grid" fill="none"/>
+  <path d="M342 284V326" class="grid" fill="none"/>
+  <path d="M386 284V326" class="grid" fill="none"/>
+  <path d="M430 284V326" class="grid" fill="none"/>
+  <path d="M474 284V326" class="grid" fill="none"/>
+  <path d="M518 284V326" class="grid" fill="none"/>
+  <path d="M562 284V326" class="grid" fill="none"/>
+  <path d="M606 284V326" class="grid" fill="none"/>
+  <path d="M650 284V326" class="grid" fill="none"/>
+  <path d="M694 284V326" class="grid" fill="none"/>
+  <path d="M738 284V326" class="grid" fill="none"/>
+  <path d="M782 284V326" class="grid" fill="none"/>
+  <path d="M826 284V326" class="grid" fill="none"/>
+  <path d="M870 284V326" class="grid" fill="none"/>
+  <rect x="19" y="329" width="95" height="42" rx="4" class="panel"/>
+  <text x="66.5" y="356" class="small label" text-anchor="middle">累计确认</text>
+  <rect x="122" y="329" width="792" height="42" rx="4" class="panel"/>
+  <path d="M166 329V371" class="grid" fill="none"/>
+  <path d="M210 329V371" class="grid" fill="none"/>
+  <path d="M254 329V371" class="grid" fill="none"/>
+  <path d="M298 329V371" class="grid" fill="none"/>
+  <path d="M342 329V371" class="grid" fill="none"/>
+  <path d="M386 329V371" class="grid" fill="none"/>
+  <path d="M430 329V371" class="grid" fill="none"/>
+  <path d="M474 329V371" class="grid" fill="none"/>
+  <path d="M518 329V371" class="grid" fill="none"/>
+  <path d="M562 329V371" class="grid" fill="none"/>
+  <path d="M606 329V371" class="grid" fill="none"/>
+  <path d="M650 329V371" class="grid" fill="none"/>
+  <path d="M694 329V371" class="grid" fill="none"/>
+  <path d="M738 329V371" class="grid" fill="none"/>
+  <path d="M782 329V371" class="grid" fill="none"/>
+  <path d="M826 329V371" class="grid" fill="none"/>
+  <path d="M870 329V371" class="grid" fill="none"/>
+  <rect x="168" y="107" width="40" height="36" rx="4" class="control"/>
+  <text x="188.0" y="131" class="small label" text-anchor="middle">R0</text>
+  <rect x="212" y="107" width="40" height="36" rx="4" class="control"/>
+  <text x="232.0" y="131" class="small label" text-anchor="middle">R1</text>
+  <rect x="564" y="107" width="40" height="36" rx="4" class="control"/>
+  <text x="584.0" y="131" class="small label" text-anchor="middle">R2</text>
+  <rect x="300" y="152" width="40" height="36" rx="4" class="block"/>
+  <text x="320.0" y="166" class="tiny label" text-anchor="middle">R1</text>
+  <text x="320.0" y="182" class="tiny" text-anchor="middle">5·6</text>
+  <rect x="344" y="152" width="40" height="36" rx="4" class="block"/>
+  <text x="364.0" y="166" class="tiny label" text-anchor="middle">R1</text>
+  <text x="364.0" y="182" class="tiny" text-anchor="middle">7·8</text>
+  <rect x="388" y="152" width="40" height="36" rx="4" class="block"/>
+  <text x="408.0" y="166" class="tiny label" text-anchor="middle">R0</text>
+  <text x="408.0" y="182" class="tiny" text-anchor="middle">1·2</text>
+  <rect x="432" y="152" width="40" height="36" rx="4" class="block"/>
+  <text x="452.0" y="166" class="tiny label" text-anchor="middle">R0</text>
+  <text x="452.0" y="182" class="tiny" text-anchor="middle">3·4</text>
+  <rect x="652" y="152" width="40" height="36" rx="4" class="block"/>
+  <text x="672.0" y="166" class="tiny label" text-anchor="middle">R2</text>
+  <text x="672.0" y="182" class="beatvals" text-anchor="middle">9·10</text>
+  <rect x="696" y="152" width="40" height="36" rx="4" class="block"/>
+  <text x="716.0" y="166" class="tiny label" text-anchor="middle">R2</text>
+  <text x="716.0" y="182" class="beatvals" text-anchor="middle">11·12</text>
+  <rect x="388" y="197" width="40" height="36" rx="4" class="control"/>
+  <text x="408.0" y="221" class="small label" text-anchor="middle">W1</text>
+  <rect x="564" y="197" width="40" height="36" rx="4" class="control"/>
+  <text x="584.0" y="221" class="small label" text-anchor="middle">W0</text>
+  <rect x="740" y="197" width="40" height="36" rx="4" class="control"/>
+  <text x="760.0" y="221" class="small label" text-anchor="middle">W2</text>
+  <rect x="432" y="242" width="40" height="36" rx="4" class="block"/>
+  <text x="452.0" y="256" class="tiny label" text-anchor="middle">W1</text>
+  <text x="452.0" y="272" class="tiny" text-anchor="middle">5·6</text>
+  <rect x="476" y="242" width="40" height="36" rx="4" class="block"/>
+  <text x="496.0" y="256" class="tiny label" text-anchor="middle">W1</text>
+  <text x="496.0" y="272" class="tiny" text-anchor="middle">7·8</text>
+  <rect x="608" y="242" width="40" height="36" rx="4" class="block"/>
+  <text x="628.0" y="256" class="tiny label" text-anchor="middle">W0</text>
+  <text x="628.0" y="272" class="tiny" text-anchor="middle">1·2</text>
+  <rect x="652" y="242" width="40" height="36" rx="4" class="block"/>
+  <text x="672.0" y="256" class="tiny label" text-anchor="middle">W0</text>
+  <text x="672.0" y="272" class="tiny" text-anchor="middle">3·4</text>
+  <rect x="784" y="242" width="40" height="36" rx="4" class="block"/>
+  <text x="804.0" y="256" class="tiny label" text-anchor="middle">W2</text>
+  <text x="804.0" y="272" class="beatvals" text-anchor="middle">9·10</text>
+  <rect x="828" y="242" width="40" height="36" rx="4" class="block"/>
+  <text x="848.0" y="256" class="tiny label" text-anchor="middle">W2</text>
+  <text x="848.0" y="272" class="beatvals" text-anchor="middle">11·12</text>
+  <rect x="520" y="287" width="40" height="36" rx="4" class="control"/>
+  <text x="540.0" y="311" class="small label" text-anchor="middle">W1</text>
+  <rect x="696" y="287" width="40" height="36" rx="4" class="control"/>
+  <text x="716.0" y="311" class="small label" text-anchor="middle">W0</text>
+  <rect x="872" y="287" width="40" height="36" rx="4" class="control"/>
+  <text x="892.0" y="311" class="small label" text-anchor="middle">W2</text>
+  <rect x="124" y="332" width="392" height="36" rx="4" class="empty"/>
+  <text x="320.0" y="356" class="tiny label" text-anchor="middle">0 B</text>
+  <rect x="520" y="332" width="172" height="36" rx="4" class="block"/>
+  <text x="606.0" y="356" class="tiny label" text-anchor="middle">4 B</text>
+  <rect x="696" y="332" width="172" height="36" rx="4" class="block"/>
+  <text x="782.0" y="356" class="tiny label" text-anchor="middle">8 B</text>
+  <rect x="872" y="332" width="40" height="36" rx="4" class="block"/>
+  <text x="892.0" y="356" class="tiny label" text-anchor="middle">12 B</text>
+  <text x="20" y="390" class="small accent label" text-anchor="start">E9 释放 S1 → E10 接纳 R2；同一沿也可交付 W0 写请求。</text>
+  <rect x="19" y="411" width="899" height="96" rx="8" class="panel"/>
+  <text x="33" y="432" class="small label" text-anchor="start">匹配串行、并发两种模型的读取首拍延迟（R0：5 拍；R1、R2：2 拍）</text>
+  <text x="135" y="464" class="small label" text-anchor="end">串行搬运</text>
+  <rect x="155" y="446" width="567.0" height="23" rx="4" class="control"/>
+  <text x="713.0" y="463" class="tiny label" text-anchor="end">27 拍</text>
+  <text x="734.0" y="463" class="tiny muted" text-anchor="start">E11、E19、E27 确认</text>
+  <text x="135" y="494" class="small label" text-anchor="end">并发搬运</text>
+  <rect x="155" y="476" width="357.0" height="23" rx="4" class="block"/>
+  <text x="503.0" y="493" class="tiny label" text-anchor="end">17 拍</text>
+  <text x="524.0" y="493" class="tiny muted" text-anchor="start">E9、E13、E17 确认</text>
+</svg>

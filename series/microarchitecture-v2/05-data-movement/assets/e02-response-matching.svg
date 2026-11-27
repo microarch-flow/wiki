@@ -1,0 +1,71 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 820 486" width="820" height="486" role="img" aria-labelledby="title desc">
+  <title id="title">根据返回标签找到正确的缓冲槽和目标地址</title>
+  <desc id="desc">E1 接纳第零行读请求 R0，标记 ID0 并保留 S0，保存目标地址 0x2000。E2 接纳第一行读请求 R1，标记 ID1 并保留 S1，保存目标地址 0x2004。R1 在 E4 返回数据 5、6，E5 返回 7、8。按返回标签 ID1 找到 S1，把四个有效字节存入对应位置；此时 S0 仍在等待 R0，尚无有效数据。E5 后 S1 已就绪，其下一笔写请求 W1 将使用 0x2004；尚未写入目标。图示省略接口的具体实现细节。</desc>
+  <defs>
+    <marker id="data-arrow" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0 0L7 3.5L0 7z" fill="#376650"/></marker>
+    <marker id="ctrl-arrow" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0 0L7 3.5L0 7z" fill="#9b6c27"/></marker>
+    <style>
+      text{font-family:"Noto Sans CJK SC","Microsoft YaHei",sans-serif;fill:#173d35;font-size:18px}
+      .heading{font-size:23px;font-weight:700}.label{font-weight:700}.small{font-size:16px}.tiny{font-size:14px}.beatvals{font-size:12px}.accent{fill:#8a5d1c}.muted{fill:#58736a}
+      .panel{fill:#fafbf8;stroke:#c7d3c7;stroke-width:1.3}.block{fill:#e0ebe3;stroke:#82a18e;stroke-width:1.4}.control{fill:#f3ebdb;stroke:#c6aa79;stroke-width:1.3}
+      .reserve{fill:#f3ebdb;stroke:#c6aa79;stroke-width:1.2;stroke-dasharray:4 3}.empty{fill:#edf0ed;stroke:#c7d3c7;stroke-width:1.2;stroke-dasharray:4 3}
+      .data{stroke:#376650;stroke-width:2.4;fill:none;stroke-linejoin:round;stroke-linecap:round;marker-end:url(#data-arrow)}
+      .ctrl{stroke:#9b6c27;stroke-width:1.8;stroke-dasharray:5 4;fill:none;stroke-linejoin:round;stroke-linecap:round;marker-end:url(#ctrl-arrow)}
+      .grid{stroke:#d1dad0;stroke-width:.9}.divider{stroke:#c7d3c7;stroke-width:1.1}.slot{fill:#fafbf8;stroke:#92ad9d;stroke-width:1.1}
+    </style>
+  </defs>
+  <rect x="1" y="1" width="818" height="484" rx="13" fill="#f5f6ef" stroke="#c4d0c4"/>
+  <text x="20" y="35" class="heading" text-anchor="start">两笔读取同时等待，ID 1 的数据先到</text>
+  <text x="20" y="61" class="small muted" text-anchor="start">E5 沿后的状态：R1 已收齐，R0 尚未返回。</text>
+  <rect x="20" y="85" width="190" height="325" rx="9" class="panel"/>
+  <text x="115" y="114" class="label" text-anchor="middle">返回数据</text>
+  <rect x="48" y="137" width="134" height="108" rx="8" class="block"/>
+  <text x="115" y="163" class="small label" text-anchor="middle">E4 · ID 1</text>
+  <text x="115" y="185" class="tiny muted" text-anchor="middle">R1 第 1 拍</text>
+  <rect x="72" y="195" width="40" height="34" rx="4" class="slot"/>
+  <rect x="118" y="195" width="40" height="34" rx="4" class="slot"/>
+  <text x="92" y="218" class="label" text-anchor="middle">5</text>
+  <text x="138" y="218" class="label" text-anchor="middle">6</text>
+  <rect x="48" y="262" width="134" height="108" rx="8" class="block"/>
+  <text x="115" y="288" class="small label" text-anchor="middle">E5 · ID 1</text>
+  <text x="115" y="310" class="tiny muted" text-anchor="middle">R1 第 2 拍</text>
+  <rect x="72" y="320" width="40" height="34" rx="4" class="slot"/>
+  <rect x="118" y="320" width="40" height="34" rx="4" class="slot"/>
+  <text x="92" y="343" class="label" text-anchor="middle">7</text>
+  <text x="138" y="343" class="label" text-anchor="middle">8</text>
+  <rect x="298" y="85" width="502" height="325" rx="9" class="panel"/>
+  <text x="318" y="114" class="label" text-anchor="start">DMA 内部状态与数据槽</text>
+  <rect x="316" y="132" width="466" height="115" rx="8" class="reserve"/>
+  <text x="333" y="156" class="label" text-anchor="start">S0 · R0（ID 0）</text>
+  <text x="333" y="180" class="small" text-anchor="start">目标：0x2000</text>
+  <text x="333" y="204" class="small accent" text-anchor="start">等待返回 · 有效 0 B</text>
+  <rect x="568" y="159" width="43" height="45" rx="4" class="reserve"/>
+  <text x="589.5" y="188" class="small muted" text-anchor="middle">—</text>
+  <rect x="617" y="159" width="43" height="45" rx="4" class="reserve"/>
+  <text x="638.5" y="188" class="small muted" text-anchor="middle">—</text>
+  <rect x="666" y="159" width="43" height="45" rx="4" class="reserve"/>
+  <text x="687.5" y="188" class="small muted" text-anchor="middle">—</text>
+  <rect x="715" y="159" width="43" height="45" rx="4" class="reserve"/>
+  <text x="736.5" y="188" class="small muted" text-anchor="middle">—</text>
+  <rect x="316" y="266" width="466" height="125" rx="8" class="block"/>
+  <text x="333" y="290" class="label" text-anchor="start">S1 · R1（ID 1）</text>
+  <text x="333" y="314" class="small" text-anchor="start">目标：0x2004</text>
+  <text x="333" y="338" class="small label" text-anchor="start">可写 · 有效 4 B</text>
+  <rect x="568" y="293" width="43" height="45" rx="4" class="slot"/>
+  <text x="589.5" y="322" class="label" text-anchor="middle">5</text>
+  <rect x="617" y="293" width="43" height="45" rx="4" class="slot"/>
+  <text x="638.5" y="322" class="label" text-anchor="middle">6</text>
+  <rect x="666" y="293" width="43" height="45" rx="4" class="slot"/>
+  <text x="687.5" y="322" class="label" text-anchor="middle">7</text>
+  <rect x="715" y="293" width="43" height="45" rx="4" class="slot"/>
+  <text x="736.5" y="322" class="label" text-anchor="middle">8</text>
+  <text x="549" y="373" class="small accent" text-anchor="middle">下一笔 W1 使用目标地址 0x2004</text>
+  <path d="M182 212H252V247" class="data"/>
+  <path d="M182 337H252V293" class="data"/>
+  <path d="M286 270H302V311H316" class="data"/>
+  <rect x="218" y="247" width="68" height="46" rx="6" class="control"/>
+  <text x="252" y="265" class="tiny label" text-anchor="middle">按 ID</text>
+  <text x="252" y="283" class="tiny label" text-anchor="middle">定位</text>
+  <text x="20" y="438" class="label" text-anchor="start">R0 先发，R1 先返回；不能按请求顺序放置数据。</text>
+  <text x="20" y="464" class="tiny muted" text-anchor="start">图中只表示已返回并保存的数据；E5 结束时目标 SRAM 尚未收到本次写数据。</text>
+</svg>
