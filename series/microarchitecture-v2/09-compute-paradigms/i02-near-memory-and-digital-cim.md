@@ -254,7 +254,7 @@ NMC 和本文狭义的 PIM，都是将独立处理逻辑放到存储数据附近
 
 当阵列只能给出一位判决时，两个多位数的乘积还需要多组位平面及数字外围来合成。那么，有没有一种办法使阵列内的物理量本身就代表乘积，并让多个乘积直接在同一处汇合？
 
-下一篇将继续使用 X = (2, 3)、W = (4, 5) 的点积，观察模拟存内计算怎样改变数值的承载方式。
+下一篇 [I03 · 怎样利用模拟电路完成矩阵乘加？](i03-analog-computing-in-memory.md) 将继续使用 X = (2, 3)、W = (4, 5) 的点积，观察模拟存内计算怎样改变数值的承载方式。
 
 进一步了解具体介质、数字存内计算的位串行排程及 bank 级计算，可以选读旧版的[存储器件与计算路径](../../microarchitecture/08-in-memory-computing/02-memory-technologies/README.md)及[数字存内计算的深入分析](../../microarchitecture/08-in-memory-computing/03-compute-paradigms/digital-cim-deep-dive.md)。
 

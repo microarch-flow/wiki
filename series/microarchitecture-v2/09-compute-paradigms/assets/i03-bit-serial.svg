@@ -1,0 +1,57 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 680 484" width="680" height="484" role="img" aria-labelledby="title desc">
+  <title id="title">从两个输入位平面恢复完整点积</title>
+  <desc id="desc">低位窗输入为0、1，两行电压0和20 mV，权重保持4与5，列电流1.0 µA，ADC输出5。高位窗输入为1、1，两行电压20 mV，列电流1.8 µA，ADC输出9。数字端保存两个码，把9左移一位，与5相加得到23。每个窗分别进行读出和转换。</desc>
+  <defs>
+    <marker id="arrow" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0 0L7 3.5L0 7Z" fill="#376a55"/></marker>
+    <style>
+      text{font-family:"Noto Sans CJK SC","PingFang SC","Microsoft YaHei",sans-serif;font-size:18px;fill:#173d35}
+      .head{font-size:22px;font-weight:700}.sub{font-size:16px;fill:#4f695a}.label{font-weight:700}.small{font-size:16px}
+      .panel{fill:#fafbf8;stroke:#c7d3c7;stroke-width:1.3}.input{fill:#e1edf2;stroke:#7da6b4;stroke-width:1.3}.cell{fill:#edf1df;stroke:#98a784;stroke-width:1.5}.out{fill:#d8eadc;stroke:#82a18e;stroke-width:1.5}.wire{fill:none;stroke:#376a55;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round;marker-end:url(#arrow)}
+    </style>
+  </defs>
+  <rect x="1" y="1" width="678" height="482" rx="13" fill="#f5f6ef" stroke="#c4d0c4"/>
+  <text x="22" y="33" class="head">同一组权重，两次定幅读出</text>
+  <text x="22" y="58" class="sub">每次 1 都代表 20 mV；位权在转换后加回</text>
+  <rect x="16" y="74" width="648" height="142" rx="10" class="panel"/>
+  <text x="30" y="100" class="label">读窗 0 · 低位 (0, 1)</text>
+  <rect x="30" y="114" width="132" height="36" rx="6" class="input"/>
+  <text x="96" y="138" text-anchor="middle" class="small">0 → 0 mV</text>
+  <rect x="30" y="167" width="132" height="36" rx="6" class="input"/>
+  <text x="96" y="191" text-anchor="middle" class="small">1 → 20 mV</text>
+  <rect x="190" y="114" width="152" height="36" rx="6" class="cell"/>
+  <text x="266" y="138" text-anchor="middle" class="small label">w₀=4 · 40 µS</text>
+  <rect x="190" y="167" width="152" height="36" rx="6" class="cell"/>
+  <text x="266" y="191" text-anchor="middle" class="small label">w₁=5 · 50 µS</text>
+  <path d="M164 132H186" class="wire"/><path d="M164 185H186" class="wire"/>
+  <path d="M344 132H423V159H472M344 185H423V159H472" class="wire"/>
+  <text x="352" y="125" class="small">0 µA</text>
+  <text x="352" y="201" class="small">1.0 µA</text>
+  <rect x="476" y="125" width="174" height="68" rx="6" class="out"/>
+  <text x="563" y="146" text-anchor="middle" class="small label">列和 1.0 µA</text>
+  <text x="563" y="166" text-anchor="middle" class="small">ADC 转换</text>
+  <text x="563" y="185" text-anchor="middle" class="small label">码 5</text>
+
+  <rect x="16" y="226" width="648" height="142" rx="10" class="panel"/>
+  <text x="30" y="252" class="label">读窗 1 · 高位 (1, 1)</text>
+  <rect x="30" y="266" width="132" height="36" rx="6" class="input"/>
+  <text x="96" y="290" text-anchor="middle" class="small">1 → 20 mV</text>
+  <rect x="30" y="319" width="132" height="36" rx="6" class="input"/>
+  <text x="96" y="343" text-anchor="middle" class="small">1 → 20 mV</text>
+  <rect x="190" y="266" width="152" height="36" rx="6" class="cell"/>
+  <text x="266" y="290" text-anchor="middle" class="small label">w₀=4 · 40 µS</text>
+  <rect x="190" y="319" width="152" height="36" rx="6" class="cell"/>
+  <text x="266" y="343" text-anchor="middle" class="small label">w₁=5 · 50 µS</text>
+  <path d="M164 284H186" class="wire"/><path d="M164 337H186" class="wire"/>
+  <path d="M344 284H423V311H472M344 337H423V311H472" class="wire"/>
+  <text x="352" y="277" class="small">0.8 µA</text>
+  <text x="352" y="353" class="small">1.0 µA</text>
+  <rect x="476" y="277" width="174" height="68" rx="6" class="out"/>
+  <text x="563" y="298" text-anchor="middle" class="small label">列和 1.8 µA</text>
+  <text x="563" y="318" text-anchor="middle" class="small">ADC 转换</text>
+  <text x="563" y="337" text-anchor="middle" class="small label">码 9</text>
+
+  <rect x="16" y="379" width="648" height="76" rx="10" class="out"/>
+  <text x="340" y="404" text-anchor="middle" class="label">数字侧：保存两个码，按原输入位权合并</text>
+  <text x="340" y="438" text-anchor="middle" class="head">5 × 1 + 9 × 2 = 23</text>
+  <text x="22" y="472" class="sub">列端刻度 0.2 µA/码；两个读窗各自完成模拟读出与转换。</text>
+</svg>
