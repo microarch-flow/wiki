@@ -1,0 +1,58 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 620 608" width="620" height="608" role="img" aria-labelledby="alu-title alu-desc">
+  <title id="alu-title">四位算术逻辑单元的功能结构示例</title>
+  <desc id="alu-desc">四位操作数 A、B 可进入共享加减法器或按位逻辑运算单元，A 与移位量 k 进入移位单元。选加法时 SUB 为零，选减法或比较时 SUB 为一。共享加减法器产生四位 R、最高位进位 C4 及有符号溢出 V。比较电路读取减法结果和标志：R 为零表示相等，C4 为零表示无符号小于，结果最高位 R3 与 V 异或表示有符号小于。按运算选择 OP 取得一个比较布尔值，并将它的高三位补零。按位逻辑单元和移位单元也按 OP 选择功能；输出多路选择器按 OP 从四条候选四位结果中选出 Y。图为组合逻辑教学示意，不表示必须同时实现所有功能，不画寄存器、时钟及具体控制译码门。</desc>
+  <defs>
+    <marker id="data-arrow" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto"><path d="M0 0L6 3L0 6Z" fill="#376a55"/></marker>
+    <marker id="ctrl-arrow" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto"><path d="M0 0L6 3L0 6Z" fill="#8a6c3c"/></marker>
+    <style>
+      text{font-family:"Noto Sans CJK SC","PingFang SC","Microsoft YaHei",sans-serif;fill:#173d35;font-size:18px}
+      .heading{font-size:21px;font-weight:700}.symbol{font-size:19px;font-weight:700}.note{font-size:16px;fill:#4f695a}.ctrl{font-size:16px;font-weight:600;fill:#765a2f}
+      .block{fill:#e0ebe3;stroke:#82a18e;stroke-width:1.6}.mux{fill:#edf1df;stroke:#82a18e;stroke-width:1.6}
+      .wire{stroke:#376a55;stroke-width:2.2;fill:none;stroke-linejoin:round;marker-end:url(#data-arrow)}
+      .control{stroke:#8a6c3c;stroke-width:1.8;stroke-dasharray:5 3;fill:none;marker-end:url(#ctrl-arrow)}
+    </style>
+  </defs>
+  <rect x="1" y="1" width="618" height="606" rx="13" fill="#f5f6ef" stroke="#c4d0c4" stroke-width="1.3"/>
+  <!-- Control interpretation at the top; repeated signal names stand for the same nets. -->
+  <text class="heading" x="22" y="34">运算选择 OP</text>
+  <text class="note" x="22" y="61">加法：SUB=0；减法或比较：SUB=1。</text>
+  <text class="note" x="22" y="83">OP 还决定各功能以及最终选取哪路结果。</text>
+  <rect x="12" y="98" width="596" height="454" rx="10" fill="#f9faf5" stroke="#c4d0c4"/>
+  <!-- Shared add/sub branch. -->
+  <rect class="block" x="107" y="131" width="245" height="77" rx="8"/>
+  <g text-anchor="middle"><text class="symbol" x="229.5" y="153">共享加减法器</text><text class="note" x="229.5" y="177">A + B′ + SUB</text><text class="note" x="229.5" y="198">每一位：Bⱼ′ = Bⱼ ⊕ SUB</text></g>
+  <text class="symbol" x="25" y="158">A, B</text><text class="note" x="25" y="180">各 4 位</text>
+  <path class="wire" d="M25 190H103"/>
+  <text class="ctrl" x="229.5" y="117" text-anchor="middle">SUB</text><path class="control" d="M229.5 120V127"/>
+  <path class="wire" d="M352 163H423"/><text class="note" x="388" y="154" text-anchor="middle">R</text>
+  <!-- Comparison consumes subtract result and carry/overflow; result is extended to common width. -->
+  <path class="wire" d="M181 208V244"/><text class="note" x="191" y="231">R, C₄, V</text>
+  <rect class="block" x="107" y="248" width="245" height="144" rx="8"/>
+  <g text-anchor="middle">
+    <text class="symbol" x="229.5" y="273">比较（按 OP 选一种）</text>
+    <text x="229.5" y="298">相等：R=0</text>
+    <text x="229.5" y="322">无符号小于：C₄=0</text>
+    <text x="229.5" y="346">有符号小于：R₃ ⊕ V</text>
+    <text class="note" x="229.5" y="373">1 位结果 t → 000t</text>
+  </g>
+  <path class="wire" d="M352 320H423"/>
+  <!-- Bitwise operation branch. -->
+  <rect class="block" x="107" y="404" width="245" height="57" rx="8"/>
+  <text class="symbol" x="229.5" y="428" text-anchor="middle">按位逻辑</text>
+  <text class="note" x="229.5" y="450" text-anchor="middle">AND / OR / XOR</text>
+  <text class="symbol" x="25" y="421">A, B</text><path class="wire" d="M25 433H103"/>
+  <path class="wire" d="M352 433H423"/>
+  <!-- Shift branch. -->
+  <rect class="block" x="107" y="473" width="245" height="60" rx="8"/>
+  <text class="symbol" x="229.5" y="497" text-anchor="middle">移位运算</text>
+  <text class="note" x="229.5" y="520" text-anchor="middle">左移 / 逻辑与算术右移</text>
+  <text class="symbol" x="25" y="490">A, k</text><path class="wire" d="M25 503H103"/>
+  <path class="wire" d="M352 503H423"/>
+  <!-- All four candidates have four-bit results. The same OP is routed to the final selector. -->
+  <rect class="mux" x="427" y="136" width="102" height="394" rx="11"/>
+  <g text-anchor="middle"><text class="symbol" x="478" y="336">结果选择</text><text x="478" y="360">MUX</text><text class="note" x="478" y="384">各路 4 位</text></g>
+  <path class="wire" d="M529 289H585"/><text class="symbol" x="551" y="279">Y</text><text class="note" x="551" y="314">4 位</text>
+  <text class="ctrl" x="478" y="117" text-anchor="middle">OP</text><path class="control" d="M478 120V132"/>
+  <text class="note" x="22" y="575">k 为移位量；同名信号相连，控制译码逻辑省略。</text>
+  <text class="note" x="22" y="596">组合逻辑教学示意，不画时钟、寄存器和写回。</text>
+</svg>

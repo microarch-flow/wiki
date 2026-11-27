@@ -1,0 +1,76 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="600" height="516" viewBox="0 0 600 516" role="img" aria-labelledby="adder-title adder-desc">
+  <title id="adder-title">半加器与全加器的连接关系</title>
+  <desc id="adder-desc">半加器同时把 A 和 B 送入异或门与与门，异或门输出和 S，与门输出进位 C。全加器的第一只半加器计算 A_i 与 B_i 的和 P 及进位 G，第二只半加器计算 P 与本位进位 C_i 的和 S_i 及进位 H，最后或门将 G 与 H 合并得到 C_{i+1}。</desc>
+  <defs>
+    <marker id="adder-data-arrow" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0 0L7 3.5L0 7Z" fill="#376a55"/></marker>
+    <marker id="adder-carry-arrow" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0 0L7 3.5L0 7Z" fill="#967333"/></marker>
+    <style>
+      text{font-family:"Noto Sans CJK SC","PingFang SC","Microsoft YaHei",sans-serif;fill:#173d35;font-size:19px}
+      .head{font-size:22px;font-weight:700}
+      .note{font-size:16px;fill:#4f695a}
+      .label{font-size:18px;font-weight:600}
+      .logic{font-size:22px;font-weight:700}
+      .box{fill:#e0ebe3;stroke:#82a18e;stroke-width:1.7}
+      .orbox{fill:#f2e8d3;stroke:#b6a073;stroke-width:1.7}
+      .data{fill:none;stroke:#376a55;stroke-width:2.4;stroke-linejoin:round;marker-end:url(#adder-data-arrow)}
+      .carry{fill:none;stroke:#967333;stroke-width:2.4;stroke-linejoin:round;marker-end:url(#adder-carry-arrow)}
+      .carrytext{font-size:18px;font-weight:600;fill:#765a2f}
+    </style>
+  </defs>
+  <rect x="1" y="1" width="598" height="514" rx="13" fill="#f5f6ef" stroke="#c4d0c4" stroke-width="1.3"/>
+  <text x="22" y="35" class="head">1. 半加器：两个比特相加，输出和与进位</text>
+  <text x="22" y="60" class="note">同名输入线相连：两只逻辑门都接收 A、B</text>
+
+  <rect class="box" x="149" y="76" width="126" height="60" rx="8"/>
+  <text x="212" y="113" text-anchor="middle" class="logic">XOR</text>
+  <text x="51" y="91" class="label">A</text>
+  <text x="51" y="121" class="label">B</text>
+  <path class="data" d="M79 85H145"/>
+  <path class="data" d="M79 115H145"/>
+  <path class="data" d="M275 106H367"/>
+  <text x="379" y="111" class="label">S = A ⊕ B</text>
+  <text x="379" y="130" class="note">本位的和</text>
+
+  <rect class="orbox" x="149" y="151" width="126" height="60" rx="8"/>
+  <text x="212" y="188" text-anchor="middle" class="logic">AND</text>
+  <text x="51" y="166" class="label">A</text>
+  <text x="51" y="196" class="label">B</text>
+  <path class="data" d="M79 160H145"/>
+  <path class="data" d="M79 190H145"/>
+  <path class="carry" d="M275 181H367"/>
+  <text x="379" y="186" class="carrytext">C = A ∧ B</text>
+  <text x="379" y="205" class="note">向高一位进位</text>
+
+  <path d="M22 227H578" stroke="#c4d0c4"/>
+  <text x="22" y="258" class="head">2. 全加器：还要加上来自低位的进位</text>
+  <rect class="box" x="112" y="294" width="118" height="68" rx="9"/>
+  <text x="171" y="322" text-anchor="middle" class="label">半加器 1</text>
+  <text x="171" y="345" text-anchor="middle" class="note">先加 Aᵢ、Bᵢ</text>
+  <rect class="box" x="338" y="294" width="118" height="68" rx="9"/>
+  <text x="397" y="322" text-anchor="middle" class="label">半加器 2</text>
+  <text x="397" y="345" text-anchor="middle" class="note">再加 P、Cᵢ</text>
+
+  <text x="34" y="311" class="label">Aᵢ</text>
+  <text x="34" y="348" class="label">Bᵢ</text>
+  <path class="data" d="M63 306H108"/>
+  <path class="data" d="M63 343H108"/>
+
+  <path class="data" d="M230 314H334"/>
+  <text x="284" y="303" text-anchor="middle" class="label">P</text>
+  <path class="carry" d="M397 270V290"/>
+  <text x="409" y="281" class="carrytext">Cᵢ</text>
+  <path class="data" d="M456 314H526"/>
+  <text x="542" y="320" class="label">Sᵢ</text>
+
+  <rect class="orbox" x="338" y="405" width="118" height="60" rx="8"/>
+  <text x="397" y="442" class="logic" text-anchor="middle">OR</text>
+  <path class="carry" d="M171 362V435H334"/>
+  <text x="188" y="427" class="carrytext">G</text>
+  <path class="carry" d="M397 362V401"/>
+  <text x="413" y="389" class="carrytext">H</text>
+  <path class="carry" d="M456 435H526"/>
+  <text x="534" y="441" class="carrytext">Cᵢ₊₁</text>
+
+  <text x="22" y="490" class="note">P = Aᵢ ⊕ Bᵢ，G = Aᵢ ∧ Bᵢ，H = P ∧ Cᵢ</text>
+  <text x="22" y="510" class="note">Sᵢ = P ⊕ Cᵢ，Cᵢ₊₁ = G ∨ H</text>
+</svg>

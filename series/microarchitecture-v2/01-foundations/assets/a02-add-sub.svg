@@ -1,0 +1,44 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 351" width="600" height="351" role="img" aria-labelledby="title desc">
+  <title id="title">用同一个四位加法器实现加法和减法</title>
+  <desc id="desc">A 直接进入加法器，B 的每个比特先与公共控制信号 SUB 异或。SUB 同时作为最低位进位输入 C0。SUB 为零时计算 A+B，SUB 为一时计算 A+按位取反的 B+1。加法器输出低四位 R 和最高位进位 C4。以四位补码 2 减 3 为例，0010 加 1100 加 1 得到 1111，C4 为零，低四位表示负一。</desc>
+  <defs>
+    <marker id="arrow" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0 0L7 3.5L0 7z" fill="#376650"/></marker>
+    <marker id="control-arrow" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0 0L7 3.5L0 7z" fill="#9b6c27"/></marker>
+    <style>
+      text{font-family:"Noto Sans CJK SC","Microsoft YaHei",sans-serif;fill:#173d35;font-size:18px}
+      .heading{font-size:22px;font-weight:700}.small{font-size:16px}.accent{fill:#8a5d1c}
+      .block{fill:#e0ebe3;stroke:#82a18e;stroke-width:1.6}
+      .wire{fill:none;stroke:#376650;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round}
+      .control{fill:none;stroke:#9b6c27;stroke-width:2.2;stroke-dasharray:6 4;stroke-linecap:round;stroke-linejoin:round}
+      .bits{font-family:"Noto Sans Mono CJK SC",monospace;font-size:18px;font-weight:700}
+    </style>
+  </defs>
+  <rect x="1" y="1" width="598" height="349" rx="13" fill="#f5f6ef" stroke="#c4d0c4"/>
+  <text x="20" y="34" class="heading">同一个加法器怎样完成加法与减法？</text>
+  <rect x="328" y="63" width="128" height="134" rx="10" class="block"/>
+  <text x="392" y="125" text-anchor="middle" font-weight="700">加法器</text>
+  <text x="392" y="149" text-anchor="middle" class="small">4 位</text>
+  <text x="25" y="88">A（4 位）</text>
+  <path class="wire" d="M25 99H328" marker-end="url(#arrow)"/>
+  <text x="25" y="164">B（4 位）</text>
+  <rect x="141" y="141" width="118" height="50" rx="8" class="block"/>
+  <text x="200" y="161" text-anchor="middle">按位 XOR</text>
+  <text x="200" y="181" class="small" text-anchor="middle">Bᵢ ⊕ SUB</text>
+  <path class="wire" d="M25 175H141" marker-end="url(#arrow)"/>
+  <path class="wire" d="M259 166H328" marker-end="url(#arrow)"/>
+  <text x="287" y="153" class="small" text-anchor="middle">B′</text>
+  <path class="wire" d="M456 99H574" marker-end="url(#arrow)"/>
+  <text x="575" y="87" text-anchor="end" class="small">结果 R（4 位）</text>
+  <path class="wire" d="M456 166H574" marker-end="url(#arrow)"/>
+  <text x="575" y="155" text-anchor="end" class="small">进位 C₄</text>
+  <path class="control" d="M200 241V191" marker-end="url(#control-arrow)"/>
+  <path class="control" d="M200 222H392V197" marker-end="url(#control-arrow)"/>
+  <circle cx="200" cy="222" r="3.4" fill="#9b6c27"/>
+  <text x="200" y="259" text-anchor="middle" class="accent">SUB</text>
+  <text x="406" y="218" class="small accent">C₀ = SUB</text>
+  <rect x="18" y="274" width="564" height="61" rx="7" fill="#edf1df"/>
+  <text x="32" y="296" class="small">SUB = 0：A + B　　SUB = 1：A + ~B + 1</text>
+  <text x="32" y="320" class="small">例：2 − 3</text>
+  <text x="123" y="320" class="bits">0010 + 1100 + 1 = 1111</text>
+  <text x="565" y="320" text-anchor="end" class="small">C₄=0，补码 −1</text>
+</svg>
