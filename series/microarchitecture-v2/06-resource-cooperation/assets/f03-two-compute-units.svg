@@ -1,0 +1,84 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 860 632" width="860" height="632" role="img" aria-labelledby="f03-units-title f03-units-desc">
+  <title id="f03-units-title">两个完整计算单元分别执行任务并共享上级资源</title>
+  <desc id="f03-units-desc">任务命令可由一个或多个入口分别交付给 P0 和 P1 的局部命令与状态逻辑。每个单元拥有独立的计算资源和保存操作数、结果的局部存储；两单元经片上互连共同访问共享 SRAM 和外部内存接口，并能够通过互连交换数据。图中虚线表示命令交付，双向实线表示逻辑数据传递；未预设中央调度器，也不规定端口、物理拓扑或硬件层级。</desc>
+  <defs>
+    <marker id="f03-data-arrow" markerUnits="userSpaceOnUse" viewBox="0 0 7 7" markerWidth="10" markerHeight="10" refX="6" refY="3.5" orient="auto-start-reverse"><path d="M0 0L7 3.5L0 7Z" fill="#376a55"/></marker>
+    <marker id="f03-command-arrow" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0 0L7 3.5L0 7Z" fill="#935c2b"/></marker>
+    <style>
+      text{font-family:"Noto Sans CJK SC","PingFang SC","Microsoft YaHei",sans-serif;fill:#173d35;font-size:18px}
+      .head{font-size:22px;font-weight:700}.strong{font-size:19px;font-weight:700}.note{font-size:16px;fill:#4f695a}
+      .command-note{font-size:16px;fill:#935c2b}.panel0{fill:#f6faf5;stroke:#82a18e;stroke-width:1.6}
+      .panel1{fill:#f5f8fc;stroke:#8ea6c4;stroke-width:1.6}.local0{fill:#d2e6d7;stroke:#82a18e;stroke-width:1.4}
+      .local1{fill:#d8e4f5;stroke:#8ea6c4;stroke-width:1.4}.memory{fill:#fafbf8;stroke:#a7b7a6;stroke-width:1.3}
+      .slot{fill:#edf1df;stroke:#82a18e;stroke-width:1.3}.shared{fill:#e0ebe3;stroke:#82a18e;stroke-width:1.4}
+      .data{fill:none;stroke:#376a55;stroke-width:2.5;stroke-linejoin:round;stroke-linecap:round;marker-start:url(#f03-data-arrow);marker-end:url(#f03-data-arrow)}
+      .cmd{fill:none;stroke:#935c2b;stroke-width:2.2;stroke-dasharray:6 4;stroke-linejoin:round;stroke-linecap:round;marker-end:url(#f03-command-arrow)}
+    </style>
+  </defs>
+  <rect x="1" y="1" width="858" height="630" rx="13" fill="#f5f6ef" stroke="#c4d0c4" stroke-width="1.3"/>
+  <text x="22" y="34" class="head">两个完整计算单元可独立执行，但不一定独占所有资源</text>
+  <text x="22" y="60" class="note">抽象教学组织：任务可以分别交付给两个单元，不预设中央调度器。</text>
+
+  <text x="116" y="97" class="command-note" text-anchor="middle">向 P0 交付命令</text>
+  <text x="548" y="97" class="command-note" text-anchor="middle">向 P1 交付命令</text>
+
+  <rect x="22" y="121" width="384" height="258" rx="10" class="panel0"/>
+  <rect x="454" y="121" width="384" height="258" rx="10" class="panel1"/>
+  <text x="392" y="149" class="strong" text-anchor="end">计算单元 P0</text>
+  <text x="824" y="149" class="strong" text-anchor="end">计算单元 P1</text>
+
+  <rect x="42" y="165" width="148" height="76" rx="7" class="local0"/>
+  <text x="116" y="195" text-anchor="middle" class="strong">本地命令</text>
+  <text x="116" y="221" text-anchor="middle" class="note">控制与状态</text>
+  <rect x="238" y="165" width="148" height="76" rx="7" class="local0"/>
+  <text x="312" y="195" text-anchor="middle" class="strong">计算资源</text>
+  <text x="312" y="221" text-anchor="middle" class="note">独立执行</text>
+  <path d="M116 106V160" class="cmd"/>
+  <path d="M193 203H233" class="cmd"/>
+
+  <rect x="474" y="165" width="148" height="76" rx="7" class="local1"/>
+  <text x="548" y="195" text-anchor="middle" class="strong">本地命令</text>
+  <text x="548" y="221" text-anchor="middle" class="note">控制与状态</text>
+  <rect x="670" y="165" width="148" height="76" rx="7" class="local1"/>
+  <text x="744" y="195" text-anchor="middle" class="strong">计算资源</text>
+  <text x="744" y="221" text-anchor="middle" class="note">独立执行</text>
+  <path d="M548 106V160" class="cmd"/>
+  <path d="M625 203H665" class="cmd"/>
+
+  <rect x="42" y="279" width="344" height="82" rx="8" class="memory"/>
+  <text x="214" y="304" text-anchor="middle" class="strong">局部存储</text>
+  <rect x="54" y="315" width="154" height="35" rx="5" class="slot"/>
+  <text x="131" y="338" text-anchor="middle" class="note">操作数</text>
+  <rect x="220" y="315" width="154" height="35" rx="5" class="slot"/>
+  <text x="297" y="338" text-anchor="middle" class="note">结果</text>
+  <path d="M312 245V275" class="data"/>
+
+  <rect x="474" y="279" width="344" height="82" rx="8" class="memory"/>
+  <text x="646" y="304" text-anchor="middle" class="strong">局部存储</text>
+  <rect x="486" y="315" width="154" height="35" rx="5" class="slot"/>
+  <text x="563" y="338" text-anchor="middle" class="note">操作数</text>
+  <rect x="652" y="315" width="154" height="35" rx="5" class="slot"/>
+  <text x="729" y="338" text-anchor="middle" class="note">结果</text>
+  <path d="M744 245V275" class="data"/>
+
+  <rect x="42" y="420" width="776" height="43" rx="8" class="shared"/>
+  <text x="430" y="447" text-anchor="middle" class="strong">片上互连与共享访问路径</text>
+  <path d="M214 365V416" class="data"/>
+  <path d="M646 365V416" class="data"/>
+
+  <rect x="42" y="506" width="260" height="59" rx="8" class="shared"/>
+  <text x="172" y="531" text-anchor="middle" class="strong">共享 SRAM</text>
+  <text x="172" y="551" text-anchor="middle" class="note">两单元可访问</text>
+  <path d="M172 467V502" class="data"/>
+  <rect x="355" y="506" width="238" height="59" rx="8" class="shared"/>
+  <text x="474" y="541" text-anchor="middle" class="strong">外部内存接口</text>
+  <path d="M474 467V502" class="data"/>
+  <rect x="654" y="506" width="164" height="59" rx="8" class="memory"/>
+  <text x="736" y="541" text-anchor="middle" class="strong">外部内存</text>
+  <path d="M597 536H650" class="data"/>
+
+  <path d="M22 580H838" stroke="#c4d0c4"/>
+  <path d="M31 601H73" class="cmd"/><text x="85" y="606" class="note">命令交付</text>
+  <path d="M193 601H235" class="data"/><text x="247" y="606" class="note">双向逻辑数据路径</text>
+  <text x="838" y="606" text-anchor="end" class="note">具体端口、拓扑与硬件层级并不固定。</text>
+</svg>
