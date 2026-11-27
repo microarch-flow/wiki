@@ -1,0 +1,185 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 437" width="960" height="437" role="img" aria-labelledby="title desc">
+  <title id="title">计算单元翻倍后的 DMA 与 MAC 阵列执行轨迹</title>
+  <desc id="desc">相同8个 tile，使用两个驻留槽，共用DMA。在4条MAC通路时，DMA先读 L0 0到32拍、L1 32到64拍，槽占满后等待计算；C0 32到96拍，W0 96到104拍，L2 104到136拍。依次持续至C7 480到544拍、W7 544到552拍。增加到8条MAC通路后，C0 32到64拍，W0 64到72拍，C1 64到96拍，L2 72到104拍，W1 104到112拍，C2 104到136拍；最后C7 304到336拍、W7 336到344拍。两图使用相同线性时间轴，读取、写回不能同时进行。完成时间从552拍缩短到344拍。</desc>
+  <defs><style>
+  text{font-family:"Noto Sans CJK SC","Microsoft YaHei",sans-serif;font-size:16px;fill:#173d35}
+  .heading{font-size:23px;font-weight:700}.label{font-size:18px;font-weight:700}.small{font-size:15px}.tiny{font-size:13px}.muted{fill:#58736a}
+  .panel{fill:#fafbf8;stroke:#c7d3c7;stroke-width:1.3}.grid{stroke:#d1dad0;stroke-width:1;stroke-dasharray:4 4}
+  .lane{fill:#f0f1eb;stroke:#c7d3c7;stroke-width:1}.read{fill:#f3ebdb;stroke:#c6aa79;stroke-width:1.3}.write{fill:#d9e8f7;stroke:#8ba6c0;stroke-width:1.3}.compute{fill:#e0ebe3;stroke:#82a18e;stroke-width:1.3}
+  .end{stroke:#355679;stroke-width:1.8;stroke-dasharray:4 3;fill:none}
+  </style></defs>
+  <rect x="1" y="1" width="958" height="435" rx="13" fill="#f5f6ef" stroke="#c4d0c4"/>
+  <text x="24" y="36" class="heading">MAC 数量翻倍，并没有让 DMA 的搬运加速</text>
+  <text x="24" y="62" class="small muted">同一任务 · 每条通路为 1 MAC/拍 · 半开区间 [起始拍, 结束拍)</text>
+  <rect x="24" y="86" width="912" height="145" rx="8" class="panel"/>
+  <text x="39" y="110" class="label">4 条 MAC 通路</text>
+  <text x="920" y="110" text-anchor="end" class="small" fill="#355679">任务完成：552 拍</text>
+  <path d="M111.0 136V205" class="grid"/>
+  <text x="111.0" y="227" text-anchor="middle" class="tiny muted">0</text>
+  <path d="M202.5 136V205" class="grid"/>
+  <text x="202.5" y="227" text-anchor="middle" class="tiny muted">64</text>
+  <path d="M294.0 136V205" class="grid"/>
+  <text x="294.0" y="227" text-anchor="middle" class="tiny muted">128</text>
+  <path d="M385.6 136V205" class="grid"/>
+  <text x="385.6" y="227" text-anchor="middle" class="tiny muted">192</text>
+  <path d="M477.1 136V205" class="grid"/>
+  <text x="477.1" y="227" text-anchor="middle" class="tiny muted">256</text>
+  <path d="M568.6 136V205" class="grid"/>
+  <text x="568.6" y="227" text-anchor="middle" class="tiny muted">320</text>
+  <path d="M660.1 136V205" class="grid"/>
+  <text x="660.1" y="227" text-anchor="middle" class="tiny muted">384</text>
+  <path d="M751.6 136V205" class="grid"/>
+  <text x="751.6" y="227" text-anchor="middle" class="tiny muted">448</text>
+  <path d="M843.2 136V205" class="grid"/>
+  <text x="843.2" y="227" text-anchor="middle" class="tiny muted">512</text>
+  <text x="48" y="156" class="small">DMA</text>
+  <rect x="111.0" y="136" width="800.8" height="30" rx="3" class="lane"/>
+  <text x="48" y="194" class="small">MAC</text>
+  <rect x="111.0" y="174" width="800.8" height="30" rx="3" class="lane"/>
+  <rect x="111.0" y="136" width="45.8" height="30" rx="1.8" class="read"/>
+  <text x="133.9" y="156" text-anchor="middle" class="small">L0</text>
+  <rect x="156.8" y="136" width="45.8" height="30" rx="1.8" class="read"/>
+  <text x="179.6" y="156" text-anchor="middle" class="small">L1</text>
+  <rect x="156.8" y="174" width="91.5" height="30" rx="1.8" class="compute"/>
+  <text x="202.5" y="194" text-anchor="middle" class="small">C0</text>
+  <rect x="248.3" y="136" width="11.4" height="30" rx="1.8" class="write"/>
+  <path d="M254.0 131V136" stroke="#8ba6c0" stroke-width="1.2"/>
+  <text x="254.0" y="128" text-anchor="middle" class="tiny" fill="#355679">W0</text>
+  <rect x="248.3" y="174" width="91.5" height="30" rx="1.8" class="compute"/>
+  <text x="294.0" y="194" text-anchor="middle" class="small">C1</text>
+  <rect x="259.7" y="136" width="45.8" height="30" rx="1.8" class="read"/>
+  <text x="282.6" y="156" text-anchor="middle" class="small">L2</text>
+  <rect x="339.8" y="136" width="11.4" height="30" rx="1.8" class="write"/>
+  <path d="M345.5 131V136" stroke="#8ba6c0" stroke-width="1.2"/>
+  <text x="345.5" y="128" text-anchor="middle" class="tiny" fill="#355679">W1</text>
+  <rect x="339.8" y="174" width="91.5" height="30" rx="1.8" class="compute"/>
+  <text x="385.6" y="194" text-anchor="middle" class="small">C2</text>
+  <rect x="351.2" y="136" width="45.8" height="30" rx="1.8" class="read"/>
+  <text x="374.1" y="156" text-anchor="middle" class="small">L3</text>
+  <rect x="431.3" y="136" width="11.4" height="30" rx="1.8" class="write"/>
+  <path d="M437.0 131V136" stroke="#8ba6c0" stroke-width="1.2"/>
+  <text x="437.0" y="128" text-anchor="middle" class="tiny" fill="#355679">W2</text>
+  <rect x="431.3" y="174" width="91.5" height="30" rx="1.8" class="compute"/>
+  <text x="477.1" y="194" text-anchor="middle" class="small">C3</text>
+  <rect x="442.8" y="136" width="45.8" height="30" rx="1.8" class="read"/>
+  <text x="465.6" y="156" text-anchor="middle" class="small">L4</text>
+  <rect x="522.8" y="136" width="11.4" height="30" rx="1.8" class="write"/>
+  <path d="M528.6 131V136" stroke="#8ba6c0" stroke-width="1.2"/>
+  <text x="528.6" y="128" text-anchor="middle" class="tiny" fill="#355679">W3</text>
+  <rect x="522.8" y="174" width="91.5" height="30" rx="1.8" class="compute"/>
+  <text x="568.6" y="194" text-anchor="middle" class="small">C4</text>
+  <rect x="534.3" y="136" width="45.8" height="30" rx="1.8" class="read"/>
+  <text x="557.2" y="156" text-anchor="middle" class="small">L5</text>
+  <rect x="614.4" y="136" width="11.4" height="30" rx="1.8" class="write"/>
+  <path d="M620.1 131V136" stroke="#8ba6c0" stroke-width="1.2"/>
+  <text x="620.1" y="128" text-anchor="middle" class="tiny" fill="#355679">W4</text>
+  <rect x="614.4" y="174" width="91.5" height="30" rx="1.8" class="compute"/>
+  <text x="660.1" y="194" text-anchor="middle" class="small">C5</text>
+  <rect x="625.8" y="136" width="45.8" height="30" rx="1.8" class="read"/>
+  <text x="648.7" y="156" text-anchor="middle" class="small">L6</text>
+  <rect x="705.9" y="136" width="11.4" height="30" rx="1.8" class="write"/>
+  <path d="M711.6 131V136" stroke="#8ba6c0" stroke-width="1.2"/>
+  <text x="711.6" y="128" text-anchor="middle" class="tiny" fill="#355679">W5</text>
+  <rect x="705.9" y="174" width="91.5" height="30" rx="1.8" class="compute"/>
+  <text x="751.6" y="194" text-anchor="middle" class="small">C6</text>
+  <rect x="717.3" y="136" width="45.8" height="30" rx="1.8" class="read"/>
+  <text x="740.2" y="156" text-anchor="middle" class="small">L7</text>
+  <rect x="797.4" y="136" width="11.4" height="30" rx="1.8" class="write"/>
+  <path d="M803.1 131V136" stroke="#8ba6c0" stroke-width="1.2"/>
+  <text x="803.1" y="128" text-anchor="middle" class="tiny" fill="#355679">W6</text>
+  <rect x="797.4" y="174" width="91.5" height="30" rx="1.8" class="compute"/>
+  <text x="843.2" y="194" text-anchor="middle" class="small">C7</text>
+  <rect x="888.9" y="136" width="11.4" height="30" rx="1.8" class="write"/>
+  <path d="M894.6 131V136" stroke="#8ba6c0" stroke-width="1.2"/>
+  <text x="894.6" y="128" text-anchor="middle" class="tiny" fill="#355679">W7</text>
+  <path d="M900.4 134V204" class="end"/>
+  <text x="900.4" y="227" text-anchor="middle" class="tiny" fill="#355679">552</text>
+  <rect x="24" y="240" width="912" height="145" rx="8" class="panel"/>
+  <text x="39" y="264" class="label">8 条 MAC 通路</text>
+  <text x="920" y="264" text-anchor="end" class="small" fill="#355679">任务完成：344 拍</text>
+  <path d="M111.0 290V359" class="grid"/>
+  <text x="111.0" y="381" text-anchor="middle" class="tiny muted">0</text>
+  <path d="M202.5 290V359" class="grid"/>
+  <text x="202.5" y="381" text-anchor="middle" class="tiny muted">64</text>
+  <path d="M294.0 290V359" class="grid"/>
+  <text x="294.0" y="381" text-anchor="middle" class="tiny muted">128</text>
+  <path d="M385.6 290V359" class="grid"/>
+  <text x="385.6" y="381" text-anchor="middle" class="tiny muted">192</text>
+  <path d="M477.1 290V359" class="grid"/>
+  <text x="477.1" y="381" text-anchor="middle" class="tiny muted">256</text>
+  <path d="M568.6 290V359" class="grid"/>
+  <text x="568.6" y="381" text-anchor="middle" class="tiny muted">320</text>
+  <path d="M660.1 290V359" class="grid"/>
+  <text x="660.1" y="381" text-anchor="middle" class="tiny muted">384</text>
+  <path d="M751.6 290V359" class="grid"/>
+  <text x="751.6" y="381" text-anchor="middle" class="tiny muted">448</text>
+  <path d="M843.2 290V359" class="grid"/>
+  <text x="843.2" y="381" text-anchor="middle" class="tiny muted">512</text>
+  <text x="48" y="310" class="small">DMA</text>
+  <rect x="111.0" y="290" width="800.8" height="30" rx="3" class="lane"/>
+  <text x="48" y="348" class="small">MAC</text>
+  <rect x="111.0" y="328" width="800.8" height="30" rx="3" class="lane"/>
+  <rect x="111.0" y="290" width="45.8" height="30" rx="1.8" class="read"/>
+  <text x="133.9" y="310" text-anchor="middle" class="small">L0</text>
+  <rect x="156.8" y="290" width="45.8" height="30" rx="1.8" class="read"/>
+  <text x="179.6" y="310" text-anchor="middle" class="small">L1</text>
+  <rect x="156.8" y="328" width="45.8" height="30" rx="1.8" class="compute"/>
+  <text x="179.6" y="348" text-anchor="middle" class="small">C0</text>
+  <rect x="202.5" y="290" width="11.4" height="30" rx="1.8" class="write"/>
+  <path d="M208.2 285V290" stroke="#8ba6c0" stroke-width="1.2"/>
+  <text x="208.2" y="282" text-anchor="middle" class="tiny" fill="#355679">W0</text>
+  <rect x="202.5" y="328" width="45.8" height="30" rx="1.8" class="compute"/>
+  <text x="225.4" y="348" text-anchor="middle" class="small">C1</text>
+  <rect x="214.0" y="290" width="45.8" height="30" rx="1.8" class="read"/>
+  <text x="236.8" y="310" text-anchor="middle" class="small">L2</text>
+  <rect x="259.7" y="290" width="11.4" height="30" rx="1.8" class="write"/>
+  <path d="M265.4 285V290" stroke="#8ba6c0" stroke-width="1.2"/>
+  <text x="265.4" y="282" text-anchor="middle" class="tiny" fill="#355679">W1</text>
+  <rect x="259.7" y="328" width="45.8" height="30" rx="1.8" class="compute"/>
+  <text x="282.6" y="348" text-anchor="middle" class="small">C2</text>
+  <rect x="271.2" y="290" width="45.8" height="30" rx="1.8" class="read"/>
+  <text x="294.0" y="310" text-anchor="middle" class="small">L3</text>
+  <rect x="316.9" y="290" width="11.4" height="30" rx="1.8" class="write"/>
+  <path d="M322.6 285V290" stroke="#8ba6c0" stroke-width="1.2"/>
+  <text x="322.6" y="282" text-anchor="middle" class="tiny" fill="#355679">W2</text>
+  <rect x="316.9" y="328" width="45.8" height="30" rx="1.8" class="compute"/>
+  <text x="339.8" y="348" text-anchor="middle" class="small">C3</text>
+  <rect x="328.4" y="290" width="45.8" height="30" rx="1.8" class="read"/>
+  <text x="351.2" y="310" text-anchor="middle" class="small">L4</text>
+  <rect x="374.1" y="290" width="11.4" height="30" rx="1.8" class="write"/>
+  <path d="M379.8 285V290" stroke="#8ba6c0" stroke-width="1.2"/>
+  <text x="379.8" y="282" text-anchor="middle" class="tiny" fill="#355679">W3</text>
+  <rect x="374.1" y="328" width="45.8" height="30" rx="1.8" class="compute"/>
+  <text x="397.0" y="348" text-anchor="middle" class="small">C4</text>
+  <rect x="385.6" y="290" width="45.8" height="30" rx="1.8" class="read"/>
+  <text x="408.4" y="310" text-anchor="middle" class="small">L5</text>
+  <rect x="431.3" y="290" width="11.4" height="30" rx="1.8" class="write"/>
+  <path d="M437.0 285V290" stroke="#8ba6c0" stroke-width="1.2"/>
+  <text x="437.0" y="282" text-anchor="middle" class="tiny" fill="#355679">W4</text>
+  <rect x="431.3" y="328" width="45.8" height="30" rx="1.8" class="compute"/>
+  <text x="454.2" y="348" text-anchor="middle" class="small">C5</text>
+  <rect x="442.8" y="290" width="45.8" height="30" rx="1.8" class="read"/>
+  <text x="465.6" y="310" text-anchor="middle" class="small">L6</text>
+  <rect x="488.5" y="290" width="11.4" height="30" rx="1.8" class="write"/>
+  <path d="M494.2 285V290" stroke="#8ba6c0" stroke-width="1.2"/>
+  <text x="494.2" y="282" text-anchor="middle" class="tiny" fill="#355679">W5</text>
+  <rect x="488.5" y="328" width="45.8" height="30" rx="1.8" class="compute"/>
+  <text x="511.4" y="348" text-anchor="middle" class="small">C6</text>
+  <rect x="500.0" y="290" width="45.8" height="30" rx="1.8" class="read"/>
+  <text x="522.8" y="310" text-anchor="middle" class="small">L7</text>
+  <rect x="545.7" y="290" width="11.4" height="30" rx="1.8" class="write"/>
+  <path d="M551.4 285V290" stroke="#8ba6c0" stroke-width="1.2"/>
+  <text x="551.4" y="282" text-anchor="middle" class="tiny" fill="#355679">W6</text>
+  <rect x="545.7" y="328" width="45.8" height="30" rx="1.8" class="compute"/>
+  <text x="568.6" y="348" text-anchor="middle" class="small">C7</text>
+  <rect x="591.5" y="290" width="11.4" height="30" rx="1.8" class="write"/>
+  <path d="M597.2 285V290" stroke="#8ba6c0" stroke-width="1.2"/>
+  <text x="597.2" y="282" text-anchor="middle" class="tiny" fill="#355679">W7</text>
+  <path d="M602.9 288V358" class="end"/>
+  <text x="602.9" y="381" text-anchor="middle" class="tiny" fill="#355679">344</text>
+  <rect x="25" y="400" width="22" height="19" rx="3" class="read"/><text x="55" y="414" class="small">L：读入 32 拍</text>
+  <rect x="206" y="400" width="22" height="19" rx="3" class="write"/><text x="236" y="414" class="small">W：写回 8 拍</text>
+  <rect x="372" y="400" width="22" height="19" rx="3" class="compute"/><text x="402" y="414" class="small">C：计算</text>
+  <rect x="506" y="400" width="22" height="19" rx="3" class="lane"/><text x="536" y="414" class="small">空白：未服务 tile</text>
+  <text x="920" y="414" class="small muted" text-anchor="end">时间单位：拍</text>
+</svg>

@@ -1,0 +1,99 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 840 414" width="840" height="414" role="img" aria-labelledby="title desc">
+  <title id="title">矩阵乘法任务的数据路径与驻留槽</title>
+  <desc id="desc">外部存储中 X 为32×16 INT16，W 为16×4 INT16，Y 为32×4 INT32。计算按4行输出划分为8个 tile。读入和写回共用一个 DMA，每拍搬运8字节，不能同时读写。两个局部槽各320字节：输入 X 128 B，输入 W 128 B，输出 Y 64 B。MAC阵列从一个槽读取数据并写回该槽的输出区；此槽的结果写回外部存储后才能释放。</desc>
+  <defs>
+    <marker id="read-arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0 0L8 4L0 8z" fill="#9b6c27"/></marker>
+    <marker id="write-arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0 0L8 4L0 8z" fill="#355679"/></marker>
+    <style>
+      text{font-family:"Noto Sans CJK SC","Microsoft YaHei",sans-serif;fill:#173d35;font-size:16px}
+      .heading{font-size:23px;font-weight:700}.label{font-size:18px;font-weight:700}.small{font-size:15px}.tiny{font-size:14px}.muted{fill:#58736a}
+      .panel{fill:#fafbf8;stroke:#c7d3c7;stroke-width:1.3}.block{fill:#e0ebe3;stroke:#82a18e;stroke-width:1.5}.operand{fill:#f3ebdb;stroke:#c6aa79;stroke-width:1.4}.result{fill:#e4edf5;stroke:#8ba6c0;stroke-width:1.4}
+      .read{fill:none;stroke:#9b6c27;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round;marker-end:url(#read-arrow)}.write{fill:none;stroke:#355679;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round;marker-end:url(#write-arrow)}
+      .readline{stroke:#9b6c27;stroke-width:2.4;stroke-linecap:round}.writeline{stroke:#355679;stroke-width:2.4;stroke-linecap:round}
+    </style>
+  </defs>
+  <rect x="1" y="1" width="838" height="412" rx="13" fill="#f5f6ef" stroke="#c4d0c4"/>
+  <text x="24" y="34" class="heading">同一个 tile 先读入，再计算，最后写回</text>
+  <text x="24" y="62" class="small muted">矩阵乘法 Y = X × W · Y 的每 4 行为一个 tile，共 8 个 tile。</text>
+  <rect x="24" y="113" width="160" height="218" rx="9" class="panel"/>
+  <text x="104" y="139" text-anchor="middle" class="label">外部存储</text>
+  <rect x="40" y="151" width="128" height="46" rx="5" class="operand"/>
+  <text x="104" y="169" text-anchor="middle" class="small">X · INT16</text>
+  <text x="104" y="189" text-anchor="middle" class="small">32 × 16</text>
+  <rect x="40" y="211" width="128" height="46" rx="5" class="operand"/>
+  <text x="104" y="229" text-anchor="middle" class="small">W · INT16</text>
+  <text x="104" y="249" text-anchor="middle" class="small">16 × 4</text>
+  <rect x="40" y="271" width="128" height="46" rx="5" class="result"/>
+  <text x="104" y="289" text-anchor="middle" class="small">Y · INT32</text>
+  <text x="104" y="309" text-anchor="middle" class="small">32 × 4</text>
+
+  <rect x="229" y="151" width="116" height="136" rx="9" class="operand"/>
+  <text x="287" y="184" text-anchor="middle" class="label">DMA</text>
+  <text x="287" y="210" text-anchor="middle" class="small">读 L / 写 W</text>
+  <text x="287" y="234" text-anchor="middle" class="small">共 8 B/拍</text>
+  <text x="287" y="258" text-anchor="middle" class="tiny muted">不同时读写</text>
+  <path d="M184 188H223" class="read"/>
+  <path d="M229 250H190" class="write"/>
+
+  <rect x="394" y="92" width="244" height="239" rx="9" class="panel"/>
+  <text x="516" y="120" text-anchor="middle" class="label">局部存储</text>
+  <g>
+    <rect x="408" y="132" width="216" height="75" rx="6" fill="#edf1df" stroke="#82a18e" stroke-width="1.4"/>
+    <text x="516" y="153" text-anchor="middle" class="small">槽 0 · 320 B</text>
+    <rect x="418" y="162" width="77" height="35" rx="4" class="operand"/>
+    <rect x="498" y="162" width="77" height="35" rx="4" class="operand"/>
+    <rect x="578" y="162" width="38" height="35" rx="4" class="result"/>
+    <text x="456.5" y="176" text-anchor="middle" class="tiny">X 块</text>
+    <text x="456.5" y="191" text-anchor="middle" class="tiny">128 B</text>
+    <text x="536.5" y="176" text-anchor="middle" class="tiny">W 块</text>
+    <text x="536.5" y="191" text-anchor="middle" class="tiny">128 B</text>
+    <text x="597" y="176" text-anchor="middle" class="tiny">Y 块</text>
+    <text x="597" y="191" text-anchor="middle" class="tiny">64 B</text>
+  </g>
+  <g>
+    <rect x="408" y="220" width="216" height="75" rx="6" fill="#edf1df" stroke="#82a18e" stroke-width="1.4"/>
+    <text x="516" y="241" text-anchor="middle" class="small">槽 1 · 320 B</text>
+    <rect x="418" y="250" width="77" height="35" rx="4" class="operand"/>
+    <rect x="498" y="250" width="77" height="35" rx="4" class="operand"/>
+    <rect x="578" y="250" width="38" height="35" rx="4" class="result"/>
+    <text x="456.5" y="264" text-anchor="middle" class="tiny">X 块</text>
+    <text x="456.5" y="279" text-anchor="middle" class="tiny">128 B</text>
+    <text x="536.5" y="264" text-anchor="middle" class="tiny">W 块</text>
+    <text x="536.5" y="279" text-anchor="middle" class="tiny">128 B</text>
+    <text x="597" y="264" text-anchor="middle" class="tiny">Y 块</text>
+    <text x="597" y="279" text-anchor="middle" class="tiny">64 B</text>
+  </g>
+  <text x="516" y="316" text-anchor="middle" class="tiny muted">写回完成后才释放槽</text>
+  <path d="M345 188H388" class="read"/>
+  <path d="M394 250H351" class="write"/>
+  <text x="369" y="176" text-anchor="middle" class="tiny" fill="#9b6c27">256 B</text>
+  <text x="369" y="273" text-anchor="middle" class="tiny" fill="#355679">64 B</text>
+
+  <rect x="686" y="151" width="130" height="136" rx="9" class="block"/>
+  <text x="751" y="181" text-anchor="middle" class="label">MAC 阵列</text>
+  <text x="751" y="204" text-anchor="middle" class="small">计算 Y</text>
+  <g stroke="#82a18e" fill="#fafbf8" stroke-width="1.3">
+    <rect x="715" y="214" width="15" height="19" rx="2"/>
+    <rect x="734" y="214" width="15" height="19" rx="2"/>
+    <rect x="753" y="214" width="15" height="19" rx="2"/>
+    <rect x="772" y="214" width="15" height="19" rx="2"/>
+  </g>
+  <g stroke="#82a18e" fill="#fafbf8" stroke-width="1.3" stroke-dasharray="3 2">
+    <rect x="715" y="239" width="15" height="19" rx="2"/>
+    <rect x="734" y="239" width="15" height="19" rx="2"/>
+    <rect x="753" y="239" width="15" height="19" rx="2"/>
+    <rect x="772" y="239" width="15" height="19" rx="2"/>
+  </g>
+  <text x="751" y="278" text-anchor="middle" class="small">4 或 8 条通路</text>
+  <path d="M638 188H680" class="read"/>
+  <path d="M686 250H644" class="write"/>
+  <text x="661" y="176" text-anchor="middle" class="tiny">操作数</text>
+  <text x="662" y="273" text-anchor="middle" class="tiny">结果</text>
+
+  <rect x="24" y="352" width="792" height="43" rx="7" class="panel"/>
+  <path d="M42 373H72" class="readline"/>
+  <text x="80" y="379" class="small">输入数据</text>
+  <path d="M188 373H218" class="writeline"/>
+  <text x="226" y="379" class="small">输出数据</text>
+  <text x="337" y="379" class="small muted">一个槽可供计算，另一槽可同时被 DMA 访问。</text>
+</svg>
