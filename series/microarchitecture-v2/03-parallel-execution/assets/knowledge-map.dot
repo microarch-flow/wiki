@@ -2,10 +2,10 @@ digraph knowledge {
   graph [rankdir=TB, bgcolor="#f5f6ef", pad="0.18", nodesep="0.24", ranksep="0.42", splines=polyline, outputorder=edgesfirst];
   node [shape=box, style="rounded,filled", color="#82a18e", fillcolor="#e0ebe3", fontcolor="#173d35", penwidth=1.3, fontname="Noto Sans CJK SC", fontsize=15, margin="0.13,0.10"];
   edge [color="#396b55", penwidth=1.4, arrowsize=.65];
-  A [label="独立运算、物理通道", fillcolor="#edf1df", fontcolor="#173d35"];
-  B [label="C01\nSIMD 与向量", fillcolor="#e0ebe3", fontcolor="#173d35"];
+  A [label="A · 数据通路、流水线\n与独立运算", fillcolor="#edf1df", fontcolor="#173d35"];
+  B [label="C01\n标量、SIMD 与向量", fillcolor="#e0ebe3", fontcolor="#173d35"];
   C [label="C02\nSIMT 与调度", fillcolor="#e0ebe3", fontcolor="#173d35"];
-  D [label="指令就绪与发射", fillcolor="#edf1df", fontcolor="#173d35"];
+  D [label="B · 指令、上下文\n就绪与发射", fillcolor="#edf1df", fontcolor="#173d35"];
   E [label="C03\n驻留与资源", fillcolor="#e0ebe3", fontcolor="#173d35"];
   A -> B;
   B -> C;

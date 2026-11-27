@@ -1,0 +1,133 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 594" width="760" height="594" role="img" aria-labelledby="title desc">
+  <title id="title">一份控制信息驱动四条物理执行通道</title>
+  <desc id="desc">第二批教学加法的起始元素编号 k=4，共享控制选择 ADD。物理通道 j 从 0 至 3，分别为元素 i=k+j 取得 X[i]、W[i] 两个值，即（5、50）、（6、60）、（7、70）、（8、80）；各通道独立加法得到 55、66、77、88。局部写使能均为 1，结果经数据通路写往对应的 Y[i]。实线为数据，虚线为控制。输入与输出接口不规定寄存器文件的物理实现。</desc>
+  <defs>
+    <marker id="data-arrow" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0 0L7 3.5L0 7z" fill="#376650"/></marker>
+    <marker id="ctrl-arrow" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0 0L7 3.5L0 7z" fill="#9b6c27"/></marker>
+    <style>
+      text{font-family:"Noto Sans CJK SC","Microsoft YaHei",sans-serif;fill:#173d35;font-size:18px}
+      .heading{font-size:22px;font-weight:700}.small{font-size:16px}.tiny{font-size:14px}.label{font-weight:700}
+      .accent{fill:#8a5d1c}.muted{fill:#58736a}.panel{fill:#fafbf8;stroke:#c7d3c7;stroke-width:1.3}
+      .reg{fill:#edf1df;stroke:#82a18e;stroke-width:1.4}.block{fill:#e0ebe3;stroke:#82a18e;stroke-width:1.4}
+      .control{fill:#f3ebdb;stroke:#c6aa79;stroke-width:1.3}
+      .data{stroke:#376650;stroke-width:2.3;fill:none;stroke-linejoin:round;stroke-linecap:round;marker-end:url(#data-arrow)}
+      .ctrl{stroke:#9b6c27;stroke-width:1.8;stroke-dasharray:5 4;fill:none;stroke-linejoin:round;stroke-linecap:round;marker-end:url(#ctrl-arrow)}
+      .ctrl-bus{stroke:#9b6c27;stroke-width:1.8;stroke-dasharray:5 4;fill:none;stroke-linejoin:round}
+      .divider{stroke:#c7d3c7;stroke-width:1.1}
+      .slot{fill:#e0ebe3;stroke:#92ad9d;stroke-width:1.1}
+      .off{fill:#f3eee3;stroke:#c9b89c;stroke-width:1.1;stroke-dasharray:4 3}
+      .edge{stroke:#376650;stroke-width:1.25;stroke-dasharray:4 4}
+    </style>
+  </defs>
+  <rect x="1" y="1" width="758" height="592" rx="13" fill="#f5f6ef" stroke="#c4d0c4"/>
+  <text x="20" y="34" class="heading">一份控制信息，驱动四条物理执行通道</text>
+  <path d="M498 29H520" class="data"/>
+  <text x="528" y="34" class="tiny">数据</text>
+  <path d="M592 29H614" class="ctrl"/>
+  <text x="622" y="34" class="tiny accent">控制</text>
+  <rect x="18" y="50" width="724" height="73" rx="10" class="control"/>
+  <text x="380" y="79" class="label" text-anchor="middle">共用的译码与控制：OP = ADD</text>
+  <text x="380" y="105" class="small accent" text-anchor="middle">本批起始编号 k = 4，局部掩码 m = (1, 1, 1, 1)</text>
+  <path d="M380 123V136M100 136H634" class="ctrl-bus"/>
+  <rect x="18" y="221" width="724" height="96" rx="9" class="panel"/>
+  <text x="32" y="244" class="small label">输入：按 i 取值</text>
+  <rect x="18" y="472" width="724" height="76" rx="9" class="panel"/>
+  <path d="M100 136V149" class="ctrl"/>
+  <rect x="28" y="149" width="144" height="61" rx="7" class="control"/>
+  <text x="100" y="172" class="label" text-anchor="middle">物理 lane 0</text>
+  <text x="100" y="193" class="tiny accent" text-anchor="middle">i = 4，m[0] = 1</text>
+  <rect x="31" y="253" width="66" height="49" rx="5" class="reg"/>
+  <rect x="102" y="253" width="66" height="49" rx="5" class="reg"/>
+  <text x="64" y="273" class="tiny" text-anchor="middle">X[4]</text>
+  <text x="64" y="293" class="label" text-anchor="middle">5</text>
+  <text x="135" y="273" class="tiny" text-anchor="middle">W[4]</text>
+  <text x="135" y="293" class="label" text-anchor="middle">50</text>
+  <path d="M64 302V343" class="data"/>
+  <path d="M135 302V343" class="data"/>
+  <rect x="32" y="343" width="136" height="49" rx="7" class="block"/>
+  <text x="100" y="365" class="label" text-anchor="middle">ADD</text>
+  <text x="100" y="383" class="tiny" text-anchor="middle">独立元素加法</text>
+  <path d="M172 177H186V365H168" class="ctrl"/>
+  <path d="M186 365V521H168" class="ctrl"/>
+  <text x="178" y="337" text-anchor="end" class="tiny accent">OP</text>
+  <path d="M100 392V426" class="data"/>
+  <text x="100" y="448" class="label" text-anchor="middle">55</text>
+  <path d="M100 454V502" class="data"/>
+  <rect x="32" y="502" width="136" height="36" rx="5" class="reg"/>
+  <text x="100" y="525" class="small label" text-anchor="middle">Y[4] ← 55</text>
+  <text x="178" y="485" text-anchor="end" class="tiny accent">WE</text>
+  <path d="M278 136V149" class="ctrl"/>
+  <rect x="206" y="149" width="144" height="61" rx="7" class="control"/>
+  <text x="278" y="172" class="label" text-anchor="middle">物理 lane 1</text>
+  <text x="278" y="193" class="tiny accent" text-anchor="middle">i = 5，m[1] = 1</text>
+  <rect x="209" y="253" width="66" height="49" rx="5" class="reg"/>
+  <rect x="280" y="253" width="66" height="49" rx="5" class="reg"/>
+  <text x="242" y="273" class="tiny" text-anchor="middle">X[5]</text>
+  <text x="242" y="293" class="label" text-anchor="middle">6</text>
+  <text x="313" y="273" class="tiny" text-anchor="middle">W[5]</text>
+  <text x="313" y="293" class="label" text-anchor="middle">60</text>
+  <path d="M242 302V343" class="data"/>
+  <path d="M313 302V343" class="data"/>
+  <rect x="210" y="343" width="136" height="49" rx="7" class="block"/>
+  <text x="278" y="365" class="label" text-anchor="middle">ADD</text>
+  <text x="278" y="383" class="tiny" text-anchor="middle">独立元素加法</text>
+  <path d="M350 177H364V365H346" class="ctrl"/>
+  <path d="M364 365V521H346" class="ctrl"/>
+  <text x="356" y="337" text-anchor="end" class="tiny accent">OP</text>
+  <path d="M278 392V426" class="data"/>
+  <text x="278" y="448" class="label" text-anchor="middle">66</text>
+  <path d="M278 454V502" class="data"/>
+  <rect x="210" y="502" width="136" height="36" rx="5" class="reg"/>
+  <text x="278" y="525" class="small label" text-anchor="middle">Y[5] ← 66</text>
+  <text x="356" y="485" text-anchor="end" class="tiny accent">WE</text>
+  <path d="M456 136V149" class="ctrl"/>
+  <rect x="384" y="149" width="144" height="61" rx="7" class="control"/>
+  <text x="456" y="172" class="label" text-anchor="middle">物理 lane 2</text>
+  <text x="456" y="193" class="tiny accent" text-anchor="middle">i = 6，m[2] = 1</text>
+  <rect x="387" y="253" width="66" height="49" rx="5" class="reg"/>
+  <rect x="458" y="253" width="66" height="49" rx="5" class="reg"/>
+  <text x="420" y="273" class="tiny" text-anchor="middle">X[6]</text>
+  <text x="420" y="293" class="label" text-anchor="middle">7</text>
+  <text x="491" y="273" class="tiny" text-anchor="middle">W[6]</text>
+  <text x="491" y="293" class="label" text-anchor="middle">70</text>
+  <path d="M420 302V343" class="data"/>
+  <path d="M491 302V343" class="data"/>
+  <rect x="388" y="343" width="136" height="49" rx="7" class="block"/>
+  <text x="456" y="365" class="label" text-anchor="middle">ADD</text>
+  <text x="456" y="383" class="tiny" text-anchor="middle">独立元素加法</text>
+  <path d="M528 177H542V365H524" class="ctrl"/>
+  <path d="M542 365V521H524" class="ctrl"/>
+  <text x="534" y="337" text-anchor="end" class="tiny accent">OP</text>
+  <path d="M456 392V426" class="data"/>
+  <text x="456" y="448" class="label" text-anchor="middle">77</text>
+  <path d="M456 454V502" class="data"/>
+  <rect x="388" y="502" width="136" height="36" rx="5" class="reg"/>
+  <text x="456" y="525" class="small label" text-anchor="middle">Y[6] ← 77</text>
+  <text x="534" y="485" text-anchor="end" class="tiny accent">WE</text>
+  <path d="M634 136V149" class="ctrl"/>
+  <rect x="562" y="149" width="144" height="61" rx="7" class="control"/>
+  <text x="634" y="172" class="label" text-anchor="middle">物理 lane 3</text>
+  <text x="634" y="193" class="tiny accent" text-anchor="middle">i = 7，m[3] = 1</text>
+  <rect x="565" y="253" width="66" height="49" rx="5" class="reg"/>
+  <rect x="636" y="253" width="66" height="49" rx="5" class="reg"/>
+  <text x="598" y="273" class="tiny" text-anchor="middle">X[7]</text>
+  <text x="598" y="293" class="label" text-anchor="middle">8</text>
+  <text x="669" y="273" class="tiny" text-anchor="middle">W[7]</text>
+  <text x="669" y="293" class="label" text-anchor="middle">80</text>
+  <path d="M598 302V343" class="data"/>
+  <path d="M669 302V343" class="data"/>
+  <rect x="566" y="343" width="136" height="49" rx="7" class="block"/>
+  <text x="634" y="365" class="label" text-anchor="middle">ADD</text>
+  <text x="634" y="383" class="tiny" text-anchor="middle">独立元素加法</text>
+  <path d="M706 177H720V365H702" class="ctrl"/>
+  <path d="M720 365V521H702" class="ctrl"/>
+  <text x="712" y="337" text-anchor="end" class="tiny accent">OP</text>
+  <path d="M634 392V426" class="data"/>
+  <text x="634" y="448" class="label" text-anchor="middle">88</text>
+  <path d="M634 454V502" class="data"/>
+  <rect x="566" y="502" width="136" height="36" rx="5" class="reg"/>
+  <text x="634" y="525" class="small label" text-anchor="middle">Y[7] ← 88</text>
+  <text x="712" y="485" text-anchor="end" class="tiny accent">WE</text>
+  <text x="380" y="566" class="small" text-anchor="middle">输出接口按 i 保存结果，WE 由本地掩码与写回许可共同决定。</text>
+  <text x="380" y="583" class="tiny" text-anchor="middle">本图省略时钟及输入、输出接口的内部结构。</text>
+</svg>
