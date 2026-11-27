@@ -166,7 +166,7 @@ B01 采用真实 RV32I 的 ADD、LW、SW、BEQ 语义和精简的五阶段单条
 | ID | 暂定标题 | 内容范围与写作重点 | 状态 |
 |---|---|---|---|
 | E01 | 一块数据从内存搬到计算单元，DMA 要做哪些工作？ | 独立引擎、描述符、地址生成、多维 stride、burst、对齐与边界切分 | 已发布（[正文](https://microarch-flow.github.io/wiki/microarchitecture-v2/05-data-movement/e01-dma-task-and-address-generation/)，提交 `41eb230`，已核验） |
-| E02 | 第一笔请求还没有返回，为什么 DMA 能发出第二笔请求？ | outstanding、ID、内部缓冲、响应匹配/乱序、反压、命令队列、完成通知与可读条件 | 正文完成（[正文](https://microarch-flow.github.io/wiki/microarchitecture-v2/05-data-movement/e02-outstanding-requests-and-completion/)，待发布核验） |
+| E02 | 第一笔请求还没有返回，为什么 DMA 能发出第二笔请求？ | outstanding、ID、内部缓冲、响应匹配/乱序、反压、命令队列、完成通知与可读条件 | 已发布（[正文](https://microarch-flow.github.io/wiki/microarchitecture-v2/05-data-movement/e02-outstanding-requests-and-completion/)，提交 `9c6492e`，已核验） |
 | E03 | 搬运数据时，能否顺便改变数据的布局和格式？ | gather/scatter、转置、重排、类型转换、打包、压缩/解压、粒度及吞吐 | 待写 |
 
 旧版 [DMA 专题](../series/microarchitecture/05-dma/README.md)的进阶资料保留原地址并按以下归属继续查阅；本轮不修改旧目录：
