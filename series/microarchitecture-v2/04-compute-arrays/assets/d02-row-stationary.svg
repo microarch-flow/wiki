@@ -1,0 +1,80 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 388" width="760" height="388" role="img" aria-labelledby="title desc">
+<title id="title">Row stationary：一对卷积核行与输入行的局部滑窗计算</title>
+<desc id="desc">独立的一维卷积教学例子：核行2、1固定，输入行1、2、3、4中依次取窗口1、2，2、3，3、4，得到输出局部部分和4、7、10。相邻窗口复用一个输入，滤波器两个权重反复使用。此图只展示单PE对一对行的处理。</desc>
+<defs>
+<marker id="x-arrow" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0 0L7 3.5L0 7z" fill="#376650"/></marker>
+<marker id="w-arrow" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0 0L7 3.5L0 7z" fill="#9b6c27"/></marker>
+<marker id="s-arrow" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0 0L7 3.5L0 7z" fill="#496b90"/></marker>
+<style>
+text{font-family:"Noto Sans CJK SC","Microsoft YaHei",sans-serif;fill:#173d35;font-size:18px}
+.heading{font-size:22px;font-weight:700}.label{font-weight:700}.sub{font-size:16px}.tiny{font-size:14px}.accent{fill:#815718}.muted{fill:#58736a}.partial{fill:#355679}
+.panel{fill:#fafbf8;stroke:#c7d3c7;stroke-width:1.3}.reg{fill:#edf1df;stroke:#82a18e;stroke-width:1.4}.block{fill:#e0ebe3;stroke:#82a18e;stroke-width:1.4}.weight{fill:#f3ebdb;stroke:#c6aa79;stroke-width:1.3}.psum{fill:#e4edf5;stroke:#8ba6c0;stroke-width:1.4}.off{fill:#f3eee3;stroke:#c9b89c;stroke-width:1.1;stroke-dasharray:4 3}
+.x,.w,.s,.xbus,.wbus,.sbus,.future{stroke-width:2.2;fill:none;stroke-linejoin:round;stroke-linecap:round}
+.x,.xbus{stroke:#376650}.x{marker-end:url(#x-arrow)}
+.w,.wbus{stroke:#9b6c27}.w{marker-end:url(#w-arrow)}
+.s,.sbus,.future{stroke:#496b90}.s,.future{marker-end:url(#s-arrow)}.future{stroke-dasharray:5 4}
+</style>
+</defs>
+<rect x="1" y="1" width="758" height="386" rx="13" fill="#f5f6ef" stroke="#c4d0c4"/>
+<text x="22" y="34" class="heading" text-anchor="start">卷积中的行驻留：同一个 PE 处理一对行</text>
+<text x="22" y="60" class="sub" text-anchor="start">一维示例：核行 [2, 1] 保留；相邻滑窗重复使用部分输入。</text>
+<rect x="19" y="83" width="234" height="244" rx="7" class="panel"/>
+<text x="136" y="108" class="sub label" text-anchor="middle">窗口 1</text>
+<rect x="84" y="123" width="49" height="34" rx="5" class="weight"/>
+<text x="108.5" y="146" class="label accent" text-anchor="middle">2</text>
+<rect x="139" y="123" width="49" height="34" rx="5" class="weight"/>
+<text x="163.5" y="146" class="label accent" text-anchor="middle">1</text>
+<text x="136" y="175" class="tiny accent" text-anchor="middle">本地保留核行</text>
+<rect x="36" y="189" width="46" height="34" rx="5" class="reg"/>
+<text x="59" y="212" class="label" text-anchor="middle">1</text>
+<rect x="87" y="189" width="46" height="34" rx="5" class="reg"/>
+<text x="110" y="212" class="label" text-anchor="middle">2</text>
+<rect x="138" y="189" width="46" height="34" rx="5" class="off"/>
+<text x="161" y="212" class="muted" text-anchor="middle">3</text>
+<rect x="189" y="189" width="46" height="34" rx="5" class="off"/>
+<text x="212" y="212" class="muted" text-anchor="middle">4</text>
+<text x="136" y="243" class="tiny" text-anchor="middle">取高亮的相邻两个输入</text>
+<rect x="39" y="258" width="194" height="49" rx="7" class="psum"/>
+<text x="136" y="279" class="sub partial" text-anchor="middle">1 × 2 + 2 × 1</text>
+<text x="136" y="298" class="sub label partial" text-anchor="middle">= 4</text>
+<rect x="262" y="83" width="234" height="244" rx="7" class="panel"/>
+<text x="379" y="108" class="sub label" text-anchor="middle">窗口 2</text>
+<rect x="327" y="123" width="49" height="34" rx="5" class="weight"/>
+<text x="351.5" y="146" class="label accent" text-anchor="middle">2</text>
+<rect x="382" y="123" width="49" height="34" rx="5" class="weight"/>
+<text x="406.5" y="146" class="label accent" text-anchor="middle">1</text>
+<text x="379" y="175" class="tiny accent" text-anchor="middle">本地保留核行</text>
+<rect x="279" y="189" width="46" height="34" rx="5" class="off"/>
+<text x="302" y="212" class="muted" text-anchor="middle">1</text>
+<rect x="330" y="189" width="46" height="34" rx="5" class="reg"/>
+<text x="353" y="212" class="label" text-anchor="middle">2</text>
+<rect x="381" y="189" width="46" height="34" rx="5" class="reg"/>
+<text x="404" y="212" class="label" text-anchor="middle">3</text>
+<rect x="432" y="189" width="46" height="34" rx="5" class="off"/>
+<text x="455" y="212" class="muted" text-anchor="middle">4</text>
+<text x="379" y="243" class="tiny" text-anchor="middle">取高亮的相邻两个输入</text>
+<rect x="282" y="258" width="194" height="49" rx="7" class="psum"/>
+<text x="379" y="279" class="sub partial" text-anchor="middle">2 × 2 + 3 × 1</text>
+<text x="379" y="298" class="sub label partial" text-anchor="middle">= 7</text>
+<rect x="505" y="83" width="234" height="244" rx="7" class="panel"/>
+<text x="622" y="108" class="sub label" text-anchor="middle">窗口 3</text>
+<rect x="570" y="123" width="49" height="34" rx="5" class="weight"/>
+<text x="594.5" y="146" class="label accent" text-anchor="middle">2</text>
+<rect x="625" y="123" width="49" height="34" rx="5" class="weight"/>
+<text x="649.5" y="146" class="label accent" text-anchor="middle">1</text>
+<text x="622" y="175" class="tiny accent" text-anchor="middle">本地保留核行</text>
+<rect x="522" y="189" width="46" height="34" rx="5" class="off"/>
+<text x="545" y="212" class="muted" text-anchor="middle">1</text>
+<rect x="573" y="189" width="46" height="34" rx="5" class="off"/>
+<text x="596" y="212" class="muted" text-anchor="middle">2</text>
+<rect x="624" y="189" width="46" height="34" rx="5" class="reg"/>
+<text x="647" y="212" class="label" text-anchor="middle">3</text>
+<rect x="675" y="189" width="46" height="34" rx="5" class="reg"/>
+<text x="698" y="212" class="label" text-anchor="middle">4</text>
+<text x="622" y="243" class="tiny" text-anchor="middle">取高亮的相邻两个输入</text>
+<rect x="525" y="258" width="194" height="49" rx="7" class="psum"/>
+<text x="622" y="279" class="sub partial" text-anchor="middle">3 × 2 + 4 × 1</text>
+<text x="622" y="298" class="sub label partial" text-anchor="middle">= 10</text>
+<text x="380" y="350" class="sub label" text-anchor="middle">核行多次使用；输入窗口只向右移动一个位置。</text>
+<text x="380" y="372" class="tiny muted" text-anchor="middle">若存在多行卷积核，不同 PE 的对应行部分和还要合并。</text>
+</svg>

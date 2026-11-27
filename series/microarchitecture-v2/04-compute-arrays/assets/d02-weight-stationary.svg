@@ -1,0 +1,87 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 725" width="760" height="725" role="img" aria-labelledby="title desc">
+<title id="title">Weight stationary：权重驻留，部分和按拍向下传递</title>
+<desc id="desc">第一组 k=0,1 的第2拍。4个PE分别保留W00=3、W01=1、W10=5、W11=2。上行收到 X10=1，分别从零计算3和1；下行收到 X01=1，使用第1拍末已接收的部分和6和2，输出第0行的组内和11和4。部分和链路每拍交接，拍2的新和只能供第3拍使用。</desc>
+<defs>
+<marker id="x-arrow" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0 0L7 3.5L0 7z" fill="#376650"/></marker>
+<marker id="w-arrow" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0 0L7 3.5L0 7z" fill="#9b6c27"/></marker>
+<marker id="s-arrow" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0 0L7 3.5L0 7z" fill="#496b90"/></marker>
+<style>
+text{font-family:"Noto Sans CJK SC","Microsoft YaHei",sans-serif;fill:#173d35;font-size:18px}
+.heading{font-size:22px;font-weight:700}.label{font-weight:700}.sub{font-size:16px}.tiny{font-size:14px}.accent{fill:#815718}.muted{fill:#58736a}.partial{fill:#355679}
+.panel{fill:#fafbf8;stroke:#c7d3c7;stroke-width:1.3}.reg{fill:#edf1df;stroke:#82a18e;stroke-width:1.4}.block{fill:#e0ebe3;stroke:#82a18e;stroke-width:1.4}.weight{fill:#f3ebdb;stroke:#c6aa79;stroke-width:1.3}.psum{fill:#e4edf5;stroke:#8ba6c0;stroke-width:1.4}.off{fill:#f3eee3;stroke:#c9b89c;stroke-width:1.1;stroke-dasharray:4 3}
+.x,.w,.s,.xbus,.wbus,.sbus,.future{stroke-width:2.2;fill:none;stroke-linejoin:round;stroke-linecap:round}
+.x,.xbus{stroke:#376650}.x{marker-end:url(#x-arrow)}
+.w,.wbus{stroke:#9b6c27}.w{marker-end:url(#w-arrow)}
+.s,.sbus,.future{stroke:#496b90}.s,.future{marker-end:url(#s-arrow)}.future{stroke-dasharray:5 4}
+</style>
+</defs>
+<rect x="1" y="1" width="758" height="723" rx="13" fill="#f5f6ef" stroke="#c4d0c4"/>
+<text x="22" y="34" class="heading" text-anchor="start">权重驻留：部分和逐拍向下归约</text>
+<text x="22" y="60" class="sub" text-anchor="start">第一组 k = 0, 1 · 第 2 拍；PE 行号表示组内 k，列号表示 j。</text>
+<rect x="18" y="86" width="135" height="52" rx="7" class="reg"/>
+<text x="85" y="108" class="sub label" text-anchor="middle">X[1,0] = 1</text>
+<text x="85" y="127" class="tiny" text-anchor="middle">4 bit · i=1</text>
+<path d="M153 111H486" class="xbus"/>
+<path d="M172 111V197H184" class="x"/>
+<circle cx="172" cy="111" r="3.4" fill="#376650"/>
+<path d="M486 111V197H501" class="x"/>
+<rect x="184" y="143" width="230" height="142" rx="7" class="panel"/>
+<text x="299.0" y="168" class="sub label" text-anchor="middle">PE(0,0) · k=0</text>
+<rect x="197" y="179" width="204" height="31" rx="7" class="weight"/>
+<text x="299.0" y="200" class="tiny label accent" text-anchor="middle">W[0,0] = 3 · 4 bit</text>
+<text x="299.0" y="236" class="label" text-anchor="middle">0 + 1 × 3 = 3</text>
+<rect x="197" y="249" width="204" height="29" rx="7" class="psum"/>
+<text x="299.0" y="269" class="sub label partial" text-anchor="middle">本拍末得到 3</text>
+<rect x="501" y="143" width="230" height="142" rx="7" class="panel"/>
+<text x="616.0" y="168" class="sub label" text-anchor="middle">PE(0,1) · k=0</text>
+<rect x="514" y="179" width="204" height="31" rx="7" class="weight"/>
+<text x="616.0" y="200" class="tiny label accent" text-anchor="middle">W[0,1] = 1 · 4 bit</text>
+<text x="616.0" y="236" class="label" text-anchor="middle">0 + 1 × 1 = 1</text>
+<rect x="514" y="249" width="204" height="29" rx="7" class="psum"/>
+<text x="616.0" y="269" class="sub label partial" text-anchor="middle">本拍末得到 1</text>
+<path d="M299 285V309" class="future"/>
+<rect x="207" y="311" width="184" height="48" rx="7" class="psum"/>
+<text x="299" y="331" class="tiny label partial" text-anchor="middle">拍初寄存器 Q = 6</text>
+<text x="299" y="350" class="tiny partial" text-anchor="middle">拍末更新为 3</text>
+<path d="M299 359V408" class="s"/>
+<path d="M616 285V309" class="future"/>
+<rect x="524" y="311" width="184" height="48" rx="7" class="psum"/>
+<text x="616" y="331" class="tiny label partial" text-anchor="middle">拍初寄存器 Q = 2</text>
+<text x="616" y="350" class="tiny partial" text-anchor="middle">拍末更新为 1</text>
+<path d="M616 359V408" class="s"/>
+<rect x="18" y="343" width="135" height="52" rx="7" class="reg"/>
+<text x="85" y="365" class="sub label" text-anchor="middle">X[0,1] = 1</text>
+<text x="85" y="384" class="tiny" text-anchor="middle">4 bit · i=0</text>
+<path d="M153 369H293M305 369H486" class="xbus"/>
+<path d="M172 369V467H184" class="x"/>
+<circle cx="172" cy="369" r="3.4" fill="#376650"/>
+<path d="M486 369V467H501" class="x"/>
+<rect x="184" y="408" width="230" height="142" rx="7" class="panel"/>
+<text x="299.0" y="433" class="sub label" text-anchor="middle">PE(1,0) · k=1</text>
+<rect x="197" y="444" width="204" height="31" rx="7" class="weight"/>
+<text x="299.0" y="465" class="tiny label accent" text-anchor="middle">W[1,0] = 5 · 4 bit</text>
+<text x="299.0" y="501" class="label" text-anchor="middle">6 + 1 × 5 = 11</text>
+<rect x="197" y="514" width="204" height="29" rx="7" class="psum"/>
+<text x="299.0" y="534" class="sub label partial" text-anchor="middle">本拍末得到 11</text>
+<rect x="501" y="408" width="230" height="142" rx="7" class="panel"/>
+<text x="616.0" y="433" class="sub label" text-anchor="middle">PE(1,1) · k=1</text>
+<rect x="514" y="444" width="204" height="31" rx="7" class="weight"/>
+<text x="616.0" y="465" class="tiny label accent" text-anchor="middle">W[1,1] = 2 · 4 bit</text>
+<text x="616.0" y="501" class="label" text-anchor="middle">2 + 1 × 2 = 4</text>
+<rect x="514" y="514" width="204" height="29" rx="7" class="psum"/>
+<text x="616.0" y="534" class="sub label partial" text-anchor="middle">本拍末得到 4</text>
+<path d="M299 550V574" class="s"/>
+<path d="M616 550V574" class="s"/>
+<rect x="184" y="575" width="547" height="54" rx="7" class="psum"/>
+<text x="457" y="598" class="sub label partial" text-anchor="middle">送到 S 缓冲的第 0 行组内部分和</text>
+<text x="457" y="619" class="sub partial" text-anchor="middle">S[0,0] = 11             S[0,1] = 4（各 10 bit）</text>
+<rect x="18" y="644" width="713" height="63" rx="7" class="panel"/>
+<path d="M30 663H54" class="x"/>
+<text x="61" y="668" class="tiny" text-anchor="start">X：行广播</text>
+<rect x="184" y="651" width="25" height="18" rx="3" class="weight"/>
+<text x="216" y="665" class="tiny accent" text-anchor="start">W：本地寄存器</text>
+<path d="M367 662H392" class="s"/>
+<text x="400" y="667" class="tiny partial" text-anchor="start">S：旧值本拍供下行</text>
+<path d="M30 688H54" class="future"/>
+<text x="61" y="693" class="tiny muted" text-anchor="start">虚线：本拍末才采入，下一拍可用；交叉线路互不连接。</text>
+</svg>

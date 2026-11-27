@@ -1,0 +1,88 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 565" width="760" height="565" role="img" aria-labelledby="title desc">
+<title id="title">部分和保存与再次装入的流量对比</title>
+<desc id="desc">在 OS 的教学模型中，四个 Y 的部分和跨全部 k 留在本地，边界只交付四个十位完成值。WS 或 IS 的教学模型中，第一组 k0,1 写入四个十位部分和11、4、13、5；第二组先读取这四个部分和，再合并本组新增贡献10、25、4、11，最终交付21、29、17、16四个十位结果。</desc>
+<defs>
+<marker id="x-arrow" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0 0L7 3.5L0 7z" fill="#376650"/></marker>
+<marker id="w-arrow" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0 0L7 3.5L0 7z" fill="#9b6c27"/></marker>
+<marker id="s-arrow" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0 0L7 3.5L0 7z" fill="#496b90"/></marker>
+<style>
+text{font-family:"Noto Sans CJK SC","Microsoft YaHei",sans-serif;fill:#173d35;font-size:18px}
+.heading{font-size:22px;font-weight:700}.label{font-weight:700}.sub{font-size:16px}.tiny{font-size:14px}.accent{fill:#815718}.muted{fill:#58736a}.partial{fill:#355679}
+.panel{fill:#fafbf8;stroke:#c7d3c7;stroke-width:1.3}.reg{fill:#edf1df;stroke:#82a18e;stroke-width:1.4}.block{fill:#e0ebe3;stroke:#82a18e;stroke-width:1.4}.weight{fill:#f3ebdb;stroke:#c6aa79;stroke-width:1.3}.psum{fill:#e4edf5;stroke:#8ba6c0;stroke-width:1.4}.off{fill:#f3eee3;stroke:#c9b89c;stroke-width:1.1;stroke-dasharray:4 3}
+.x,.w,.s,.xbus,.wbus,.sbus,.future{stroke-width:2.2;fill:none;stroke-linejoin:round;stroke-linecap:round}
+.x,.xbus{stroke:#376650}.x{marker-end:url(#x-arrow)}
+.w,.wbus{stroke:#9b6c27}.w{marker-end:url(#w-arrow)}
+.s,.sbus,.future{stroke:#496b90}.s,.future{marker-end:url(#s-arrow)}.future{stroke-dasharray:5 4}
+</style>
+</defs>
+<rect x="1" y="1" width="758" height="563" rx="13" fill="#f5f6ef" stroke="#c4d0c4"/>
+<text x="22" y="34" class="heading" text-anchor="start">同一组输出：何时需要让部分和跨越边界？</text>
+<rect x="19" y="56" width="722" height="164" rx="7" class="panel"/>
+<text x="36" y="82" class="sub label" text-anchor="start">OS：累加状态留在 PE 内直到 k = 3</text>
+<rect x="38" y="97" width="302" height="102" rx="7" class="block"/>
+<text x="189" y="123" class="sub label" text-anchor="middle">四个 PE 的本地 ACC</text>
+<text x="189" y="149" class="sub" text-anchor="middle">k=0 → 1 → 2 → 3</text>
+<text x="189" y="174" class="tiny" text-anchor="middle">不交付未完成的部分和</text>
+<path d="M340 148H519" class="s"/>
+<text x="430" y="136" class="tiny partial" text-anchor="middle">只送完成值</text>
+<text x="430" y="173" class="tiny label partial" text-anchor="middle">4 × 10 bit</text>
+<rect x="531" y="109" width="88" height="35" rx="5" class="psum"/>
+<text x="575.0" y="132" class="label partial" text-anchor="middle">21</text>
+<rect x="625" y="109" width="88" height="35" rx="5" class="psum"/>
+<text x="669.0" y="132" class="label partial" text-anchor="middle">29</text>
+<rect x="531" y="150" width="88" height="35" rx="5" class="psum"/>
+<text x="575.0" y="173" class="label partial" text-anchor="middle">17</text>
+<rect x="625" y="150" width="88" height="35" rx="5" class="psum"/>
+<text x="669.0" y="173" class="label partial" text-anchor="middle">16</text>
+<text x="622" y="196" class="tiny label" text-anchor="middle">最终 Y</text>
+<rect x="19" y="231" width="722" height="267" rx="7" class="panel"/>
+<text x="36" y="258" class="sub label" text-anchor="start">WS / IS 教学例：k 分成两组，第一组留下部分和</text>
+<rect x="34" y="275" width="182" height="174" rx="7" class="block"/>
+<text x="125" y="296" class="sub label" text-anchor="middle">第一组 k=0,1</text>
+<rect x="45" y="308" width="77" height="32" rx="5" class="psum"/>
+<text x="83.5" y="331" class="label partial" text-anchor="middle">11</text>
+<rect x="128" y="308" width="77" height="32" rx="5" class="psum"/>
+<text x="166.5" y="331" class="label partial" text-anchor="middle">4</text>
+<rect x="45" y="346" width="77" height="32" rx="5" class="psum"/>
+<text x="83.5" y="369" class="label partial" text-anchor="middle">13</text>
+<rect x="128" y="346" width="77" height="32" rx="5" class="psum"/>
+<text x="166.5" y="369" class="label partial" text-anchor="middle">5</text>
+<text x="125" y="395" class="tiny" text-anchor="middle">组内部分和</text>
+<text x="125" y="419" class="tiny muted" text-anchor="middle">S 的初值为 0</text>
+<path d="M216 352H290" class="s"/>
+<text x="253" y="328" class="tiny partial" text-anchor="middle">写入</text>
+<text x="253" y="375" class="tiny label partial" text-anchor="middle">4×10</text>
+<text x="253" y="393" class="tiny partial" text-anchor="middle">bit</text>
+<rect x="292" y="275" width="175" height="174" rx="7" class="psum"/>
+<text x="379" y="296" class="sub label partial" text-anchor="middle">S 缓冲</text>
+<rect x="309" y="308" width="67" height="32" rx="5" class="psum"/>
+<text x="342.5" y="331" class="label partial" text-anchor="middle">11</text>
+<rect x="382" y="308" width="67" height="32" rx="5" class="psum"/>
+<text x="415.5" y="331" class="label partial" text-anchor="middle">4</text>
+<rect x="309" y="346" width="67" height="32" rx="5" class="psum"/>
+<text x="342.5" y="369" class="label partial" text-anchor="middle">13</text>
+<rect x="382" y="346" width="67" height="32" rx="5" class="psum"/>
+<text x="415.5" y="369" class="label partial" text-anchor="middle">5</text>
+<text x="379" y="395" class="tiny partial" text-anchor="middle">跨两组保存</text>
+<path d="M467 352H538" class="s"/>
+<text x="502" y="328" class="tiny partial" text-anchor="middle">读出</text>
+<text x="502" y="375" class="tiny label partial" text-anchor="middle">4×10</text>
+<text x="502" y="393" class="tiny partial" text-anchor="middle">bit</text>
+<rect x="540" y="275" width="187" height="174" rx="7" class="block"/>
+<text x="634" y="296" class="sub label" text-anchor="middle">第二组 k=2,3</text>
+<text x="634" y="317" class="tiny" text-anchor="middle">新增贡献</text>
+<rect x="553" y="324" width="77" height="30" rx="5" class="psum"/>
+<text x="591.5" y="347" class="label partial" text-anchor="middle">10</text>
+<rect x="636" y="324" width="77" height="30" rx="5" class="psum"/>
+<text x="674.5" y="347" class="label partial" text-anchor="middle">25</text>
+<rect x="553" y="360" width="77" height="30" rx="5" class="psum"/>
+<text x="591.5" y="383" class="label partial" text-anchor="middle">4</text>
+<rect x="636" y="360" width="77" height="30" rx="5" class="psum"/>
+<text x="674.5" y="383" class="label partial" text-anchor="middle">11</text>
+<text x="634" y="407" class="tiny label" text-anchor="middle">加到读出的 S</text>
+<text x="634" y="431" class="sub label" text-anchor="middle">得到最终 Y</text>
+<path d="M634 449V464" class="s"/>
+<text x="634" y="484" class="tiny label partial" text-anchor="middle">21, 29; 17, 16</text>
+<text x="380" y="519" class="sub label partial" text-anchor="middle">第一组写 40 bit + 第二组读 40 bit；另有最终输出 40 bit。</text>
+<text x="380" y="545" class="tiny muted" text-anchor="middle">在 PE 与外部状态/结果接收位置的边界计数；不是 SRAM/HBM 实际访问量。</text>
+</svg>
