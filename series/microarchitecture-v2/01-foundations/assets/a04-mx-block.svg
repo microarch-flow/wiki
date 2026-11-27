@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 620 390" width="620" height="390" role="img" aria-labelledby="mx-title mx-desc">
+  <title id="mx-title">MXFP8 的元素编码与块共享缩放</title>
+  <desc id="mx-desc">OCP MX v1.0 的 MXFP8 示例使用一个 8 位 E8M0 缩放因子及 32 个 8 位 E4M3 元素。共享缩放编码为十进制 130（二进制 10000010），所以比例 s 等于 2 的 130 减 127 次方，即 8。元素仍各自含符号、四位指数、三位小数部分。第一个元素编码 0 0111 100，元素数值为 1.5，乘共享比例得到 12；第二个元素编码 0 0110 000，数值为 0.5，乘共享比例得到 4；其他三十个元素同样解释。完整块的编码载荷为 32 乘 8 加 8 等于 264 位，即 33 字节。此图仅表达共同尺度与元素数值的关系，不规定物理布局或选择缩放的方法，不计对齐和额外元数据。</desc>
+  <defs>
+    <style>
+      text{font-family:"Noto Sans CJK SC","PingFang SC","Microsoft YaHei",sans-serif;fill:#173d35;font-size:18px}
+      .heading{font-size:22px;font-weight:700}.note{font-size:16px;fill:#4f695a}.symbol{font-size:19px;font-weight:700}.scale{font-size:19px;font-weight:700;fill:#765a2f}
+      .block{fill:#e0ebe3;stroke:#82a18e;stroke-width:1.6}.sign{fill:#e0ebe3;stroke:#82a18e}.exp{fill:#e6dcc4;stroke:#bda57a}.fraction{fill:#edf1df;stroke:#82a18e}.bits{font-size:18px;font-weight:700;font-family:"Noto Sans Mono CJK SC",monospace}
+    </style>
+  </defs>
+  <rect x="1" y="1" width="618" height="388" rx="13" fill="#f5f6ef" stroke="#c4d0c4" stroke-width="1.3"/>
+  <text class="heading" x="22" y="34">OCP MXFP8：一个块包含 32 个元素</text>
+  <rect x="18" y="51" width="584" height="77" rx="9" fill="#e6dcc4" stroke="#bda57a" stroke-width="1.3"/>
+  <text class="scale" x="32" y="77">块共享缩放 E8M0（8 位）</text>
+  <text class="bits" x="32" y="109">10000010</text>
+  <text class="note" x="143" y="109">= 130</text>
+  <text x="219" y="108">s = 2</text><text x="260" y="99" font-size="14">130 − 127</text><text class="scale" x="344" y="108">= 8</text>
+  <text class="note" x="402" y="108">全块共用 s</text>
+  <text class="symbol" x="22" y="155">E4M3 元素（各 8 位，仍有自己的指数）</text>
+  <!-- The element cards show logical fields, not physical packing order for the memory interface. -->
+  <g text-anchor="middle">
+    <rect class="block" x="18" y="169" width="188" height="142" rx="9"/>
+    <rect class="block" x="216" y="169" width="188" height="142" rx="9"/>
+    <rect class="block" x="414" y="169" width="188" height="142" rx="9"/>
+    <text class="symbol" x="112" y="195">元素 0</text><text class="symbol" x="310" y="195">元素 1</text><text class="symbol" x="508" y="195">元素 2–31</text>
+    <g transform="translate(28 201)">
+      <text class="note" x="18" y="17">S</text><text class="note" x="68" y="17">E</text><text class="note" x="135" y="17">F</text>
+      <rect class="sign" x="3" y="22" width="30" height="28" rx="3"/><rect class="exp" x="36" y="22" width="66" height="28" rx="3"/><rect class="fraction" x="105" y="22" width="63" height="28" rx="3"/>
+      <text class="bits" x="18" y="43">0</text><text class="bits" x="69" y="43">0111</text><text class="bits" x="136" y="43">100</text>
+    </g>
+    <g transform="translate(226 201)">
+      <text class="note" x="18" y="17">S</text><text class="note" x="68" y="17">E</text><text class="note" x="135" y="17">F</text>
+      <rect class="sign" x="3" y="22" width="30" height="28" rx="3"/><rect class="exp" x="36" y="22" width="66" height="28" rx="3"/><rect class="fraction" x="105" y="22" width="63" height="28" rx="3"/>
+      <text class="bits" x="18" y="43">0</text><text class="bits" x="69" y="43">0110</text><text class="bits" x="136" y="43">000</text>
+    </g>
+    <text class="note" x="112" y="272">元素值 = 1.5</text><text class="note" x="310" y="272">元素值 = 0.5</text>
+    <text class="symbol" x="112" y="298">1.5 × 8 = 12</text><text class="symbol" x="310" y="298">0.5 × 8 = 4</text>
+    <text x="508" y="227" font-size="22">⋯</text><text class="note" x="508" y="254">另外 30 个元素</text><text class="symbol" x="508" y="287">各自乘 s = 8</text>
+  </g>
+  <rect x="18" y="323" width="584" height="34" rx="7" fill="#edf1df" stroke="#ced9c7"/>
+  <text class="symbol" x="310" y="347" text-anchor="middle">32 × 8 + 8 = 264 bit = 33 B</text>
+  <text class="note" x="22" y="377">仅展示编码载荷与数值关系，不计对齐和额外元数据。</text>
+</svg>

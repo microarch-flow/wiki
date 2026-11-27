@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 650 401" width="650" height="401" role="img" aria-labelledby="mix-title mix-desc">
+  <title id="mix-title">同一组乘积采用不同累加精度时的舍入差异</title>
+  <desc id="mix-desc">本教学例沿用 A01 四项点积的乘积 6、5、6、4，它们均可用 E4M3 表示。累加初值为零。若每项相加后都舍入到 E4M3 并采用最邻近偶数规则，累加状态依次是零、六、十一、十六、二十：第三次相加的精确结果十七，恰处于十六和十八之间，舍入到十六。使用 FP32 累加，则状态依次为零、六、十一、十七、二十一，保留完整数学和。如果另外将最终 FP32 的二十一转换到 E4M3，二十一在二十和二十二之间，按最邻近偶数规则得到二十。是否最终低精度转换是独立决定。这个对比仅展示教学数值过程，不保证真实硬件采用该路径。</desc>
+  <defs>
+    <marker id="mix-arrow" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto"><path d="M0 0L6 3L0 6Z" fill="#376a55"/></marker>
+    <marker id="round-arrow" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto"><path d="M0 0L6 3L0 6Z" fill="#8a6c3c"/></marker>
+    <style>
+      text{font-family:"Noto Sans CJK SC","PingFang SC","Microsoft YaHei",sans-serif;fill:#173d35;font-size:18px}
+      .heading{font-size:22px;font-weight:700}.note{font-size:16px;fill:#4f695a}.symbol{font-size:20px;font-weight:700}.value{font-size:23px;font-weight:700;font-family:"Noto Sans Mono CJK SC",monospace}.round{fill:#765a2f;font-weight:600}
+      .block{fill:#e0ebe3;stroke:#82a18e;stroke-width:1.5}.rounded{fill:#e6dcc4;stroke:#bda57a;stroke-width:1.5}.final{fill:#d2e6d7;stroke:#719e81;stroke-width:1.5}
+      .wire{stroke:#376a55;stroke-width:1.9;fill:none;marker-end:url(#mix-arrow)}.cast{stroke:#8a6c3c;stroke-width:1.8;stroke-dasharray:5 4;fill:none;marker-end:url(#round-arrow)}
+    </style>
+  </defs>
+  <rect x="1" y="1" width="648" height="399" rx="13" fill="#f5f6ef" stroke="#c4d0c4" stroke-width="1.3"/>
+  <text class="heading" x="22" y="33">沿用 A01 的四项点积</text>
+  <text class="note" x="22" y="59">乘积 6、5、6、4 均可用 E4M3 表示。下面只改变累加精度。</text>
+  <!-- Each state box stores the value obtained AFTER the corresponding addition and rounding step. -->
+  <rect x="12" y="73" width="626" height="140" rx="10" fill="#f9faf5" stroke="#c4d0c4"/>
+  <text class="symbol" x="24" y="99">1. E4M3：每次相加后按 RNE 舍入</text>
+  <g text-anchor="middle">
+    <text class="note" x="79" y="124">初值</text><text class="note" x="140" y="139">+6</text><text class="note" x="266" y="139">+5</text><text class="note" x="392" y="139">+6</text><text class="note" x="518" y="139">+4</text>
+    <rect class="block" x="44" y="146" width="70" height="36" rx="6"/><text class="value" x="79" y="171">0</text>
+    <rect class="block" x="170" y="146" width="70" height="36" rx="6"/><text class="value" x="205" y="171">6</text>
+    <rect class="block" x="296" y="146" width="70" height="36" rx="6"/><text class="value" x="331" y="171">11</text>
+    <rect class="rounded" x="422" y="146" width="70" height="36" rx="6"/><text class="value round" x="457" y="171">16</text>
+    <rect class="rounded" x="548" y="146" width="70" height="36" rx="6"/><text class="value round" x="583" y="171">20</text>
+  </g>
+  <path class="wire" d="M114 164H166"/><path class="wire" d="M240 164H292"/><path class="wire" d="M366 164H418"/><path class="wire" d="M492 164H544"/>
+  <text class="note round" x="24" y="203">11 + 6 = 17，恰在 16 与 18 中间；16 的保留最低位为 0。</text>
+  <rect x="12" y="221" width="626" height="107" rx="10" fill="#f9faf5" stroke="#c4d0c4"/>
+  <text class="symbol" x="24" y="247">2. FP32：较宽的累加状态</text>
+  <g text-anchor="middle">
+    <text class="note" x="140" y="273">+6</text><text class="note" x="266" y="273">+5</text><text class="note" x="392" y="273">+6</text><text class="note" x="518" y="273">+4</text>
+    <rect class="block" x="44" y="280" width="70" height="36" rx="6"/><text class="value" x="79" y="305">0</text>
+    <rect class="block" x="170" y="280" width="70" height="36" rx="6"/><text class="value" x="205" y="305">6</text>
+    <rect class="block" x="296" y="280" width="70" height="36" rx="6"/><text class="value" x="331" y="305">11</text>
+    <rect class="block" x="422" y="280" width="70" height="36" rx="6"/><text class="value" x="457" y="305">17</text>
+    <rect class="final" x="548" y="280" width="70" height="36" rx="6"/><text class="value" x="583" y="305">21</text>
+  </g>
+  <path class="wire" d="M114 298H166"/><path class="wire" d="M240 298H292"/><path class="wire" d="M366 298H418"/><path class="wire" d="M492 298H544"/>
+  <text class="note" x="22" y="351">若最终还要转为 E4M3，21 舍入为 20（20 与 22 的正中）。</text>
+  <text class="note" x="22" y="377">累加与输出转换是两个步骤；以上为教学数值过程，不指定真实硬件实现。</text>
+</svg>

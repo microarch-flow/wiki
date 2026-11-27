@@ -1,0 +1,57 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 435" width="640" height="435" role="img" aria-labelledby="title desc">
+  <title id="title">普通乘加与融合乘加的区别：舍入一次还是两次</title>
+  <desc id="desc">输入均可由 FP16 精确表示：a 等于一加二的负十次方，b 等于一减二的负十次方，c 等于负一。精确乘积为一减二的负二十次方。普通乘加先将乘积按最近值且平分取偶舍入到一，再加负一得到零。FMA 保留精确乘积的数学效果，先加负一得到负二的负二十次方，再进行一次 FP16 舍入；这个结果是可表示的次正规数，所以数值不变。图是数学语义示意而非实际硬件通路，假设支持次正规数。</desc>
+  <defs>
+    <marker id="arrow" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0 0L7 3.5L0 7z" fill="#376650"/></marker>
+    <style>
+      text{font-family:"Noto Sans CJK SC","Microsoft YaHei",sans-serif;fill:#173d35;font-size:18px}
+      .heading{font-size:22px;font-weight:700}.small{font-size:16px}.accent{fill:#8a5d1c}
+      .panel{fill:#fafbf8;stroke:#c7d3c7;stroke-width:1.3}
+      .value{fill:#e0ebe3;stroke:#82a18e;stroke-width:1.4}
+      .round{fill:#eee6d5;stroke:#c5a674;stroke-width:1.4}
+      .wire{fill:none;stroke:#376650;stroke-width:2.2;stroke-linecap:round;marker-end:url(#arrow)}
+    </style>
+  </defs>
+  <rect x="1" y="1" width="638" height="433" rx="13" fill="#f5f6ef" stroke="#c4d0c4"/>
+  <text x="20" y="34" class="heading">FMA 为什么能保留普通乘加丢失的信息？</text>
+  <text x="20" y="61" class="small">FP16：a=1+2⁻¹⁰，b=1−2⁻¹⁰，c=−1；三者均可精确表示。</text>
+  <rect x="18" y="77" width="294" height="302" rx="10" class="panel"/>
+  <rect x="328" y="77" width="294" height="302" rx="10" class="panel"/>
+  <g text-anchor="middle">
+    <text x="165" y="104" font-weight="700">分开乘法、加法</text>
+    <text x="475" y="104" font-weight="700">融合乘加 FMA</text>
+    <rect x="37" y="118" width="256" height="49" rx="7" class="value"/>
+    <text x="165" y="137" class="small">数学上的精确乘积</text>
+    <text x="165" y="159" font-weight="700">a×b = 1−2⁻²⁰</text>
+    <rect x="347" y="118" width="256" height="49" rx="7" class="value"/>
+    <text x="475" y="137" class="small">数学上的精确乘积</text>
+    <text x="475" y="159" font-weight="700">a×b = 1−2⁻²⁰</text>
+    <path d="M165 167V181" class="wire"/>
+    <path d="M475 167V181" class="wire"/>
+    <rect x="37" y="181" width="256" height="44" rx="7" class="round"/>
+    <text x="165" y="199" class="small accent">第 1 次 FP16 舍入</text>
+    <text x="165" y="219" font-weight="700">1</text>
+    <rect x="347" y="181" width="256" height="44" rx="7" class="value"/>
+    <text x="475" y="199" class="small">不先舍入乘积，直接加 c</text>
+    <text x="475" y="219" font-weight="700">(1−2⁻²⁰)−1 = −2⁻²⁰</text>
+    <path d="M165 225V239" class="wire"/>
+    <path d="M475 225V239" class="wire"/>
+    <rect x="37" y="239" width="256" height="44" rx="7" class="value"/>
+    <text x="165" y="257" class="small">加 c</text>
+    <text x="165" y="277" font-weight="700">1−1 = 0</text>
+    <rect x="347" y="239" width="256" height="44" rx="7" class="round"/>
+    <text x="475" y="257" class="small accent">唯一一次 FP16 舍入</text>
+    <text x="475" y="277" font-weight="700">−2⁻²⁰</text>
+    <path d="M165 283V297" class="wire"/>
+    <path d="M475 283V335" class="wire"/>
+    <rect x="37" y="297" width="256" height="32" rx="7" class="round"/>
+    <text x="165" y="319" class="small accent">第 2 次 FP16 舍入：0</text>
+    <path d="M165 329V335" class="wire"/>
+    <rect x="37" y="335" width="256" height="32" rx="7" class="value"/>
+    <rect x="347" y="335" width="256" height="32" rx="7" class="value"/>
+    <text x="165" y="357" font-weight="700">结果：0</text>
+    <text x="475" y="357" font-weight="700">结果：−2⁻²⁰（次正规数）</text>
+  </g>
+  <text x="20" y="403" class="small">假设次正规数可用，舍入方式为最近值、平分取偶。</text>
+  <text x="20" y="424" class="small">此图只表示数学语义，不规定实际硬件的数据通路或时钟周期。</text>
+</svg>
