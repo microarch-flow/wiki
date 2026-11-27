@@ -1,126 +1,170 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="540" height="963" viewBox="0 0 540 963" xml:lang="zh-CN" role="img" aria-labelledby="title desc">
-<title id="title">NAND 与非门：改变一个输入</title>
-<desc id="desc">同一两输入与非门的两个状态，A始终为1，B从0变为1。第一状态中并联的B控制PMOS形成上拉路径、输出1；第二状态中串联的NMOS均导通形成下拉路径、输出0。粗色线路只标示输出与供电轨间的完整导通路径，不表示持续电流。理想开关等效；同名输入相连；省略体端和负载。</desc>
-<defs><marker id="current" markerWidth="8" markerHeight="8" refX="7.2" refY="4" orient="auto"><path d="M0 0L8 4L0 8Z" fill="#a65029"/></marker></defs>
-<rect x="1" y="1" width="538" height="961" rx="15" fill="#f7f6ef" stroke="#c6cec2" stroke-width="1.2"/>
-<g font-family="system-ui, &apos;Noto Sans CJK SC&apos;, &apos;Microsoft YaHei&apos;, sans-serif" fill="#213c36">
-<text x="20" y="35" font-size="24" fill="#213c36" font-weight="700" text-anchor="start">NAND 与非门：改变 B</text>
-<text x="20" y="63" font-size="18" fill="#526860" font-weight="400" text-anchor="start">A = 1 始终不变；B 从 0 变为 1</text>
-<rect x="15" y="77" width="510" height="391" rx="10" fill="#fffdf7" stroke="#d3dacf" stroke-width="1.2"/>
-<text x="30" y="107" font-size="20" fill="#213c36" font-weight="700" text-anchor="start">① A = 1，B = 0</text>
-<text x="245" y="132" font-size="17" fill="#213c36" font-weight="650" text-anchor="middle">VDD = 0.8 V</text>
-<path d="M228 142H262" fill="none" stroke="#213c36" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>
-<path d="M230 390H260M235 395H255M240 400H250" fill="none" stroke="#213c36" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
-<text x="268" y="398" font-size="17" fill="#526860" font-weight="400" text-anchor="start">0 V</text>
-<path d="M245 142V155M140 155H350M140 155V168M350 155V168M140 228V235M350 228V235M140 235H350M245 235V259V272M245 318V328M245 376V390" fill="none" stroke="#536860" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>
-<path d="M245 142V155H350V168M350 228V235H245V259" fill="none" stroke="#a65029" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
-<circle cx="245" cy="155" r="3.2" fill="#a65029" stroke="none" stroke-width="1.8"/>
-<circle cx="245" cy="235" r="3.2" fill="#a65029" stroke="none" stroke-width="1.8"/>
-<rect x="119" y="170" width="108" height="56" rx="7" fill="#eeeee8" stroke="#abb4ab" stroke-width="1.5"/>
-<path d="M140 168V179M140 217V228" fill="none" stroke="#536860" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
-<circle cx="140" cy="179" r="3.1" fill="#fffdf7" stroke="#536860" stroke-width="1.8"/>
-<circle cx="140" cy="217" r="3.1" fill="#fffdf7" stroke="#536860" stroke-width="1.8"/>
-<path d="M140 214L128 182" fill="none" stroke="#526860" stroke-width="2.7" stroke-linecap="round" stroke-linejoin="round"/>
-<path d="M88 198.0H109" fill="none" stroke="#536860" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="4 3"/>
-<circle cx="114" cy="198.0" r="4.3" fill="#fffdf7" stroke="#536860" stroke-width="1.8"/>
-<text x="85" y="203.0" font-size="17" fill="#213c36" font-weight="650" text-anchor="end">A</text>
-<text x="154" y="196.0" font-size="16" fill="#213c36" font-weight="700" text-anchor="start">PMOS</text>
-<text x="154" y="215.0" font-size="16" fill="#526860" font-weight="650" text-anchor="start">关断</text>
-<rect x="329" y="170" width="108" height="56" rx="7" fill="#f4e5d7" stroke="#a65029" stroke-width="1.5"/>
-<path d="M350 168V179M350 217V228" fill="none" stroke="#a65029" stroke-width="3.9" stroke-linecap="round" stroke-linejoin="round"/>
-<circle cx="350" cy="179" r="3.1" fill="#fffdf7" stroke="#a65029" stroke-width="1.8"/>
-<circle cx="350" cy="217" r="3.1" fill="#fffdf7" stroke="#a65029" stroke-width="1.8"/>
-<path d="M350 182V214" fill="none" stroke="#a65029" stroke-width="3.9" stroke-linecap="round" stroke-linejoin="round"/>
-<path d="M298 198.0H319" fill="none" stroke="#536860" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="4 3"/>
-<circle cx="324" cy="198.0" r="4.3" fill="#fffdf7" stroke="#536860" stroke-width="1.8"/>
-<text x="295" y="203.0" font-size="17" fill="#213c36" font-weight="650" text-anchor="end">B</text>
-<text x="364" y="196.0" font-size="16" fill="#213c36" font-weight="700" text-anchor="start">PMOS</text>
-<text x="364" y="215.0" font-size="16" fill="#a65029" font-weight="650" text-anchor="start">导通</text>
-<rect x="224" y="274" width="108" height="42" rx="7" fill="#dbece7" stroke="#09677b" stroke-width="1.5"/>
-<path d="M245 272V283M245 307V318" fill="none" stroke="#536860" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
-<circle cx="245" cy="283" r="3.1" fill="#fffdf7" stroke="#536860" stroke-width="1.8"/>
-<circle cx="245" cy="307" r="3.1" fill="#fffdf7" stroke="#536860" stroke-width="1.8"/>
-<path d="M245 286V304" fill="none" stroke="#536860" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"/>
-<path d="M193 295.0H224" fill="none" stroke="#536860" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="4 3"/>
-<text x="190" y="300.0" font-size="17" fill="#213c36" font-weight="650" text-anchor="end">A</text>
-<text x="259" y="293.0" font-size="16" fill="#213c36" font-weight="700" text-anchor="start">NMOS</text>
-<text x="259" y="312.0" font-size="16" fill="#09677b" font-weight="650" text-anchor="start">导通</text>
-<rect x="224" y="330" width="108" height="44" rx="7" fill="#eeeee8" stroke="#abb4ab" stroke-width="1.5"/>
-<path d="M245 328V339M245 365V376" fill="none" stroke="#536860" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
-<circle cx="245" cy="339" r="3.1" fill="#fffdf7" stroke="#536860" stroke-width="1.8"/>
-<circle cx="245" cy="365" r="3.1" fill="#fffdf7" stroke="#536860" stroke-width="1.8"/>
-<path d="M245 362L233 342" fill="none" stroke="#526860" stroke-width="2.7" stroke-linecap="round" stroke-linejoin="round"/>
-<path d="M193 352.0H224" fill="none" stroke="#536860" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="4 3"/>
-<text x="190" y="357.0" font-size="17" fill="#213c36" font-weight="650" text-anchor="end">B</text>
-<text x="259" y="350.0" font-size="16" fill="#213c36" font-weight="700" text-anchor="start">NMOS</text>
-<text x="259" y="369.0" font-size="16" fill="#526860" font-weight="650" text-anchor="start">关断</text>
-<text x="30" y="143" font-size="17" fill="#a65029" font-weight="700" text-anchor="start">并联上拉</text>
-<text x="30" y="276" font-size="17" fill="#09677b" font-weight="700" text-anchor="start">串联下拉</text>
-<text x="30" y="427" font-size="18" fill="#a65029" font-weight="700" text-anchor="start">B 的 PMOS 接通一条上拉支路。</text>
-<text x="30" y="453" font-size="17" fill="#526860" font-weight="400" text-anchor="start">B 的 NMOS 已断开串联下拉路径。</text>
-<path d="M245 259H466" fill="none" stroke="#a65029" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
-<circle cx="245" cy="259" r="4" fill="#a65029" stroke="none" stroke-width="1.8"/>
-<text x="466" y="248" font-size="21" fill="#a65029" font-weight="700" text-anchor="middle">Y = 1</text>
-<rect x="15" y="479" width="510" height="391" rx="10" fill="#fffdf7" stroke="#d3dacf" stroke-width="1.2"/>
-<text x="30" y="509" font-size="20" fill="#213c36" font-weight="700" text-anchor="start">② A = 1，B = 1</text>
-<text x="245" y="534" font-size="17" fill="#213c36" font-weight="650" text-anchor="middle">VDD = 0.8 V</text>
-<path d="M228 544H262" fill="none" stroke="#213c36" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>
-<path d="M230 792H260M235 797H255M240 802H250" fill="none" stroke="#213c36" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
-<text x="268" y="800" font-size="17" fill="#526860" font-weight="400" text-anchor="start">0 V</text>
-<path d="M245 544V557M140 557H350M140 557V570M350 557V570M140 630V637M350 630V637M140 637H350M245 637V661V674M245 720V730M245 778V792" fill="none" stroke="#536860" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>
-<path d="M245 661V674M245 720V730M245 778V792" fill="none" stroke="#09677b" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
-<circle cx="245" cy="557" r="3.2" fill="#536860" stroke="none" stroke-width="1.8"/>
-<circle cx="245" cy="637" r="3.2" fill="#536860" stroke="none" stroke-width="1.8"/>
-<rect x="119" y="572" width="108" height="56" rx="7" fill="#eeeee8" stroke="#abb4ab" stroke-width="1.5"/>
-<path d="M140 570V581M140 619V630" fill="none" stroke="#536860" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
-<circle cx="140" cy="581" r="3.1" fill="#fffdf7" stroke="#536860" stroke-width="1.8"/>
-<circle cx="140" cy="619" r="3.1" fill="#fffdf7" stroke="#536860" stroke-width="1.8"/>
-<path d="M140 616L128 584" fill="none" stroke="#526860" stroke-width="2.7" stroke-linecap="round" stroke-linejoin="round"/>
-<path d="M88 600.0H109" fill="none" stroke="#536860" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="4 3"/>
-<circle cx="114" cy="600.0" r="4.3" fill="#fffdf7" stroke="#536860" stroke-width="1.8"/>
-<text x="85" y="605.0" font-size="17" fill="#213c36" font-weight="650" text-anchor="end">A</text>
-<text x="154" y="598.0" font-size="16" fill="#213c36" font-weight="700" text-anchor="start">PMOS</text>
-<text x="154" y="617.0" font-size="16" fill="#526860" font-weight="650" text-anchor="start">关断</text>
-<rect x="329" y="572" width="108" height="56" rx="7" fill="#eeeee8" stroke="#abb4ab" stroke-width="1.5"/>
-<path d="M350 570V581M350 619V630" fill="none" stroke="#536860" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
-<circle cx="350" cy="581" r="3.1" fill="#fffdf7" stroke="#536860" stroke-width="1.8"/>
-<circle cx="350" cy="619" r="3.1" fill="#fffdf7" stroke="#536860" stroke-width="1.8"/>
-<path d="M350 616L338 584" fill="none" stroke="#526860" stroke-width="2.7" stroke-linecap="round" stroke-linejoin="round"/>
-<path d="M298 600.0H319" fill="none" stroke="#536860" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="4 3"/>
-<circle cx="324" cy="600.0" r="4.3" fill="#fffdf7" stroke="#536860" stroke-width="1.8"/>
-<text x="295" y="605.0" font-size="17" fill="#213c36" font-weight="650" text-anchor="end">B</text>
-<text x="364" y="598.0" font-size="16" fill="#213c36" font-weight="700" text-anchor="start">PMOS</text>
-<text x="364" y="617.0" font-size="16" fill="#526860" font-weight="650" text-anchor="start">关断</text>
-<rect x="224" y="676" width="108" height="42" rx="7" fill="#dbece7" stroke="#09677b" stroke-width="1.5"/>
-<path d="M245 674V685M245 709V720" fill="none" stroke="#09677b" stroke-width="3.9" stroke-linecap="round" stroke-linejoin="round"/>
-<circle cx="245" cy="685" r="3.1" fill="#fffdf7" stroke="#09677b" stroke-width="1.8"/>
-<circle cx="245" cy="709" r="3.1" fill="#fffdf7" stroke="#09677b" stroke-width="1.8"/>
-<path d="M245 688V706" fill="none" stroke="#09677b" stroke-width="3.9" stroke-linecap="round" stroke-linejoin="round"/>
-<path d="M193 697.0H224" fill="none" stroke="#536860" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="4 3"/>
-<text x="190" y="702.0" font-size="17" fill="#213c36" font-weight="650" text-anchor="end">A</text>
-<text x="259" y="695.0" font-size="16" fill="#213c36" font-weight="700" text-anchor="start">NMOS</text>
-<text x="259" y="714.0" font-size="16" fill="#09677b" font-weight="650" text-anchor="start">导通</text>
-<rect x="224" y="732" width="108" height="44" rx="7" fill="#dbece7" stroke="#09677b" stroke-width="1.5"/>
-<path d="M245 730V741M245 767V778" fill="none" stroke="#09677b" stroke-width="3.9" stroke-linecap="round" stroke-linejoin="round"/>
-<circle cx="245" cy="741" r="3.1" fill="#fffdf7" stroke="#09677b" stroke-width="1.8"/>
-<circle cx="245" cy="767" r="3.1" fill="#fffdf7" stroke="#09677b" stroke-width="1.8"/>
-<path d="M245 744V764" fill="none" stroke="#09677b" stroke-width="3.9" stroke-linecap="round" stroke-linejoin="round"/>
-<path d="M193 754.0H224" fill="none" stroke="#536860" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="4 3"/>
-<text x="190" y="759.0" font-size="17" fill="#213c36" font-weight="650" text-anchor="end">B</text>
-<text x="259" y="752.0" font-size="16" fill="#213c36" font-weight="700" text-anchor="start">NMOS</text>
-<text x="259" y="771.0" font-size="16" fill="#09677b" font-weight="650" text-anchor="start">导通</text>
-<text x="30" y="545" font-size="17" fill="#a65029" font-weight="700" text-anchor="start">并联上拉</text>
-<text x="30" y="678" font-size="17" fill="#09677b" font-weight="700" text-anchor="start">串联下拉</text>
-<text x="30" y="829" font-size="18" fill="#09677b" font-weight="700" text-anchor="start">两只 NMOS 接通同一条下拉路径。</text>
-<text x="30" y="855" font-size="17" fill="#526860" font-weight="400" text-anchor="start">两只 PMOS 均关断，上拉路径全部断开。</text>
-<path d="M245 661H466" fill="none" stroke="#09677b" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
-<circle cx="245" cy="661" r="4" fill="#09677b" stroke="none" stroke-width="1.8"/>
-<text x="466" y="650" font-size="21" fill="#09677b" font-weight="700" text-anchor="middle">Y = 0</text>
-<path d="M20 899H47" fill="none" stroke="#a65029" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
-<text x="56" y="905" font-size="17" fill="#213c36" font-weight="400" text-anchor="start">完整上拉路径</text>
-<path d="M280 899H307" fill="none" stroke="#09677b" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
-<text x="316" y="905" font-size="17" fill="#213c36" font-weight="400" text-anchor="start">完整下拉路径</text>
-<text x="20" y="928" font-size="17" fill="#526860" font-weight="400" text-anchor="start">粗色线不表示持续电流。</text>
-<text x="20" y="950" font-size="17" fill="#526860" font-weight="400" text-anchor="start">理想开关等效；同名输入相连；省略体端与负载。</text>
+<svg xmlns="http://www.w3.org/2000/svg" width="550" height="1212" viewBox="0 0 550 1212" role="img" aria-labelledby="title desc" xml:lang="zh-CN">
+<title id="title">NAND 门的四端晶体管和导通路径</title>
+<desc id="desc">同一两输入NAND门的两个状态，固定A=1，B从0变为1。第一状态B控制的PMOS独立接通上拉而串联下拉断开，输出1。第二状态两只NMOS串联接通下拉，输出0。保留每只MOS四端：PMOS体端始终接VDD，NMOS体端始终接VSS。X指串联中间节点，不是固定电压。相同的输入和体端电源名称表示同一电路节点；粗色线仅标示完整导通路径而非持续电流。</desc>
+<defs>
+ <marker id="electron" markerWidth="7" markerHeight="7" refX="6.5" refY="3.5" orient="auto"><path d="M0 0L7 3.5 0 7Z" fill="#09677b"/></marker>
+ <marker id="current" markerWidth="7" markerHeight="7" refX="6.5" refY="3.5" orient="auto"><path d="M0 0L7 3.5 0 7Z" fill="#a65029"/></marker>
+ <marker id="muted" markerWidth="7" markerHeight="7" refX="6.5" refY="3.5" orient="auto"><path d="M0 0L7 3.5 0 7Z" fill="#526861"/></marker>
+</defs>
+<rect x="1" y="1" width="548" height="1210" rx="15" fill="#f7f6ef" stroke="#c9d3c7"/>
+<g font-family="system-ui, 'Noto Sans CJK SC', 'Microsoft YaHei', sans-serif" fill="#203c37">
+<text x="20" y="35" font-size="23" fill="#203c37" font-weight="700" text-anchor="start">NAND 与非门：改变 B</text>
+<text x="20" y="62" font-size="18" fill="#526861" font-weight="400" text-anchor="start">A = 1 始终不变；B 从 0 变为 1。</text>
+<rect x="15" y="80" width="520" height="502" rx="10" fill="#fffdf7" stroke="#d3dacf" stroke-width="1.2"/>
+<text x="30" y="107" font-size="21" fill="#203c37" font-weight="700" text-anchor="start">① A = 1，B = 0</text>
+<text x="515" y="107" font-size="22" fill="#a65029" font-weight="700" text-anchor="end">Y = 1</text>
+<path d="M248 134H292" fill="none" stroke="#53675b" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" />
+<text x="270" y="125" font-size="17" fill="#526861" font-weight="650" text-anchor="middle">VDD = 0.8 V</text>
+<path d="M270 522V530M256 530H284M261 535H279M266 540H274" fill="none" stroke="#53675b" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" />
+<text x="293" y="537" font-size="17" fill="#526861" font-weight="650" text-anchor="start">VSS = 0 V</text>
+<path d="M270 134V162M158 162H390M158 162V174M390 162V174" fill="none" stroke="#53675b" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" />
+<path d="M270 134V162H390V174" fill="none" stroke="#a65029" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" />
+<path d="M158 260V285H390V260M270 285V324" fill="none" stroke="#53675b" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" />
+<path d="M390 260V285H270V324" fill="none" stroke="#a65029" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" />
+<circle cx="270" cy="162" r="3.4" fill="#a65029" stroke="#a65029" stroke-width="1.6"/>
+<circle cx="270" cy="285" r="3.4" fill="#a65029" stroke="#a65029" stroke-width="1.6"/>
+<path d="M88 217H138M138 192V242" fill="none" stroke="#53675b" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" />
+<text x="115" y="208" font-size="16" fill="#203c37" font-weight="650" text-anchor="middle">G</text>
+<text x="84" y="222" font-size="19" fill="#203c37" font-weight="650" text-anchor="end">A</text>
+<path d="M158 174V206M158 228V260" fill="none" stroke="#53675b" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" />
+<path d="M158 214V220" fill="none" stroke="#53675b" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" />
+<text x="168" y="185" font-size="16" fill="#203c37" font-weight="650" text-anchor="start">S</text>
+<text x="168" y="256" font-size="16" fill="#203c37" font-weight="650" text-anchor="start">D</text>
+<path d="M158 217H209" fill="none" stroke="#76568c" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" />
+<path d="M178 213L187 217L178 221Z" fill="#76568c" stroke="#76568c" stroke-width="1"/>
+<circle cx="209" cy="217" r="2.6" fill="#fffdf7" stroke="#76568c" stroke-width="1.6"/>
+<text x="191" y="209" font-size="16" fill="#76568c" font-weight="650" text-anchor="middle">B</text>
+<text x="217" y="223" font-size="16" fill="#76568c" font-weight="650" text-anchor="start">VDD</text>
+<text x="213" y="195" font-size="18" fill="#a65029" font-weight="700" text-anchor="start">PMOS</text>
+<text x="213" y="244" font-size="17" fill="#526861" font-weight="650" text-anchor="start">关断</text>
+<path d="M320 217H370M370 192V242" fill="none" stroke="#53675b" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" />
+<text x="347" y="208" font-size="16" fill="#203c37" font-weight="650" text-anchor="middle">G</text>
+<text x="316" y="222" font-size="19" fill="#203c37" font-weight="650" text-anchor="end">B</text>
+<path d="M390 174V206M390 228V260" fill="none" stroke="#a65029" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" />
+<path d="M390 214V220" fill="none" stroke="#a65029" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" />
+<text x="400" y="185" font-size="16" fill="#203c37" font-weight="650" text-anchor="start">S</text>
+<text x="400" y="256" font-size="16" fill="#203c37" font-weight="650" text-anchor="start">D</text>
+<path d="M390 217H441" fill="none" stroke="#76568c" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" />
+<path d="M410 213L419 217L410 221Z" fill="#76568c" stroke="#76568c" stroke-width="1"/>
+<circle cx="441" cy="217" r="2.6" fill="#fffdf7" stroke="#76568c" stroke-width="1.6"/>
+<text x="423" y="209" font-size="16" fill="#76568c" font-weight="650" text-anchor="middle">B</text>
+<text x="449" y="223" font-size="16" fill="#76568c" font-weight="650" text-anchor="start">VDD</text>
+<text x="445" y="195" font-size="18" fill="#a65029" font-weight="700" text-anchor="start">PMOS</text>
+<text x="445" y="244" font-size="17" fill="#a65029" font-weight="650" text-anchor="start">导通</text>
+<path d="M270 324V343M270 429V447M270 533V522" fill="none" stroke="#53675b" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" />
+<path d="M200 386H250M250 361V411" fill="none" stroke="#53675b" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" />
+<text x="227" y="377" font-size="16" fill="#203c37" font-weight="650" text-anchor="middle">G</text>
+<text x="196" y="391" font-size="19" fill="#203c37" font-weight="650" text-anchor="end">A</text>
+<path d="M270 343V375M270 397V429" fill="none" stroke="#53675b" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" />
+<path d="M270 383V389" fill="none" stroke="#53675b" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" />
+<text x="280" y="354" font-size="16" fill="#203c37" font-weight="650" text-anchor="start">D</text>
+<text x="280" y="425" font-size="16" fill="#203c37" font-weight="650" text-anchor="start">S</text>
+<path d="M270 386H321" fill="none" stroke="#76568c" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" />
+<path d="M294 382L285 386L294 390Z" fill="#76568c" stroke="#76568c" stroke-width="1"/>
+<circle cx="321" cy="386" r="2.6" fill="#fffdf7" stroke="#76568c" stroke-width="1.6"/>
+<text x="303" y="378" font-size="16" fill="#76568c" font-weight="650" text-anchor="middle">B</text>
+<text x="329" y="392" font-size="16" fill="#76568c" font-weight="650" text-anchor="start">VSS</text>
+<text x="325" y="364" font-size="18" fill="#09677b" font-weight="700" text-anchor="start">NMOS</text>
+<text x="325" y="413" font-size="17" fill="#09677b" font-weight="650" text-anchor="start">允许导通</text>
+<path d="M200 490H250M250 465V515" fill="none" stroke="#53675b" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" />
+<text x="227" y="481" font-size="16" fill="#203c37" font-weight="650" text-anchor="middle">G</text>
+<text x="196" y="495" font-size="19" fill="#203c37" font-weight="650" text-anchor="end">B</text>
+<path d="M270 447V479M270 501V533" fill="none" stroke="#53675b" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" />
+<path d="M270 487V493" fill="none" stroke="#53675b" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" />
+<text x="280" y="458" font-size="16" fill="#203c37" font-weight="650" text-anchor="start">D</text>
+<text x="280" y="529" font-size="16" fill="#203c37" font-weight="650" text-anchor="start">S</text>
+<path d="M270 490H321" fill="none" stroke="#76568c" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" />
+<path d="M294 486L285 490L294 494Z" fill="#76568c" stroke="#76568c" stroke-width="1"/>
+<circle cx="321" cy="490" r="2.6" fill="#fffdf7" stroke="#76568c" stroke-width="1.6"/>
+<text x="303" y="482" font-size="16" fill="#76568c" font-weight="650" text-anchor="middle">B</text>
+<text x="329" y="496" font-size="16" fill="#76568c" font-weight="650" text-anchor="start">VSS</text>
+<text x="325" y="468" font-size="18" fill="#09677b" font-weight="700" text-anchor="start">NMOS</text>
+<text x="325" y="517" font-size="17" fill="#526861" font-weight="650" text-anchor="start">关断</text>
+<circle cx="270" cy="438" r="3.2" fill="#53675b" stroke="#53675b" stroke-width="1.6"/>
+<text x="257" y="443" font-size="17" fill="#203c37" font-weight="650" text-anchor="end">X</text>
+<text x="30" y="554" font-size="17" fill="#526861" font-weight="400" text-anchor="start">并联上拉：B=0 可拉高。</text>
+<path d="M270 324H493" fill="none" stroke="#a65029" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round" />
+<circle cx="270" cy="324" r="3.4" fill="#a65029" stroke="#a65029" stroke-width="1.6"/>
+<circle cx="493" cy="324" r="3" fill="#fffdf7" stroke="#a65029" stroke-width="1.6"/>
+<text x="484" y="313" font-size="19" fill="#a65029" font-weight="700" text-anchor="end">Y</text>
+<rect x="15" y="593" width="520" height="502" rx="10" fill="#fffdf7" stroke="#d3dacf" stroke-width="1.2"/>
+<text x="30" y="620" font-size="21" fill="#203c37" font-weight="700" text-anchor="start">② A = 1，B = 1</text>
+<text x="515" y="620" font-size="22" fill="#09677b" font-weight="700" text-anchor="end">Y = 0</text>
+<path d="M248 647H292" fill="none" stroke="#53675b" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" />
+<text x="270" y="638" font-size="17" fill="#526861" font-weight="650" text-anchor="middle">VDD = 0.8 V</text>
+<path d="M270 1035V1043M256 1043H284M261 1048H279M266 1053H274" fill="none" stroke="#53675b" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" />
+<text x="293" y="1050" font-size="17" fill="#526861" font-weight="650" text-anchor="start">VSS = 0 V</text>
+<path d="M270 647V675M158 675H390M158 675V687M390 675V687" fill="none" stroke="#53675b" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" />
+<path d="M158 773V798H390V773M270 798V837" fill="none" stroke="#53675b" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" />
+<circle cx="270" cy="675" r="3.4" fill="#53675b" stroke="#53675b" stroke-width="1.6"/>
+<circle cx="270" cy="798" r="3.4" fill="#53675b" stroke="#53675b" stroke-width="1.6"/>
+<path d="M88 730H138M138 705V755" fill="none" stroke="#53675b" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" />
+<text x="115" y="721" font-size="16" fill="#203c37" font-weight="650" text-anchor="middle">G</text>
+<text x="84" y="735" font-size="19" fill="#203c37" font-weight="650" text-anchor="end">A</text>
+<path d="M158 687V719M158 741V773" fill="none" stroke="#53675b" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" />
+<path d="M158 727V733" fill="none" stroke="#53675b" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" />
+<text x="168" y="698" font-size="16" fill="#203c37" font-weight="650" text-anchor="start">S</text>
+<text x="168" y="769" font-size="16" fill="#203c37" font-weight="650" text-anchor="start">D</text>
+<path d="M158 730H209" fill="none" stroke="#76568c" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" />
+<path d="M178 726L187 730L178 734Z" fill="#76568c" stroke="#76568c" stroke-width="1"/>
+<circle cx="209" cy="730" r="2.6" fill="#fffdf7" stroke="#76568c" stroke-width="1.6"/>
+<text x="191" y="722" font-size="16" fill="#76568c" font-weight="650" text-anchor="middle">B</text>
+<text x="217" y="736" font-size="16" fill="#76568c" font-weight="650" text-anchor="start">VDD</text>
+<text x="213" y="708" font-size="18" fill="#a65029" font-weight="700" text-anchor="start">PMOS</text>
+<text x="213" y="757" font-size="17" fill="#526861" font-weight="650" text-anchor="start">关断</text>
+<path d="M320 730H370M370 705V755" fill="none" stroke="#53675b" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" />
+<text x="347" y="721" font-size="16" fill="#203c37" font-weight="650" text-anchor="middle">G</text>
+<text x="316" y="735" font-size="19" fill="#203c37" font-weight="650" text-anchor="end">B</text>
+<path d="M390 687V719M390 741V773" fill="none" stroke="#53675b" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" />
+<path d="M390 727V733" fill="none" stroke="#53675b" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" />
+<text x="400" y="698" font-size="16" fill="#203c37" font-weight="650" text-anchor="start">S</text>
+<text x="400" y="769" font-size="16" fill="#203c37" font-weight="650" text-anchor="start">D</text>
+<path d="M390 730H441" fill="none" stroke="#76568c" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" />
+<path d="M410 726L419 730L410 734Z" fill="#76568c" stroke="#76568c" stroke-width="1"/>
+<circle cx="441" cy="730" r="2.6" fill="#fffdf7" stroke="#76568c" stroke-width="1.6"/>
+<text x="423" y="722" font-size="16" fill="#76568c" font-weight="650" text-anchor="middle">B</text>
+<text x="449" y="736" font-size="16" fill="#76568c" font-weight="650" text-anchor="start">VDD</text>
+<text x="445" y="708" font-size="18" fill="#a65029" font-weight="700" text-anchor="start">PMOS</text>
+<text x="445" y="757" font-size="17" fill="#526861" font-weight="650" text-anchor="start">关断</text>
+<path d="M270 837V856M270 942V960M270 1046V1035" fill="none" stroke="#09677b" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" />
+<path d="M200 899H250M250 874V924" fill="none" stroke="#53675b" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" />
+<text x="227" y="890" font-size="16" fill="#203c37" font-weight="650" text-anchor="middle">G</text>
+<text x="196" y="904" font-size="19" fill="#203c37" font-weight="650" text-anchor="end">A</text>
+<path d="M270 856V888M270 910V942" fill="none" stroke="#09677b" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" />
+<path d="M270 896V902" fill="none" stroke="#09677b" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" />
+<text x="280" y="867" font-size="16" fill="#203c37" font-weight="650" text-anchor="start">D</text>
+<text x="280" y="938" font-size="16" fill="#203c37" font-weight="650" text-anchor="start">S</text>
+<path d="M270 899H321" fill="none" stroke="#76568c" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" />
+<path d="M294 895L285 899L294 903Z" fill="#76568c" stroke="#76568c" stroke-width="1"/>
+<circle cx="321" cy="899" r="2.6" fill="#fffdf7" stroke="#76568c" stroke-width="1.6"/>
+<text x="303" y="891" font-size="16" fill="#76568c" font-weight="650" text-anchor="middle">B</text>
+<text x="329" y="905" font-size="16" fill="#76568c" font-weight="650" text-anchor="start">VSS</text>
+<text x="325" y="877" font-size="18" fill="#09677b" font-weight="700" text-anchor="start">NMOS</text>
+<text x="325" y="926" font-size="17" fill="#09677b" font-weight="650" text-anchor="start">导通</text>
+<path d="M200 1003H250M250 978V1028" fill="none" stroke="#53675b" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" />
+<text x="227" y="994" font-size="16" fill="#203c37" font-weight="650" text-anchor="middle">G</text>
+<text x="196" y="1008" font-size="19" fill="#203c37" font-weight="650" text-anchor="end">B</text>
+<path d="M270 960V992M270 1014V1046" fill="none" stroke="#09677b" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" />
+<path d="M270 1000V1006" fill="none" stroke="#09677b" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" />
+<text x="280" y="971" font-size="16" fill="#203c37" font-weight="650" text-anchor="start">D</text>
+<text x="280" y="1042" font-size="16" fill="#203c37" font-weight="650" text-anchor="start">S</text>
+<path d="M270 1003H321" fill="none" stroke="#76568c" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" />
+<path d="M294 999L285 1003L294 1007Z" fill="#76568c" stroke="#76568c" stroke-width="1"/>
+<circle cx="321" cy="1003" r="2.6" fill="#fffdf7" stroke="#76568c" stroke-width="1.6"/>
+<text x="303" y="995" font-size="16" fill="#76568c" font-weight="650" text-anchor="middle">B</text>
+<text x="329" y="1009" font-size="16" fill="#76568c" font-weight="650" text-anchor="start">VSS</text>
+<text x="325" y="981" font-size="18" fill="#09677b" font-weight="700" text-anchor="start">NMOS</text>
+<text x="325" y="1030" font-size="17" fill="#09677b" font-weight="650" text-anchor="start">导通</text>
+<circle cx="270" cy="951" r="3.2" fill="#09677b" stroke="#09677b" stroke-width="1.6"/>
+<text x="257" y="956" font-size="17" fill="#203c37" font-weight="650" text-anchor="end">X</text>
+<text x="30" y="1067" font-size="17" fill="#526861" font-weight="400" text-anchor="start">串联下拉：A、B 都为 1 才完整。</text>
+<path d="M270 837H493" fill="none" stroke="#09677b" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round" />
+<circle cx="270" cy="837" r="3.4" fill="#09677b" stroke="#09677b" stroke-width="1.6"/>
+<circle cx="493" cy="837" r="3" fill="#fffdf7" stroke="#09677b" stroke-width="1.6"/>
+<text x="484" y="826" font-size="19" fill="#09677b" font-weight="700" text-anchor="end">Y</text>
+<text x="22" y="1117" font-size="16.5" fill="#526861" font-weight="400" text-anchor="start">棕：完整上拉；蓝：完整下拉。粗色线不代表稳态电流。</text>
+<text x="22" y="1143" font-size="17" fill="#526861" font-weight="400" text-anchor="start">同名输入及电源标记相连；紫色 B 为体端。</text>
+<text x="22" y="1169" font-size="17" fill="#526861" font-weight="400" text-anchor="start">允许导通：输入许可，实际状态取决于栅源电压。</text>
+<text x="22" y="1195" font-size="17" fill="#526861" font-weight="400" text-anchor="start">X 为串联中间节点，此处不计算其电压；省略负载。</text>
 </g>
 </svg>

@@ -1,49 +1,69 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="520" height="543" viewBox="0 0 520 543" role="img" aria-labelledby="title desc" xml:lang="zh-CN">
-  <title id="title">CMOS 反相器的真实连接与逻辑抽象</title>
-  <desc id="desc">简化三端 MOS 管符号。PMOS 源接 VDD 0.8 V，NMOS 源接地；体端接各自源极并在图中省略。两栅同接输入 A、两漏同接输出 Y，Y 与地之间是等效负载电容。反相器的逻辑符号表示输出与输入的逻辑值相反。</desc>
-  <defs>
-    <marker id="electron" markerWidth="8" markerHeight="8" refX="7.2" refY="4" orient="auto"><path d="M0 0L8 4 0 8Z" fill="#09677b"/></marker>
-    <marker id="current" markerWidth="8" markerHeight="8" refX="7.2" refY="4" orient="auto"><path d="M0 0L8 4 0 8Z" fill="#a65029"/></marker>
-    <marker id="muted" markerWidth="8" markerHeight="8" refX="7.2" refY="4" orient="auto"><path d="M0 0L8 4 0 8Z" fill="#526861"/></marker>
-    <g id="ground" stroke="#53675b" stroke-width="2.3" fill="none"><path d="M0 -7V0M-12 0H12M-8 4H8M-3.5 8H3.5"/></g>
-    <g id="cap" stroke="#53675b" stroke-width="2.5" fill="none"><path d="M0 -26V-6M-17 -6H17M-17 6H17M0 6V26"/></g>
-  </defs>
-  <rect x="1" y="1" width="518" height="541" rx="15" fill="#f7f6ef" stroke="#c9d3c7"/>
-  <g font-family="system-ui, 'Noto Sans CJK SC', 'Microsoft YaHei', sans-serif" fill="#203c37">
-  <text x="20" y="34" font-size="23" fill="#203c37" font-weight="700" text-anchor="start">两只 MOS 管，共用一个输入和输出</text>
-<text x="20" y="61" font-size="17" fill="#526861" font-weight="400" text-anchor="start">PMOS 上拉，NMOS 下拉；体端连至各自源极。</text>
-<rect x="16" y="78" width="488" height="280" rx="10" fill="#fffdf7" stroke="#d3dacf"/>
+<svg xmlns="http://www.w3.org/2000/svg" width="550" height="642" viewBox="0 0 550 642" role="img" aria-labelledby="title desc" xml:lang="zh-CN">
+<title id="title">CMOS 反相器的四端连接与逻辑抽象</title>
+<desc id="desc">两只增强型 MOS 管的完整四端电路符号。PMOS 源端、体端接高电源轨 VDD，NMOS 源端、体端接低电源轨 VSS。输入 A 接两个栅极，输出 Y 接两个漏极和等效负载电容。相同的 VDD、VSS 电源标记表示同一个电路节点。体端箭头表示体区极性，不是电流方向。下方抽象为 NOT 门符号。</desc>
+<defs>
+ <marker id="electron" markerWidth="7" markerHeight="7" refX="6.5" refY="3.5" orient="auto"><path d="M0 0L7 3.5 0 7Z" fill="#09677b"/></marker>
+ <marker id="current" markerWidth="7" markerHeight="7" refX="6.5" refY="3.5" orient="auto"><path d="M0 0L7 3.5 0 7Z" fill="#a65029"/></marker>
+ <marker id="muted" markerWidth="7" markerHeight="7" refX="6.5" refY="3.5" orient="auto"><path d="M0 0L7 3.5 0 7Z" fill="#526861"/></marker>
+</defs>
+<rect x="1" y="1" width="548" height="640" rx="15" fill="#f7f6ef" stroke="#c9d3c7"/>
+<g font-family="system-ui, 'Noto Sans CJK SC', 'Microsoft YaHei', sans-serif" fill="#203c37">
+<text x="20" y="34" font-size="23" fill="#203c37" font-weight="700" text-anchor="start">两只 MOS 管，共用一个输入和输出</text>
+<text x="20" y="62" font-size="18" fill="#526861" font-weight="400" text-anchor="start">保留四个端子：G 栅、D 漏、S 源、B 体。</text>
+<rect x="15" y="77" width="520" height="370" rx="10" fill="#fffdf7" stroke="#d3dacf" stroke-width="1.2"/>
 <text x="30" y="105" font-size="20" fill="#203c37" font-weight="700" text-anchor="start">CMOS 反相器的电路连接</text>
-<text x="236" y="132" font-size="18" fill="#203c37" font-weight="650" text-anchor="middle">VDD = 0.8 V</text>
-<path d="M214 142H258M236 142V158H217" stroke="#53675b" stroke-width="2.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
-<path d="M217 156V186M202 156V186" stroke="#a65029" stroke-width="2.8" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
-<path d="M217 184H236V242H217M217 240V270M202 240V270" stroke="#53675b" stroke-width="2.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
-<path d="M217 270H236V304" stroke="#53675b" stroke-width="2.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
-<use href="#ground" x="236" y="311"/>
-<path d="M58 213H120M120 171V255M120 171H180M120 255H202" stroke="#53675b" stroke-width="2.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
-<circle cx="190" cy="171" r="10" fill="#fffdf7" stroke="#53675b" stroke-width="2.2"/>
-<path d="M200 171H202" stroke="#53675b" stroke-width="2.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
-<circle cx="120" cy="213" r="3.5" fill="#203c37" stroke="none" stroke-width="1.8"/>
-<text x="58" y="200" font-size="19" fill="#203c37" font-weight="650" text-anchor="start">输入 A</text>
-<path d="M236 213H451M416 213V245M416 297V304" stroke="#53675b" stroke-width="2.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
-<circle cx="236" cy="213" r="3.5" fill="#203c37" stroke="none" stroke-width="1.8"/>
-<circle cx="416" cy="213" r="3.5" fill="#203c37" stroke="none" stroke-width="1.8"/>
-<use href="#cap" x="416" y="271"/>
-<use href="#ground" x="416" y="311"/>
-<text x="451" y="200" font-size="19" fill="#203c37" font-weight="650" text-anchor="end">输出 Y</text>
-<text x="440" y="277" font-size="18" fill="#203c37" font-weight="600" text-anchor="start">Cₗ</text>
-<text x="250" y="176" font-size="18" fill="#a65029" font-weight="650" text-anchor="start">PMOS</text>
-<text x="250" y="261" font-size="18" fill="#09677b" font-weight="650" text-anchor="start">NMOS</text>
-<text x="30" y="341" font-size="16.5" fill="#526861" font-weight="400" text-anchor="start">简化 MOS 符号：栅极小圆圈表示 PMOS 低电平控制。</text>
-<path d="M260 364V387" stroke="#526861" stroke-width="2.1" fill="none" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#muted)"/>
-<rect x="16" y="395" width="488" height="131" rx="10" fill="#fffdf7" stroke="#d3dacf"/>
-<text x="29" y="421" font-size="20" fill="#203c37" font-weight="700" text-anchor="start">抽象为逻辑门符号（NOT）</text>
-<path d="M113 473H195" stroke="#53675b" stroke-width="2.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
-<path d="M195 443L195 503L295 473Z" fill="#e0ece7" stroke="#53675b" stroke-width="2.6" stroke-linejoin="round"/>
-<circle cx="304" cy="473" r="9" fill="#fffdf7" stroke="#53675b" stroke-width="2.6"/>
-<path d="M313 473H406" stroke="#53675b" stroke-width="2.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
-<text x="94" y="479" font-size="18" fill="#203c37" font-weight="650" text-anchor="start">A</text>
-<text x="416" y="479" font-size="18" fill="#203c37" font-weight="650" text-anchor="start">Y</text>
-<text x="260" y="519" font-size="17.5" fill="#203c37" font-weight="650" text-anchor="middle">Y 与 A 的逻辑值相反</text>
-  </g>
+<path d="M233 131H277" fill="none" stroke="#53675b" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" />
+<text x="255" y="122" font-size="17" fill="#526861" font-weight="650" text-anchor="middle">VDD = 0.8 V</text>
+<path d="M255 131V140" fill="none" stroke="#53675b" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" />
+<path d="M255 226V254" fill="none" stroke="#53675b" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" />
+<path d="M255 254V282" fill="none" stroke="#53675b" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" />
+<path d="M255 368V385" fill="none" stroke="#53675b" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" />
+<path d="M255 385V393M241 393H269M246 398H264M251 403H259" fill="none" stroke="#53675b" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" />
+<text x="278" y="400" font-size="17" fill="#526861" font-weight="650" text-anchor="start">VSS = 0 V</text>
+<path d="M185 183V325M185 254H65" fill="none" stroke="#53675b" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" />
+<circle cx="185" cy="254" r="3.4" fill="#53675b" stroke="#53675b" stroke-width="1.6"/>
+<text x="63" y="244" font-size="18" fill="#203c37" font-weight="650" text-anchor="start">输入 A</text>
+<path d="M185 183H235M235 158V208" fill="none" stroke="#53675b" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" />
+<text x="212" y="174" font-size="16" fill="#203c37" font-weight="650" text-anchor="middle">G</text>
+<path d="M255 140V172M255 194V226" fill="none" stroke="#53675b" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" />
+<path d="M255 180V186" fill="none" stroke="#53675b" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" />
+<text x="265" y="151" font-size="16" fill="#203c37" font-weight="650" text-anchor="start">S</text>
+<text x="265" y="222" font-size="16" fill="#203c37" font-weight="650" text-anchor="start">D</text>
+<path d="M255 183H306" fill="none" stroke="#76568c" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" />
+<path d="M275 179L284 183L275 187Z" fill="#76568c" stroke="#76568c" stroke-width="1"/>
+<circle cx="306" cy="183" r="2.6" fill="#fffdf7" stroke="#76568c" stroke-width="1.6"/>
+<text x="288" y="175" font-size="16" fill="#76568c" font-weight="650" text-anchor="middle">B</text>
+<text x="314" y="189" font-size="16" fill="#76568c" font-weight="650" text-anchor="start">VDD</text>
+<text x="310" y="161" font-size="18" fill="#a65029" font-weight="700" text-anchor="start">PMOS</text>
+<path d="M185 325H235M235 300V350" fill="none" stroke="#53675b" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" />
+<text x="212" y="316" font-size="16" fill="#203c37" font-weight="650" text-anchor="middle">G</text>
+<path d="M255 282V314M255 336V368" fill="none" stroke="#53675b" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" />
+<path d="M255 322V328" fill="none" stroke="#53675b" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" />
+<text x="265" y="293" font-size="16" fill="#203c37" font-weight="650" text-anchor="start">D</text>
+<text x="265" y="364" font-size="16" fill="#203c37" font-weight="650" text-anchor="start">S</text>
+<path d="M255 325H306" fill="none" stroke="#76568c" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" />
+<path d="M279 321L270 325L279 329Z" fill="#76568c" stroke="#76568c" stroke-width="1"/>
+<circle cx="306" cy="325" r="2.6" fill="#fffdf7" stroke="#76568c" stroke-width="1.6"/>
+<text x="288" y="317" font-size="16" fill="#76568c" font-weight="650" text-anchor="middle">B</text>
+<text x="314" y="331" font-size="16" fill="#76568c" font-weight="650" text-anchor="start">VSS</text>
+<text x="310" y="303" font-size="18" fill="#09677b" font-weight="700" text-anchor="start">NMOS</text>
+<path d="M255 254H454" fill="none" stroke="#53675b" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" />
+<circle cx="255" cy="254" r="3.4" fill="#53675b" stroke="#53675b" stroke-width="1.6"/>
+<circle cx="439" cy="254" r="3.4" fill="#53675b" stroke="#53675b" stroke-width="1.6"/>
+<circle cx="454" cy="254" r="3" fill="#fffdf7" stroke="#53675b" stroke-width="1.6"/>
+<text x="454" y="244" font-size="18" fill="#346c59" font-weight="650" text-anchor="end">输出 Y</text>
+<path d="M439 254V312.5M422 312.5H456M422 326.5H456M439 326.5V385" fill="none" stroke="#53675b" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" />
+<text x="462" y="324.5" font-size="17" fill="#526861" font-weight="650" text-anchor="start">Cₗ</text>
+<path d="M439 385V393M425 393H453M430 398H448M435 403H443" fill="none" stroke="#53675b" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" />
+<text x="30" y="434" font-size="17" fill="#526861" font-weight="400" text-anchor="start">同名电源标记相连；B 为体端，Cₗ 为等效负载。</text>
+<path d="M275 457V481" fill="none" stroke="#526861" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#muted)"/>
+<rect x="15" y="494" width="520" height="134" rx="10" fill="#fffdf7" stroke="#d3dacf" stroke-width="1.2"/>
+<text x="30" y="525" font-size="20" fill="#203c37" font-weight="700" text-anchor="start">抽象为逻辑门符号（NOT）</text>
+<path d="M91 575H201M320 575H448" fill="none" stroke="#53675b" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" />
+<path d="M201 542V608L300 575Z" fill="#e0ece7" stroke="#53675b" stroke-width="2.5" stroke-linejoin="round"/>
+<circle cx="310" cy="575" r="9" fill="#fffdf7" stroke="#53675b" stroke-width="1.6"/>
+<text x="70" y="581" font-size="18" fill="#203c37" font-weight="650" text-anchor="start">A</text>
+<text x="462" y="581" font-size="18" fill="#203c37" font-weight="650" text-anchor="start">Y</text>
+<text x="275" y="621" font-size="17" fill="#346c59" font-weight="650" text-anchor="middle">Y 与 A 的逻辑值相反</text>
+</g>
 </svg>

@@ -1,0 +1,114 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="540" height="815" viewBox="0 0 540 815" role="img" aria-labelledby="title desc" xml:lang="zh-CN">
+<title id="title">增加电阻，Y 能否被拉低？</title>
+<desc id="desc">VDD与Y之间串接电阻，A低时NMOS关断，若Y先前较低则经电阻向电源正极转移电子直至接近0.8V；A高时NMOS导通，两条路径同时输运电子，输出电压取决于电流平衡。上拉电阻远大于NMOS的等效导通电阻时，Y显著降低且略高于0V。</desc>
+<defs><marker id="electron" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0 0L7 3.5L0 7Z" fill="#09677b"/></marker><marker id="current" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0 0L7 3.5L0 7Z" fill="#a65029"/></marker></defs>
+<rect x="1" y="1" width="538" height="813" rx="15" fill="#f7f6ef" stroke="#c9d3c7" stroke-width="1.2"/>
+<g font-family="system-ui, Noto Sans CJK SC, Microsoft YaHei, sans-serif" fill="#203c37">
+<text x="20" y="35" font-size="24" fill="#203c37" font-weight="700" text-anchor="start">增加电阻，Y 能否被拉低？</text>
+<text x="20" y="61" font-size="17" fill="#526861" font-weight="400" text-anchor="start">只将 VDD 与 Y 之间的导线改为电阻。</text>
+<g transform="translate(0 78)">
+<rect x="15" y="0" width="510" height="320" rx="10" fill="#fffdf7" stroke="#d3dacf" stroke-width="1.2"/>
+<text x="29" y="29" font-size="20" fill="#203c37" font-weight="700" text-anchor="start">① A = 0 V：NMOS 关断</text>
+<text x="72" y="58" font-size="16" fill="#a65029" font-weight="650" text-anchor="middle">VDD = 0.8 V</text>
+<path d="M72 80V130M56 130H88M62 144H82M72 144V236" fill="none" stroke="#a65029" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+<text x="91" y="124" font-size="15" fill="#a65029" font-weight="700" text-anchor="start">+</text>
+<text x="91" y="152" font-size="15" fill="#a65029" font-weight="700" text-anchor="start">−</text>
+<path d="M72 80H142M208 80H455" fill="none" stroke="#a65029" stroke-width="2.7" stroke-linecap="round" stroke-linejoin="round"/>
+<rect x="142" y="70" width="66" height="20" rx="3" fill="#f5e8df" stroke="#a65029" stroke-width="1.8"/>
+<text x="175" y="85" font-size="15" fill="#a65029" font-weight="700" text-anchor="middle">R</text>
+<text x="175" y="60" font-size="16" fill="#a65029" font-weight="650" text-anchor="middle">电阻</text>
+<rect x="143" y="155" width="209" height="50" rx="4" fill="#f0e1cc" stroke="#bb9461" stroke-width="1.2"/>
+<rect x="143" y="155" width="47" height="31" rx="2" fill="#d5e9eb" stroke="#09677b" stroke-width="1.2"/>
+<rect x="305" y="155" width="47" height="31" rx="2" fill="#d5e9eb" stroke="#09677b" stroke-width="1.2"/>
+<rect x="190" y="131" width="115" height="16" rx="2" fill="#e8deef" stroke="#795591" stroke-width="1.2"/>
+<rect x="190" y="147" width="115" height="8" rx="0" fill="#b7c1bd" stroke="#8e9b94" stroke-width="1.2"/>
+<rect x="232" y="189" width="30" height="16" rx="1" fill="#dfb988" stroke="#b78e60" stroke-width="1.2"/>
+<text x="166" y="178" font-size="15" fill="#09677b" font-weight="650" text-anchor="middle">N⁺</text>
+<text x="329" y="178" font-size="15" fill="#09677b" font-weight="650" text-anchor="middle">N⁺</text>
+<text x="247" y="184" font-size="16" fill="#203c37" font-weight="500" text-anchor="middle">P 型体区</text>
+<text x="247" y="201" font-size="12" fill="#203c37" font-weight="650" text-anchor="middle">P⁺</text>
+<path d="M166 155V123H123V236" fill="none" stroke="#53675b" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+<text x="151" y="116" font-size="15" fill="#53675b" font-weight="650" text-anchor="middle">S 源极</text>
+<path d="M247 205V236" fill="none" stroke="#53675b" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+<text x="257" y="220" font-size="15" fill="#53675b" font-weight="650" text-anchor="start">B 体端</text>
+<path d="M72 236H455" fill="none" stroke="#53675b" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+<circle cx="72" cy="236" r="3" fill="#53675b" stroke="none" stroke-width="1.5"/>
+<circle cx="123" cy="236" r="3" fill="#53675b" stroke="none" stroke-width="1.5"/>
+<circle cx="247" cy="236" r="3" fill="#53675b" stroke="none" stroke-width="1.5"/>
+<path d="M247 236V243M230 243H264M236 249H258M242 255H252" fill="none" stroke="#53675b" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+<text x="269" y="253" font-size="16" fill="#53675b" font-weight="600" text-anchor="start">GND = 0 V</text>
+<text x="72" y="223" font-size="14" fill="#53675b" font-weight="500" text-anchor="middle">电源负极</text>
+<path d="M247 131V109" fill="none" stroke="#795591" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>
+<circle cx="247" cy="109" r="3" fill="#795591" stroke="none" stroke-width="1.5"/>
+<text x="247" y="102" font-size="16" fill="#795591" font-weight="650" text-anchor="middle">A = 0 V</text>
+<text x="183" y="144" font-size="14" fill="#795591" font-weight="650" text-anchor="end">G</text>
+<path d="M330 155V80H455" fill="none" stroke="#09677b" stroke-width="2.7" stroke-linecap="round" stroke-linejoin="round"/>
+<circle cx="330" cy="80" r="3.8" fill="#09677b" stroke="none" stroke-width="1.5"/>
+<text x="342" y="111" font-size="15" fill="#09677b" font-weight="650" text-anchor="start">D 漏极</text>
+<circle cx="455" cy="80" r="3.8" fill="#09677b" stroke="none" stroke-width="1.5"/>
+<text x="455" y="63" font-size="17" fill="#09677b" font-weight="700" text-anchor="middle">Y（输出）</text>
+<path d="M455 80V121M455 165V236" fill="none" stroke="#45876b" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="5 4"/>
+<circle cx="455" cy="143" r="22" fill="#fffdf7" stroke="#45876b" stroke-width="2"/>
+<text x="455" y="150" font-size="20" fill="#45876b" font-weight="650" text-anchor="middle">V</text>
+<text x="455" y="183" font-size="15" fill="#45876b" font-weight="600" text-anchor="middle">电压表</text>
+<text x="455" y="202" font-size="14" fill="#45876b" font-weight="500" text-anchor="middle">高阻</text>
+<path d="M313 80H225" fill="none" stroke="#09677b" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#electron)"/>
+<text x="29" y="282" font-size="20" fill="#09677b" font-weight="700" text-anchor="start">Y 最终接近 0.8 V</text>
+<text x="29" y="305" font-size="17" fill="#526861" font-weight="400" text-anchor="start">若 Y 原先较低，电子经 R 净移向电源正极。</text>
+</g>
+<g transform="translate(0 409)">
+<rect x="15" y="0" width="510" height="320" rx="10" fill="#fffdf7" stroke="#d3dacf" stroke-width="1.2"/>
+<text x="29" y="29" font-size="20" fill="#203c37" font-weight="700" text-anchor="start">② A = 0.8 V：NMOS 导通</text>
+<text x="72" y="58" font-size="16" fill="#a65029" font-weight="650" text-anchor="middle">VDD = 0.8 V</text>
+<path d="M72 80V130M56 130H88M62 144H82M72 144V236" fill="none" stroke="#a65029" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+<text x="91" y="124" font-size="15" fill="#a65029" font-weight="700" text-anchor="start">+</text>
+<text x="91" y="152" font-size="15" fill="#a65029" font-weight="700" text-anchor="start">−</text>
+<path d="M72 80H142M208 80H455" fill="none" stroke="#a65029" stroke-width="2.7" stroke-linecap="round" stroke-linejoin="round"/>
+<rect x="142" y="70" width="66" height="20" rx="3" fill="#f5e8df" stroke="#a65029" stroke-width="1.8"/>
+<text x="175" y="85" font-size="15" fill="#a65029" font-weight="700" text-anchor="middle">R</text>
+<text x="175" y="60" font-size="16" fill="#a65029" font-weight="650" text-anchor="middle">电阻</text>
+<rect x="143" y="155" width="209" height="50" rx="4" fill="#f0e1cc" stroke="#bb9461" stroke-width="1.2"/>
+<rect x="143" y="155" width="47" height="31" rx="2" fill="#d5e9eb" stroke="#09677b" stroke-width="1.2"/>
+<rect x="305" y="155" width="47" height="31" rx="2" fill="#d5e9eb" stroke="#09677b" stroke-width="1.2"/>
+<rect x="190" y="131" width="115" height="16" rx="2" fill="#e8deef" stroke="#795591" stroke-width="1.2"/>
+<rect x="190" y="147" width="115" height="8" rx="0" fill="#b7c1bd" stroke="#8e9b94" stroke-width="1.2"/>
+<rect x="232" y="189" width="30" height="16" rx="1" fill="#dfb988" stroke="#b78e60" stroke-width="1.2"/>
+<rect x="190" y="155" width="115" height="8" rx="0" fill="#72bbc1" stroke="#09677b" stroke-width="1"/>
+<text x="166" y="178" font-size="15" fill="#09677b" font-weight="650" text-anchor="middle">N⁺</text>
+<text x="329" y="178" font-size="15" fill="#09677b" font-weight="650" text-anchor="middle">N⁺</text>
+<text x="247" y="184" font-size="16" fill="#203c37" font-weight="500" text-anchor="middle">P 型体区</text>
+<text x="247" y="201" font-size="12" fill="#203c37" font-weight="650" text-anchor="middle">P⁺</text>
+<path d="M166 155V123H123V236" fill="none" stroke="#53675b" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+<text x="151" y="116" font-size="15" fill="#53675b" font-weight="650" text-anchor="middle">S 源极</text>
+<path d="M247 205V236" fill="none" stroke="#53675b" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+<text x="257" y="220" font-size="15" fill="#53675b" font-weight="650" text-anchor="start">B 体端</text>
+<path d="M72 236H455" fill="none" stroke="#53675b" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+<circle cx="72" cy="236" r="3" fill="#53675b" stroke="none" stroke-width="1.5"/>
+<circle cx="123" cy="236" r="3" fill="#53675b" stroke="none" stroke-width="1.5"/>
+<circle cx="247" cy="236" r="3" fill="#53675b" stroke="none" stroke-width="1.5"/>
+<path d="M247 236V243M230 243H264M236 249H258M242 255H252" fill="none" stroke="#53675b" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+<text x="269" y="253" font-size="16" fill="#53675b" font-weight="600" text-anchor="start">GND = 0 V</text>
+<text x="72" y="223" font-size="14" fill="#53675b" font-weight="500" text-anchor="middle">电源负极</text>
+<path d="M247 131V109" fill="none" stroke="#795591" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>
+<circle cx="247" cy="109" r="3" fill="#795591" stroke="none" stroke-width="1.5"/>
+<text x="247" y="102" font-size="16" fill="#795591" font-weight="650" text-anchor="middle">A = 0.8 V</text>
+<text x="183" y="144" font-size="14" fill="#795591" font-weight="650" text-anchor="end">G</text>
+<path d="M330 155V80H455" fill="none" stroke="#09677b" stroke-width="2.7" stroke-linecap="round" stroke-linejoin="round"/>
+<circle cx="330" cy="80" r="3.8" fill="#09677b" stroke="none" stroke-width="1.5"/>
+<text x="342" y="111" font-size="15" fill="#09677b" font-weight="650" text-anchor="start">D 漏极</text>
+<circle cx="455" cy="80" r="3.8" fill="#09677b" stroke="none" stroke-width="1.5"/>
+<text x="455" y="63" font-size="17" fill="#09677b" font-weight="700" text-anchor="middle">Y（输出）</text>
+<path d="M455 80V121M455 165V236" fill="none" stroke="#45876b" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="5 4"/>
+<circle cx="455" cy="143" r="22" fill="#fffdf7" stroke="#45876b" stroke-width="2"/>
+<text x="455" y="150" font-size="20" fill="#45876b" font-weight="650" text-anchor="middle">V</text>
+<text x="455" y="183" font-size="15" fill="#45876b" font-weight="600" text-anchor="middle">电压表</text>
+<text x="455" y="202" font-size="14" fill="#45876b" font-weight="500" text-anchor="middle">高阻</text>
+<path d="M204 160H289" fill="none" stroke="#09677b" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#electron)"/>
+<path d="M313 80H225" fill="none" stroke="#09677b" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#electron)"/>
+<text x="29" y="282" font-size="19" fill="#09677b" font-weight="700" text-anchor="start">Y 显著降低，但略高于 0 V</text>
+<text x="29" y="305" font-size="17" fill="#526861" font-weight="400" text-anchor="start">R 从 Y 取走电子，NMOS 向 Y 补入电子。</text>
+</g>
+<text x="20" y="759" font-size="16" fill="#526861" font-weight="400" text-anchor="start">假设上拉电阻足够大、NMOS 下拉足够强。</text>
+<text x="20" y="785" font-size="16" fill="#526861" font-weight="400" text-anchor="start">蓝色箭头表示电子净移动；关断时的箭头为充电期间。</text>
+</g>
+</svg>
