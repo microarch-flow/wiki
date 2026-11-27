@@ -133,7 +133,7 @@ B01 采用真实 RV32I 的 ADD、LW、SW、BEQ 语义和精简的五阶段单条
 | B05 | 两条指令写入同一个寄存器，为什么不一定存在真正的依赖？ | RAW/WAR/WAW、物理寄存器、重命名、映射、资源回收与提交 | 已发布（[正文](https://microarch-flow.github.io/wiki/microarchitecture-v2/02-cpu/b05-register-renaming/)，提交 `7ed1ff4`，已核验） |
 | B06 | 分支结果还没有算出来，处理器下一拍该执行什么？ | 分支方向和目标预测、BTB/RAS、推测执行、错误路径恢复 | 已发布（[正文](https://microarch-flow.github.io/wiki/microarchitecture-v2/02-cpu/b06-branch-prediction-and-speculation/)，提交 `ad69b05`，已核验） |
 | B07 | 前面的 Store 地址还没有确定，后面的 Load 能否提前执行？ | AGU、LSU、LSQ、store buffer、地址消歧、存储转发、内存次序/屏障/提交与可见性的区别 | 已发布（[正文](https://microarch-flow.github.io/wiki/microarchitecture-v2/02-cpu/b07-memory-execution-and-ordering/)，提交 `76f49b2`，已核验） |
-| B08 | 一个线程正在等待，另一个线程怎样利用空闲的计算资源？ | 多硬件上下文、交错多线程、SMT、资源共享、公平与吞吐权衡 | 已评审，待部署核验（[正文](../series/microarchitecture-v2/02-cpu/b08-hardware-multithreading-and-resource-sharing.md)） |
+| B08 | 一个线程正在等待，另一个线程怎样利用空闲的计算资源？ | 多硬件上下文、交错多线程、SMT、资源共享、公平与吞吐权衡 | 已发布（[正文](https://microarch-flow.github.io/wiki/microarchitecture-v2/02-cpu/b08-hardware-multithreading-and-resource-sharing/)，提交 `a72d567`，已核验） |
 
 ### C. 并行执行与 GPU（3 篇）
 
