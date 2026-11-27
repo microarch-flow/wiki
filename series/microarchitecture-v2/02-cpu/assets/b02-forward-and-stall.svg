@@ -1,0 +1,88 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 670" width="760" height="670" role="img" aria-labelledby="title desc">
+  <title id="title">Load-use 冒险：先停一拍，再旁路数据</title>
+  <desc id="desc">C4 中 I1 执行，得到地址 0x200；I2 在 ID 需要 x5，不能使用该地址代替 Load 的返回值。E4 保持 FPC 和 IF/ID，清除 ID/EX 的 valid 位，使 C5 的 EX 是气泡。C5 中 I1 访问内存并在 E5 将 6 保存至 MEM/WB；I2 重新读寄存器，仍得到旧值 0，但可进入 ID/EX。C6 中 I1 的 MEM/WB 写回值 6 直接旁路供 I2 在 EX 使用，I2 计算 6+1=7。E6 RF 写入 x5=6，EX/MEM 锁存 I2 的 R=7。灰色格子为不在本图追踪的其他工作，不一定为空。</desc>
+  <defs>
+    <marker id="arrow" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0 0L7 3.5L0 7z" fill="#376650"/></marker>
+    <marker id="feedback-arrow" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0 0L7 3.5L0 7z" fill="#5b7680"/></marker>
+    <style>
+      text{font-family:"Noto Sans CJK SC","PingFang SC","Microsoft YaHei",sans-serif;fill:#173d35;font-size:18px}
+      .heading{font-size:22px;font-weight:700}.small{font-size:16px}.tiny{font-size:14.5px}.label{font-weight:700}
+      .row{fill:#fafbf8;stroke:#c7d3c7;stroke-width:1.3}
+      .producer{fill:#d2e6d7;stroke:#376650;stroke-width:1.5}
+      .consumer{fill:#e0ebe3;stroke:#82a18e;stroke-width:1.5}
+      .stall{fill:#f2e7d1;stroke:#bd9857;stroke-width:1.5}
+      .bubble{fill:#f7f8f3;stroke:#9aa6a1;stroke-width:1.5;stroke-dasharray:5 4}
+      .other{fill:#f2f3ef;stroke:#d3d9d3;stroke-width:1.1}
+      .dim{fill:#6e8079}.accent{fill:#8a5d1c}.ftext{fill:#496872}
+      .data{stroke:#376650;stroke-width:2.3;fill:none;stroke-linejoin:round;stroke-linecap:round;marker-end:url(#arrow)}
+      .feedback{stroke:#5b7680;stroke-width:2.5;fill:none;stroke-linejoin:round;stroke-linecap:round;marker-end:url(#feedback-arrow)}
+    </style>
+  </defs>
+  <rect x="1" y="1" width="758" height="668" rx="13" fill="#f5f6ef" stroke="#c4d0c4" stroke-width="1.3"/>
+  <text x="22" y="34" class="heading">Load-use：地址已算出，但数据还没回来</text>
+  <text x="22" y="62" class="small">I1：LW x5, 0(x4)　　I2：ADD x7, x5, x3</text>
+  <text x="22" y="83" class="tiny dim">x4 = 0x200，内存该地址的字 = 6；x5 旧值 = 0，x3 = 1。</text>
+  <text x="177" y="111" class="label" text-anchor="middle">ID</text>
+  <text x="331" y="111" class="label" text-anchor="middle">EX</text>
+  <text x="485" y="111" class="label" text-anchor="middle">MEM</text>
+  <text x="639" y="111" class="label" text-anchor="middle">WB</text>
+  <!-- C4 -->
+  <rect x="17" y="121" width="726" height="113" rx="10" class="row"/>
+  <text x="31" y="153" class="label">C4</text>
+  <text x="31" y="177" class="tiny dim">E3→E4</text>
+  <rect x="106" y="132" width="142" height="90" rx="7" class="stall"/>
+  <text x="177" y="155" text-anchor="middle" class="label accent">I2 · ADD</text>
+  <text x="177" y="177" text-anchor="middle" class="small">需要新 x5</text>
+  <text x="177" y="202" text-anchor="middle" class="small accent label">停顿</text>
+  <rect x="260" y="132" width="142" height="90" rx="7" class="producer"/>
+  <text x="331" y="155" text-anchor="middle" class="label">I1 · LW</text>
+  <text x="331" y="177" text-anchor="middle" class="small">R = 0x200</text>
+  <text x="331" y="202" text-anchor="middle" class="tiny accent">这是地址，不是 x5</text>
+  <rect x="414" y="132" width="142" height="90" rx="7" class="other"/><text x="485" y="182" text-anchor="middle" class="tiny dim">未追踪</text>
+  <rect x="568" y="132" width="142" height="90" rx="7" class="other"/><text x="639" y="182" text-anchor="middle" class="tiny dim">未追踪</text>
+
+  <rect x="17" y="242" width="726" height="37" rx="7" class="stall"/>
+  <text x="29" y="265" class="small accent label">E4：</text><text x="79" y="265" class="small">保持 FPC 与 IF/ID；把 ID/EX.valid 清零；I1 正常推进。</text>
+
+  <!-- C5 -->
+  <rect x="17" y="289" width="726" height="113" rx="10" class="row"/>
+  <text x="31" y="321" class="label">C5</text>
+  <text x="31" y="345" class="tiny dim">E4→E5</text>
+  <rect x="106" y="300" width="142" height="90" rx="7" class="consumer"/>
+  <text x="177" y="323" text-anchor="middle" class="label">I2 · ADD</text>
+  <text x="177" y="346" text-anchor="middle" class="small">重新译码读数</text>
+  <text x="177" y="371" text-anchor="middle" class="small">RF[x5] = 0</text>
+  <rect x="260" y="300" width="142" height="90" rx="7" class="bubble"/>
+  <text x="331" y="340" text-anchor="middle" class="label dim">气泡</text><text x="331" y="366" text-anchor="middle" class="small dim">valid = 0</text>
+  <rect x="414" y="300" width="142" height="90" rx="7" class="producer"/>
+  <text x="485" y="323" text-anchor="middle" class="label">I1 · LW</text>
+  <text x="485" y="346" text-anchor="middle" class="small">读 0x200</text>
+  <text x="485" y="371" text-anchor="middle" class="small label">返回 6</text>
+  <rect x="568" y="300" width="142" height="90" rx="7" class="other"/><text x="639" y="350" text-anchor="middle" class="tiny dim">未追踪</text>
+
+  <rect x="17" y="410" width="726" height="37" rx="7" class="consumer"/>
+  <text x="29" y="433" class="small label">E5：</text><text x="79" y="433" class="small">I1 将 L=6 保存到 MEM/WB；I2 进入 ID/EX。</text>
+
+  <!-- C6 -->
+  <rect x="17" y="457" width="726" height="130" rx="10" class="row"/>
+  <text x="31" y="489" class="label">C6</text>
+  <text x="31" y="513" class="tiny dim">E5→E6</text>
+  <rect x="106" y="468" width="142" height="90" rx="7" class="other"/><text x="177" y="518" text-anchor="middle" class="tiny dim">未追踪</text>
+  <rect x="260" y="468" width="142" height="90" rx="7" class="consumer"/>
+  <text x="331" y="491" text-anchor="middle" class="label">I2 · ADD</text>
+  <text x="331" y="514" text-anchor="middle" class="small">选择旁路 6</text>
+  <text x="331" y="539" text-anchor="middle" class="small label">R = 6 + 1 = 7</text>
+  <rect x="414" y="468" width="142" height="90" rx="7" class="bubble"/>
+  <text x="485" y="508" text-anchor="middle" class="label dim">气泡</text><text x="485" y="534" text-anchor="middle" class="small dim">valid = 0</text>
+  <rect x="568" y="468" width="142" height="90" rx="7" class="producer"/>
+  <text x="639" y="491" text-anchor="middle" class="label">I1 · LW</text>
+  <text x="639" y="514" text-anchor="middle" class="small">MEM/WB.L = 6</text>
+  <text x="639" y="539" text-anchor="middle" class="small">准备写回 x5</text>
+  <path d="M639 558V578H331V558" class="feedback"/>
+  <rect x="431" y="567" width="109" height="18" rx="5" fill="#fafbf8"/>
+  <text x="485" y="581" text-anchor="middle" class="tiny ftext label">旁路新值 6</text>
+
+  <rect x="17" y="596" width="726" height="37" rx="7" class="consumer"/>
+  <text x="29" y="619" class="small label">E6：</text><text x="79" y="619" class="small">写入 RF[x5]=6；锁存 I2 的 R=7（E6 前 x5 仍为 0）。</text>
+  <text x="380" y="655" text-anchor="middle" class="tiny dim">“未追踪”可有其他指令；虚线气泡格才表示无有效指令。</text>
+</svg>

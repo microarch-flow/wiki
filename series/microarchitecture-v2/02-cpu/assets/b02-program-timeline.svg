@@ -1,0 +1,192 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 453" width="800" height="453" role="img" aria-labelledby="title desc">
+  <title id="title">B01 示例程序在顺序五级流水线中的执行时序</title>
+  <desc id="desc">每列为一个周期 C1 至 C15，每行是一阶段 IF、ID、EX、MEM 或 WB，格中为该周期内的指令编号。C4 检测到 I1 Load 与 I2 写后读数据依赖：I2 保留在 ID，I3 的取指结果在 E4 不被接收，C5 再取 I3，I2 在 ID 重试而 EX 插入空槽。C9 I5 在 EX 判定跳转，E9 丢弃 I6 的 ID 与 I7 的 IF 实例，C10 从目标重新取 I7。C15 I8 写回结束，共 8 条指令按序完成，用时 15 个周期。虚线浅灰格是阻塞或丢弃产生的无效槽，淡色空白格表示该阶段无有效指令或超出示例观察范围。× 表示该指令实例在周期末不保留。</desc>
+  <defs>
+    <style>
+      text{font-family:"Noto Sans CJK SC","PingFang SC","Microsoft YaHei",sans-serif;fill:#173d35;font-size:17px}
+      .heading{font-size:22px;font-weight:700}.note{font-size:15px;fill:#4f695a}.tiny{font-size:14px}.label{font-size:17px;font-weight:700}.cell{font-size:16px;font-weight:700}
+      .active{fill:#e0ebe3;stroke:#82a18e;stroke-width:1.1}
+      .idle{fill:#fafbf8;stroke:#e0e6dd;stroke-width:1}
+      .bubble{fill:#eaece5;stroke:#a0a99e;stroke-width:1.15;stroke-dasharray:4 2}
+      .hold{fill:#f2e7d1;stroke:#9b6c27;stroke-width:1.6}
+      .retry{fill:#f2e7d1;stroke:#bca16d;stroke-width:1.1}
+      .discard{fill:#f4e6df;stroke:#b77967;stroke-width:1.3;stroke-dasharray:4 2}
+      .branch{fill:#d2e6d7;stroke:#376650;stroke-width:2}
+      .accent{fill:#8a5d1c}.error{fill:#884735}.muted{fill:#87948a}.header{fill:#e7ede4}
+    </style>
+  </defs>
+  <rect x="1" y="1" width="798" height="451" rx="13" fill="#f5f6ef" stroke="#c4d0c4" stroke-width="1.3"/>
+  <text x="22" y="33" class="heading">同一段程序，15 个周期内按序完成 8 条指令</text>
+  <text x="22" y="59" class="note">每格表示一个完整周期 Cn（E(n−1) 到 En），周期末的边沿采样并更新。</text>
+  <rect x="14" y="71" width="772" height="277" rx="10" fill="#fafbf8" stroke="#c7d3c7"/>
+  <!-- Only these two regions create new empty slots: the hold and the branch redirect. -->
+  <rect x="217" y="81" width="92" height="18" rx="5" fill="#f2e7d1"/>
+  <text x="263" y="94" text-anchor="middle" class="tiny accent">Load-use 等待</text>
+  <rect x="448" y="81" width="91" height="18" rx="5" fill="#f4e6df"/>
+  <text x="493.5" y="94" text-anchor="middle" class="tiny error">E9 转向</text>
+  <text x="29" y="119" class="tiny label">阶段</text>
+  <text x="102" y="118" class="tiny " text-anchor="middle">C1</text>
+  <text x="148" y="118" class="tiny " text-anchor="middle">C2</text>
+  <text x="194" y="118" class="tiny " text-anchor="middle">C3</text>
+  <text x="240" y="118" class="tiny accent" text-anchor="middle">C4</text>
+  <text x="286" y="118" class="tiny accent" text-anchor="middle">C5</text>
+  <text x="332" y="118" class="tiny " text-anchor="middle">C6</text>
+  <text x="378" y="118" class="tiny " text-anchor="middle">C7</text>
+  <text x="424" y="118" class="tiny " text-anchor="middle">C8</text>
+  <text x="470" y="118" class="tiny error" text-anchor="middle">C9</text>
+  <text x="516" y="118" class="tiny " text-anchor="middle">C10</text>
+  <text x="562" y="118" class="tiny " text-anchor="middle">C11</text>
+  <text x="608" y="118" class="tiny " text-anchor="middle">C12</text>
+  <text x="654" y="118" class="tiny " text-anchor="middle">C13</text>
+  <text x="700" y="118" class="tiny " text-anchor="middle">C14</text>
+  <text x="746" y="118" class="tiny " text-anchor="middle">C15</text>
+  <!-- IF stage, C1 to C15 -->
+  <text x="30" y="152" class="label">IF</text>
+  <rect x="81" y="130" width="42" height="34" rx="4" class="active"/>
+  <text x="102" y="152" text-anchor="middle" class="cell ">I0</text>
+  <rect x="127" y="130" width="42" height="34" rx="4" class="active"/>
+  <text x="148" y="152" text-anchor="middle" class="cell ">I1</text>
+  <rect x="173" y="130" width="42" height="34" rx="4" class="active"/>
+  <text x="194" y="152" text-anchor="middle" class="cell ">I2</text>
+  <rect x="219" y="130" width="42" height="34" rx="4" class="discard"/>
+  <text x="240" y="152" text-anchor="middle" class="cell error">I3×</text>
+  <rect x="265" y="130" width="42" height="34" rx="4" class="active"/>
+  <text x="286" y="152" text-anchor="middle" class="cell ">I3</text>
+  <rect x="311" y="130" width="42" height="34" rx="4" class="active"/>
+  <text x="332" y="152" text-anchor="middle" class="cell ">I4</text>
+  <rect x="357" y="130" width="42" height="34" rx="4" class="active"/>
+  <text x="378" y="152" text-anchor="middle" class="cell ">I5</text>
+  <rect x="403" y="130" width="42" height="34" rx="4" class="active"/>
+  <text x="424" y="152" text-anchor="middle" class="cell ">I6</text>
+  <rect x="449" y="130" width="42" height="34" rx="4" class="discard"/>
+  <text x="470" y="152" text-anchor="middle" class="cell error">I7×</text>
+  <rect x="495" y="130" width="42" height="34" rx="4" class="active"/>
+  <text x="516" y="152" text-anchor="middle" class="cell ">I7</text>
+  <rect x="541" y="130" width="42" height="34" rx="4" class="active"/>
+  <text x="562" y="152" text-anchor="middle" class="cell ">I8</text>
+  <rect x="587" y="130" width="42" height="34" rx="4" class="idle"/>
+  <rect x="633" y="130" width="42" height="34" rx="4" class="idle"/>
+  <rect x="679" y="130" width="42" height="34" rx="4" class="idle"/>
+  <rect x="725" y="130" width="42" height="34" rx="4" class="idle"/>
+  <!-- ID stage, C1 to C15 -->
+  <text x="30" y="194" class="label">ID</text>
+  <rect x="81" y="172" width="42" height="34" rx="4" class="idle"/>
+  <rect x="127" y="172" width="42" height="34" rx="4" class="active"/>
+  <text x="148" y="194" text-anchor="middle" class="cell ">I0</text>
+  <rect x="173" y="172" width="42" height="34" rx="4" class="active"/>
+  <text x="194" y="194" text-anchor="middle" class="cell ">I1</text>
+  <rect x="219" y="172" width="42" height="34" rx="4" class="hold"/>
+  <text x="240" y="194" text-anchor="middle" class="cell accent">I2</text>
+  <rect x="265" y="172" width="42" height="34" rx="4" class="retry"/>
+  <text x="286" y="194" text-anchor="middle" class="cell accent">I2</text>
+  <rect x="311" y="172" width="42" height="34" rx="4" class="active"/>
+  <text x="332" y="194" text-anchor="middle" class="cell ">I3</text>
+  <rect x="357" y="172" width="42" height="34" rx="4" class="active"/>
+  <text x="378" y="194" text-anchor="middle" class="cell ">I4</text>
+  <rect x="403" y="172" width="42" height="34" rx="4" class="active"/>
+  <text x="424" y="194" text-anchor="middle" class="cell ">I5</text>
+  <rect x="449" y="172" width="42" height="34" rx="4" class="discard"/>
+  <text x="470" y="194" text-anchor="middle" class="cell error">I6×</text>
+  <rect x="495" y="172" width="42" height="34" rx="4" class="bubble"/>
+  <text x="516" y="194" text-anchor="middle" class="cell muted">—</text>
+  <rect x="541" y="172" width="42" height="34" rx="4" class="active"/>
+  <text x="562" y="194" text-anchor="middle" class="cell ">I7</text>
+  <rect x="587" y="172" width="42" height="34" rx="4" class="active"/>
+  <text x="608" y="194" text-anchor="middle" class="cell ">I8</text>
+  <rect x="633" y="172" width="42" height="34" rx="4" class="idle"/>
+  <rect x="679" y="172" width="42" height="34" rx="4" class="idle"/>
+  <rect x="725" y="172" width="42" height="34" rx="4" class="idle"/>
+  <!-- EX stage, C1 to C15 -->
+  <text x="30" y="236" class="label">EX</text>
+  <rect x="81" y="214" width="42" height="34" rx="4" class="idle"/>
+  <rect x="127" y="214" width="42" height="34" rx="4" class="idle"/>
+  <rect x="173" y="214" width="42" height="34" rx="4" class="active"/>
+  <text x="194" y="236" text-anchor="middle" class="cell ">I0</text>
+  <rect x="219" y="214" width="42" height="34" rx="4" class="active"/>
+  <text x="240" y="236" text-anchor="middle" class="cell ">I1</text>
+  <rect x="265" y="214" width="42" height="34" rx="4" class="bubble"/>
+  <text x="286" y="236" text-anchor="middle" class="cell muted">—</text>
+  <rect x="311" y="214" width="42" height="34" rx="4" class="active"/>
+  <text x="332" y="236" text-anchor="middle" class="cell ">I2</text>
+  <rect x="357" y="214" width="42" height="34" rx="4" class="active"/>
+  <text x="378" y="236" text-anchor="middle" class="cell ">I3</text>
+  <rect x="403" y="214" width="42" height="34" rx="4" class="active"/>
+  <text x="424" y="236" text-anchor="middle" class="cell ">I4</text>
+  <rect x="449" y="214" width="42" height="34" rx="4" class="branch"/>
+  <text x="470" y="236" text-anchor="middle" class="cell ">I5</text>
+  <rect x="495" y="214" width="42" height="34" rx="4" class="bubble"/>
+  <text x="516" y="236" text-anchor="middle" class="cell muted">—</text>
+  <rect x="541" y="214" width="42" height="34" rx="4" class="bubble"/>
+  <text x="562" y="236" text-anchor="middle" class="cell muted">—</text>
+  <rect x="587" y="214" width="42" height="34" rx="4" class="active"/>
+  <text x="608" y="236" text-anchor="middle" class="cell ">I7</text>
+  <rect x="633" y="214" width="42" height="34" rx="4" class="active"/>
+  <text x="654" y="236" text-anchor="middle" class="cell ">I8</text>
+  <rect x="679" y="214" width="42" height="34" rx="4" class="idle"/>
+  <rect x="725" y="214" width="42" height="34" rx="4" class="idle"/>
+  <!-- MEM stage, C1 to C15 -->
+  <text x="30" y="278" class="label">MEM</text>
+  <rect x="81" y="256" width="42" height="34" rx="4" class="idle"/>
+  <rect x="127" y="256" width="42" height="34" rx="4" class="idle"/>
+  <rect x="173" y="256" width="42" height="34" rx="4" class="idle"/>
+  <rect x="219" y="256" width="42" height="34" rx="4" class="active"/>
+  <text x="240" y="278" text-anchor="middle" class="cell ">I0</text>
+  <rect x="265" y="256" width="42" height="34" rx="4" class="active"/>
+  <text x="286" y="278" text-anchor="middle" class="cell ">I1</text>
+  <rect x="311" y="256" width="42" height="34" rx="4" class="bubble"/>
+  <text x="332" y="278" text-anchor="middle" class="cell muted">—</text>
+  <rect x="357" y="256" width="42" height="34" rx="4" class="active"/>
+  <text x="378" y="278" text-anchor="middle" class="cell ">I2</text>
+  <rect x="403" y="256" width="42" height="34" rx="4" class="active"/>
+  <text x="424" y="278" text-anchor="middle" class="cell ">I3</text>
+  <rect x="449" y="256" width="42" height="34" rx="4" class="active"/>
+  <text x="470" y="278" text-anchor="middle" class="cell ">I4</text>
+  <rect x="495" y="256" width="42" height="34" rx="4" class="active"/>
+  <text x="516" y="278" text-anchor="middle" class="cell ">I5</text>
+  <rect x="541" y="256" width="42" height="34" rx="4" class="bubble"/>
+  <text x="562" y="278" text-anchor="middle" class="cell muted">—</text>
+  <rect x="587" y="256" width="42" height="34" rx="4" class="bubble"/>
+  <text x="608" y="278" text-anchor="middle" class="cell muted">—</text>
+  <rect x="633" y="256" width="42" height="34" rx="4" class="active"/>
+  <text x="654" y="278" text-anchor="middle" class="cell ">I7</text>
+  <rect x="679" y="256" width="42" height="34" rx="4" class="active"/>
+  <text x="700" y="278" text-anchor="middle" class="cell ">I8</text>
+  <rect x="725" y="256" width="42" height="34" rx="4" class="idle"/>
+  <!-- WB stage, C1 to C15 -->
+  <text x="30" y="320" class="label">WB</text>
+  <rect x="81" y="298" width="42" height="34" rx="4" class="idle"/>
+  <rect x="127" y="298" width="42" height="34" rx="4" class="idle"/>
+  <rect x="173" y="298" width="42" height="34" rx="4" class="idle"/>
+  <rect x="219" y="298" width="42" height="34" rx="4" class="idle"/>
+  <rect x="265" y="298" width="42" height="34" rx="4" class="active"/>
+  <text x="286" y="320" text-anchor="middle" class="cell ">I0</text>
+  <rect x="311" y="298" width="42" height="34" rx="4" class="active"/>
+  <text x="332" y="320" text-anchor="middle" class="cell ">I1</text>
+  <rect x="357" y="298" width="42" height="34" rx="4" class="bubble"/>
+  <text x="378" y="320" text-anchor="middle" class="cell muted">—</text>
+  <rect x="403" y="298" width="42" height="34" rx="4" class="active"/>
+  <text x="424" y="320" text-anchor="middle" class="cell ">I2</text>
+  <rect x="449" y="298" width="42" height="34" rx="4" class="active"/>
+  <text x="470" y="320" text-anchor="middle" class="cell ">I3</text>
+  <rect x="495" y="298" width="42" height="34" rx="4" class="active"/>
+  <text x="516" y="320" text-anchor="middle" class="cell ">I4</text>
+  <rect x="541" y="298" width="42" height="34" rx="4" class="active"/>
+  <text x="562" y="320" text-anchor="middle" class="cell ">I5</text>
+  <rect x="587" y="298" width="42" height="34" rx="4" class="bubble"/>
+  <text x="608" y="320" text-anchor="middle" class="cell muted">—</text>
+  <rect x="633" y="298" width="42" height="34" rx="4" class="bubble"/>
+  <text x="654" y="320" text-anchor="middle" class="cell muted">—</text>
+  <rect x="679" y="298" width="42" height="34" rx="4" class="active"/>
+  <text x="700" y="320" text-anchor="middle" class="cell ">I7</text>
+  <rect x="725" y="298" width="42" height="34" rx="4" class="active"/>
+  <text x="746" y="320" text-anchor="middle" class="cell ">I8</text>
+  <!-- Divider marks E9 between the C9 and C10 cells. -->
+  <path d="M493 100V340" fill="none" stroke="#b77967" stroke-width="1.5" stroke-dasharray="4 4"/>
+  <text x="22" y="371" class="note">C4：保留 ID 的 I2；I3 未接收。C5：I2 重试，EX 无效，重新取 I3。</text>
+  <text x="22" y="394" class="note">E9：I5 判定跳转，丢弃已取到的 I6、I7。C10 从 0x11C 重新取 I7。</text>
+  <rect x="22" y="411" width="20" height="17" rx="3" class="active"/><text x="48" y="425" class="tiny">有效指令</text>
+  <rect x="133" y="411" width="20" height="17" rx="3" class="hold"/><text x="159" y="425" class="tiny">ID 保留／重试</text>
+  <rect x="285" y="411" width="20" height="17" rx="3" class="discard"/><text x="311" y="425" class="tiny">× 周期末丢弃</text>
+  <rect x="440" y="411" width="20" height="17" rx="3" class="bubble"/><text x="466" y="425" class="tiny">注入或传递的空槽</text>
+  <rect x="625" y="411" width="20" height="17" rx="3" class="idle"/><text x="651" y="425" class="tiny">无指令／未画</text>
+</svg>
