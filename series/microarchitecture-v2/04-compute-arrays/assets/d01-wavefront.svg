@@ -1,0 +1,109 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 558" width="760" height="558" role="img" aria-labelledby="title desc">
+<title id="title">六拍内逐步填充并排空 2×2 阵列</title>
+<desc id="desc">每格写出 PE 本拍使用的归约索引 k 与拍末部分和。第 1 至 6 拍分别执行 1、3、4、4、3、1 次 MAC。最后四个部分和分别为 21、29、17、16。无有效 k 的 PE 保持 ACC。</desc>
+<defs>
+<marker id="data-arrow" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0 0L7 3.5L0 7z" fill="#376650"/></marker>
+<marker id="weight-arrow" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0 0L7 3.5L0 7z" fill="#9b6c27"/></marker>
+<style>
+text{font-family:"Noto Sans CJK SC","Microsoft YaHei",sans-serif;fill:#173d35;font-size:18px}
+.heading{font-size:22px;font-weight:700}.sub{font-size:16px}.tiny{font-size:14px}.label{font-weight:700}
+.accent{fill:#815718}.muted{fill:#58736a}.label.accent{fill:#815718}
+.panel{fill:#fafbf8;stroke:#c7d3c7;stroke-width:1.3}.reg{fill:#edf1df;stroke:#82a18e;stroke-width:1.4}
+.block{fill:#e0ebe3;stroke:#82a18e;stroke-width:1.4}.control{fill:#f3ebdb;stroke:#c6aa79;stroke-width:1.3}
+.data,.weight{stroke-width:2.3;fill:none;stroke-linejoin:round;stroke-linecap:round}
+.data{stroke:#376650;marker-end:url(#data-arrow)}.weight{stroke:#9b6c27;marker-end:url(#weight-arrow)}
+.bus{stroke:#376650;stroke-width:2.3;fill:none;stroke-linejoin:round;stroke-linecap:round}
+.wbus{stroke:#9b6c27;stroke-width:2.3;fill:none;stroke-linejoin:round;stroke-linecap:round}
+.divider{stroke:#c7d3c7;stroke-width:1.1}.off{fill:#f3eee3;stroke:#c9b89c;stroke-width:1.1;stroke-dasharray:4 3}
+</style>
+</defs>
+<rect x="1" y="1" width="758" height="556" rx="13" fill="#f5f6ef" stroke="#c4d0c4"/>
+<text x="22" y="34" class="heading" text-anchor="start">六拍数据流：逐个追踪 PE 中的 k 和部分和</text>
+<text x="22" y="60" class="sub" text-anchor="start">k 从 0 开始；t 从 1 开始。格内数字是拍末的 ACC。</text>
+<rect x="22" y="80" width="716" height="395" rx="7" class="panel"/>
+<text x="58" y="105" class="sub label" text-anchor="middle">拍 t</text>
+<text x="177" y="105" class="sub label" text-anchor="middle">PE(0,0)</text>
+<text x="319" y="105" class="sub label" text-anchor="middle">PE(0,1)</text>
+<text x="461" y="105" class="sub label" text-anchor="middle">PE(1,0)</text>
+<text x="603" y="105" class="sub label" text-anchor="middle">PE(1,1)</text>
+<text x="710" y="105" class="tiny label" text-anchor="middle">MAC</text>
+<text x="58" y="147" class="label" text-anchor="middle">1</text>
+<rect x="112" y="116" width="130" height="51" rx="7" class="reg"/>
+<text x="177" y="135" class="tiny" text-anchor="middle">k = 0</text>
+<text x="177" y="157" class="sub label" text-anchor="middle">ACC = 6</text>
+<rect x="254" y="116" width="130" height="51" rx="7" class="off"/>
+<text x="319" y="146" class="tiny muted" text-anchor="middle">— 保持</text>
+<rect x="396" y="116" width="130" height="51" rx="7" class="off"/>
+<text x="461" y="146" class="tiny muted" text-anchor="middle">— 保持</text>
+<rect x="538" y="116" width="130" height="51" rx="7" class="off"/>
+<text x="603" y="146" class="tiny muted" text-anchor="middle">— 保持</text>
+<text x="710" y="147" class="label" text-anchor="middle">1</text>
+<text x="58" y="205" class="label" text-anchor="middle">2</text>
+<rect x="112" y="174" width="130" height="51" rx="7" class="reg"/>
+<text x="177" y="193" class="tiny" text-anchor="middle">k = 1</text>
+<text x="177" y="215" class="sub label" text-anchor="middle">ACC = 11</text>
+<rect x="254" y="174" width="130" height="51" rx="7" class="reg"/>
+<text x="319" y="193" class="tiny" text-anchor="middle">k = 0</text>
+<text x="319" y="215" class="sub label" text-anchor="middle">ACC = 2</text>
+<rect x="396" y="174" width="130" height="51" rx="7" class="reg"/>
+<text x="461" y="193" class="tiny" text-anchor="middle">k = 0</text>
+<text x="461" y="215" class="sub label" text-anchor="middle">ACC = 3</text>
+<rect x="538" y="174" width="130" height="51" rx="7" class="off"/>
+<text x="603" y="204" class="tiny muted" text-anchor="middle">— 保持</text>
+<text x="710" y="205" class="label" text-anchor="middle">3</text>
+<text x="58" y="263" class="label" text-anchor="middle">3</text>
+<rect x="112" y="232" width="130" height="51" rx="7" class="reg"/>
+<text x="177" y="251" class="tiny" text-anchor="middle">k = 2</text>
+<text x="177" y="273" class="sub label" text-anchor="middle">ACC = 17</text>
+<rect x="254" y="232" width="130" height="51" rx="7" class="reg"/>
+<text x="319" y="251" class="tiny" text-anchor="middle">k = 1</text>
+<text x="319" y="273" class="sub label" text-anchor="middle">ACC = 4</text>
+<rect x="396" y="232" width="130" height="51" rx="7" class="reg"/>
+<text x="461" y="251" class="tiny" text-anchor="middle">k = 1</text>
+<text x="461" y="273" class="sub label" text-anchor="middle">ACC = 13</text>
+<rect x="538" y="232" width="130" height="51" rx="7" class="reg"/>
+<text x="603" y="251" class="tiny" text-anchor="middle">k = 0</text>
+<text x="603" y="273" class="sub label" text-anchor="middle">ACC = 1</text>
+<text x="710" y="263" class="label" text-anchor="middle">4</text>
+<text x="58" y="321" class="label" text-anchor="middle">4</text>
+<rect x="112" y="290" width="130" height="51" rx="7" class="block"/>
+<text x="177" y="309" class="tiny" text-anchor="middle">k = 3</text>
+<text x="177" y="331" class="sub label" text-anchor="middle">ACC = 21</text>
+<rect x="254" y="290" width="130" height="51" rx="7" class="reg"/>
+<text x="319" y="309" class="tiny" text-anchor="middle">k = 2</text>
+<text x="319" y="331" class="sub label" text-anchor="middle">ACC = 13</text>
+<rect x="396" y="290" width="130" height="51" rx="7" class="reg"/>
+<text x="461" y="309" class="tiny" text-anchor="middle">k = 2</text>
+<text x="461" y="331" class="sub label" text-anchor="middle">ACC = 15</text>
+<rect x="538" y="290" width="130" height="51" rx="7" class="reg"/>
+<text x="603" y="309" class="tiny" text-anchor="middle">k = 1</text>
+<text x="603" y="331" class="sub label" text-anchor="middle">ACC = 5</text>
+<text x="710" y="321" class="label" text-anchor="middle">4</text>
+<text x="58" y="379" class="label" text-anchor="middle">5</text>
+<rect x="112" y="348" width="130" height="51" rx="7" class="off"/>
+<text x="177" y="378" class="tiny muted" text-anchor="middle">— 保持</text>
+<rect x="254" y="348" width="130" height="51" rx="7" class="block"/>
+<text x="319" y="367" class="tiny" text-anchor="middle">k = 3</text>
+<text x="319" y="389" class="sub label" text-anchor="middle">ACC = 29</text>
+<rect x="396" y="348" width="130" height="51" rx="7" class="block"/>
+<text x="461" y="367" class="tiny" text-anchor="middle">k = 3</text>
+<text x="461" y="389" class="sub label" text-anchor="middle">ACC = 17</text>
+<rect x="538" y="348" width="130" height="51" rx="7" class="reg"/>
+<text x="603" y="367" class="tiny" text-anchor="middle">k = 2</text>
+<text x="603" y="389" class="sub label" text-anchor="middle">ACC = 8</text>
+<text x="710" y="379" class="label" text-anchor="middle">3</text>
+<text x="58" y="437" class="label" text-anchor="middle">6</text>
+<rect x="112" y="406" width="130" height="51" rx="7" class="off"/>
+<text x="177" y="436" class="tiny muted" text-anchor="middle">— 保持</text>
+<rect x="254" y="406" width="130" height="51" rx="7" class="off"/>
+<text x="319" y="436" class="tiny muted" text-anchor="middle">— 保持</text>
+<rect x="396" y="406" width="130" height="51" rx="7" class="off"/>
+<text x="461" y="436" class="tiny muted" text-anchor="middle">— 保持</text>
+<rect x="538" y="406" width="130" height="51" rx="7" class="block"/>
+<text x="603" y="425" class="tiny" text-anchor="middle">k = 3</text>
+<text x="603" y="447" class="sub label" text-anchor="middle">ACC = 16</text>
+<text x="710" y="437" class="label" text-anchor="middle">1</text>
+<rect x="22" y="488" width="716" height="51" rx="7" class="block"/>
+<text x="380" y="509" class="sub label" text-anchor="middle">全部输出：Y[0,0]=21，Y[0,1]=29，Y[1,0]=17，Y[1,1]=16</text>
+<text x="380" y="530" class="sub" text-anchor="middle">有效 MAC：16 次；总 MAC 槽位：4 × 6 = 24。</text>
+</svg>

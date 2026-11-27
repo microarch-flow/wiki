@@ -1,0 +1,75 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 538" width="760" height="538" role="img" aria-labelledby="title desc">
+<title id="title">行列广播为四个 PE 同时送操作数</title>
+<desc id="desc">在 k=0 时，行 0 广播 X[0,0]=2，行 1 广播 X[1,0]=1；列 0 广播 W[0,0]=3，列 1 广播 W[0,1]=1。四个 PE 同拍使用相应 X/W，初值为 0 的部分和在拍末分别变为 6、2、3、1。</desc>
+<defs>
+<marker id="data-arrow" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0 0L7 3.5L0 7z" fill="#376650"/></marker>
+<marker id="weight-arrow" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0 0L7 3.5L0 7z" fill="#9b6c27"/></marker>
+<style>
+text{font-family:"Noto Sans CJK SC","Microsoft YaHei",sans-serif;fill:#173d35;font-size:18px}
+.heading{font-size:22px;font-weight:700}.sub{font-size:16px}.tiny{font-size:14px}.label{font-weight:700}
+.accent{fill:#815718}.muted{fill:#58736a}.label.accent{fill:#815718}
+.panel{fill:#fafbf8;stroke:#c7d3c7;stroke-width:1.3}.reg{fill:#edf1df;stroke:#82a18e;stroke-width:1.4}
+.block{fill:#e0ebe3;stroke:#82a18e;stroke-width:1.4}.control{fill:#f3ebdb;stroke:#c6aa79;stroke-width:1.3}
+.data,.weight{stroke-width:2.3;fill:none;stroke-linejoin:round;stroke-linecap:round}
+.data{stroke:#376650;marker-end:url(#data-arrow)}.weight{stroke:#9b6c27;marker-end:url(#weight-arrow)}
+.bus{stroke:#376650;stroke-width:2.3;fill:none;stroke-linejoin:round;stroke-linecap:round}
+.wbus{stroke:#9b6c27;stroke-width:2.3;fill:none;stroke-linejoin:round;stroke-linecap:round}
+.divider{stroke:#c7d3c7;stroke-width:1.1}.off{fill:#f3eee3;stroke:#c9b89c;stroke-width:1.1;stroke-dasharray:4 3}
+</style>
+</defs>
+<rect x="1" y="1" width="758" height="536" rx="13" fill="#f5f6ef" stroke="#c4d0c4"/>
+<text x="22" y="34" class="heading" text-anchor="start">行列广播：四个源元素，为四个 PE 供数</text>
+<text x="22" y="60" class="sub" text-anchor="start">k = 0；同一行共享 X，同一列共享 W。</text>
+<rect x="300" y="77" width="134" height="40" rx="7" class="control"/>
+<text x="367" y="103" class="sub label accent" text-anchor="middle">W[0,0] = 3</text>
+<path d="M418 117V137M418 147V317M418 327V403" class="wbus"/>
+<path d="M418 223H400" class="weight"/>
+<circle cx="418" cy="223" r="3.5" fill="#9b6c27"/>
+<path d="M418 403H400" class="weight"/>
+<rect x="582" y="77" width="134" height="40" rx="7" class="control"/>
+<text x="649" y="103" class="sub label accent" text-anchor="middle">W[0,1] = 1</text>
+<path d="M700 117V403" class="wbus"/>
+<path d="M700 223H682" class="weight"/>
+<circle cx="700" cy="223" r="3.5" fill="#9b6c27"/>
+<path d="M700 403H682" class="weight"/>
+<rect x="20" y="122" width="134" height="40" rx="7" class="reg"/>
+<text x="87" y="147" class="sub label" text-anchor="middle">X[0,0] = 2</text>
+<path d="M154 142H516" class="bus"/>
+<path d="M234 142V165" class="data"/>
+<circle cx="234" cy="142" r="3.5" fill="#376650"/>
+<path d="M516 142V165" class="data"/>
+<circle cx="516" cy="142" r="3.5" fill="#376650"/>
+<rect x="20" y="302" width="134" height="40" rx="7" class="reg"/>
+<text x="87" y="327" class="sub label" text-anchor="middle">X[1,0] = 1</text>
+<path d="M154 322H516" class="bus"/>
+<path d="M234 322V345" class="data"/>
+<circle cx="234" cy="322" r="3.5" fill="#376650"/>
+<path d="M516 322V345" class="data"/>
+<circle cx="516" cy="322" r="3.5" fill="#376650"/>
+<rect x="190" y="165" width="210" height="116" rx="7" class="block"/>
+<text x="295" y="191" class="sub label" text-anchor="middle">PE(0,0) → Y[0,0]</text>
+<text x="295" y="218" class="label" text-anchor="middle">0 + 2 × 3 = 6</text>
+<rect x="204" y="233" width="182" height="36" rx="7" class="reg"/>
+<text x="295" y="256" class="sub label" text-anchor="middle">拍末 ACC ← 6</text>
+<rect x="472" y="165" width="210" height="116" rx="7" class="block"/>
+<text x="577" y="191" class="sub label" text-anchor="middle">PE(0,1) → Y[0,1]</text>
+<text x="577" y="218" class="label" text-anchor="middle">0 + 2 × 1 = 2</text>
+<rect x="486" y="233" width="182" height="36" rx="7" class="reg"/>
+<text x="577" y="256" class="sub label" text-anchor="middle">拍末 ACC ← 2</text>
+<rect x="190" y="345" width="210" height="116" rx="7" class="block"/>
+<text x="295" y="371" class="sub label" text-anchor="middle">PE(1,0) → Y[1,0]</text>
+<text x="295" y="398" class="label" text-anchor="middle">0 + 1 × 3 = 3</text>
+<rect x="204" y="413" width="182" height="36" rx="7" class="reg"/>
+<text x="295" y="436" class="sub label" text-anchor="middle">拍末 ACC ← 3</text>
+<rect x="472" y="345" width="210" height="116" rx="7" class="block"/>
+<text x="577" y="371" class="sub label" text-anchor="middle">PE(1,1) → Y[1,1]</text>
+<text x="577" y="398" class="label" text-anchor="middle">0 + 1 × 1 = 1</text>
+<rect x="486" y="413" width="182" height="36" rx="7" class="reg"/>
+<text x="577" y="436" class="sub label" text-anchor="middle">拍末 ACC ← 1</text>
+<path d="M24 494H50" class="data"/>
+<text x="57" y="499" class="tiny" text-anchor="start">X：行分发</text>
+<path d="M170 494H196" class="weight"/>
+<text x="204" y="499" class="tiny accent" text-anchor="start">W：列分发</text>
+<text x="22" y="521" class="tiny muted" text-anchor="start">不同颜色的线路交叉处互不连接；圆点表示同一数据路径分叉。</text>
+<text x="738" y="499" class="sub label" text-anchor="end">4 次 MAC / 拍</text>
+</svg>
