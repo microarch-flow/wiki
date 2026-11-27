@@ -1,4 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 680 356" role="img" aria-labelledby="title desc">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 680 356" width="680" height="356" role="img" aria-labelledby="title desc">
   <title id="title">四选一多路选择器</title>
   <desc id="desc">选择编号为二进制 10 时，两个第一级 MUX 都根据 i0 等于 0 选择输入 0。第二级 MUX 根据 i1 等于 1 选择第二组，最终输出 x2 等于 3。</desc>
   <defs>

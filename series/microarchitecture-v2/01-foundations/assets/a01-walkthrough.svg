@@ -1,0 +1,74 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 750 380" width="750" height="380" role="img" aria-labelledby="title desc">
+<title id="title">入口寄存器的逐拍更新过程</title>
+<desc id="desc">E1 后 RUN，组号为 0，写使能为 1，MUX 得到第一组，寄存器仍为 0。E2 至 E5 四次写入对应组的数据。E5 后进入 DONE，写使能降为零，E6 后 IDLE 且寄存器保持。每列显示对应采样沿之后的稳定值。</desc>
+<style>
+text{font-family:"Noto Sans CJK SC","Microsoft YaHei",sans-serif;fill:#173d35;font-size:18px}
+.heading{font-size:22px;font-weight:700}
+.small{font-size:15px;fill:#4f695a}
+.label{font-size:18px;font-weight:600}
+.edge{stroke:#849c8c;stroke-width:1.4;stroke-dasharray:5 4}
+</style>
+<rect x="1" y="1" width="748" height="378" rx="13" fill="#f5f6ef" stroke="#c4d0c4"/>
+<text x="24" y="32" class="heading">每一列：该上升沿之后的稳定值</text>
+<text x="25" y="78" class="label">CLK</text>
+<path d="M 119 84 H 139 V 61 H 184 V 84 H 235 V 61 H 280 V 84 H 331 V 61 H 376 V 84 H 427 V 61 H 472 V 84 H 523 V 61 H 568 V 84 H 619 V 61 H 664 V 84 H 715" fill="none" stroke="#376650" stroke-width="2.5" stroke-linejoin="round"/>
+<rect x="18" y="94" width="714" height="42" rx="4" fill="#e8eee6"/>
+<text x="25" y="121" class="label">阶段 S</text>
+<text x="187" y="121" text-anchor="middle">RUN</text>
+<text x="283" y="121" text-anchor="middle">RUN</text>
+<text x="379" y="121" text-anchor="middle">RUN</text>
+<text x="475" y="121" text-anchor="middle">RUN</text>
+<rect x="526" y="97" width="90" height="36" rx="5" fill="#e6dcc4"/>
+<text x="571" y="121" text-anchor="middle">DONE</text>
+<text x="667" y="121" text-anchor="middle">IDLE</text>
+<rect x="18" y="138" width="714" height="42" rx="4" fill="#fafbf8"/>
+<text x="25" y="165" class="label">组号 i</text>
+<text x="187" y="165" text-anchor="middle">0</text>
+<text x="283" y="165" text-anchor="middle">1</text>
+<text x="379" y="165" text-anchor="middle">2</text>
+<text x="475" y="165" text-anchor="middle">3</text>
+<text x="571" y="165" text-anchor="middle">3</text>
+<text x="667" y="165" text-anchor="middle">3</text>
+<rect x="18" y="182" width="714" height="42" rx="4" fill="#e8eee6"/>
+<text x="25" y="209" class="label">EN_XW</text>
+<text x="187" y="209" text-anchor="middle">1</text>
+<text x="283" y="209" text-anchor="middle">1</text>
+<text x="379" y="209" text-anchor="middle">1</text>
+<text x="475" y="209" text-anchor="middle">1</text>
+<text x="571" y="209" text-anchor="middle">0</text>
+<text x="667" y="209" text-anchor="middle">0</text>
+<rect x="18" y="226" width="714" height="42" rx="4" fill="#fafbf8"/>
+<text x="25" y="253" class="label">MUX 输出</text>
+<text x="187" y="253" text-anchor="middle">(2, 3)</text>
+<text x="283" y="253" text-anchor="middle">(1, 5)</text>
+<text x="379" y="253" text-anchor="middle">(3, 2)</text>
+<text x="475" y="253" text-anchor="middle">(4, 1)</text>
+<text x="571" y="253" text-anchor="middle">(4, 1)</text>
+<text x="667" y="253" text-anchor="middle">(4, 1)</text>
+<rect x="18" y="270" width="714" height="42" rx="4" fill="#edf1df"/>
+<text x="25" y="297" class="label">X、W</text>
+<text x="187" y="297" text-anchor="middle">(0, 0)</text>
+<rect x="238" y="273" width="90" height="36" rx="5" fill="#d2e6d7"/>
+<text x="283" y="297" text-anchor="middle">(2, 3)</text>
+<rect x="334" y="273" width="90" height="36" rx="5" fill="#d2e6d7"/>
+<text x="379" y="297" text-anchor="middle">(1, 5)</text>
+<rect x="430" y="273" width="90" height="36" rx="5" fill="#d2e6d7"/>
+<text x="475" y="297" text-anchor="middle">(3, 2)</text>
+<rect x="526" y="273" width="90" height="36" rx="5" fill="#d2e6d7"/>
+<text x="571" y="297" text-anchor="middle">(4, 1)</text>
+<text x="667" y="297" text-anchor="middle">(4, 1)</text>
+<line x1="139" y1="50" x2="139" y2="314" class="edge"/>
+<text x="139" y="53" text-anchor="middle" class="small">E1</text>
+<line x1="235" y1="50" x2="235" y2="314" class="edge"/>
+<text x="235" y="53" text-anchor="middle" class="small">E2</text>
+<line x1="331" y1="50" x2="331" y2="314" class="edge"/>
+<text x="331" y="53" text-anchor="middle" class="small">E3</text>
+<line x1="427" y1="50" x2="427" y2="314" class="edge"/>
+<text x="427" y="53" text-anchor="middle" class="small">E4</text>
+<line x1="523" y1="50" x2="523" y2="314" class="edge"/>
+<text x="523" y="53" text-anchor="middle" class="small">E5</text>
+<line x1="619" y1="50" x2="619" y2="314" class="edge"/>
+<text x="619" y="53" text-anchor="middle" class="small">E6</text>
+<text x="26" y="339" class="small">E₂–E₅：采入四组操作数；新组号随边沿更新。</text>
+<text x="26" y="362" class="small">E₅ 沿后 DONE=1，但不表示乘法或点积已经完成。</text>
+</svg>

@@ -1,0 +1,50 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 510" width="600" height="510" role="img" aria-labelledby="register-title register-desc">
+  <title id="register-title">四位寄存器与逐拍采样</title>
+  <desc id="register-desc">四只 D 触发器分别接 D3、D2、D1、D0，共用上升沿采样时钟；输出 Q3 到 Q0 按从高位到低位排列。第一个上升沿之前 D 为 0010、Q 为 0000。第一个上升沿后 Q 变为 0010，随后 D 变为 0001，Q 仍保持 0010。第二个上升沿后 Q 才变成 0001。示意略去传播延迟，假设满足采样时序。</desc>
+  <defs>
+    <marker id="register-arrow" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0 0L7 3.5L0 7Z" fill="#376a55"/></marker>
+    <style>
+      text{font-family:"Noto Sans CJK SC","PingFang SC","Microsoft YaHei",sans-serif;fill:#173d35;font-size:19px}
+      .head{font-size:22px;font-weight:700}.note{font-size:16px;fill:#4f695a}.symbol{font-size:18px;font-weight:700}
+      .box{fill:#e0ebe3;stroke:#82a18e;stroke-width:1.6}.data{stroke:#376a55;stroke-width:2.2;fill:none;marker-end:url(#register-arrow)}
+      .clock{stroke:#8a6c3c;stroke-width:2;stroke-linejoin:round;fill:none}.clocktext{fill:#765a2f;font-size:16px;font-weight:600}
+      .edge{stroke:#8a6c3c;stroke-width:1.5;stroke-dasharray:4 4;fill:none}.bus{stroke:#82a18e;stroke-width:1.6;fill:#e0ebe3}
+      .value{font-size:20px;font-weight:700;font-family:"Noto Sans Mono CJK SC",monospace}
+    </style>
+  </defs>
+  <rect x="1" y="1" width="598" height="508" rx="13" fill="#f5f6ef" stroke="#c4d0c4" stroke-width="1.3"/>
+  <text class="head" x="22" y="34">1. 四只触发器共用一个时钟</text>
+  <text class="note" x="22" y="60">D[3:0] = 0010（高位在左，低位在右）</text>
+  <!-- Each branch has a genuinely separate D and Q wire. CLK enters at the lower-left triangle, Q leaves the lower-right. -->
+  <g text-anchor="middle">
+    <text class="symbol" x="78" y="86">D₃ = 0</text><text class="symbol" x="210" y="86">D₂ = 0</text>
+    <text class="symbol" x="342" y="86">D₁ = 1</text><text class="symbol" x="474" y="86">D₀ = 0</text>
+    <g>
+      <rect class="box" x="53" y="108" width="98" height="65" rx="8"/><rect class="box" x="185" y="108" width="98" height="65" rx="8"/>
+      <rect class="box" x="317" y="108" width="98" height="65" rx="8"/><rect class="box" x="449" y="108" width="98" height="65" rx="8"/>
+      <text x="102" y="139">D 触发器</text><text x="234" y="139">D 触发器</text><text x="366" y="139">D 触发器</text><text x="498" y="139">D 触发器</text>
+      <text class="note" x="102" y="160">1 位</text><text class="note" x="234" y="160">1 位</text><text class="note" x="366" y="160">1 位</text><text class="note" x="498" y="160">1 位</text>
+    </g>
+  </g>
+  <path class="data" d="M78 90V104"/><path class="data" d="M210 90V104"/><path class="data" d="M342 90V104"/><path class="data" d="M474 90V104"/>
+  <path class="data" d="M126 173V191"/><path class="data" d="M258 173V191"/><path class="data" d="M390 173V191"/><path class="data" d="M522 173V191"/>
+  <g text-anchor="middle" class="symbol"><text x="126" y="210">Q₃</text><text x="258" y="210">Q₂</text><text x="390" y="210">Q₁</text><text x="522" y="210">Q₀</text></g>
+  <path class="clock" d="M39 230H474 M78 230V173 M210 230V173 M342 230V173 M474 230V173"/>
+  <path class="clock" d="M71 173L78 166L85 173 M203 173L210 166L217 173 M335 173L342 166L349 173 M467 173L474 166L481 173"/>
+  <g fill="#8a6c3c"><circle cx="78" cy="230" r="3"/><circle cx="210" cy="230" r="3"/><circle cx="342" cy="230" r="3"/></g>
+  <text class="clocktext" x="39" y="250">CLK（共同上升沿采样）</text>
+  <path d="M22 265H578" stroke="#c4d0c4"/>
+  <text class="head" x="22" y="295">2. 输入变了，输出何时改变？</text>
+  <!-- Vertical dashed lines are sample edges, not signal wires. Ignore physical propagation latency. -->
+  <path class="edge" d="M219 322V459 M443 322V459"/>
+  <g text-anchor="middle" class="clocktext"><text x="219" y="318">第 1 沿 ↑</text><text x="443" y="318">第 2 沿 ↑</text></g>
+  <g class="symbol"><text x="22" y="354">CLK</text><text x="22" y="397">D[3:0]</text><text x="22" y="444">Q[3:0]</text></g>
+  <path class="clock" d="M124 356H219V334H289V356H443V334H516V356H578"/>
+  <rect class="bus" x="124" y="373" width="211" height="35" rx="5"/><rect class="bus" x="335" y="373" width="243" height="35" rx="5"/>
+  <g text-anchor="middle" class="value"><text x="229" y="397">0010</text><text x="457" y="397">0001</text></g>
+  <rect class="bus" x="124" y="419" width="95" height="35" rx="5"/><rect class="bus" x="219" y="419" width="224" height="35" rx="5"/><rect class="bus" x="443" y="419" width="135" height="35" rx="5"/>
+  <g text-anchor="middle" class="value"><text x="171.5" y="443">0000</text><text x="331" y="443">0010</text><text x="510.5" y="443">0001</text></g>
+
+  <text class="note" x="22" y="478">两条采样沿之间：D 已变为 0001，Q 仍保存 0010。</text>
+  <text class="note" x="22" y="499">教学示意：假设满足采样时序，略去时钟到 Q 的延迟。</text>
+</svg>

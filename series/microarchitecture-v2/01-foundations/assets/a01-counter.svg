@@ -1,0 +1,54 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 502" width="600" height="502" role="img" aria-labelledby="counter-title counter-desc">
+  <title id="counter-title">两位同步计数器的反馈和更新</title>
+  <desc id="counter-desc">两个 D 触发器共用上升沿采样时钟。低位旧输出 i0 反馈到反相器和异或门；高位旧输出 i1 反馈到异或门。反相器产生 i0 的下一值，异或门产生 i1 的下一值，分别连接对应 D 输入。两个下一值均由边沿前的旧输出决定，并在同一上升沿采样。假设初始为 00，每次上升沿的状态依次为 01、10、11、00。未画使能和复位线路，假设每拍计数并满足采样时序。</desc>
+  <defs>
+    <marker id="counter-arrow" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0 0L7 3.5L0 7Z" fill="#376a55"/></marker>
+    <style>
+      text{font-family:"Noto Sans CJK SC","PingFang SC","Microsoft YaHei",sans-serif;fill:#173d35;font-size:19px}
+      .head{font-size:22px;font-weight:700}.note{font-size:16px;fill:#4f695a}.symbol{font-size:19px;font-weight:700}.logic{font-size:21px;font-weight:700}
+      .box{fill:#e0ebe3;stroke:#82a18e;stroke-width:1.7}.reg{fill:#edf1df;stroke:#82a18e;stroke-width:1.7}
+      .wire{stroke:#376a55;stroke-width:2.3;fill:none;stroke-linejoin:round}.arrow{marker-end:url(#counter-arrow)}
+      .clock{stroke:#8a6c3c;stroke-width:2;fill:none;stroke-linejoin:round}.clocktext{fill:#765a2f;font-size:17px;font-weight:600}
+      .state{font-size:21px;font-weight:700;font-family:"Noto Sans Mono CJK SC",monospace}
+    </style>
+  </defs>
+  <rect x="1" y="1" width="598" height="500" rx="13" fill="#f5f6ef" stroke="#c4d0c4" stroke-width="1.3"/>
+  <text class="head" x="22" y="35">1. 沿反馈线，从旧值算出新值</text>
+  <text class="note" x="22" y="61">两个 D 触发器的 CLK 端共用同一上升沿</text>
+  <!-- Combinational next-state logic: low bit NOT, high bit XOR. -->
+  <rect class="box" x="125" y="121" width="113" height="55" rx="9"/>
+  <text class="logic" x="181.5" y="155" text-anchor="middle">NOT</text>
+  <rect class="box" x="125" y="276" width="113" height="74" rx="9"/>
+  <text class="logic" x="181.5" y="320" text-anchor="middle">XOR</text>
+  <rect class="reg" x="361" y="111" width="114" height="75" rx="9"/>
+  <text class="symbol" x="418" y="142" text-anchor="middle">D FF₀</text><text class="note" x="418" y="164" text-anchor="middle">低位</text>
+  <rect class="reg" x="361" y="276" width="114" height="75" rx="9"/>
+  <text class="symbol" x="418" y="306" text-anchor="middle">D FF₁</text><text class="note" x="418" y="330" text-anchor="middle">高位</text>
+  <!-- From i0 Q: upper rectangular feedback route, split at x=66 y=148. -->
+  <path class="wire" d="M475 148H514V86H66V297"/>
+  <path class="wire arrow" d="M66 148H121"/><path class="wire arrow" d="M66 297H121"/>
+  <circle cx="66" cy="148" r="4" fill="#376a55"/>
+  <text class="note" x="228" y="80">反馈：旧 i₀</text><text class="symbol" x="483" y="139">i₀</text>
+  <!-- From i1 Q: lower rectangular feedback route; does not cross the upper route. -->
+  <path class="wire" d="M475 314H532V375H94V329"/><path class="wire arrow" d="M94 329H121"/>
+  <text class="symbol" x="483" y="304">i₁</text><text class="note" x="230" y="395">反馈：旧 i₁</text>
+  <text class="note" x="71" y="291">i₀</text><text class="note" x="96" y="322">i₁</text>
+  <path class="wire arrow" d="M238 148H357"/><path class="wire arrow" d="M238 314H357"/>
+  <text class="symbol" x="297" y="138" text-anchor="middle">i₀′ = ¬i₀</text>
+  <text class="symbol" x="297" y="304" text-anchor="middle">i₁′ = i₁ ⊕ i₀</text>
+  <!-- Common clock represented by named inputs to keep feedback wiring unambiguous. -->
+  <path class="clock" d="M392 186V210 M385 186L392 179L399 186 M392 351V369 M385 351L392 344L399 351"/>
+  <text class="clocktext" x="405" y="210">CLK ↑</text><text class="clocktext" x="405" y="368">CLK ↑</text>
+  <rect x="99" y="223" width="460" height="37" rx="8" fill="#e9edde" stroke="#ced9c7"/>
+  <text class="note" x="329" y="247" text-anchor="middle">例如沿前 i₁i₀ = 01，则沿前 D₁D₀ = 10。</text>
+  <text class="head" x="22" y="423">2. 每个上升沿，两位一起更新</text>
+  <g text-anchor="middle" class="state">
+    <rect class="box" x="23" y="437" width="77" height="34" rx="7"/><text x="61.5" y="460">00</text>
+    <rect class="box" x="140" y="437" width="77" height="34" rx="7"/><text x="178.5" y="460">01</text>
+    <rect class="box" x="257" y="437" width="77" height="34" rx="7"/><text x="295.5" y="460">10</text>
+    <rect class="box" x="374" y="437" width="77" height="34" rx="7"/><text x="412.5" y="460">11</text>
+    <rect class="box" x="491" y="437" width="77" height="34" rx="7"/><text x="529.5" y="460">00</text>
+  </g>
+  <g class="wire arrow"><path d="M104 454H135"/><path d="M221 454H252"/><path d="M338 454H369"/><path d="M455 454H486"/></g>
+  <text class="note" x="22" y="492">假设初态为 00，每拍计数；图中省略使能与复位。</text>
+</svg>
