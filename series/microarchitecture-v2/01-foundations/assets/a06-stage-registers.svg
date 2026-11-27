@@ -1,0 +1,74 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 660 666" width="660" height="666" role="img" aria-labelledby="stages-title stages-desc">
+  <title id="stages-title">E2 沿后，三个流水级各自保存不同任务的状态</title>
+  <desc id="stages-desc">对应三阶段 READ、MUL、WB 流水模型。在 E2 沿后，命令寄存器存有任务 J2 的 RA 等于 1、RB 等于 0、WA 等于 7，组合读逻辑从同一寄存器文件输出 3 与 2；操作数寄存器存有任务 J1 的 X 等于 1、W 等于 5、WA 等于 6，组合乘法器产生 5；乘积寄存器 P 存有任务 J0 的乘积 6 和 WA 等于 5。三个级间寄存器各有占用位 V，此时均为 1。E3 沿到来时，寄存器文件根据旧的 P、WA、V 写 R5 为 6，同时乘积寄存器采入 J1 乘积及地址，操作数寄存器采入 J2 数据及地址；各接收寄存器采的是上升沿之前稳定的输入，不是该沿刚产生的新值。若 E3 不接受新任务，命令寄存器的 V 更新为 0。V 仅表示该级是否保存有效任务，不是握手信号。图中省略内部时钟与复位的连线。</desc>
+  <defs>
+    <marker id="stages-data-arrow" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0 0L7 3.5L0 7Z" fill="#376a55"/></marker>
+    <marker id="stages-ctrl-arrow" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0 0L7 3.5L0 7Z" fill="#967333"/></marker>
+    <style>
+      text{font-family:"Noto Sans CJK SC","PingFang SC","Microsoft YaHei",sans-serif;fill:#173d35;font-size:18px}
+      .head{font-size:22px;font-weight:700}.strong{font-size:19px;font-weight:700}.note{font-size:16px;fill:#4f695a}
+      .reg{fill:#edf1df;stroke:#82a18e;stroke-width:1.7}.box{fill:#e0ebe3;stroke:#82a18e;stroke-width:1.6}
+      .tag{fill:#f2e8d3;stroke:#b6a073;stroke-width:1.4}.ctrltxt{fill:#765a2f;font-size:17px;font-weight:700}
+      .data{fill:none;stroke:#376a55;stroke-width:2.5;stroke-linejoin:round;marker-end:url(#stages-data-arrow)}
+      .ctrl{fill:none;stroke:#967333;stroke-width:2.2;stroke-linejoin:round;marker-end:url(#stages-ctrl-arrow)}
+    </style>
+  </defs>
+  <rect x="1" y="1" width="658" height="664" rx="13" fill="#f5f6ef" stroke="#c4d0c4" stroke-width="1.3"/>
+  <text x="22" y="34" class="head">E2 沿后：三组不同任务同时处于三个阶段</text>
+  <text x="22" y="61" class="note">V = 1 表示该级存有有效任务；V 不是握手信号。</text>
+  <text x="331" y="91" class="strong">命令输入：E2 采入 J2</text>
+  <path class="data" d="M454 97V107"/>
+  <rect x="310" y="111" width="328" height="72" rx="8" class="reg"/>
+  <text x="327" y="136" class="strong">命令寄存器</text>
+  <text x="327" y="162">RA = 1，RB = 0，WA = 7</text>
+  <rect x="561" y="119" width="64" height="28" rx="5" class="tag"/>
+  <text x="593" y="139" class="ctrltxt" text-anchor="middle">V = 1</text>
+
+  <rect x="22" y="212" width="155" height="165" rx="9" class="box"/>
+  <text x="99.5" y="239" class="strong" text-anchor="middle">寄存器文件</text>
+  <text x="99.5" y="262" class="note" text-anchor="middle">8 × 16 位 · 2R1W</text>
+  <rect x="31" y="275" width="137" height="39" rx="6" fill="#f9faf5" stroke="#82a18e"/>
+  <text x="99.5" y="300" class="strong" text-anchor="middle">组合读逻辑</text>
+  <rect x="31" y="325" width="137" height="40" rx="6" class="tag"/>
+  <text x="99.5" y="350" class="strong" text-anchor="middle">写端口</text>
+
+  <path class="ctrl" d="M320 183V218H181"/>
+  <text x="309" y="207" class="ctrltxt" text-anchor="end">RA = 1，RB = 0</text>
+  <path class="data" d="M177 294H306"/>
+  <text x="241" y="278" class="note" text-anchor="middle">D_X = 3</text>
+  <text x="241" y="316" class="note" text-anchor="middle">D_W = 2</text>
+  <text x="589" y="201" class="ctrltxt" text-anchor="end">WA、V 下传</text>
+  <path class="ctrl" d="M607 183V238"/>
+
+  <rect x="310" y="242" width="328" height="85" rx="9" class="reg"/>
+  <text x="327" y="267" class="strong">操作数寄存器（J1）</text>
+  <text x="327" y="295">X = 1，W = 5，WA = 6</text>
+  <rect x="561" y="250" width="64" height="28" rx="5" class="tag"/>
+  <text x="593" y="270" class="ctrltxt" text-anchor="middle">V = 1</text>
+
+  <path class="data" d="M414 327V348"/>
+  <rect x="336" y="352" width="156" height="65" rx="8" class="box"/>
+  <text x="414" y="378" class="strong" text-anchor="middle">组合乘法器</text>
+  <text x="414" y="401" class="note" text-anchor="middle">1 × 5 = 5</text>
+  <path class="data" d="M414 417V445"/>
+  <path class="ctrl" d="M607 327V445"/>
+  <text x="589" y="385" class="ctrltxt" text-anchor="end">WA、V 下传</text>
+
+  <rect x="310" y="449" width="328" height="73" rx="9" class="reg"/>
+  <text x="327" y="474" class="strong">乘积寄存器（J0）</text>
+  <text x="327" y="501">P = 6，WA = 5</text>
+  <rect x="561" y="456" width="64" height="28" rx="5" class="tag"/>
+  <text x="593" y="476" class="ctrltxt" text-anchor="middle">V = 1</text>
+
+  <path class="data" d="M310 495H70V381"/>
+  <path class="ctrl" d="M310 468H132V381"/>
+  <text x="141" y="444" class="ctrltxt">WA=5，WE=V=1</text>
+  <text x="189" y="514" class="strong" text-anchor="middle">WD = P = 6</text>
+
+  <rect x="22" y="539" width="616" height="106" rx="9" fill="#d2e6d7" stroke="#82a18e" stroke-width="1.5"/>
+  <text x="38" y="561" class="strong">到 E3：同一上升沿同时采样各自的沿前输入</text>
+  <text x="38" y="585" class="note">J0：写回 R5 = 6；J1：采入 P = 5、WA = 6；</text>
+  <text x="38" y="606" class="note">J2：采入 X = 3、W = 2、WA = 7。</text>
+  <text x="38" y="630" class="note">若无新命令，命令寄存器的 V 更新为 0。</text>
+  <text x="22" y="661" class="note">绿色：数据；棕色：控制及目标编号；省略共同 CLK 和复位连线。</text>
+</svg>

@@ -1,0 +1,73 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 750 474" width="750" height="474" role="img" aria-labelledby="iter-title iter-desc">
+  <title id="iter-title">相同的三周期延迟，不同的启动间隔</title>
+  <desc id="iter-desc">比较两个延迟均为三个周期的教学运算单元。A 采用同一套计算资源串行处理三个步骤，每个任务执行时排斥其他任务；任务 J0 在 E0 接收、E3 完成，J1 在 E3 接收、E6 完成，J2 在 E6 接收、E9 完成。假设接口允许同一边沿完成旧任务并接收新任务，故启动间隔 II 为三拍。B 有三个独立运算阶段，阶段间有寄存器，每级需一拍，彼此无数据依赖的三个任务分别在 E0、E1、E2 接收，并在 E3、E4、E5 完成，II 为一拍。每个着色格表示相邻两个边沿之间的资源占用，并非结果已生成。图省略实现细节，并假定下游总能接收结果。</desc>
+  <defs>
+    <style>
+      text{font-family:"Noto Sans CJK SC","PingFang SC","Microsoft YaHei",sans-serif;fill:#173d35;font-size:17px}
+      .heading{font-size:22px;font-weight:700}.section{font-size:19px;font-weight:700}.note{font-size:15px;fill:#4f695a}.label{font-size:16px;font-weight:600}.job{font-size:18px;font-weight:700}.num{font-size:17px;font-weight:700}.amber{fill:#765a2f}
+      .edge{stroke:#849c8c;stroke-width:1.2;stroke-dasharray:4 4;fill:none}.grid{fill:#fafbf8;stroke:#d4ded1;stroke-width:1}
+      .j0{fill:#d5e8d9;stroke:#82a18e;stroke-width:1.4}.j1{fill:#eee6d5;stroke:#be9c63;stroke-width:1.4}.j2{fill:#dae7eb;stroke:#8da5ac;stroke-width:1.4}
+    </style>
+  </defs>
+  <rect x="1" y="1" width="748" height="472" rx="13" fill="#f5f6ef" stroke="#c4d0c4" stroke-width="1.3"/>
+  <text class="heading" x="20" y="34">延迟都是 3 拍，为什么启动间隔不同？</text>
+  <text class="note" x="20" y="58">每格表示两个相邻上升沿之间的一拍；同色 J 代表同一项任务。</text>
+
+  <!-- A: one resource reused for all 3 steps of each job. -->
+  <text class="section" x="20" y="91">A｜同一套计算器分三拍复用</text>
+  <text class="num" x="726" y="91" text-anchor="end">L = 3，II = 3</text>
+  <rect class="grid" x="170" y="119" width="558" height="55" rx="5"/>
+  <text class="label" x="25" y="139">计算器</text><text class="note" x="25" y="160">唯一运算资源</text>
+  <g text-anchor="middle" class="note">
+    <text x="170" y="113">E₀</text><text x="232" y="113">E₁</text><text x="294" y="113">E₂</text><text x="356" y="113">E₃</text><text x="418" y="113">E₄</text><text x="480" y="113">E₅</text><text x="542" y="113">E₆</text><text x="604" y="113">E₇</text><text x="666" y="113">E₈</text><text x="728" y="113">E₉</text>
+  </g>
+  <path class="edge" d="M170 118V176M232 118V176M294 118V176M356 118V176M418 118V176M480 118V176M542 118V176M604 118V176M666 118V176M728 118V176"/>
+  <g text-anchor="middle">
+    <rect class="j0" x="172.5" y="122" width="57" height="49" rx="5"/><text class="job" x="201" y="143">J₀</text><text class="note" x="201" y="163">步 1</text>
+    <rect class="j0" x="234.5" y="122" width="57" height="49" rx="5"/><text class="job" x="263" y="143">J₀</text><text class="note" x="263" y="163">步 2</text>
+    <rect class="j0" x="296.5" y="122" width="57" height="49" rx="5"/><text class="job" x="325" y="143">J₀</text><text class="note" x="325" y="163">步 3</text>
+    <rect class="j1" x="358.5" y="122" width="57" height="49" rx="5"/><text class="job" x="387" y="143">J₁</text><text class="note" x="387" y="163">步 1</text>
+    <rect class="j1" x="420.5" y="122" width="57" height="49" rx="5"/><text class="job" x="449" y="143">J₁</text><text class="note" x="449" y="163">步 2</text>
+    <rect class="j1" x="482.5" y="122" width="57" height="49" rx="5"/><text class="job" x="511" y="143">J₁</text><text class="note" x="511" y="163">步 3</text>
+    <rect class="j2" x="544.5" y="122" width="57" height="49" rx="5"/><text class="job" x="573" y="143">J₂</text><text class="note" x="573" y="163">步 1</text>
+    <rect class="j2" x="606.5" y="122" width="57" height="49" rx="5"/><text class="job" x="635" y="143">J₂</text><text class="note" x="635" y="163">步 2</text>
+    <rect class="j2" x="668.5" y="122" width="57" height="49" rx="5"/><text class="job" x="697" y="143">J₂</text><text class="note" x="697" y="163">步 3</text>
+  </g>
+  <text x="20" y="197" class="label">接收边沿：E₀、E₃、E₆</text>
+  <text x="389" y="197" class="label">完成边沿：E₃、E₆、E₉</text>
+  <text x="20" y="219" class="note">接口允许在同一边沿完成旧任务并接收新任务；执行期间不接收其他任务。</text>
+
+  <path d="M20 235H728" stroke="#c4d0c4" stroke-width="1.4"/>
+
+  <!-- B: 3 independent pipeline resources; interstage data held in registers. -->
+  <text class="section" x="20" y="265">B｜三套独立计算资源，级间有寄存器</text>
+  <text class="num" x="726" y="265" text-anchor="end">L = 3，II = 1</text>
+  <text class="note" x="20" y="290">每级一拍，独立任务可以在不同级同时执行。</text>
+  <g text-anchor="middle" class="note">
+    <text x="170" y="313">E₀</text><text x="232" y="313">E₁</text><text x="294" y="313">E₂</text><text x="356" y="313">E₃</text><text x="418" y="313">E₄</text><text x="480" y="313">E₅</text>
+  </g>
+  <rect class="grid" x="170" y="320" width="310" height="87" rx="5"/>
+  <path d="M170 349H480M170 378H480" stroke="#d4ded1" stroke-width="1.2"/>
+  <text x="25" y="340" class="label">第 1 级</text><text x="25" y="369" class="label">第 2 级</text><text x="25" y="398" class="label">第 3 级</text>
+  <path class="edge" d="M170 319V409M232 319V409M294 319V409M356 319V409M418 319V409M480 319V409"/>
+  <g text-anchor="middle" class="job">
+    <rect class="j0" x="173" y="323" width="56" height="23" rx="4"/><text x="201" y="341">J₀</text>
+    <rect class="j1" x="235" y="323" width="56" height="23" rx="4"/><text x="263" y="341">J₁</text>
+    <rect class="j2" x="297" y="323" width="56" height="23" rx="4"/><text x="325" y="341">J₂</text>
+    <rect class="j0" x="235" y="352" width="56" height="23" rx="4"/><text x="263" y="370">J₀</text>
+    <rect class="j1" x="297" y="352" width="56" height="23" rx="4"/><text x="325" y="370">J₁</text>
+    <rect class="j2" x="359" y="352" width="56" height="23" rx="4"/><text x="387" y="370">J₂</text>
+    <rect class="j0" x="297" y="381" width="56" height="23" rx="4"/><text x="325" y="399">J₀</text>
+    <rect class="j1" x="359" y="381" width="56" height="23" rx="4"/><text x="387" y="399">J₁</text>
+    <rect class="j2" x="421" y="381" width="56" height="23" rx="4"/><text x="449" y="399">J₂</text>
+  </g>
+  <rect x="497" y="320" width="231" height="88" rx="6" fill="#e8eee6" stroke="#d4ded1"/>
+  <g text-anchor="middle">
+    <text x="612.5" y="346" class="label">接收：E₀、E₁、E₂</text>
+    <text x="612.5" y="372" class="label">完成：E₃、E₄、E₅</text>
+    <text x="612.5" y="394" class="note">三项任务开始重叠执行</text>
+  </g>
+
+  <text x="20" y="431" class="note">L 为单项任务从接收到完成的周期数；II 为连续启动的最小间隔（拍）。</text>
+  <text x="20" y="454" class="note">教学假设：只送入三项独立任务，下游始终能接收，所有级均满足采样时序。</text>
+</svg>

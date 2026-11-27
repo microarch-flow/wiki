@@ -1,0 +1,62 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 660 503" width="660" height="503" role="img" aria-labelledby="title desc">
+  <title id="title">切分组合路径后时钟周期缩短，单次运算延迟不一定缩短</title>
+  <desc id="desc">教学模型假设整数乘法器由部分积生成与归约六纳秒以及末级加法四纳秒两部分组成，每个寄存器到寄存器路径的时钟到输出延迟和建立时间之和为一纳秒，忽略时钟偏斜和不确定度。未切分时最小时钟周期十一纳秒，一个乘积延迟一个周期即十一纳秒，理想情况下每十一纳秒接收一组独立输入。将两部分之间插入中间寄存器，并完整保存归约得到的两个位向量，两个阶段分别要求七和五纳秒，故共同时钟周期至少七纳秒；两个周期延迟十四纳秒，独立输入的启动间隔仍是一个周期，稳态每七纳秒接收一组，代价是单次延迟增加。</desc>
+  <defs>
+    <marker id="arrow" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0 0L7 3.5L0 7z" fill="#376650"/></marker>
+    <marker id="dim-arr" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto-start-reverse"><path d="M0 0L6 3L0 6z" fill="#9b6c27"/></marker>
+    <style>
+      text{font-family:"Noto Sans CJK SC","Microsoft YaHei",sans-serif;fill:#173d35;font-size:18px}
+      .heading{font-size:22px;font-weight:700}.small{font-size:16px}.tiny{font-size:14.5px}
+      .accent{fill:#8a5d1c}.panel{fill:#fafbf8;stroke:#c7d3c7;stroke-width:1.3}
+      .reg{fill:#edf1df;stroke:#82a18e;stroke-width:1.5}.block{fill:#e0ebe3;stroke:#82a18e;stroke-width:1.5}
+      .wire{fill:none;stroke:#376650;stroke-width:2.4;stroke-linecap:round;marker-end:url(#arrow)}
+      .dim{fill:none;stroke:#9b6c27;stroke-width:1.7;marker-start:url(#dim-arr);marker-end:url(#dim-arr)}
+    </style>
+  </defs>
+  <rect x="1" y="1" width="658" height="501" rx="13" fill="#f5f6ef" stroke="#c4d0c4"/>
+  <text x="20" y="34" class="heading">插入寄存器：缩短每一拍的最长组合路径</text>
+  <text x="20" y="59" class="small">假设 t₍CQ₎ + t₍setup₎ = 1 ns，忽略时钟偏斜和不确定度。</text>
+
+  <rect x="16" y="74" width="628" height="167" rx="9" class="panel"/>
+  <text x="31" y="98" font-weight="700">方案 A：未切分</text>
+  <rect x="33" y="111" width="72" height="53" rx="6" class="reg"/>
+  <rect x="137" y="111" width="213" height="53" rx="6" class="block"/>
+  <rect x="381" y="111" width="164" height="53" rx="6" class="block"/>
+  <rect x="576" y="111" width="53" height="53" rx="6" class="reg"/>
+  <g text-anchor="middle">
+    <text x="69" y="134" class="small">输入</text><text x="69" y="153" class="tiny">寄存器</text>
+    <text x="243.5" y="133" font-weight="700">部分积生成与归约</text><text x="243.5" y="154" class="small">6 ns</text>
+    <text x="463" y="133" font-weight="700">末级加法</text><text x="463" y="154" class="small">4 ns</text>
+    <text x="602.5" y="134" class="small">输出</text><text x="602.5" y="153" class="tiny">寄存器</text>
+  </g>
+  <path d="M105 137H137" class="wire"/><path d="M350 137H381" class="wire"/><path d="M545 137H576" class="wire"/>
+  <path d="M69 180H602" class="dim"/>
+  <text x="330" y="200" text-anchor="middle" class="accent">周期 T ≥ 6 + 4 + 1 = 11 ns</text>
+  <text x="330" y="224" text-anchor="middle" class="small">按最小周期：延迟 1 拍 = 11 ns；II = 1 拍，稳态 1 组 / 11 ns</text>
+
+  <rect x="16" y="253" width="628" height="190" rx="9" class="panel"/>
+  <text x="31" y="277" font-weight="700">方案 B：插入一级中间寄存器</text>
+  <rect x="33" y="290" width="72" height="53" rx="6" class="reg"/>
+  <rect x="127" y="290" width="153" height="53" rx="6" class="block"/>
+  <rect x="303" y="286" width="85" height="61" rx="6" fill="#eee6d5" stroke="#c7a977" stroke-width="1.5"/>
+  <rect x="411" y="290" width="134" height="53" rx="6" class="block"/>
+  <rect x="568" y="290" width="61" height="53" rx="6" class="reg"/>
+  <g text-anchor="middle">
+    <text x="69" y="313" class="small">输入</text><text x="69" y="332" class="tiny">寄存器</text>
+    <text x="203.5" y="313" class="small" font-weight="700">部分积生成与归约</text><text x="203.5" y="332" class="small">6 ns</text>
+    <text x="345.5" y="313" class="small accent" font-weight="700">中间寄存器</text>
+    <text x="345.5" y="333" class="tiny accent">两个位向量</text>
+    <text x="478" y="313" class="small" font-weight="700">末级加法</text><text x="478" y="332" class="small">4 ns</text>
+    <text x="598.5" y="313" class="small">输出</text><text x="598.5" y="332" class="tiny">寄存器</text>
+  </g>
+  <path d="M105 316H127" class="wire"/><path d="M280 316H303" class="wire"/><path d="M388 316H411" class="wire"/><path d="M545 316H568" class="wire"/>
+  <path d="M69 359H345" class="dim"/>
+  <path d="M346 359H598" class="dim"/>
+  <text x="207" y="379" text-anchor="middle" class="small accent">第 1 级：6+1=7 ns</text>
+  <text x="473" y="379" text-anchor="middle" class="small accent">第 2 级：4+1=5 ns</text>
+  <text x="330" y="402" text-anchor="middle" font-weight="700">共同时钟周期 T ≥ max(7, 5) = 7 ns</text>
+  <text x="330" y="426" text-anchor="middle" class="small">按最小周期：延迟 2 拍 = 14 ns；II = 1 拍，稳态 1 组 / 7 ns</text>
+
+  <text x="20" y="468" class="small">中间寄存器须保存归约得到的两个完整位向量。</text>
+  <text x="20" y="489" class="small">以上为独立输入、无停顿的教学假设，不是实测或固定硬件参数。</text>
+</svg>
