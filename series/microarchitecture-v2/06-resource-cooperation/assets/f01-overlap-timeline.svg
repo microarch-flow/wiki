@@ -1,0 +1,250 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1008 680" width="1008" height="680" role="img" aria-labelledby="title desc">
+  <title id="title">完全串行、单输入槽与双输入槽的三块数据执行时序</title>
+  <desc id="desc">相同的三块数据依次经历搬入 L（2 拍）、计算 C（3 拍）和写回 W（2 拍）。完全串行的最后写回在 t=21 结束；单输入槽但有两个输出槽时，搬入与上一块写回可以并行，最后写回在 t=17 结束；双输入槽与双输出槽时，下一块搬入可以与当前块计算重叠，并在 t=13 结束。区间为左闭右开的时钟边沿区间，颜色与编号表示数据块，空白表示引擎未执行本例的任务。</desc>
+  <defs><style>
+    text{font-family:"Noto Sans CJK SC","Microsoft YaHei",system-ui,sans-serif;fill:#173d35}
+    .heading{font-size:22px;font-weight:700}.panel-title{font-size:18px;font-weight:700}
+    .sub{font-size:16px;fill:#47665b}.legend{font-size:15px;font-weight:600}
+    .axis{font-size:14px;fill:#47665b}.lane{font-size:18px;font-weight:600}
+    .bar-label{font-size:16px;font-weight:700}.end{font-size:17px;font-weight:700;fill:#935c2b}
+    .panel{fill:#fafbf8;stroke:#c7d3c7;stroke-width:1.2}.track{fill:#eef2ed}
+    .grid{stroke:#cbd7cc;stroke-width:0.9}.finish{stroke:#935c2b;stroke-width:1.6;stroke-dasharray:4 3}
+    .tile0{fill:#cee4d4;stroke:#6d9c7e}.tile1{fill:#f5d9c7;stroke:#b87f5f}.tile2{fill:#dce6f4;stroke:#7892b5}
+  </style></defs>
+  <rect x="1" y="1" width="1006" height="678" rx="13" fill="#f5f6ef" stroke="#c4d0c4"/>
+  <text x="20" y="31" class="heading">相同的三块数据，改变引擎间的重叠方式</text>
+  <text x="20" y="58" class="sub">搬入 2 拍 · 计算 3 拍 · 写回 2 拍</text>
+  <text x="464" y="58" class="sub">颜色对应数据块：</text>
+  <rect x="608" y="39" width="30" height="23" rx="4" class="tile0"/>
+  <text x="649" y="56" class="legend">块 0</text>
+  <rect x="723" y="39" width="30" height="23" rx="4" class="tile1"/>
+  <text x="764" y="56" class="legend">块 1</text>
+  <rect x="838" y="39" width="30" height="23" rx="4" class="tile2"/>
+  <text x="879" y="56" class="legend">块 2</text>
+  <g>
+    <rect x="15" y="79" width="978" height="176" rx="9" class="panel"/>
+    <text x="29" y="103" class="panel-title">A · 完全串行</text>
+    <text x="977" y="103" class="end" text-anchor="end">t = 21 结束</text>
+    <text x="28" y="127" class="axis">时钟边沿 t</text>
+    <rect x="137" y="140" width="840" height="30" rx="2" class="track"/>
+    <text x="28" y="161" class="lane">搬入 L</text>
+    <rect x="137" y="176" width="840" height="30" rx="2" class="track"/>
+    <text x="28" y="197" class="lane">计算 C</text>
+    <rect x="137" y="212" width="840" height="30" rx="2" class="track"/>
+    <text x="28" y="233" class="lane">写回 W</text>
+    <text x="137" y="127" class="axis" text-anchor="middle">0</text>
+    <path d="M137 132v112" class="grid"/>
+    <text x="177" y="127" class="axis" text-anchor="middle">1</text>
+    <path d="M177 132v112" class="grid"/>
+    <text x="217" y="127" class="axis" text-anchor="middle">2</text>
+    <path d="M217 132v112" class="grid"/>
+    <text x="257" y="127" class="axis" text-anchor="middle">3</text>
+    <path d="M257 132v112" class="grid"/>
+    <text x="297" y="127" class="axis" text-anchor="middle">4</text>
+    <path d="M297 132v112" class="grid"/>
+    <text x="337" y="127" class="axis" text-anchor="middle">5</text>
+    <path d="M337 132v112" class="grid"/>
+    <text x="377" y="127" class="axis" text-anchor="middle">6</text>
+    <path d="M377 132v112" class="grid"/>
+    <text x="417" y="127" class="axis" text-anchor="middle">7</text>
+    <path d="M417 132v112" class="grid"/>
+    <text x="457" y="127" class="axis" text-anchor="middle">8</text>
+    <path d="M457 132v112" class="grid"/>
+    <text x="497" y="127" class="axis" text-anchor="middle">9</text>
+    <path d="M497 132v112" class="grid"/>
+    <text x="537" y="127" class="axis" text-anchor="middle">10</text>
+    <path d="M537 132v112" class="grid"/>
+    <text x="577" y="127" class="axis" text-anchor="middle">11</text>
+    <path d="M577 132v112" class="grid"/>
+    <text x="617" y="127" class="axis" text-anchor="middle">12</text>
+    <path d="M617 132v112" class="grid"/>
+    <text x="657" y="127" class="axis" text-anchor="middle">13</text>
+    <path d="M657 132v112" class="grid"/>
+    <text x="697" y="127" class="axis" text-anchor="middle">14</text>
+    <path d="M697 132v112" class="grid"/>
+    <text x="737" y="127" class="axis" text-anchor="middle">15</text>
+    <path d="M737 132v112" class="grid"/>
+    <text x="777" y="127" class="axis" text-anchor="middle">16</text>
+    <path d="M777 132v112" class="grid"/>
+    <text x="817" y="127" class="axis" text-anchor="middle">17</text>
+    <path d="M817 132v112" class="grid"/>
+    <text x="857" y="127" class="axis" text-anchor="middle">18</text>
+    <path d="M857 132v112" class="grid"/>
+    <text x="897" y="127" class="axis" text-anchor="middle">19</text>
+    <path d="M897 132v112" class="grid"/>
+    <text x="937" y="127" class="axis" text-anchor="middle">20</text>
+    <path d="M937 132v112" class="grid"/>
+    <text x="977" y="127" class="axis" text-anchor="middle">21</text>
+    <path d="M977 132v112" class="grid"/>
+    <path d="M977 132v112" class="finish"/>
+    <rect x="138" y="140" width="78" height="30" rx="4" class="tile0" stroke-width="1.3"/>
+    <text x="177" y="161" class="bar-label" text-anchor="middle">L0</text>
+    <rect x="418" y="140" width="78" height="30" rx="4" class="tile1" stroke-width="1.3"/>
+    <text x="457" y="161" class="bar-label" text-anchor="middle">L1</text>
+    <rect x="698" y="140" width="78" height="30" rx="4" class="tile2" stroke-width="1.3"/>
+    <text x="737" y="161" class="bar-label" text-anchor="middle">L2</text>
+    <rect x="218" y="176" width="118" height="30" rx="4" class="tile0" stroke-width="1.3"/>
+    <text x="277" y="197" class="bar-label" text-anchor="middle">C0</text>
+    <rect x="498" y="176" width="118" height="30" rx="4" class="tile1" stroke-width="1.3"/>
+    <text x="557" y="197" class="bar-label" text-anchor="middle">C1</text>
+    <rect x="778" y="176" width="118" height="30" rx="4" class="tile2" stroke-width="1.3"/>
+    <text x="837" y="197" class="bar-label" text-anchor="middle">C2</text>
+    <rect x="338" y="212" width="78" height="30" rx="4" class="tile0" stroke-width="1.3"/>
+    <text x="377" y="233" class="bar-label" text-anchor="middle">W0</text>
+    <rect x="618" y="212" width="78" height="30" rx="4" class="tile1" stroke-width="1.3"/>
+    <text x="657" y="233" class="bar-label" text-anchor="middle">W1</text>
+    <rect x="898" y="212" width="78" height="30" rx="4" class="tile2" stroke-width="1.3"/>
+    <text x="937" y="233" class="bar-label" text-anchor="middle">W2</text>
+  </g>
+  <g>
+    <rect x="15" y="265" width="978" height="176" rx="9" class="panel"/>
+    <text x="29" y="289" class="panel-title">B · 单输入槽、双输出槽</text>
+    <text x="977" y="289" class="end" text-anchor="end">t = 17 结束</text>
+    <text x="28" y="313" class="axis">时钟边沿 t</text>
+    <rect x="137" y="326" width="840" height="30" rx="2" class="track"/>
+    <text x="28" y="347" class="lane">搬入 L</text>
+    <rect x="137" y="362" width="840" height="30" rx="2" class="track"/>
+    <text x="28" y="383" class="lane">计算 C</text>
+    <rect x="137" y="398" width="840" height="30" rx="2" class="track"/>
+    <text x="28" y="419" class="lane">写回 W</text>
+    <text x="137" y="313" class="axis" text-anchor="middle">0</text>
+    <path d="M137 318v112" class="grid"/>
+    <text x="177" y="313" class="axis" text-anchor="middle">1</text>
+    <path d="M177 318v112" class="grid"/>
+    <text x="217" y="313" class="axis" text-anchor="middle">2</text>
+    <path d="M217 318v112" class="grid"/>
+    <text x="257" y="313" class="axis" text-anchor="middle">3</text>
+    <path d="M257 318v112" class="grid"/>
+    <text x="297" y="313" class="axis" text-anchor="middle">4</text>
+    <path d="M297 318v112" class="grid"/>
+    <text x="337" y="313" class="axis" text-anchor="middle">5</text>
+    <path d="M337 318v112" class="grid"/>
+    <text x="377" y="313" class="axis" text-anchor="middle">6</text>
+    <path d="M377 318v112" class="grid"/>
+    <text x="417" y="313" class="axis" text-anchor="middle">7</text>
+    <path d="M417 318v112" class="grid"/>
+    <text x="457" y="313" class="axis" text-anchor="middle">8</text>
+    <path d="M457 318v112" class="grid"/>
+    <text x="497" y="313" class="axis" text-anchor="middle">9</text>
+    <path d="M497 318v112" class="grid"/>
+    <text x="537" y="313" class="axis" text-anchor="middle">10</text>
+    <path d="M537 318v112" class="grid"/>
+    <text x="577" y="313" class="axis" text-anchor="middle">11</text>
+    <path d="M577 318v112" class="grid"/>
+    <text x="617" y="313" class="axis" text-anchor="middle">12</text>
+    <path d="M617 318v112" class="grid"/>
+    <text x="657" y="313" class="axis" text-anchor="middle">13</text>
+    <path d="M657 318v112" class="grid"/>
+    <text x="697" y="313" class="axis" text-anchor="middle">14</text>
+    <path d="M697 318v112" class="grid"/>
+    <text x="737" y="313" class="axis" text-anchor="middle">15</text>
+    <path d="M737 318v112" class="grid"/>
+    <text x="777" y="313" class="axis" text-anchor="middle">16</text>
+    <path d="M777 318v112" class="grid"/>
+    <text x="817" y="313" class="axis" text-anchor="middle">17</text>
+    <path d="M817 318v112" class="grid"/>
+    <text x="857" y="313" class="axis" text-anchor="middle">18</text>
+    <path d="M857 318v112" class="grid"/>
+    <text x="897" y="313" class="axis" text-anchor="middle">19</text>
+    <path d="M897 318v112" class="grid"/>
+    <text x="937" y="313" class="axis" text-anchor="middle">20</text>
+    <path d="M937 318v112" class="grid"/>
+    <text x="977" y="313" class="axis" text-anchor="middle">21</text>
+    <path d="M977 318v112" class="grid"/>
+    <path d="M817 318v112" class="finish"/>
+    <rect x="138" y="326" width="78" height="30" rx="4" class="tile0" stroke-width="1.3"/>
+    <text x="177" y="347" class="bar-label" text-anchor="middle">L0</text>
+    <rect x="338" y="326" width="78" height="30" rx="4" class="tile1" stroke-width="1.3"/>
+    <text x="377" y="347" class="bar-label" text-anchor="middle">L1</text>
+    <rect x="538" y="326" width="78" height="30" rx="4" class="tile2" stroke-width="1.3"/>
+    <text x="577" y="347" class="bar-label" text-anchor="middle">L2</text>
+    <rect x="218" y="362" width="118" height="30" rx="4" class="tile0" stroke-width="1.3"/>
+    <text x="277" y="383" class="bar-label" text-anchor="middle">C0</text>
+    <rect x="418" y="362" width="118" height="30" rx="4" class="tile1" stroke-width="1.3"/>
+    <text x="477" y="383" class="bar-label" text-anchor="middle">C1</text>
+    <rect x="618" y="362" width="118" height="30" rx="4" class="tile2" stroke-width="1.3"/>
+    <text x="677" y="383" class="bar-label" text-anchor="middle">C2</text>
+    <rect x="338" y="398" width="78" height="30" rx="4" class="tile0" stroke-width="1.3"/>
+    <text x="377" y="419" class="bar-label" text-anchor="middle">W0</text>
+    <rect x="538" y="398" width="78" height="30" rx="4" class="tile1" stroke-width="1.3"/>
+    <text x="577" y="419" class="bar-label" text-anchor="middle">W1</text>
+    <rect x="738" y="398" width="78" height="30" rx="4" class="tile2" stroke-width="1.3"/>
+    <text x="777" y="419" class="bar-label" text-anchor="middle">W2</text>
+  </g>
+  <g>
+    <rect x="15" y="451" width="978" height="176" rx="9" class="panel"/>
+    <text x="29" y="475" class="panel-title">C · 双输入槽、双输出槽</text>
+    <text x="977" y="475" class="end" text-anchor="end">t = 13 结束</text>
+    <text x="28" y="499" class="axis">时钟边沿 t</text>
+    <rect x="137" y="512" width="840" height="30" rx="2" class="track"/>
+    <text x="28" y="533" class="lane">搬入 L</text>
+    <rect x="137" y="548" width="840" height="30" rx="2" class="track"/>
+    <text x="28" y="569" class="lane">计算 C</text>
+    <rect x="137" y="584" width="840" height="30" rx="2" class="track"/>
+    <text x="28" y="605" class="lane">写回 W</text>
+    <text x="137" y="499" class="axis" text-anchor="middle">0</text>
+    <path d="M137 504v112" class="grid"/>
+    <text x="177" y="499" class="axis" text-anchor="middle">1</text>
+    <path d="M177 504v112" class="grid"/>
+    <text x="217" y="499" class="axis" text-anchor="middle">2</text>
+    <path d="M217 504v112" class="grid"/>
+    <text x="257" y="499" class="axis" text-anchor="middle">3</text>
+    <path d="M257 504v112" class="grid"/>
+    <text x="297" y="499" class="axis" text-anchor="middle">4</text>
+    <path d="M297 504v112" class="grid"/>
+    <text x="337" y="499" class="axis" text-anchor="middle">5</text>
+    <path d="M337 504v112" class="grid"/>
+    <text x="377" y="499" class="axis" text-anchor="middle">6</text>
+    <path d="M377 504v112" class="grid"/>
+    <text x="417" y="499" class="axis" text-anchor="middle">7</text>
+    <path d="M417 504v112" class="grid"/>
+    <text x="457" y="499" class="axis" text-anchor="middle">8</text>
+    <path d="M457 504v112" class="grid"/>
+    <text x="497" y="499" class="axis" text-anchor="middle">9</text>
+    <path d="M497 504v112" class="grid"/>
+    <text x="537" y="499" class="axis" text-anchor="middle">10</text>
+    <path d="M537 504v112" class="grid"/>
+    <text x="577" y="499" class="axis" text-anchor="middle">11</text>
+    <path d="M577 504v112" class="grid"/>
+    <text x="617" y="499" class="axis" text-anchor="middle">12</text>
+    <path d="M617 504v112" class="grid"/>
+    <text x="657" y="499" class="axis" text-anchor="middle">13</text>
+    <path d="M657 504v112" class="grid"/>
+    <text x="697" y="499" class="axis" text-anchor="middle">14</text>
+    <path d="M697 504v112" class="grid"/>
+    <text x="737" y="499" class="axis" text-anchor="middle">15</text>
+    <path d="M737 504v112" class="grid"/>
+    <text x="777" y="499" class="axis" text-anchor="middle">16</text>
+    <path d="M777 504v112" class="grid"/>
+    <text x="817" y="499" class="axis" text-anchor="middle">17</text>
+    <path d="M817 504v112" class="grid"/>
+    <text x="857" y="499" class="axis" text-anchor="middle">18</text>
+    <path d="M857 504v112" class="grid"/>
+    <text x="897" y="499" class="axis" text-anchor="middle">19</text>
+    <path d="M897 504v112" class="grid"/>
+    <text x="937" y="499" class="axis" text-anchor="middle">20</text>
+    <path d="M937 504v112" class="grid"/>
+    <text x="977" y="499" class="axis" text-anchor="middle">21</text>
+    <path d="M977 504v112" class="grid"/>
+    <path d="M657 504v112" class="finish"/>
+    <rect x="138" y="512" width="78" height="30" rx="4" class="tile0" stroke-width="1.3"/>
+    <text x="177" y="533" class="bar-label" text-anchor="middle">L0</text>
+    <rect x="218" y="512" width="78" height="30" rx="4" class="tile1" stroke-width="1.3"/>
+    <text x="257" y="533" class="bar-label" text-anchor="middle">L1</text>
+    <rect x="338" y="512" width="78" height="30" rx="4" class="tile2" stroke-width="1.3"/>
+    <text x="377" y="533" class="bar-label" text-anchor="middle">L2</text>
+    <rect x="218" y="548" width="118" height="30" rx="4" class="tile0" stroke-width="1.3"/>
+    <text x="277" y="569" class="bar-label" text-anchor="middle">C0</text>
+    <rect x="338" y="548" width="118" height="30" rx="4" class="tile1" stroke-width="1.3"/>
+    <text x="397" y="569" class="bar-label" text-anchor="middle">C1</text>
+    <rect x="458" y="548" width="118" height="30" rx="4" class="tile2" stroke-width="1.3"/>
+    <text x="517" y="569" class="bar-label" text-anchor="middle">C2</text>
+    <rect x="338" y="584" width="78" height="30" rx="4" class="tile0" stroke-width="1.3"/>
+    <text x="377" y="605" class="bar-label" text-anchor="middle">W0</text>
+    <rect x="458" y="584" width="78" height="30" rx="4" class="tile1" stroke-width="1.3"/>
+    <text x="497" y="605" class="bar-label" text-anchor="middle">W1</text>
+    <rect x="578" y="584" width="78" height="30" rx="4" class="tile2" stroke-width="1.3"/>
+    <text x="617" y="605" class="bar-label" text-anchor="middle">W2</text>
+  </g>
+  <text x="20" y="660" class="sub">横条表示引擎占用区间 [开始, 结束)，同一编号表示同一数据块；空白表示该引擎空闲。</text>
+</svg>
