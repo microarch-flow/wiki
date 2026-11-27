@@ -1,0 +1,102 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 690 532" width="690" height="532" role="img" aria-labelledby="title desc">
+  <title id="title">严格顺序发射与优先发射最早就绪任务的对比</title>
+  <desc id="desc">教学系统共用一个 READ 阶段及操作数寄存器 X、W，RF 只有一个写口，ADD 从发射到最早写回经过两个时钟边沿，MUL 经过三个。T1 依赖 T0 写入 R5，R5 在 E3 写回后才可用，无旁路。严格顺序下 T0、T1、T2 分别在 E0、E4、E5 发射，E3、E6、E7 写回，T1 在 E1 至 E3 不能发射。选择最早的就绪任务时 T0、T2、T1 分别在 E0、E1、E4 发射。T0 与 T2 在 E3 都请求写回，仲裁选择 T0，T2 结果和所需操作数保留至 E4 写回，T1 在 E6 写回。两种安排结果相同，独立的 T2 在第二种安排中更早写回。</desc>
+  <defs>
+    <style>
+      text{font-family:"Noto Sans CJK SC","Microsoft YaHei",sans-serif;fill:#173d35;font-size:18px}
+      .heading{font-size:22px;font-weight:700}.small{font-size:16px}.tiny{font-size:14px}.label{font-weight:700}
+      .accent{fill:#8a5d1c}.panel{fill:#fafbf8;stroke:#c7d3c7;stroke-width:1.3}
+      .header{fill:#e0ebe3;stroke:#c7d3c7;stroke-width:1.1}
+      .row{fill:#edf1df}.blank{fill:#fafbf8;stroke:#dbe3da;stroke-width:1}
+      .task0{fill:#d2e6d7;stroke:#8faf9a;stroke-width:1}
+      .task1{fill:#e0ebe3;stroke:#a0b9ab;stroke-width:1}
+      .task2{fill:#dce7e6;stroke:#96b3af;stroke-width:1}
+      .wait{fill:#eee6d5;stroke:#cdb28c;stroke-width:1}
+    </style>
+  </defs>
+  <rect x="1" y="1" width="688" height="530" rx="13" fill="#f5f6ef" stroke="#c4d0c4"/>
+  <text x="20" y="34" class="heading">后来的独立任务，可以先使用空闲资源吗？</text>
+  <text x="20" y="60" class="small">T₀：MUL；T₁：ADD，等待 T₀ 的 R5；T₂：独立 ADD。</text>
+  <text x="20" y="83" class="small">共享 READ、X/W、RF 单写口；ADD 最早 2 拍写回，MUL 最早 3 拍。</text>
+
+  <rect x="16" y="99" width="658" height="165" rx="9" class="panel"/>
+  <text x="30" y="122" font-weight="700">方案 A：严格按照接纳顺序发射</text>
+  <rect x="30" y="133" width="630" height="29" rx="5" class="header"/>
+  <text x="85" y="153" text-anchor="middle" class="small">边沿</text>
+  <g text-anchor="middle" class="small label">
+    <text x="172" y="153">E₀</text><text x="237" y="153">E₁</text><text x="302" y="153">E₂</text><text x="367" y="153">E₃</text>
+    <text x="432" y="153">E₄</text><text x="497" y="153">E₅</text><text x="562" y="153">E₆</text><text x="627" y="153">E₇</text>
+  </g>
+  <rect x="30" y="167" width="108" height="29" rx="4" class="row"/>
+  <rect x="30" y="200" width="108" height="29" rx="4" class="row"/>
+  <text x="84" y="187" text-anchor="middle" class="small label">发射</text>
+  <text x="84" y="220" text-anchor="middle" class="small label">RF 写回</text>
+  <g>
+    <rect x="141" y="167" width="62" height="29" rx="4" class="task0"/>
+    <rect x="206" y="167" width="62" height="29" rx="4" class="wait"/>
+    <rect x="271" y="167" width="62" height="29" rx="4" class="wait"/>
+    <rect x="336" y="167" width="62" height="29" rx="4" class="wait"/>
+    <rect x="401" y="167" width="62" height="29" rx="4" class="task1"/>
+    <rect x="466" y="167" width="62" height="29" rx="4" class="task2"/>
+    <rect x="531" y="167" width="62" height="29" rx="4" class="blank"/>
+    <rect x="596" y="167" width="62" height="29" rx="4" class="blank"/>
+    <rect x="141" y="200" width="62" height="29" rx="4" class="blank"/>
+    <rect x="206" y="200" width="62" height="29" rx="4" class="blank"/>
+    <rect x="271" y="200" width="62" height="29" rx="4" class="blank"/>
+    <rect x="336" y="200" width="62" height="29" rx="4" class="task0"/>
+    <rect x="401" y="200" width="62" height="29" rx="4" class="blank"/>
+    <rect x="466" y="200" width="62" height="29" rx="4" class="blank"/>
+    <rect x="531" y="200" width="62" height="29" rx="4" class="task1"/>
+    <rect x="596" y="200" width="62" height="29" rx="4" class="task2"/>
+  </g>
+  <g text-anchor="middle">
+    <text x="172" y="187">T₀</text>
+    <text x="237" y="187" class="small accent">等 T₁</text><text x="302" y="187" class="small accent">等 T₁</text><text x="367" y="187" class="small accent">等 T₁</text>
+    <text x="432" y="187">T₁</text><text x="497" y="187">T₂</text>
+    <text x="367" y="220">T₀</text><text x="562" y="220">T₁</text><text x="627" y="220">T₂</text>
+  </g>
+  <text x="30" y="252" class="tiny">E₁～E₃：T₁ 未就绪，所以排在其后的 T₂ 也不能发射。</text>
+
+  <rect x="16" y="277" width="658" height="179" rx="9" class="panel"/>
+  <text x="30" y="300" font-weight="700">方案 B：从就绪任务中选择最早接纳的一项</text>
+  <rect x="30" y="311" width="630" height="29" rx="5" class="header"/>
+  <text x="85" y="331" text-anchor="middle" class="small">边沿</text>
+  <g text-anchor="middle" class="small label">
+    <text x="172" y="331">E₀</text><text x="237" y="331">E₁</text><text x="302" y="331">E₂</text><text x="367" y="331">E₃</text>
+    <text x="432" y="331">E₄</text><text x="497" y="331">E₅</text><text x="562" y="331">E₆</text><text x="627" y="331">E₇</text>
+  </g>
+  <rect x="30" y="345" width="108" height="29" rx="4" class="row"/>
+  <rect x="30" y="378" width="108" height="29" rx="4" class="row"/>
+  <text x="84" y="365" text-anchor="middle" class="small label">发射</text>
+  <text x="84" y="398" text-anchor="middle" class="small label">RF 写回</text>
+  <g>
+    <rect x="141" y="345" width="62" height="29" rx="4" class="task0"/>
+    <rect x="206" y="345" width="62" height="29" rx="4" class="task2"/>
+    <rect x="271" y="345" width="62" height="29" rx="4" class="wait"/>
+    <rect x="336" y="345" width="62" height="29" rx="4" class="wait"/>
+    <rect x="401" y="345" width="62" height="29" rx="4" class="task1"/>
+    <rect x="466" y="345" width="62" height="29" rx="4" class="blank"/>
+    <rect x="531" y="345" width="62" height="29" rx="4" class="blank"/>
+    <rect x="596" y="345" width="62" height="29" rx="4" class="blank"/>
+    <rect x="141" y="378" width="62" height="29" rx="4" class="blank"/>
+    <rect x="206" y="378" width="62" height="29" rx="4" class="blank"/>
+    <rect x="271" y="378" width="62" height="29" rx="4" class="blank"/>
+    <rect x="336" y="378" width="62" height="29" rx="4" class="task0"/>
+    <rect x="401" y="378" width="62" height="29" rx="4" class="task2"/>
+    <rect x="466" y="378" width="62" height="29" rx="4" class="blank"/>
+    <rect x="531" y="378" width="62" height="29" rx="4" class="task1"/>
+    <rect x="596" y="378" width="62" height="29" rx="4" class="blank"/>
+  </g>
+  <g text-anchor="middle">
+    <text x="172" y="365">T₀</text><text x="237" y="365">T₂</text>
+    <text x="302" y="365" class="small accent">等 T₁</text><text x="367" y="365" class="small accent">等 T₁</text>
+    <text x="432" y="365">T₁</text>
+    <text x="367" y="398">T₀</text><text x="432" y="398">T₂</text><text x="562" y="398">T₁</text>
+  </g>
+  <text x="30" y="427" class="tiny accent">E₃：T₀/T₂ 竞争单写口，选择 T₀；保留 T₂ 的 ALU 结果及其操作数。</text>
+  <text x="30" y="447" class="tiny">E₄：T₂ 写回，同时 T₁ 发射；T₂ 的写回从 E₇ 提前到 E₄。</text>
+
+  <rect x="18" y="469" width="654" height="46" rx="7" fill="#e0ebe3"/>
+  <text x="30" y="489" class="small">无旁路：E₃ 写回 R5 后才就绪，T₁ 最早在 E₄ 发射。</text>
+  <text x="30" y="509" class="small">两种安排都得到相同的结果。</text>
+</svg>

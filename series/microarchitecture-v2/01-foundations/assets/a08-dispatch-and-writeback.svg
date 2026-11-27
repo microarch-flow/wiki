@@ -1,0 +1,112 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 740 948" width="740" height="948" role="img" aria-labelledby="dispatch-title dispatch-desc">
+  <title id="dispatch-title">发射选择、共享操作数寄存器与写回仲裁</title>
+  <desc id="dispatch-desc">上半图为初始三个等待记录：T0 的 OP、RA、RB、WA 为 MUL、0、1、5，两源可读；T1 为 ADD、5、2、6，源 A 必须等待 T0 在 RF 产生的新 R5，源 B 可读；T2 为 ADD、3、4、7，两源可读。依赖跟踪判断所需 RF 版本是否可读，选择一项两源均就绪的记录并发出 issue_valid，在 READ 命令寄存器 read_ready 时完成发射。下半图为随后 E2 沿后：RF 有两个读口和一个写口；READ 中保存命令字段，组合读逻辑与命令中的 WA、OP 和 V 一起送到共享操作数寄存器。此时 READ 空，操作数寄存器保存 T2 的 X5、W4、WA7、OP ADD、V1，其 ALU 组合结果为九。乘积寄存器 P 保存先前任务 T0 的 P6、WA5、V1。仅当 OP 为 MUL 且 P 可以接收时，乘法结果才采入 P，否则对应有效操作数需等待。ALU 和 P 是两条写回候选；本例固定 P 路径优先于 ALU，E3 选择 T0，将旧 P 的 6 写回 R5，T2 操作数保持；T0 写回完成后释放 P。各寄存器在同一上升沿采样沿前输入，未选中的 ALU 结果不得因更新 X/W 而丢失。</desc>
+  <defs>
+    <marker id="dispatch-data-arrow" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0 0L7 3.5L0 7Z" fill="#376a55"/></marker>
+    <marker id="dispatch-ctrl-arrow" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0 0L7 3.5L0 7Z" fill="#967333"/></marker>
+    <style>
+      text{font-family:"Noto Sans CJK SC","PingFang SC","Microsoft YaHei",sans-serif;fill:#173d35;font-size:18px}
+      .head{font-size:22px;font-weight:700}.strong{font-size:19px;font-weight:700}.note{font-size:16px;fill:#4f695a}
+      .reg{fill:#edf1df;stroke:#82a18e;stroke-width:1.7}.box{fill:#e0ebe3;stroke:#82a18e;stroke-width:1.5}
+      .wait{fill:#f2e8d3;stroke:#b6a073;stroke-width:1.5}.active{fill:#d2e6d7;stroke:#82a18e;stroke-width:1.5}
+      .ctrltext{fill:#765a2f;font-size:17px;font-weight:700}.line{stroke:#c4d0c4;stroke-width:1}
+      .data{fill:none;stroke:#376a55;stroke-width:2.5;stroke-linejoin:round;marker-end:url(#dispatch-data-arrow)}
+      .ctrl{fill:none;stroke:#967333;stroke-width:2.2;stroke-linejoin:round;marker-end:url(#dispatch-ctrl-arrow)}
+      .inactive{fill:none;stroke:#9ca89f;stroke-width:2;stroke-dasharray:5 4;marker-end:url(#dispatch-data-arrow)}
+    </style>
+  </defs>
+  <rect x="1" y="1" width="738" height="946" rx="13" fill="#f5f6ef" stroke="#c4d0c4" stroke-width="1.3"/>
+  <text x="22" y="34" class="head">1. 发射：选择数据就绪、能够进入 READ 的任务</text>
+  <text x="22" y="61" class="note">开始时的等待记录；ready 标志对应任务需要的值，而非任意旧值。</text>
+
+  <rect x="22" y="78" width="466" height="132" rx="8" fill="#f9faf5" stroke="#82a18e" stroke-width="1.4"/>
+  <rect x="23" y="79" width="464" height="32" rx="7" fill="#e0ebe3"/>
+  <rect x="23" y="144" width="464" height="32" fill="#f2e8d3"/>
+  <g text-anchor="middle" class="note">
+    <text x="54" y="101">任务</text><text x="117" y="101">OP</text><text x="177" y="101">RA</text><text x="231" y="101">RB</text><text x="285" y="101">WA</text><text x="354" y="101">源 A 就绪</text><text x="440" y="101">源 B 就绪</text>
+  </g>
+  <path class="line" d="M85 78V210M150 78V210M204 78V210M258 78V210M312 78V210M398 78V210M22 111H488M22 144H488M22 177H488"/>
+  <g text-anchor="middle">
+    <text x="54" y="135" class="strong">T0</text><text x="117" y="135">MUL</text><text x="177" y="135">0</text><text x="231" y="135">1</text><text x="285" y="135">5</text><text x="354" y="135" class="strong">1</text><text x="440" y="135" class="strong">1</text>
+    <text x="54" y="168" class="strong">T1</text><text x="117" y="168">ADD</text><text x="177" y="168">5</text><text x="231" y="168">2</text><text x="285" y="168">6</text><text x="354" y="168" class="ctrltext">0</text><text x="440" y="168" class="strong">1</text>
+    <text x="54" y="201" class="strong">T2</text><text x="117" y="201">ADD</text><text x="177" y="201">3</text><text x="231" y="201">4</text><text x="285" y="201">7</text><text x="354" y="201" class="strong">1</text><text x="440" y="201" class="strong">1</text>
+  </g>
+  <rect x="542" y="94" width="176" height="96" rx="8" class="wait"/>
+  <text x="630" y="120" text-anchor="middle" class="strong">依赖跟踪</text>
+  <text x="630" y="143" text-anchor="middle" class="note">RF 中所需版本</text>
+  <text x="630" y="166" text-anchor="middle" class="note">是否已可读？</text>
+  <path class="ctrl" d="M542 143H492"/>
+
+  <path class="data" d="M255 210V228"/>
+  <rect x="98" y="232" width="314" height="62" rx="8" class="wait"/>
+  <text x="255" y="257" text-anchor="middle" class="strong">选择器：只看两源均就绪的任务</text>
+  <text x="255" y="280" text-anchor="middle" class="note">例如优先发射 T0，再发射 T2</text>
+  <path class="data" d="M412 263H526"/>
+  <text x="469" y="251" text-anchor="middle" class="note">issue_valid</text>
+  <text x="469" y="283" text-anchor="middle" class="note">及命令字段</text>
+  <rect x="530" y="232" width="188" height="62" rx="8" class="reg"/>
+  <text x="624" y="257" text-anchor="middle" class="strong">READ</text>
+  <text x="624" y="280" text-anchor="middle" class="note">命令寄存器</text>
+  <path class="ctrl" d="M624 294V317H255V298"/>
+  <text x="448" y="313" text-anchor="middle" class="ctrltext">read_ready</text>
+  <text x="22" y="343" class="note">只有 issue_valid 和 read_ready 同时为 1，当前边沿才接收一条命令。</text>
+
+  <path d="M22 356H718" stroke="#c4d0c4"/>
+  <text x="22" y="384" class="head">2. E2 沿后，两个结果竞争同一个写口</text>
+
+  <rect x="22" y="425" width="193" height="250" rx="9" class="box"/>
+  <text x="118.5" y="452" text-anchor="middle" class="strong">寄存器文件 RF</text>
+  <text x="118.5" y="474" text-anchor="middle" class="note">8 × 16 位 · 2R1W</text>
+  <rect x="32" y="497" width="173" height="55" rx="7" fill="#f9faf5" stroke="#82a18e"/>
+  <text x="118.5" y="521" text-anchor="middle" class="strong">组合读取</text>
+  <text x="118.5" y="542" text-anchor="middle" class="note">两个读端口</text>
+  <rect x="32" y="616" width="173" height="46" rx="7" class="wait"/>
+  <text x="118.5" y="645" text-anchor="middle" class="strong">一个写端口</text>
+
+  <rect x="298" y="398" width="420" height="66" rx="8" class="reg"/>
+  <text x="314" y="423" class="strong">READ 命令寄存器</text>
+  <text x="314" y="448" class="note">OP、RA、RB、WA；此时空（V = 0）</text>
+  <path class="ctrl" d="M310 464V483H219"/>
+  <text x="254" y="477" class="note" text-anchor="middle">RA、RB</text>
+  <path class="data" d="M215 526H294"/>
+  <text x="255" y="516" class="note" text-anchor="middle">D_X、D_W</text>
+  <path class="ctrl" d="M675 464V496"/>
+  <text x="655" y="486" class="ctrltext" text-anchor="end">OP、WA、V</text>
+
+  <rect x="298" y="500" width="420" height="80" rx="8" class="reg"/>
+  <text x="314" y="525" class="strong">共享操作数寄存器（T2，V = 1）</text>
+  <text x="314" y="551">X = 5，W = 4，OP = ADD，WA = 7</text>
+  <text x="314" y="572" class="note">未被执行路径接收时，必须保持。</text>
+  <path class="data" d="M394 580V609"/>
+  <path class="inactive" d="M616 580V609"/>
+
+  <rect x="298" y="613" width="192" height="69" rx="8" class="box"/>
+  <text x="394" y="638" text-anchor="middle" class="strong">ALU</text>
+  <text x="394" y="662" text-anchor="middle">T2：5 + 4 = 9</text>
+  <rect x="514" y="613" width="204" height="69" rx="8" class="box"/>
+  <text x="616" y="637" text-anchor="middle" class="strong">乘法器</text>
+  <text x="616" y="661" text-anchor="middle" class="note">仅 OP = MUL 时使用</text>
+  <path class="inactive" d="M616 682V706"/>
+  <text x="599" y="699" text-anchor="end" class="note">P 能接收才采入</text>
+
+  <rect x="514" y="710" width="204" height="64" rx="8" class="reg"/>
+  <text x="616" y="734" text-anchor="middle" class="strong">P（T0，V = 1）</text>
+  <text x="616" y="760" text-anchor="middle">P = 6，WA = 5</text>
+  <path class="data" d="M394 682V794"/>
+  <text x="406" y="735" class="note">9，WA=7</text>
+  <text x="406" y="757" class="ctrltext">等待</text>
+  <path class="data" d="M616 774V794"/>
+  <text x="628" y="791" class="note">6，WA=5</text>
+
+  <rect x="298" y="798" width="420" height="64" rx="8" class="wait"/>
+  <text x="508" y="823" text-anchor="middle" class="strong">写回仲裁 + 结果 MUX</text>
+  <text x="508" y="847" text-anchor="middle" class="note">本例 P 优先于 ALU；E3 选择 T0，T2 继续等待。</text>
+  <path class="data" d="M298 830H118V679"/>
+  <text x="132" y="733" class="strong">WD = 6</text>
+  <text x="132" y="757" class="ctrltext">WA = 5</text>
+  <text x="132" y="781" class="ctrltext">WE = 1</text>
+
+  <rect x="22" y="880" width="696" height="43" rx="8" class="active"/>
+  <text x="38" y="906" class="strong">E3：写 R5 = 6；释放 P；T2 在 X/W 中继续保持。</text>
+  <text x="22" y="939" class="note">假设满足采样时序；同一上升沿采入各自的沿前旧值，图省略 CLK。</text>
+</svg>
