@@ -1,0 +1,110 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 625" width="760" height="625" role="img" aria-labelledby="title desc">
+  <title id="title">发射机会、运算单元类型与寄存器供数是不同资源约束</title>
+  <desc id="desc">教学计算单元可保留多个线程组，每个边沿最多选择一条已具备发射条件的组指令。按运算类型送向 4 条 32 位 ADD 或 SUB 通道、假设的 2 条 MUL 通道或独立的 LSU 访存路径，各路径的服务能力可以不同。完整四槽位组的 ADD 有八个 32 位源操作数共 32 B，以及四个 32 位结果共 16 B。如果寄存器读取服务每拍只能提供四个字，则独立取得八个源操作数至少需要两个读取周期；这不是实际芯片的逐周期发射保证。</desc>
+  <defs>
+    <marker id="data-arrow" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0 0L7 3.5L0 7z" fill="#376650"/></marker>
+    <marker id="ctrl-arrow" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0 0L7 3.5L0 7z" fill="#9b6c27"/></marker>
+    <style>
+      text{font-family:"Noto Sans CJK SC","Microsoft YaHei",sans-serif;fill:#173d35;font-size:18px}
+      .heading{font-size:22px;font-weight:700}.small{font-size:16px}.tiny{font-size:14px}.label{font-weight:700}
+      .accent{fill:#8a5d1c}.muted{fill:#58736a}.panel{fill:#fafbf8;stroke:#c7d3c7;stroke-width:1.3}
+      .reg{fill:#edf1df;stroke:#82a18e;stroke-width:1.4}.block{fill:#e0ebe3;stroke:#82a18e;stroke-width:1.4}
+      .control{fill:#f3ebdb;stroke:#c6aa79;stroke-width:1.3}
+      .data{stroke:#376650;stroke-width:2.3;fill:none;stroke-linejoin:round;stroke-linecap:round;marker-end:url(#data-arrow)}
+      .ctrl{stroke:#9b6c27;stroke-width:1.8;stroke-dasharray:5 4;fill:none;stroke-linejoin:round;stroke-linecap:round;marker-end:url(#ctrl-arrow)}
+      .ctrl-bus{stroke:#9b6c27;stroke-width:1.8;stroke-dasharray:5 4;fill:none;stroke-linejoin:round}
+      .divider{stroke:#c7d3c7;stroke-width:1.1}
+      .slot{fill:#e0ebe3;stroke:#92ad9d;stroke-width:1.1}
+      .off{fill:#f3eee3;stroke:#c9b89c;stroke-width:1.1;stroke-dasharray:4 3}
+      .edge{stroke:#376650;stroke-width:1.25;stroke-dasharray:4 4}
+    </style>
+  </defs>
+  <rect x="1" y="1" width="758" height="623" rx="13" fill="#f5f6ef" stroke="#c4d0c4"/>
+  <text x="20" y="34" class="heading">同一个发射机会，会使用哪些执行资源？</text>
+  <rect x="18" y="51" width="724" height="82" rx="9" class="panel"/>
+  <text x="32" y="74" class="small label">驻留组</text>
+  <rect x="135" y="65" width="78" height="48" rx="5" class="reg"/>
+  <text x="174" y="86" class="label" text-anchor="middle">B0.G0</text>
+  <text x="174" y="103" class="tiny" text-anchor="middle">等待</text>
+  <rect x="226" y="65" width="78" height="48" rx="5" class="slot"/>
+  <text x="265" y="86" class="label" text-anchor="middle">B0.G1</text>
+  <text x="265" y="103" class="tiny" text-anchor="middle">候选</text>
+  <rect x="317" y="65" width="78" height="48" rx="5" class="reg"/>
+  <text x="356" y="86" class="label" text-anchor="middle">B0.G2</text>
+  <text x="356" y="103" class="tiny" text-anchor="middle">等待</text>
+  <rect x="408" y="65" width="78" height="48" rx="5" class="slot"/>
+  <text x="447" y="86" class="label" text-anchor="middle">B1.G0</text>
+  <text x="447" y="103" class="tiny" text-anchor="middle">候选</text>
+  <rect x="499" y="65" width="78" height="48" rx="5" class="reg"/>
+  <text x="538" y="86" class="label" text-anchor="middle">B1.G1</text>
+  <text x="538" y="103" class="tiny" text-anchor="middle">等待</text>
+  <rect x="590" y="65" width="78" height="48" rx="5" class="reg"/>
+  <text x="629" y="86" class="label" text-anchor="middle">B1.G2</text>
+  <text x="629" y="103" class="tiny" text-anchor="middle">等待</text>
+  <path d="M380 133V148" class="ctrl"/>
+  <rect x="128" y="148" width="504" height="66" rx="8" class="control"/>
+  <text x="380" y="174" class="small label" text-anchor="middle">就绪判断与仲裁：每边沿最多选择一条组指令</text>
+  <text x="380" y="197" class="tiny accent" text-anchor="middle">按 OP 选择对应路径，且须有资源接纳能力</text>
+  <path d="M380 214V229M142 229H618" class="ctrl-bus"/>
+  <path d="M142 229V244" class="ctrl"/>
+  <rect x="33" y="244" width="218" height="102" rx="7" class="block"/>
+  <text x="142" y="269" class="label" text-anchor="middle">ADD / SUB</text>
+  <text x="142" y="294" class="small" text-anchor="middle">4 × 32 bit lanes</text>
+  <rect x="48.0" y="304" width="39.0" height="29" rx="5" class="reg"/>
+  <text x="67.5" y="324" class="tiny label" text-anchor="middle">L0</text>
+  <rect x="95.0" y="304" width="39.0" height="29" rx="5" class="reg"/>
+  <text x="114.5" y="324" class="tiny label" text-anchor="middle">L1</text>
+  <rect x="142.0" y="304" width="39.0" height="29" rx="5" class="reg"/>
+  <text x="161.5" y="324" class="tiny label" text-anchor="middle">L2</text>
+  <rect x="189.0" y="304" width="39.0" height="29" rx="5" class="reg"/>
+  <text x="208.5" y="324" class="tiny label" text-anchor="middle">L3</text>
+  <path d="M380 229V244" class="ctrl"/>
+  <rect x="271" y="244" width="218" height="102" rx="7" class="block"/>
+  <text x="380" y="269" class="label" text-anchor="middle">MUL</text>
+  <text x="380" y="294" class="small" text-anchor="middle">2 lanes（假设）</text>
+  <rect x="286.0" y="304" width="86.0" height="29" rx="5" class="reg"/>
+  <text x="329.0" y="324" class="tiny label" text-anchor="middle">L0</text>
+  <rect x="380.0" y="304" width="86.0" height="29" rx="5" class="reg"/>
+  <text x="423.0" y="324" class="tiny label" text-anchor="middle">L1</text>
+  <path d="M618 229V244" class="ctrl"/>
+  <rect x="509" y="244" width="218" height="102" rx="7" class="block"/>
+  <text x="618" y="269" class="label" text-anchor="middle">LSU</text>
+  <text x="618" y="294" class="small" text-anchor="middle">独立访存请求路径</text>
+  <rect x="532" y="304" width="172" height="29" rx="5" class="reg"/>
+  <text x="618" y="324" class="tiny label" text-anchor="middle">地址与数据请求</text>
+  <rect x="18" y="362" width="724" height="52" rx="8" class="panel"/>
+  <text x="380" y="384" class="small label" text-anchor="middle">RF 与数据通路：读取操作数 / 写回结果也需要服务能力</text>
+  <text x="380" y="404" class="tiny" text-anchor="middle">不同运算类型不能只按 lane 总数计算吞吐。</text>
+  <rect x="18" y="430" width="724" height="176" rx="9" class="panel"/>
+  <text x="32" y="455" class="small label">观察一个完整组的双源 ADD（四个有效槽位）</text>
+  <rect x="34" y="472" width="38" height="34" rx="5" class="reg"/>
+  <text x="53" y="494" class="tiny label" text-anchor="middle">X0</text>
+  <rect x="77" y="472" width="38" height="34" rx="5" class="reg"/>
+  <text x="96" y="494" class="tiny label" text-anchor="middle">X1</text>
+  <rect x="120" y="472" width="38" height="34" rx="5" class="reg"/>
+  <text x="139" y="494" class="tiny label" text-anchor="middle">X2</text>
+  <rect x="163" y="472" width="38" height="34" rx="5" class="reg"/>
+  <text x="182" y="494" class="tiny label" text-anchor="middle">X3</text>
+  <rect x="206" y="472" width="38" height="34" rx="5" class="reg"/>
+  <text x="225" y="494" class="tiny label" text-anchor="middle">W0</text>
+  <rect x="249" y="472" width="38" height="34" rx="5" class="reg"/>
+  <text x="268" y="494" class="tiny label" text-anchor="middle">W1</text>
+  <rect x="292" y="472" width="38" height="34" rx="5" class="reg"/>
+  <text x="311" y="494" class="tiny label" text-anchor="middle">W2</text>
+  <rect x="335" y="472" width="38" height="34" rx="5" class="reg"/>
+  <text x="354" y="494" class="tiny label" text-anchor="middle">W3</text>
+  <text x="34" y="529" class="small label">至少 2 拍 × 4 字/拍 = 8 字（32 B）</text>
+  <text x="34" y="553" class="tiny">假设 RF 每拍只可提供 4 字。</text>
+  <path d="M392 489H423" class="data"/>
+  <rect x="443" y="472" width="61" height="34" rx="5" class="slot"/>
+  <text x="473.5" y="494" class="small label" text-anchor="middle">Y0</text>
+  <rect x="512" y="472" width="61" height="34" rx="5" class="slot"/>
+  <text x="542.5" y="494" class="small label" text-anchor="middle">Y1</text>
+  <rect x="581" y="472" width="61" height="34" rx="5" class="slot"/>
+  <text x="611.5" y="494" class="small label" text-anchor="middle">Y2</text>
+  <rect x="650" y="472" width="61" height="34" rx="5" class="slot"/>
+  <text x="680.5" y="494" class="small label" text-anchor="middle">Y3</text>
+  <text x="578" y="529" class="small label" text-anchor="middle">4 个结果字（16 B）</text>
+  <text x="578" y="553" class="tiny" text-anchor="middle">写回仍受端口容量约束。</text>
+  <text x="380" y="585" class="small accent" text-anchor="middle">这是给定读取服务容量下的下界，不是实际逐拍发射保证。</text>
+</svg>

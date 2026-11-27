@@ -1,0 +1,118 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 694" width="760" height="694" role="img" aria-labelledby="title desc">
+  <title id="title">驻留资源限制能够保留的线程组数量</title>
+  <desc id="desc">教学计算单元的物理执行通道始终为四条。该单元最多容纳六个四槽位线程组及两个线程块，RF 可保存 120 个 32 位字，共享存储容量为 64 B。每个块包含十个真实线程，分成 4、4、2 个线程的三个组；教学分配规则为每块全部十二个槽位预留同样的寄存器空间，共享存储每块预留 32 B。每槽四字时每块使用 48 字，两个块共使用 96 字和 64 B，驻留组上限六个，理论 occupancy 100%。每槽六字时每块使用 72 字，剩余 48 字不足另一块，故驻留组上限三个，理论 occupancy 50%。</desc>
+  <defs>
+    <marker id="data-arrow" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0 0L7 3.5L0 7z" fill="#376650"/></marker>
+    <marker id="ctrl-arrow" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0 0L7 3.5L0 7z" fill="#9b6c27"/></marker>
+    <style>
+      text{font-family:"Noto Sans CJK SC","Microsoft YaHei",sans-serif;fill:#173d35;font-size:18px}
+      .heading{font-size:22px;font-weight:700}.small{font-size:16px}.tiny{font-size:14px}.label{font-weight:700}
+      .accent{fill:#8a5d1c}.muted{fill:#58736a}.panel{fill:#fafbf8;stroke:#c7d3c7;stroke-width:1.3}
+      .reg{fill:#edf1df;stroke:#82a18e;stroke-width:1.4}.block{fill:#e0ebe3;stroke:#82a18e;stroke-width:1.4}
+      .control{fill:#f3ebdb;stroke:#c6aa79;stroke-width:1.3}
+      .data{stroke:#376650;stroke-width:2.3;fill:none;stroke-linejoin:round;stroke-linecap:round;marker-end:url(#data-arrow)}
+      .ctrl{stroke:#9b6c27;stroke-width:1.8;stroke-dasharray:5 4;fill:none;stroke-linejoin:round;stroke-linecap:round;marker-end:url(#ctrl-arrow)}
+      .ctrl-bus{stroke:#9b6c27;stroke-width:1.8;stroke-dasharray:5 4;fill:none;stroke-linejoin:round}
+      .divider{stroke:#c7d3c7;stroke-width:1.1}
+      .slot{fill:#e0ebe3;stroke:#92ad9d;stroke-width:1.1}
+      .off{fill:#f3eee3;stroke:#c9b89c;stroke-width:1.1;stroke-dasharray:4 3}
+      .edge{stroke:#376650;stroke-width:1.25;stroke-dasharray:4 4}
+    </style>
+  </defs>
+  <rect x="1" y="1" width="758" height="692" rx="13" fill="#f5f6ef" stroke="#c4d0c4"/>
+  <text x="20" y="34" class="heading">同一套硬件，能同时容纳多少线程块？</text>
+  <rect x="18" y="49" width="724" height="80" rx="9" class="panel"/>
+  <text x="32" y="74" class="small label">固定容量：最多 6 个组、2 个块；RF 120 字，共享存储 64 B</text>
+  <text x="32" y="100" class="small">每组 4 槽位、每字 32 bit；物理 ADD 通道 4 条。</text>
+  <rect x="18" y="141" width="724" height="111" rx="9" class="panel"/>
+  <text x="32" y="166" class="small label">每块：10 个真实线程 / 3 个组 / 12 个预留槽位</text>
+  <text x="138" y="190" class="tiny label" text-anchor="middle">组 0</text>
+  <rect x="30" y="202" width="51" height="35" rx="5" class="reg"/>
+  <text x="55.5" y="225" class="small label" text-anchor="middle">T0</text>
+  <rect x="86" y="202" width="51" height="35" rx="5" class="reg"/>
+  <text x="111.5" y="225" class="small label" text-anchor="middle">T1</text>
+  <rect x="142" y="202" width="51" height="35" rx="5" class="reg"/>
+  <text x="167.5" y="225" class="small label" text-anchor="middle">T2</text>
+  <rect x="198" y="202" width="51" height="35" rx="5" class="reg"/>
+  <text x="223.5" y="225" class="small label" text-anchor="middle">T3</text>
+  <text x="374" y="190" class="tiny label" text-anchor="middle">组 1</text>
+  <rect x="266" y="202" width="51" height="35" rx="5" class="reg"/>
+  <text x="291.5" y="225" class="small label" text-anchor="middle">T4</text>
+  <rect x="322" y="202" width="51" height="35" rx="5" class="reg"/>
+  <text x="347.5" y="225" class="small label" text-anchor="middle">T5</text>
+  <rect x="378" y="202" width="51" height="35" rx="5" class="reg"/>
+  <text x="403.5" y="225" class="small label" text-anchor="middle">T6</text>
+  <rect x="434" y="202" width="51" height="35" rx="5" class="reg"/>
+  <text x="459.5" y="225" class="small label" text-anchor="middle">T7</text>
+  <text x="610" y="190" class="tiny label" text-anchor="middle">组 2</text>
+  <rect x="502" y="202" width="51" height="35" rx="5" class="reg"/>
+  <text x="527.5" y="225" class="small label" text-anchor="middle">T8</text>
+  <rect x="558" y="202" width="51" height="35" rx="5" class="reg"/>
+  <text x="583.5" y="225" class="small label" text-anchor="middle">T9</text>
+  <rect x="614" y="202" width="51" height="35" rx="5" class="off"/>
+  <text x="639.5" y="225" class="tiny accent" text-anchor="middle">空槽</text>
+  <rect x="670" y="202" width="51" height="35" rx="5" class="off"/>
+  <text x="695.5" y="225" class="tiny accent" text-anchor="middle">空槽</text>
+  <rect x="18" y="266" width="354" height="356" rx="9" class="panel"/>
+  <rect x="388" y="266" width="354" height="356" rx="9" class="panel"/>
+  <text x="195" y="296" class="heading" text-anchor="middle">R = 4 字 / 槽位</text>
+  <text x="195" y="322" class="small" text-anchor="middle">每块 RF 48 字；共享 32 B</text>
+  <rect x="38" y="341" width="146" height="62" rx="6" class="slot"/>
+  <text x="111" y="363" class="small label" text-anchor="middle">块 0</text>
+  <rect x="49" y="371" width="38" height="24" rx="4" class="reg"/>
+  <text x="68" y="388" class="tiny label" text-anchor="middle">G0</text>
+  <rect x="91" y="371" width="38" height="24" rx="4" class="reg"/>
+  <text x="110" y="388" class="tiny label" text-anchor="middle">G1</text>
+  <rect x="133" y="371" width="38" height="24" rx="4" class="reg"/>
+  <text x="152" y="388" class="tiny label" text-anchor="middle">G2</text>
+  <rect x="196" y="341" width="146" height="62" rx="6" class="slot"/>
+  <text x="269" y="363" class="small label" text-anchor="middle">块 1</text>
+  <rect x="207" y="371" width="38" height="24" rx="4" class="reg"/>
+  <text x="226" y="388" class="tiny label" text-anchor="middle">G0</text>
+  <rect x="249" y="371" width="38" height="24" rx="4" class="reg"/>
+  <text x="268" y="388" class="tiny label" text-anchor="middle">G1</text>
+  <rect x="291" y="371" width="38" height="24" rx="4" class="reg"/>
+  <text x="310" y="388" class="tiny label" text-anchor="middle">G2</text>
+  <text x="36" y="424" class="small label">RF：96/120 字</text>
+  <rect x="36" y="433" width="318" height="18" rx="5" class="panel"/>
+  <rect x="36" y="433" width="254.4" height="18" rx="5" class="slot"/>
+  <text x="36" y="476" class="small label">共享存储：64/64 B</text>
+  <rect x="36" y="485" width="318" height="18" rx="5" class="panel"/>
+  <rect x="36" y="485" width="318.0" height="18" rx="5" class="slot"/>
+  <text x="36" y="528" class="small label">驻留组：6/6 组</text>
+  <rect x="36" y="537" width="318" height="18" rx="5" class="panel"/>
+  <rect x="36" y="537" width="318.0" height="18" rx="5" class="slot"/>
+  <text x="195" y="584" class="tiny" text-anchor="middle">块数、驻留组、共享存储达上限</text>
+  <text x="195" y="607" class="label" text-anchor="middle">理论 occupancy = 100%</text>
+  <text x="565" y="296" class="heading" text-anchor="middle">R = 6 字 / 槽位</text>
+  <text x="565" y="322" class="small" text-anchor="middle">每块 RF 72 字；共享 32 B</text>
+  <rect x="408" y="341" width="146" height="62" rx="6" class="slot"/>
+  <text x="481" y="363" class="small label" text-anchor="middle">块 0</text>
+  <rect x="419" y="371" width="38" height="24" rx="4" class="reg"/>
+  <text x="438" y="388" class="tiny label" text-anchor="middle">G0</text>
+  <rect x="461" y="371" width="38" height="24" rx="4" class="reg"/>
+  <text x="480" y="388" class="tiny label" text-anchor="middle">G1</text>
+  <rect x="503" y="371" width="38" height="24" rx="4" class="reg"/>
+  <text x="522" y="388" class="tiny label" text-anchor="middle">G2</text>
+  <rect x="566" y="341" width="146" height="62" rx="6" class="off"/>
+  <text x="639" y="363" class="small accent" text-anchor="middle">块 1 放不下</text>
+  <rect x="577" y="371" width="38" height="24" rx="4" class="off"/>
+  <text x="596" y="388" class="tiny muted" text-anchor="middle">—</text>
+  <rect x="619" y="371" width="38" height="24" rx="4" class="off"/>
+  <text x="638" y="388" class="tiny muted" text-anchor="middle">—</text>
+  <rect x="661" y="371" width="38" height="24" rx="4" class="off"/>
+  <text x="680" y="388" class="tiny muted" text-anchor="middle">—</text>
+  <text x="406" y="424" class="small label">RF：72/120 字</text>
+  <rect x="406" y="433" width="318" height="18" rx="5" class="panel"/>
+  <rect x="406" y="433" width="190.8" height="18" rx="5" class="slot"/>
+  <text x="406" y="476" class="small label">共享存储：32/64 B</text>
+  <rect x="406" y="485" width="318" height="18" rx="5" class="panel"/>
+  <rect x="406" y="485" width="159.0" height="18" rx="5" class="slot"/>
+  <text x="406" y="528" class="small label">驻留组：3/6 组</text>
+  <rect x="406" y="537" width="318" height="18" rx="5" class="panel"/>
+  <rect x="406" y="537" width="159.0" height="18" rx="5" class="slot"/>
+  <text x="565" y="584" class="tiny accent" text-anchor="middle">RF 剩余 48 字 &lt; 72 字</text>
+  <text x="565" y="607" class="label" text-anchor="middle">理论 occupancy = 50%</text>
+  <text x="380" y="649" class="small" text-anchor="middle">空槽也占用预留容量：每个块按完整 12 槽位预留。</text>
+  <text x="380" y="675" class="small label" text-anchor="middle">理论驻留比例是资源上限，不代表四条物理通道加倍。</text>
+</svg>
