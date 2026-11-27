@@ -1,0 +1,74 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 680 514" width="680" height="514" role="img" aria-labelledby="title desc">
+  <title id="title">配置位怎样选择已有的数据通路</title>
+  <desc id="desc">P0 的第一个输入接到二选一 MUX 的输出，MUX 的两个输入分别通过预先布设的导线连接输入 a 与 P1 的结果寄存器 Q。配置寄存器保存一位选择信号 S。配置 A 中 S 为 0，选择 a=2；配置 B 中 S 为 1，选择 P1.Q=6。两种配置中，物理导线与 MUX 没有变化。</desc>
+  <defs>
+    <marker id="arrow" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0 0L7 3.5L0 7Z" fill="#376a55"/></marker>
+    <marker id="ctrl-arrow" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0 0L7 3.5L0 7Z" fill="#967333"/></marker>
+    <marker id="off-arrow" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0 0L7 3.5L0 7Z" fill="#a3afa6"/></marker>
+    <style>
+      text{font-family:"Noto Sans CJK SC","PingFang SC","Microsoft YaHei",sans-serif;font-size:18px;fill:#173d35}
+      .head{font-size:22px;font-weight:700}.label{font-weight:700}.tiny{font-size:16px}.muted{fill:#58736a}.accent{fill:#815718}
+      .panel{fill:#fafbf8;stroke:#c7d3c7;stroke-width:1.3}
+      .block{fill:#e0ebe3;stroke:#82a18e;stroke-width:1.4}.reg{fill:#edf1df;stroke:#82a18e;stroke-width:1.3}
+      .off-block{fill:#f3f4ee;stroke:#c6cfc6;stroke-width:1.2}.out{fill:#d2e6d7;stroke:#82a18e;stroke-width:1.4}
+      .cfg{fill:#f3ebdb;stroke:#c6aa79;stroke-width:1.3}
+      .data,.off,.ctrl{fill:none;stroke-linejoin:round;stroke-linecap:round}
+      .data{stroke:#376a55;stroke-width:2.4;marker-end:url(#arrow)}
+      .off{stroke:#a3afa6;stroke-width:2.1;marker-end:url(#off-arrow)}
+      .ctrl{stroke:#967333;stroke-width:2.1;stroke-dasharray:5 4;marker-end:url(#ctrl-arrow)}
+    </style>
+  </defs>
+  <rect x="1" y="1" width="678" height="512" rx="13" fill="#f5f6ef" stroke="#c4d0c4"/>
+  <text x="22" y="34" class="head">用配置位选择 P0 的一个输入来源</text>
+  <text x="22" y="59" class="tiny muted">箭头表示信号方向；两条预布线始终存在。</text>
+  <g>
+    <rect x="16" y="73" width="648" height="188" rx="10" class="panel"/>
+    <text x="32" y="100" class="label">配置 A · 第 1 拍</text>
+    <rect x="32" y="113" width="150" height="43" rx="6" class="reg"/>
+    <text x="107" y="140" text-anchor="middle" class="label">a = 2</text>
+    <rect x="32" y="167" width="150" height="43" rx="6" class="off-block"/>
+    <text x="107" y="194" text-anchor="middle" class="muted">P1.Q</text>
+    <path d="M182 134.5H264" class="data"/>
+    <path d="M182 188.5H264" class="off"/>
+    <rect x="268" y="112" width="147" height="98" rx="7" class="block"/>
+    <text x="284" y="140" class="tiny label">0</text>
+    <text x="284" y="195" class="tiny muted">1</text>
+    <path d="M304 135H324L361 161H411" stroke="#376a55" stroke-width="2.4" fill="none" stroke-linejoin="round"/>
+    <path d="M304 189H324L351 170" stroke="#a3afa6" stroke-width="2.1" fill="none" stroke-linejoin="round"/>
+    <text x="379" y="195" text-anchor="middle" class="tiny label">MUX</text>
+    <path d="M415 161H484" class="data"/>
+    <rect x="488" y="134" width="160" height="53" rx="6" class="out"/>
+    <text x="568" y="155" text-anchor="middle" class="tiny">P0 第一个输入</text>
+    <text x="568" y="176" text-anchor="middle" class="label">2</text>
+    <rect x="270" y="228" width="205" height="26" rx="5" class="cfg"/>
+    <text x="372.5" y="247" text-anchor="middle" class="tiny accent label">配置寄存器：S = 0</text>
+    <path d="M341.5 228V214" class="ctrl"/>
+  </g>
+  <g transform="translate(0 202)">
+    <rect x="16" y="73" width="648" height="188" rx="10" class="panel"/>
+    <text x="32" y="100" class="label">配置 B · 第 2 拍</text>
+    <rect x="32" y="113" width="150" height="43" rx="6" class="off-block"/>
+    <text x="107" y="140" text-anchor="middle" class="muted">a</text>
+    <rect x="32" y="167" width="150" height="43" rx="6" class="reg"/>
+    <text x="107" y="194" text-anchor="middle" class="label">P1.Q = 6</text>
+    <path d="M182 134.5H264" class="off"/>
+    <path d="M182 188.5H264" class="data"/>
+    <rect x="268" y="112" width="147" height="98" rx="7" class="block"/>
+    <text x="284" y="140" class="tiny muted">0</text>
+    <text x="284" y="195" class="tiny label">1</text>
+    <path d="M304 135H324L351 153" stroke="#a3afa6" stroke-width="2.1" fill="none" stroke-linejoin="round"/>
+    <path d="M304 189H324L361 161H411" stroke="#376a55" stroke-width="2.4" fill="none" stroke-linejoin="round"/>
+    <text x="379" y="195" text-anchor="middle" class="tiny label">MUX</text>
+    <path d="M415 161H484" class="data"/>
+    <rect x="488" y="134" width="160" height="53" rx="6" class="out"/>
+    <text x="568" y="155" text-anchor="middle" class="tiny">P0 第一个输入</text>
+    <text x="568" y="176" text-anchor="middle" class="label">6</text>
+    <rect x="270" y="228" width="205" height="26" rx="5" class="cfg"/>
+    <text x="372.5" y="247" text-anchor="middle" class="tiny accent label">配置寄存器：S = 1</text>
+    <path d="M341.5 228V214" class="ctrl"/>
+  </g>
+  <path d="M27 480H53" class="data"/><text x="61" y="485" class="tiny">选中路径</text>
+  <path d="M184 480H210" class="off"/><text x="218" y="485" class="tiny muted">未选中路径</text>
+  <path d="M371 480H397" class="ctrl"/><text x="405" y="485" class="tiny accent">配置选择信号</text>
+  <text x="22" y="505" class="tiny muted">省略 P0 的第二个输入、其他 MUX 和结果寄存器。</text>
+</svg>

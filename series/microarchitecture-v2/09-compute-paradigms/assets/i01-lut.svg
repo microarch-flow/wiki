@@ -1,0 +1,80 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 680 548" width="680" height="548" role="img" aria-labelledby="title desc">
+  <title id="title">相同二输入 LUT 怎样配置为 AND 或 XOR</title>
+  <desc id="desc">二输入 LUT 保存四个配置比特。按输入 ab=00、01、10、11 的顺序，AND 的配置值为 0、0、0、1，XOR 的配置值为 0、1、1、0。两种配置中，运行时信号 a=1、b=0 都选择地址 10 的配置位，分别输出 0 和 1。图中把选择网络简化为四选一 MUX，而不是具体 FPGA 的物理电路图。</desc>
+  <defs>
+    <marker id="arrow" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0 0L7 3.5L0 7Z" fill="#376a55"/></marker>
+    <marker id="off-arrow" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0 0L7 3.5L0 7Z" fill="#a3afa6"/></marker>
+    <style>
+      text{font-family:"Noto Sans CJK SC","PingFang SC","Microsoft YaHei",sans-serif;font-size:18px;fill:#173d35}
+      .head{font-size:22px;font-weight:700}.label{font-weight:700}.tiny{font-size:16px}.muted{fill:#58736a}.accent{fill:#815718}
+      .panel{fill:#fafbf8;stroke:#c7d3c7;stroke-width:1.3}
+      .cfg{fill:#f3ebdb;stroke:#c6aa79;stroke-width:1.2}.chosen{fill:#e5d5af;stroke:#9b6c27;stroke-width:1.5}
+      .mux{fill:#e0ebe3;stroke:#82a18e;stroke-width:1.4}.out{fill:#d2e6d7;stroke:#82a18e;stroke-width:1.4}
+      .data,.off{fill:none;stroke-linejoin:round;stroke-linecap:round}
+      .data{stroke:#376a55;stroke-width:2.4;marker-end:url(#arrow)}
+      .off{stroke:#a3afa6;stroke-width:1.7;marker-end:url(#off-arrow)}
+    </style>
+  </defs>
+  <rect x="1" y="1" width="678" height="546" rx="13" fill="#f5f6ef" stroke="#c4d0c4"/>
+  <text x="22" y="33" class="head">配置比特保存真值，输入比特选择真值</text>
+  <text x="22" y="58" class="tiny muted">相同输入 a = 1、b = 0；比较两次独立配置。</text>
+  <g>
+    <rect x="16" y="73" width="648" height="210" rx="10" class="panel"/>
+    <text x="31" y="100" class="label">配置 A · AND</text>
+    <text x="50" y="122" class="tiny muted">索引 ab</text>
+    <text x="178" y="122" text-anchor="middle" class="tiny accent">配置比特</text>
+    <g text-anchor="middle">
+      <text x="75" y="149">00</text>
+      <text x="75" y="183">01</text>
+      <text x="75" y="217" class="label">10</text>
+      <text x="75" y="251">11</text>
+      <rect x="135" y="130" width="86" height="29" rx="5" class="cfg"/><text x="178" y="151">0</text>
+      <rect x="135" y="164" width="86" height="29" rx="5" class="cfg"/><text x="178" y="185">0</text>
+      <rect x="135" y="198" width="86" height="29" rx="5" class="chosen"/><text x="178" y="219" class="label">0</text>
+      <rect x="135" y="232" width="86" height="29" rx="5" class="cfg"/><text x="178" y="253">1</text>
+    </g>
+    <path d="M221 144.5H325" class="off"/><path d="M221 178.5H325" class="off"/><path d="M221 246.5H325" class="off"/>
+    <path d="M221 212.5H325" class="data"/>
+    <path d="M330 124L435 168V222L330 267Z" class="mux"/>
+    <text x="377" y="190" text-anchor="middle" class="tiny label">4 选 1</text>
+    <text x="377" y="211" text-anchor="middle" class="tiny label">MUX</text>
+    <rect x="430" y="91" width="218" height="43" rx="5" class="out"/>
+    <text x="539" y="108" text-anchor="middle" class="tiny">运行时输入</text>
+    <text x="539" y="127" text-anchor="middle" class="tiny label">a=1，b=0 → 10</text>
+    <path d="M483 134V145H417V155" class="data"/>
+    <path d="M435 195H503" class="data"/>
+    <rect x="507" y="169" width="141" height="52" rx="6" class="out"/>
+    <text x="577.5" y="191" text-anchor="middle" class="tiny">输出 y</text>
+    <text x="577.5" y="212" text-anchor="middle" class="label">0</text>
+  </g>
+  <g transform="translate(0 222)">
+    <rect x="16" y="73" width="648" height="210" rx="10" class="panel"/>
+    <text x="31" y="100" class="label">配置 B · XOR</text>
+    <text x="50" y="122" class="tiny muted">索引 ab</text>
+    <text x="178" y="122" text-anchor="middle" class="tiny accent">配置比特</text>
+    <g text-anchor="middle">
+      <text x="75" y="149">00</text>
+      <text x="75" y="183">01</text>
+      <text x="75" y="217" class="label">10</text>
+      <text x="75" y="251">11</text>
+      <rect x="135" y="130" width="86" height="29" rx="5" class="cfg"/><text x="178" y="151">0</text>
+      <rect x="135" y="164" width="86" height="29" rx="5" class="cfg"/><text x="178" y="185">1</text>
+      <rect x="135" y="198" width="86" height="29" rx="5" class="chosen"/><text x="178" y="219" class="label">1</text>
+      <rect x="135" y="232" width="86" height="29" rx="5" class="cfg"/><text x="178" y="253">0</text>
+    </g>
+    <path d="M221 144.5H325" class="off"/><path d="M221 178.5H325" class="off"/><path d="M221 246.5H325" class="off"/>
+    <path d="M221 212.5H325" class="data"/>
+    <path d="M330 124L435 168V222L330 267Z" class="mux"/>
+    <text x="377" y="190" text-anchor="middle" class="tiny label">4 选 1</text>
+    <text x="377" y="211" text-anchor="middle" class="tiny label">MUX</text>
+    <rect x="430" y="91" width="218" height="43" rx="5" class="out"/>
+    <text x="539" y="108" text-anchor="middle" class="tiny">运行时输入</text>
+    <text x="539" y="127" text-anchor="middle" class="tiny label">a=1，b=0 → 10</text>
+    <path d="M483 134V145H417V155" class="data"/>
+    <path d="M435 195H503" class="data"/>
+    <rect x="507" y="169" width="141" height="52" rx="6" class="out"/>
+    <text x="577.5" y="191" text-anchor="middle" class="tiny">输出 y</text>
+    <text x="577.5" y="212" text-anchor="middle" class="label">1</text>
+  </g>
+  <text x="22" y="534" class="tiny muted">简化的 LUT 读取模型，不表示真实器件的具体晶体管连接。</text>
+</svg>

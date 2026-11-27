@@ -213,13 +213,24 @@ B01 采用真实 RV32I 的 ADD、LW、SW、BEQ 语义和精简的五阶段单条
 
 ### I. 其他计算范式（5 篇，拓展）
 
+2026-11-28：复核 A–F、G/H 当前正文、旧版存内计算及 FPGA/ASIC、相关电路、存储、算法及芯片架构实例后，保留五篇基线。I01、I04、I05 为独立拓展分支；I02 从传统 PE 到近存与数字阵列求值，I03 再从同一个点积转入模拟域，区分理想阵列行为与完整数据路径。I01 以 a=2、b=3、c=4 的先加后乘和先乘后加为对照，先改变 P0、P1 的有效连接，再解释字级功能配置与 LUT，区分空间/时间映射、配置与执行控制、数据就绪和指令驱动，最后分析配置与实现代价。I04 原题易使人误解光子计算摆脱电子电路，I05 原题易使人误解事件驱动必须无统一时钟；相应正文动工前讨论标题措辞，本轮不改变其规划和标题。
+
 | ID | 暂定标题 | 内容范围与写作重点 | 状态 |
 |---|---|---|---|
-| I01 | 计算任务改变后，硬件的数据通路也能改变吗？ | 固定与可重构数据通路、空间计算、数据流驱动、FPGA 与 CGRA | 待写 |
+| I01 | 计算任务改变后，硬件的数据通路也能改变吗？ | 固定与可重构数据通路、空间计算、数据流驱动、FPGA 与 CGRA | 已评审，待发布核验（[正文](../series/microarchitecture-v2/09-compute-paradigms/i01-reconfigurable-and-spatial-computing.md)） |
 | I02 | 如果把计算单元放到存储器旁边或内部，会发生什么？ | 传统/近存/数字存内计算对照、搬运成本、存储阵列求值 | 待写 |
 | I03 | 怎样利用模拟电路完成矩阵乘加？ | 模拟存内计算、外围电路、ADC/DAC、精度与误差、能耗取舍 | 待写 |
 | I04 | 如果不用电子传输数值，怎样利用光完成计算？ | 光子计算的信息承载、基本机制及计算组织 | 待写 |
 | I05 | 如果计算不再按照统一时钟推进，而是由事件触发，会怎样？ | 神经形态计算、神经元状态、脉冲与事件驱动；不暗示所有神经形态芯片都是无时钟实现 | 待写 |
+
+旧版进阶资料保留原地址，不修改旧目录；新版稳定后再评估迁移、归档或保留为关联阅读：
+
+- [存内计算问题与分类](../series/microarchitecture/08-in-memory-computing/01-overview/README.md)、[介质与计算路径](../series/microarchitecture/08-in-memory-computing/02-memory-technologies/README.md)：位置与求值方式分别比较；SRAM 感测/电荷域、DRAM bank 旁逻辑与跨 bank 归约、ReRAM 非理想、Flash/PCM/MRAM 及介质矩阵作为器件与进阶资料。
+- [阵列求值与转换](../series/microarchitecture/08-in-memory-computing/03-compute-paradigms/README.md)、[电路与计算宏](../series/microarchitecture/08-in-memory-computing/04-circuit-and-macro/README.md)：数字位平面、补码、模拟重复读误差、混合信号交接、ADC/DAC/SA 实现、输入编码、精度误差预算与外围开销作为 I02/I03 的深入学习资料。
+- [架构与系统集成](../series/microarchitecture/08-in-memory-computing/05-architecture-and-system/README.md)：宏级至系统分层、跨阵列归约、存储层次与主机接口、建模参数和校准，保留给系统进阶或 H 参考。
+- [软件栈](../series/microarchitecture/08-in-memory-computing/06-software-stack/README.md)、[工作负载](../series/microarchitecture/08-in-memory-computing/07-workloads/README.md)：映射、量化、运行时及模型适用性留给软件、算法和系统应用研究。
+- [产业与产品](../series/microarchitecture/08-in-memory-computing/08-industry-and-products/README.md)、[研究进展](../series/microarchitecture/08-in-memory-computing/09-research-frontier/README.md)、[参考资料](../series/microarchitecture/08-in-memory-computing/10-reference/README.md)：产品、原型、指标口径、论文和选型资料保留为芯片实例及进阶查阅素材。
+- [旧版 FPGA/ASIC 分析](../series/microarchitecture/09-power-implementation/fpga-vs-asic/README.md)：保留实现成本及历史定量研究；I01 不将特定器件和工艺的研究比例推广为普遍倍数。
 
 ## 6. 写作与评审要求
 
