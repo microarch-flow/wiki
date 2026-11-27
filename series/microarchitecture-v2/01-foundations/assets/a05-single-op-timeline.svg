@@ -1,0 +1,44 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 750 380" width="750" height="380" role="img" aria-labelledby="single-title single-desc">
+  <title id="single-title">两项串行运算的命令、读数和写回时序</title>
+  <desc id="single-desc">教学数据通路先执行 ADD，读地址 RA=0、RB=1、写地址 WA=6；E0 接收命令并保持字段，E1 之前读数使能有效，E1 采入 X=2、W=3，E2 之前 RF 写使能有效，E2 将 5 写入 R6 并回 IDLE。E3 接收 SUB，RA=6、RB=2、WA=7；E4 采入已经写回的 5 与 1，E5 将 4 写入 R7 并回 IDLE。图的第一行列出在各边沿采样时的动作和使能，之后各行是该边沿之后的稳定值。命令在其执行期间保持到写回边沿。不假定尚未使用的初始操作数为某个值。</desc>
+  <style>
+    text{font-family:"Noto Sans CJK SC","PingFang SC","Microsoft YaHei",sans-serif;fill:#173d35;font-size:17px}
+    .heading{font-size:22px;font-weight:700}.note{font-size:15px;fill:#4f695a}.label{font-size:17px;font-weight:600}.value{font-size:18px;font-weight:700}.ctrl{font-size:15px;fill:#765a2f;font-weight:600}
+    .edge{stroke:#849c8c;stroke-width:1.4;stroke-dasharray:4 4;fill:none}.clock{stroke:#376a55;stroke-width:2.25;fill:none;stroke-linejoin:round}.command{fill:#e0ebe3;stroke:#82a18e;stroke-width:1.4}
+  </style>
+  <rect x="1" y="1" width="748" height="378" rx="13" fill="#f5f6ef" stroke="#c4d0c4" stroke-width="1.3"/>
+  <text class="heading" x="22" y="32">先写回 ADD 的结果，再执行 SUB</text>
+  <text class="label" x="22" y="78">CLK</text>
+  <g class="note" text-anchor="middle"><text x="139" y="53">E₀</text><text x="235" y="53">E₁</text><text x="331" y="53">E₂</text><text x="427" y="53">E₃</text><text x="523" y="53">E₄</text><text x="619" y="53">E₅</text></g>
+  <path class="clock" d="M118 84H139V61H183V84H235V61H279V84H331V61H375V84H427V61H471V84H523V61H567V84H619V61H663V84H718"/>
+  <!-- Actions in this row refer to the sampling edge at the left of each cell. -->
+  <rect x="15" y="93" width="719" height="51" rx="6" fill="#e9e6d5"/>
+  <text class="label" x="22" y="114">该沿的动作</text><text class="note" x="22" y="134">沿前使能</text>
+  <g text-anchor="middle" font-size="16">
+    <text x="187" y="115">接受 ADD</text><text class="note" x="187" y="135">存命令</text>
+    <text x="283" y="115">采入 X/W</text><text class="ctrl" x="283" y="135">EN_XW=1</text>
+    <text x="379" y="115">写回 R6</text><text class="ctrl" x="379" y="135">WE=1</text>
+    <text x="475" y="115">接受 SUB</text><text class="note" x="475" y="135">存命令</text>
+    <text x="571" y="115">采入 X/W</text><text class="ctrl" x="571" y="135">EN_XW=1</text>
+    <text x="667" y="115">写回 R7</text><text class="ctrl" x="667" y="135">WE=1</text>
+  </g>
+  <!-- These remaining rows describe stable values AFTER the labeled edge. -->
+  <rect x="15" y="147" width="719" height="37" rx="6" fill="#e8eee6"/>
+  <text class="label" x="22" y="171">沿后阶段</text>
+  <g text-anchor="middle"><text x="187" y="171">READ</text><text x="283" y="171">EXEC</text><text x="379" y="171">IDLE</text><text x="475" y="171">READ</text><text x="571" y="171">EXEC</text><text x="667" y="171">IDLE</text></g>
+  <rect x="15" y="187" width="719" height="56" rx="6" fill="#fafbf8"/>
+  <text class="label" x="22" y="208">活动命令</text><text class="note" x="22" y="229">RA、RB、WA</text>
+  <rect class="command" x="142" y="190" width="186" height="50" rx="6"/>
+  <rect class="command" x="430" y="190" width="186" height="50" rx="6"/>
+  <g text-anchor="middle"><text class="value" x="235" y="210">ADD</text><text class="note" x="235" y="231">(0, 1, 6)</text><text x="379" y="221">—</text><text class="value" x="523" y="210">SUB</text><text class="note" x="523" y="231">(6, 2, 7)</text><text x="667" y="221">—</text></g>
+  <rect x="15" y="246" width="719" height="38" rx="6" fill="#e8eee6"/>
+  <text class="label" x="22" y="271">X、W 沿后</text>
+  <g text-anchor="middle"><text class="note" x="187" y="271">未用</text><text x="283" y="271">(2, 3)</text><text x="379" y="271">(2, 3)</text><text x="475" y="271">(2, 3)</text><text x="571" y="271">(5, 1)</text><text x="667" y="271">(5, 1)</text></g>
+  <rect x="15" y="287" width="719" height="38" rx="6" fill="#edf1df"/>
+  <text class="label" x="22" y="312">R6、R7 沿后</text>
+  <rect x="334" y="290" width="90" height="32" rx="6" fill="#d2e6d7"/><rect x="622" y="290" width="90" height="32" rx="6" fill="#d2e6d7"/>
+  <g text-anchor="middle"><text x="187" y="312">(0, 0)</text><text x="283" y="312">(0, 0)</text><text class="value" x="379" y="312">(5, 0)</text><text x="475" y="312">(5, 0)</text><text x="571" y="312">(5, 0)</text><text class="value" x="667" y="312">(5, 4)</text></g>
+  <path class="edge" d="M139 56V327M235 56V186M235 244V327M331 56V327M427 56V327M523 56V186M523 244V327M619 56V327"/>
+  <text class="note" x="22" y="348">命令字段保持到写回沿；该沿未列出的 EN_XW 或 WE 均为 0。</text>
+  <text class="note" x="22" y="369">教学示意：连续区间满足采样时序，省略传播延迟；两项工作不重叠。</text>
+</svg>

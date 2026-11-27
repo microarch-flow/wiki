@@ -1,0 +1,56 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="760" height="434" viewBox="0 0 760 434" role="img" aria-labelledby="port-limits-title port-limits-desc">
+  <title id="port-limits-title">双读单写寄存器文件的端口容量</title>
+  <desc id="port-limits-desc">假设一个寄存器文件具有两个独立的十六位读端口和一个十六位写端口，允许不同地址的读写在同一时钟周期进行。左侧例子中，两个读端口分别选择 R0 和 R1，写端口以 WA=6（R6）、WE=1 和 WD=十六位新值在规定的时钟边沿写入 R6。右侧假设已有两个不同的结果，分别应写入 R6 的五和 R7 的四。单一写端口只有一组写地址、写数据和写使能，因此只能在一个边沿完成其中一次写入。图示选择 R6，未选择的 R7 结果必须保留在另外的存储中，或者设计应当避免两个结果同时完成。两个例子比较接口容量，不表示 A05 的实际串行执行过程。</desc>
+  <defs>
+    <marker id="pl-arrow" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0 0L7 3.5L0 7Z" fill="#567b69"/></marker>
+    <style>
+      text{font-family:"Noto Sans CJK SC","PingFang SC","Microsoft YaHei",sans-serif;fill:#173d35;font-size:18px}
+      .head{font-size:23px;font-weight:700}.subhead{font-size:20px;font-weight:700}.key{font-size:20px;font-weight:700}.note{font-size:15px;fill:#4f695a}.tag{font-size:15px;fill:#765a2f;font-weight:600}
+      .panel{fill:#f0f3e9;stroke:#c4d0c4;stroke-width:1.4}.box{fill:#e0ebe3;stroke:#82a18e;stroke-width:1.6}.rf{fill:#e9eddd;stroke:#9dad91;stroke-width:1.6}
+      .wait{fill:#f3ecda;stroke:#bc9e73;stroke-width:1.5}.wire{stroke:#567b69;stroke-width:2.2;fill:none;stroke-linejoin:round;marker-end:url(#pl-arrow)}
+      .not-selected{stroke:#a18352;stroke-width:2;fill:none;stroke-dasharray:5 5;stroke-linejoin:round}
+    </style>
+  </defs>
+  <rect x="1" y="1" width="758" height="432" rx="13" fill="#f5f6ef" stroke="#c4d0c4" stroke-width="1.3"/>
+  <text class="head" x="22" y="35">两个读口、一个写口，能同时完成哪些访问？</text>
+  <text class="note" x="22" y="62">假设 RF 支持 2R1W，每个读、写数据端口均为 16 位。</text>
+  <!-- Left: distinct addresses, no read/write address collision. -->
+  <rect class="panel" x="16" y="79" width="355" height="314" rx="10"/>
+  <text class="subhead" x="29" y="106">情形 A：同拍读两项、写一项</text>
+  <text class="note" x="29" y="129">RA=0（R0），RB=1（R1）。</text>
+  <rect class="box" x="52" y="142" width="283" height="51" rx="7"/>
+  <text x="193.5" y="162" text-anchor="middle">写口：WA = 6（R6），WE = 1</text>
+  <text class="note" x="193.5" y="181" text-anchor="middle">WD：16 位新值</text>
+  <path class="wire" d="M193.5 193V213"/>
+  <rect class="rf" x="77" y="216" width="233" height="52" rx="8"/>
+  <text class="key" x="193.5" y="239" text-anchor="middle">寄存器文件 RF</text>
+  <text class="note" x="193.5" y="259" text-anchor="middle">两个独立读口 · 一个写口</text>
+  <path class="wire" d="M132 268V284H107V299"/><path class="wire" d="M255 268V284H280V299"/>
+  <rect class="box" x="29" y="302" width="156" height="55" rx="7"/>
+  <rect class="box" x="202" y="302" width="156" height="55" rx="7"/>
+  <text x="107" y="324" text-anchor="middle">读出 R0</text>
+  <text class="note" x="107" y="345" text-anchor="middle">读口 A：16 位数据</text>
+  <text x="280" y="324" text-anchor="middle">读出 R1</text>
+  <text class="note" x="280" y="345" text-anchor="middle">读口 B：16 位数据</text>
+  <text class="note" x="29" y="380">若接口允许，不同地址可同拍读写。</text>
+  <!-- Right: independent complete results compete for a single write port. -->
+  <rect class="panel" x="389" y="79" width="355" height="314" rx="10"/>
+  <text class="subhead" x="403" y="106">情形 B：两项结果同时待写</text>
+  <text class="note" x="403" y="129">已有两个结果，目的寄存器不同。</text>
+  <rect class="box" x="402" y="142" width="152" height="50" rx="7"/>
+  <rect class="wait" x="579" y="142" width="152" height="50" rx="7"/>
+  <text class="tag" x="478" y="160" text-anchor="middle">已选择</text><text class="key" x="478" y="184" text-anchor="middle">R6 ← 5</text>
+  <text class="tag" x="655" y="160" text-anchor="middle">暂未选择</text><text class="key" x="655" y="184" text-anchor="middle">R7 ← 4</text>
+  <path class="wire" d="M478 192V204H511V218"/>
+  <path class="not-selected" d="M655 192V204H622V218"/>
+  <rect class="box" x="440" y="221" width="253" height="60" rx="8"/>
+  <text class="key" x="566.5" y="245" text-anchor="middle">写回选择</text>
+  <text class="note" x="566.5" y="267" text-anchor="middle">WA=6（R6），WD=5，WE=1</text>
+  <path class="wire" d="M566.5 281V298"/>
+  <rect class="rf" x="450" y="301" width="233" height="52" rx="8"/>
+  <text class="key" x="566.5" y="324" text-anchor="middle">RF：单一写口</text>
+  <text class="note" x="566.5" y="344" text-anchor="middle">本沿仅能写入 R6</text>
+  <text class="note" x="403" y="371">R7 的结果须另行保存，</text>
+  <text class="note" x="403" y="387">或避免两项同时完成。</text>
+  <text class="note" x="22" y="419">仅比较端口容量；并非本篇教学数据通路的实际串行执行过程。</text>
+</svg>

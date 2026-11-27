@@ -1,0 +1,66 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 660 458" width="660" height="458" role="img" aria-labelledby="rf-read-title rf-read-desc">
+  <title id="rf-read-title">八个 16 位寄存器及两个独立读端口</title>
+  <desc id="rf-read-desc">教学寄存器文件有八个 16 位寄存器，R0 到 R7 当前值依次为 2、3、1、5、4、0、0、0。每个寄存器的输出作为一组 16 位信号，同时连接到两个八选一多路选择器。两个选择器分别由三位地址 RA 和 RB 控制。RA 等于 000，选择 R0 的值 2，送到操作数寄存器 X 的数据输入 D_X；RB 等于 001，选择 R1 的值 3，送到 W 的数据输入 D_W。图中只画组合读取，不表示 X 和 W 已经采样更新。</desc>
+  <defs>
+    <marker id="rf-read-arrow" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0 0L7 3.5L0 7Z" fill="#376a55"/></marker>
+    <marker id="rf-read-ctrl-arrow" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0 0L7 3.5L0 7Z" fill="#967333"/></marker>
+    <style>
+      text{font-family:"Noto Sans CJK SC","PingFang SC","Microsoft YaHei",sans-serif;fill:#173d35;font-size:18px}
+      .head{font-size:22px;font-weight:700}.note{font-size:16px;fill:#4f695a}.strong{font-size:19px;font-weight:700}.label{font-size:18px;font-weight:600}
+      .body{fill:#e0ebe3;stroke:#82a18e;stroke-width:1.6}
+      .reg{fill:#f9faf5;stroke:#c4d0c4;stroke-width:1}
+      .active{fill:#d2e6d7;stroke:#82a18e;stroke-width:1.4}
+      .bus{fill:none;stroke:#376a55;stroke-width:4;stroke-linejoin:round}
+      .data{fill:none;stroke:#376a55;stroke-width:2.6;stroke-linejoin:round;marker-end:url(#rf-read-arrow)}
+      .ctrl{fill:none;stroke:#967333;stroke-width:2.2;stroke-linejoin:round;marker-end:url(#rf-read-ctrl-arrow)}
+      .ctrltext{fill:#765a2f;font-weight:700}
+    </style>
+  </defs>
+  <rect x="1" y="1" width="658" height="456" rx="13" fill="#f5f6ef" stroke="#c4d0c4" stroke-width="1.3"/>
+  <text x="22" y="34" class="head">两个读地址怎样选出一对操作数？</text>
+  <text x="22" y="61" class="note">寄存器文件（RF）：8 个寄存器，每个 16 位</text>
+
+  <rect x="22" y="76" width="170" height="330" rx="9" class="body"/>
+  <text x="107" y="100" class="strong" text-anchor="middle">当前值 Q</text>
+  <g text-anchor="middle">
+    <rect x="31" y="112" width="152" height="33" rx="5" class="active"/><text x="72" y="134" class="label">R0</text><text x="143" y="134" class="strong">2</text>
+    <rect x="31" y="149" width="152" height="33" rx="5" class="active"/><text x="72" y="171" class="label">R1</text><text x="143" y="171" class="strong">3</text>
+    <rect x="31" y="186" width="152" height="33" rx="5" class="reg"/><text x="72" y="208">R2</text><text x="143" y="208">1</text>
+    <rect x="31" y="223" width="152" height="33" rx="5" class="reg"/><text x="72" y="245">R3</text><text x="143" y="245">5</text>
+    <rect x="31" y="260" width="152" height="33" rx="5" class="reg"/><text x="72" y="282">R4</text><text x="143" y="282">4</text>
+    <rect x="31" y="297" width="152" height="33" rx="5" class="reg"/><text x="72" y="319">R5</text><text x="143" y="319">0</text>
+    <rect x="31" y="334" width="152" height="33" rx="5" class="reg"/><text x="72" y="356">R6</text><text x="143" y="356">0</text>
+    <rect x="31" y="371" width="152" height="33" rx="5" class="reg"/><text x="72" y="393">R7</text><text x="143" y="393">0</text>
+  </g>
+
+  <!-- Bundle represents all eight register outputs, each 16 bits. -->
+  <path class="bus" d="M192 242H235V184"/>
+  <path class="bus" d="M235 242V322"/>
+  <circle cx="235" cy="242" r="4.5" fill="#376a55"/>
+  <path class="data" d="M235 184H280"/>
+  <path class="data" d="M235 322H280"/>
+  <text x="252" y="236" class="note">两路 MUX 均接全部</text>
+  <text x="252" y="255" class="note">8 组 16 位输出信号</text>
+
+  <rect x="284" y="151" width="163" height="66" rx="8" class="body"/>
+  <text class="strong" x="365.5" y="178" text-anchor="middle">8 选 1 MUX</text>
+  <text class="note" x="365.5" y="201" text-anchor="middle">16 位读端口 A</text>
+  <text class="ctrltext" x="365.5" y="120" text-anchor="middle">RA = 000</text>
+  <path class="ctrl" d="M365.5 127V147"/>
+  <path class="data" d="M447 184H479"/>
+  <rect x="483" y="151" width="155" height="66" rx="8" class="active"/>
+  <text x="560.5" y="178" class="strong" text-anchor="middle">X 的输入</text>
+  <text x="560.5" y="201" class="label" text-anchor="middle">D_X = 2（16 位）</text>
+
+  <rect x="284" y="289" width="163" height="66" rx="8" class="body"/>
+  <text class="strong" x="365.5" y="316" text-anchor="middle">8 选 1 MUX</text>
+  <text class="note" x="365.5" y="339" text-anchor="middle">16 位读端口 B</text>
+  <text class="ctrltext" x="365.5" y="274" text-anchor="middle">RB = 001</text>
+  <path class="ctrl" d="M365.5 280V287"/>
+  <path class="data" d="M447 322H479"/>
+  <rect x="483" y="289" width="155" height="66" rx="8" class="active"/>
+  <text x="560.5" y="316" class="strong" text-anchor="middle">W 的输入</text>
+  <text x="560.5" y="339" class="label" text-anchor="middle">D_W = 3（16 位）</text>
+  <text x="279" y="382" class="note">RA、RB 各自选择，不互相限制。</text>
+  <text x="22" y="440" class="note">仅表示组合读取；X、W 的寄存器状态尚未采样更新。</text>
+</svg>

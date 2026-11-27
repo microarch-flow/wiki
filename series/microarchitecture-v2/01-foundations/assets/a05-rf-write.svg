@@ -1,0 +1,68 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 660 598" width="660" height="598" role="img" aria-labelledby="rf-write-title rf-write-desc">
+  <title id="rf-write-title">寄存器文件的写地址译码与单个寄存器的更新</title>
+  <desc id="rf-write-desc">八个 16 位寄存器的写数据入口连接同一信号 WD 等于 5。三位写地址 WA 等于 110，经三到八译码器选择第六路，每路译码结果与总写使能 WE 相与。WE 等于 1 时，EN7 至 EN0 的有效位向量为 01000000，只有 EN6 等于一。所有寄存器共用同一个上升沿时钟；上升沿到来时仅 R6 从沿前的零更新为五，其他寄存器保持沿前值。寄存器的沿前值 R0 至 R7 为 2、3、1、5、4、0、0、0，沿后 R6 为 5，其余不变。</desc>
+  <defs>
+    <marker id="rf-write-arrow" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0 0L7 3.5L0 7Z" fill="#376a55"/></marker>
+    <marker id="rf-write-ctrl-arrow" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0 0L7 3.5L0 7Z" fill="#967333"/></marker>
+    <style>
+      text{font-family:"Noto Sans CJK SC","PingFang SC","Microsoft YaHei",sans-serif;fill:#173d35;font-size:18px}
+      .head{font-size:22px;font-weight:700}.note{font-size:16px;fill:#4f695a}.strong{font-size:19px;font-weight:700}
+      .box{fill:#e0ebe3;stroke:#82a18e;stroke-width:1.6}
+      .ctrlbox{fill:#f2e8d3;stroke:#b6a073;stroke-width:1.5}
+      .data{fill:none;stroke:#376a55;stroke-width:2.6;stroke-linejoin:round;marker-end:url(#rf-write-arrow)}
+      .ctrl{fill:none;stroke:#967333;stroke-width:2.2;stroke-linejoin:round;marker-end:url(#rf-write-ctrl-arrow)}
+      .ctrltext{fill:#765a2f;font-weight:700}.line{stroke:#c4d0c4;stroke-width:1}
+    </style>
+  </defs>
+  <rect x="1" y="1" width="658" height="596" rx="13" fill="#f5f6ef" stroke="#c4d0c4" stroke-width="1.3"/>
+  <text x="22" y="34" class="head">一个写地址怎样只改写一个寄存器？</text>
+  <text x="22" y="61" class="note">8 个 16 位寄存器；写入目标为 R6，写入值为 5。</text>
+
+  <rect x="22" y="87" width="118" height="43" rx="7" class="ctrlbox"/>
+  <text x="81" y="114" text-anchor="middle" class="ctrltext">WA = 110</text>
+  <path class="ctrl" d="M140 108.5H158"/>
+  <rect x="162" y="87" width="164" height="43" rx="7" class="ctrlbox"/>
+  <text x="244" y="114" text-anchor="middle" class="strong">3→8 译码器</text>
+  <path class="ctrl" d="M326 108.5H344"/>
+  <rect x="348" y="87" width="290" height="43" rx="7" class="ctrlbox"/>
+  <text x="493" y="114" text-anchor="middle">每路与总写使能 WE 相与</text>
+  <text x="493" y="61" text-anchor="middle" class="ctrltext">WE = 1</text>
+  <path class="ctrl" d="M493 66V83"/>
+  <path class="ctrl" d="M493 130V152"/>
+  <rect x="348" y="156" width="290" height="53" rx="7" class="ctrlbox"/>
+  <text x="493" y="177" text-anchor="middle" class="ctrltext">EN₇…EN₀ = 01000000</text>
+  <text x="493" y="198" text-anchor="middle" class="note">仅 EN₆ = 1</text>
+
+  <rect x="22" y="156" width="264" height="53" rx="7" class="box"/>
+  <text x="154" y="177" class="strong" text-anchor="middle">WD = 5（16 位）</text>
+  <text x="154" y="198" class="note" text-anchor="middle">同一写数据连到全部寄存器</text>
+  <path class="data" d="M154 209V222H346V238"/>
+  <path class="ctrl" d="M493 209V222H460V238"/>
+
+  <rect x="22" y="242" width="616" height="302" rx="9" fill="#f9faf5" stroke="#82a18e" stroke-width="1.6"/>
+  <rect x="23" y="243" width="614" height="38" rx="8" fill="#e0ebe3"/>
+  <g class="strong" text-anchor="middle">
+    <text x="77" y="268">寄存器</text>
+    <text x="215" y="268">沿前 Q</text>
+    <text x="346" y="268">写数据</text>
+    <text x="460" y="268">本地 EN</text>
+    <text x="574" y="268">沿后 Q</text>
+  </g>
+  <rect x="23" y="479" width="614" height="33" fill="#d2e6d7"/>
+  <path class="line" d="M131 242V543M291 242V543M408 242V543M518 242V543"/>
+  <path class="line" d="M22 281H638M22 314H638M22 347H638M22 380H638M22 413H638M22 446H638M22 479H638M22 512H638"/>
+  <g text-anchor="middle">
+    <text x="77" y="304">R0</text><text x="215" y="304">2</text><text x="346" y="304">5</text><text x="460" y="304">0</text><text x="574" y="304">2</text>
+    <text x="77" y="337">R1</text><text x="215" y="337">3</text><text x="346" y="337">5</text><text x="460" y="337">0</text><text x="574" y="337">3</text>
+    <text x="77" y="370">R2</text><text x="215" y="370">1</text><text x="346" y="370">5</text><text x="460" y="370">0</text><text x="574" y="370">1</text>
+    <text x="77" y="403">R3</text><text x="215" y="403">5</text><text x="346" y="403">5</text><text x="460" y="403">0</text><text x="574" y="403">5</text>
+    <text x="77" y="436">R4</text><text x="215" y="436">4</text><text x="346" y="436">5</text><text x="460" y="436">0</text><text x="574" y="436">4</text>
+    <text x="77" y="469">R5</text><text x="215" y="469">0</text><text x="346" y="469">5</text><text x="460" y="469">0</text><text x="574" y="469">0</text>
+    <g class="strong"><text x="77" y="502">R6</text><text x="215" y="502">0</text><text x="346" y="502">5</text><text x="460" y="502" class="ctrltext">1</text><text x="574" y="502">5</text></g>
+    <text x="77" y="535">R7</text><text x="215" y="535">0</text><text x="346" y="535">5</text><text x="460" y="535">0</text><text x="574" y="535">0</text>
+  </g>
+  <path d="M22 562H37V548H52V562H67" fill="none" stroke="#967333" stroke-width="2.2" stroke-linejoin="round"/>
+  <text x="80" y="562" class="ctrltext">CLK ↑</text>
+  <text x="165" y="562" class="note">全部共用一个上升沿；仅 R6 采入 WD。</text>
+  <text x="22" y="586" class="note">其余寄存器虽收到 WD，但因本地 EN 为 0 而保持原值。</text>
+</svg>
