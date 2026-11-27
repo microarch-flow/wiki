@@ -1,0 +1,114 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 940 544" width="940" height="544" role="img" aria-labelledby="title desc">
+  <title id="title">多播的局部数据就绪与全部目的地交付</title>
+  <desc id="desc">权重 B 在 u=0 开始多播。P0 和 P1 的本地 B 副本分别在 u=2 和 u=5 完整可读，全部目的地交付在 u=5。其他资源已就绪，每个计算单元需计算三拍。按本地数据就绪启动，P0 在 [2,5) 计算，P1 在 [5,8) 计算。要求等待全部目的地交付，则 P0 额外等待 [2,5)，两个单元都在 [5,8) 计算。两种方式的本地数据可读时刻相同。</desc>
+  <defs><style>
+    text{font-family:"Noto Sans CJK SC","Microsoft YaHei",system-ui,sans-serif;fill:#173d35}
+    .heading{font-size:22px;font-weight:700}.panel-title{font-size:18px;font-weight:700}
+    .sub{font-size:17px;fill:#47665b}.legend{font-size:16px;fill:#47665b}
+    .axis{font-size:15px;fill:#47665b}.lane{font-size:20px;font-weight:700}
+    .bar-label{font-size:17px;font-weight:600}.waiting-label{font-size:16px;fill:#526458}
+    .finish-label{font-size:16px;font-weight:700;fill:#935c2b}
+    .panel{fill:#fafbf8;stroke:#c7d3c7;stroke-width:1.2}.track{fill:#eef2ed}
+    .grid{stroke:#cbd7cc;stroke-width:0.9}.global{stroke:#935c2b;stroke-width:2;stroke-dasharray:5 4}
+    .waiting{fill:#e5e9e2;stroke:#b9c6b8;stroke-width:1.2}
+    .extra{fill:#f7e9d4;stroke:#bb8c55;stroke-width:1.4;stroke-dasharray:5 3}
+    .compute0{fill:#cee4d4;stroke:#6d9c7e;stroke-width:1.4}
+    .compute1{fill:#dce6f4;stroke:#7892b5;stroke-width:1.4}
+    .ready{fill:#173d35;stroke:#fafbf8;stroke-width:1.4}
+  </style></defs>
+  <rect x="1" y="1" width="938" height="542" rx="13" fill="#f5f6ef" stroke="#c4d0c4"/>
+  <text x="20" y="31" class="heading">权重 B 已在本地可读，是否还要等待其他目的地？</text>
+  <text x="20" y="58" class="sub">独立教学时标 u：u = 0 启动多播；其他操作数与资源已就绪，每个单元计算 3 拍。</text>
+  <path d="M 28 72 l 6 6 -6 6 -6 -6 Z" class="ready"/>
+  <text x="43" y="84" class="legend">本地 B 完整可读</text>
+  <path d="M 235 78 h 30" class="global"/>
+  <text x="274" y="84" class="legend">全部目的地交付</text>
+  <rect x="480" y="68" width="29" height="19" rx="3" class="compute0"/>
+  <text x="519" y="84" class="legend">P0 计算</text>
+  <rect x="644" y="68" width="29" height="19" rx="3" class="compute1"/>
+  <text x="683" y="84" class="legend">P1 计算</text>
+  <g aria-label="A · 按本地数据就绪启动">
+    <rect x="15" y="100" width="910" height="192" rx="9" class="panel"/>
+    <text x="29" y="127" class="panel-title">A · 按本地数据就绪启动</text>
+    <text x="620" y="127" class="finish-label" text-anchor="middle">u = 5 全部目的地交付</text>
+    <rect x="150" y="169" width="752" height="39" rx="2" class="track"/>
+    <text x="29" y="195" class="lane">P0</text>
+    <rect x="150" y="226" width="752" height="39" rx="2" class="track"/>
+    <text x="29" y="252" class="lane">P1</text>
+    <text x="29" y="154" class="axis">时钟边沿 u</text>
+    <text x="150" y="154" class="axis" text-anchor="middle">0</text>
+    <path d="M150 158 v115" class="grid"/>
+    <text x="244" y="154" class="axis" text-anchor="middle">1</text>
+    <path d="M244 158 v115" class="grid"/>
+    <text x="338" y="154" class="axis" text-anchor="middle">2</text>
+    <path d="M338 158 v115" class="grid"/>
+    <text x="432" y="154" class="axis" text-anchor="middle">3</text>
+    <path d="M432 158 v115" class="grid"/>
+    <text x="526" y="154" class="axis" text-anchor="middle">4</text>
+    <path d="M526 158 v115" class="grid"/>
+    <text x="620" y="154" class="axis" text-anchor="middle">5</text>
+    <path d="M620 158 v115" class="grid"/>
+    <text x="714" y="154" class="axis" text-anchor="middle">6</text>
+    <path d="M714 158 v115" class="grid"/>
+    <text x="808" y="154" class="axis" text-anchor="middle">7</text>
+    <path d="M808 158 v115" class="grid"/>
+    <text x="902" y="154" class="axis" text-anchor="middle">8</text>
+    <path d="M902 158 v115" class="grid"/>
+    <path d="M620 158 v115" class="global"/>
+    <rect x="151" y="169" width="186" height="39" rx="4" class="waiting"/>
+    <text x="244" y="195" text-anchor="middle" class="waiting-label">等待本地 B</text>
+    <rect x="151" y="226" width="468" height="39" rx="4" class="waiting"/>
+    <text x="385" y="252" text-anchor="middle" class="waiting-label">等待本地 B</text>
+    <rect x="339" y="169" width="280" height="39" rx="4" class="compute0"/>
+    <text x="479" y="195" text-anchor="middle" class="bar-label">计算 3 拍</text>
+    <text x="761" y="195" text-anchor="middle" class="waiting-label">P0 已算完</text>
+    <rect x="621" y="226" width="280" height="39" rx="4" class="compute1"/>
+    <text x="761" y="252" text-anchor="middle" class="bar-label">计算 3 拍</text>
+    <path d="M620 158 v115" class="global"/>
+    <path d="M338 162 l7 7 -7 7 -7 -7 Z" class="ready"/>
+    <path d="M620 219 l7 7 -7 7 -7 -7 Z" class="ready"/>
+  </g>
+  <g aria-label="B · 强制等待全部目的地后启动">
+    <rect x="15" y="304" width="910" height="192" rx="9" class="panel"/>
+    <text x="29" y="331" class="panel-title">B · 强制等待全部目的地后启动</text>
+    <text x="620" y="331" class="finish-label" text-anchor="middle">u = 5 全部目的地交付</text>
+    <rect x="150" y="373" width="752" height="39" rx="2" class="track"/>
+    <text x="29" y="399" class="lane">P0</text>
+    <rect x="150" y="430" width="752" height="39" rx="2" class="track"/>
+    <text x="29" y="456" class="lane">P1</text>
+    <text x="29" y="358" class="axis">时钟边沿 u</text>
+    <text x="150" y="358" class="axis" text-anchor="middle">0</text>
+    <path d="M150 362 v115" class="grid"/>
+    <text x="244" y="358" class="axis" text-anchor="middle">1</text>
+    <path d="M244 362 v115" class="grid"/>
+    <text x="338" y="358" class="axis" text-anchor="middle">2</text>
+    <path d="M338 362 v115" class="grid"/>
+    <text x="432" y="358" class="axis" text-anchor="middle">3</text>
+    <path d="M432 362 v115" class="grid"/>
+    <text x="526" y="358" class="axis" text-anchor="middle">4</text>
+    <path d="M526 362 v115" class="grid"/>
+    <text x="620" y="358" class="axis" text-anchor="middle">5</text>
+    <path d="M620 362 v115" class="grid"/>
+    <text x="714" y="358" class="axis" text-anchor="middle">6</text>
+    <path d="M714 362 v115" class="grid"/>
+    <text x="808" y="358" class="axis" text-anchor="middle">7</text>
+    <path d="M808 362 v115" class="grid"/>
+    <text x="902" y="358" class="axis" text-anchor="middle">8</text>
+    <path d="M902 362 v115" class="grid"/>
+    <path d="M620 362 v115" class="global"/>
+    <rect x="151" y="373" width="186" height="39" rx="4" class="waiting"/>
+    <text x="244" y="399" text-anchor="middle" class="waiting-label">等待本地 B</text>
+    <rect x="151" y="430" width="468" height="39" rx="4" class="waiting"/>
+    <text x="385" y="456" text-anchor="middle" class="waiting-label">等待本地 B</text>
+    <rect x="339" y="373" width="280" height="39" rx="4" class="extra"/>
+    <text x="479" y="399" text-anchor="middle" class="bar-label">额外等待 3 拍</text>
+    <rect x="621" y="373" width="280" height="39" rx="4" class="compute0"/>
+    <text x="761" y="399" text-anchor="middle" class="bar-label">计算 3 拍</text>
+    <rect x="621" y="430" width="280" height="39" rx="4" class="compute1"/>
+    <text x="761" y="456" text-anchor="middle" class="bar-label">计算 3 拍</text>
+    <path d="M620 362 v115" class="global"/>
+    <path d="M338 366 l7 7 -7 7 -7 -7 Z" class="ready"/>
+    <path d="M620 423 l7 7 -7 7 -7 -7 Z" class="ready"/>
+  </g>
+  <text x="20" y="524" class="sub">横条只表示各计算单元的等待或工作区间，不表示网络路径及其资源占用。</text>
+</svg>

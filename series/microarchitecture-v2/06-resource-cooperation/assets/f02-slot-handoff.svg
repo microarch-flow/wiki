@@ -1,0 +1,74 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1008 544" width="1008" height="544" role="img" aria-labelledby="f02-slot-title f02-slot-desc">
+  <title id="f02-slot-title">输入槽 I0 与输出槽 O0 的状态交接</title>
+  <desc id="f02-slot-desc">输入槽 I0 由空闲开始，分配给 L0 写入输入块 A0。最后一次写入结束且数据对 C 可读，才能变为输入就绪；C 获准后读取 A0，最后一次读取结束后 I0 重新空闲，可分配给 A2。输出槽 O0 由空闲开始，在 C0 计算开始前预留，C0 完整写入 Y0 且 W 可读后才成为结果就绪；W 获准后读取 Y0，本例在写回目标可见时释放 O0。在 F01 的理想日程中，相邻状态转换可以发生在同一时钟边沿。接纳命令不等于数据可读，生产者写完不等于缓冲已释放。</desc>
+  <defs>
+    <marker id="f02-state-arrow" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0 0L7 3.5L0 7Z" fill="#376a55"/></marker>
+    <style>
+      text{font-family:"Noto Sans CJK SC","PingFang SC","Microsoft YaHei",sans-serif;fill:#173d35;font-size:19px}
+      .head{font-size:23px;font-weight:700}.panel-head{font-size:21px;font-weight:700}
+      .label{font-size:19px;font-weight:700}.note{font-size:16px;fill:#4f695a}.condition{font-size:15.5px;fill:#36594e}
+      .time{font-size:15px;fill:#4f695a}.highlight{font-size:17px;font-weight:700;fill:#935c2b}
+      .panel{fill:#fafbf8;stroke:#c7d3c7;stroke-width:1.3}
+      .free{fill:#edf1df;stroke:#82a18e;stroke-width:1.4}
+      .tile0{fill:#cee4d4;stroke:#6d9c7e;stroke-width:1.5}
+      .state-arrow{fill:none;stroke:#376a55;stroke-width:2;stroke-linecap:round;marker-end:url(#f02-state-arrow)}
+    </style>
+  </defs>
+  <rect x="1" y="1" width="1006" height="542" rx="13" fill="#f5f6ef" stroke="#c4d0c4" stroke-width="1.3"/>
+  <text x="22" y="34" class="head">一个缓冲槽怎样在生产者与消费者之间交接？</text>
+  <text x="22" y="60" class="note">沿用 F01 的块 0：状态说明数据由谁持有，箭头说明状态转换所需的条件。</text>
+  <rect x="855" y="40" width="22" height="22" rx="4" class="tile0"/>
+  <text x="885" y="56" class="note">块 0 占用</text>
+
+  <!-- I0 lifecycle -->
+  <rect x="14" y="80" width="980" height="189" rx="10" class="panel"/>
+  <text x="30" y="110" class="panel-head">输入槽 I0</text>
+  <text x="976" y="110" text-anchor="end" class="note">L 生产输入 · C 消费输入</text>
+  <g text-anchor="middle">
+    <text x="195" y="144" class="condition">L 分配 I0</text><text x="195" y="165" class="condition">开始写入</text>
+    <text x="401" y="144" class="condition">最后写入</text><text x="401" y="165" class="condition">且 C 可读</text>
+    <text x="607" y="144" class="condition">C 获准</text><text x="607" y="165" class="condition">开始读取</text>
+    <text x="813" y="144" class="condition">最后一次</text><text x="813" y="165" class="condition">读取结束</text>
+    <rect x="28" y="179" width="128" height="74" rx="7" class="free"/>
+    <text x="92" y="209" class="label">空闲</text><text x="92" y="233" class="note">可分配</text>
+    <rect x="234" y="179" width="128" height="74" rx="7" class="tile0"/>
+    <text x="298" y="209" class="label">L 写入</text><text x="298" y="233" class="note">A0 填入中</text>
+    <rect x="440" y="179" width="128" height="74" rx="7" class="tile0"/>
+    <text x="504" y="209" class="label">输入就绪</text><text x="504" y="233" class="note">A0 对 C 可读</text>
+    <rect x="646" y="179" width="128" height="74" rx="7" class="tile0"/>
+    <text x="710" y="209" class="label">C 读取</text><text x="710" y="233" class="note">A0 仍在使用</text>
+    <rect x="852" y="179" width="128" height="74" rx="7" class="free"/>
+    <text x="916" y="209" class="label">空闲</text><text x="916" y="233" class="note">可分配给 A2</text>
+    <path d="M159 207H229" class="state-arrow"/><text x="195" y="241" class="time">E₀</text>
+    <path d="M365 207H435" class="state-arrow"/><text x="401" y="241" class="time">E₂</text>
+    <path d="M571 207H641" class="state-arrow"/><text x="607" y="241" class="time">E₂</text>
+    <path d="M777 207H847" class="state-arrow"/><text x="813" y="241" class="time">E₅</text>
+  </g>
+
+  <!-- O0 lifecycle -->
+  <rect x="14" y="282" width="980" height="189" rx="10" class="panel"/>
+  <text x="30" y="312" class="panel-head">输出槽 O0</text>
+  <text x="976" y="312" text-anchor="end" class="note">C 生产结果 · W 消费结果</text>
+  <g text-anchor="middle">
+    <text x="195" y="346" class="condition">C 分配 O0</text><text x="195" y="367" class="condition">预留空间</text>
+    <text x="401" y="346" class="condition">最后写入</text><text x="401" y="367" class="condition">且 W 可读</text>
+    <text x="607" y="346" class="condition">W 获准</text><text x="607" y="367" class="condition">开始读取</text>
+    <text x="813" y="346" class="condition">本例写回</text><text x="813" y="367" class="condition">目标可见</text>
+    <rect x="28" y="381" width="128" height="74" rx="7" class="free"/>
+    <text x="92" y="411" class="label">空闲</text><text x="92" y="435" class="note">可分配</text>
+    <rect x="234" y="381" width="128" height="74" rx="7" class="tile0"/>
+    <text x="298" y="411" class="label">C 预留／写入</text><text x="298" y="435" class="note">Y0 尚未就绪</text>
+    <rect x="440" y="381" width="128" height="74" rx="7" class="tile0"/>
+    <text x="504" y="411" class="label">结果就绪</text><text x="504" y="435" class="note">Y0 对 W 可读</text>
+    <rect x="646" y="381" width="128" height="74" rx="7" class="tile0"/>
+    <text x="710" y="411" class="label">W 读取</text><text x="710" y="435" class="note">Y0 仍在使用</text>
+    <rect x="852" y="381" width="128" height="74" rx="7" class="free"/>
+    <text x="916" y="411" class="label">空闲</text><text x="916" y="435" class="note">可分配给 Y2</text>
+    <path d="M159 409H229" class="state-arrow"/><text x="195" y="443" class="time">E₂</text>
+    <path d="M365 409H435" class="state-arrow"/><text x="401" y="443" class="time">E₅</text>
+    <path d="M571 409H641" class="state-arrow"/><text x="607" y="443" class="time">E₅</text>
+    <path d="M777 409H847" class="state-arrow"/><text x="813" y="443" class="time">E₇</text>
+  </g>
+  <text x="22" y="498" class="highlight">接纳命令 ≠ 数据可读　　　　生产者写完 ≠ 缓冲可复用</text>
+  <text x="22" y="523" class="note">边沿编号取自 F01 的理想日程；相邻转换可以在同一边沿交接，不要求各占一拍。</text>
+</svg>
