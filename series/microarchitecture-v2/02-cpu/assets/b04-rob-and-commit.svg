@@ -1,0 +1,91 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 749" width="760" height="749" role="img" aria-labelledby="title desc">
+  <title id="title">计算完成不等于已经提交：E8 沿后的结果缓冲式 ROB</title>
+  <desc id="desc">I0 在 E6 提交，已经令架构 RF 的 x6=5。E8 沿后，I1 尚在访存，I2 等待新 x5，I3 已完成计算并按条目编号写入 ROB 的结果字段9，I4 等待较早指令的读写条件，I5 等待较早指令及分支操作数。I1 是队首，因此 I3 虽已就绪也不能向架构 RF 写回。按程序顺序登记，返回结果可以乱序写相应 ROB 条目，提交只能检查队首。RF 仍然保存 x5=0、x6=5、x7=0、x8=0。逻辑排列不表示物理槽位，ROB 结果不旁路到读数路径。</desc>
+  <defs>
+    <marker id="arrow" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0 0L7 3.5L0 7z" fill="#376650"/></marker>
+    <marker id="feedback-arrow" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0 0L7 3.5L0 7z" fill="#5b7680"/></marker>
+    <style>
+      text{font-family:"Noto Sans CJK SC","PingFang SC","Microsoft YaHei",sans-serif;fill:#173d35;font-size:18px}
+      .heading{font-size:22px;font-weight:700}.small{font-size:16px}.tiny{font-size:14.5px}.label{font-weight:700}
+      .panel{fill:#fafbf8;stroke:#c7d3c7;stroke-width:1.3}.block{fill:#e0ebe3;stroke:#82a18e;stroke-width:1.4}
+      .arch{fill:#d2e6d7;stroke:#376650;stroke-width:1.7}.result{fill:#e0eaed;stroke:#72929b;stroke-width:1.55}
+      .stall{fill:#f2e7d1;stroke:#bd9857;stroke-width:1.5}.future{fill:#f2f3ef;stroke:#d3d9d3;stroke-width:1.2;stroke-dasharray:4 3}
+      .dim{fill:#6e8079}.accent{fill:#8a5d1c}.ftext{fill:#496872}
+      .data{stroke:#376650;stroke-width:2.3;fill:none;stroke-linejoin:round;stroke-linecap:round;marker-end:url(#arrow)}
+      .feedback{stroke:#5b7680;stroke-width:2;fill:none;stroke-linejoin:round;stroke-linecap:round;stroke-dasharray:6 4;marker-end:url(#feedback-arrow)}
+      .stop{stroke:#8a5d1c;stroke-width:2.2;fill:none;stroke-dasharray:5 4;stroke-linecap:round}
+    </style>
+  </defs>
+  <rect x="1" y="1" width="758" height="747" rx="13" fill="#f5f6ef" stroke="#c4d0c4" stroke-width="1.3"/>
+  <text x="22" y="34" class="heading">E8：I3 已完成计算，但还不能提交</text>
+  <text x="22" y="62" class="small">按顺序登记，乱序保存结果，只在队首提交；E6 已提交 I0。</text>
+
+  <!-- In-order allocation and out-of-order result packet. -->
+  <rect x="35" y="82" width="331" height="87" rx="8" class="block"/>
+  <text x="51" y="106" class="label">ID · 按程序顺序登记</text>
+  <text x="51" y="131" class="small">指令信息、目标编号、PC</text>
+  <text x="51" y="153" class="tiny dim">新记录放到队尾</text>
+  <rect x="388" y="82" width="337" height="87" rx="8" class="result"/>
+  <text x="404" y="106" class="label ftext">执行返回 · 不要求顺序</text>
+  <text x="404" y="131" class="small">E8：I3 的结果包（条目号、9）</text>
+  <text x="404" y="153" class="tiny ftext">按条目号写入 ROB，不写 RF</text>
+
+  <!-- ROB in logical order; tail route is outside slots. -->
+  <rect x="35" y="190" width="690" height="385" rx="9" class="panel"/>
+  <text x="53" y="217" class="label">ROB：保留尚未提交的记录</text>
+  <text x="709" y="217" text-anchor="end" class="tiny dim">逻辑顺序（非物理槽号）</text>
+  <text x="63" y="244" class="tiny dim">顺序</text>
+  <text x="151" y="244" class="tiny dim">指令 / 目标</text>
+  <text x="392" y="244" class="tiny dim">状态</text>
+  <text x="637" y="244" text-anchor="middle" class="tiny dim">结果字段</text>
+
+  <rect x="51" y="255" width="658" height="51" rx="6" class="stall"/>
+  <text x="64" y="277" class="label accent">I1</text><text x="64" y="296" class="tiny accent">队首</text>
+  <text x="151" y="286" class="small label">LW x5, 0(x4)</text>
+  <text x="392" y="286" class="small accent">等待访存响应</text>
+  <text x="637" y="286" class="small accent" text-anchor="middle">—</text>
+
+  <rect x="51" y="312" width="658" height="45" rx="6" class="block"/>
+  <text x="64" y="340" class="label">I2</text>
+  <text x="151" y="340" class="small">ADD x7, x5, x3</text>
+  <text x="392" y="340" class="small">等待新 x5</text>
+  <text x="637" y="340" class="small" text-anchor="middle">—</text>
+
+  <rect x="51" y="363" width="658" height="45" rx="6" class="result"/>
+  <text x="64" y="391" class="label ftext">I3</text>
+  <text x="151" y="391" class="small label">ADD x8, x9, x10</text>
+  <text x="392" y="391" class="small label ftext">已完成，尚未提交</text>
+  <text x="637" y="391" class="label ftext" text-anchor="middle">9</text>
+
+  <rect x="51" y="414" width="658" height="45" rx="6" class="block"/>
+  <text x="64" y="442" class="label">I4</text>
+  <text x="151" y="442" class="small">ADD x5, x6, x1</text>
+  <text x="392" y="442" class="small">等待读写顺序条件</text>
+  <text x="637" y="442" class="small" text-anchor="middle">—</text>
+
+  <rect x="51" y="465" width="658" height="45" rx="6" class="block"/>
+  <text x="64" y="493" class="label">I5</text>
+  <text x="151" y="493" class="small">BEQ x7, x5, +8</text>
+  <text x="392" y="493" class="small">等待较早指令</text>
+  <text x="637" y="493" class="small" text-anchor="middle">—</text>
+
+  <rect x="51" y="516" width="658" height="41" rx="6" class="future"/>
+  <text x="64" y="542" class="small dim">队尾：下一空位置</text>
+  <text x="691" y="542" text-anchor="end" class="tiny dim">有空间且允许取指时登记</text>
+
+  <path d="M51 169H22V536H48" class="data"/>
+  <path d="M709 169H739V386H712" class="feedback"/>
+
+  <!-- Commit gate and architectural RF. -->
+  <rect x="35" y="596" width="328" height="111" rx="8" class="stall"/>
+  <text x="51" y="620" class="label accent">提交端 · 只检查队首 I1</text>
+  <text x="51" y="650" class="small">I1 尚未完成，本拍不能提交</text>
+  <text x="51" y="681" class="small accent">I3 的 9 继续留在 ROB</text>
+  <rect x="402" y="596" width="323" height="111" rx="8" class="arch"/>
+  <text x="419" y="620" class="label">架构 RF（已提交的值）</text>
+  <text x="419" y="652" class="small">x5 = 0</text><text x="558" y="652" class="small label">x6 = 5</text>
+  <text x="419" y="681" class="small">x7 = 0</text><text x="558" y="681" class="small">x8 = 0</text>
+  <path d="M363 651H397" class="stop"/>
+  <path d="M374 644L388 658M388 644L374 658" stroke="#8a5d1c" stroke-width="2.2" stroke-linecap="round" fill="none"/>
+  <text x="380" y="735" class="tiny dim" text-anchor="middle">本模型结果写 ROB；RF 只由提交端更新，不从 ROB 旁路取数。</text>
+</svg>

@@ -1,0 +1,77 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 679" width="760" height="679" role="img" aria-labelledby="title desc">
+  <title id="title">精确异常：在队首报告 I1 的访存异常，撤销未提交记录</title>
+  <desc id="desc">在另一个执行结果里，I1 的 Load 发生访问异常。E10 将 I1 的异常原因写入 ROB 队首条目，不生成可提交的 x5 结果。I3 的结果9已暂存在自己的 ROB 位置，而 I2、I4、I5 均等待。E11 处理队首异常，阻止 I1 正常提交，清除 I1 以及所有更年轻的 I2 至 I5，并丢弃被清除指令的迟到返回。此前 I0 已提交，所以架构 RF 保持 x6=5、x5=0、x7=0、x8=0。处理器保存 I1 的地址0x104到异常返回地址寄存器 EPC，并保存 Load 访问异常类型；当前 PC 转到异常处理程序入口，而不是直接重取 I1。</desc>
+  <defs>
+    <marker id="arrow" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0 0L7 3.5L0 7z" fill="#376650"/></marker>
+    <marker id="feedback-arrow" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0 0L7 3.5L0 7z" fill="#5b7680"/></marker>
+    <marker id="fault-arrow" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0 0L7 3.5L0 7z" fill="#a65047"/></marker>
+    <style>
+      text{font-family:"Noto Sans CJK SC","PingFang SC","Microsoft YaHei",sans-serif;fill:#173d35;font-size:18px}
+      .heading{font-size:22px;font-weight:700}.small{font-size:16px}.tiny{font-size:14.5px}.label{font-weight:700}
+      .panel{fill:#fafbf8;stroke:#c7d3c7;stroke-width:1.3}.block{fill:#e0ebe3;stroke:#82a18e;stroke-width:1.4}
+      .arch{fill:#d2e6d7;stroke:#376650;stroke-width:1.7}.result{fill:#e0eaed;stroke:#72929b;stroke-width:1.55}
+      .stall{fill:#f2e7d1;stroke:#bd9857;stroke-width:1.5}.future{fill:#f2f3ef;stroke:#d3d9d3;stroke-width:1.2;stroke-dasharray:4 3}
+      .error{fill:#f4e0dc;stroke:#bd7c70;stroke-width:1.6}.error-text{fill:#99493e}
+      .dim{fill:#6e8079}.accent{fill:#8a5d1c}.ftext{fill:#496872}
+      .data{stroke:#376650;stroke-width:2.3;fill:none;stroke-linejoin:round;stroke-linecap:round;marker-end:url(#arrow)}
+      .feedback{stroke:#5b7680;stroke-width:2;fill:none;stroke-linejoin:round;stroke-linecap:round;stroke-dasharray:6 4;marker-end:url(#feedback-arrow)}
+      .fault{stroke:#a65047;stroke-width:2.3;fill:none;stroke-linejoin:round;stroke-linecap:round;marker-end:url(#fault-arrow)}
+    </style>
+  </defs>
+  <rect x="1" y="1" width="758" height="677" rx="13" fill="#f5f6ef" stroke="#c4d0c4" stroke-width="1.3"/>
+  <text x="22" y="34" class="heading">I1 发生异常：不能让更年轻的结果改变程序状态</text>
+  <text x="22" y="62" class="small">E10 记录队首异常；E11 报告异常并丢弃未提交的工作。</text>
+
+  <!-- Before and after trap delivery. -->
+  <rect x="35" y="82" width="330" height="298" rx="9" class="panel"/>
+  <text x="51" y="108" class="label">E10 沿后 · ROB</text>
+  <rect x="49" y="121" width="302" height="62" rx="7" class="error"/>
+  <text x="61" y="143" class="small label error-text">队首 I1 · LW x5, 0(x4)</text>
+  <text x="61" y="166" class="small error-text">访问异常，无有效结果，不写 x5</text>
+  <rect x="49" y="190" width="302" height="37" rx="6" class="block"/>
+  <text x="61" y="214" class="small">I2 · 等待 x5</text>
+  <rect x="49" y="233" width="302" height="37" rx="6" class="result"/>
+  <text x="61" y="257" class="small label ftext">I3 · 已完成，结果 9 在 ROB</text>
+  <rect x="49" y="276" width="302" height="37" rx="6" class="block"/>
+  <text x="61" y="300" class="small">I4 · 等待读写条件</text>
+  <rect x="49" y="319" width="302" height="37" rx="6" class="block"/>
+  <text x="61" y="343" class="small">I5 · 等待较早指令</text>
+  <text x="200" y="372" text-anchor="middle" class="tiny dim">I1 还没有提交</text>
+
+  <path d="M366 227H393" class="fault"/>
+  <rect x="395" y="82" width="330" height="298" rx="9" class="panel"/>
+  <text x="411" y="108" class="label">E11 沿后 · 报告异常</text>
+  <rect x="409" y="121" width="302" height="62" rx="7" class="error"/>
+  <text x="421" y="143" class="small label error-text">I1 不正常提交</text>
+  <text x="421" y="166" class="small error-text">记录异常，并撤销其在途记录</text>
+  <rect x="409" y="190" width="302" height="37" rx="6" class="future"/>
+  <text x="421" y="214" class="small dim">I2 · 失效</text>
+  <rect x="409" y="233" width="302" height="37" rx="6" class="future"/>
+  <text x="421" y="257" class="small dim">I3 · 结果 9 丢弃，不更新 RF</text>
+  <rect x="409" y="276" width="302" height="37" rx="6" class="future"/>
+  <text x="421" y="300" class="small dim">I4 · 失效</text>
+  <rect x="409" y="319" width="302" height="37" rx="6" class="future"/>
+  <text x="421" y="343" class="small dim">I5 · 失效</text>
+  <text x="560" y="372" text-anchor="middle" class="tiny dim">I1～I5 均被移出在途集合</text>
+
+  <!-- Committed state remains intact. -->
+  <rect x="35" y="397" width="690" height="85" rx="8" class="arch"/>
+  <text x="51" y="425" class="label">架构 RF 保持在已提交前缀：只有 I0 完成了状态更新</text>
+  <text x="51" y="458" class="small">x5 = 0</text><text x="220" y="458" class="small label">x6 = 5</text>
+  <text x="390" y="458" class="small">x7 = 0</text><text x="560" y="458" class="small">x8 = 0</text>
+
+  <!-- Save the interrupted instruction and redirect PC; not the same address. -->
+  <rect x="35" y="499" width="330" height="114" rx="8" class="result"/>
+  <text x="51" y="526" class="label ftext">保存异常信息</text>
+  <text x="51" y="553" class="small label">EPC = 0x104（I1 的 PC）</text>
+  <text x="51" y="578" class="small">原因：Load 访问异常</text>
+  <text x="51" y="600" class="tiny dim">供处理程序判断是否、在哪里继续</text>
+  <path d="M366 555H392" class="feedback"/>
+  <rect x="395" y="499" width="330" height="114" rx="8" class="block"/>
+  <text x="411" y="526" class="label">改变取指地址</text>
+  <text x="411" y="553" class="small label">PC → 异常处理程序入口</text>
+  <text x="411" y="578" class="small">不是直接从 EPC 重新取指</text>
+  <text x="411" y="600" class="tiny dim">是否重试 I1 由处理结果决定</text>
+  <text x="380" y="638" text-anchor="middle" class="small">被撤销的指令不再更新状态；迟到的执行结果必须忽略。</text>
+  <text x="380" y="663" text-anchor="middle" class="tiny dim">示意仅显示本算例的正常架构值，不展开权限切换等 trap 状态更新。</text>
+</svg>
