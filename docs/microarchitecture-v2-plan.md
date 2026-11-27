@@ -111,7 +111,7 @@ flowchart TD
 | A02 | 有限个比特，怎样表示一个数并完成加减运算？ | 二进制、补码、定点、半加/全加、进位、减法、比较、移位、溢出；从小位宽 ALU 推导快进位 | 已发布（[正文](https://microarch-flow.github.io/wiki/microarchitecture-v2/01-foundations/a02-number-representation-and-arithmetic/)，提交 `b86d5ac`，已核验） |
 | A03 | 从部分积到 MAC：芯片怎样完成一次乘加？ | 乘法部分积与符号、Booth、压缩树、MAC、累加位宽、反馈、点积与归约 | 已发布（[正文](https://microarch-flow.github.io/wiki/microarchitecture-v2/01-foundations/a03-multiplication-and-accumulation/)，提交 `30dee23`，已核验） |
 | A04 | 浮点与低精度运算：芯片怎样计算不同格式的数？ | 指数、有效数字、对齐、规格化、舍入、特殊值、FMA、BF16/FP8/MX、混合精度；不讲模型量化选择 | 已发布（[正文](https://microarch-flow.github.io/wiki/microarchitecture-v2/01-foundations/a04-floating-point-and-low-precision/)，提交 `51ff618`，已核验） |
-| A05 | 一组运算单元怎样连续完成不同的计算？ | ALU/FPU/MAC、寄存器文件、操作数选择、读写端口、数据通路、控制通路、写回与多周期执行 | 已评审，待发布核验（`series/microarchitecture-v2/01-foundations/a05-datapath-and-control.md`） |
+| A05 | 一组运算单元怎样连续完成不同的计算？ | ALU/FPU/MAC、寄存器文件、操作数选择、读写端口、数据通路、控制通路、写回与多周期执行 | 已发布（[正文](https://microarch-flow.github.io/wiki/microarchitecture-v2/01-foundations/a05-datapath-and-control/)，提交 `25f9a6b`，已核验） |
 | A06 | 第一份结果还没出来，为什么下一份运算可以开始？ | 关键路径、流水级、延迟、II、吞吐、填排和反馈依赖；独立输入与相关输入对照 | 待写 |
 | A07 | 下游来不及接收数据，上游怎样知道何时停止？ | 停顿、气泡、valid/ready、FIFO、反压、弹性流水、跨时钟域交接；不重复物理时序 | 待写 |
 | A08 | 多项工作同时就绪，谁先使用计算资源？ | 数据依赖、资源占用、在途任务、就绪、仲裁、发射、完成、结果可用，通用执行语义 | 待写 |
