@@ -201,7 +201,7 @@ D02–D04 与 D05–D08 是两条分支。内核工程师不必先学完整寄�
 
 | ID | 暂定标题 | 核心范围 | 主要前置 | 计划文件名 | 状态 |
 | --- | --- | --- | --- | --- | --- | --- |
-| D01 | 一句张量计算，怎样逐步变成循环和内存操作？ | 分层 Lowering、Tensor IR、Loop IR、Bufferization、显式读写与转换合法性。 | A01–A03、B04 的必要知识 | `d01-lowering-and-bufferization.md` | 初稿完成，待发布核验 |
+| D01 | 一句张量计算，怎样逐步变成循环和内存操作？ | 分层 Lowering、Tensor IR、Loop IR、Bufferization、显式读写与转换合法性。 | A01–A03、B04 的必要知识 | `d01-lowering-and-bufferization.md` | 已发布 |
 | D02 | 一个 IR 操作怎样变成目标机器的指令？ | 类型与指令合法化、指令选择、Machine IR、目标调用约定。 | D01 中低层 IR、A04 | `d02-instruction-selection.md` | 待写 |
 | D03 | 临时值比硬件寄存器多，编译器怎样处理？ | 活跃区间、寄存器分配、Spill/Reload、机器指令调度与相互约束。 | D02、B05 | `d03-register-allocation-and-scheduling.md` | 待写 |
 | D04 | 生成的代码怎样成为可加载、可调用的程序？ | 汇编、目标文件、符号、重定位、静态与动态链接、Kernel 元数据及产物兼容。 | D02、D03 或已有目标代码 | `d04-executable-artifacts.md` | 待写 |
@@ -451,3 +451,5 @@ K 横跨所有路线。K01/K02 可早期开展，K03–K05 按被分析的机制
 - 2026-11-28 · B06 已发布并核验，B 专题六篇初稿均已发布。正文提交 `50c8e0a`，[GitHub Pages 部署](https://github.com/microarch-flow/wiki/actions/runs/46122645715)成功。[公开正文](https://microarch-flow.github.io/wiki/series/compiler-runtime/02-frontend-and-optimization/b06-legal-transformation/)、两张图解、六篇导读入口及搜索收录、五条正文后继链接、侧栏与面包屑均已核验。NumPy 2.3.5、PyTorch 2.8.0 CPU 核对了形状、偏置及双输出算例；JAX/jaxlib 0.5.3 生成的 StableHLO 验证广播与双输出，另实测 FP32 分组得到 0/1、循环交换反例得到 11/1。整站构建及 174 项测试通过。后续 C、D 可据 B04、B06 的依赖、形状与数值条件继续展开。
 
 - 2026-11-28 · C05 已发布并核验，C 专题五篇初稿全部完成。正文提交 `6d5a6b8`，[GitHub Pages 部署](https://github.com/microarch-flow/wiki/actions/runs/46123535725)成功。[公开正文](https://microarch-flow.github.io/wiki/series/compiler-runtime/03-mapping-and-planning/c05-cost-model-and-search/)、C04 后继、专题导读、两张图解、导航、面包屑和搜索收录均已核对。本地整站 175 项测试通过，复算四个合法候选、容量冲突反例及 Pareto 前沿，验证一列 8 B/8 拍和三列 12 B/16 拍方案。核对 B06 数值语义与归约拆分边界。
+
+- 2026-11-28 · D01 已发布并核验。正文提交 `01218cc`，包含 B06 的后续提交 `50c8e0a` 的 [GitHub Pages 部署](https://github.com/microarch-flow/wiki/actions/runs/46122645715)成功。[公开正文](https://microarch-flow.github.io/wiki/series/compiler-runtime/04-code-generation/d01-lowering-and-bufferization/)、专题导读、两张图解、导航、面包屑及搜索收录均已核验。合并 C04 后本地整站 173 项测试通过，含 B06 的部署版本 174 项测试通过。复算了六个加法结果、[1,0] 的三个字节地址及覆盖旧输入的反例。
