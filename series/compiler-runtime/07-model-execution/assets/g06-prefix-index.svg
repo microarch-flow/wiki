@@ -1,0 +1,70 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 841" width="500" height="841" role="img" aria-labelledby="title desc">
+  <title id="title">链式 Hash 和 Radix 树的前缀索引对照</title>
+  <desc id="desc">假设缓存身份一致且处于同一命名空间 N。完整块链式 Hash 教学结构中，H1 等于 hash(N,[p1至p4])，A 的第二个完整块键 H2A 等于 hash(H1,[p5至p8])，分别记录到池块七和二的映射。C 查询与 A 相同的 H1，命中池块七；C 的末块仅有 c5、c6，完整块版本不建立其键。另一种独立的概念图以 Token 路径组织 Radix 树：根 N 经过压缩的共同路径 p1至p4，然后分别分支至 A 的 p5至p8 与 C 的 c5、c6。树可以表达部分路径，但不意味着所有具体框架都支持部分物理块复用。索引保存键或路径、映射及引用，实际 KV 在缓存池中。图不规定具体实现中的 Hash 算法、键格式或碰撞处理规则。</desc>
+  <defs>
+    <marker id="arrow" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0 0L7 3.5L0 7Z" fill="#527d64"/></marker>
+    <style>
+text{font-family:"Noto Sans CJK SC","PingFang SC","Microsoft YaHei",sans-serif;fill:#173d35;font-size:20px}
+.head{font-weight:700;font-size:23px}.subhead{font-weight:700;font-size:20px}.label{font-size:18px;fill:#416354}
+.small{font-size:17px;fill:#416354}.tiny{font-size:16px;fill:#416354}.token{font-size:18px;font-weight:600}
+.context{fill:#edf2e8;stroke:#9ab69e;stroke-width:1.5}.artifact{fill:#f9f8ef;stroke:#b8ba9e;stroke-width:1.4}
+.done{fill:#d9e9dc;stroke:#6f9a80;stroke-width:1.4}.known{fill:#f2e4c9;stroke:#9c7b42;stroke-width:1.5}
+.unknown{fill:#f5f6ef;stroke:#8b9c8e;stroke-width:1.4;stroke-dasharray:3 3}
+.future{fill:#f5f6ef;stroke:#c4d0c4;stroke-width:1}.line{stroke:#c4d0c4;stroke-width:1.3;fill:none}
+.arrow{stroke:#527d64;stroke-width:2;fill:none;marker-end:url(#arrow)}.branch{stroke:#527d64;stroke-width:2;fill:none}
+.bar{fill:#82af91;stroke:#527d64;stroke-width:1}.goldbar{fill:#d5b16e;stroke:#9c7b42;stroke-width:1}
+.cut{fill:#e9ece5;stroke:#9cae9e;stroke-width:1.4;stroke-dasharray:4 3}.match{fill:#f2e4c9;stroke:#9c7b42;stroke-width:2}
+
+.highlight{fill:#d9e9dc;stroke:#9c7b42;stroke-width:2.5}
+.empty{fill:#f5f6ef;stroke:#8b9c8e;stroke-width:1.4;stroke-dasharray:3 3}
+
+.idle{fill:#e8eee6;stroke:#78937f;stroke-dasharray:5 3;stroke-width:1.7}
+</style>
+  </defs>
+  <rect x="1" y="1" width="498" height="839" rx="14" fill="#f5f6ef" stroke="#c4d0c4" stroke-width="1.3"/>
+
+  <text x="24" y="34" class="head">索引怎样识别相同前缀？</text>
+  <text x="24" y="61" class="label">先确认相同缓存身份，记命名空间为 N</text>
+  <rect x="18" y="79" width="464" height="310" rx="10" class="context"/>
+  <text x="32" y="109" class="subhead">方式一：完整块的链式 Hash</text>
+  <text x="32" y="135" class="small">前一个前缀的 Hash 参与计算下一个键。</text>
+  <rect x="32" y="151" width="313" height="57" rx="5" class="done"/>
+  <text x="48" y="174" class="token">H1 = hash(N, [p1, …, p4])</text>
+  <text x="48" y="196" class="small">A、C 的首块键相同</text>
+  <path d="M350 179H372" class="arrow"/>
+  <rect x="379" y="157" width="89" height="46" rx="5" class="highlight"/>
+  <text x="423.5" y="186" text-anchor="middle" class="token">块 7</text>
+  <path d="M188 212V232" class="arrow"/>
+  <rect x="32" y="239" width="313" height="55" rx="5" class="done"/>
+  <text x="48" y="262" class="token">H2A = hash(H1, [p5, …, p8])</text>
+  <text x="48" y="284" class="small">A 的第二个完整块</text>
+  <path d="M350 266H372" class="arrow"/>
+  <rect x="379" y="243" width="89" height="46" rx="5" class="done"/>
+  <text x="423.5" y="272" text-anchor="middle" class="token">块 2</text>
+  <rect x="32" y="311" width="436" height="63" rx="5" class="artifact"/>
+  <text x="44" y="335" class="label">C 的首块查 H1 → 命中块 7。</text>
+  <text x="44" y="361" class="small">末块只有 c5、c6：完整块版本不建立其键。</text>
+  <rect x="18" y="403" width="464" height="314" rx="10" class="artifact"/>
+  <text x="32" y="433" class="subhead">方式二：按 Token 路径组织 Radix 树</text>
+  <text x="32" y="461" class="small">压缩相同前缀路径；沿分支继续查找。</text>
+  <rect x="179" y="475" width="142" height="35" rx="5" class="context"/>
+  <text x="250" y="498" text-anchor="middle" class="token">根 · N</text>
+  <path d="M250 513V528" class="arrow"/>
+  <rect x="134" y="534" width="232" height="45" rx="5" class="highlight"/>
+  <text x="250" y="553" text-anchor="middle" class="token">p1, p2, p3, p4</text>
+  <text x="250" y="571" text-anchor="middle" class="tiny">共同路径，可引用块 7</text>
+  <path d="M250 582V596H142V610" class="arrow"/>
+  <path d="M250 596H358V610" class="arrow"/>
+  <rect x="32" y="617" width="218" height="55" rx="5" class="done"/>
+  <rect x="258" y="617" width="210" height="55" rx="5" class="known"/>
+  <text x="141" y="639" text-anchor="middle" class="token">p5, p6, p7, p8</text>
+  <text x="141" y="660" text-anchor="middle" class="small">A 的分支</text>
+  <text x="363" y="639" text-anchor="middle" class="token">c5, c6</text>
+  <text x="363" y="660" text-anchor="middle" class="small">C 的分支路径</text>
+  <text x="32" y="699" class="tiny">树能表达部分路径，不代表物理块支持部分复用。</text>
+  <rect x="18" y="731" width="464" height="67" rx="10" class="context"/>
+  <text x="32" y="761" class="subhead">索引存的是键或路径、映射及引用</text>
+  <text x="32" y="785" class="small">真正的 K、V 仍在缓存池中。</text>
+  <text x="250" y="824" text-anchor="middle" class="small">教学结构示意，不限定框架的键格式或索引实现。</text>
+
+</svg>

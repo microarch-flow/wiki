@@ -29,7 +29,7 @@ G01 建立共享模型资源与请求实例的认知。G02 区分已生成 Token
 | G03 | [模型给出一组 Logits，怎样决定下一个 Token？](g03-sampling-and-generation.md) | Logits 处理顺序、采样、RNG、停止条件、生成状态、增量解码与输出边界。 | G02 | 已发布 |
 | G04 | [权重已经装进显存，为什么请求增加后仍然可能溢出？](g04-model-state-and-memory-budget.md) | Weight、Activation、Workspace、KV 内存预算、GQA/MLA/SSM 等状态差异、KV 精度和元数据。 | G01、G02 | 已发布 |
 | G05 | [序列不断变长，KV 怎样保存在不连续的缓存块中？](g05-paged-kv-cache.md) | 逻辑块表、分配与回收、分页、块大小取舍、不同层的缓存池、引用计数、Copy-on-Write。 | G04、F03 | 已发布 |
-| G06 | 两个请求的开头相同，哪些计算和状态可以复用？ | Prefix Cache、Hash/Radix、缓存身份、共享、命中率、淘汰、缓存污染。 | G05 | 未发布 |
+| G06 | [两个请求的开头相同，哪些计算和状态可以复用？](g06-prefix-cache.md) | Prefix Cache、Hash/Radix、缓存身份、共享、命中率、淘汰、缓存污染。 | G05 | 已发布 |
 | G07 | 显存放不下全部 KV，应该搬走还是重新计算？ | 分层存储、活跃状态卸载、冷前缀、迁移、预取、恢复、传输与重算代价。 | G05、F02；按需 G06 | 未发布 |
 | G08 | 怎样让模型生成符合指定格式的文本？ | 约束解码、语法状态、Token 边界、Mask、允许集合、输出验证。 | G03 | 未发布 |
 | G09 | [一次生成多个候选 Token，怎样验证并提交正确的结果？](g09-speculative-decoding.md) | 投机解码、Draft/Verify、接受与拒绝、状态提交与回滚、接受率与成本。 | G03、G04；分页场景参考 G05 | 已发布 |
