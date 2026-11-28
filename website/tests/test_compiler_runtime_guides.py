@@ -530,6 +530,21 @@ class CompilerRuntimeGuideTests(unittest.TestCase):
         previous = SITE / PREFIX / route / "d06-fused-kernels/index.html"
         self.assertIn(f"../{slug}/", GuideContent(previous.read_text()).links)
 
+    def test_g04_article_navigation_search_and_diagrams(self):
+        route = "07-model-execution"
+        slug = "g04-model-state-and-memory-budget"
+        self._check_article(
+            route,
+            "模型执行与生成控制",
+            slug,
+            "权重已经装进显存，为什么请求增加后仍然可能溢出？",
+            ("g04-memory-lifetimes.svg", "g04-kv-per-position.svg",
+             "g04-model-state-types.svg", "g04-device-budget.svg"),
+        )
+        for previous_slug in ("g02-prefill-and-decode", "g03-sampling-and-generation"):
+            previous = SITE / PREFIX / route / previous_slug / "index.html"
+            self.assertIn(f"../{slug}/", GuideContent(previous.read_text()).links)
+
     def _check_foundation_article(self, slug, title, diagram_names):
         self._check_article("01-foundations", "软件执行共同基础", slug, title, diagram_names)
 

@@ -1,0 +1,142 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 770" width="500" height="770" role="img" aria-labelledby="title desc">
+  <title id="title">计算标准全注意力中逐层、逐位置的 KV 有效载荷</title>
+  <desc id="desc">沿用 G02 教学层，FP16，每元素 2 字节，4 个查询头、2 个 KV 头且每头 16 维。每个位置在一层中分别保存 K、V，各 2×16×2 字节即 64 字节，共 128 字节。固定四个查询头及其他条件，MHA 使用四个 KV 头为 256 字节，GQA 使用两个为 128 字节，MQA 一个为 64 字节。A 四轮模型前向完成后有效位置数为八、九、十、十一，对应这一层 1024、1152、1280、1408 字节的有效载荷。以上不含元数据、对齐和预留空间，不代表实际分配容量。</desc>
+  <defs>
+    <marker id="arrow" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0 0L7 3.5L0 7Z" fill="#527d64"/></marker>
+    <style>
+text{font-family:"Noto Sans CJK SC","PingFang SC","Microsoft YaHei",sans-serif;fill:#173d35;font-size:20px}
+.head{font-weight:700;font-size:23px}.subhead{font-weight:700;font-size:20px}.label{font-size:18px;fill:#416354}
+.small{font-size:17px;fill:#416354}.tiny{font-size:16px;fill:#416354}.token{font-size:18px;font-weight:600}
+.context{fill:#edf2e8;stroke:#9ab69e;stroke-width:1.5}.artifact{fill:#f9f8ef;stroke:#b8ba9e;stroke-width:1.4}
+.done{fill:#d9e9dc;stroke:#6f9a80;stroke-width:1.4}.known{fill:#f2e4c9;stroke:#9c7b42;stroke-width:1.5}
+.unknown{fill:#f5f6ef;stroke:#8b9c8e;stroke-width:1.4;stroke-dasharray:3 3}
+.future{fill:#f5f6ef;stroke:#c4d0c4;stroke-width:1}.line{stroke:#c4d0c4;stroke-width:1.3;fill:none}
+.arrow{stroke:#527d64;stroke-width:2;fill:none;marker-end:url(#arrow)}
+.bar{fill:#82af91;stroke:#527d64;stroke-width:1}.goldbar{fill:#d5b16e;stroke:#9c7b42;stroke-width:1}
+</style>
+  </defs>
+  <rect x="1" y="1" width="498" height="768" rx="14" fill="#f5f6ef" stroke="#c4d0c4" stroke-width="1.3"/>
+
+  <text x="24" y="34" class="head">一个位置的 KV 到底有多大？</text>
+  <text x="24" y="61" class="label">G02 教学层：FP16 · 4 个 Query 头 · 2 个 KV 头</text>
+  <rect x="18" y="79" width="464" height="231" rx="10" class="context"/>
+  <text x="32" y="109" class="subhead">每层、每位置：分别保存 K 和 V</text>
+  <text x="32" y="136" class="small">每个小格：1 个 FP16 元素（2 B）</text>
+  <rect x="31" y="149" width="209" height="121" rx="8" class="artifact"/>
+  <rect x="260" y="149" width="209" height="121" rx="8" class="artifact"/>
+  <text x="135.5" y="178" text-anchor="middle" class="subhead">K：2 个头，每头 16 维</text>
+  <rect x="43.00" y="190" width="10" height="19" rx="1.4" class="done"/>
+  <rect x="54.65" y="190" width="10" height="19" rx="1.4" class="done"/>
+  <rect x="66.30" y="190" width="10" height="19" rx="1.4" class="done"/>
+  <rect x="77.95" y="190" width="10" height="19" rx="1.4" class="done"/>
+  <rect x="89.60" y="190" width="10" height="19" rx="1.4" class="done"/>
+  <rect x="101.25" y="190" width="10" height="19" rx="1.4" class="done"/>
+  <rect x="112.90" y="190" width="10" height="19" rx="1.4" class="done"/>
+  <rect x="124.55" y="190" width="10" height="19" rx="1.4" class="done"/>
+  <rect x="136.20" y="190" width="10" height="19" rx="1.4" class="done"/>
+  <rect x="147.85" y="190" width="10" height="19" rx="1.4" class="done"/>
+  <rect x="159.50" y="190" width="10" height="19" rx="1.4" class="done"/>
+  <rect x="171.15" y="190" width="10" height="19" rx="1.4" class="done"/>
+  <rect x="182.80" y="190" width="10" height="19" rx="1.4" class="done"/>
+  <rect x="194.45" y="190" width="10" height="19" rx="1.4" class="done"/>
+  <rect x="206.10" y="190" width="10" height="19" rx="1.4" class="done"/>
+  <rect x="217.75" y="190" width="10" height="19" rx="1.4" class="done"/>
+  <rect x="43.00" y="212" width="10" height="19" rx="1.4" class="done"/>
+  <rect x="54.65" y="212" width="10" height="19" rx="1.4" class="done"/>
+  <rect x="66.30" y="212" width="10" height="19" rx="1.4" class="done"/>
+  <rect x="77.95" y="212" width="10" height="19" rx="1.4" class="done"/>
+  <rect x="89.60" y="212" width="10" height="19" rx="1.4" class="done"/>
+  <rect x="101.25" y="212" width="10" height="19" rx="1.4" class="done"/>
+  <rect x="112.90" y="212" width="10" height="19" rx="1.4" class="done"/>
+  <rect x="124.55" y="212" width="10" height="19" rx="1.4" class="done"/>
+  <rect x="136.20" y="212" width="10" height="19" rx="1.4" class="done"/>
+  <rect x="147.85" y="212" width="10" height="19" rx="1.4" class="done"/>
+  <rect x="159.50" y="212" width="10" height="19" rx="1.4" class="done"/>
+  <rect x="171.15" y="212" width="10" height="19" rx="1.4" class="done"/>
+  <rect x="182.80" y="212" width="10" height="19" rx="1.4" class="done"/>
+  <rect x="194.45" y="212" width="10" height="19" rx="1.4" class="done"/>
+  <rect x="206.10" y="212" width="10" height="19" rx="1.4" class="done"/>
+  <rect x="217.75" y="212" width="10" height="19" rx="1.4" class="done"/>
+  <text x="135.5" y="254" text-anchor="middle" class="label">2 × 16 × 2 B = 64 B</text>
+  <text x="364.5" y="178" text-anchor="middle" class="subhead">V：2 个头，每头 16 维</text>
+  <rect x="272.00" y="190" width="10" height="19" rx="1.4" class="done"/>
+  <rect x="283.65" y="190" width="10" height="19" rx="1.4" class="done"/>
+  <rect x="295.30" y="190" width="10" height="19" rx="1.4" class="done"/>
+  <rect x="306.95" y="190" width="10" height="19" rx="1.4" class="done"/>
+  <rect x="318.60" y="190" width="10" height="19" rx="1.4" class="done"/>
+  <rect x="330.25" y="190" width="10" height="19" rx="1.4" class="done"/>
+  <rect x="341.90" y="190" width="10" height="19" rx="1.4" class="done"/>
+  <rect x="353.55" y="190" width="10" height="19" rx="1.4" class="done"/>
+  <rect x="365.20" y="190" width="10" height="19" rx="1.4" class="done"/>
+  <rect x="376.85" y="190" width="10" height="19" rx="1.4" class="done"/>
+  <rect x="388.50" y="190" width="10" height="19" rx="1.4" class="done"/>
+  <rect x="400.15" y="190" width="10" height="19" rx="1.4" class="done"/>
+  <rect x="411.80" y="190" width="10" height="19" rx="1.4" class="done"/>
+  <rect x="423.45" y="190" width="10" height="19" rx="1.4" class="done"/>
+  <rect x="435.10" y="190" width="10" height="19" rx="1.4" class="done"/>
+  <rect x="446.75" y="190" width="10" height="19" rx="1.4" class="done"/>
+  <rect x="272.00" y="212" width="10" height="19" rx="1.4" class="done"/>
+  <rect x="283.65" y="212" width="10" height="19" rx="1.4" class="done"/>
+  <rect x="295.30" y="212" width="10" height="19" rx="1.4" class="done"/>
+  <rect x="306.95" y="212" width="10" height="19" rx="1.4" class="done"/>
+  <rect x="318.60" y="212" width="10" height="19" rx="1.4" class="done"/>
+  <rect x="330.25" y="212" width="10" height="19" rx="1.4" class="done"/>
+  <rect x="341.90" y="212" width="10" height="19" rx="1.4" class="done"/>
+  <rect x="353.55" y="212" width="10" height="19" rx="1.4" class="done"/>
+  <rect x="365.20" y="212" width="10" height="19" rx="1.4" class="done"/>
+  <rect x="376.85" y="212" width="10" height="19" rx="1.4" class="done"/>
+  <rect x="388.50" y="212" width="10" height="19" rx="1.4" class="done"/>
+  <rect x="400.15" y="212" width="10" height="19" rx="1.4" class="done"/>
+  <rect x="411.80" y="212" width="10" height="19" rx="1.4" class="done"/>
+  <rect x="423.45" y="212" width="10" height="19" rx="1.4" class="done"/>
+  <rect x="435.10" y="212" width="10" height="19" rx="1.4" class="done"/>
+  <rect x="446.75" y="212" width="10" height="19" rx="1.4" class="done"/>
+  <text x="364.5" y="254" text-anchor="middle" class="label">2 × 16 × 2 B = 64 B</text>
+
+  <text x="250" y="295" text-anchor="middle" class="subhead">K + V = 128 B / 位置 / 层</text>
+  <rect x="18" y="325" width="464" height="213" rx="10" class="artifact"/>
+  <text x="32" y="355" class="subhead">Query 头数相同，KV 头数不同</text>
+  <text x="32" y="383" class="small">固定 4 个 Query 头、每头 16 维、FP16</text>
+  <text x="36" y="413" class="label">结构</text>
+  <text x="183" y="413" text-anchor="middle" class="label">KV 头</text>
+  <text x="462" y="413" text-anchor="end" class="label">载荷（B）</text>
+  <path d="M32 423H468" class="line"/>
+  <text x="36" y="450" class="token">MHA</text>
+  <text x="183" y="450" text-anchor="middle" class="token">4</text>
+  <rect x="226" y="434" width="158" height="18" rx="4" class="future"/>
+  <rect x="226" y="434" width="158.00" height="18" rx="4" class="bar"/>
+  <text x="462" y="450" text-anchor="end" class="token">256</text>
+  <text x="36" y="484" class="token">GQA</text>
+  <text x="183" y="484" text-anchor="middle" class="token">2</text>
+  <rect x="226" y="468" width="158" height="18" rx="4" class="future"/>
+  <rect x="226" y="468" width="79.00" height="18" rx="4" class="goldbar"/>
+  <text x="462" y="484" text-anchor="end" class="token">128</text>
+  <text x="36" y="518" class="token">MQA</text>
+  <text x="183" y="518" text-anchor="middle" class="token">1</text>
+  <rect x="226" y="502" width="158" height="18" rx="4" class="future"/>
+  <rect x="226" y="502" width="39.50" height="18" rx="4" class="bar"/>
+  <text x="462" y="518" text-anchor="end" class="token">64</text>
+
+  <rect x="18" y="551" width="464" height="174" rx="10" class="context"/>
+  <text x="32" y="581" class="subhead">沿用 GQA：A 的有效 KV 载荷</text>
+  <text x="32" y="609" class="small">单层；对应 G02 四轮前向完成后的状态</text>
+  <rect x="32" y="622" width="106" height="88" rx="5" class="done"/>
+  <text x="85" y="644" text-anchor="middle" class="small">Prefill</text>
+  <text x="85" y="670" text-anchor="middle" class="label">8 位置</text>
+  <text x="85" y="695" text-anchor="middle" class="token">1,024 B</text>
+  <rect x="142" y="622" width="106" height="88" rx="5" class="done"/>
+  <text x="195" y="644" text-anchor="middle" class="small">Decode 1</text>
+  <text x="195" y="670" text-anchor="middle" class="label">9 位置</text>
+  <text x="195" y="695" text-anchor="middle" class="token">1,152 B</text>
+  <rect x="252" y="622" width="106" height="88" rx="5" class="done"/>
+  <text x="305" y="644" text-anchor="middle" class="small">Decode 2</text>
+  <text x="305" y="670" text-anchor="middle" class="label">10 位置</text>
+  <text x="305" y="695" text-anchor="middle" class="token">1,280 B</text>
+  <rect x="362" y="622" width="106" height="88" rx="5" class="done"/>
+  <text x="415" y="644" text-anchor="middle" class="small">Decode 3</text>
+  <text x="415" y="670" text-anchor="middle" class="label">11 位置</text>
+  <text x="415" y="695" text-anchor="middle" class="token">1,408 B</text>
+
+  <text x="250" y="752" text-anchor="middle" class="small">仅有效数据载荷，不含元数据、对齐和预留空间。</text>
+
+</svg>

@@ -1,0 +1,80 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 780" width="500" height="780" role="img" aria-labelledby="title desc">
+  <title id="title">模型权重、其他开销与 KV 预算的单设备反例</title>
+  <desc id="desc">构造单设备的 24 GiB 可用预算，权重 12 GiB，与其同时存在的其他非 KV 开销 4 GiB，留给 KV 的预算 8 GiB。比例条按实际容量比例绘制。假设八条请求当前有效 KV 载荷各为 1 GiB，忽略元数据、对齐、分配粒度和额外状态，载荷恰好用尽预算。如果下一轮任一请求还需要新增正的有效 KV 载荷且其他资源占用不变，就无法放下更多有效数据。最后的 Δ 框不按比例绘制。预算、有效载荷、分配及预留是不同口径，这不是推荐的接纳策略或实测容量。</desc>
+  <defs>
+    <marker id="arrow" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0 0L7 3.5L0 7Z" fill="#527d64"/></marker>
+    <style>
+text{font-family:"Noto Sans CJK SC","PingFang SC","Microsoft YaHei",sans-serif;fill:#173d35;font-size:20px}
+.head{font-weight:700;font-size:23px}.subhead{font-weight:700;font-size:20px}.label{font-size:18px;fill:#416354}
+.small{font-size:17px;fill:#416354}.tiny{font-size:16px;fill:#416354}.token{font-size:18px;font-weight:600}
+.context{fill:#edf2e8;stroke:#9ab69e;stroke-width:1.5}.artifact{fill:#f9f8ef;stroke:#b8ba9e;stroke-width:1.4}
+.done{fill:#d9e9dc;stroke:#6f9a80;stroke-width:1.4}.known{fill:#f2e4c9;stroke:#9c7b42;stroke-width:1.5}
+.unknown{fill:#f5f6ef;stroke:#8b9c8e;stroke-width:1.4;stroke-dasharray:3 3}
+.future{fill:#f5f6ef;stroke:#c4d0c4;stroke-width:1}.line{stroke:#c4d0c4;stroke-width:1.3;fill:none}
+.arrow{stroke:#527d64;stroke-width:2;fill:none;marker-end:url(#arrow)}
+.bar{fill:#82af91;stroke:#527d64;stroke-width:1}.goldbar{fill:#d5b16e;stroke:#9c7b42;stroke-width:1}
+</style>
+  </defs>
+  <rect x="1" y="1" width="498" height="778" rx="14" fill="#f5f6ef" stroke="#c4d0c4" stroke-width="1.3"/>
+
+  <text x="24" y="34" class="head">当前 8 条放得下，下一轮呢？</text>
+  <text x="24" y="61" class="label">构造的单设备容量预算 · 不是实测数据</text>
+  <rect x="18" y="79" width="464" height="209" rx="10" class="context"/>
+  <text x="32" y="110" class="subhead">同一时刻：可用预算 24 GiB</text>
+  <text x="32" y="140" class="small">固定权重与其他非 KV 开销</text>
+  <rect x="32" y="156" width="218" height="49" rx="4" class="bar"/>
+  <rect x="250" y="156" width="72.667" height="49" class="goldbar"/>
+  <rect x="322.667" y="156" width="145.333" height="49" rx="4" class="done"/>
+  <text x="141" y="186" text-anchor="middle" class="token">权重 12</text>
+  <text x="286.333" y="178" text-anchor="middle" class="tiny">其他</text>
+  <text x="286.333" y="197" text-anchor="middle" class="tiny">4</text>
+  <text x="395.333" y="178" text-anchor="middle" class="token">KV</text>
+  <text x="395.333" y="197" text-anchor="middle" class="tiny">预算 8</text>
+  <path d="M32 212V221H468V212" class="line"/>
+  <text x="250" y="242" text-anchor="middle" class="token">12 + 4 + 8 = 24 GiB</text>
+  <text x="32" y="272" class="small">只剩 8 GiB 可用于 KV；预算不是已分配量。</text>
+  <path d="M395.333 294V310H250V328" class="arrow"/>
+  <rect x="18" y="336" width="464" height="206" rx="10" class="artifact"/>
+  <text x="32" y="367" class="subhead">放大观察：8 GiB 的 KV 预算</text>
+  <text x="32" y="397" class="label">8 条请求各 1 GiB 有效 KV 载荷</text>
+  <rect x="32.0" y="413" width="54.5" height="53" class="done"/>
+  <text x="59.2" y="436" text-anchor="middle" class="tiny">R1</text>
+  <text x="59.2" y="457" text-anchor="middle" class="tiny">1 GiB</text>
+  <rect x="86.5" y="413" width="54.5" height="53" class="done"/>
+  <text x="113.8" y="436" text-anchor="middle" class="tiny">R2</text>
+  <text x="113.8" y="457" text-anchor="middle" class="tiny">1 GiB</text>
+  <rect x="141.0" y="413" width="54.5" height="53" class="done"/>
+  <text x="168.2" y="436" text-anchor="middle" class="tiny">R3</text>
+  <text x="168.2" y="457" text-anchor="middle" class="tiny">1 GiB</text>
+  <rect x="195.5" y="413" width="54.5" height="53" class="done"/>
+  <text x="222.8" y="436" text-anchor="middle" class="tiny">R4</text>
+  <text x="222.8" y="457" text-anchor="middle" class="tiny">1 GiB</text>
+  <rect x="250.0" y="413" width="54.5" height="53" class="done"/>
+  <text x="277.2" y="436" text-anchor="middle" class="tiny">R5</text>
+  <text x="277.2" y="457" text-anchor="middle" class="tiny">1 GiB</text>
+  <rect x="304.5" y="413" width="54.5" height="53" class="done"/>
+  <text x="331.8" y="436" text-anchor="middle" class="tiny">R6</text>
+  <text x="331.8" y="457" text-anchor="middle" class="tiny">1 GiB</text>
+  <rect x="359.0" y="413" width="54.5" height="53" class="done"/>
+  <text x="386.2" y="436" text-anchor="middle" class="tiny">R7</text>
+  <text x="386.2" y="457" text-anchor="middle" class="tiny">1 GiB</text>
+  <rect x="413.5" y="413" width="54.5" height="53" class="done"/>
+  <text x="440.8" y="436" text-anchor="middle" class="tiny">R8</text>
+  <text x="440.8" y="457" text-anchor="middle" class="tiny">1 GiB</text>
+
+  <text x="250" y="498" text-anchor="middle" class="subhead">载荷合计 8 GiB，已用完预算</text>
+  <text x="32" y="525" class="small">假设忽略元数据、分配粒度和额外状态。</text>
+  <path d="M250 546V565" class="arrow"/>
+  <rect x="18" y="572" width="464" height="140" rx="10" class="context"/>
+  <text x="32" y="603" class="subhead">下一轮：仍需增长的请求</text>
+  <text x="32" y="635" class="label">若新增有效 KV 载荷为 Δ &gt; 0：</text>
+  <rect x="32" y="648" width="247" height="41" rx="5" class="done"/>
+  <text x="155.5" y="675" text-anchor="middle" class="subhead">当前 8 GiB</text>
+  <text x="294" y="675" class="token">+</text>
+  <rect x="317" y="648" width="43" height="41" rx="5" class="known"/>
+  <text x="338.5" y="675" text-anchor="middle" class="subhead">Δ</text>
+  <text x="370" y="675" class="token">&gt; 8 GiB</text>
+  <text x="250" y="738" text-anchor="middle" class="small">若资源占用无其他变化，任何正增长都放不下。</text>
+  <text x="250" y="763" text-anchor="middle" class="small">Δ 框不按比例；载荷不等于实际分配或预留。</text>
+
+</svg>
