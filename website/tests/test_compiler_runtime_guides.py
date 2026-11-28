@@ -462,6 +462,19 @@ class CompilerRuntimeGuideTests(unittest.TestCase):
             ("g01-model-instance.svg", "g01-request-ownership.svg"),
         )
 
+    def test_g02_article_navigation_search_and_diagrams(self):
+        route = "07-model-execution"
+        slug = "g02-prefill-and-decode"
+        self._check_article(
+            route,
+            "模型执行与生成控制",
+            slug,
+            "生成一个 Token 之前，模型到底执行了哪些工作？",
+            ("g02-prefill.svg", "g02-generation-progress.svg", "g02-stage-work.svg"),
+        )
+        previous = SITE / PREFIX / route / "g01-model-loading-and-execution/index.html"
+        self.assertIn(f"../{slug}/", GuideContent(previous.read_text()).links)
+
     def _check_foundation_article(self, slug, title, diagram_names):
         self._check_article("01-foundations", "软件执行共同基础", slug, title, diagram_names)
 

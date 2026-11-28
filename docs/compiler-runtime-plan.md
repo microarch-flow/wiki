@@ -268,7 +268,7 @@ G01 建立共享模型资源与请求实例的认知。G02 区分已生成 Token
 | ID | 暂定标题 | 核心范围 | 主要前置 | 计划文件名 | 状态 |
 | --- | --- | --- | --- | --- | --- | --- |
 | G01 | 模型文件怎样变成可以反复执行的模型实例？ | 权重准备、模型加载、后端交接、实例与请求区别、冷启动；CNN、扩散、SSM、LLM 的执行差异。 | F01、F02；F03 按需 | `g01-model-loading-and-execution.md` | 已发布 |
-| G02 | 生成一个 Token 之前，模型到底执行了哪些工作？ | 单请求执行、Prefill、Decode、自回归依赖、KV 状态实际更新时点及阶段计算量。 | G01、模型基础 | `g02-prefill-and-decode.md` | 待写 |
+| G02 | 生成一个 Token 之前，模型到底执行了哪些工作？ | 单请求执行、Prefill、Decode、自回归依赖、KV 状态实际更新时点及阶段计算量。 | G01、模型基础 | `g02-prefill-and-decode.md` | 已发布 |
 | G03 | 模型给出一组 Logits，怎样决定下一个 Token？ | Logits 处理顺序、采样、RNG、停止条件、生成状态、增量解码与输出边界。 | G02 | `g03-sampling-and-generation.md` | 待写 |
 | G04 | 权重已经装进显存，为什么请求增加后仍然可能溢出？ | Weight、Activation、Workspace、KV 内存预算、GQA/MLA/SSM 等状态差异、KV 精度和元数据。 | G01、G02 | `g04-model-state-and-memory-budget.md` | 待写 |
 | G05 | 序列不断变长，KV 怎样保存在不连续的缓存块中？ | 逻辑块表、分配与回收、分页、块大小取舍、不同层的缓存池、引用计数、Copy-on-Write。 | G04、F03 | `g05-paged-kv-cache.md` | 待写 |
@@ -495,3 +495,5 @@ K 横跨所有路线。K01/K02 可早期开展，K03–K05 按被分析的机制
 - 2026-11-28 · G 专题认知依赖与迁移复核：保留九篇及两条路线。F01–F03 已建立通用模块/入口、依赖与可见性、动态 Buffer 生命周期；G01 不依赖 D05–D08、F04/F05 的深化知识。旧版模型加载、请求路径的身份及状态归属归 G01；G02–G03 追踪请求 A 的已生成和已计算位置，普通无前缀复用、无投机的四 Token 生成需一次完整 Prefill 与三次 Decode（结束时历史状态覆盖 11 个位置）；G04–G07 保留逐层预算、逻辑块与共享/迁移、计数边界；G08/G09 保留约束状态及候选状态提交/回滚。算法与模型已有 Attention、GQA、SSM 和自回归基础，但尚无独立 MLA 和投机解码正文，G04/G09 补足其所需的最小前置认知及原始来源，不改其他系列。H01/H02 以 G02/G03 为基础，H03 另需 G04/G05；I、J 继承模型与请求实例身份。G01 完成初稿，沿 M/W→请求 A（8 输入、4 输出上限、已生成及已计算均为 0），保留版本/适配器相容、后端交接、预热范围及启动峰值；核查 Safetensors、ONNX Runtime、TensorRT、vLLM v0.10.2 源码、Diffusers v0.34.0、Mamba 论文。复算 BF16 矩阵 32 MiB 及两份并存的 64 MiB 教学峰值，两张图 500/360 px 渲染检查通过；合并 F04/D05 正文后的本地网站构建和 188 项整站测试通过。旧推理运行时不变。
 
 - 2026-11-28 · D05 已发布并核验，AI 内核实现路线已开始。正文提交 `392d2af`，[GitHub Pages 部署](https://github.com/microarch-flow/wiki/actions/runs/46136068312)成功；[公开正文](https://microarch-flow.github.io/wiki/series/compiler-runtime/04-code-generation/d05-matrix-multiplication-kernels/)、D01/D04 衔接、专题导读、三张图解、导航、面包屑及搜索索引均已核验。合并 F04 后本地整站 187 项测试通过；1440 px/390 px 浏览器检查无横向溢出。实际 C11 编译执行及 SIMD 模型各通过 1,002 组，CUDA 线程模型通过 3,018 次（含末块无效线程），实际 CBLAS SGEMM 验证与 cuBLAS 参数等价关系通过 1,006 组，NPU 教学模型两种输出布局合计 606 次通过。GPU/NPU 结果为软件模型验证，非真机测量。旧版推理运行时未修改。
+
+- 2026-11-28 · G02 初稿完成。沿 G01 的模型 M 和请求 A（8 个输入、4 个输出上限），区分已知 Token、已生成 Token、已计算位置及实际有效 KV。假设全因果 Attention、无前缀复用/分块/投机、恰好生成 4 个输出：Prefill 得 y1，三轮 Decode 得 y2–y4，最终 12 个已知 Token、4 个已生成 Token、11 个有效 KV 位置。明确逐层 KV、数据就绪与状态回收的通用执行契约；按有效位置计重复计算 38→11、每层每查询头有效因果位置对 202→66。沿用 Transformer 工作负载的教学层核查阶段 FLOP、权重与历史 KV 的逻辑读写（不作为实际 HBM 流量或时延）；完整容量留 G04、采样留 G03、分页留 G05、性能估算留 K05。核查 Transformers v4.57.0、vLLM v0.10.2、PagedAttention、FlashAttention、Splitwise 原始资料，旧推理运行时不变。
