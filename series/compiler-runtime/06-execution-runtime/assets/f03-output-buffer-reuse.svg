@@ -1,0 +1,79 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 571" width="500" height="571" role="img" aria-labelledby="title desc">
+  <title id="title">两个独立输出槽和共享输出槽的执行日程</title>
+  <desc id="desc">假设沿 F02 的两组任务输入分别在第 4 和第 8 拍就绪，且一个搬运引擎和一个计算引擎。两个独立的 12 B 输出槽合计 24 B，C1 在第 4 至 7 拍执行、W1 在第 8 至 10 拍写回、C2 在第 8 至 11 拍执行、W2 在第 11 至 13 拍写回。若共享一块 12 B 输出槽，C2 可能覆盖 W1 正在读取的数据。等待 W1 成功交接且确认它不再访问该槽，且无其他持有者后，C2 在第 10 至 13 拍执行，W2 在第 13 至 15 拍写回。图仅展示计算和写回，搬入日程不变。两个方案本次工作分别需要 13 拍和 15 拍；只是教学模型，不是实测。</desc>
+  <defs>
+    <style>
+      text{font-family:"Noto Sans CJK SC","PingFang SC","Microsoft YaHei",sans-serif;fill:#173d35;font-size:18px}
+      .head{font-weight:700;font-size:23px}.subhead{font-weight:700;font-size:20px}.label{font-size:17px;fill:#416354}.small{font-size:16px;fill:#416354}.tick{font-size:14px;fill:#416354}.slot{font-size:17px;font-weight:600}.strong{font-weight:700;font-size:18px}.warn{fill:#765820;font-weight:600;font-size:17px}
+      .panel{fill:#edf2e8;stroke:#9ab69e;stroke-width:1.4}.idle{fill:#f9f8ef;stroke:#b8ba9e;stroke-width:1}.load{fill:#d9e9dc;stroke:#6f9a80;stroke-width:1.3}.compute{fill:#c1dac6;stroke:#6f9a80;stroke-width:1.4}.wait{fill:#f2e4c9;stroke:#9c7b42;stroke-width:1.3}.free{fill:#d9e9dc;stroke:#6f9a80;stroke-width:1.3}.used{fill:#f2e4c9;stroke:#9c7b42;stroke-width:1.3}.grid{stroke:#c4d0c4;stroke-width:1;stroke-dasharray:3 3}.edge{fill:none;stroke:#527d64;stroke-width:2;marker-end:url(#arrow)}.dep{fill:none;stroke:#9c7b42;stroke-width:2;stroke-dasharray:5 3;marker-end:url(#dep-arrow)}.end{stroke:#9c7b42;stroke-width:1.5}.danger{fill:none;stroke:#9c7b42;stroke-width:1.8;stroke-dasharray:5 3}
+    </style>
+    <marker id="arrow" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0 0L7 3.5L0 7Z" fill="#527d64"/></marker>
+    <marker id="dep-arrow" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0 0L7 3.5L0 7Z" fill="#9c7b42"/></marker>
+  </defs>
+  <rect x="1" y="1" width="498" height="569" rx="14" fill="#f5f6ef" stroke="#c4d0c4" stroke-width="1.3"/>
+  <text x="24" y="33" class="head">减少输出槽，会改变执行日程</text>
+  <text x="24" y="58" class="label">沿 F02：两组输入分别在第 4、8 拍就绪</text>
+  <text x="24" y="80" class="small">仅展示计算、写回；两组搬入日程不变</text>
+  <rect x="18" y="94" width="464" height="198" rx="10" class="panel"/>
+  <text x="32" y="121" class="subhead">方案一：两个输出槽（24 B）</text>
+  <text x="123" y="145" class="tick" text-anchor="middle">0</text>
+  <text x="167" y="145" class="tick" text-anchor="middle">2</text>
+  <text x="211" y="145" class="tick" text-anchor="middle">4</text>
+  <text x="255" y="145" class="tick" text-anchor="middle">6</text>
+  <text x="277" y="145" class="tick" text-anchor="middle">7</text>
+  <text x="299" y="145" class="tick" text-anchor="middle">8</text>
+  <text x="343" y="145" class="tick" text-anchor="middle">10</text>
+  <text x="365" y="145" class="tick" text-anchor="middle">11</text>
+  <text x="409" y="145" class="tick" text-anchor="middle">13</text>
+  <text x="453" y="145" class="tick" text-anchor="middle">15</text>
+  <path d="M123 151V229M145 151V229M167 151V229M189 151V229M211 151V229M233 151V229M255 151V229M277 151V229M299 151V229M321 151V229M343 151V229M365 151V229M387 151V229M409 151V229M431 151V229M453 151V229" class="grid"/>
+  <text x="115" y="177" class="label" text-anchor="end">计算引擎</text>
+  <rect x="123" y="155" width="330" height="32" rx="4" class="idle"/>
+  <rect x="211" y="155" width="66" height="32" rx="5" class="compute"/>
+  <text x="244.0" y="177.0" class="slot" text-anchor="middle">C₁</text>
+  <rect x="299" y="155" width="66" height="32" rx="5" class="compute"/>
+  <text x="332.0" y="177.0" class="slot" text-anchor="middle">C₂</text>
+  <text x="115" y="217" class="label" text-anchor="end">搬运引擎</text>
+  <rect x="123" y="195" width="330" height="32" rx="4" class="idle"/>
+  <rect x="299" y="195" width="44" height="32" rx="5" class="load"/>
+  <text x="321.0" y="217.0" class="slot" text-anchor="middle">W₁</text>
+  <rect x="365" y="195" width="44" height="32" rx="5" class="load"/>
+  <text x="387.0" y="217.0" class="slot" text-anchor="middle">W₂</text>
+  <path d="M409 152V231" class="end"/>
+  <rect x="299" y="152" width="44" height="77" rx="4" class="danger"/>
+  <text x="466" y="258" class="label" text-anchor="end">第 13 拍：第二组结果可读</text>
+  <text x="32" y="281" class="label">若共享同一槽，C₂ 与 W₁ 的访问可能冲突。</text>
+  <rect x="18" y="306" width="464" height="198" rx="10" class="panel"/>
+  <text x="32" y="333" class="subhead">方案二：共享一个输出槽（12 B）</text>
+  <text x="123" y="357" class="tick" text-anchor="middle">0</text>
+  <text x="167" y="357" class="tick" text-anchor="middle">2</text>
+  <text x="211" y="357" class="tick" text-anchor="middle">4</text>
+  <text x="255" y="357" class="tick" text-anchor="middle">6</text>
+  <text x="277" y="357" class="tick" text-anchor="middle">7</text>
+  <text x="299" y="357" class="tick" text-anchor="middle">8</text>
+  <text x="343" y="357" class="tick" text-anchor="middle">10</text>
+  <text x="365" y="357" class="tick" text-anchor="middle">11</text>
+  <text x="409" y="357" class="tick" text-anchor="middle">13</text>
+  <text x="453" y="357" class="tick" text-anchor="middle">15</text>
+  <path d="M123 363V441M145 363V441M167 363V441M189 363V441M211 363V441M233 363V441M255 363V441M277 363V441M299 363V441M321 363V441M343 363V441M365 363V441M387 363V441M409 363V441M431 363V441M453 363V441" class="grid"/>
+  <text x="115" y="389" class="label" text-anchor="end">计算引擎</text>
+  <rect x="123" y="367" width="330" height="32" rx="4" class="idle"/>
+  <rect x="211" y="367" width="66" height="32" rx="5" class="compute"/>
+  <text x="244.0" y="389.0" class="slot" text-anchor="middle">C₁</text>
+  <rect x="299" y="367" width="44" height="32" rx="5" class="wait"/>
+  <text x="321.0" y="389.0" class="slot" text-anchor="middle">等</text>
+  <rect x="343" y="367" width="66" height="32" rx="5" class="compute"/>
+  <text x="376.0" y="389.0" class="slot" text-anchor="middle">C₂</text>
+  <text x="115" y="429" class="label" text-anchor="end">搬运引擎</text>
+  <rect x="123" y="407" width="330" height="32" rx="4" class="idle"/>
+  <rect x="299" y="407" width="44" height="32" rx="5" class="load"/>
+  <text x="321.0" y="429.0" class="slot" text-anchor="middle">W₁</text>
+  <rect x="409" y="407" width="44" height="32" rx="5" class="load"/>
+  <text x="431.0" y="429.0" class="slot" text-anchor="middle">W₂</text>
+  <path d="M453 364V443" class="end"/>
+  <path d="M343 364V443" class="danger"/>
+  <text x="466" y="470" class="warn" text-anchor="end">第 10 拍：等 e_Y₁ 确认可安全复用</text>
+  <text x="32" y="493" class="label">第 15 拍：第二组结果可读</text>
+  <text x="24" y="531" class="label">少用 12 B 输出空间，总耗时由 13 拍增至 15 拍。</text>
+  <text x="24" y="555" class="small">教学日程；仅计两组向量的逻辑输出空间。</text>
+</svg>

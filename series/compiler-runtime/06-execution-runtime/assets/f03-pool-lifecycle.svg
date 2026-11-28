@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 671" width="500" height="671" role="img" aria-labelledby="title desc">
+  <title id="title">一个输出 Buffer 从分配到安全复用的生命周期</title>
+  <desc id="desc">一块 12 B 输出槽由池保留。空闲时可以借用；运行时将其分配给 C1，C1 写入而 W1 读取并写回结果。上层归还引用时，W1 可能仍然持有资源并读取该存储，所以该槽位于待回收状态，不能马上分配。事件 e_Y1 满足约定，W1 已完成且读访问结束，确认无其他持有者及在途访问并满足释放契约后，才可安全归还到池，重新借给 C2。池中保留的存储不等于当前可借空间；这是教学状态，不规定任何实现必须具备这种状态机。</desc>
+  <defs>
+    <style>
+      text{font-family:"Noto Sans CJK SC","PingFang SC","Microsoft YaHei",sans-serif;fill:#173d35;font-size:18px}
+      .head{font-weight:700;font-size:23px}.subhead{font-weight:700;font-size:20px}.label{font-size:17px;fill:#416354}.small{font-size:16px;fill:#416354}.tick{font-size:14px;fill:#416354}.slot{font-size:17px;font-weight:600}.strong{font-weight:700;font-size:18px}.warn{fill:#765820;font-weight:600;font-size:17px}
+      .panel{fill:#edf2e8;stroke:#9ab69e;stroke-width:1.4}.idle{fill:#f9f8ef;stroke:#b8ba9e;stroke-width:1}.load{fill:#d9e9dc;stroke:#6f9a80;stroke-width:1.3}.compute{fill:#c1dac6;stroke:#6f9a80;stroke-width:1.4}.wait{fill:#f2e4c9;stroke:#9c7b42;stroke-width:1.3}.free{fill:#d9e9dc;stroke:#6f9a80;stroke-width:1.3}.used{fill:#f2e4c9;stroke:#9c7b42;stroke-width:1.3}.grid{stroke:#c4d0c4;stroke-width:1;stroke-dasharray:3 3}.edge{fill:none;stroke:#527d64;stroke-width:2;marker-end:url(#arrow)}.dep{fill:none;stroke:#9c7b42;stroke-width:2;stroke-dasharray:5 3;marker-end:url(#dep-arrow)}.end{stroke:#9c7b42;stroke-width:1.5}.danger{fill:none;stroke:#9c7b42;stroke-width:1.8;stroke-dasharray:5 3}
+    </style>
+    <marker id="arrow" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0 0L7 3.5L0 7Z" fill="#527d64"/></marker>
+    <marker id="dep-arrow" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0 0L7 3.5L0 7Z" fill="#9c7b42"/></marker>
+  </defs>
+  <rect x="1" y="1" width="498" height="669" rx="14" fill="#f5f6ef" stroke="#c4d0c4" stroke-width="1.3"/>
+  <text x="24" y="33" class="head">一个 Buffer 怎样安全归还？</text>
+  <text x="24" y="58" class="label">逻辑资源：一块 12 B 输出槽</text>
+  <text x="24" y="80" class="small">跟踪分配、持有、回收、再次借用</text>
+  <rect x="23" y="96" width="454" height="76" rx="9" class="free"/>
+  <text x="38" y="124" class="subhead">空闲：可借用</text>
+  <text x="38" y="150" class="label">池中已有一块保留的输出存储</text>
+  <rect x="23" y="194" width="454" height="76" rx="9" class="panel"/>
+  <text x="38" y="222" class="subhead">分配：当前被持有</text>
+  <text x="38" y="248" class="label">C₁ 写入，W₁ 读取并写回主机</text>
+  <rect x="23" y="292" width="454" height="76" rx="9" class="wait"/>
+  <text x="38" y="320" class="subhead">待回收：不可立即再借</text>
+  <text x="38" y="346" class="label">上层归还引用，但 W₁ 可能尚在读</text>
+  <rect x="23" y="430" width="454" height="76" rx="9" class="free"/>
+  <text x="38" y="458" class="subhead">安全归还：重新空闲</text>
+  <text x="38" y="484" class="label">确认无其他持有者及在途访问</text>
+  <rect x="23" y="528" width="454" height="76" rx="9" class="panel"/>
+  <text x="38" y="556" class="subhead">再次借出：供 C₂ 写入</text>
+  <text x="38" y="582" class="label">同一设备空间进入下一轮生命周期</text>
+  <path d="M250 172V190" class="edge"/>
+  <path d="M250 270V288" class="edge"/>
+  <path d="M250 506V524" class="edge"/>
+  <path d="M250 368V375 H42 V423 H250 V426" class="dep"/>
+  <text x="66" y="397" class="warn">e_Y₁：W₁ 完成，读访问结束</text>
+  <text x="66" y="417" class="small">还需满足释放约定</text>
+  <text x="24" y="630" class="label">池保留的存储不等于当前可借的空间。</text>
+  <text x="24" y="654" class="small">以上为教学状态，不规定统一的分配器状态机。</text>
+</svg>

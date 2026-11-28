@@ -219,6 +219,19 @@ class CompilerRuntimeGuideTests(unittest.TestCase):
         previous = SITE / PREFIX / route / "f01-module-loading-and-dispatch/index.html"
         self.assertIn(f"../{slug}/", GuideContent(previous.read_text()).links)
 
+    def test_f03_article_navigation_search_and_diagrams(self):
+        route = "06-execution-runtime"
+        slug = "f03-runtime-buffer-management"
+        self._check_article(
+            route,
+            "通用执行运行时",
+            slug,
+            "两项任务需要使用同一块 Buffer，什么时候才能安全复用？",
+            ("f03-output-buffer-reuse.svg", "f03-pool-lifecycle.svg", "f03-pool-fragmentation.svg"),
+        )
+        previous = SITE / PREFIX / route / "f02-asynchronous-execution/index.html"
+        self.assertIn(f"../{slug}/", GuideContent(previous.read_text()).links)
+
     def test_a01_article_navigation_search_and_diagrams(self):
         self._check_foundation_article(
             "a01-program-semantics",

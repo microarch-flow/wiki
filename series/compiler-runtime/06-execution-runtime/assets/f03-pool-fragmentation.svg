@@ -1,0 +1,55 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 601" width="500" height="601" role="img" aria-labelledby="title desc">
+  <title id="title">连续地址池中的外部与内部碎片</title>
+  <desc id="desc">教学示例使用一个连续地址池，容量 48 B。偏移 [0,12) 和 [24,36) 处为两段空闲区，[12,24) 和 [36,48) 仍在使用。总空闲字节数为 24 B，但最大连续空闲区只有 12 B，因而无法在此池内分配大小为 20 B 的连续子区间。确认 [12,24) 已安全归还后，将三个相邻的空闲区合并为 [0,36)，即可满足 20 B 的请求。另一例中，假设分配器按大小级别选择 16 B 的块来满足 12 B 请求，块内留下 4 B 无法分给其他对象。图不规定真实分配器的粒度或策略。</desc>
+  <defs>
+    <style>
+      text{font-family:"Noto Sans CJK SC","PingFang SC","Microsoft YaHei",sans-serif;fill:#173d35;font-size:18px}
+      .head{font-weight:700;font-size:23px}.subhead{font-weight:700;font-size:20px}.label{font-size:17px;fill:#416354}.small{font-size:16px;fill:#416354}.tick{font-size:14px;fill:#416354}.slot{font-size:17px;font-weight:600}.strong{font-weight:700;font-size:18px}.warn{fill:#765820;font-weight:600;font-size:17px}
+      .panel{fill:#edf2e8;stroke:#9ab69e;stroke-width:1.4}.idle{fill:#f9f8ef;stroke:#b8ba9e;stroke-width:1}.load{fill:#d9e9dc;stroke:#6f9a80;stroke-width:1.3}.compute{fill:#c1dac6;stroke:#6f9a80;stroke-width:1.4}.wait{fill:#f2e4c9;stroke:#9c7b42;stroke-width:1.3}.free{fill:#d9e9dc;stroke:#6f9a80;stroke-width:1.3}.used{fill:#f2e4c9;stroke:#9c7b42;stroke-width:1.3}.grid{stroke:#c4d0c4;stroke-width:1;stroke-dasharray:3 3}.edge{fill:none;stroke:#527d64;stroke-width:2;marker-end:url(#arrow)}.dep{fill:none;stroke:#9c7b42;stroke-width:2;stroke-dasharray:5 3;marker-end:url(#dep-arrow)}.end{stroke:#9c7b42;stroke-width:1.5}.danger{fill:none;stroke:#9c7b42;stroke-width:1.8;stroke-dasharray:5 3}
+    </style>
+    <marker id="arrow" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0 0L7 3.5L0 7Z" fill="#527d64"/></marker>
+    <marker id="dep-arrow" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0 0L7 3.5L0 7Z" fill="#9c7b42"/></marker>
+  </defs>
+  <rect x="1" y="1" width="498" height="599" rx="14" fill="#f5f6ef" stroke="#c4d0c4" stroke-width="1.3"/>
+  <text x="24" y="33" class="head">总空闲量足够，仍可能分配失败</text>
+  <text x="24" y="58" class="label">连续地址池共 48 B；以下数字均为字节偏移</text>
+  <text x="24" y="80" class="small">请求 20 B 连续子区间，暂不改变池容量</text>
+  <rect x="18" y="94" width="464" height="151" rx="10" class="panel"/>
+  <text x="32" y="121" class="subhead">释放前：空闲空间被分隔</text>
+  <text x="35.0" y="145" class="tick" text-anchor="middle">0</text>
+  <text x="142.5" y="145" class="tick" text-anchor="middle">12</text>
+  <text x="250.0" y="145" class="tick" text-anchor="middle">24</text>
+  <text x="357.5" y="145" class="tick" text-anchor="middle">36</text>
+  <text x="465.0" y="145" class="tick" text-anchor="middle">48</text>
+  <rect x="35.0" y="154" width="107.5" height="36" rx="5" class="free"/>
+  <text x="88.75" y="178.0" class="slot" text-anchor="middle">空闲</text>
+  <rect x="142.5" y="154" width="107.5" height="36" rx="5" class="used"/>
+  <text x="196.25" y="178.0" class="slot" text-anchor="middle">在用</text>
+  <rect x="250.0" y="154" width="107.5" height="36" rx="5" class="free"/>
+  <text x="303.75" y="178.0" class="slot" text-anchor="middle">空闲</text>
+  <rect x="357.5" y="154" width="107.5" height="36" rx="5" class="used"/>
+  <text x="411.25" y="178.0" class="slot" text-anchor="middle">在用</text>
+  <text x="32" y="214" class="label">总空闲 24 B，最大连续空闲段 12 B</text>
+  <text x="32" y="236" class="warn">分配 20 B 失败</text>
+  <rect x="18" y="260" width="464" height="151" rx="10" class="panel"/>
+  <text x="32" y="287" class="subhead">释放 [12,24) 后：相邻空闲段合并</text>
+  <text x="35.0" y="311" class="tick" text-anchor="middle">0</text>
+  <text x="142.5" y="311" class="tick" text-anchor="middle">12</text>
+  <text x="250.0" y="311" class="tick" text-anchor="middle">24</text>
+  <text x="357.5" y="311" class="tick" text-anchor="middle">36</text>
+  <text x="465.0" y="311" class="tick" text-anchor="middle">48</text>
+  <rect x="35.0" y="320" width="322.5" height="36" rx="5" class="free"/>
+  <text x="196.25" y="344.0" class="slot" text-anchor="middle">合并后空闲 36 B</text>
+  <rect x="357.5" y="320" width="107.5" height="36" rx="5" class="used"/>
+  <text x="411.25" y="344.0" class="slot" text-anchor="middle">在用</text>
+  <text x="32" y="380" class="label">总空闲 36 B，最大连续空闲段 36 B</text>
+  <text x="32" y="402" class="strong">分配 20 B 可以满足</text>
+  <rect x="18" y="427" width="464" height="130" rx="10" class="panel"/>
+  <text x="32" y="454" class="subhead">另一类浪费：按大小级别分配</text>
+  <rect x="35" y="468" width="322.5" height="35" rx="4" class="compute"/>
+  <text x="196.25" y="490" class="slot" text-anchor="middle">有效 12 B</text>
+  <rect x="357.5" y="468" width="107.5" height="35" rx="4" class="wait"/>
+  <text x="411.25" y="490" class="slot" text-anchor="middle">剩 4 B</text>
+  <text x="32" y="528" class="small">16 B 的块分给 12 B 请求，块内留下 4 B。</text>
+  <text x="24" y="584" class="small">示意：不要求真实分配器按上述块大小管理。</text>
+</svg>
