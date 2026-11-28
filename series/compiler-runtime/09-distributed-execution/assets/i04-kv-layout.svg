@@ -1,0 +1,127 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="500" height="411" viewBox="0 0 500 411" role="img" aria-labelledby="title desc">
+  <title id="title">同一层的历史 KV 怎样分到两张卡？</title>
+  <desc id="desc">沿用 G02、G04 的请求 A。历史有 8 个位置 p1 至 p8；一层有两个 KV 头，每个头在每个位置的 K 与 V 合计 64 B。总共 1024 B。在 TP=2 的本例中每个 Rank 保存一个完整 KV 头的 8 个位置，每卡 512 B；CP=2 沿历史位置切分，每个 Rank 保存两个 KV 头的 4 个位置，每卡 512 B。色块表示该处 KV 的所有者，不表示实际存储地址。</desc>
+  <defs>
+    <marker id="arrow" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto"><path d="M0 0L6 3L0 6Z" fill="#527d64"/></marker>
+    <marker id="arrowback" markerWidth="6" markerHeight="6" refX="1" refY="3" orient="auto"><path d="M6 0L0 3L6 6Z" fill="#527d64"/></marker>
+  </defs>
+
+  <style>
+    text { font-family: "Noto Sans CJK SC", "PingFang SC", "Microsoft YaHei", sans-serif; fill: #173d35; font-size: 18px; }
+    .head { font-size: 23px; font-weight: 700; } .subhead { font-size: 20px; font-weight: 700; }
+    .label { font-size: 17px; fill: #416354; } .small { font-size: 16px; fill: #416354; }
+    .num { font-size: 18px; text-anchor: middle; font-weight: 600; }
+    .panel { fill: #edf2e8; stroke: #9ab69e; stroke-width: 1.4; }
+    .card { fill: #f9f8ef; stroke: #b8ba9e; stroke-width: 1.25; }
+    .r0 { fill: #d9e9dc; stroke: #729582; stroke-width: 1.25; }
+    .r1 { fill: #f2e4c9; stroke: #aa9163; stroke-width: 1.25; }
+    .r2 { fill: #dce8e9; stroke: #7a969b; stroke-width: 1.25; }
+    .full { fill: #eaeedf; stroke: #9ab69e; stroke-width: 1.25; }
+    .arr { fill: none; stroke: #527d64; stroke-width: 1.8; marker-end: url(#arrow); }
+    .bi { fill: none; stroke: #527d64; stroke-width: 1.7; marker-start: url(#arrowback); marker-end: url(#arrow); }
+    .candidate { fill: none; stroke: #527d64; stroke-width: 2; stroke-dasharray: 3 2; marker-end: url(#arrow); }
+    .guide { stroke: #c4d0c4; stroke-width: 1; stroke-dasharray: 3 3; }
+    .wait { fill: #f9f8ef; stroke: #b8ba9e; stroke-width: 1.25; stroke-dasharray: 4 3; }
+    .tick { font-size: 15px; fill: #416354; }
+  </style>
+  <rect x="1" y="1" width="498" height="409" rx="14" fill="#f5f6ef" stroke="#c4d0c4" stroke-width="1.3"/>
+  <text x="24" y="33" class="head">同样的 512 B，切开的对象不同</text>
+  <text x="24" y="57" class="label">请求 A · 单层、8 个位置、2 个 KV 头</text>
+  <text x="24" y="80" class="small">每格：一个头在一个位置的 K+V = 64 B</text>
+  <rect x="18" y="96" width="464" height="123" rx="10" class="panel"/>
+  <text x="30" y="122" class="subhead">TP=2 · 沿 KV 头切分</text>
+  <text x="113" y="144" class="small" text-anchor="middle">p1</text>
+  <rect x="92" y="150" width="42" height="24" rx="4" class="r0"/>
+  <text x="113.0" y="168.0" class="num">R0</text>
+  <rect x="92" y="177" width="42" height="24" rx="4" class="r1"/>
+  <text x="113.0" y="195.0" class="num">R1</text>
+  <text x="160" y="144" class="small" text-anchor="middle">p2</text>
+  <rect x="139" y="150" width="42" height="24" rx="4" class="r0"/>
+  <text x="160.0" y="168.0" class="num">R0</text>
+  <rect x="139" y="177" width="42" height="24" rx="4" class="r1"/>
+  <text x="160.0" y="195.0" class="num">R1</text>
+  <text x="207" y="144" class="small" text-anchor="middle">p3</text>
+  <rect x="186" y="150" width="42" height="24" rx="4" class="r0"/>
+  <text x="207.0" y="168.0" class="num">R0</text>
+  <rect x="186" y="177" width="42" height="24" rx="4" class="r1"/>
+  <text x="207.0" y="195.0" class="num">R1</text>
+  <text x="254" y="144" class="small" text-anchor="middle">p4</text>
+  <rect x="233" y="150" width="42" height="24" rx="4" class="r0"/>
+  <text x="254.0" y="168.0" class="num">R0</text>
+  <rect x="233" y="177" width="42" height="24" rx="4" class="r1"/>
+  <text x="254.0" y="195.0" class="num">R1</text>
+  <text x="301" y="144" class="small" text-anchor="middle">p5</text>
+  <rect x="280" y="150" width="42" height="24" rx="4" class="r0"/>
+  <text x="301.0" y="168.0" class="num">R0</text>
+  <rect x="280" y="177" width="42" height="24" rx="4" class="r1"/>
+  <text x="301.0" y="195.0" class="num">R1</text>
+  <text x="348" y="144" class="small" text-anchor="middle">p6</text>
+  <rect x="327" y="150" width="42" height="24" rx="4" class="r0"/>
+  <text x="348.0" y="168.0" class="num">R0</text>
+  <rect x="327" y="177" width="42" height="24" rx="4" class="r1"/>
+  <text x="348.0" y="195.0" class="num">R1</text>
+  <text x="395" y="144" class="small" text-anchor="middle">p7</text>
+  <rect x="374" y="150" width="42" height="24" rx="4" class="r0"/>
+  <text x="395.0" y="168.0" class="num">R0</text>
+  <rect x="374" y="177" width="42" height="24" rx="4" class="r1"/>
+  <text x="395.0" y="195.0" class="num">R1</text>
+  <text x="442" y="144" class="small" text-anchor="middle">p8</text>
+  <rect x="421" y="150" width="42" height="24" rx="4" class="r0"/>
+  <text x="442.0" y="168.0" class="num">R0</text>
+  <rect x="421" y="177" width="42" height="24" rx="4" class="r1"/>
+  <text x="442.0" y="195.0" class="num">R1</text>
+  <text x="30" y="169" class="small">头 0</text>
+  <text x="30" y="196" class="small">头 1</text>
+  <text x="470" y="122" class="small" text-anchor="end">8 × 64 B/卡</text>
+  <rect x="18" y="231" width="464" height="123" rx="10" class="panel"/>
+  <text x="30" y="257" class="subhead">CP=2 · 沿位置切分</text>
+  <text x="113" y="279" class="small" text-anchor="middle">p1</text>
+  <rect x="92" y="285" width="42" height="24" rx="4" class="r0"/>
+  <text x="113.0" y="303.0" class="num">R0</text>
+  <rect x="92" y="312" width="42" height="24" rx="4" class="r0"/>
+  <text x="113.0" y="330.0" class="num">R0</text>
+  <text x="160" y="279" class="small" text-anchor="middle">p2</text>
+  <rect x="139" y="285" width="42" height="24" rx="4" class="r0"/>
+  <text x="160.0" y="303.0" class="num">R0</text>
+  <rect x="139" y="312" width="42" height="24" rx="4" class="r0"/>
+  <text x="160.0" y="330.0" class="num">R0</text>
+  <text x="207" y="279" class="small" text-anchor="middle">p3</text>
+  <rect x="186" y="285" width="42" height="24" rx="4" class="r0"/>
+  <text x="207.0" y="303.0" class="num">R0</text>
+  <rect x="186" y="312" width="42" height="24" rx="4" class="r0"/>
+  <text x="207.0" y="330.0" class="num">R0</text>
+  <text x="254" y="279" class="small" text-anchor="middle">p4</text>
+  <rect x="233" y="285" width="42" height="24" rx="4" class="r0"/>
+  <text x="254.0" y="303.0" class="num">R0</text>
+  <rect x="233" y="312" width="42" height="24" rx="4" class="r0"/>
+  <text x="254.0" y="330.0" class="num">R0</text>
+  <text x="301" y="279" class="small" text-anchor="middle">p5</text>
+  <rect x="280" y="285" width="42" height="24" rx="4" class="r1"/>
+  <text x="301.0" y="303.0" class="num">R1</text>
+  <rect x="280" y="312" width="42" height="24" rx="4" class="r1"/>
+  <text x="301.0" y="330.0" class="num">R1</text>
+  <text x="348" y="279" class="small" text-anchor="middle">p6</text>
+  <rect x="327" y="285" width="42" height="24" rx="4" class="r1"/>
+  <text x="348.0" y="303.0" class="num">R1</text>
+  <rect x="327" y="312" width="42" height="24" rx="4" class="r1"/>
+  <text x="348.0" y="330.0" class="num">R1</text>
+  <text x="395" y="279" class="small" text-anchor="middle">p7</text>
+  <rect x="374" y="285" width="42" height="24" rx="4" class="r1"/>
+  <text x="395.0" y="303.0" class="num">R1</text>
+  <rect x="374" y="312" width="42" height="24" rx="4" class="r1"/>
+  <text x="395.0" y="330.0" class="num">R1</text>
+  <text x="442" y="279" class="small" text-anchor="middle">p8</text>
+  <rect x="421" y="285" width="42" height="24" rx="4" class="r1"/>
+  <text x="442.0" y="303.0" class="num">R1</text>
+  <rect x="421" y="312" width="42" height="24" rx="4" class="r1"/>
+  <text x="442.0" y="330.0" class="num">R1</text>
+  <text x="30" y="304" class="small">头 0</text>
+  <text x="30" y="331" class="small">头 1</text>
+  <text x="470" y="257" class="small" text-anchor="end">4 × 128 B/卡</text>
+  <rect x="24" y="369" width="28" height="20" rx="3" class="r0"/>
+  <text x="58" y="385" class="small">Rank 0</text>
+  <rect x="152" y="369" width="28" height="20" rx="3" class="r1"/>
+  <text x="186" y="385" class="small">Rank 1</text>
+  <text x="473" y="385" class="label" text-anchor="end">每卡均为 512 B</text>
+  <text x="24" y="404" class="small">色块仅表示有效 KV 的所有者，不表示物理地址。</text>
+</svg>
