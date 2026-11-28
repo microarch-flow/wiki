@@ -182,7 +182,7 @@ B03 可以在 A02/A03 后独立阅读。这里主讲变换的语义和合法性�
 | C01 | 一块矩阵怎样分给有限数量的计算单元？ | 计算分解、张量分块、时空映射、任务分配、Placement、尾块与资源约束。 | A03、A04、B04 的必要知识 | `c01-tensor-mapping.md` | 已发布 |
 | C02 | 同一组数据怎样安排布局和驻留，才能减少搬运？ | Layout 选择、数据复用、Dataflow 选择、存储层次、布局转换代价。 | C01 | `c02-layout-and-dataflow-planning.md` | 已发布 |
 | C03 | 计算与数据搬运怎样安排在同一张时间表上？ | Task DAG、静态调度、资源占用、DMA 编排、通信规划、计算搬运重叠。 | A05、C02 | `c03-static-execution-planning.md` | 已发布 |
-| C04 | 已经使用过的缓冲空间，什么时候可以交给下一项任务？ | 静态 Buffer 生命周期、分配、复用、干涉关系、容量及别名约束。 | C03、B04；按需 B05 | `c04-static-buffer-allocation.md` | 初稿完成，待发布核验 |
+| C04 | 已经使用过的缓冲空间，什么时候可以交给下一项任务？ | 静态 Buffer 生命周期、分配、复用、干涉关系、容量及别名约束。 | C03、B04；按需 B05 | `c04-static-buffer-allocation.md` | 已发布 |
 | C05 | 许多方案都能正确执行，怎样找到更好的一个？ | 合法性与优化目标、代价模型、设计空间、搜索、Auto-tuning、Pareto、Shape 专门化。 | C01–C04 的相关知识；按需 K03 | `c05-cost-model-and-search.md` | 待写 |
 
 2026-11-28 复核 C 专题依赖后，保留五篇划分。C01 固定索引分工与目标约束，C02 据此分析共享和驻留，C03 加入任务时长、DMA 与通信，C04 用最后访问和占用区间分配空间。容量不足时回看 C01–C03。C05 按比较目标引用这些代价。
@@ -437,3 +437,5 @@ K 横跨所有路线。K01/K02 可早期开展，K03–K05 按被分析的机制
 - 2026-11-28 · C03 已发布并核验。正文提交 `c7ce950`，[GitHub Pages 部署](https://github.com/microarch-flow/wiki/actions/runs/46120041225)成功。[公开正文](https://microarch-flow.github.io/wiki/series/compiler-runtime/03-mapping-and-planning/c03-static-execution-planning/)、C02 后继、专题导读、两张图解、导航、面包屑和搜索收录均已核对。本地整站 170 项测试通过，穷举合法资源次序并复算矩阵结果，核对全串行 16 拍、单槽 14 拍、双槽独立端口 12 拍与双槽共用独占端口 14 拍。
 
 - 2026-11-28 · B05 已发布并核验。正文提交 `fefa4b0`，[GitHub Pages 部署](https://github.com/microarch-flow/wiki/actions/runs/46120124316)成功。[公开正文](https://microarch-flow.github.io/wiki/series/compiler-runtime/02-frontend-and-optimization/b05-dataflow-analysis-and-optimization/)、B04 后继链接、专题导读、两张图解、导航、面包屑及搜索索引均已核验。Go 1.19.8 与 LLVM 19.1.7 验证了 score 化简前后的 14 次调用，另用 Go 复算了倍率改变和两次读取的反例。整站构建及 171 项测试通过。
+
+- 2026-11-28 · C04 已发布并核验。正文提交 `12c1453`，[GitHub Pages 部署](https://github.com/microarch-flow/wiki/actions/runs/46121884804)成功。[公开正文](https://microarch-flow.github.io/wiki/series/compiler-runtime/03-mapping-and-planning/c04-static-buffer-allocation/)、C03 后继、专题导读、两张图解、导航、面包屑和搜索收录均已核对。本地整站 172 项测试通过，枚举地址分配并逐拍复算矩阵结果，验证 12 拍日程的 12 B 最小容量、8 B 起点对齐下的 20 B 最小地址跨度，以及 8 B 池中的 16 拍日程。
