@@ -560,6 +560,15 @@ class CompilerRuntimeGuideTests(unittest.TestCase):
             previous = SITE / PREFIX / route / previous_slug / "index.html"
             self.assertIn(f"../{slug}/", GuideContent(previous.read_text()).links)
 
+    def test_h01_article_navigation_search_and_diagrams(self):
+        self._check_article(
+            "08-request-scheduling",
+            "请求调度与批处理",
+            "h01-continuous-batching",
+            "同一批请求长短不一，新请求能不能立即加入？",
+            ("h01-batch-members.svg", "h01-padded-packed.svg", "h01-round-worklist.svg"),
+        )
+
     def _check_foundation_article(self, slug, title, diagram_names):
         self._check_article("01-foundations", "软件执行共同基础", slug, title, diagram_names)
 

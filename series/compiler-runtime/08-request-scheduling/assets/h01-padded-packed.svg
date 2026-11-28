@@ -1,0 +1,89 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 500" width="500" height="500" role="img" aria-labelledby="title desc">
+  <title id="title">初次 Prefill 的矩形批与打包表示</title>
+  <desc id="desc">请求 A 有 8 个输入 Token，请求 B 有 3 个输入 Token，隐藏维度均为 d。矩形输入有两行、每行 8 个位置，对应形状 [2,8,d]，包含 11 个有效位置和 5 个填充位置。打包输入将 A、B 的有效位置依次保存为形状 [11,d]，由边界偏移 [0,8,11] 表示两条序列各自的起止范围。边界不改变位置与因果注意力语义。颜色表示请求归属，虚线框为填充。</desc>
+  <defs>
+    <marker id="arrow" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0 0L7 3.5L0 7Z" fill="#527d64"/></marker>
+    <style>text{font-family:"Noto Sans CJK SC","PingFang SC","Microsoft YaHei",sans-serif;fill:#173d35;font-size:20px}
+.head{font-size:23px;font-weight:700}.subhead{font-size:20px;font-weight:700}.label{font-size:18px;fill:#416354}.small{font-size:17px;fill:#416354}.token{font-size:18px;font-weight:600}.tiny{font-size:16px;fill:#416354}
+.a{fill:#d9e9dc;stroke:#6f9a80;stroke-width:1.4}.b{fill:#f2e4c9;stroke:#9c7b42;stroke-width:1.4}.c{fill:#dfe8ef;stroke:#7d9eb1;stroke-width:1.4}.pad{fill:#f5f6ef;stroke:#9cae9e;stroke-width:1.4;stroke-dasharray:4 3}.line{stroke:#c4d0c4;stroke-width:1.3;fill:none}.outline{stroke:#8b9c8e;stroke-width:1.4;fill:none}.context{fill:#edf2e8;stroke:#9ab69e;stroke-width:1.5}.artifact{fill:#f9f8ef;stroke:#b8ba9e;stroke-width:1.4}.arrow{stroke:#527d64;stroke-width:2;fill:none;marker-end:url(#arrow)}</style>
+  </defs>
+  <rect x="1" y="1" width="498" height="498" rx="14" fill="#f5f6ef" stroke="#c4d0c4" stroke-width="1.3"/>
+  <text x="24" y="34" class="head">请求归属不同，输入长度也不同</text>
+  <text x="24" y="61" class="label">本轮 A 处理 8 个位置，B 处理 3 个位置</text>
+  <text x="24" y="104" class="subhead">矩形批（Padding）</text>
+  <text x="475" y="104" class="token" text-anchor="end">[2,8,d]</text>
+  <text x="40" y="146" class="token" text-anchor="middle">A</text>
+  <rect x="65" y="122" width="47" height="39" rx="4" class="a"/>
+  <text x="88.5" y="148" class="token" text-anchor="middle">p1</text>
+  <rect x="116" y="122" width="47" height="39" rx="4" class="a"/>
+  <text x="139.5" y="148" class="token" text-anchor="middle">p2</text>
+  <rect x="167" y="122" width="47" height="39" rx="4" class="a"/>
+  <text x="190.5" y="148" class="token" text-anchor="middle">p3</text>
+  <rect x="218" y="122" width="47" height="39" rx="4" class="a"/>
+  <text x="241.5" y="148" class="token" text-anchor="middle">p4</text>
+  <rect x="269" y="122" width="47" height="39" rx="4" class="a"/>
+  <text x="292.5" y="148" class="token" text-anchor="middle">p5</text>
+  <rect x="320" y="122" width="47" height="39" rx="4" class="a"/>
+  <text x="343.5" y="148" class="token" text-anchor="middle">p6</text>
+  <rect x="371" y="122" width="47" height="39" rx="4" class="a"/>
+  <text x="394.5" y="148" class="token" text-anchor="middle">p7</text>
+  <rect x="422" y="122" width="47" height="39" rx="4" class="a"/>
+  <text x="445.5" y="148" class="token" text-anchor="middle">p8</text>
+  <text x="40" y="192" class="token" text-anchor="middle">B</text>
+  <rect x="65" y="168" width="47" height="39" rx="4" class="b"/>
+  <text x="88.5" y="194" class="token" text-anchor="middle">p1</text>
+  <rect x="116" y="168" width="47" height="39" rx="4" class="b"/>
+  <text x="139.5" y="194" class="token" text-anchor="middle">p2</text>
+  <rect x="167" y="168" width="47" height="39" rx="4" class="b"/>
+  <text x="190.5" y="194" class="token" text-anchor="middle">p3</text>
+  <rect x="218" y="168" width="47" height="39" rx="4" class="pad"/>
+  <text x="241.5" y="194" class="small" text-anchor="middle">×</text>
+  <rect x="269" y="168" width="47" height="39" rx="4" class="pad"/>
+  <text x="292.5" y="194" class="small" text-anchor="middle">×</text>
+  <rect x="320" y="168" width="47" height="39" rx="4" class="pad"/>
+  <text x="343.5" y="194" class="small" text-anchor="middle">×</text>
+  <rect x="371" y="168" width="47" height="39" rx="4" class="pad"/>
+  <text x="394.5" y="194" class="small" text-anchor="middle">×</text>
+  <rect x="422" y="168" width="47" height="39" rx="4" class="pad"/>
+  <text x="445.5" y="194" class="small" text-anchor="middle">×</text>
+  <text x="25" y="236" class="label">16 个位置：11 个有效，5 个填充</text>
+  <path d="M25 252H475" class="line"/>
+  <text x="25" y="285" class="subhead">打包批（Packed Batch）</text>
+  <text x="475" y="285" class="token" text-anchor="end">[11,d]</text>
+  <text x="188" y="314" class="small" text-anchor="middle">请求 A：8 个位置</text>
+  <text x="413.5" y="314" class="small" text-anchor="middle">B：3 个位置</text>
+  <rect x="25" y="331" width="39" height="35" rx="4" class="a"/>
+  <text x="44.5" y="355" class="token" text-anchor="middle">p1</text>
+  <rect x="66" y="331" width="39" height="35" rx="4" class="a"/>
+  <text x="85.5" y="355" class="token" text-anchor="middle">p2</text>
+  <rect x="107" y="331" width="39" height="35" rx="4" class="a"/>
+  <text x="126.5" y="355" class="token" text-anchor="middle">p3</text>
+  <rect x="148" y="331" width="39" height="35" rx="4" class="a"/>
+  <text x="167.5" y="355" class="token" text-anchor="middle">p4</text>
+  <rect x="189" y="331" width="39" height="35" rx="4" class="a"/>
+  <text x="208.5" y="355" class="token" text-anchor="middle">p5</text>
+  <rect x="230" y="331" width="39" height="35" rx="4" class="a"/>
+  <text x="249.5" y="355" class="token" text-anchor="middle">p6</text>
+  <rect x="271" y="331" width="39" height="35" rx="4" class="a"/>
+  <text x="290.5" y="355" class="token" text-anchor="middle">p7</text>
+  <rect x="312" y="331" width="39" height="35" rx="4" class="a"/>
+  <text x="331.5" y="355" class="token" text-anchor="middle">p8</text>
+  <rect x="353" y="331" width="39" height="35" rx="4" class="b"/>
+  <text x="372.5" y="355" class="token" text-anchor="middle">p1</text>
+  <rect x="394" y="331" width="39" height="35" rx="4" class="b"/>
+  <text x="413.5" y="355" class="token" text-anchor="middle">p2</text>
+  <rect x="435" y="331" width="39" height="35" rx="4" class="b"/>
+  <text x="454.5" y="355" class="token" text-anchor="middle">p3</text>
+  <path d="M25 373V380H352V373" class="outline"/>
+  <path d="M353 373V380H474V373" class="outline"/>
+  <path d="M25 382V392" class="outline"/>
+  <text x="25" y="410" class="token" text-anchor="middle">0</text>
+  <path d="M353 382V392" class="outline"/>
+  <text x="353" y="410" class="token" text-anchor="middle">8</text>
+  <path d="M475 382V392" class="outline"/>
+  <text x="475" y="410" class="token" text-anchor="middle">11</text>
+  <text x="250" y="438" class="label" text-anchor="middle">边界偏移（从 0 开始）：[0,8,11]</text>
+  <text x="24" y="467" class="small">d 为每个位置的隐藏向量宽度。</text>
+  <text x="24" y="488" class="small">有效位置仍只属于原来的请求，不跨序列。</text>
+
+</svg>
