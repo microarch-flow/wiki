@@ -1,0 +1,59 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 789" width="500" height="789" role="img" aria-labelledby="title desc">
+  <title id="title">停止字符串跨 Token 的输出缓冲</title>
+  <desc id="desc">请求 A 的替代停止配置为字面字符串 END，不返回匹配串。假设教学词表中 t_b 解出稳定文本 ok 空格 EN，t_a 解出稳定文本 D!。选出 y1=t_b 后，安全发送 ok 空格、暂存可能匹配停止串开头的 EN；此时有效 KV 8、已生成 1。下一轮计算 y1 的位置并选出 y2=t_a，待发送部分 EN 与 D! 拼接为 END!，命中停止串 END。丢弃停止串及其后的感叹号，已发送的 ok 空格保持不变，缓冲清空并停止。有效 KV 9，已生成 2。图假设一个字面停止串、稳定解码片段以及不返回停止串，不代表真实分词器。</desc>
+  <defs>
+    <marker id="arrow" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0 0L7 3.5L0 7Z" fill="#527d64"/></marker>
+    <style>
+text{font-family:"Noto Sans CJK SC","PingFang SC","Microsoft YaHei",sans-serif;fill:#173d35;font-size:20px}
+.head{font-weight:700;font-size:23px}.subhead{font-weight:700;font-size:20px}.label{font-size:18px;fill:#416354}
+.small{font-size:17px;fill:#416354}.tiny{font-size:16px;fill:#416354}.token{font-size:18px;font-weight:600}
+.context{fill:#edf2e8;stroke:#9ab69e;stroke-width:1.5}.artifact{fill:#f9f8ef;stroke:#b8ba9e;stroke-width:1.4}
+.done{fill:#d9e9dc;stroke:#6f9a80;stroke-width:1.4}.known{fill:#f2e4c9;stroke:#9c7b42;stroke-width:1.5}
+.unknown{fill:#f5f6ef;stroke:#8b9c8e;stroke-width:1.4;stroke-dasharray:3 3}
+.future{fill:#f5f6ef;stroke:#c4d0c4;stroke-width:1}.line{stroke:#c4d0c4;stroke-width:1.3;fill:none}
+.arrow{stroke:#527d64;stroke-width:2;fill:none;marker-end:url(#arrow)}.branch{stroke:#527d64;stroke-width:2;fill:none}
+.bar{fill:#82af91;stroke:#527d64;stroke-width:1}.goldbar{fill:#d5b16e;stroke:#9c7b42;stroke-width:1}
+.cut{fill:#e9ece5;stroke:#9cae9e;stroke-width:1.4;stroke-dasharray:4 3}.match{fill:#f2e4c9;stroke:#9c7b42;stroke-width:2}
+</style>
+  </defs>
+  <rect x="1" y="1" width="498" height="787" rx="14" fill="#f5f6ef" stroke="#c4d0c4" stroke-width="1.3"/>
+
+  <text x="24" y="34" class="head">停止串跨 Token：文本要暂存</text>
+  <text x="24" y="62" class="label">请求 A 的另一组配置：stop = "END"</text>
+  <text x="24" y="87" class="small">停止串不返回；␣ 表示一个空格。</text>
+  <rect x="18" y="102" width="464" height="205" rx="10" class="context"/>
+  <text x="32" y="135" class="subhead">第 1 步：选出 y1 = t_b</text>
+  <text x="32" y="166" class="label">稳定解码片段： "ok␣EN"</text>
+  <rect x="32" y="180" width="205" height="56" rx="6" class="done"/>
+  <rect x="263" y="180" width="205" height="56" rx="6" class="known"/>
+  <text x="134" y="202" text-anchor="middle" class="small">已安全发送</text>
+  <text x="134" y="225" text-anchor="middle" class="subhead">ok␣</text>
+  <text x="365" y="202" text-anchor="middle" class="small">暂存</text>
+  <text x="365" y="225" text-anchor="middle" class="subhead">EN</text>
+  <text x="32" y="265" class="label">EN 可能是停止串 END 的开头。</text>
+  <text x="32" y="291" class="small">已生成 1 · 有效 KV 8；继续生成</text>
+  <path d="M250 311V329" class="arrow"/>
+  <rect x="18" y="336" width="464" height="257" rx="10" class="artifact"/>
+  <text x="32" y="368" class="subhead">第 2 步：选出 y2 = t_a</text>
+  <text x="32" y="399" class="label">新增稳定片段： "D!"</text>
+  <text x="32" y="430" class="label">待发送文本：EN + D! → END!</text>
+  <rect x="32" y="446" width="101" height="55" rx="5" class="known"/>
+  <rect x="138" y="446" width="101" height="55" rx="5" class="known"/>
+  <rect x="244" y="446" width="101" height="55" rx="5" class="known"/>
+  <rect x="350" y="446" width="117" height="55" rx="5" class="cut"/>
+  <text x="82.5" y="480" text-anchor="middle" class="subhead">E</text>
+  <text x="188.5" y="480" text-anchor="middle" class="subhead">N</text>
+  <text x="294.5" y="480" text-anchor="middle" class="subhead">D</text>
+  <text x="408.5" y="480" text-anchor="middle" class="subhead">!</text>
+  <path d="M32 508V518H345V508" fill="none" stroke="#9c7b42" stroke-width="2"/>
+  <text x="188.5" y="544" text-anchor="middle" class="small" style="fill:#785d2a;font-weight:700">命中停止串 END</text>
+  <text x="408.5" y="544" text-anchor="middle" class="small">匹配后的文本</text>
+  <text x="32" y="578" class="label">不发送匹配串 END 及后面的 "!"。</text>
+  <path d="M250 597V615" class="arrow"/>
+  <rect x="18" y="622" width="464" height="98" rx="10" class="context"/>
+  <text x="32" y="652" class="subhead">已发送仍为 "ok␣"；缓冲清空</text>
+  <text x="32" y="685" class="label">停止：已生成 2 · 有效 KV 9</text>
+  <text x="250" y="749" text-anchor="middle" class="small">教学词表，假设片段已稳定且仅匹配一个字面串。</text>
+  <text x="250" y="774" text-anchor="middle" class="small">真实 Tokenizer 的增量解码可能还需处理字节边界。</text>
+
+</svg>

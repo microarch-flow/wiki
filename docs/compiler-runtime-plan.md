@@ -271,7 +271,7 @@ G01 建立共享模型资源与请求实例的认知。G02 区分已生成 Token
 | --- | --- | --- | --- | --- | --- | --- |
 | G01 | 模型文件怎样变成可以反复执行的模型实例？ | 权重准备、模型加载、后端交接、实例与请求区别、冷启动；CNN、扩散、SSM、LLM 的执行差异。 | F01、F02；F03 按需 | `g01-model-loading-and-execution.md` | 已发布 |
 | G02 | 生成一个 Token 之前，模型到底执行了哪些工作？ | 单请求执行、Prefill、Decode、自回归依赖、KV 状态实际更新时点及阶段计算量。 | G01、模型基础 | `g02-prefill-and-decode.md` | 已发布 |
-| G03 | 模型给出一组 Logits，怎样决定下一个 Token？ | Logits 处理顺序、采样、RNG、停止条件、生成状态、增量解码与输出边界。 | G02 | `g03-sampling-and-generation.md` | 待写 |
+| G03 | 模型给出一组 Logits，怎样决定下一个 Token？ | Logits 处理顺序、采样、RNG、停止条件、生成状态、增量解码与输出边界。 | G02 | `g03-sampling-and-generation.md` | 已发布 |
 | G04 | 权重已经装进显存，为什么请求增加后仍然可能溢出？ | Weight、Activation、Workspace、KV 内存预算、GQA/MLA/SSM 等状态差异、KV 精度和元数据。 | G01、G02 | `g04-model-state-and-memory-budget.md` | 待写 |
 | G05 | 序列不断变长，KV 怎样保存在不连续的缓存块中？ | 逻辑块表、分配与回收、分页、块大小取舍、不同层的缓存池、引用计数、Copy-on-Write。 | G04、F03 | `g05-paged-kv-cache.md` | 待写 |
 | G06 | 两个请求的开头相同，哪些计算和状态可以复用？ | Prefix Cache、Hash/Radix、缓存身份、共享、命中率、淘汰、缓存污染。 | G05 | `g06-prefix-cache.md` | 待写 |
@@ -505,3 +505,5 @@ K 横跨所有路线。K01/K02 可早期开展，K03–K05 按被分析的机制
 - 2026-11-28 · D06 初稿完成，随本次 main 更新发布。沿 D05 算例追踪 MatMul + BiasRelu 的中间值、Epilogue 与行 Softmax 归约；两张静态图解及入口链接。独立 C11 例程严格编译并通过 2,003 组测试，行内局部状态与双线程共享/屏障 Softmax 模型通过 3,024 组有限分数和掩码用例（非 GPU 实测）。旧版推理运行时不变。
 
 - 2026-11-28 · F05 已发布并核验，F01–F05 五篇初稿全部发布。正文提交 `1e1a9a7`，[GitHub Pages 部署](https://github.com/microarch-flow/wiki/actions/runs/46138300039) 成功；[公开正文](https://microarch-flow.github.io/wiki/series/compiler-runtime/06-execution-runtime/f05-dynamic-shapes-and-specialization/)、F04 后继及 G01 衔接、三张图解、导航、面包屑、专题导读与五篇搜索收录均已核验。合并 G02 后本地整站 190 项测试全部通过；复算三/五元素结果、36/60/96 B 空间、4/8 线程启动规模、分桶空余容量与固定搬运差额（教学模型，非 GPU 实测），三张图 360 px 渲染通过。复审 F01–F05 认知依赖及知识边界，F01–F03 为通用执行主线，F04/F05 为按场景深化。保留并行 D06/G02，旧推理运行时未修改。
+
+- 2026-11-28 · G03 初稿完成。沿 G02 请求 A 的 Prefill 末位置 Logits，复用语言模型教学分数 [2,1,0]，从温度、Top-k/Top-p 和归一化进入实际选择及处理顺序反例，再跟踪请求级 RNG、生成历史和已计算位置。T=1、Top-p=0.70 的归一化概率约 0.731/0.269，教学随机数 0.80 选出 y1=t_b，生成数 1 而有效 KV 仍为 8；温度/掩码顺序可能改变候选。区分 Seed 与完整随机状态、停止原因、Token/UTF-8 字符/流式输出边界；构造 A 的替代停止配置 END，文本片段 ok EN 与 D!，第二个输出已提交而未显示，生成数 2、有效 KV 9，返回文本仅 ok 后接空格。采样与停止语义留 G03，语法解析与候选状态提交/回滚分别留 G08/G09，资源回收沿 F02/F03，服务级处理留 J。核查 Transformers v4.57.0、vLLM v0.10.2 Sampler/TopKTopPSampler/Detokenizer/Reproducibility 及 Top-p 原论文；概率、状态、字节与停止缓冲算例独立复算、三图 500/360 px 实际渲染、本地构建和 192 项整站测试均通过。旧推理运行时不变。

@@ -503,6 +503,19 @@ class CompilerRuntimeGuideTests(unittest.TestCase):
         previous = SITE / PREFIX / route / "d05-matrix-multiplication-kernels/index.html"
         self.assertIn(f"../{slug}/", GuideContent(previous.read_text()).links)
 
+    def test_g03_article_navigation_search_and_diagrams(self):
+        route = "07-model-execution"
+        slug = "g03-sampling-and-generation"
+        self._check_article(
+            route,
+            "模型执行与生成控制",
+            slug,
+            "模型给出一组 Logits，怎样决定下一个 Token？",
+            ("g03-logits-to-token.svg", "g03-generation-state.svg", "g03-stop-buffer.svg"),
+        )
+        previous = SITE / PREFIX / route / "g02-prefill-and-decode/index.html"
+        self.assertIn(f"../{slug}/", GuideContent(previous.read_text()).links)
+
     def _check_foundation_article(self, slug, title, diagram_names):
         self._check_article("01-foundations", "软件执行共同基础", slug, title, diagram_names)
 

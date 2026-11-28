@@ -1,0 +1,68 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 762" width="500" height="762" role="img" aria-labelledby="title desc">
+  <title id="title">从 Logits 到 Token 的选择</title>
+  <desc id="desc">三项教学词表 t_a、t_b、EOS 的 Logits 为 2、1、0。温度为 1 时 Softmax 得到约 0.665、0.245、0.090；top-p=0.70 保留前两项，因为第一项的概率不足 0.70 而前两项累计已达到阈值，去掉 EOS，重新归一化为约 0.731、0.269、0。用概率区间展示一次教学抽样，均匀随机数 u=0.80 落入第二项区间，选择 t_b 作为 y1。数值四舍五入。</desc>
+  <defs>
+    <marker id="arrow" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0 0L7 3.5L0 7Z" fill="#527d64"/></marker>
+    <style>
+text{font-family:"Noto Sans CJK SC","PingFang SC","Microsoft YaHei",sans-serif;fill:#173d35;font-size:20px}
+.head{font-weight:700;font-size:23px}.subhead{font-weight:700;font-size:20px}.label{font-size:18px;fill:#416354}
+.small{font-size:17px;fill:#416354}.tiny{font-size:16px;fill:#416354}.token{font-size:18px;font-weight:600}
+.context{fill:#edf2e8;stroke:#9ab69e;stroke-width:1.5}.artifact{fill:#f9f8ef;stroke:#b8ba9e;stroke-width:1.4}
+.done{fill:#d9e9dc;stroke:#6f9a80;stroke-width:1.4}.known{fill:#f2e4c9;stroke:#9c7b42;stroke-width:1.5}
+.unknown{fill:#f5f6ef;stroke:#8b9c8e;stroke-width:1.4;stroke-dasharray:3 3}
+.future{fill:#f5f6ef;stroke:#c4d0c4;stroke-width:1}.line{stroke:#c4d0c4;stroke-width:1.3;fill:none}
+.arrow{stroke:#527d64;stroke-width:2;fill:none;marker-end:url(#arrow)}.branch{stroke:#527d64;stroke-width:2;fill:none}
+.bar{fill:#82af91;stroke:#527d64;stroke-width:1}.goldbar{fill:#d5b16e;stroke:#9c7b42;stroke-width:1}
+.cut{fill:#e9ece5;stroke:#9cae9e;stroke-width:1.4;stroke-dasharray:4 3}.match{fill:#f2e4c9;stroke:#9c7b42;stroke-width:2}
+</style>
+  </defs>
+  <rect x="1" y="1" width="498" height="760" rx="14" fill="#f5f6ef" stroke="#c4d0c4" stroke-width="1.3"/>
+
+  <text x="24" y="34" class="head">从 Logits 到第一个输出 Token</text>
+  <text x="24" y="61" class="label">请求 A：位置 p8 的教学词表分数</text>
+  <rect x="18" y="79" width="464" height="222" rx="10" class="context"/>
+  <text x="32" y="110" class="subhead">1  T=1：用 Softmax 得到概率</text>
+  <text x="38" y="140" class="label">Token</text>
+  <text x="142" y="140" class="label" text-anchor="middle">Logit</text>
+  <text x="204" y="140" class="label">概率（满条 = 1）</text>
+  <path d="M30 151H470" class="line"/>
+  <text x="38" y="180" class="token">t_a</text>
+  <text x="142" y="180" text-anchor="middle">2</text>
+  <rect x="204" y="164" width="190" height="18" rx="4" class="future"/>
+  <rect x="204" y="164" width="126.35" height="18" rx="4" class="bar"/>
+  <text x="462" y="180" text-anchor="end" class="token">0.665</text>
+  <text x="38" y="220" class="token">t_b</text>
+  <text x="142" y="220" text-anchor="middle">1</text>
+  <rect x="204" y="204" width="190" height="18" rx="4" class="future"/>
+  <rect x="204" y="204" width="46.55" height="18" rx="4" class="bar"/>
+  <text x="462" y="220" text-anchor="end" class="token">0.245</text>
+  <text x="38" y="260" class="token">EOS</text>
+  <text x="142" y="260" text-anchor="middle">0</text>
+  <rect x="204" y="244" width="190" height="18" rx="4" class="future"/>
+  <rect x="204" y="244" width="17.10" height="18" rx="4" class="bar"/>
+  <text x="462" y="260" text-anchor="end" class="token">0.090</text>
+
+  <text x="32" y="284" class="small">Logit 是分数，原始值并不是概率。</text>
+  <path d="M250 305V323" class="arrow"/>
+  <rect x="18" y="330" width="464" height="132" rx="10" class="artifact"/>
+  <text x="32" y="360" class="subhead">2  top-p=0.70：按概率降序累加</text>
+  <text x="32" y="389" class="label">0.665 ＜ 0.70；0.665 + 0.245 ≥ 0.70</text>
+  <text x="32" y="418" class="label">保留 t_a、t_b，去掉 EOS</text>
+  <text x="32" y="446" class="label">重新归一化：0.731、0.269、0</text>
+  <path d="M250 466V485" class="arrow"/>
+  <rect x="18" y="492" width="464" height="224" rx="10" class="context"/>
+  <text x="32" y="523" class="subhead">3  抽样：均匀随机数 u=0.80</text>
+  <text x="379.2" y="556" text-anchor="middle" class="small" style="fill:#785d2a;font-weight:700">u=0.80</text>
+  <path d="M379.2 560V578" style="stroke:#9c7b42;stroke-width:2;marker-end:url(#arrow)" fill="none"/>
+  <rect x="32" y="580" width="317.254" height="42" rx="3" class="bar"/>
+  <rect x="349.254" y="580" width="116.746" height="42" rx="3" class="goldbar"/>
+  <text x="190.6" y="607" text-anchor="middle" class="token">t_a  0.731</text>
+  <text x="407.6" y="607" text-anchor="middle" class="token">t_b  0.269</text>
+  <path d="M32 625V632 M349.254 625V632 M466 625V632" class="line"/>
+  <text x="32" y="653" text-anchor="start" class="small">0</text>
+  <text x="349.254" y="653" text-anchor="middle" class="small">0.731</text>
+  <text x="466" y="653" text-anchor="end" class="small">1</text>
+  <text x="32" y="695" class="subhead" style="fill:#785d2a">u ∈ [0.731, 1) → 选出 y1 = t_b</text>
+  <text x="250" y="745" text-anchor="middle" class="small">概率均为近似值，随机数仅为教学构造。</text>
+
+</svg>
