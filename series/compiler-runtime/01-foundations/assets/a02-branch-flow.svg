@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 508" width="500" height="508" role="img" aria-labelledby="branch-title branch-desc">
+  <title id="branch-title">条件决定接下来执行哪一条路径</title>
+  <desc id="branch-desc">本例 a 等于 2、b 等于 3、c 等于 4。先执行 t 等于 a 加 b，得到 5；判断 t 是否大于 0，本例条件为真，执行 y 等于 t 乘 c，得到 20。假分支的 y 等于 0 本次不执行，但其他输入可能使该分支被选择。两个分支均能到达 return y。本图箭头表示控制转移；实线标出本次选择的路径，虚线标出本次未执行的路径。</desc>
+  <defs>
+    <marker id="a02-control-arrow" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0 0L7 3.5L0 7Z" fill="#396b55"/></marker>
+    <marker id="a02-other-arrow" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0 0L7 3.5L0 7Z" fill="#7b8582"/></marker>
+    <style>
+      text{font-family:"Noto Sans CJK SC","PingFang SC","Microsoft YaHei",sans-serif;fill:#173d35;font-size:21px}
+      .head{font-weight:700;font-size:23px}.label{font-size:18px;fill:#416354}.code{font-family:"Noto Sans Mono CJK SC","Consolas",monospace;font-size:21px;font-weight:600}
+      .step{fill:#e0ebe3;stroke:#82a18e;stroke-width:1.5}.value{fill:#d9e9dc;stroke:#6f9a80;stroke-width:1.5}.other{fill:#eef0e6;stroke:#9aa89a;stroke-width:1.5}.other-text{fill:#66706b}.decision{fill:#f2e4c9;stroke:#9c7b42;stroke-width:1.5}
+      .taken{fill:none;stroke:#396b55;stroke-width:2.5;marker-end:url(#a02-control-arrow)}.untaken{fill:none;stroke:#7b8582;stroke-width:2;stroke-dasharray:6 5;marker-end:url(#a02-other-arrow)}
+    </style>
+  </defs>
+  <rect x="1" y="1" width="498" height="506" rx="14" fill="#f5f6ef" stroke="#c4d0c4" stroke-width="1.3"/>
+  <text class="head" x="24" y="32">跟踪条件与接下来的语句</text>
+  <g text-anchor="middle">
+    <rect class="step" x="60" y="49" width="380" height="40" rx="9"/>
+    <text class="code" x="250" y="76">a = 2, b = 3, c = 4</text>
+    <rect class="step" x="135" y="115" width="230" height="48" rx="9"/>
+    <text class="code" x="250" y="145">t = a + b = 5</text>
+    <path class="decision" d="M250 188L343 229L250 270L157 229Z"/>
+    <text class="code" x="250" y="236">t &gt; 0 ?</text>
+    <rect class="value" x="30" y="300" width="198" height="69" rx="9"/>
+    <text class="code" x="129" y="329">y = t * c</text>
+    <text class="label" x="129" y="353">本例 y = 20</text>
+    <rect class="other" x="272" y="300" width="198" height="69" rx="9"/>
+    <text class="code other-text" x="371" y="329">y = 0</text>
+    <text class="label other-text" x="371" y="353">本例不执行</text>
+    <rect class="step" x="150" y="411" width="200" height="56" rx="9"/>
+    <text class="code" x="250" y="436">return y</text>
+    <text class="label" x="250" y="457">本例返回 20</text>
+  </g>
+  <path class="taken" d="M250 89V111"/>
+  <path class="taken" d="M250 163V184"/>
+  <path class="taken" d="M157 229H129V296"/>
+  <text class="label" x="101" y="216">真</text>
+  <path class="untaken" d="M343 229H371V296"/>
+  <text class="label other-text" x="373" y="216">假</text>
+  <path class="taken" d="M129 369V391H218V407"/>
+  <path class="untaken" d="M371 369V391H282V407"/>
+  <path d="M26 489H62" stroke="#396b55" stroke-width="2.5"/>
+  <text class="label" x="72" y="495">本次路径</text>
+  <path d="M246 489H282" stroke="#7b8582" stroke-width="2" stroke-dasharray="6 5"/>
+  <text class="label other-text" x="292" y="495">另一种可能路径</text>
+</svg>

@@ -123,9 +123,21 @@ class CompilerRuntimeGuideTests(unittest.TestCase):
                     self.assertTrue(path.is_file(), (relative, link))
 
     def test_a01_article_navigation_search_and_diagrams(self):
+        self._check_foundation_article(
+            "a01-program-semantics",
+            "同一段计算，软件究竟要求计算机做什么？",
+            ("a01-values-and-state.svg", "a01-observable-behavior.svg"),
+        )
+
+    def test_a02_article_navigation_search_and_diagrams(self):
+        self._check_foundation_article(
+            "a02-program-representation",
+            "程序中的计算、分支和先后关系怎样被明确表达？",
+            ("a02-value-flow.svg", "a02-branch-flow.svg"),
+        )
+
+    def _check_foundation_article(self, slug, title, diagram_names):
         route = "01-foundations"
-        slug = "a01-program-semantics"
-        title = "同一段计算，软件究竟要求计算机做什么？"
         relative = f"{PREFIX}{route}/{slug}/"
         url = "https://site.invalid/" + relative
         source = SOURCE / route / f"{slug}.md"
@@ -165,7 +177,7 @@ class CompilerRuntimeGuideTests(unittest.TestCase):
         self.assertIn(url, [urljoin(guide_url, link) for link in guide.links])
 
         content = GuideContent(page)
-        for filename in ("a01-values-and-state.svg", "a01-observable-behavior.svg"):
+        for filename in diagram_names:
             original = SOURCE / route / "assets" / filename
             published = SITE / PREFIX / route / "assets" / filename
             self.assertTrue(original.is_file())
