@@ -1,0 +1,73 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 883" width="500" height="883" role="img" aria-labelledby="title desc">
+  <title id="title">沿请求 A 对照两个固定版本的执行职责</title>
+  <desc id="desc">同一请求 A 有8个输入，恰好生成4个输出。固定 vLLM v0.12.0 V1 普通 EngineCore.step 与 SGLang v0.5.6 SRT 普通 event_loop_normal。两侧按职责而非进程拓扑进行对照。服务入口处理输入，vLLM 输入准备交给 InputProcessor，SGLang TokenizerManager 准备请求。vLLM EngineCore V1 Scheduler 选择本轮 token 与缓存资源，SGLang Scheduler ScheduleBatch 准备本轮和缓存槽位。vLLM Executor/Worker 将工作交给 GPUModelRunner，SGLang TP Worker 调用 ModelRunner；计算 Logits 并采样出 token。调度器收到结果后更新请求输出历史、检查停止条件。未完成的请求返回调度，输出路径独立交给上层：vLLM OutputProcessor 处理引擎结果，SGLang DetokenizerManager 解码并传回 TokenizerManager。结束时释放请求持有的资源引用，物理缓存仍可能保留以复用。图不要求这些模块各有独立进程，不对应唯一线程或队列，也不把逻辑依赖画成实际同步执行时序；输出、设备执行和释放可以分开推进。</desc>
+  <defs><style>
+      text{font-family:"Noto Sans CJK SC","PingFang SC","Microsoft YaHei",sans-serif;fill:#173d35;font-size:18px}
+      .head{font-size:23px;font-weight:700}.subhead{font-size:20px;font-weight:700}.label{font-size:18px;font-weight:600}.small{font-size:17px;fill:#416354}.tick{font-size:16px;fill:#416354}
+      .panel{fill:#edf2e8;stroke:#9ab69e;stroke-width:1.4}.grid{stroke:#c4d0c4;stroke-width:1;stroke-dasharray:3 3}.axis{stroke:#8b9c8e;stroke-width:1.3;fill:none}
+      .idle{fill:#f9f8ef;stroke:#b8ba9e;stroke-width:1}.warn{fill:#765820;font-weight:600}.warn-panel{fill:#f6efe0;stroke:#b9914e;stroke-width:1.5}
+      .v{fill:#d9e9dc;stroke:#6f9a80;stroke-width:1.2}.sg{fill:#dfe8ef;stroke:#7d9eb1;stroke-width:1.2}.boxname{font-size:17px;font-weight:600}.boxsub{font-size:16px;fill:#416354}.stage{font-size:18px;font-weight:700}.edge{fill:none;stroke:#527d64;stroke-width:1.6;marker-end:url(#arrow)}.return{fill:none;stroke:#527d64;stroke-width:1.7;stroke-dasharray:4 3;marker-end:url(#arrow)}.divider{stroke:#c4d0c4;stroke-width:1.2;fill:none}
+    </style>
+    <marker id="arrow" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0 0L7 3.5L0 7Z" fill="#527d64"/></marker>
+  </defs>
+  <rect x="1" y="1" width="498" height="881" rx="14" fill="#f5f6ef" stroke="#c4d0c4" stroke-width="1.3"/>
+  <text x="24" y="34" class="head">同一个请求，怎样穿过两套系统？</text>
+  <text x="24" y="60" class="small">A：8 个输入，恰好 4 个输出；普通生成。</text>
+  <text x="133" y="91" class="label" text-anchor="middle">vLLM v0.12.0 · V1</text>
+  <text x="367" y="91" class="label" text-anchor="middle">SGLang v0.5.6 · SRT</text>
+  <text x="24" y="126" class="stage">1  接入与输入准备</text>
+  <rect x="24" y="136" width="220" height="64" rx="6" class="v"/>
+  <rect x="256" y="136" width="220" height="64" rx="6" class="sg"/>
+  <text x="134" y="161" class="boxname" text-anchor="middle">服务入口</text>
+  <text x="134" y="185" class="boxsub" text-anchor="middle">InputProcessor</text>
+  <text x="366" y="161" class="boxname" text-anchor="middle">服务入口</text>
+  <text x="366" y="185" class="boxsub" text-anchor="middle">TokenizerManager</text>
+  <path d="M134 200L134 217" class="edge"/>
+  <path d="M366 200L366 217" class="edge"/>
+  <text x="24" y="241" class="stage">2  调度与缓存资源</text>
+  <rect x="24" y="251" width="220" height="64" rx="6" class="v"/>
+  <rect x="256" y="251" width="220" height="64" rx="6" class="sg"/>
+  <text x="134" y="276" class="boxname" text-anchor="middle">EngineCore / Scheduler</text>
+  <text x="134" y="300" class="boxsub" text-anchor="middle">选中本轮 Token 与 KV 槽</text>
+  <text x="366" y="276" class="boxname" text-anchor="middle">Scheduler</text>
+  <text x="366" y="300" class="boxsub" text-anchor="middle">ScheduleBatch / KV 槽</text>
+  <path d="M134 315L134 332" class="edge"/>
+  <path d="M366 315L366 332" class="edge"/>
+  <text x="24" y="356" class="stage">3  本轮模型执行与采样</text>
+  <rect x="24" y="366" width="220" height="64" rx="6" class="v"/>
+  <rect x="256" y="366" width="220" height="64" rx="6" class="sg"/>
+  <text x="134" y="391" class="boxname" text-anchor="middle">Executor / Worker</text>
+  <text x="134" y="415" class="boxsub" text-anchor="middle">GPUModelRunner</text>
+  <text x="366" y="391" class="boxname" text-anchor="middle">TP Worker</text>
+  <text x="366" y="415" class="boxsub" text-anchor="middle">ModelRunner</text>
+  <path d="M134 430L134 447" class="edge"/>
+  <path d="M366 430L366 447" class="edge"/>
+  <text x="24" y="471" class="stage">4  结果提交与停止判断</text>
+  <rect x="24" y="481" width="220" height="64" rx="6" class="v"/>
+  <rect x="256" y="481" width="220" height="64" rx="6" class="sg"/>
+  <text x="134" y="506" class="boxname" text-anchor="middle">Scheduler</text>
+  <text x="134" y="530" class="boxsub" text-anchor="middle">更新请求输出历史</text>
+  <text x="366" y="506" class="boxname" text-anchor="middle">Scheduler</text>
+  <text x="366" y="530" class="boxsub" text-anchor="middle">更新请求输出历史</text>
+  <rect x="24" y="555" width="452" height="44" rx="7" class="panel"/>
+  <text x="37" y="581" class="label">交付本轮输出；未结束则回到步骤 2。</text>
+  <path d="M134 544L134 553" class="edge"/>
+  <path d="M366 544L366 553" class="edge"/>
+  <text x="24" y="624" class="stage">5  向调用方交付输出（可异步）</text>
+  <rect x="24" y="635" width="220" height="62" rx="6" class="v"/>
+  <rect x="256" y="635" width="220" height="62" rx="6" class="sg"/>
+  <text x="134" y="659" class="boxname" text-anchor="middle">OutputProcessor</text>
+  <text x="134" y="683" class="boxsub" text-anchor="middle">整理输出，再向 API 返回</text>
+  <text x="366" y="659" class="boxname" text-anchor="middle">DetokenizerManager</text>
+  <text x="366" y="683" class="boxsub" text-anchor="middle">解码 → TokenizerManager</text>
+  <text x="24" y="727" class="stage">6  请求结束：归还请求持有的资源</text>
+  <rect x="24" y="738" width="220" height="62" rx="6" class="v"/>
+  <rect x="256" y="738" width="220" height="62" rx="6" class="sg"/>
+  <text x="134" y="762" class="boxname" text-anchor="middle">Scheduler / KV 管理</text>
+  <text x="134" y="786" class="boxsub" text-anchor="middle">退还请求持有的引用</text>
+  <text x="366" y="762" class="boxname" text-anchor="middle">Scheduler / 缓存管理</text>
+  <text x="366" y="786" class="boxsub" text-anchor="middle">退还请求持有的引用</text>
+  <text x="24" y="826" class="small">输出与清理不必同刻完成；缓存内容可保留。</text>
+  <text x="24" y="850" class="small">图仅表示职责关系，不是进程映射或实测时序。</text>
+  <text x="24" y="874" class="small">输出交付与实际设备执行可以异步。</text>
+</svg>

@@ -313,8 +313,9 @@ PYTHONPATH=website/tests python3 -m unittest test_compiler_runtime_k05
 
 ## 接下来怎么读
 
-本篇建立从模型规格、逐 Rank 容量、每轮计算/数据/通信需求到完整请求吞吐的条件估算，并指出哪些条件需要真实测量。理解这些边界后，K06 将沿真实框架源码追踪一次请求如何被组织、执行、更新并回收。
+本篇建立从模型规格、逐 Rank 容量、每轮计算/数据/通信需求到完整请求吞吐的条件估算，并指出哪些条件需要真实测量。理解这些边界后，[K06](k06-framework-code-walkthrough.md) 沿真实框架源码追踪一次请求如何被组织、执行、更新并回收。
 
+- [K06：沿着同一个请求，怎样读懂 vLLM 和 SGLang 的源码执行路径？](k06-framework-code-walkthrough.md)
 - [K01：怎样定义可以公平比较的延迟和吞吐量？](k01-performance-metrics.md)
 - [K03：系统变慢了，怎样找到真正的瓶颈？](k03-benchmarking-and-profiling.md)
 - [K04：知道请求何时到达，怎样预测它们何时完成？](k04-trace-and-event-model.md)
