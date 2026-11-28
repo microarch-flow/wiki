@@ -1,0 +1,85 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="500" height="676" viewBox="0 0 500 676" role="img" aria-labelledby="title desc">
+  <title id="title">缓存命中节省工作，但首输出还受等待时间影响</title>
+  <desc id="desc">C 的输入为 p1、p2、p3、p4、c5、c6。每个 KV 块容纳四个位置。副本 0 中活跃请求 A 持有可复用的已建立前四位置状态。C 若选择副本 0，固定一块已有前缀，只新增两个位置及一个块。副本 1 的 B 活跃但没有与 C 匹配的有效前缀，C 若选择它就需新增六个位置及两个块。图只画 C 的 Prefill 状态，省略 A、B 其他块。比较从 C 进入路由决策边界到首输出在服务端就绪的构造估算：副本 0 等待 8 毫秒、首输出计算 4 毫秒，共 12 毫秒；副本 1 等待 2 毫秒、首输出计算 9 毫秒，共 11 毫秒。若副本 0 的等待降至 3 毫秒，计算仍用 4 毫秒，共 7 毫秒。两种条件下预计较早就绪的副本不同。这些时间并非实测，未计其他开销。</desc>
+  <defs>
+    <style>
+      text{font-family:"Noto Sans CJK SC","PingFang SC","Microsoft YaHei",sans-serif;fill:#173d35;font-size:19px}
+      .head{font-size:23px;font-weight:700}.subhead{font-size:20px;font-weight:700}.label{font-size:18px;fill:#416354}.small{font-size:17px;fill:#416354}
+      .token{font-size:18px;font-weight:600;text-anchor:middle}.num{font-size:18px;text-anchor:middle;font-weight:600}.total{font-weight:700;font-size:20px;text-anchor:end}
+      .panel{fill:#edf2e8;stroke:#9ab69e;stroke-width:1.4}.group{fill:#f9f8ef;stroke:#b8ba9e;stroke-width:1.4}
+      .hit{fill:#d9e9dc;stroke:#6f9a80;stroke-width:1.4}.new{fill:#dfe8ef;stroke:#7d9eb1;stroke-width:1.4}.slot{fill:#f5f6ef;stroke:#9cae9e;stroke-width:1.3;stroke-dasharray:3 3}
+      .wait{fill:#f2e4c9;stroke:#aa9163;stroke-width:1.4}.compute{fill:#dfe8ef;stroke:#7d9eb1;stroke-width:1.4}.line{stroke:#c4d0c4;stroke-width:1.3;fill:none}
+    </style>
+  </defs>
+  <rect x="1" y="1" width="498" height="674" rx="14" fill="#f5f6ef" stroke="#c4d0c4" stroke-width="1.3"/>
+  <text x="24" y="35" class="head">缓存命中，还是更短的等待？</text>
+  <text x="24" y="60" class="label">C 的输入：p1 p2 p3 p4 c5 c6（每块 4 位置）</text>
+
+  <rect x="18" y="74" width="464" height="133" rx="10" class="panel"/>
+  <text x="30" y="101" class="subhead">副本 0 · A 活跃，C 命中前缀</text>
+  <rect x="30" y="111" width="214" height="45" rx="6" class="group"/>
+  <rect x="256" y="111" width="214" height="45" rx="6" class="group"/>
+  <rect x="36" y="116" width="48" height="35" rx="4" class="hit"/>
+  <rect x="87" y="116" width="48" height="35" rx="4" class="hit"/>
+  <rect x="138" y="116" width="48" height="35" rx="4" class="hit"/>
+  <rect x="189" y="116" width="48" height="35" rx="4" class="hit"/>
+  <rect x="262" y="116" width="48" height="35" rx="4" class="new"/>
+  <rect x="313" y="116" width="48" height="35" rx="4" class="new"/>
+  <rect x="364" y="116" width="48" height="35" rx="4" class="slot"/>
+  <rect x="415" y="116" width="48" height="35" rx="4" class="slot"/>
+  <text x="60" y="139" class="token">p1</text><text x="111" y="139" class="token">p2</text><text x="162" y="139" class="token">p3</text><text x="213" y="139" class="token">p4</text>
+  <text x="286" y="139" class="token">c5</text><text x="337" y="139" class="token">c6</text>
+  <text x="137" y="178" class="small" text-anchor="middle">固定已有 1 块的引用</text>
+  <text x="363" y="178" class="small" text-anchor="middle">新增 1 块</text>
+  <text x="250" y="198" class="small" text-anchor="middle">仅新增计算 2 个输入位置</text>
+
+  <rect x="18" y="217" width="464" height="133" rx="10" class="panel"/>
+  <text x="30" y="244" class="subhead">副本 1 · B 活跃，C 没有命中</text>
+  <rect x="30" y="254" width="214" height="45" rx="6" class="group"/>
+  <rect x="256" y="254" width="214" height="45" rx="6" class="group"/>
+  <rect x="36" y="259" width="48" height="35" rx="4" class="new"/>
+  <rect x="87" y="259" width="48" height="35" rx="4" class="new"/>
+  <rect x="138" y="259" width="48" height="35" rx="4" class="new"/>
+  <rect x="189" y="259" width="48" height="35" rx="4" class="new"/>
+  <rect x="262" y="259" width="48" height="35" rx="4" class="new"/>
+  <rect x="313" y="259" width="48" height="35" rx="4" class="new"/>
+  <rect x="364" y="259" width="48" height="35" rx="4" class="slot"/>
+  <rect x="415" y="259" width="48" height="35" rx="4" class="slot"/>
+  <text x="60" y="282" class="token">p1</text><text x="111" y="282" class="token">p2</text><text x="162" y="282" class="token">p3</text><text x="213" y="282" class="token">p4</text>
+  <text x="286" y="282" class="token">c5</text><text x="337" y="282" class="token">c6</text>
+  <text x="137" y="321" class="small" text-anchor="middle">新增 1 块</text>
+  <text x="363" y="321" class="small" text-anchor="middle">新增 1 块</text>
+  <text x="250" y="341" class="small" text-anchor="middle">新增计算 6 个输入位置</text>
+  <text x="250" y="373" class="small" text-anchor="middle">只画 C 的 Prefill 状态；省略其他请求的块。</text>
+
+  <path d="M24 390H476" class="line"/>
+  <text x="24" y="420" class="subhead">预计首输出就绪时间（ms）</text>
+  <rect x="24" y="435" width="22" height="18" rx="4" class="wait"/>
+  <text x="53" y="450" class="small">等待</text>
+  <rect x="166" y="435" width="22" height="18" rx="4" class="compute"/>
+  <text x="195" y="450" class="small">首输出计算</text>
+  <text x="474" y="450" class="small" text-anchor="end">总计</text>
+
+  <text x="24" y="487" class="label">副本 0</text>
+  <rect x="120" y="466" width="200" height="31" rx="4" class="wait"/>
+  <rect x="320" y="466" width="100" height="31" rx="4" class="compute"/>
+  <text x="220" y="488" class="num">8</text>
+  <text x="370" y="488" class="num">4</text>
+  <text x="474" y="488" class="total">12</text>
+  <text x="24" y="528" class="label">副本 1</text>
+  <rect x="120" y="507" width="50" height="31" rx="4" class="wait"/>
+  <rect x="170" y="507" width="225" height="31" rx="4" class="compute"/>
+  <text x="145" y="529" class="num">2</text>
+  <text x="282.5" y="529" class="num">9</text>
+  <text x="474" y="529" class="total">11</text>
+  <text x="24" y="558" class="small">此时副本 1 的预计首输出更早。</text>
+  <path d="M24 570H476" class="line"/>
+  <text x="24" y="594" class="label">若副本 0 的等待降至 3 ms：</text>
+  <rect x="120" y="605" width="75" height="31" rx="4" class="wait"/>
+  <rect x="195" y="605" width="100" height="31" rx="4" class="compute"/>
+  <text x="24" y="627" class="label">副本 0</text>
+  <text x="157.5" y="627" class="num">3</text>
+  <text x="245" y="627" class="num">4</text>
+  <text x="474" y="627" class="total">7</text>
+  <text x="250" y="660" class="small" text-anchor="middle">同一时间尺度；构造估算，非实测。</text>
+</svg>

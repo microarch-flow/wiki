@@ -122,6 +122,30 @@ class CompilerRuntimeGuideTests(unittest.TestCase):
                         path /= "index.html"
                     self.assertTrue(path.is_file(), (relative, link))
 
+    def test_j01_article_navigation_search_and_diagrams(self):
+        route = "10-serving"
+        slug = "j01-request-routing"
+        self._check_article(
+            route,
+            "推理服务系统",
+            slug,
+            "一个请求到达，服务怎样决定将它交给哪个模型副本？",
+            ("j01-request-path.svg", "j01-routing-tradeoff.svg"),
+        )
+        relative = f"{PREFIX}{route}/{slug}/"
+        page = SITE / relative / "index.html"
+        base_url = "https://site.invalid/" + relative
+        linked_paths = {
+            urlsplit(urljoin(base_url, link)).path
+            for link in GuideContent(page.read_text()).links
+        }
+        for dependency in (
+            "07-model-execution/g06-prefix-cache",
+            "08-request-scheduling/h03-admission-and-request-scheduling",
+            "09-distributed-execution/i02-pipeline-and-data-parallelism",
+        ):
+            self.assertIn(f"/{PREFIX}{dependency}/", linked_paths)
+
     def test_b01_article_navigation_search_and_diagrams(self):
         self._check_article(
             "02-frontend-and-optimization",
