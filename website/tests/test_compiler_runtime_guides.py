@@ -650,6 +650,89 @@ class CompilerRuntimeGuideTests(unittest.TestCase):
         previous = SITE / PREFIX / route / "g06-prefix-cache" / "index.html"
         self.assertIn(f"../{slug}/", GuideContent(previous.read_text()).links)
 
+    def test_g08_article_navigation_search_and_diagrams(self):
+        route = "07-model-execution"
+        slug = "g08-constrained-decoding"
+        self._check_article(
+            route,
+            "模型执行与生成控制",
+            slug,
+            "怎样让模型生成符合指定格式的文本？",
+            ("g08-grammar-mask.svg", "g08-grammar-progress.svg",
+             "g08-token-boundaries.svg"),
+        )
+        for previous_slug in ("g03-sampling-and-generation", "g09-speculative-decoding"):
+            previous = SITE / PREFIX / route / previous_slug / "index.html"
+            self.assertIn(f"../{slug}/", GuideContent(previous.read_text()).links)
+
+    def test_g08_teaching_grammar_and_generation_state(self):
+        import codecs
+        import itertools
+        import math
+
+        # Exact two-string language from the article, not a general JSON engine.
+        language = (b'{"ok":true}', b'{"ok":false}')
+        vocab = {"t_a": b"true}x", "t_b": b'{"ok":', "t_c": b"true",
+                 "t_d": b"false}", "t_e": b"}"}
+
+        def allowed(prefix):
+            ids = {v for v, payload in vocab.items()
+                   if any(full.startswith(prefix + payload) for full in language)}
+            if prefix in language:
+                ids.add("EOS")
+            return ids
+
+        self.assertEqual(allowed(b""), {"t_b"})
+        q1 = vocab["t_b"]
+        self.assertEqual(allowed(q1), {"t_c", "t_d"})
+        q2 = q1 + vocab["t_c"]
+        self.assertEqual(allowed(q2), {"t_e"})
+        self.assertEqual(allowed(q2 + vocab["t_e"]), {"EOS"})
+        self.assertEqual(allowed(q1 + vocab["t_d"]), {"EOS"})
+        self.assertNotIn("t_a", allowed(q1))
+
+        # Exhaustively check every candidate chain fitting the four-token budget.
+        # EOS terminates; the grammar never admits trailing bytes or incomplete EOS.
+        outcomes = set()
+        for n in range(1, 5):
+            for ids in itertools.product((*vocab, "EOS"), repeat=n):
+                prefix = b""
+                for i, token in enumerate(ids):
+                    if token not in allowed(prefix):
+                        break
+                    if token == "EOS":
+                        if i == n - 1:
+                            outcomes.add((ids, prefix))
+                        break
+                    prefix += vocab[token]
+        self.assertEqual(outcomes, {
+            (("t_b", "t_c", "t_e", "EOS"), language[0]),
+            (("t_b", "t_d", "EOS"), language[1]),
+        })
+        for _, payload in outcomes:
+            obj = json.loads(payload)
+            self.assertEqual(set(obj), {"ok"})
+            self.assertIs(type(obj["ok"]), bool)
+        with self.assertRaises(json.JSONDecodeError):
+            json.loads(q2)
+
+        probs = [math.exp(-i) / (1 + math.exp(-1)) for i in (0, 1)]
+        self.assertEqual([round(p, 3) for p in probs], [0.731, 0.269])
+        self.assertLess(0.20, probs[0])
+        self.assertEqual([8 + max(0, i - 1) for i in range(5)], [8, 8, 9, 10, 11])
+        self.assertEqual([8 + i for i in range(5)], [8, 9, 10, 11, 12])
+        self.assertEqual(math.ceil(131072 / 32) * 4, 16 * 1024)
+        self.assertEqual(32 * 16 * 1024, 512 * 1024)
+        self.assertEqual(131072 * 4, 512 * 1024)
+        decoder = codecs.getincrementaldecoder("utf-8")()
+        self.assertEqual(decoder.decode(bytes.fromhex("E4 BD"), final=False), "")
+        self.assertEqual(decoder.decode(bytes.fromhex("A0"), final=True), "你")
+        # Rejected speculative suffix must not leave the parser at its tentative qF.
+        tentative = q2 + vocab["t_e"]
+        self.assertEqual(allowed(tentative), {"EOS"})
+        self.assertEqual(allowed(q1), {"t_c", "t_d"})
+        self.assertEqual(allowed(q1 + vocab["t_d"]), {"EOS"})
+
     def _check_foundation_article(self, slug, title, diagram_names):
         self._check_article("01-foundations", "软件执行共同基础", slug, title, diagram_names)
 

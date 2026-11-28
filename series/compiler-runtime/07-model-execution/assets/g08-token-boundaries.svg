@@ -1,0 +1,68 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 788" width="500" height="788" role="img" aria-labelledby="title desc">
+  <title id="title">语法约束的 Token 内容及 UTF-8 边界</title>
+  <desc id="desc">在等待布尔值的 q1 时，假想词表中的 t_a 内容是 true}x。逐字符试探，true 可以推进语法到 q2，右大括号可以到接受态 qF，但多余字母 x 没有合法转移，所以整项候选被硬 Mask 禁止，而非仅丢弃 x 并接受前半段。t_c 内容为 true，可以合法地推进至仍需右括号的 q2；t_d 内容为 false}，可以直接推进到完整合法的 qF。另一种允许 Unicode 字符串内容的语法位置中，接续 G03 的 UTF-8 字节例，字符你需要三个字节 E4 BD A0，若第一片 Token 只有 E4 BD，不能直接将其视作非法或形成完整字符，应在确有合法续字节可能时保留待续的字节状态。第二片 A0 到来才形成完整字符并可在满足语法和输出条件时解码输出。这个字节示例与图上方只允许固定布尔值 JSON 的教学语法是不同场景。</desc>
+  <defs>
+    <marker id="arrow" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0 0L7 3.5L0 7Z" fill="#527d64"/></marker>
+    <style>
+text{font-family:"Noto Sans CJK SC","PingFang SC","Microsoft YaHei",sans-serif;fill:#173d35;font-size:20px}
+.head{font-weight:700;font-size:23px}.subhead{font-weight:700;font-size:20px}.label{font-size:18px;fill:#416354}
+.small{font-size:17px;fill:#416354}.tiny{font-size:16px;fill:#416354}.token{font-size:18px;font-weight:600}
+.context{fill:#edf2e8;stroke:#9ab69e;stroke-width:1.5}.artifact{fill:#f9f8ef;stroke:#b8ba9e;stroke-width:1.4}
+.done{fill:#d9e9dc;stroke:#6f9a80;stroke-width:1.4}.known{fill:#f2e4c9;stroke:#9c7b42;stroke-width:1.5}
+.unknown{fill:#f5f6ef;stroke:#8b9c8e;stroke-width:1.4;stroke-dasharray:3 3}
+.future{fill:#f5f6ef;stroke:#c4d0c4;stroke-width:1}.line{stroke:#c4d0c4;stroke-width:1.3;fill:none}
+.arrow{stroke:#527d64;stroke-width:2;fill:none;marker-end:url(#arrow)}.branch{stroke:#527d64;stroke-width:2;fill:none}
+.bar{fill:#82af91;stroke:#527d64;stroke-width:1}.goldbar{fill:#d5b16e;stroke:#9c7b42;stroke-width:1}
+.cut{fill:#e9ece5;stroke:#9cae9e;stroke-width:1.4;stroke-dasharray:4 3}.match{fill:#f2e4c9;stroke:#9c7b42;stroke-width:2}
+
+.allowed{fill:#d9e9dc;stroke:#6f9a80;stroke-width:1.4}
+.masked{fill:#e9ece5;stroke:#9cae9e;stroke-width:1.4;stroke-dasharray:4 3}
+.pending{fill:#f2e4c9;stroke:#9c7b42;stroke-width:1.5}
+</style>
+  </defs>
+  <rect x="1" y="1" width="498" height="786" rx="14" fill="#f5f6ef" stroke="#c4d0c4" stroke-width="1.3"/>
+
+  <text x="24" y="34" class="head">必须检查候选 Token 的完整内容</text>
+  <text x="24" y="61" class="label">当前为 q1：已生成 {"ok":，等待布尔值</text>
+  <rect x="18" y="79" width="464" height="200" rx="10" class="artifact"/>
+  <text x="32" y="109" class="subhead">t_a = true}x：整个候选被禁止</text>
+  <text x="32" y="137" class="small">假想地在语法状态上逐字符推进：</text>
+  <rect x="32" y="153" width="138" height="49" rx="5" class="allowed"/>
+  <rect x="181" y="153" width="138" height="49" rx="5" class="allowed"/>
+  <rect x="330" y="153" width="138" height="49" rx="5" class="masked"/>
+  <text x="101" y="175" text-anchor="middle" class="token">true</text>
+  <text x="101" y="194" text-anchor="middle" class="small">进入 q2</text>
+  <text x="250" y="175" text-anchor="middle" class="token">}</text>
+  <text x="250" y="194" text-anchor="middle" class="small">进入 qF</text>
+  <text x="399" y="175" text-anchor="middle" class="token">x</text>
+  <text x="399" y="194" text-anchor="middle" class="small">无合法转移</text>
+  <path d="M171 177H173 M320 177H322" class="branch"/>
+  <path d="M173 173L180 177L173 181Z M322 173L329 177L322 181Z" fill="#527d64"/>
+  <text x="32" y="231" class="label">虽然 true} 能构成合法结尾，末尾却有 x。</text>
+  <text x="32" y="257" class="subhead">不能只接受合法前半段，再丢掉 x。</text>
+  <rect x="18" y="292" width="464" height="148" rx="10" class="context"/>
+  <text x="32" y="322" class="subhead">其他候选可合法地推进不同距离</text>
+  <rect x="32" y="338" width="124" height="36" rx="5" class="allowed"/>
+  <text x="94" y="361" text-anchor="middle" class="token">t_c · true</text>
+  <text x="173" y="361" class="label">q2：合法前缀，尚未完整</text>
+  <rect x="32" y="386" width="124" height="36" rx="5" class="allowed"/>
+  <text x="94" y="409" text-anchor="middle" class="token">t_d · false}</text>
+  <text x="173" y="409" class="label">qF：完整合法 JSON</text>
+  <rect x="18" y="454" width="464" height="265" rx="10" class="artifact"/>
+  <text x="32" y="484" class="subhead">Token 也可能只携带部分字符字节</text>
+  <text x="32" y="512" class="small">另一场景：语法允许 Unicode 字符串内容。</text>
+  <text x="32" y="540" class="label">G03 的 UTF-8 字节片段例：“你”</text>
+  <rect x="32" y="557" width="205" height="57" rx="5" class="pending"/>
+  <rect x="263" y="557" width="205" height="57" rx="5" class="allowed"/>
+  <text x="134.5" y="581" text-anchor="middle" class="token">第一片：E4 BD</text>
+  <text x="134.5" y="602" text-anchor="middle" class="small">合法但不完整</text>
+  <text x="365.5" y="581" text-anchor="middle" class="token">续片：A0</text>
+  <text x="365.5" y="602" text-anchor="middle" class="small">完成字符</text>
+  <path d="M134.5 620V638H250V649 M365.5 620V638H250V649" class="arrow"/>
+  <rect x="112" y="656" width="276" height="46" rx="5" class="context"/>
+  <text x="250" y="676" text-anchor="middle" class="token">E4 BD A0 → 你</text>
+  <text x="250" y="694" text-anchor="middle" class="tiny">字符完整后才形成可输出文本</text>
+  <text x="250" y="747" text-anchor="middle" class="small">有合法续字节时，不能把未完字符误判为非法。</text>
+  <text x="250" y="771" text-anchor="middle" class="small">第一片也不应当单独输出成完整字符。</text>
+
+</svg>

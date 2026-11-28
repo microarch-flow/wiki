@@ -1,0 +1,73 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 920" width="500" height="920" role="img" aria-labelledby="title desc">
+  <title id="title">请求 A 的语法解析状态、生成数及有效 KV 随步骤推进</title>
+  <desc id="desc">在没有额外停止条件、输出上限为四个 Token 且 EOS 在本例计入生成 Token 计数的约定中，A 已完成八个输入 Token 的 Prefill，还未选择第一个输出，已知数八、已生成零、有效 KV 八，语法状态 q0。选择 y1=t_b 即 {"ok":，更新语法状态为 q1（等待布尔值）；已知九、已生成一、有效 KV 八。将 y1 输入目标模型后选择 y2=t_c 即 true，进入 q2（等待右大括号），已知十、已生成二、有效 KV 九。下一轮输入 y2 后选择 y3=t_e 即右大括号，进入接受态 qF，文本是完整的 {"ok":true}，已知十一、已生成三、有效 KV 十。这个教学执行直到下一轮输入 y3 并选择 EOS 后才停止，选择 EOS 不产生可见文本，已知数十二、已生成四、有效 KV 十一，EOS 尚未执行对应的前向。语法接受表示输出内容满足文法，并不必然等同于生成已停止。</desc>
+  <defs>
+    <marker id="arrow" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0 0L7 3.5L0 7Z" fill="#527d64"/></marker>
+    <style>
+text{font-family:"Noto Sans CJK SC","PingFang SC","Microsoft YaHei",sans-serif;fill:#173d35;font-size:20px}
+.head{font-weight:700;font-size:23px}.subhead{font-weight:700;font-size:20px}.label{font-size:18px;fill:#416354}
+.small{font-size:17px;fill:#416354}.tiny{font-size:16px;fill:#416354}.token{font-size:18px;font-weight:600}
+.context{fill:#edf2e8;stroke:#9ab69e;stroke-width:1.5}.artifact{fill:#f9f8ef;stroke:#b8ba9e;stroke-width:1.4}
+.done{fill:#d9e9dc;stroke:#6f9a80;stroke-width:1.4}.known{fill:#f2e4c9;stroke:#9c7b42;stroke-width:1.5}
+.unknown{fill:#f5f6ef;stroke:#8b9c8e;stroke-width:1.4;stroke-dasharray:3 3}
+.future{fill:#f5f6ef;stroke:#c4d0c4;stroke-width:1}.line{stroke:#c4d0c4;stroke-width:1.3;fill:none}
+.arrow{stroke:#527d64;stroke-width:2;fill:none;marker-end:url(#arrow)}.branch{stroke:#527d64;stroke-width:2;fill:none}
+.bar{fill:#82af91;stroke:#527d64;stroke-width:1}.goldbar{fill:#d5b16e;stroke:#9c7b42;stroke-width:1}
+.cut{fill:#e9ece5;stroke:#9cae9e;stroke-width:1.4;stroke-dasharray:4 3}.match{fill:#f2e4c9;stroke:#9c7b42;stroke-width:2}
+
+.allowed{fill:#d9e9dc;stroke:#6f9a80;stroke-width:1.4}
+.masked{fill:#e9ece5;stroke:#9cae9e;stroke-width:1.4;stroke-dasharray:4 3}
+.pending{fill:#f2e4c9;stroke:#9c7b42;stroke-width:1.5}
+</style>
+  </defs>
+  <rect x="1" y="1" width="498" height="918" rx="14" fill="#f5f6ef" stroke="#c4d0c4" stroke-width="1.3"/>
+
+  <text x="24" y="34" class="head">语法状态跟随 A 的生成结果推进</text>
+  <text x="24" y="61" class="label">A：8 个输入、最多选择 4 个输出 Token</text>
+  <rect x="18" y="79" width="464" height="118" rx="10" class="context"/>
+  <text x="32" y="109" class="subhead">Prefill 已完成，尚未开始选择</text>
+  <rect x="32" y="123" width="78" height="34" rx="5" class="pending"/>
+  <text x="71" y="146" text-anchor="middle" class="token">q0</text>
+  <text x="125" y="146" class="label">等待固定开头</text>
+  <text x="32" y="181" class="small">已知 8 · 已生成 0 · 有效 KV 8</text>
+  <path d="M250 198V206" class="arrow"/>
+  <rect x="18" y="208" width="464" height="152" rx="10" class="artifact"/>
+  <text x="32" y="238" text-anchor="start" class="subhead">选择 y1=t_b：{"ok":</text>
+  <rect x="32" y="251" width="78" height="34" rx="5" class="pending"/>
+  <text x="71" y="274" text-anchor="middle" class="token">q1</text>
+  <text x="125" y="274" text-anchor="start" class="label">等待布尔值</text>
+  <text x="32" y="304" text-anchor="start" class="label">文本前缀：{"ok":</text>
+  <text x="32" y="328" text-anchor="start" class="small">已知 9 · 已生成 1 · 有效 KV 8</text>
+  <text x="32" y="350" text-anchor="start" class="tiny">未停止；下一轮前向的输入为 y1。</text>
+  <path d="M250 361V369" class="arrow"/>
+  <rect x="18" y="371" width="464" height="152" rx="10" class="artifact"/>
+  <text x="32" y="401" text-anchor="start" class="subhead">Decode y1，选择 y2=t_c：true</text>
+  <rect x="32" y="414" width="78" height="34" rx="5" class="pending"/>
+  <text x="71" y="437" text-anchor="middle" class="token">q2</text>
+  <text x="125" y="437" text-anchor="start" class="label">等待右大括号</text>
+  <text x="32" y="467" text-anchor="start" class="label">文本前缀：{"ok":true</text>
+  <text x="32" y="491" text-anchor="start" class="small">已知 10 · 已生成 2 · 有效 KV 9</text>
+  <text x="32" y="513" text-anchor="start" class="tiny">未停止；下一轮前向的输入为 y2。</text>
+  <path d="M250 524V532" class="arrow"/>
+  <rect x="18" y="534" width="464" height="152" rx="10" class="context"/>
+  <text x="32" y="564" text-anchor="start" class="subhead">Decode y2，选择 y3=t_e：}</text>
+  <rect x="32" y="577" width="78" height="34" rx="5" class="done"/>
+  <text x="71" y="600" text-anchor="middle" class="token">qF</text>
+  <text x="125" y="600" text-anchor="start" class="label">已接受完整 JSON</text>
+  <text x="32" y="630" text-anchor="start" class="label">文本前缀：{"ok":true}</text>
+  <text x="32" y="654" text-anchor="start" class="small">已知 11 · 已生成 3 · 有效 KV 10</text>
+  <text x="32" y="676" text-anchor="start" class="tiny">语法接受；但尚未停止，等待 EOS。</text>
+  <path d="M250 687V695" class="arrow"/>
+  <rect x="18" y="697" width="464" height="152" rx="10" class="context"/>
+  <text x="32" y="727" text-anchor="start" class="subhead">Decode y3，选择 y4=EOS</text>
+  <rect x="32" y="740" width="78" height="34" rx="5" class="done"/>
+  <text x="71" y="763" text-anchor="middle" class="token">结束</text>
+  <text x="125" y="763" text-anchor="start" class="label">此例选择 EOS 后停止</text>
+  <text x="32" y="793" text-anchor="start" class="label">文本前缀：{"ok":true}</text>
+  <text x="32" y="817" text-anchor="start" class="small">已知 12 · 已生成 4 · 有效 KV 11</text>
+  <text x="32" y="839" text-anchor="start" class="tiny">EOS 无可见文本，尚未为它建立 KV。</text>
+
+  <text x="250" y="879" text-anchor="middle" class="small">已知数、生成数包含本例所选 EOS 等 Token。</text>
+  <text x="250" y="903" text-anchor="middle" class="small">语法接受与生成停止是两种不同的状态变化。</text>
+
+</svg>

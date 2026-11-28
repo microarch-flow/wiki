@@ -1,0 +1,114 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 938" width="500" height="938" role="img" aria-labelledby="title desc">
+  <title id="title">语法状态下的硬 Mask 与采样分布</title>
+  <desc id="desc">教学规范仅允许没有空格的 JSON 字符串 {"ok":true} 或 {"ok":false}。假想词表为 t_a=真值 true 后跟右大括号及非法字母 x，t_b 为开头 {"ok":，t_c 为 true，t_d 为 false 后跟右大括号，t_e 为右大括号，以及 EOS。q0 初态各原始 Logit 为 t_a 2、t_b 1、t_c -1、t_d -2、t_e -3、EOS 0；硬 Mask 只允许 t_b，把所有其他分数设为负无穷，t_b 的归一化概率为一。消费 t_b 进入等待布尔值的 q1，原始 Logit 为 t_a 3、t_b 0、t_c 2、t_d 1、t_e -1、EOS 0；仅 t_c 和 t_d 合法。t_a 整个 Token 包含多余的末尾 x，不合法；t_d 含右大括号，可直接令 JSON 内容完整。温度一且不做概率截断时，t_c、t_d 的条件采样概率约为 .731 和 .269。按此教学例的均匀随机数 .20 选择 t_c。数值用于说明约束后的采样分布。</desc>
+  <defs>
+    <marker id="arrow" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0 0L7 3.5L0 7Z" fill="#527d64"/></marker>
+    <style>
+text{font-family:"Noto Sans CJK SC","PingFang SC","Microsoft YaHei",sans-serif;fill:#173d35;font-size:20px}
+.head{font-weight:700;font-size:23px}.subhead{font-weight:700;font-size:20px}.label{font-size:18px;fill:#416354}
+.small{font-size:17px;fill:#416354}.tiny{font-size:16px;fill:#416354}.token{font-size:18px;font-weight:600}
+.context{fill:#edf2e8;stroke:#9ab69e;stroke-width:1.5}.artifact{fill:#f9f8ef;stroke:#b8ba9e;stroke-width:1.4}
+.done{fill:#d9e9dc;stroke:#6f9a80;stroke-width:1.4}.known{fill:#f2e4c9;stroke:#9c7b42;stroke-width:1.5}
+.unknown{fill:#f5f6ef;stroke:#8b9c8e;stroke-width:1.4;stroke-dasharray:3 3}
+.future{fill:#f5f6ef;stroke:#c4d0c4;stroke-width:1}.line{stroke:#c4d0c4;stroke-width:1.3;fill:none}
+.arrow{stroke:#527d64;stroke-width:2;fill:none;marker-end:url(#arrow)}.branch{stroke:#527d64;stroke-width:2;fill:none}
+.bar{fill:#82af91;stroke:#527d64;stroke-width:1}.goldbar{fill:#d5b16e;stroke:#9c7b42;stroke-width:1}
+.cut{fill:#e9ece5;stroke:#9cae9e;stroke-width:1.4;stroke-dasharray:4 3}.match{fill:#f2e4c9;stroke:#9c7b42;stroke-width:2}
+
+.allowed{fill:#d9e9dc;stroke:#6f9a80;stroke-width:1.4}
+.masked{fill:#e9ece5;stroke:#9cae9e;stroke-width:1.4;stroke-dasharray:4 3}
+.pending{fill:#f2e4c9;stroke:#9c7b42;stroke-width:1.5}
+</style>
+  </defs>
+  <rect x="1" y="1" width="498" height="936" rx="14" fill="#f5f6ef" stroke="#c4d0c4" stroke-width="1.3"/>
+
+  <text x="24" y="34" class="head">语法怎样屏蔽不合法的 Token？</text>
+  <text x="24" y="62" class="label">教学语法只接受两种完整输出（均无空格）：</text>
+  <rect x="24" y="75" width="221" height="35" rx="5" class="context"/>
+  <rect x="255" y="75" width="221" height="35" rx="5" class="context"/>
+  <text x="134.5" y="98" text-anchor="middle" class="token">{"ok":true}</text>
+  <text x="365.5" y="98" text-anchor="middle" class="token">{"ok":false}</text>
+  <rect x="18" y="124" width="464" height="332" rx="10" class="context"/>
+  <text x="32" y="154" text-anchor="start" class="subhead">q0：还没有输出，必须先生成开头</text>
+  <text x="36" y="187" text-anchor="start" class="label">假想 Token</text>
+  <text x="265" y="187" text-anchor="middle" class="label">Logit</text>
+  <text x="361" y="187" text-anchor="middle" class="label">硬 Mask 后</text>
+  <text x="464" y="187" text-anchor="end" class="label">概率</text>
+  <path d="M32 199H468" class="line"/>
+  <rect x="32" y="207" width="436" height="31" rx="4" class="masked"/>
+  <text x="42" y="228" text-anchor="start" class="token">t_a · true}x</text>
+  <text x="265" y="228" text-anchor="middle" class="label">2</text>
+  <text x="361" y="228" text-anchor="middle" class="label">−∞</text>
+  <text x="457" y="228" text-anchor="end" class="token">0</text>
+  <rect x="32" y="242" width="436" height="31" rx="4" class="allowed"/>
+  <text x="42" y="263" text-anchor="start" class="token">t_b · {"ok":</text>
+  <text x="265" y="263" text-anchor="middle" class="label">1</text>
+  <text x="361" y="263" text-anchor="middle" class="token">1</text>
+  <text x="457" y="263" text-anchor="end" class="token">1</text>
+  <rect x="32" y="277" width="436" height="31" rx="4" class="masked"/>
+  <text x="42" y="298" text-anchor="start" class="token">t_c · true</text>
+  <text x="265" y="298" text-anchor="middle" class="label">-1</text>
+  <text x="361" y="298" text-anchor="middle" class="label">−∞</text>
+  <text x="457" y="298" text-anchor="end" class="token">0</text>
+  <rect x="32" y="312" width="436" height="31" rx="4" class="masked"/>
+  <text x="42" y="333" text-anchor="start" class="token">t_d · false}</text>
+  <text x="265" y="333" text-anchor="middle" class="label">-2</text>
+  <text x="361" y="333" text-anchor="middle" class="label">−∞</text>
+  <text x="457" y="333" text-anchor="end" class="token">0</text>
+  <rect x="32" y="347" width="436" height="31" rx="4" class="masked"/>
+  <text x="42" y="368" text-anchor="start" class="token">t_e · }</text>
+  <text x="265" y="368" text-anchor="middle" class="label">-3</text>
+  <text x="361" y="368" text-anchor="middle" class="label">−∞</text>
+  <text x="457" y="368" text-anchor="end" class="token">0</text>
+  <rect x="32" y="382" width="436" height="31" rx="4" class="masked"/>
+  <text x="42" y="403" text-anchor="start" class="token">EOS · 结束</text>
+  <text x="265" y="403" text-anchor="middle" class="label">0</text>
+  <text x="361" y="403" text-anchor="middle" class="label">−∞</text>
+  <text x="457" y="403" text-anchor="end" class="token">0</text>
+  <text x="32" y="434" text-anchor="start" class="small">屏蔽后只允许 t_b；其概率为 1。</text>
+  <rect x="18" y="471" width="464" height="332" rx="10" class="artifact"/>
+  <text x="32" y="501" text-anchor="start" class="subhead">q1：已消费 t_b，等待布尔值</text>
+  <text x="36" y="534" text-anchor="start" class="label">假想 Token</text>
+  <text x="265" y="534" text-anchor="middle" class="label">Logit</text>
+  <text x="361" y="534" text-anchor="middle" class="label">硬 Mask 后</text>
+  <text x="464" y="534" text-anchor="end" class="label">概率</text>
+  <path d="M32 546H468" class="line"/>
+  <rect x="32" y="554" width="436" height="31" rx="4" class="masked"/>
+  <text x="42" y="575" text-anchor="start" class="token">t_a · true}x</text>
+  <text x="265" y="575" text-anchor="middle" class="label">3</text>
+  <text x="361" y="575" text-anchor="middle" class="label">−∞</text>
+  <text x="457" y="575" text-anchor="end" class="token">0</text>
+  <rect x="32" y="589" width="436" height="31" rx="4" class="masked"/>
+  <text x="42" y="610" text-anchor="start" class="token">t_b · {"ok":</text>
+  <text x="265" y="610" text-anchor="middle" class="label">0</text>
+  <text x="361" y="610" text-anchor="middle" class="label">−∞</text>
+  <text x="457" y="610" text-anchor="end" class="token">0</text>
+  <rect x="32" y="624" width="436" height="31" rx="4" class="allowed"/>
+  <text x="42" y="645" text-anchor="start" class="token">t_c · true</text>
+  <text x="265" y="645" text-anchor="middle" class="label">2</text>
+  <text x="361" y="645" text-anchor="middle" class="token">2</text>
+  <text x="457" y="645" text-anchor="end" class="token">0.731</text>
+  <rect x="32" y="659" width="436" height="31" rx="4" class="allowed"/>
+  <text x="42" y="680" text-anchor="start" class="token">t_d · false}</text>
+  <text x="265" y="680" text-anchor="middle" class="label">1</text>
+  <text x="361" y="680" text-anchor="middle" class="token">1</text>
+  <text x="457" y="680" text-anchor="end" class="token">0.269</text>
+  <rect x="32" y="694" width="436" height="31" rx="4" class="masked"/>
+  <text x="42" y="715" text-anchor="start" class="token">t_e · }</text>
+  <text x="265" y="715" text-anchor="middle" class="label">-1</text>
+  <text x="361" y="715" text-anchor="middle" class="label">−∞</text>
+  <text x="457" y="715" text-anchor="end" class="token">0</text>
+  <rect x="32" y="729" width="436" height="31" rx="4" class="masked"/>
+  <text x="42" y="750" text-anchor="start" class="token">EOS · 结束</text>
+  <text x="265" y="750" text-anchor="middle" class="label">0</text>
+  <text x="361" y="750" text-anchor="middle" class="label">−∞</text>
+  <text x="457" y="750" text-anchor="end" class="token">0</text>
+  <text x="32" y="781" text-anchor="start" class="small">t_a 的末尾 x 非法；t_d 可直接使 JSON 完整。</text>
+
+  <path d="M250 460V467" class="arrow"/>
+  <rect x="18" y="816" width="464" height="76" rx="10" class="context"/>
+  <text x="32" y="846" class="subhead">T=1、不截断：按允许项的分布抽样</text>
+  <text x="32" y="875" class="label">q1 的教学随机数 u=0.20 → 选择 t_c。</text>
+  <text x="250" y="921" text-anchor="middle" class="small">概率为 Mask 后重新归一化的教学数值。</text>
+
+</svg>
