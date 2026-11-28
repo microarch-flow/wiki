@@ -245,7 +245,7 @@ F01–F03 为模型执行的主要基础。F04、F05 分别深入重放和变体
 
 | ID | 暂定标题 | 核心范围 | 主要前置 | 计划文件名 | 状态 |
 | --- | --- | --- | --- | --- | --- | --- |
-| F01 | 设备已经准备好了，运行时怎样启动第一次计算？ | Module Load、执行上下文、Kernel Dispatch、参数绑定、资源准备。 | A04、E01/E03 的接口；D04 按需 | `f01-module-loading-and-dispatch.md` | 初稿完成，待发布核验 |
+| F01 | 设备已经准备好了，运行时怎样启动第一次计算？ | Module Load、执行上下文、Kernel Dispatch、参数绑定、资源准备。 | A04、E01/E03 的接口；D04 按需 | `f01-module-loading-and-dispatch.md` | 已发布 |
 | F02 | 提交任务的函数已经返回，为什么不能马上读取计算结果？ | Stream、Event、Fence、异步执行、依赖及可见性、搬运计算编排。 | F01、A05、E04 的完成语义 | `f02-asynchronous-execution.md` | 待写 |
 | F03 | 两项任务需要使用同一块 Buffer，什么时候才能安全复用？ | 动态分配、内存池、碎片、所有权、延迟释放、异步资源回收。 | F02 | `f03-runtime-buffer-management.md` | 待写 |
 | F04 | 多次执行相同的任务序列，怎样减少每轮提交开销？ | 任务图、执行图捕获、Replay、动态 DAG、重放约束及重建。 | F02、F03 | `f04-execution-graphs-and-replay.md` | 待写 |
@@ -461,3 +461,5 @@ K 横跨所有路线。K01/K02 可早期开展，K03–K05 按被分析的机制
 - 2026-11-28 · F 专题认知依赖复核：保留五篇划分。F01–F03 沿 A04/A05 的向量加法建立加载与绑定、L_A/L_B→C→W 的异步依赖、动态 Buffer 生命周期；F04/F05 可独立深化，分别继承旧版提交工作量与关键路径的区别、图重放约束，以及形状分桶、Guard、变体选择和回退。旧版模型权重、实例及预热归 G01，批次组织归 H，硬件任务控制归计算微架构。F01 以 A04/A05、D01 以及并行完成的 E01 为基础，承接设备上下文 ctx_P，明确模块入口和设备资源引用、参数与数据、提交与完成的区别。D04、E02–E04 尚无正文；完成后复核产物兼容、地址访问、命令接纳和完成语义，统一 F01–F03 的接口用词，不阻塞正文建设。F01 初稿完成。
 
 - 2026-11-28 · D02 已发布并核验。正文提交 `b1bfbf9`，[GitHub Pages 部署](https://github.com/microarch-flow/wiki/actions/runs/46126401602)成功。[公开正文](https://microarch-flow.github.io/wiki/series/compiler-runtime/04-code-generation/d02-instruction-selection/)、D01 后继、专题导读、两张图解、导航、面包屑及搜索收录均已核验。LLVM 19.1.7 C API 实际生成 RV32IM/RV32I 汇编与分配前的 Machine IR，验证立即数及地址选择；定宽乘加与宽整数加法各 10,000 组随机比特向量和边界算例复算通过（非真机执行）。合并 E01 后本地整站 177 项测试通过。
+
+- 2026-11-28 · F01 已发布并核验。正文提交 `03f2e1e`，[GitHub Pages 部署](https://github.com/microarch-flow/wiki/actions/runs/46126833863) 成功；[公开正文](https://microarch-flow.github.io/wiki/series/compiler-runtime/06-execution-runtime/f01-module-loading-and-dispatch/)、E01 衔接链接、专题导读、两张图解、导航、面包屑及搜索收录已核验。合并并行完成的 E01/D02 后，本地整站 178 项测试全部通过，独立复算三组 12 B 缓冲区与四线程的三个有效结果 [5, 5, 6]（非真实 GPU 实测）。F02–F05 仍待编写，旧推理运行时不变。
