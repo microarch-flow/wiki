@@ -1,0 +1,83 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 573" width="500" height="573" role="img" aria-labelledby="title desc">
+  <title id="title">形状正确不代表计算语义正确</title>
+  <desc id="desc">共同输入：P = [[7,0],[-1,-2]]，bias = [1,-2]。正确按列使用 bias[j] 得到 Z = [[8,-2],[0,-4]]，经 ReLU 得到 Y = [[8,0],[0,0]]。错误按行使用 bias[i] 得到 Z = [[8,1],[-3,-4]]，经 ReLU 得到 Y = [[8,1],[0,0]]。两条路径的形状均为 2×2，且偏置下标均合法，所以只检查结构和索引范围可能无法发现差异；独立参考比较发现 Y[0,1] 预期为 0，实际为 1。本图使用从 0 开始的下标。教学整数运算示例。</desc>
+  <defs>
+    <style>
+      text{font-family:"Noto Sans CJK SC","PingFang SC","Microsoft YaHei",sans-serif;fill:#173d35;font-size:18px}
+      .head{font-size:23px;font-weight:700}.subhead{font-size:20px;font-weight:700}.label{font-size:18px;font-weight:600}.small{font-size:17px;fill:#416354}.tick{font-size:16px;fill:#416354}
+      .panel{fill:#edf2e8;stroke:#9ab69e;stroke-width:1.4}.grid{stroke:#c4d0c4;stroke-width:1;stroke-dasharray:3 3}.axis{stroke:#8b9c8e;stroke-width:1.3;fill:none}
+      .code{font-family:"DejaVu Sans Mono","Noto Sans CJK SC",monospace;font-size:18px}.warn{fill:#765820;font-weight:600}.warn-panel{fill:#f6efe0;stroke:#b9914e;stroke-width:1.5}
+      .cell{fill:#f9f8ef;stroke:#9aa89a;stroke-width:1.2}.marked-good{fill:#d9e9dc;stroke:#427a5a;stroke-width:2}.marked-bad{fill:#f2e4c9;stroke:#9c7b42;stroke-width:2.3}.num{font-size:21px;font-weight:600}.edge{fill:none;stroke:#527d64;stroke-width:1.7;marker-end:url(#arrow)}
+    </style>
+    <marker id="arrow" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0 0L7 3.5L0 7Z" fill="#527d64"/></marker>
+  </defs>
+  <rect x="1" y="1" width="498" height="571" rx="14" fill="#f5f6ef" stroke="#c4d0c4" stroke-width="1.3"/>
+  <text x="24" y="34" class="head">两次执行的形状一样，值也一样吗？</text>
+  <text x="24" y="64" class="subhead">共同输入（B03 / B06）</text>
+  <text x="53" y="103" class="label" text-anchor="middle">P</text>
+  <text x="285" y="103" class="label" text-anchor="middle">bias</text>
+  <rect x="76" y="77" width="41" height="32" rx="3" class="cell"/>
+  <text x="96.5" y="99" class="num" text-anchor="middle">7</text>
+  <rect x="119" y="77" width="41" height="32" rx="3" class="cell"/>
+  <text x="139.5" y="99" class="num" text-anchor="middle">0</text>
+  <rect x="76" y="111" width="41" height="32" rx="3" class="cell"/>
+  <text x="96.5" y="133" class="num" text-anchor="middle">−1</text>
+  <rect x="119" y="111" width="41" height="32" rx="3" class="cell"/>
+  <text x="139.5" y="133" class="num" text-anchor="middle">−2</text>
+  <rect x="315" y="93" width="41" height="32" rx="3" class="cell"/>
+  <text x="335.5" y="115" class="num" text-anchor="middle">1</text>
+  <rect x="358" y="93" width="41" height="32" rx="3" class="cell"/>
+  <text x="378.5" y="115" class="num" text-anchor="middle">−2</text>
+  <text x="177" y="143" class="small">行下标 i，列下标 j（从 0 开始）</text>
+  <rect x="18" y="154" width="464" height="162" rx="10" class="panel"/>
+  <text x="32" y="182" class="subhead">正确：按列取偏置</text>
+  <text x="32" y="209" class="code">Z[i,j] = P[i,j] + bias[j]</text>
+  <text x="51" y="258" class="label" text-anchor="middle">Z</text>
+  <text x="309" y="258" class="label" text-anchor="middle">Y</text>
+  <rect x="74" y="225" width="41" height="32" rx="3" class="cell"/>
+  <text x="94.5" y="247" class="num" text-anchor="middle">8</text>
+  <rect x="117" y="225" width="41" height="32" rx="3" class="cell"/>
+  <text x="137.5" y="247" class="num" text-anchor="middle">−2</text>
+  <rect x="74" y="259" width="41" height="32" rx="3" class="cell"/>
+  <text x="94.5" y="281" class="num" text-anchor="middle">0</text>
+  <rect x="117" y="259" width="41" height="32" rx="3" class="cell"/>
+  <text x="137.5" y="281" class="num" text-anchor="middle">−4</text>
+  <rect x="331" y="225" width="41" height="32" rx="3" class="cell"/>
+  <text x="351.5" y="247" class="num" text-anchor="middle">8</text>
+  <rect x="374" y="225" width="41" height="32" rx="3" class="marked-good"/>
+  <text x="394.5" y="247" class="num" text-anchor="middle">0</text>
+  <rect x="331" y="259" width="41" height="32" rx="3" class="cell"/>
+  <text x="351.5" y="281" class="num" text-anchor="middle">0</text>
+  <rect x="374" y="259" width="41" height="32" rx="3" class="cell"/>
+  <text x="394.5" y="281" class="num" text-anchor="middle">0</text>
+  <path d="M174 258L284 258" class="edge"/>
+  <text x="227" y="249" class="small" text-anchor="middle">ReLU</text>
+  <text x="462" y="307" class="small" text-anchor="end">Y 形状：2×2</text>
+  <rect x="18" y="328" width="464" height="162" rx="10" class="warn-panel"/>
+  <text x="32" y="356" class="subhead">错误：按行取偏置</text>
+  <text x="32" y="383" class="code">Z[i,j] = P[i,j] + bias[i]</text>
+  <text x="51" y="432" class="label" text-anchor="middle">Z</text>
+  <text x="309" y="432" class="label" text-anchor="middle">Y</text>
+  <rect x="74" y="399" width="41" height="32" rx="3" class="cell"/>
+  <text x="94.5" y="421" class="num" text-anchor="middle">8</text>
+  <rect x="117" y="399" width="41" height="32" rx="3" class="cell"/>
+  <text x="137.5" y="421" class="num" text-anchor="middle">1</text>
+  <rect x="74" y="433" width="41" height="32" rx="3" class="cell"/>
+  <text x="94.5" y="455" class="num" text-anchor="middle">−3</text>
+  <rect x="117" y="433" width="41" height="32" rx="3" class="cell"/>
+  <text x="137.5" y="455" class="num" text-anchor="middle">−4</text>
+  <rect x="331" y="399" width="41" height="32" rx="3" class="cell"/>
+  <text x="351.5" y="421" class="num" text-anchor="middle">8</text>
+  <rect x="374" y="399" width="41" height="32" rx="3" class="marked-bad"/>
+  <text x="394.5" y="421" class="num" text-anchor="middle">1</text>
+  <rect x="331" y="433" width="41" height="32" rx="3" class="cell"/>
+  <text x="351.5" y="455" class="num" text-anchor="middle">0</text>
+  <rect x="374" y="433" width="41" height="32" rx="3" class="cell"/>
+  <text x="394.5" y="455" class="num" text-anchor="middle">0</text>
+  <path d="M174 432L284 432" class="edge"/>
+  <text x="227" y="423" class="small" text-anchor="middle">ReLU</text>
+  <text x="462" y="481" class="small" text-anchor="end">Y 形状：2×2</text>
+  <text x="24" y="518" class="label">仅检查形状和下标范围，可能均通过。</text>
+  <text x="24" y="544" class="warn">逐值比较：Y[0,1] 应为 0，却得到 1。</text>
+  <text x="24" y="564" class="small">教学整数示例；值按算子数学语义推导。</text>
+</svg>

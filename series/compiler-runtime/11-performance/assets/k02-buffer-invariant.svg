@@ -1,0 +1,94 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 630" width="500" height="630" role="img" aria-labelledby="title desc">
+  <title id="title">共享输出 Buffer 的安全复用不变量</title>
+  <desc id="desc">沿 F03 的两组向量加法，第一组正确结果 [5,5,6]，第二组 [3,10,4]，共享唯一 12 Byte 设备输出槽 d_Y。C1 在第4到7拍计算；W1 在第8到10拍读取该槽并写回第一组主机缓冲。错误方案 C2 在8到11拍执行，与 W1 在8到10拍重叠；给出一种可能的元素访问次序：C2 先覆盖 d_Y[0]（5 变为 3），随后 W1 读到 3 而非 5。合法方案等待 W1 完成且归还访问权、无其他读者后，C2 第10到13拍执行、W2 第13到15拍写回。第一组 W1 读取 5。图中时间按比例绘制，未显示搬入；元素访问顺序仅用于反例，不指定子事件耗时。教学安排，非实测。</desc>
+  <defs>
+    <style>
+      text{font-family:"Noto Sans CJK SC","PingFang SC","Microsoft YaHei",sans-serif;fill:#173d35;font-size:18px}
+      .head{font-size:23px;font-weight:700}.subhead{font-size:20px;font-weight:700}.label{font-size:18px;font-weight:600}.small{font-size:17px;fill:#416354}.tick{font-size:16px;fill:#416354}
+      .panel{fill:#edf2e8;stroke:#9ab69e;stroke-width:1.4}.grid{stroke:#c4d0c4;stroke-width:1;stroke-dasharray:3 3}.axis{stroke:#8b9c8e;stroke-width:1.3;fill:none}
+      .code{font-family:"DejaVu Sans Mono","Noto Sans CJK SC",monospace;font-size:18px}.warn{fill:#765820;font-weight:600}.warn-panel{fill:#f6efe0;stroke:#b9914e;stroke-width:1.5}
+      .idle{fill:#f9f8ef;stroke:#b8ba9e;stroke-width:1}.g1{fill:#d9e9dc;stroke:#6f9a80;stroke-width:1.2}.g2{fill:#dfe8ef;stroke:#7d9eb1;stroke-width:1.2}.slot{font-weight:600;font-size:17px}.danger{fill:none;stroke:#9c7b42;stroke-width:2;stroke-dasharray:5 3}.safe{fill:none;stroke:#427a5a;stroke-width:2;stroke-dasharray:4 3}.edge{fill:none;stroke:#527d64;stroke-width:1.7;marker-end:url(#arrow)}
+    </style>
+    <marker id="arrow" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0 0L7 3.5L0 7Z" fill="#527d64"/></marker>
+  </defs>
+  <rect x="1" y="1" width="498" height="628" rx="14" fill="#f5f6ef" stroke="#c4d0c4" stroke-width="1.3"/>
+  <text x="24" y="34" class="head">共享 d_Y：旧读者还没结束</text>
+  <text x="24" y="60" class="small">第一组正确结果 [5, 5, 6]</text>
+  <text x="24" y="83" class="small">第二组正确结果 [3, 10, 4]</text>
+  <text x="24" y="107" class="small">C 写入 d_Y，W 从 d_Y 读出并写回主机</text>
+  <rect x="18" y="119" width="464" height="232" rx="10" class="warn-panel"/>
+  <text x="32" y="147" class="subhead">错误：过早复用</text>
+  <text x="463" y="147" class="tick" text-anchor="end">时间（拍）</text>
+  <path d="M101 178L461 178" class="axis"/>
+  <path d="M101 178L101 250" class="grid"/>
+  <text x="101" y="170" class="tick" text-anchor="middle">0</text>
+  <path d="M197 178L197 250" class="grid"/>
+  <text x="197" y="170" class="tick" text-anchor="middle">4</text>
+  <path d="M269 178L269 250" class="grid"/>
+  <text x="269" y="170" class="tick" text-anchor="middle">7</text>
+  <path d="M293 178L293 250" class="grid"/>
+  <text x="293" y="170" class="tick" text-anchor="middle">8</text>
+  <path d="M341 178L341 250" class="grid"/>
+  <text x="341" y="170" class="tick" text-anchor="middle">10</text>
+  <path d="M365 178L365 250" class="grid"/>
+  <text x="365" y="170" class="tick" text-anchor="middle">11</text>
+  <path d="M413 178L413 250" class="grid"/>
+  <text x="413" y="170" class="tick" text-anchor="middle">13</text>
+  <path d="M461 178L461 250" class="grid"/>
+  <text x="461" y="170" class="tick" text-anchor="middle">15</text>
+  <text x="90" y="203" class="label" text-anchor="end">计算</text>
+  <rect x="101" y="182" width="360" height="29" rx="3" class="idle"/>
+  <rect x="197" y="182" width="72" height="29" rx="3" class="g1"/>
+  <text x="233.0" y="203" class="slot" text-anchor="middle">C₁</text>
+  <rect x="293" y="182" width="72" height="29" rx="3" class="g2"/>
+  <text x="329.0" y="203" class="slot" text-anchor="middle">C₂</text>
+  <text x="90" y="238" class="label" text-anchor="end">写回</text>
+  <rect x="101" y="217" width="360" height="29" rx="3" class="idle"/>
+  <rect x="293" y="217" width="48" height="29" rx="3" class="g1"/>
+  <text x="317.0" y="238" class="slot" text-anchor="middle">W₁</text>
+  <rect x="365" y="217" width="48" height="29" rx="3" class="g2"/>
+  <text x="389.0" y="238" class="slot" text-anchor="middle">W₂</text>
+  <rect x="293" y="179" width="48" height="67" rx="3" class="danger"/>
+  <text x="32" y="271" class="warn">8–10 拍：W₁ 读取时，C₂ 也可写入。</text>
+  <text x="32" y="297" class="small">一种错误次序（8–10 拍内）：</text>
+  <text x="32" y="323" class="label">C₂ 先覆盖 d_Y[0]：5 → 3</text>
+  <text x="32" y="343" class="warn">W₁ 再读到 3（应为 5）</text>
+  <rect x="18" y="363" width="464" height="232" rx="10" class="panel"/>
+  <text x="32" y="391" class="subhead">合法：等访问权归还</text>
+  <text x="463" y="391" class="tick" text-anchor="end">时间（拍）</text>
+  <path d="M101 422L461 422" class="axis"/>
+  <path d="M101 422L101 494" class="grid"/>
+  <text x="101" y="414" class="tick" text-anchor="middle">0</text>
+  <path d="M197 422L197 494" class="grid"/>
+  <text x="197" y="414" class="tick" text-anchor="middle">4</text>
+  <path d="M269 422L269 494" class="grid"/>
+  <text x="269" y="414" class="tick" text-anchor="middle">7</text>
+  <path d="M293 422L293 494" class="grid"/>
+  <text x="293" y="414" class="tick" text-anchor="middle">8</text>
+  <path d="M341 422L341 494" class="grid"/>
+  <text x="341" y="414" class="tick" text-anchor="middle">10</text>
+  <path d="M365 422L365 494" class="grid"/>
+  <text x="365" y="414" class="tick" text-anchor="middle">11</text>
+  <path d="M413 422L413 494" class="grid"/>
+  <text x="413" y="414" class="tick" text-anchor="middle">13</text>
+  <path d="M461 422L461 494" class="grid"/>
+  <text x="461" y="414" class="tick" text-anchor="middle">15</text>
+  <text x="90" y="447" class="label" text-anchor="end">计算</text>
+  <rect x="101" y="426" width="360" height="29" rx="3" class="idle"/>
+  <rect x="197" y="426" width="72" height="29" rx="3" class="g1"/>
+  <text x="233.0" y="447" class="slot" text-anchor="middle">C₁</text>
+  <rect x="341" y="426" width="72" height="29" rx="3" class="g2"/>
+  <text x="377.0" y="447" class="slot" text-anchor="middle">C₂</text>
+  <text x="90" y="482" class="label" text-anchor="end">写回</text>
+  <rect x="101" y="461" width="360" height="29" rx="3" class="idle"/>
+  <rect x="293" y="461" width="48" height="29" rx="3" class="g1"/>
+  <text x="317.0" y="482" class="slot" text-anchor="middle">W₁</text>
+  <rect x="413" y="461" width="48" height="29" rx="3" class="g2"/>
+  <text x="437.0" y="482" class="slot" text-anchor="middle">W₂</text>
+  <path d="M341 422L341 495" class="safe"/>
+  <text x="32" y="515" class="label">第 10 拍：W₁ 已归还访问权。</text>
+  <text x="32" y="541" class="small">确认没有其他访问者，C₂ 才可写入。</text>
+  <text x="32" y="567" class="label">W₁ 先读到 d_Y[0] = 5</text>
+  <text x="32" y="587" class="small">C₂ 再覆盖为 3；第 15 拍 W₂ 完成。</text>
+  <text x="250" y="620" class="small" text-anchor="middle">教学日程与可能的元素次序，并非实测。</text>
+</svg>
