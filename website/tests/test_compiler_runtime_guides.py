@@ -131,6 +131,20 @@ class CompilerRuntimeGuideTests(unittest.TestCase):
             ("b01-expression-trees.svg",),
         )
 
+    def test_b02_article_navigation_search_and_diagrams(self):
+        route = "02-frontend-and-optimization"
+        slug = "b02-control-flow-and-ssa"
+        self._check_article(
+            route,
+            "编译前端与程序优化",
+            slug,
+            "遇到分支和循环，编译器怎样表示不同执行路径上的值？",
+            ("b02-branch-cfg.svg", "b02-loop-values.svg"),
+        )
+        previous = SITE / PREFIX / route / "b01-compiler-frontend/index.html"
+        previous_body = GuideContent(previous.read_text())
+        self.assertIn(f"../{slug}/", previous_body.links)
+
     def test_a01_article_navigation_search_and_diagrams(self):
         self._check_foundation_article(
             "a01-program-semantics",

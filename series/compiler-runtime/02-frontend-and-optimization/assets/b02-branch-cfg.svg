@@ -1,0 +1,44 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="456" height="414" viewBox="0 0 456 414" role="img" aria-labelledby="branch-title branch-desc">
+  <title id="branch-title">条件决定经过哪一条控制路径</title>
+  <desc id="branch-desc">四个框代表四个基本块。entry 计算 t 等于 a 加 b，再判断 t 是否大于零。若为真，positive 块计算 y_pos 等于 t 乘以 c。若为假，zero 块令 y_zero 等于零。两条路径都进入 join，按实际来路取得 y 并返回。每条箭头表示一次可能的控制转移。</desc>
+  <defs>
+    <marker id="branch-arrow" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M0 0L8 4L0 8Z" fill="#396b55"/>
+    </marker>
+  </defs>
+  <style>
+    text { font-family: "Noto Sans CJK SC", "PingFang SC", "Microsoft YaHei", sans-serif; fill: #173d35; text-anchor: middle; font-size: 20px }
+    .name, .code { font-family: "DejaVu Sans Mono", Consolas, monospace }
+    .name { font-size: 22px; font-weight: bold }
+    .code { font-size: 20px }
+    .legend { font-size: 18px; fill: #416354 }
+    .block { fill: #e0ebe3; stroke: #82a18e; stroke-width: 1.5 }
+    .edge { fill: none; stroke: #396b55; stroke-width: 2; marker-end: url(#branch-arrow) }
+  </style>
+  <rect x="1" y="1" width="454" height="412" rx="14" fill="#f5f6ef" stroke="#c4d0c4"/>
+
+  <path class="edge" d="M195 110L111 163"/>
+  <path class="edge" d="M261 110L345 163"/>
+  <path class="edge" d="M111 241L183 279"/>
+  <path class="edge" d="M345 241L273 279"/>
+  <text x="125" y="135">真</text>
+  <text x="331" y="135">假</text>
+
+  <rect class="block" x="137" y="17" width="182" height="93" rx="11"/>
+  <text class="name" x="228" y="43">entry</text>
+  <text class="code" x="228" y="72">t = a + b</text>
+  <text class="code" x="228" y="98">t &gt; 0 ?</text>
+
+  <rect class="block" x="13" y="165" width="196" height="76" rx="11"/>
+  <text class="name" x="111" y="195">positive</text>
+  <text class="code" x="111" y="225">y_pos = t * c</text>
+  <rect class="block" x="247" y="165" width="196" height="76" rx="11"/>
+  <text class="name" x="345" y="195">zero</text>
+  <text class="code" x="345" y="225">y_zero = 0</text>
+
+  <rect class="block" x="125" y="281" width="206" height="92" rx="11"/>
+  <text class="name" x="228" y="308">join</text>
+  <text x="228" y="336">按来路取得 y</text>
+  <text class="code" x="228" y="360">return y</text>
+  <text class="legend" x="228" y="399">箭头表示控制从一个基本块转到下一个基本块。</text>
+</svg>
