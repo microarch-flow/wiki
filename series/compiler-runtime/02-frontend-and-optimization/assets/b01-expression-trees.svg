@@ -1,0 +1,64 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="460" height="338" viewBox="0 0 460 338" role="img" aria-labelledby="b01-title b01-desc">
+  <title id="b01-title">一对括号怎样改变表达式树？</title>
+  <desc id="b01-desc">上半部是两棵简化语法树。连线表示父节点包含的子表达式。左树的根是乘法，左子树是 a 加 b，右侧是 c。右树的根是加法，左侧是 a，右子树是 b 乘 c。下半部单独验算，代入 a 等于 2、b 等于 3、c 等于 4，左式得 20，右式得 14。</desc>
+  <style>
+    text { fill: #173d35; font-family: "Noto Sans CJK SC", "PingFang SC", "Microsoft YaHei", sans-serif; text-anchor: middle }
+    .expr, .symbol, .result { font-family: "DejaVu Sans Mono", Consolas, monospace }
+    .expr { font-size: 24px; font-weight: 600 }
+    .symbol { font-size: 25px }
+    .result { font-size: 24px; font-weight: 600 }
+    .caption { font-size: 20px; fill: #416354 }
+    .branch { fill: none; stroke: #396b55; stroke-width: 2 }
+    .operator { fill: #d9e9dc; stroke: #6f9a80; stroke-width: 1.5 }
+    .name { fill: #e8e9df; stroke: #9aa89a; stroke-width: 1.5 }
+  </style>
+  <rect x="1" y="1" width="458" height="336" rx="14" fill="#f5f6ef" stroke="#c4d0c4"/>
+  <path d="M230 20V226" stroke="#ccd4c9"/>
+
+  <g>
+    <text class="expr" x="115" y="39">(a + b) * c</text>
+    <path class="branch" d="M122 83L80 145L45 206 M80 145L115 206 M122 83L165 145"/>
+    <g class="operator">
+      <circle cx="122" cy="83" r="17"/>
+      <circle cx="80" cy="145" r="17"/>
+    </g>
+    <g class="name">
+      <rect x="146" y="128" width="38" height="34" rx="7"/>
+      <rect x="26" y="189" width="38" height="34" rx="7"/>
+      <rect x="96" y="189" width="38" height="34" rx="7"/>
+    </g>
+    <g class="symbol">
+      <text x="122" y="92">*</text>
+      <text x="80" y="153">+</text>
+      <text x="165" y="153">c</text>
+      <text x="45" y="214">a</text>
+      <text x="115" y="214">b</text>
+    </g>
+  </g>
+
+  <g>
+    <text class="expr" x="345" y="39">a + b * c</text>
+    <path class="branch" d="M338 83L295 145 M338 83L380 145L345 206 M380 145L415 206"/>
+    <g class="operator">
+      <circle cx="338" cy="83" r="17"/>
+      <circle cx="380" cy="145" r="17"/>
+    </g>
+    <g class="name">
+      <rect x="276" y="128" width="38" height="34" rx="7"/>
+      <rect x="326" y="189" width="38" height="34" rx="7"/>
+      <rect x="396" y="189" width="38" height="34" rx="7"/>
+    </g>
+    <g class="symbol">
+      <text x="338" y="91">+</text>
+      <text x="295" y="153">a</text>
+      <text x="380" y="154">*</text>
+      <text x="345" y="214">b</text>
+      <text x="415" y="214">c</text>
+    </g>
+  </g>
+
+  <path d="M18 245H442" stroke="#b9c9b9"/>
+  <text class="caption" x="230" y="278">代入 a = 2，b = 3，c = 4 验算</text>
+  <text class="result" x="115" y="316">5 × 4 = 20</text>
+  <text class="result" x="345" y="316">2 + 12 = 14</text>
+</svg>

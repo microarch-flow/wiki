@@ -122,6 +122,15 @@ class CompilerRuntimeGuideTests(unittest.TestCase):
                         path /= "index.html"
                     self.assertTrue(path.is_file(), (relative, link))
 
+    def test_b01_article_navigation_search_and_diagrams(self):
+        self._check_article(
+            "02-frontend-and-optimization",
+            "编译前端与程序优化",
+            "b01-compiler-frontend",
+            "一段源代码怎样变成编译器能够处理的表示？",
+            ("b01-expression-trees.svg",),
+        )
+
     def test_a01_article_navigation_search_and_diagrams(self):
         self._check_foundation_article(
             "a01-program-semantics",
@@ -151,7 +160,9 @@ class CompilerRuntimeGuideTests(unittest.TestCase):
         )
 
     def _check_foundation_article(self, slug, title, diagram_names):
-        route = "01-foundations"
+        self._check_article("01-foundations", "软件执行共同基础", slug, title, diagram_names)
+
+    def _check_article(self, route, route_title, slug, title, diagram_names):
         relative = f"{PREFIX}{route}/{slug}/"
         url = "https://site.invalid/" + relative
         source = SOURCE / route / f"{slug}.md"
@@ -185,7 +196,7 @@ class CompilerRuntimeGuideTests(unittest.TestCase):
         crumb_targets = {unescape(label): urljoin(url, unescape(href)) for href, label in
                          re.findall(r'<a href="([^"]+)">([^<]+)</a>', crumb)}
         self.assertEqual(crumb_targets["新版：编译器与运行时系统"], "https://site.invalid/" + PREFIX)
-        self.assertEqual(crumb_targets["软件执行共同基础"], "https://site.invalid/" + PREFIX + route + "/")
+        self.assertEqual(crumb_targets[route_title], "https://site.invalid/" + PREFIX + route + "/")
         guide_url = "https://site.invalid/" + PREFIX + route + "/"
         guide = GuideContent((SITE / PREFIX / route / "index.html").read_text())
         self.assertIn(url, [urljoin(guide_url, link) for link in guide.links])
