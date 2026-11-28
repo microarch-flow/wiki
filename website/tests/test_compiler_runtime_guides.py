@@ -346,6 +346,19 @@ class CompilerRuntimeGuideTests(unittest.TestCase):
         previous = SITE / PREFIX / route / "e01-device-context-and-driver/index.html"
         self.assertIn(f"../{slug}/", GuideContent(previous.read_text()).links)
 
+    def test_e03_article_navigation_search_and_diagrams(self):
+        route = "05-device-driver"
+        slug = "e03-command-submission"
+        self._check_article(
+            route,
+            "设备驱动与底层资源管理",
+            slug,
+            "驱动怎样告诉设备有一项工作需要执行？",
+            ("e03-command-descriptors.svg", "e03-ring-queue.svg", "e03-submit-path.svg"),
+        )
+        previous = SITE / PREFIX / route / "e02-device-memory-mapping/index.html"
+        self.assertIn(f"../{slug}/", GuideContent(previous.read_text()).links)
+
     def test_d02_article_navigation_search_and_diagrams(self):
         route = "04-code-generation"
         slug = "d02-instruction-selection"

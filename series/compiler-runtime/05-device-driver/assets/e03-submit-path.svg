@@ -1,0 +1,62 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 836" width="500" height="836" role="img" aria-labelledby="submit-title submit-desc">
+  <title id="submit-title">从驱动提交命令到设备执行的控制路径</title>
+  <desc id="submit-desc">本教学系统中，驱动先校验任务并持有其相关资源；CPU 将完整的描述符写入主机内存中的空闲提交队列槽，这里假定控制区采用一致性内存。软件按接口要求保证完整描述符先于设备观察到新队尾而可见，随后通过 MMIO 写入 Doorbell 门铃寄存器公布新队尾。设备在此后可以读取并接纳命令、保存所需任务参数。只有满足相应数据依赖与可执行资源条件，任务才能执行。最后通过独立的状态接口报告完成或错误，由下一篇讨论。软件提交成功返回或门铃写入结束不代表设备已接纳命令，更不代表任务完成。箭头表示逻辑先后及交接条件，不表示实际耗时、时钟周期或所有设备的固定接口。</desc>
+  <defs>
+    <marker id="submit-arrow" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0 0L7 3.5L0 7Z" fill="#527d64"/></marker>
+    <style>
+      text{font-family:"Noto Sans CJK SC","PingFang SC","Microsoft YaHei",sans-serif;fill:#173d35;font-size:20px}
+      .head{font-weight:700;font-size:23px}.subhead{font-weight:700;font-size:20px}.label{font-size:18px;fill:#416354}.small{font-size:16px;fill:#416354}.code{font-family:"Noto Sans Mono CJK SC","Consolas",monospace;font-size:18px;font-weight:600}
+      .host{fill:#f9f8ef;stroke:#b8ba9e;stroke-width:1.4}.driver{fill:#f2e4c9;stroke:#9c7b42;stroke-width:1.4}.device{fill:#edf2e8;stroke:#9ab69e;stroke-width:1.4}.alloc{fill:#d9e9dc;stroke:#6f9a80;stroke-width:1.3}.edge{fill:none;stroke:#527d64;stroke-width:2;marker-end:url(#submit-arrow)}.num{font-size:18px;font-weight:700;fill:#fffdf6}
+    </style>
+  </defs>
+  <rect x="1" y="1" width="498" height="834" rx="14" fill="#f5f6ef" stroke="#c4d0c4" stroke-width="1.3"/>
+  <text x="24" y="34" class="head">把任务交给设备，不等于执行完成</text>
+  <text x="24" y="58" class="small">本例采用主机内存中的 SQ 和 MMIO 门铃</text>
+
+  <rect x="18" y="75" width="464" height="70" rx="10" class="driver"/>
+  <circle cx="42" cy="100" r="15" fill="#9c7b42"/><text x="42" y="106" class="num" text-anchor="middle">1</text>
+  <text x="66" y="106" class="subhead">驱动校验并持有任务资源</text>
+  <text x="66" y="131" class="label">确认上下文、访问权及资源状态</text>
+
+  <path d="M250 145V162" class="edge"/>
+  <rect x="18" y="167" width="464" height="79" rx="10" class="host"/>
+  <circle cx="42" cy="193" r="15" fill="#527d64"/><text x="42" y="199" class="num" text-anchor="middle">2</text>
+  <text x="66" y="199" class="subhead">CPU 将描述符写入空闲槽</text>
+  <text x="66" y="225" class="label">控制区采用一致性 DMA 内存</text>
+
+  <path d="M250 246V263" class="edge"/>
+  <rect x="18" y="268" width="464" height="79" rx="10" class="driver"/>
+  <circle cx="42" cy="294" r="15" fill="#9c7b42"/><text x="42" y="300" class="num" text-anchor="middle">3</text>
+  <text x="66" y="300" class="subhead">按内存与 I/O 契约排序</text>
+  <text x="66" y="326" class="label">确保设备见新 tail 前命令已可读</text>
+
+  <path d="M250 347V364" class="edge"/>
+  <rect x="18" y="369" width="464" height="76" rx="10" class="driver"/>
+  <circle cx="42" cy="395" r="15" fill="#9c7b42"/><text x="42" y="401" class="num" text-anchor="middle">4</text>
+  <text x="66" y="401" class="subhead">写 Doorbell，公布新 tail</text>
+  <text x="66" y="427" class="label">本例 MMIO 门铃携带新的队尾计数</text>
+
+  <path d="M250 445V464" class="edge"/>
+  <rect x="18" y="469" width="464" height="45" rx="8" fill="#fffdf6" stroke="#b8ba9e" stroke-width="1.3"/>
+  <text x="250" y="488" class="small" text-anchor="middle">软件提交可先于设备取走命令</text>
+  <text x="250" y="507" class="label" text-anchor="middle">提交返回 / 门铃写完 ≠ 接纳或完成</text>
+
+  <path d="M250 514V531" class="edge"/>
+  <rect x="18" y="536" width="464" height="79" rx="10" class="device"/>
+  <circle cx="42" cy="562" r="15" fill="#527d64"/><text x="42" y="568" class="num" text-anchor="middle">5</text>
+  <text x="66" y="568" class="subhead">设备取出并接纳命令</text>
+  <text x="66" y="594" class="label">取得并保存必要的任务参数</text>
+
+  <path d="M250 615V632" class="edge"/>
+  <rect x="18" y="637" width="464" height="67" rx="10" class="device"/>
+  <circle cx="42" cy="661" r="15" fill="#527d64"/><text x="42" y="667" class="num" text-anchor="middle">6</text>
+  <text x="66" y="667" class="subhead">满足依赖和执行资源，开始执行</text>
+  <text x="66" y="691" class="label">接纳的任务仍可能等待</text>
+
+  <path d="M250 704V721" class="edge"/>
+  <rect x="18" y="726" width="464" height="66" rx="10" class="alloc"/>
+  <circle cx="42" cy="750" r="15" fill="#527d64"/><text x="42" y="756" class="num" text-anchor="middle">7</text>
+  <text x="66" y="756" class="subhead">独立报告完成或错误</text>
+  <text x="66" y="780" class="label">由下一篇 E04 解释完成处理</text>
+  <text x="250" y="820" class="small" text-anchor="middle">箭头表示逻辑交接关系，不是实际时钟时序</text>
+</svg>

@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 581" width="500" height="581" role="img" aria-labelledby="ring-title ring-desc">
+  <title id="ring-title">四槽提交队列的发布和归还</title>
+  <desc id="ring-desc">教学队列 SQ 位于主机内存，有四个槽，head 和 tail 是逻辑上单调递增的计数器，分别表示已归还的槽数和已发布的命令数，物理槽号为计数对 4 取余。起初 head 等于 0、tail 等于 0，四槽都空闲。驱动发布 L_A、L_B、C 和 W 后，head 等于 0、tail 等于 4，四个槽均不可重新写入，队列已满。设备在完整取得 L_A 的参数后按本例约定归还槽 0，head 等于 1、tail 等于 4；槽 0 已可复用，其他三个槽仍保留待取命令。此时 L_A 仍可能尚未执行或正在执行，槽位归还不意味着任务完成。</desc>
+  <defs>
+    <marker id="queue-arrow" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0 0L7 3.5L0 7Z" fill="#527d64"/></marker>
+    <style>
+      text{font-family:"Noto Sans CJK SC","PingFang SC","Microsoft YaHei",sans-serif;fill:#173d35;font-size:20px}
+      .head{font-weight:700;font-size:23px}.subhead{font-weight:700;font-size:20px}.label{font-size:18px;fill:#416354}.small{font-size:16px;fill:#416354}.code{font-family:"Noto Sans Mono CJK SC","Consolas",monospace;font-size:19px;font-weight:600}
+      .host{fill:#f9f8ef;stroke:#b8ba9e;stroke-width:1.4}.driver{fill:#f2e4c9;stroke:#9c7b42;stroke-width:1.4}.device{fill:#edf2e8;stroke:#9ab69e;stroke-width:1.4}.alloc{fill:#d9e9dc;stroke:#6f9a80;stroke-width:1.3}.empty{fill:#f5f6ef;stroke:#a5afa2;stroke-width:1.3;stroke-dasharray:5 3}
+      .edge{fill:none;stroke:#527d64;stroke-width:2;marker-end:url(#queue-arrow)}
+    </style>
+  </defs>
+  <rect x="1" y="1" width="498" height="579" rx="14" fill="#f5f6ef" stroke="#c4d0c4" stroke-width="1.3"/>
+  <text x="24" y="34" class="head">四个槽，怎样反复使用？</text>
+  <text x="24" y="58" class="small">SQ 位于主机内存；槽号 = 逻辑计数 mod 4</text>
+
+  <rect x="18" y="77" width="464" height="126" rx="10" class="host"/>
+  <text x="32" y="102" class="subhead">① 初始：队列为空</text>
+  <text x="32" y="128" class="code">head=0, tail=0</text>
+  <g class="small" text-anchor="middle"><text x="84" y="151">槽 0</text><text x="194" y="151">槽 1</text><text x="304" y="151">槽 2</text><text x="414" y="151">槽 3</text></g>
+  <rect x="34" y="158" width="100" height="34" rx="5" class="empty"/><rect x="144" y="158" width="100" height="34" rx="5" class="empty"/><rect x="254" y="158" width="100" height="34" rx="5" class="empty"/><rect x="364" y="158" width="100" height="34" rx="5" class="empty"/>
+  <g class="label" text-anchor="middle"><text x="84" y="181">空闲</text><text x="194" y="181">空闲</text><text x="304" y="181">空闲</text><text x="414" y="181">空闲</text></g>
+
+  <path d="M250 203V220" class="edge"/>
+  <rect x="18" y="225" width="464" height="126" rx="10" class="host"/>
+  <text x="32" y="250" class="subhead">② 发布四项命令：队列已满</text>
+  <text x="32" y="276" class="code">head=0, tail=4</text>
+  <g class="small" text-anchor="middle"><text x="84" y="299">槽 0</text><text x="194" y="299">槽 1</text><text x="304" y="299">槽 2</text><text x="414" y="299">槽 3</text></g>
+  <rect x="34" y="306" width="100" height="34" rx="5" class="driver"/><rect x="144" y="306" width="100" height="34" rx="5" class="driver"/><rect x="254" y="306" width="100" height="34" rx="5" class="driver"/><rect x="364" y="306" width="100" height="34" rx="5" class="driver"/>
+  <g class="code" text-anchor="middle"><text x="84" y="329">L_A</text><text x="194" y="329">L_B</text><text x="304" y="329">C</text><text x="414" y="329">W</text></g>
+
+  <path d="M250 351V368" class="edge"/>
+  <rect x="18" y="373" width="464" height="126" rx="10" class="host"/>
+  <text x="32" y="398" class="subhead">③ 设备取走 L_A，归还槽 0</text>
+  <text x="32" y="424" class="code">head=1, tail=4</text>
+  <g class="small" text-anchor="middle"><text x="84" y="447">槽 0</text><text x="194" y="447">槽 1</text><text x="304" y="447">槽 2</text><text x="414" y="447">槽 3</text></g>
+  <rect x="34" y="454" width="100" height="34" rx="5" class="empty"/><rect x="144" y="454" width="100" height="34" rx="5" class="driver"/><rect x="254" y="454" width="100" height="34" rx="5" class="driver"/><rect x="364" y="454" width="100" height="34" rx="5" class="driver"/>
+  <g text-anchor="middle"><text x="84" y="477" class="label">可复用</text><text x="194" y="477" class="code">L_B</text><text x="304" y="477" class="code">C</text><text x="414" y="477" class="code">W</text></g>
+
+  <rect x="18" y="511" width="464" height="38" rx="8" class="alloc"/>
+  <text x="250" y="536" class="label" text-anchor="middle">设备已持有 L_A 的参数，但任务未必完成</text>
+  <text x="250" y="570" class="small" text-anchor="middle">head：已归还槽数　tail：已发布命令数</text>
+</svg>

@@ -1,0 +1,44 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 649" width="500" height="649" role="img" aria-labelledby="command-title command-desc">
+  <title id="command-title">向量加法的四项教学命令描述符</title>
+  <desc id="command-desc">设备上下文 ctx_P 关联四项任务。L_A 将主机 DMA 地址 0x3000_0080 的 12 B 数据搬到设备缓冲区 d_A（0x1000），成功交接标记为 e_A；L_B 将主机 DMA 地址 0x3000_1080 的 12 B 数据搬到设备缓冲区 d_B（0x2000），成功交接标记为 e_B。计算任务 C 关联 vec_add 的执行入口 K，以 d_A、d_B 为输入，d_Y（0x3000）为输出，参数 n 为 3，启动规模为 1×4；C 等待 e_A、e_B 成功交接，产生 e_C。任务 W 等待 e_C，将 d_Y 的 12 B 数据写回主机 DMA 地址 0x3000_2080；成功交接标记 e_Y 还要求满足主机可见性条件。每条描述符记录本次任务所需参数及依赖等信息，并不保存向量本身。这些仅是教学字段，不是真实设备的二进制布局。</desc>
+  <defs>
+    <style>
+      text{font-family:"Noto Sans CJK SC","PingFang SC","Microsoft YaHei",sans-serif;fill:#173d35;font-size:20px}
+      .head{font-weight:700;font-size:23px}.subhead{font-weight:700;font-size:20px}.label{font-size:18px;fill:#416354}.small{font-size:16px;fill:#416354}.code{font-family:"Noto Sans Mono CJK SC","Consolas",monospace;font-size:18px;font-weight:600}
+      .driver{fill:#f2e4c9;stroke:#9c7b42;stroke-width:1.4}.host{fill:#f9f8ef;stroke:#b8ba9e;stroke-width:1.4}.alloc{fill:#d9e9dc;stroke:#6f9a80;stroke-width:1.3}.card{fill:#fffdf6;stroke:#b8ba9e;stroke-width:1.3}
+    </style>
+  </defs>
+  <rect x="1" y="1" width="498" height="647" rx="14" fill="#f5f6ef" stroke="#c4d0c4" stroke-width="1.3"/>
+  <text x="24" y="34" class="head">四项任务怎样变成描述符？</text>
+  <text x="24" y="58" class="small">ctx_P 关联命令、地址、参数与依赖</text>
+
+  <rect x="18" y="75" width="464" height="116" rx="10" class="driver"/>
+  <text x="32" y="101" class="subhead">L_A · DMA 搬入 A</text>
+  <text x="468" y="101" class="label" text-anchor="end">交接标记 e_A</text>
+  <rect x="30" y="111" width="440" height="68" rx="7" class="card"/>
+  <text x="42" y="136" class="label">主机 DMA <tspan class="code">0x3000_0080</tspan></text>
+  <text x="42" y="163" class="label">→ 设备 <tspan class="code">d_A (0x1000)</tspan>　　12 B</text>
+
+  <rect x="18" y="201" width="464" height="116" rx="10" class="driver"/>
+  <text x="32" y="227" class="subhead">L_B · DMA 搬入 B</text>
+  <text x="468" y="227" class="label" text-anchor="end">交接标记 e_B</text>
+  <rect x="30" y="237" width="440" height="68" rx="7" class="card"/>
+  <text x="42" y="262" class="label">主机 DMA <tspan class="code">0x3000_1080</tspan></text>
+  <text x="42" y="289" class="label">→ 设备 <tspan class="code">d_B (0x2000)</tspan>　　12 B</text>
+
+  <rect x="18" y="327" width="464" height="148" rx="10" class="alloc"/>
+  <text x="32" y="353" class="subhead">C · 执行 vec_add</text>
+  <text x="468" y="353" class="label" text-anchor="end">交接标记 e_C</text>
+  <rect x="30" y="363" width="440" height="100" rx="7" class="card"/>
+  <text x="42" y="388" class="label">入口 <tspan class="code">K</tspan>　等待 <tspan class="code">e_A、e_B</tspan> 成功</text>
+  <text x="42" y="412" class="code">d_A (0x1000), d_B (0x2000)</text>
+  <text x="42" y="442" class="label">→ <tspan class="code">d_Y (0x3000)</tspan>　　<tspan class="code">n=3</tspan>　启动 <tspan class="code">1×4</tspan></text>
+
+  <rect x="18" y="485" width="464" height="126" rx="10" class="driver"/>
+  <text x="32" y="511" class="subhead">W · DMA 写回 Y</text>
+  <text x="468" y="511" class="label" text-anchor="end">e_Y：主机可读后</text>
+  <rect x="30" y="521" width="440" height="78" rx="7" class="card"/>
+  <text x="42" y="545" class="label">等待 <tspan class="code">e_C</tspan> 成功：<tspan class="code">d_Y (0x3000)</tspan></text>
+  <text x="42" y="575" class="label">→ 主机 DMA <tspan class="code">0x3000_2080</tspan>　12 B</text>
+  <text x="250" y="633" class="small" text-anchor="middle">教学字段，非真实二进制格式；描述符不保存向量值</text>
+</svg>
