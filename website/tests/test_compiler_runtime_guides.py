@@ -636,6 +636,20 @@ class CompilerRuntimeGuideTests(unittest.TestCase):
                 self.assertEqual(len(re.findall(r'class="arithmatex(?: |")', body)), count)
                 self.assertNotIn("$$", body)
 
+    def test_g07_article_navigation_search_and_diagrams(self):
+        route = "07-model-execution"
+        slug = "g07-tiered-kv-cache"
+        self._check_article(
+            route,
+            "模型执行与生成控制",
+            slug,
+            "显存放不下全部 KV，应该搬走还是重新计算？",
+            ("g07-active-migration.svg", "g07-cold-prefix.svg",
+             "g07-restore-prefetch.svg"),
+        )
+        previous = SITE / PREFIX / route / "g06-prefix-cache" / "index.html"
+        self.assertIn(f"../{slug}/", GuideContent(previous.read_text()).links)
+
     def _check_foundation_article(self, slug, title, diagram_names):
         self._check_article("01-foundations", "软件执行共同基础", slug, title, diagram_names)
 

@@ -1,0 +1,83 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 1025" width="500" height="1025" role="img" aria-labelledby="title desc">
+  <title id="title">活跃请求 A 的 KV 迁移和恢复示例</title>
+  <desc id="desc">A 在 Decode 1 完成后已有十个已知 Token、两个已生成 Token、九个有效 KV 位置，设备块表 [7,2,11]。C 完成 Prefill 后有六个有效 KV 位置，块表 [7,5]，与 A 共享设备块七。暂停 A，保留它对块七的引用，C 也持有该块。冻结 A 的私有块二和十一的待迁移状态并保护源，在主机 H0、H1 中分别复制 p5 到 p8、y1 的有效状态；复制成功且可用后，A 改为跨层位置记录 [设备块7,主机H0,主机H1]；解除旧引用并等待所有在途访问结束后才可安全回收设备块二和十一。这是一份跨层位置记录，而不是可直接传给 GPU 的设备块表。恢复 A 时，假设设备端随后有空闲，先分配新的设备块九、十二，再从 H0、H1 复制，待复制成功且可见后建立设备块表 [7,9,12]，复用有效 KV、保留原来的生成状态，不重新采样，下一轮输入仍为已知但未计算的 y2。图中不按实际硬件时间或容量比例绘制。</desc>
+  <defs>
+    <marker id="arrow" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0 0L7 3.5L0 7Z" fill="#527d64"/></marker>
+    <style>
+text{font-family:"Noto Sans CJK SC","PingFang SC","Microsoft YaHei",sans-serif;fill:#173d35;font-size:20px}
+.head{font-weight:700;font-size:23px}.subhead{font-weight:700;font-size:20px}.label{font-size:18px;fill:#416354}
+.small{font-size:17px;fill:#416354}.tiny{font-size:16px;fill:#416354}.token{font-size:18px;font-weight:600}
+.context{fill:#edf2e8;stroke:#9ab69e;stroke-width:1.5}.artifact{fill:#f9f8ef;stroke:#b8ba9e;stroke-width:1.4}
+.done{fill:#d9e9dc;stroke:#6f9a80;stroke-width:1.4}.known{fill:#f2e4c9;stroke:#9c7b42;stroke-width:1.5}
+.unknown{fill:#f5f6ef;stroke:#8b9c8e;stroke-width:1.4;stroke-dasharray:3 3}
+.future{fill:#f5f6ef;stroke:#c4d0c4;stroke-width:1}.line{stroke:#c4d0c4;stroke-width:1.3;fill:none}
+.arrow{stroke:#527d64;stroke-width:2;fill:none;marker-end:url(#arrow)}.branch{stroke:#527d64;stroke-width:2;fill:none}
+.bar{fill:#82af91;stroke:#527d64;stroke-width:1}.goldbar{fill:#d5b16e;stroke:#9c7b42;stroke-width:1}
+.cut{fill:#e9ece5;stroke:#9cae9e;stroke-width:1.4;stroke-dasharray:4 3}.match{fill:#f2e4c9;stroke:#9c7b42;stroke-width:2}
+
+.highlight{fill:#d9e9dc;stroke:#9c7b42;stroke-width:2.5}
+.empty{fill:#f5f6ef;stroke:#8b9c8e;stroke-width:1.4;stroke-dasharray:3 3}
+
+.idle{fill:#e8eee6;stroke:#78937f;stroke-dasharray:5 3;stroke-width:1.7}
+
+.host{fill:#f2e4c9;stroke:#9c7b42;stroke-width:1.5}
+.device{fill:#d9e9dc;stroke:#6f9a80;stroke-width:1.4}
+.wait{fill:#f9f8ef;stroke:#9c7b42;stroke-dasharray:5 4;stroke-width:1.4}
+</style>
+  </defs>
+  <rect x="1" y="1" width="498" height="1023" rx="14" fill="#f5f6ef" stroke="#c4d0c4" stroke-width="1.3"/>
+
+  <text x="24" y="34" class="head">暂停 A：先搬走状态，再安全恢复</text>
+  <text x="24" y="61" class="label">有在途访问时，不能仅改块表就回收旧块。</text>
+  <rect x="18" y="78" width="464" height="244" rx="10" class="context"/>
+  <text x="32" y="108" class="subhead">初始：A 与 C 都有设备端 KV</text>
+  <text x="32" y="137" class="label">A（Decode 1 后）块表 [7, 2, 11]</text>
+  <text x="32" y="164" class="small">已知 10 · 已生成 2 · 有效 KV 9</text>
+  <text x="32" y="192" class="label">C（Prefill 后）块表 [7, 5] · 有效 KV 6</text>
+  <rect x="32" y="208" width="139" height="65" rx="5" class="device"/>
+  <rect x="180" y="208" width="139" height="65" rx="5" class="device"/>
+  <rect x="328" y="208" width="140" height="65" rx="5" class="device"/>
+  <text x="101.5" y="230" text-anchor="middle" class="token">设备块 7</text>
+  <text x="101.5" y="252" text-anchor="middle" class="small">p1–p4（共享）</text>
+  <text x="249.5" y="230" text-anchor="middle" class="token">设备块 2</text>
+  <text x="249.5" y="252" text-anchor="middle" class="small">p5–p8（私有）</text>
+  <text x="398" y="230" text-anchor="middle" class="token">设备块 11</text>
+  <text x="398" y="252" text-anchor="middle" class="small">仅 y1（私有）</text>
+  <text x="32" y="300" class="small">仅展示 A 的三个块；y2 已知但尚无 KV。</text>
+  <path d="M250 327V345" class="arrow"/>
+  <rect x="18" y="351" width="464" height="251" rx="10" class="artifact"/>
+  <text x="32" y="381" class="subhead">1. 暂停 A，固定待迁移的源</text>
+  <text x="32" y="410" class="label">保留块 7 引用，C 也持有；复制私有块。</text>
+  <rect x="32" y="425" width="205" height="40" rx="5" class="device"/>
+  <rect x="263" y="425" width="205" height="40" rx="5" class="device"/>
+  <text x="134.5" y="451" text-anchor="middle" class="token">设备块 2 · p5–p8</text>
+  <text x="365.5" y="451" text-anchor="middle" class="token">设备块 11 · y1</text>
+  <path d="M134.5 469V487" class="arrow"/>
+  <path d="M365.5 469V487" class="arrow"/>
+  <rect x="32" y="493" width="205" height="40" rx="5" class="host"/>
+  <rect x="263" y="493" width="205" height="40" rx="5" class="host"/>
+  <text x="134.5" y="519" text-anchor="middle" class="token">主机 H0 · p5–p8</text>
+  <text x="365.5" y="519" text-anchor="middle" class="token">主机 H1 · y1</text>
+  <text x="32" y="558" class="small">冻结源状态，复制期间保留对源的引用。</text>
+  <text x="32" y="584" class="small">副本成功且可用后，才切换位置记录。</text>
+  <path d="M250 607V625" class="arrow"/>
+  <rect x="18" y="631" width="464" height="115" rx="10" class="context"/>
+  <text x="32" y="661" class="subhead">2. A 的状态位置记录改变</text>
+  <text x="32" y="687" class="label">[设备块 7, 主机 H0, 主机 H1]</text>
+  <text x="32" y="710" class="tiny">这是跨层位置记录，不是可直接交给 GPU 的块表。</text>
+  <text x="32" y="733" class="tiny">2/11 旧引用解除且所有在途访问结束后再回收。</text>
+  <path d="M250 750V768" class="arrow"/>
+  <rect x="18" y="774" width="464" height="206" rx="10" class="artifact"/>
+  <text x="32" y="804" class="subhead">3. 恢复 A（假设设备端随后有空闲）</text>
+  <text x="32" y="833" class="label">先分配新块 9、12，再从主机复制回来。</text>
+  <rect x="32" y="845" width="205" height="40" rx="5" class="host"/>
+  <rect x="263" y="845" width="205" height="40" rx="5" class="host"/>
+  <text x="134.5" y="871" text-anchor="middle" class="token">H0 → 设备块 9</text>
+  <text x="365.5" y="871" text-anchor="middle" class="token">H1 → 设备块 12</text>
+  <path d="M250 888V902" class="arrow"/>
+  <rect x="32" y="907" width="436" height="40" rx="5" class="done"/>
+  <text x="250" y="933" text-anchor="middle" class="token">复制完成后：设备块表 [7, 9, 12]</text>
+  <text x="32" y="967" class="small">不重新采样；下一轮输入仍是未计算的 y2。</text>
+  <text x="250" y="1008" text-anchor="middle" class="small">绿色为设备状态，金色为主机副本；逻辑流程示意。</text>
+
+</svg>

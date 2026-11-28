@@ -1,0 +1,95 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 817" width="500" height="817" role="img" aria-labelledby="title desc">
+  <title id="title">按需恢复与提前恢复的等待时间对照</title>
+  <desc id="desc">教学假设：完整恢复需要十二毫秒，其他独立工作从 t 等于零持续到八毫秒；假设两类工作可以重叠，且恢复的时长不因带宽资源竞争改变。按需恢复时在独立工作结束 t8 后开始恢复，到 t20 目标数据才就绪，暴露等待十二毫秒；提前恢复时间为 t0 到 t12，独立工作 t8 结束后仍需等到 t12，暴露等待四毫秒。恢复提前只隐藏八毫秒，不会把延迟自动变为零。预取会提前占用目标存储、可能引入带宽竞争，且依赖对后续工作需求的预测；时间线在相同的比例尺上绘制，不代表实际硬件运行测量。</desc>
+  <defs>
+    <marker id="arrow" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0 0L7 3.5L0 7Z" fill="#527d64"/></marker>
+    <style>
+text{font-family:"Noto Sans CJK SC","PingFang SC","Microsoft YaHei",sans-serif;fill:#173d35;font-size:20px}
+.head{font-weight:700;font-size:23px}.subhead{font-weight:700;font-size:20px}.label{font-size:18px;fill:#416354}
+.small{font-size:17px;fill:#416354}.tiny{font-size:16px;fill:#416354}.token{font-size:18px;font-weight:600}
+.context{fill:#edf2e8;stroke:#9ab69e;stroke-width:1.5}.artifact{fill:#f9f8ef;stroke:#b8ba9e;stroke-width:1.4}
+.done{fill:#d9e9dc;stroke:#6f9a80;stroke-width:1.4}.known{fill:#f2e4c9;stroke:#9c7b42;stroke-width:1.5}
+.unknown{fill:#f5f6ef;stroke:#8b9c8e;stroke-width:1.4;stroke-dasharray:3 3}
+.future{fill:#f5f6ef;stroke:#c4d0c4;stroke-width:1}.line{stroke:#c4d0c4;stroke-width:1.3;fill:none}
+.arrow{stroke:#527d64;stroke-width:2;fill:none;marker-end:url(#arrow)}.branch{stroke:#527d64;stroke-width:2;fill:none}
+.bar{fill:#82af91;stroke:#527d64;stroke-width:1}.goldbar{fill:#d5b16e;stroke:#9c7b42;stroke-width:1}
+.cut{fill:#e9ece5;stroke:#9cae9e;stroke-width:1.4;stroke-dasharray:4 3}.match{fill:#f2e4c9;stroke:#9c7b42;stroke-width:2}
+
+.highlight{fill:#d9e9dc;stroke:#9c7b42;stroke-width:2.5}
+.empty{fill:#f5f6ef;stroke:#8b9c8e;stroke-width:1.4;stroke-dasharray:3 3}
+
+.idle{fill:#e8eee6;stroke:#78937f;stroke-dasharray:5 3;stroke-width:1.7}
+
+.host{fill:#f2e4c9;stroke:#9c7b42;stroke-width:1.5}
+.device{fill:#d9e9dc;stroke:#6f9a80;stroke-width:1.4}
+.wait{fill:#f9f8ef;stroke:#9c7b42;stroke-dasharray:5 4;stroke-width:1.4}
+</style>
+  </defs>
+  <rect x="1" y="1" width="498" height="815" rx="14" fill="#f5f6ef" stroke="#c4d0c4" stroke-width="1.3"/>
+
+  <text x="24" y="34" class="head">提前恢复，等待就一定消失吗？</text>
+  <text x="24" y="61" class="label">教学假设：恢复需 12 ms；独立工作需 8 ms</text>
+  <rect x="18" y="77" width="464" height="471" rx="10" class="context"/>
+  <text x="32" y="107" class="subhead">观察两种恢复安排</text>
+  <rect x="32" y="122" width="20" height="16" rx="3" class="done"/>
+  <text x="59" y="136" class="small">独立工作</text>
+  <rect x="172" y="122" width="20" height="16" rx="3" class="host"/>
+  <text x="199" y="136" class="small">恢复阶段</text>
+  <rect x="323" y="122" width="20" height="16" rx="3" class="wait"/>
+  <text x="350" y="136" class="small">暴露等待</text>
+  <text x="32" y="172" text-anchor="start" class="subhead">按需恢复：t=8 才开始</text>
+  <text x="32" y="196" class="tiny">t (ms)</text>
+  <path d="M128 205H458.0" class="line"/>
+  <text x="128.0" y="196" text-anchor="middle" class="tiny">0</text>
+  <path d="M128.0 202V316" class="line" stroke-dasharray="3 3"/>
+  <text x="260.0" y="196" text-anchor="middle" class="tiny">8</text>
+  <path d="M260.0 202V316" class="line" stroke-dasharray="3 3"/>
+  <text x="326.0" y="196" text-anchor="middle" class="tiny">12</text>
+  <path d="M326.0 202V316" class="line" stroke-dasharray="3 3"/>
+  <text x="458.0" y="196" text-anchor="middle" class="tiny">20</text>
+  <path d="M458.0 202V316" class="line" stroke-dasharray="3 3"/>
+  <text x="32" y="232" text-anchor="start" class="small">独立工作</text>
+  <rect x="128" y="212" width="132" height="27" rx="4" class="done"/>
+  <text x="194" y="231" text-anchor="middle" class="tiny">0–8</text>
+  <text x="32" y="270" text-anchor="start" class="small">恢复</text>
+  <rect x="260.0" y="250" width="198.0" height="27" rx="4" class="host"/>
+  <text x="359.0" y="269" text-anchor="middle" class="tiny">8–20</text>
+  <text x="32" y="307" text-anchor="start" class="small">暴露等待</text>
+  <rect x="260.0" y="288" width="198.0" height="25" rx="4" class="wait"/>
+  <text x="359.0" y="306" text-anchor="middle" class="tiny">12 ms</text>
+  <path d="M458.0 248V322" stroke="#527d64" stroke-width="2"/>
+  <text x="458.0" y="338" text-anchor="end" class="tiny">t=20 可执行</text>
+<path d="M32 341H468" class="line"/>
+  <text x="32" y="367" text-anchor="start" class="subhead">提前恢复：t=0 就开始</text>
+  <text x="32" y="391" class="tiny">t (ms)</text>
+  <path d="M128 400H458.0" class="line"/>
+  <text x="128.0" y="391" text-anchor="middle" class="tiny">0</text>
+  <path d="M128.0 397V511" class="line" stroke-dasharray="3 3"/>
+  <text x="260.0" y="391" text-anchor="middle" class="tiny">8</text>
+  <path d="M260.0 397V511" class="line" stroke-dasharray="3 3"/>
+  <text x="326.0" y="391" text-anchor="middle" class="tiny">12</text>
+  <path d="M326.0 397V511" class="line" stroke-dasharray="3 3"/>
+  <text x="458.0" y="391" text-anchor="middle" class="tiny">20</text>
+  <path d="M458.0 397V511" class="line" stroke-dasharray="3 3"/>
+  <text x="32" y="427" text-anchor="start" class="small">独立工作</text>
+  <rect x="128" y="407" width="132" height="27" rx="4" class="done"/>
+  <text x="194" y="426" text-anchor="middle" class="tiny">0–8</text>
+  <text x="32" y="465" text-anchor="start" class="small">恢复</text>
+  <rect x="128.0" y="445" width="198.0" height="27" rx="4" class="host"/>
+  <text x="227.0" y="464" text-anchor="middle" class="tiny">0–12</text>
+  <text x="32" y="502" text-anchor="start" class="small">暴露等待</text>
+  <rect x="260.0" y="483" width="66.0" height="25" rx="4" class="wait"/>
+  <text x="293.0" y="501" text-anchor="middle" class="tiny">4 ms</text>
+  <path d="M326.0 443V517" stroke="#527d64" stroke-width="2"/>
+  <text x="326.0" y="533" text-anchor="middle" class="tiny">t=12 可执行</text>
+
+  <rect x="18" y="564" width="464" height="186" rx="10" class="artifact"/>
+  <text x="32" y="594" class="subhead">提前恢复只隐藏了 8 ms</text>
+  <text x="32" y="626" class="label">按需等待 12 ms → 提前安排后剩余 4 ms。</text>
+  <text x="32" y="655" class="label">两项工作均完成时，目标计算才能启动。</text>
+  <text x="32" y="685" class="small">预取会更早占用目的块、可能争抢传输带宽。</text>
+  <text x="32" y="716" class="small">预测错误也可能搬运不需要的数据。</text>
+  <text x="250" y="776" text-anchor="middle" class="small">假设可以独立重叠，且恢复时长不受竞争改变。</text>
+  <text x="250" y="800" text-anchor="middle" class="small">时间线等比例绘制；不是硬件测量结果。</text>
+
+</svg>
