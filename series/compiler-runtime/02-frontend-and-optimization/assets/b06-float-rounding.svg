@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="450" height="448" viewBox="0 0 450 448" role="img" aria-labelledby="round-title round-desc">
+  <title id="round-title">三个 FP32 数相加，为什么改变括号会得到零或一？</title>
+  <desc id="round-desc">A 等于二的二十四次方，即 16777216，每次加法都采用舍入到最近、等距取偶。先算 A 加一时，精确和 16777217 在相邻可表示数 16777216 和 16777218 的中点，取有效数末位为偶数的 16777216。再加负 A 得零。若先算一加负 A，则得到可精确表示的负 16777215；A 加上它得到一。</desc>
+  <defs>
+    <marker id="round-tip" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M0 0L8 4L0 8Z" fill="#396b55"/>
+    </marker>
+  </defs>
+  <style>
+    text { font-family: "Noto Sans CJK SC", "PingFang SC", "Microsoft YaHei", sans-serif; fill: #173d35; text-anchor: middle; font-size: 20px }
+    .code, .tick { font-family: "DejaVu Sans Mono", Consolas, monospace }
+    .code { font-size: 21px }
+    .tick { font-size: 17px }
+    .strong { font-weight: 700 }
+    .label { font-size: 18px; fill: #416354 }
+    .group { fill: #e0ebe3; stroke: #82a18e; stroke-width: 1.5 }
+    .axis { stroke: #849789; stroke-width: 2 }
+    .exact { fill: #396b55 }
+    .mid { fill: #f5f6ef; stroke: #396b55; stroke-width: 2 }
+    .edge { fill: none; stroke: #396b55; stroke-width: 2; marker-end: url(#round-tip) }
+  </style>
+  <rect x="1" y="1" width="448" height="446" rx="14" fill="#f5f6ef" stroke="#c4d0c4"/>
+  <text class="code strong" x="225" y="30">A = 2²⁴ = 16777216</text>
+  <text class="label" x="225" y="56">每步按 FP32 舍入到最近值，等距时取偶。</text>
+
+  <rect class="group" x="16" y="74" width="418" height="41" rx="9"/>
+  <text class="code strong" x="225" y="102">(A + 1) + (−A)</text>
+  <text x="225" y="145">先算 A + 1，精确和落在中点。</text>
+  <path class="axis" d="M61 199H389"/>
+  <circle class="exact" cx="61" cy="199" r="5"/>
+  <circle class="mid" cx="225" cy="199" r="5"/>
+  <circle class="exact" cx="389" cy="199" r="5"/>
+  <path class="edge" d="M225 190Q225 174 208 174H77Q61 174 61 190"/>
+  <text class="tick" x="61" y="225">16777216</text>
+  <text class="tick" x="225" y="225">16777217</text>
+  <text class="tick" x="389" y="225">16777218</text>
+  <text class="label" x="225" y="251">两端是相邻的 FP32 数，中点舍入到 A。</text>
+  <text class="code strong" x="225" y="282">A + (−A) = 0</text>
+
+  <rect class="group" x="16" y="303" width="418" height="41" rx="9"/>
+  <text class="code strong" x="225" y="331">A + (1 + (−A))</text>
+  <text class="code" x="225" y="371">1 + (−A) = −16777215</text>
+  <text class="code strong" x="225" y="401">A + (−16777215) = 1</text>
+  <text class="label" x="225" y="431">这两步的结果都能用 FP32 精确表示。</text>
+</svg>

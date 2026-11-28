@@ -184,6 +184,19 @@ class CompilerRuntimeGuideTests(unittest.TestCase):
         previous = SITE / PREFIX / route / "b04-dependency-and-alias-analysis/index.html"
         self.assertIn(f"../{slug}/", GuideContent(previous.read_text()).links)
 
+    def test_b06_article_navigation_search_and_diagrams(self):
+        route = "02-frontend-and-optimization"
+        slug = "b06-legal-transformation"
+        self._check_article(
+            route,
+            "编译前端与程序优化",
+            slug,
+            "看起来等价的两种计算，编译器为什么不能任意替换？",
+            ("b06-fusion-uses.svg", "b06-float-rounding.svg"),
+        )
+        previous = SITE / PREFIX / route / "b05-dataflow-analysis-and-optimization/index.html"
+        self.assertIn(f"../{slug}/", GuideContent(previous.read_text()).links)
+
     def test_a01_article_navigation_search_and_diagrams(self):
         self._check_foundation_article(
             "a01-program-semantics",

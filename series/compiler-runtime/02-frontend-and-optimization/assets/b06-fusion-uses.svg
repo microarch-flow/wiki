@@ -1,0 +1,52 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="450" height="419" viewBox="0 0 450 419" role="img" aria-labelledby="fusion-title fusion-desc">
+  <title id="fusion-title">把 Add 和 ReLU 融合后，怎样保留两个返回值？</title>
+  <desc id="fusion-desc">两幅图都取矩阵乘法输出 P 的第一行 [7,0] 和偏置 [1,-2]。Add 得到 Z 的第一行 [8,-2]，ReLU 把它变成 Y 的第一行 [8,0]。上图有两个算子，下图把两项计算放进同一个融合算子内。两图都把 Y 和 Z 提供给调用者；若用 Y 替换 Z，Z 的第二个元素就从负二变为零。</desc>
+  <defs>
+    <marker id="fusion-tip" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M0 0L8 4L0 8Z" fill="#396b55"/>
+    </marker>
+  </defs>
+  <style>
+    text { font-family: "Noto Sans CJK SC", "PingFang SC", "Microsoft YaHei", sans-serif; fill: #173d35; text-anchor: middle; font-size: 20px }
+    .code { font-family: "DejaVu Sans Mono", Consolas, monospace; font-size: 20px }
+    .label { font-size: 18px; fill: #416354 }
+    .heading { font-size: 20px; font-weight: 700 }
+    .op { fill: #d9e9dc; stroke: #6f9a80; stroke-width: 1.5 }
+    .value { fill: #e8e9df; stroke: #9aa89a; stroke-width: 1.5 }
+    .group { fill: #e5eeea; stroke: #55796a; stroke-width: 2 }
+    .edge { fill: none; stroke: #396b55; stroke-width: 2; marker-end: url(#fusion-tip) }
+  </style>
+  <rect x="1" y="1" width="448" height="417" rx="14" fill="#f5f6ef" stroke="#c4d0c4"/>
+  <text class="heading" x="225" y="27">取 MatMul 输出 P 的第一行</text>
+  <text class="code" x="225" y="53">P = [7,0]   bias = [1,-2]</text>
+  <path d="M17 66H433" stroke="#c4d0c4"/>
+
+  <text class="heading" x="225" y="92">融合前的两个算子</text>
+  <rect class="op" x="31" y="105" width="163" height="39" rx="9"/>
+  <text class="code" x="112.5" y="131">Add(P,bias)</text>
+  <rect class="op" x="256" y="105" width="163" height="39" rx="9"/>
+  <text class="code" x="337.5" y="131">ReLU(Z)</text>
+  <text class="label" x="225" y="118">Z</text>
+  <path class="edge" d="M195 127H254"/>
+  <path class="edge" d="M113 144V163"/>
+  <path class="edge" d="M338 144V163"/>
+  <rect class="value" x="31" y="165" width="163" height="39" rx="9"/>
+  <text class="code" x="112.5" y="191">Z = [8,-2]</text>
+  <rect class="value" x="256" y="165" width="163" height="39" rx="9"/>
+  <text class="code" x="337.5" y="191">Y = [8,0]</text>
+
+  <path d="M17 219H433" stroke="#c4d0c4"/>
+  <rect class="group" x="14" y="232" width="422" height="83" rx="11"/>
+  <text class="heading" x="225" y="258">融合后的一个算子</text>
+  <text class="code" x="112.5" y="297">Add(P,bias)</text>
+  <text class="code" x="337.5" y="297">ReLU(Z)</text>
+  <text class="label" x="225" y="286">Z</text>
+  <path class="edge" d="M190 295H260"/>
+  <path class="edge" d="M113 303V330"/>
+  <path class="edge" d="M338 303V330"/>
+  <rect class="value" x="31" y="332" width="163" height="39" rx="9"/>
+  <text class="code" x="112.5" y="358">Z = [8,-2]</text>
+  <rect class="value" x="256" y="332" width="163" height="39" rx="9"/>
+  <text class="code" x="337.5" y="358">Y = [8,0]</text>
+  <text class="label" x="225" y="401">两种写法都向调用者返回 (Y, Z)。</text>
+</svg>
