@@ -248,7 +248,7 @@ F01–F03 为模型执行的主要基础。F04、F05 分别深入重放和变体
 | ID | 暂定标题 | 核心范围 | 主要前置 | 计划文件名 | 状态 |
 | --- | --- | --- | --- | --- | --- | --- |
 | F01 | 设备已经准备好了，运行时怎样启动第一次计算？ | Module Load、执行上下文、Kernel Dispatch、参数绑定、资源准备。 | A04、E01/E03 的接口；D04 按需 | `f01-module-loading-and-dispatch.md` | 已发布 |
-| F02 | 提交任务的函数已经返回，为什么不能马上读取计算结果？ | Stream、Event、Fence、异步执行、依赖及可见性、搬运计算编排。 | F01、A05、E04 的完成语义 | `f02-asynchronous-execution.md` | 初稿完成，待发布核验 |
+| F02 | 提交任务的函数已经返回，为什么不能马上读取计算结果？ | Stream、Event、Fence、异步执行、依赖及可见性、搬运计算编排。 | F01、A05、E04 的完成语义 | `f02-asynchronous-execution.md` | 已发布 |
 | F03 | 两项任务需要使用同一块 Buffer，什么时候才能安全复用？ | 动态分配、内存池、碎片、所有权、延迟释放、异步资源回收。 | F02 | `f03-runtime-buffer-management.md` | 待写 |
 | F04 | 多次执行相同的任务序列，怎样减少每轮提交开销？ | 任务图、执行图捕获、Replay、动态 DAG、重放约束及重建。 | F02、F03 | `f04-execution-graphs-and-replay.md` | 待写 |
 | F05 | 实际输入形状发生变化，运行时怎样找到可以执行的程序？ | Shape Guard、分桶、变体选择、JIT 触发、编译缓存、Fallback。 | A03、F01、F03；按需 F04 | `f05-dynamic-shapes-and-specialization.md` | 待写 |
@@ -471,3 +471,5 @@ K 横跨所有路线。K01/K02 可早期开展，K03–K05 按被分析的机制
 - 2026-11-28 · D03 已发布并核验。正文提交 `208daf3`，[GitHub Pages 部署](https://github.com/microarch-flow/wiki/actions/runs/46129106512)成功。[公开正文](https://microarch-flow.github.io/wiki/series/compiler-runtime/04-code-generation/d03-register-allocation-and-scheduling/)、D02 后继、专题导读、三张图解、导航、面包屑与搜索索引均已核验。两份教学汇编各以 10,000 组随机比特向量和边界输入复算，验证输入未改变、栈对齐与恢复；独立复算理想发射时序为 9/11 拍。LLVM 19.1.7 实际验证了相同计算的虚拟寄存器重写、调度和强制寄存器压力下的 Spill/Reload 生成（不同于教学约束，非真机执行）。本地 179 项整站测试通过，合并 E02 的部署版本构建和整站测试也通过。
 
 - 2026-11-28 · F02 初稿完成。承接 F01 的三组设备地址与 A05 的四项任务，将等待编码为流内顺序与跨流事件，区分记录、流等待、主机同步，以及 Fence 的实现特定语义。通过单组 9 拍、独立双组串行 18 拍与一种重叠 13 拍的教学日程区分异步、依赖和资源约束；保留失败/取消后不提前回收的不变量，动态分配与复用留 F03。同步 E02 的设备地址、Pin/Map 和可见性交接；E04 尚未完成，后续结合其底层完成语义复核 F02 对提交与成功交接的接口假设。
+
+- 2026-11-28 · F02 已发布并核验。正文提交 `03b3e2b`，[GitHub Pages 部署](https://github.com/microarch-flow/wiki/actions/runs/46130067829) 成功；[公开正文](https://microarch-flow.github.io/wiki/series/compiler-runtime/06-execution-runtime/f02-asynchronous-execution/)、F01 后继和 E02 衔接链接、专题导读、两张图解、导航、面包屑及搜索收录均已核验。合并 E02/D03 后本地整站 181 项测试全部通过，独立复算单组 9 拍、双组串行 18 拍和一种重叠 13 拍的所有数据依赖与资源约束、两组输出及旧数据反例（教学模型，非 GPU 实测），并核查 360 px 窄屏图解。F03–F05 仍待编写，旧推理运行时不变。
