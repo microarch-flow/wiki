@@ -1,0 +1,50 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 686" width="500" height="686" role="img" aria-labelledby="title desc">
+  <title id="title">从数据依赖到执行任务图</title>
+  <desc id="desc">F02 中 L_A 和 L_B 分别搬入主机输入 A、B，C 执行 vec_add，W 将结果写回主机。仅看数据依赖时，两项搬入任务分别指向计算任务 C，计算任务 C 指向 W；L_A 与 L_B 之间无数据依赖，但如果只有一个搬运引擎则不能据此认为它们一定并发。在 F02 采用同一搬入流的组织形式中，L_A 必须排在 L_B 前面，再经记录事件、跨流等待形成 L_B 到 C、C 到 W 的先后依赖。本图将事件节点简化成边，只表示设备任务之间的执行依赖，不是模型计算图，也不表示具体设备日程。</desc>
+  <defs>
+    <style>
+      text{font-family:"Noto Sans CJK SC","PingFang SC","Microsoft YaHei",sans-serif;fill:#173d35;font-size:18px}
+      .head{font-weight:700;font-size:23px}.subhead{font-weight:700;font-size:20px}.label{font-size:17px;fill:#416354}.small{font-size:16px;fill:#416354}.tick{font-size:14px;fill:#416354}.slot{font-size:17px;font-weight:600}.strong{font-weight:700;font-size:18px}.warn{fill:#765820;font-weight:600;font-size:17px}
+      .panel{fill:#edf2e8;stroke:#9ab69e;stroke-width:1.4}.idle{fill:#f9f8ef;stroke:#b8ba9e;stroke-width:1}.load{fill:#d9e9dc;stroke:#6f9a80;stroke-width:1.3}.compute{fill:#c1dac6;stroke:#6f9a80;stroke-width:1.4}.wait{fill:#f2e4c9;stroke:#9c7b42;stroke-width:1.3}.free{fill:#d9e9dc;stroke:#6f9a80;stroke-width:1.3}.used{fill:#f2e4c9;stroke:#9c7b42;stroke-width:1.3}.grid{stroke:#c4d0c4;stroke-width:1;stroke-dasharray:3 3}.edge{fill:none;stroke:#527d64;stroke-width:2;marker-end:url(#arrow)}.dep{fill:none;stroke:#9c7b42;stroke-width:2;stroke-dasharray:5 3;marker-end:url(#dep-arrow)}.end{stroke:#9c7b42;stroke-width:1.5}.danger{fill:none;stroke:#9c7b42;stroke-width:1.8;stroke-dasharray:5 3}
+    </style>
+    <marker id="arrow" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0 0L7 3.5L0 7Z" fill="#527d64"/></marker>
+    <marker id="dep-arrow" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0 0L7 3.5L0 7Z" fill="#9c7b42"/></marker>
+  </defs>
+  <rect x="1" y="1" width="498" height="684" rx="14" fill="#f5f6ef" stroke="#c4d0c4" stroke-width="1.3"/>
+  <text x="24" y="33" class="head">从数据依赖到执行任务图</text>
+  <text x="24" y="58" class="label">沿 F02：L_A、L_B 搬入，C 计算，W 写回</text>
+  <rect x="18" y="78" width="464" height="226" rx="10" class="panel"/>
+  <text x="32" y="105" class="subhead">一、仅观察数据依赖</text>
+  <rect x="37" y="122" width="204" height="37" rx="5" class="load"/>
+  <text x="139.0" y="146.5" class="slot" text-anchor="middle">L_A · 搬入 A</text>
+  <rect x="259" y="122" width="204" height="37" rx="5" class="load"/>
+  <text x="361.0" y="146.5" class="slot" text-anchor="middle">L_B · 搬入 B</text>
+  <path d="M139 159V175H213V189" class="edge"/>
+  <path d="M361 159V175H287V189" class="edge"/>
+  <rect x="152" y="193" width="196" height="37" rx="5" class="compute"/>
+  <text x="250.0" y="217.5" class="slot" text-anchor="middle">C · vec_add</text>
+  <path d="M250 230V244" class="edge"/>
+  <rect x="152" y="248" width="196" height="37" rx="5" class="load"/>
+  <text x="250.0" y="272.5" class="slot" text-anchor="middle">W · 写回 Y</text>
+  <text x="32" y="326" class="label">L_A 与 L_B 之间无数据依赖，</text>
+  <text x="32" y="349" class="small">但一个搬运引擎不保证两项搬入并发。</text>
+  <rect x="18" y="366" width="464" height="231" rx="10" class="panel"/>
+  <text x="32" y="393" class="subhead">二、加入 F02 的流顺序</text>
+  <rect x="42" y="410" width="176" height="31" rx="5" class="load"/>
+  <text x="130.0" y="431.5" class="slot" text-anchor="middle">L_A · 搬入 A</text>
+  <rect x="42" y="460" width="176" height="31" rx="5" class="load"/>
+  <text x="130.0" y="481.5" class="slot" text-anchor="middle">L_B · 搬入 B</text>
+  <rect x="42" y="510" width="176" height="31" rx="5" class="compute"/>
+  <text x="130.0" y="531.5" class="slot" text-anchor="middle">C · vec_add</text>
+  <rect x="42" y="560" width="176" height="31" rx="5" class="load"/>
+  <text x="130.0" y="581.5" class="slot" text-anchor="middle">W · 写回 Y</text>
+  <path d="M130 441V456" class="dep"/>
+  <path d="M130 491V506" class="edge"/>
+  <path d="M130 541V556" class="edge"/>
+  <text x="231" y="455" class="warn">同一搬入流的顺序</text>
+  <text x="231" y="505" class="label">等待输入就绪（e_B）</text>
+  <text x="231" y="555" class="label">等待 C 完成（e_C）</text>
+  <text x="24" y="624" class="small">实线：数据依赖；虚线：额外的流顺序。</text>
+  <text x="24" y="648" class="small">这里简化事件节点为边，只表示执行依赖，</text>
+  <text x="24" y="669" class="small">不是模型算子计算图，也不是执行时间表。</text>
+</svg>

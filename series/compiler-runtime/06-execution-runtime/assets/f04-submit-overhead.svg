@@ -1,0 +1,97 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 591" width="500" height="591" role="img" aria-labelledby="title desc">
+  <title id="title">逐项异步提交和重放执行图的时间线</title>
+  <desc id="desc">教学模型：同一组任务 L_A、L_B、C、W 的设备执行时间分别为 2、2、3、2 拍，主机每次提交耗时 3 拍，任务被提交之后并满足依赖时才开始执行。逐项异步提交时，主机在 0 至 3、3 至 6、6 至 9、9 至 12 拍提交四项任务，设备在 3 至 5、6 至 8、9 至 12、12 至 14 拍执行。假设执行图已经准备好，一次提交图耗时 3 拍；主机之后可以进行其他不依赖结果的工作，设备在 3 至 5、5 至 7、7 至 10、10 至 12 拍执行四项任务。主机提交时间累计由 12 拍降到 3 拍，结果就绪时间由 14 拍提前至 12 拍，执行图启动并未减少 9 拍设备工作量。未计入一次性图准备成本，只是教学假设，不是实测数据。</desc>
+  <defs>
+    <style>
+      text{font-family:"Noto Sans CJK SC","PingFang SC","Microsoft YaHei",sans-serif;fill:#173d35;font-size:18px}
+      .head{font-weight:700;font-size:23px}.subhead{font-weight:700;font-size:20px}.label{font-size:17px;fill:#416354}.small{font-size:16px;fill:#416354}.tick{font-size:14px;fill:#416354}.slot{font-size:17px;font-weight:600}.strong{font-weight:700;font-size:18px}.warn{fill:#765820;font-weight:600;font-size:17px}
+      .panel{fill:#edf2e8;stroke:#9ab69e;stroke-width:1.4}.idle{fill:#f9f8ef;stroke:#b8ba9e;stroke-width:1}.load{fill:#d9e9dc;stroke:#6f9a80;stroke-width:1.3}.compute{fill:#c1dac6;stroke:#6f9a80;stroke-width:1.4}.wait{fill:#f2e4c9;stroke:#9c7b42;stroke-width:1.3}.free{fill:#d9e9dc;stroke:#6f9a80;stroke-width:1.3}.used{fill:#f2e4c9;stroke:#9c7b42;stroke-width:1.3}.grid{stroke:#c4d0c4;stroke-width:1;stroke-dasharray:3 3}.edge{fill:none;stroke:#527d64;stroke-width:2;marker-end:url(#arrow)}.dep{fill:none;stroke:#9c7b42;stroke-width:2;stroke-dasharray:5 3;marker-end:url(#dep-arrow)}.end{stroke:#9c7b42;stroke-width:1.5}.danger{fill:none;stroke:#9c7b42;stroke-width:1.8;stroke-dasharray:5 3}
+    </style>
+    <marker id="arrow" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0 0L7 3.5L0 7Z" fill="#527d64"/></marker>
+    <marker id="dep-arrow" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0 0L7 3.5L0 7Z" fill="#9c7b42"/></marker>
+  </defs>
+  <rect x="1" y="1" width="498" height="589" rx="14" fill="#f5f6ef" stroke="#c4d0c4" stroke-width="1.3"/>
+  <text x="24" y="33" class="head">减少重复提交，设备可以更早开工</text>
+  <text x="24" y="58" class="label">每次提交耗时 3 拍，提交结束后任务才能开始</text>
+  <text x="24" y="80" class="small">搬入各 2 拍、计算 3 拍、写回 2 拍；同一组任务</text>
+  <rect x="18" y="94" width="464" height="207" rx="10" class="panel"/>
+  <text x="32" y="121" class="subhead">方式一：逐项异步提交</text>
+  <text x="123" y="145" class="tick" text-anchor="middle">0</text>
+  <text x="147" y="145" class="tick" text-anchor="middle">1</text>
+  <text x="171" y="145" class="tick" text-anchor="middle">2</text>
+  <text x="195" y="145" class="tick" text-anchor="middle">3</text>
+  <text x="219" y="145" class="tick" text-anchor="middle">4</text>
+  <text x="243" y="145" class="tick" text-anchor="middle">5</text>
+  <text x="267" y="145" class="tick" text-anchor="middle">6</text>
+  <text x="291" y="145" class="tick" text-anchor="middle">7</text>
+  <text x="315" y="145" class="tick" text-anchor="middle">8</text>
+  <text x="339" y="145" class="tick" text-anchor="middle">9</text>
+  <text x="363" y="145" class="tick" text-anchor="middle">10</text>
+  <text x="387" y="145" class="tick" text-anchor="middle">11</text>
+  <text x="411" y="145" class="tick" text-anchor="middle">12</text>
+  <text x="435" y="145" class="tick" text-anchor="middle">13</text>
+  <text x="459" y="145" class="tick" text-anchor="middle">14</text>
+  <path d="M123 151V230M147 151V230M171 151V230M195 151V230M219 151V230M243 151V230M267 151V230M291 151V230M315 151V230M339 151V230M363 151V230M387 151V230M411 151V230M435 151V230M459 151V230" class="grid"/>
+  <text x="115" y="177" class="label" text-anchor="end">Host</text>
+  <rect x="123" y="155" width="336" height="32" rx="4" class="idle"/>
+  <rect x="123" y="155" width="72" height="32" rx="5" class="wait"/>
+  <text x="159.0" y="177.0" class="slot" text-anchor="middle">L_A</text>
+  <rect x="195" y="155" width="72" height="32" rx="5" class="wait"/>
+  <text x="231.0" y="177.0" class="slot" text-anchor="middle">L_B</text>
+  <rect x="267" y="155" width="72" height="32" rx="5" class="wait"/>
+  <text x="303.0" y="177.0" class="slot" text-anchor="middle">C</text>
+  <rect x="339" y="155" width="72" height="32" rx="5" class="wait"/>
+  <text x="375.0" y="177.0" class="slot" text-anchor="middle">W</text>
+  <text x="115" y="217" class="label" text-anchor="end">设备</text>
+  <rect x="123" y="195" width="336" height="32" rx="4" class="idle"/>
+  <rect x="195" y="195" width="48" height="32" rx="5" class="load"/>
+  <text x="219.0" y="217.0" class="slot" text-anchor="middle">L_A</text>
+  <rect x="267" y="195" width="48" height="32" rx="5" class="load"/>
+  <text x="291.0" y="217.0" class="slot" text-anchor="middle">L_B</text>
+  <rect x="339" y="195" width="72" height="32" rx="5" class="compute"/>
+  <text x="375.0" y="217.0" class="slot" text-anchor="middle">C</text>
+  <rect x="411" y="195" width="48" height="32" rx="5" class="load"/>
+  <text x="435.0" y="217.0" class="slot" text-anchor="middle">W</text>
+  <path d="M459 192V230" class="end"/>
+  <text x="459" y="259" class="warn" text-anchor="end">第 14 拍：结果可读</text>
+  <text x="32" y="284" class="label">主机提交累计 12 拍；设备工作累计 9 拍。</text>
+  <rect x="18" y="315" width="464" height="207" rx="10" class="panel"/>
+  <text x="32" y="342" class="subhead">方式二：启动已准备好的图</text>
+  <text x="123" y="366" class="tick" text-anchor="middle">0</text>
+  <text x="147" y="366" class="tick" text-anchor="middle">1</text>
+  <text x="171" y="366" class="tick" text-anchor="middle">2</text>
+  <text x="195" y="366" class="tick" text-anchor="middle">3</text>
+  <text x="219" y="366" class="tick" text-anchor="middle">4</text>
+  <text x="243" y="366" class="tick" text-anchor="middle">5</text>
+  <text x="267" y="366" class="tick" text-anchor="middle">6</text>
+  <text x="291" y="366" class="tick" text-anchor="middle">7</text>
+  <text x="315" y="366" class="tick" text-anchor="middle">8</text>
+  <text x="339" y="366" class="tick" text-anchor="middle">9</text>
+  <text x="363" y="366" class="tick" text-anchor="middle">10</text>
+  <text x="387" y="366" class="tick" text-anchor="middle">11</text>
+  <text x="411" y="366" class="tick" text-anchor="middle">12</text>
+  <text x="435" y="366" class="tick" text-anchor="middle">13</text>
+  <text x="459" y="366" class="tick" text-anchor="middle">14</text>
+  <path d="M123 372V451M147 372V451M171 372V451M195 372V451M219 372V451M243 372V451M267 372V451M291 372V451M315 372V451M339 372V451M363 372V451M387 372V451M411 372V451M435 372V451M459 372V451" class="grid"/>
+  <text x="115" y="398" class="label" text-anchor="end">Host</text>
+  <rect x="123" y="376" width="336" height="32" rx="4" class="idle"/>
+  <rect x="123" y="376" width="72" height="32" rx="5" class="wait"/>
+  <text x="159.0" y="398.0" class="slot" text-anchor="middle">启动图</text>
+  <rect x="195" y="376" width="264" height="32" rx="5" class="load"/>
+  <text x="327.0" y="398.0" class="slot" text-anchor="middle">可做其他工作</text>
+  <text x="115" y="438" class="label" text-anchor="end">设备</text>
+  <rect x="123" y="416" width="336" height="32" rx="4" class="idle"/>
+  <rect x="195" y="416" width="48" height="32" rx="5" class="load"/>
+  <text x="219.0" y="438.0" class="slot" text-anchor="middle">L_A</text>
+  <rect x="243" y="416" width="48" height="32" rx="5" class="load"/>
+  <text x="267.0" y="438.0" class="slot" text-anchor="middle">L_B</text>
+  <rect x="291" y="416" width="72" height="32" rx="5" class="compute"/>
+  <text x="327.0" y="438.0" class="slot" text-anchor="middle">C</text>
+  <rect x="363" y="416" width="48" height="32" rx="5" class="load"/>
+  <text x="387.0" y="438.0" class="slot" text-anchor="middle">W</text>
+  <path d="M411 413V451" class="end"/>
+  <text x="459" y="480" class="warn" text-anchor="end">第 12 拍：结果可读</text>
+  <text x="32" y="505" class="label">主机提交累计 3 拍；设备工作仍累计 9 拍。</text>
+  <text x="24" y="550" class="strong">主机提交成本 12 → 3 拍；结果就绪 14 → 12 拍。</text>
+  <text x="24" y="574" class="small">忽略图的一次性准备成本；图示为教学日程、非实测。</text>
+</svg>

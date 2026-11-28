@@ -232,6 +232,19 @@ class CompilerRuntimeGuideTests(unittest.TestCase):
         previous = SITE / PREFIX / route / "f02-asynchronous-execution/index.html"
         self.assertIn(f"../{slug}/", GuideContent(previous.read_text()).links)
 
+    def test_f04_article_navigation_search_and_diagrams(self):
+        route = "06-execution-runtime"
+        slug = "f04-execution-graphs-and-replay"
+        self._check_article(
+            route,
+            "通用执行运行时",
+            slug,
+            "多次执行相同的任务序列，怎样减少每轮提交开销？",
+            ("f04-task-graph.svg", "f04-submit-overhead.svg"),
+        )
+        previous = SITE / PREFIX / route / "f03-runtime-buffer-management/index.html"
+        self.assertIn(f"../{slug}/", GuideContent(previous.read_text()).links)
+
     def test_a01_article_navigation_search_and_diagrams(self):
         self._check_foundation_article(
             "a01-program-semantics",
