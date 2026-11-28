@@ -24,7 +24,7 @@
 
 | 编号 | 文章（暂定标题） | 读完应理解什么 | 主要前置知识 | 状态 |
 | --- | --- | --- | --- | --- |
-| H01 | [同一批请求长短不一，新请求能不能立即加入？](h01-continuous-batching.md) | 静态批、动态批、Continuous Batching、请求与迭代生命周期、Padding 与 Packed Batch 的工作清单。 | G02、G03；F05 按需 | 待发布核验 |
+| H01 | [同一批请求长短不一，新请求能不能立即加入？](h01-continuous-batching.md) | 静态批、动态批、Continuous Batching、请求与迭代生命周期、Padding 与 Packed Batch 的工作清单。 | G02、G03；F05 按需 | 已发布 |
 | H02 | 一个很长的提示词，怎样避免长时间阻塞正在生成的请求？ | Chunked Prefill、混合批处理、Token 预算、Prefill 与 Decode 的调度取舍。 | H01、G02 | 未发布 |
 | H03 | KV 空间不足时，应该接纳、等待还是抢占哪个请求？ | 引擎准入、资源预算、优先级、公平、抢占、暂停、恢复、重算与避免反复抢占。 | H01、G04、G05；按需 H02、G07 | 未发布 |
 
