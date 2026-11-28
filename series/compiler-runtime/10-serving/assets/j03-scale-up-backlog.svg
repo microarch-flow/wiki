@@ -1,0 +1,69 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="500" height="620" viewBox="0 0 500 620" role="img" aria-labelledby="title desc">
+  <title id="title">新副本就绪之后，已有积压仍需时间消化</title>
+  <desc id="desc">教学流体模型，固定同类请求。初始两个副本每秒各可处理四个请求，总能力为每秒八个。t=0 时到达率从每秒六个增加到十个，立即启动第三个副本，但要到 t=10 秒才就绪。启动期间能力仍为八，积压以每秒两个的速率从零增加到二十。t=10 秒后能力为十二，持续到达率仍为十，积压以每秒两个减少，t=20 秒归零。此后能力仍为十二，但实际完成率为每秒十个。各速率及时间为构造假设，不是实测值。</desc>
+  <defs>
+    <style>
+      text{font-family:"Noto Sans CJK SC","PingFang SC","Microsoft YaHei",sans-serif;fill:#173d35;font-size:19px}
+      .head{font-size:23px;font-weight:700}.subhead{font-size:20px;font-weight:700}.label{font-size:18px;fill:#416354}.small{font-size:17px;fill:#416354}.tick{font-size:17px;fill:#416354}
+      .panel{fill:#edf2e8;stroke:#9ab69e;stroke-width:1.4}.chart{fill:#f9f8ef;stroke:#b8ba9e;stroke-width:1.2}.start{fill:#f2e4c9;opacity:.58}.grid{stroke:#c4d0c4;stroke-width:1.1;stroke-dasharray:4 4;fill:none}
+      .axis{stroke:#627f6c;stroke-width:1.3;fill:none}.arrivals{stroke:#457f9a;stroke-width:3;stroke-dasharray:6 4;fill:none}.capacity{stroke:#39764e;stroke-width:3.4;fill:none}.queue{stroke:#a36c35;stroke-width:3.3;fill:none}.qfill{fill:#f2e4c9;opacity:.8}.highlight{fill:#8b5e2e;font-size:18px;font-weight:700}.line{stroke:#c4d0c4;stroke-width:1.3;fill:none}
+    </style>
+  </defs>
+  <rect x="1" y="1" width="498" height="618" rx="14" fill="#f5f6ef" stroke="#c4d0c4" stroke-width="1.3"/>
+  <text x="24" y="35" class="head">扩容要等就绪，还要消化积压</text>
+  <text x="24" y="61" class="label">副本 0、1 各 4 请求/秒；此前到达 6</text>
+
+  <rect x="18" y="76" width="464" height="232" rx="10" class="panel"/>
+  <text x="30" y="103" class="subhead">到达率与处理能力（请求/秒）</text>
+  <path d="M32 124H61" class="arrivals"/>
+  <text x="68" y="131" class="small">到达率</text>
+  <path d="M205 124H234" class="capacity"/>
+  <text x="241" y="131" class="small">可供处理能力</text>
+
+  <!-- x=72+14.8t; y=270-10r. The displayed time window begins at t=0. -->
+  <rect x="72" y="144" width="370" height="126" class="chart"/>
+  <rect x="72" y="144" width="148" height="126" class="start"/>
+  <path d="M72 150H442 M72 170H442 M72 190H442 M72 210H442 M220 144V270 M368 144V270" class="grid"/>
+  <path d="M72 144V270H442" class="axis"/>
+  <text x="63" y="156" text-anchor="end" class="tick">12</text>
+  <text x="63" y="176" text-anchor="end" class="tick">10</text>
+  <text x="63" y="196" text-anchor="end" class="tick">8</text>
+  <text x="63" y="216" text-anchor="end" class="tick">6</text>
+  <text x="63" y="276" text-anchor="end" class="tick">0</text>
+  <path d="M72 170H442" class="arrivals"/>
+  <path d="M72 190H220V150H442" class="capacity"/>
+  <text x="146" y="237" text-anchor="middle" class="highlight">副本 2 启动中</text>
+  <text x="331" y="237" text-anchor="middle" class="label">三个副本已就绪</text>
+  <text x="72" y="292" text-anchor="middle" class="tick">0</text>
+  <text x="220" y="292" text-anchor="middle" class="tick">10</text>
+  <text x="368" y="292" text-anchor="middle" class="tick">20</text>
+  <text x="442" y="292" text-anchor="middle" class="tick">25 秒</text>
+
+  <rect x="18" y="322" width="464" height="205" rx="10" class="panel"/>
+  <text x="30" y="350" class="subhead">等待处理的积压（请求）</text>
+  <!-- x is the same time scale; y=489-6Q. -->
+  <rect x="72" y="363" width="370" height="126" class="chart"/>
+  <rect x="72" y="363" width="148" height="126" class="start"/>
+  <path d="M72 369H442 M72 429H442 M220 363V489 M368 363V489" class="grid"/>
+  <path d="M72 363V489H442" class="axis"/>
+  <text x="63" y="375" text-anchor="end" class="tick">20</text>
+  <text x="63" y="435" text-anchor="end" class="tick">10</text>
+  <text x="63" y="495" text-anchor="end" class="tick">0</text>
+  <path d="M72 489L220 369L368 489Z" class="qfill"/>
+  <path d="M72 489L220 369L368 489H442" class="queue"/>
+  <circle cx="220" cy="369" r="5" fill="#a36c35"/>
+  <circle cx="72" cy="489" r="4" fill="#a36c35"/>
+  <circle cx="368" cy="489" r="4" fill="#a36c35"/>
+  <text x="230" y="392" class="highlight">20</text>
+  <text x="123" y="463" class="small">+2/秒</text>
+  <text x="244" y="463" class="small">−2/秒</text>
+  <text x="72" y="513" text-anchor="middle" class="tick">0</text>
+  <text x="220" y="513" text-anchor="middle" class="tick">10</text>
+  <text x="368" y="513" text-anchor="middle" class="tick">20</text>
+  <text x="442" y="513" text-anchor="middle" class="tick">25 秒</text>
+
+  <text x="24" y="552" class="label">实际完成率：8 → 12 → 10 请求/秒</text>
+  <text x="24" y="577" class="label">副本 2 在 10 秒就绪，20 秒积压清空。</text>
+  <path d="M24 588H476" class="line"/>
+  <text x="250" y="608" text-anchor="middle" class="small">同类请求的构造流体模型，非实测。</text>
+</svg>

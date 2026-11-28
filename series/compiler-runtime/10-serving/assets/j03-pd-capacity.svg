@@ -1,0 +1,52 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="500" height="604" viewBox="0 0 500 604" role="img" aria-labelledby="title desc">
+  <title id="title">PD 分离时，单独增加 Prefill 容量不一定提高端到端能力</title>
+  <desc id="desc">以相同输入输出长度分布的请求为例，将各阶段能力换算为每秒请求数。初始 Prefill 为八、KV 交接传输为六、Decode 为五，稳定端到端能力上限为五，受 Decode 限制。只增加 Prefill 到十二，交接仍为六且 Decode 为五，上限仍是五。进一步将 Decode 增加到九，Prefill 十二、交接六，新的端到端能力上限为六，受 KV 交接限制。各数字为教学假设，不是实测。实际中间积压必须通过背压和资源额度限制。</desc>
+  <defs>
+    <style>
+      text{font-family:"Noto Sans CJK SC","PingFang SC","Microsoft YaHei",sans-serif;fill:#173d35;font-size:19px}
+      .head{font-size:23px;font-weight:700}.subhead{font-size:20px;font-weight:700}.label{font-size:18px;fill:#416354}.small{font-size:17px;fill:#416354}.center{text-anchor:middle}.num{font-size:22px;font-weight:700;text-anchor:middle}
+      .panel{fill:#edf2e8;stroke:#9ab69e;stroke-width:1.4}.stage{fill:#d9e9dc;stroke:#6f9a80;stroke-width:1.4}.transfer{fill:#dfe8ef;stroke:#7d9eb1;stroke-width:1.4}.limit{fill:#f2e4c9;stroke:#aa9163;stroke-width:1.7}.arrow{stroke:#6f8f78;stroke-width:1.7;fill:none;marker-end:url(#arrow)}.line{stroke:#c4d0c4;stroke-width:1.3;fill:none}
+    </style>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10Z" fill="#6f8f78"/></marker>
+  </defs>
+  <rect x="1" y="1" width="498" height="602" rx="14" fill="#f5f6ef" stroke="#c4d0c4" stroke-width="1.3"/>
+  <text x="24" y="35" class="head">P、交接、D 的能力需要配合</text>
+  <text x="24" y="61" class="label">固定请求类型及阶段条件；单位：请求/秒</text>
+
+  <rect x="18" y="77" width="464" height="144" rx="10" class="panel"/>
+  <text x="30" y="104" class="subhead">初始配置</text>
+  <rect x="30" y="116" width="120" height="65" rx="6" class="stage"/>
+  <rect x="190" y="116" width="120" height="65" rx="6" class="transfer"/>
+  <rect x="350" y="116" width="120" height="65" rx="6" class="limit"/>
+  <path d="M150 148H188" class="arrow"/><path d="M310 148H348" class="arrow"/>
+  <text x="90" y="140" class="center">P</text><text x="90" y="167" class="num">8</text>
+  <text x="250" y="140" class="center">KV 交接</text><text x="250" y="167" class="num">6</text>
+  <text x="410" y="140" class="center">D</text><text x="410" y="167" class="num">5</text>
+  <text x="30" y="205" class="label">端到端上限：5，受 D 限制</text>
+
+  <rect x="18" y="234" width="464" height="144" rx="10" class="panel"/>
+  <text x="30" y="261" class="subhead">只增加 P 的容量</text>
+  <rect x="30" y="273" width="120" height="65" rx="6" class="stage"/>
+  <rect x="190" y="273" width="120" height="65" rx="6" class="transfer"/>
+  <rect x="350" y="273" width="120" height="65" rx="6" class="limit"/>
+  <path d="M150 305H188" class="arrow"/><path d="M310 305H348" class="arrow"/>
+  <text x="90" y="297" class="center">P</text><text x="90" y="324" class="num">12</text>
+  <text x="250" y="297" class="center">KV 交接</text><text x="250" y="324" class="num">6</text>
+  <text x="410" y="297" class="center">D</text><text x="410" y="324" class="num">5</text>
+  <text x="30" y="362" class="label">端到端上限仍为 5</text>
+
+  <rect x="18" y="391" width="464" height="144" rx="10" class="panel"/>
+  <text x="30" y="418" class="subhead">再增加 D 的容量</text>
+  <rect x="30" y="430" width="120" height="65" rx="6" class="stage"/>
+  <rect x="190" y="430" width="120" height="65" rx="6" class="limit"/>
+  <rect x="350" y="430" width="120" height="65" rx="6" class="stage"/>
+  <path d="M150 462H188" class="arrow"/><path d="M310 462H348" class="arrow"/>
+  <text x="90" y="454" class="center">P</text><text x="90" y="481" class="num">12</text>
+  <text x="250" y="454" class="center">KV 交接</text><text x="250" y="481" class="num">6</text>
+  <text x="410" y="454" class="center">D</text><text x="410" y="481" class="num">9</text>
+  <text x="30" y="519" class="label">端到端上限：6，瓶颈转移到交接</text>
+
+  <path d="M24 546H476" class="line"/>
+  <text x="24" y="570" class="small">需用背压与资源额度限制中间积压。</text>
+  <text x="24" y="591" class="small">各值为构造能力上限；不表示实测吞吐。</text>
+</svg>

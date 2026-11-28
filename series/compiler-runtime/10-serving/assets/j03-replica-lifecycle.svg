@@ -1,0 +1,53 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="500" height="788" viewBox="0 0 500 788" role="img" aria-labelledby="title desc">
+  <title id="title">副本从启动、就绪到排空、停止的生命周期</title>
+  <desc id="desc">副本 2 扩容时依次完成资源分配、加载模型权重并初始化通信与运行时、预热和就绪检查，随后才进入路由候选集合并可接收新请求。就绪不代表已经积累真实请求的热前缀。缩容时先撤出新请求的路由候选集合，再排空已有请求和相关传输，确认引用及底层访问已经结束，然后按生命周期约定释放资源并停止副本。健康失败可隔离副本，停止给它分发新请求，并遵循异常恢复的资源契约。本图是职责顺序示意，不意味着所有实现的状态枚举或时间相同。</desc>
+  <defs>
+    <style>
+      text{font-family:"Noto Sans CJK SC","PingFang SC","Microsoft YaHei",sans-serif;fill:#173d35;font-size:19px}
+      .head{font-size:23px;font-weight:700}.subhead{font-size:20px;font-weight:700}.label{font-size:18px;fill:#416354}.small{font-size:17px;fill:#416354}.center{text-anchor:middle}
+      .panel{fill:#edf2e8;stroke:#9ab69e;stroke-width:1.4}.stage{fill:#f9f8ef;stroke:#b8ba9e;stroke-width:1.4}.ready{fill:#d9e9dc;stroke:#6f9a80;stroke-width:1.5}.drain{fill:#f2e4c9;stroke:#aa9163;stroke-width:1.4}.stop{fill:#f5f6ef;stroke:#9cae9e;stroke-width:1.4;stroke-dasharray:4 3}
+      .arrow{stroke:#6f8f78;stroke-width:1.8;fill:none;marker-end:url(#arrow)}.line{stroke:#c4d0c4;stroke-width:1.3;fill:none}
+    </style>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10Z" fill="#6f8f78"/></marker>
+  </defs>
+  <rect x="1" y="1" width="498" height="786" rx="14" fill="#f5f6ef" stroke="#c4d0c4" stroke-width="1.3"/>
+  <text x="24" y="35" class="head">副本何时接纳、何时退出？</text>
+  <text x="24" y="61" class="label">以新增加的副本 2 为例</text>
+
+  <rect x="18" y="77" width="464" height="276" rx="10" class="panel"/>
+  <text x="30" y="105" class="subhead">扩容 · 尚不接收新请求</text>
+  <rect x="44" y="119" width="412" height="58" rx="6" class="stage"/>
+  <text x="250" y="143" class="subhead center">分配资源</text>
+  <text x="250" y="166" class="small center">设备、主机与必要存储</text>
+  <path d="M250 177V191" class="arrow"/>
+  <rect x="44" y="191" width="412" height="58" rx="6" class="stage"/>
+  <text x="250" y="215" class="subhead center">加载模型并初始化</text>
+  <text x="250" y="238" class="small center">权重、执行运行时、通信、KV 池</text>
+  <path d="M250 249V263" class="arrow"/>
+  <rect x="44" y="263" width="412" height="58" rx="6" class="stage"/>
+  <text x="250" y="287" class="subhead center">预热与就绪检查</text>
+  <text x="250" y="310" class="small center">建立预期执行所需的资源与状态</text>
+  <path d="M250 321V367" class="arrow"/>
+  <rect x="30" y="370" width="440" height="71" rx="8" class="ready"/>
+  <text x="250" y="397" class="subhead center">就绪 · 进入路由候选集合</text>
+  <text x="250" y="423" class="small center">可以接收新请求，但未必有热前缀</text>
+  <path d="M250 441V455" class="arrow"/>
+
+  <rect x="18" y="456" width="464" height="270" rx="10" class="panel"/>
+  <text x="30" y="484" class="subhead">缩容 · 停止送入新的工作</text>
+  <rect x="44" y="498" width="412" height="58" rx="6" class="drain"/>
+  <text x="250" y="522" class="subhead center">撤出新请求的路由候选集合</text>
+  <text x="250" y="545" class="small center">已有请求与状态仍然存在</text>
+  <path d="M250 556V572" class="arrow"/>
+  <rect x="44" y="572" width="412" height="58" rx="6" class="drain"/>
+  <text x="250" y="596" class="subhead center">排空并确认资源使用结束</text>
+  <text x="250" y="619" class="small center">处理已有请求、传输、引用和访问</text>
+  <path d="M250 630V646" class="arrow"/>
+  <rect x="44" y="646" width="412" height="58" rx="6" class="stop"/>
+  <text x="250" y="670" class="subhead center">释放资源并停止副本</text>
+  <text x="250" y="693" class="small center">按各层资源的生命周期约定操作</text>
+
+  <path d="M24 735H476" class="line"/>
+  <text x="24" y="755" class="small">健康检查失败时可隔离，不再分发新请求。</text>
+  <text x="24" y="776" class="small">异常清理仍须满足 J02 的资源安全条件。</text>
+</svg>
