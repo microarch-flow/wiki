@@ -1,0 +1,51 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="440" height="580" viewBox="0 0 440 580" role="img" aria-labelledby="title desc">
+  <title id="title">分页 KV 内核分别定位低精度载荷与 Scale</title>
+  <desc id="desc">沿用 D07 的逻辑位置1、2、3，块表映射至槽5偏移1、槽2偏移0、槽2偏移1。这里假设每个 K 或 V 的一个 Token 有四个 INT8 码共4字节及一个 FP16 Scale 共2字节，两个 Token 为一页。载荷池每槽8字节，Scale 池每槽4字节，基地址独立。三个位置在两个池分别产生44、22字节，16、8字节，20、10字节偏移。位置5无效不得读取。K 的尺度影响 QK 分数，须在比较最大值与求指数前处理；V 的尺度须进入加权和 z。K 和 V 各有自己的池和尺度。</desc>
+  <defs>
+    <marker id="arrow" markerWidth="7" markerHeight="7" refX="6.3" refY="3.5" orient="auto" markerUnits="userSpaceOnUse"><path d="M0 0 7 3.5 0 7Z" fill="#476957"/></marker>
+    <style>
+      text {font-family:"Noto Sans CJK SC","PingFang SC","Microsoft YaHei",sans-serif;fill:#173d35;font-size:19px}
+      .head {font-size:21px;font-weight:700}
+      .label {font-size:18px;font-weight:700}
+      .note {font-size:16px;fill:#416354}
+      .code {font-family:"DejaVu Sans Mono",Consolas,monospace;font-size:17px}
+      .panel {fill:#edf2e8;stroke:#cad8cb;stroke-width:1.2}
+      .cell {fill:#d9e9dc;stroke:#729582;stroke-width:1.25}
+      .target {fill:#f2e4c9;stroke:#aa9163;stroke-width:1.5}
+      .target-text {fill:#78591b;font-weight:700}
+      .wire {fill:none;stroke:#476957;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;marker-end:url(#arrow)}
+    </style>
+  </defs>
+  <rect x="1" y="1" width="438" height="578" rx="14" fill="#f5f6ef" stroke="#c4d0c4"/>
+  <text x="18" y="30" class="head">分页 KV：同一位置，两份地址</text>
+  <text x="18" y="54" class="note">页大小 2；有效长度 5；块表 [5,2,9]</text>
+  <rect x="13" y="67" width="414" height="105" rx="9" class="panel"/>
+  <text x="25" y="92" class="label">D07 的 Tile：位置 1、2、3</text>
+  <g text-anchor="middle">
+    <rect x="25" y="104" width="124" height="52" rx="5" class="cell"/><rect x="158" y="104" width="124" height="52" rx="5" class="target"/><rect x="291" y="104" width="124" height="52" rx="5" class="target"/>
+    <text x="87" y="125" class="code">j=1</text><text x="220" y="125" class="code">j=2</text><text x="353" y="125" class="code">j=3</text>
+    <text x="87" y="147" class="note">槽5 / 偏移1</text><text x="220" y="147" class="note target-text">槽2 / 偏移0</text><text x="353" y="147" class="note target-text">槽2 / 偏移1</text>
+  </g>
+  <path d="M220 173V193" class="wire"/>
+  <rect x="13" y="197" width="414" height="213" rx="9" class="panel"/>
+  <text x="25" y="223" class="label">每个 K 或 V 在两个独立池中</text>
+  <text x="25" y="248" class="note">每 Token：4 个 INT8 码 + 1 个 FP16 Scale</text>
+  <g text-anchor="middle">
+    <text x="210" y="275" class="label">码池</text><text x="348" y="275" class="label target-text">Scale 池</text>
+    <text x="210" y="297" class="note">每槽 8 B</text><text x="348" y="297" class="note">每槽 4 B</text>
+    <text x="70" y="324" class="code">j=1</text><text x="70" y="352" class="code">j=2</text><text x="70" y="380" class="code">j=3</text>
+    <rect x="146" y="305" width="128" height="25" rx="3" class="cell"/><rect x="284" y="305" width="128" height="25" rx="3" class="target"/>
+    <rect x="146" y="333" width="128" height="25" rx="3" class="cell"/><rect x="284" y="333" width="128" height="25" rx="3" class="target"/>
+    <rect x="146" y="361" width="128" height="25" rx="3" class="cell"/><rect x="284" y="361" width="128" height="25" rx="3" class="target"/>
+    <text x="210" y="324" class="code">+44 B</text><text x="348" y="324" class="code">+22 B</text>
+    <text x="210" y="352" class="code">+16 B</text><text x="348" y="352" class="code">+8 B</text>
+    <text x="210" y="380" class="code">+20 B</text><text x="348" y="380" class="code">+10 B</text>
+  </g>
+  <text x="25" y="402" class="note">* 每个偏移均相对于各池的独立基址。</text>
+  <path d="M220 411V429" class="wire"/>
+  <rect x="13" y="433" width="414" height="105" rx="9" class="target"/>
+  <text x="25" y="458" class="label target-text">按 K、V 各自的 Scale 解释码</text>
+  <text x="25" y="482" class="note">K：先还原分数尺度，再更新 m、l</text>
+  <text x="25" y="508" class="note">V：本位置的尺度进入加权和 z</text>
+  <text x="18" y="561" class="note">j=5 无效，码与 Scale 均不得读取。</text>
+</svg>

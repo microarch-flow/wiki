@@ -296,6 +296,6 @@ cublasSgemm(handle, CUBLAS_OP_T, CUBLAS_OP_N,
 
 下一篇 [D06：两个算子已经决定融合，怎样真正减少中间数据搬运？](d06-fused-kernels.md) 将在已经决定融合的前提下，继续追踪这样的中间结果：它能留在哪里，怎样生成融合循环与 Epilogue，遇到跨元素归约时又需要怎样的协作。
 
-低精度格式与目标输入转换将在 D08 深入。若希望了解内核代码如何成为设备可接收的产物，可以按需阅读 [D04：生成的代码怎样成为可加载、可调用的程序？](d04-executable-artifacts.md)；实际加载和任务提交见 [F01](../06-execution-runtime/f01-module-loading-and-dispatch.md)。
+低精度格式与目标输入转换见 [D08：低精度数据怎样变成设备可以直接处理的输入？](d08-low-precision-kernels.md)。若希望了解内核代码如何成为设备可接收的产物，可以按需阅读 [D04：生成的代码怎样成为可加载、可调用的程序？](d04-executable-artifacts.md)；实际加载和任务提交见 [F01](../06-execution-runtime/f01-module-loading-and-dispatch.md)。
 
 [返回专题阅读顺序](README.md#计划阅读顺序)

@@ -1,0 +1,61 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="440" height="598" viewBox="0 0 440 598" role="img" aria-labelledby="title desc">
+  <title id="title">按列打包有符号 INT4 权重及分组 Scale</title>
+  <desc id="desc">D05 的两列权重码分别为3、5、2、1及1、2、3、4，采用四位补码，每字节低四位先存较小 k 的码、高四位存下一码。四个字节按地址排列为0x53、0x12、0x21、0x43。另例0xD作为有符号四位补码是13减16即负3。每列沿K每两项一组；FP16 Scale按列号 j 和组号 g 定位，第一列尺度为0.25和0.5，第二列均为0.5。四字节编码载荷加八字节尺度共十二字节，不含对齐；原FP16权重十六字节。</desc>
+  <defs>
+    <marker id="arrow" markerWidth="7" markerHeight="7" refX="6.3" refY="3.5" orient="auto" markerUnits="userSpaceOnUse"><path d="M0 0 7 3.5 0 7Z" fill="#476957"/></marker>
+    <style>
+      text {font-family:"Noto Sans CJK SC","PingFang SC","Microsoft YaHei",sans-serif;fill:#173d35;font-size:19px}
+      .head {font-size:21px;font-weight:700}
+      .label {font-size:18px;font-weight:700}
+      .note {font-size:16px;fill:#416354}
+      .code {font-family:"DejaVu Sans Mono",Consolas,monospace;font-size:17px}
+      .panel {fill:#edf2e8;stroke:#cad8cb;stroke-width:1.2}
+      .cell {fill:#d9e9dc;stroke:#729582;stroke-width:1.25}
+      .target {fill:#f2e4c9;stroke:#aa9163;stroke-width:1.5}
+      .target-text {fill:#78591b;font-weight:700}
+      .wire {fill:none;stroke:#476957;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;marker-end:url(#arrow)}
+    </style>
+  </defs>
+  <rect x="1" y="1" width="438" height="596" rx="14" fill="#f5f6ef" stroke="#c4d0c4"/>
+  <text x="18" y="30" class="head">INT4：码的存储与解释分开</text>
+  <text x="18" y="54" class="note">W 按列组织 · 每两项一组 · 4 位补码</text>
+
+  <rect x="13" y="67" width="414" height="166" rx="9" class="panel"/>
+  <text x="25" y="92" class="label">逻辑码（k 递增）</text>
+  <g text-anchor="middle">
+    <text x="135" y="119" class="note">k=0</text><text x="215" y="119" class="note">k=1</text>
+    <text x="305" y="119" class="note">k=2</text><text x="385" y="119" class="note">k=3</text>
+    <text x="61" y="147" class="label">W₀</text><text x="61" y="188" class="label">W₁</text>
+    <rect x="100" y="127" width="70" height="30" rx="3" class="cell"/><rect x="180" y="127" width="70" height="30" rx="3" class="cell"/>
+    <rect x="270" y="127" width="70" height="30" rx="3" class="target"/><rect x="350" y="127" width="70" height="30" rx="3" class="target"/>
+    <rect x="100" y="168" width="70" height="30" rx="3" class="cell"/><rect x="180" y="168" width="70" height="30" rx="3" class="cell"/>
+    <rect x="270" y="168" width="70" height="30" rx="3" class="target"/><rect x="350" y="168" width="70" height="30" rx="3" class="target"/>
+    <text x="135" y="148" class="code">3</text><text x="215" y="148" class="code">5</text><text x="305" y="148" class="code">2</text><text x="385" y="148" class="code">1</text>
+    <text x="135" y="189" class="code">1</text><text x="215" y="189" class="code">2</text><text x="305" y="189" class="code">3</text><text x="385" y="189" class="code">4</text>
+    <text x="175" y="220" class="note">g=0</text><text x="345" y="220" class="note target-text">g=1</text>
+  </g>
+  <path d="M220 234V249" class="wire"/>
+  <rect x="13" y="253" width="414" height="168" rx="9" class="panel"/>
+  <text x="25" y="279" class="label">四个字节（地址递增）</text>
+  <g text-anchor="middle">
+    <text x="72" y="303" class="note">+0 B</text><text x="171" y="303" class="note">+1 B</text><text x="270" y="303" class="note">+2 B</text><text x="369" y="303" class="note">+3 B</text>
+    <rect x="26" y="310" width="92" height="33" rx="4" class="cell"/><rect x="125" y="310" width="92" height="33" rx="4" class="target"/>
+    <rect x="224" y="310" width="92" height="33" rx="4" class="cell"/><rect x="323" y="310" width="92" height="33" rx="4" class="target"/>
+    <text x="72" y="332" class="code">0x53</text><text x="171" y="332" class="code">0x12</text><text x="270" y="332" class="code">0x21</text><text x="369" y="332" class="code">0x43</text>
+  </g>
+  <text x="25" y="365" class="note">0x53 的低四位为 3，高四位为 5。</text>
+  <text x="25" y="391" class="note">先取位段，再按补码解释。例如：</text>
+  <text x="415" y="411" text-anchor="end" class="code">0xD → 13−16=−3</text>
+
+  <rect x="13" y="434" width="414" height="151" rx="9" class="panel"/>
+  <text x="25" y="460" class="label">Scale 元数据（按 j、g 定位）</text>
+  <g text-anchor="middle">
+    <text x="205" y="484" class="note">g=0</text><text x="344" y="484" class="note">g=1</text>
+    <text x="69" y="507" class="note">W₀</text><text x="69" y="535" class="note">W₁</text>
+    <rect x="139" y="489" width="132" height="24" rx="3" class="cell"/><rect x="278" y="489" width="132" height="24" rx="3" class="target"/>
+    <rect x="139" y="517" width="132" height="24" rx="3" class="cell"/><rect x="278" y="517" width="132" height="24" rx="3" class="target"/>
+    <text x="205" y="507" class="code">0.25</text><text x="344" y="507" class="code">0.5</text><text x="205" y="535" class="code">0.5</text><text x="344" y="535" class="code">0.5</text>
+  </g>
+  <text x="25" y="560" class="note">码 4 B + FP16 Scale 8 B = 12 B</text>
+  <text x="25" y="581" class="note">原 FP16 权重 16 B；此处未计对齐。</text>
+</svg>

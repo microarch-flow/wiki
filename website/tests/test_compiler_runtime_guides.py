@@ -569,6 +569,22 @@ class CompilerRuntimeGuideTests(unittest.TestCase):
             ("h01-batch-members.svg", "h01-padded-packed.svg", "h01-round-worklist.svg"),
         )
 
+    def test_d08_article_navigation_search_and_diagrams(self):
+        route = "04-code-generation"
+        slug = "d08-low-precision-kernels"
+        self._check_article(
+            route,
+            "算子实现与代码生成",
+            slug,
+            "低精度数据怎样变成设备可以直接处理的输入？",
+            ("d08-packed-weights.svg", "d08-grouped-dot.svg",
+             "d08-kv-format.svg"),
+        )
+        for previous in ("d05-matrix-multiplication-kernels",
+                         "d07-attention-kernels"):
+            page = SITE / PREFIX / route / previous / "index.html"
+            self.assertIn(f"../{slug}/", GuideContent(page.read_text()).links)
+
     def _check_foundation_article(self, slug, title, diagram_names):
         self._check_article("01-foundations", "软件执行共同基础", slug, title, diagram_names)
 
