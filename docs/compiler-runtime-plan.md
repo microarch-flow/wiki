@@ -179,7 +179,7 @@ B03 可以在 A02/A03 后独立阅读。这里主讲变换的语义和合法性�
 
 | ID | 暂定标题 | 核心范围 | 主要前置 | 计划文件名 | 状态 |
 | --- | --- | --- | --- | --- | --- | --- |
-| C01 | 一块矩阵怎样分给有限数量的计算单元？ | 计算分解、张量分块、时空映射、任务分配、Placement、尾块与资源约束。 | A03、A04、B04 的必要知识 | `c01-tensor-mapping.md` | 初稿完成，待发布核验 |
+| C01 | 一块矩阵怎样分给有限数量的计算单元？ | 计算分解、张量分块、时空映射、任务分配、Placement、尾块与资源约束。 | A03、A04、B04 的必要知识 | `c01-tensor-mapping.md` | 已发布 |
 | C02 | 同一组数据怎样安排布局和驻留，才能减少搬运？ | Layout 选择、数据复用、Dataflow 选择、存储层次、布局转换代价。 | C01 | `c02-layout-and-dataflow-planning.md` | 待写 |
 | C03 | 计算与数据搬运怎样安排在同一张时间表上？ | Task DAG、静态调度、资源占用、DMA 编排、通信规划、计算搬运重叠。 | A05、C02 | `c03-static-execution-planning.md` | 待写 |
 | C04 | 已经使用过的缓冲空间，什么时候可以交给下一项任务？ | 静态 Buffer 生命周期、分配、复用、干涉关系、容量及别名约束。 | C03、B04；按需 B05 | `c04-static-buffer-allocation.md` | 待写 |
@@ -425,3 +425,5 @@ K 横跨所有路线。K01/K02 可早期开展，K03–K05 按被分析的机制
 - 2026-11-28 · B02 已发布并核验。正文提交 `2ebb134`，[GitHub Pages 部署](https://github.com/microarch-flow/wiki/actions/runs/46112811993)成功。[公开正文](https://microarch-flow.github.io/wiki/series/compiler-runtime/02-frontend-and-optimization/b02-control-flow-and-ssa/)、B01 后继链接、专题入口、两张图解、侧栏、面包屑及搜索索引均已核验。分支和循环示例经 Go 1.19.8 与 LLVM 19.1.7 复算，MLIR 分支经工具校验及转换执行。本地整站 165 项测试通过。
 
 - 2026-11-28 · B03 已发布并核验。正文提交 `a0f0c0e`，[GitHub Pages 部署](https://github.com/microarch-flow/wiki/actions/runs/46115804546)成功。[公开正文](https://microarch-flow.github.io/wiki/series/compiler-runtime/02-frontend-and-optimization/b03-graph-capture/)、B02 后继链接、专题入口、两张图解、侧栏、面包屑及搜索索引均已核验。PyTorch 2.8.0 CPU 实测覆盖同形异值分支、导出约束、图断点和 Guard 失效。ONNX 1.20.1 检查并执行了等价三节点图。
+
+- 2026-11-28 · C01 已发布并核验。正文提交 `e845e61`，[GitHub Pages 部署](https://github.com/microarch-flow/wiki/actions/runs/46116608737)成功。[公开正文](https://microarch-flow.github.io/wiki/series/compiler-runtime/03-mapping-and-planning/c01-tensor-mapping/)、专题入口、图解、站内链接、导航、面包屑及搜索索引均已核验。本地整站 167 项测试通过，独立复算确认两种输出分工、两段归约的部分和，以及尾块的 24/32 和 24/24 个有效乘加位置。
