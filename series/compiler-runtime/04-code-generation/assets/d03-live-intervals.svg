@@ -1,0 +1,99 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="440" height="376" viewBox="0 0 440 376" role="img" aria-labelledby="title desc">
+  <title id="title">按指令顺序观察活跃值</title>
+  <desc id="desc">从原有 Machine IR 的五次计算与取数追踪结果：I1 读 a=2，I2 读 c=4，I3 读 b=3，I4 计算 t=5，I5 计算 y=20。每行记录该项操作之后仍可能被后续操作使用的值。I3 后 a、c、b 同时活跃，三个值超过两个可分配寄存器的容量。I4 后 a、b 的旧值不再活跃，保留 t 和 c。返回 y 后不再跟踪函数内的活跃值。</desc>
+  <defs>
+    <style>
+      text {font-family:"Noto Sans CJK SC","PingFang SC","Microsoft YaHei",sans-serif;fill:#173d35;font-size:19px}
+      .head {font-size:21px;font-weight:700}
+      .note {font-size:16px;fill:#416354}
+      .code {font-family:"DejaVu Sans Mono",Consolas,monospace;font-size:17px}
+      .small {font-size:16px}
+      .code-sm {font-family:"DejaVu Sans Mono",Consolas,monospace;font-size:15px}
+      .cell {fill:#d9e9dc;stroke:#729582;stroke-width:1.3}
+      .target {fill:#f2e4c9;stroke:#aa9163;stroke-width:1.5}
+      .target-text {fill:#78591b;font-weight:700}
+      .panel {fill:#edf2e8;stroke:#cad8cb;stroke-width:1.2}
+      .node {fill:#e9eee4;stroke:#97ad9a;stroke-width:1.25}
+      .grid {stroke:#cbd6cb;stroke-width:1;fill:none}
+      .warn {fill:#875b35;font-weight:700}
+      .muted {fill:#e9ebe7;stroke:#bac4b9;stroke-width:1.1}
+      .stale {fill:#faf9f3;stroke:#b6b9a8;stroke-dasharray:4 3}
+    </style>
+  </defs>
+  <rect x="1" y="1" width="438" height="374" rx="14" fill="#f5f6ef" stroke="#c4d0c4"/>
+  <text x="18" y="30" class="head" text-anchor="start">在每条指令之后，哪些值还要保留？</text>
+  <text x="18" y="55" class="note" text-anchor="start">本例只给值分配 t0、t1 两个寄存器。</text>
+  <text x="18" y="80" class="note" text-anchor="start">行是程序点，LW 的偏移单位为 B。</text>
+  <text x="16" y="110" class="note" text-anchor="start">执行的操作</text>
+  <text x="195" y="110" class="code" text-anchor="middle">a</text>
+  <text x="239" y="110" class="code" text-anchor="middle">c</text>
+  <text x="283" y="110" class="code" text-anchor="middle">b</text>
+  <text x="327" y="110" class="code" text-anchor="middle">t</text>
+  <text x="371" y="110" class="code" text-anchor="middle">y</text>
+  <text x="416" y="110" class="note" text-anchor="middle">数量</text>
+  <path d="M15 152H425" class="grid"/>
+  <text x="16" y="142" class="code-sm" text-anchor="start">I1</text>
+  <text x="43" y="142" class="code-sm" text-anchor="start">a=LW(+0)</text>
+  <rect x="177" y="123" width="36" height="26" rx="4" class="cell"/>
+  <text x="195" y="142" class="code" text-anchor="middle">2</text>
+  <text x="239" y="142" class="note" text-anchor="middle">·</text>
+  <text x="283" y="142" class="note" text-anchor="middle">·</text>
+  <text x="327" y="142" class="note" text-anchor="middle">·</text>
+  <text x="371" y="142" class="note" text-anchor="middle">·</text>
+  <text x="416" y="142" class="code" text-anchor="middle">1</text>
+  <path d="M15 186H425" class="grid"/>
+  <text x="16" y="176" class="code-sm" text-anchor="start">I2</text>
+  <text x="43" y="176" class="code-sm" text-anchor="start">c=LW(+8)</text>
+  <rect x="177" y="157" width="36" height="26" rx="4" class="cell"/>
+  <text x="195" y="176" class="code" text-anchor="middle">2</text>
+  <rect x="221" y="157" width="36" height="26" rx="4" class="cell"/>
+  <text x="239" y="176" class="code" text-anchor="middle">4</text>
+  <text x="283" y="176" class="note" text-anchor="middle">·</text>
+  <text x="327" y="176" class="note" text-anchor="middle">·</text>
+  <text x="371" y="176" class="note" text-anchor="middle">·</text>
+  <text x="416" y="176" class="code" text-anchor="middle">2</text>
+  <rect x="9" y="188" width="422" height="32" rx="4" class="target"/>
+  <text x="16" y="210" class="code-sm" text-anchor="start">I3</text>
+  <text x="43" y="210" class="code-sm" text-anchor="start">b=LW(+4)</text>
+  <rect x="177" y="191" width="36" height="26" rx="4" class="target"/>
+  <text x="195" y="210" class="code" text-anchor="middle">2</text>
+  <rect x="221" y="191" width="36" height="26" rx="4" class="target"/>
+  <text x="239" y="210" class="code" text-anchor="middle">4</text>
+  <rect x="265" y="191" width="36" height="26" rx="4" class="target"/>
+  <text x="283" y="210" class="code" text-anchor="middle">3</text>
+  <text x="327" y="210" class="note" text-anchor="middle">·</text>
+  <text x="371" y="210" class="note" text-anchor="middle">·</text>
+  <text x="416" y="210" class="code target-text" text-anchor="middle">3</text>
+  <path d="M15 254H425" class="grid"/>
+  <text x="16" y="244" class="code-sm" text-anchor="start">I4</text>
+  <text x="43" y="244" class="code-sm" text-anchor="start">t=ADD(a,b)</text>
+  <text x="195" y="244" class="note" text-anchor="middle">·</text>
+  <rect x="221" y="225" width="36" height="26" rx="4" class="cell"/>
+  <text x="239" y="244" class="code" text-anchor="middle">4</text>
+  <text x="283" y="244" class="note" text-anchor="middle">·</text>
+  <rect x="309" y="225" width="36" height="26" rx="4" class="cell"/>
+  <text x="327" y="244" class="code" text-anchor="middle">5</text>
+  <text x="371" y="244" class="note" text-anchor="middle">·</text>
+  <text x="416" y="244" class="code" text-anchor="middle">2</text>
+  <path d="M15 288H425" class="grid"/>
+  <text x="16" y="278" class="code-sm" text-anchor="start">I5</text>
+  <text x="43" y="278" class="code-sm" text-anchor="start">y=MUL(t,c)</text>
+  <text x="195" y="278" class="note" text-anchor="middle">·</text>
+  <text x="239" y="278" class="note" text-anchor="middle">·</text>
+  <text x="283" y="278" class="note" text-anchor="middle">·</text>
+  <text x="327" y="278" class="note" text-anchor="middle">·</text>
+  <rect x="353" y="259" width="36" height="26" rx="4" class="cell"/>
+  <text x="371" y="278" class="code" text-anchor="middle">20</text>
+  <text x="416" y="278" class="code" text-anchor="middle">1</text>
+  <path d="M15 322H425" class="grid"/>
+  <text x="16" y="312" class="code-sm" text-anchor="start"></text>
+  <text x="43" y="312" class="code-sm" text-anchor="start">return y</text>
+  <text x="195" y="312" class="note" text-anchor="middle">·</text>
+  <text x="239" y="312" class="note" text-anchor="middle">·</text>
+  <text x="283" y="312" class="note" text-anchor="middle">·</text>
+  <text x="327" y="312" class="note" text-anchor="middle">·</text>
+  <text x="371" y="312" class="note" text-anchor="middle">·</text>
+  <text x="416" y="312" class="code" text-anchor="middle">0</text>
+  <text x="18" y="346" class="note warn" text-anchor="start">I3 后同时有 3 个活跃值，超过容量 2。</text>
+  <text x="18" y="367" class="note" text-anchor="start">表格只描述值的活跃性，不表示执行时钟。</text>
+</svg>

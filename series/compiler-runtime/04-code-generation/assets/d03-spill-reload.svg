@@ -1,0 +1,82 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="440" height="405" viewBox="0 0 440 405" role="img" aria-labelledby="title desc">
+  <title id="title">只用两个寄存器时怎样保留 c</title>
+  <desc id="desc">初始 t0、t1 尚无所需数据，私有 spill 槽未使用。按顺序，LW 把 a=2 放在 t0、c=4 放在 t1；SW 把 c=4 保存到 0(sp)，t1 可改放 b=3；ADD 把 t=5 写进 t0，释放 t1；LW 从私有槽重新读取 c=4 到 t1；MUL 得到 y=20，写进 t0。槽的字节可能仍存 4，但无需继续保留。base 与 sp 是另外的保留寄存器。</desc>
+  <defs>
+    <style>
+      text {font-family:"Noto Sans CJK SC","PingFang SC","Microsoft YaHei",sans-serif;fill:#173d35;font-size:19px}
+      .head {font-size:21px;font-weight:700}
+      .note {font-size:16px;fill:#416354}
+      .code {font-family:"DejaVu Sans Mono",Consolas,monospace;font-size:17px}
+      .small {font-size:16px}
+      .code-sm {font-family:"DejaVu Sans Mono",Consolas,monospace;font-size:15px}
+      .cell {fill:#d9e9dc;stroke:#729582;stroke-width:1.3}
+      .target {fill:#f2e4c9;stroke:#aa9163;stroke-width:1.5}
+      .target-text {fill:#78591b;font-weight:700}
+      .panel {fill:#edf2e8;stroke:#cad8cb;stroke-width:1.2}
+      .node {fill:#e9eee4;stroke:#97ad9a;stroke-width:1.25}
+      .grid {stroke:#cbd6cb;stroke-width:1;fill:none}
+      .warn {fill:#875b35;font-weight:700}
+      .muted {fill:#e9ebe7;stroke:#bac4b9;stroke-width:1.1}
+      .stale {fill:#faf9f3;stroke:#b6b9a8;stroke-dasharray:4 3}
+    </style>
+  </defs>
+  <rect x="1" y="1" width="438" height="403" rx="14" fill="#f5f6ef" stroke="#c4d0c4"/>
+  <text x="18" y="31" class="head" text-anchor="start">两个寄存器，一处临时内存</text>
+  <text x="18" y="57" class="note" text-anchor="start">base 和 sp 另算；spill 槽不覆盖输入。</text>
+  <text x="16" y="91" class="note" text-anchor="start">指令完成后</text>
+  <text x="223" y="91" class="code" text-anchor="middle">t0</text>
+  <text x="293" y="91" class="code" text-anchor="middle">t1</text>
+  <text x="381" y="91" class="code" text-anchor="middle">0(sp)</text>
+  <path d="M15 135H425" class="grid"/>
+  <text x="16" y="124" class="code-sm" text-anchor="start">lw t0,0(base)</text>
+  <rect x="191.0" y="104" width="64" height="28" rx="5" class="cell"/>
+  <text x="223" y="124" class="code-sm" text-anchor="middle">a=2</text>
+  <text x="293" y="124" class="note" text-anchor="middle">—</text>
+  <text x="381" y="124" class="note" text-anchor="middle">—</text>
+  <path d="M15 171H425" class="grid"/>
+  <text x="16" y="160" class="code-sm" text-anchor="start">lw t1,8(base)</text>
+  <rect x="191.0" y="140" width="64" height="28" rx="5" class="cell"/>
+  <text x="223" y="160" class="code-sm" text-anchor="middle">a=2</text>
+  <rect x="261.0" y="140" width="64" height="28" rx="5" class="cell"/>
+  <text x="293" y="160" class="code-sm" text-anchor="middle">c=4</text>
+  <text x="381" y="160" class="note" text-anchor="middle">—</text>
+  <rect x="9" y="173" width="422" height="34" rx="4" class="panel"/>
+  <text x="16" y="196" class="code-sm" text-anchor="start">sw t1,0(sp)</text>
+  <rect x="191.0" y="176" width="64" height="28" rx="5" class="cell"/>
+  <text x="223" y="196" class="code-sm target-text" text-anchor="middle">a=2</text>
+  <text x="293" y="196" class="note" text-anchor="middle">—</text>
+  <rect x="338.0" y="176" width="86" height="28" rx="5" class="target"/>
+  <text x="381" y="196" class="code-sm target-text" text-anchor="middle">c=4</text>
+  <path d="M15 243H425" class="grid"/>
+  <text x="16" y="232" class="code-sm" text-anchor="start">lw t1,4(base)</text>
+  <rect x="191.0" y="212" width="64" height="28" rx="5" class="cell"/>
+  <text x="223" y="232" class="code-sm" text-anchor="middle">a=2</text>
+  <rect x="261.0" y="212" width="64" height="28" rx="5" class="cell"/>
+  <text x="293" y="232" class="code-sm" text-anchor="middle">b=3</text>
+  <rect x="338.0" y="212" width="86" height="28" rx="5" class="target"/>
+  <text x="381" y="232" class="code-sm" text-anchor="middle">c=4</text>
+  <path d="M15 279H425" class="grid"/>
+  <text x="16" y="268" class="code-sm" text-anchor="start">add t0,t0,t1</text>
+  <rect x="191.0" y="248" width="64" height="28" rx="5" class="cell"/>
+  <text x="223" y="268" class="code-sm" text-anchor="middle">t=5</text>
+  <text x="293" y="268" class="note" text-anchor="middle">—</text>
+  <rect x="338.0" y="248" width="86" height="28" rx="5" class="target"/>
+  <text x="381" y="268" class="code-sm" text-anchor="middle">c=4</text>
+  <rect x="9" y="281" width="422" height="34" rx="4" class="panel"/>
+  <text x="16" y="304" class="code-sm" text-anchor="start">lw t1,0(sp)</text>
+  <rect x="191.0" y="284" width="64" height="28" rx="5" class="cell"/>
+  <text x="223" y="304" class="code-sm target-text" text-anchor="middle">t=5</text>
+  <rect x="261.0" y="284" width="64" height="28" rx="5" class="cell"/>
+  <text x="293" y="304" class="code-sm target-text" text-anchor="middle">c=4</text>
+  <rect x="338.0" y="284" width="86" height="28" rx="5" class="stale"/>
+  <text x="381" y="304" class="code-sm" text-anchor="middle">4*</text>
+  <path d="M15 351H425" class="grid"/>
+  <text x="16" y="340" class="code-sm" text-anchor="start">mul t0,t0,t1</text>
+  <rect x="191.0" y="320" width="64" height="28" rx="5" class="cell"/>
+  <text x="223" y="340" class="code-sm" text-anchor="middle">y=20</text>
+  <text x="293" y="340" class="note" text-anchor="middle">—</text>
+  <rect x="338.0" y="320" width="86" height="28" rx="5" class="stale"/>
+  <text x="381" y="340" class="code-sm" text-anchor="middle">4*</text>
+  <text x="18" y="373" class="note" text-anchor="start">—：无需保留；*：槽内旧比特可能仍存在。</text>
+  <text x="18" y="396" class="note" text-anchor="start">SW 保存 c，之后的 LW 恢复 c。</text>
+</svg>

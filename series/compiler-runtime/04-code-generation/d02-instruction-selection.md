@@ -235,6 +235,6 @@ D01 将原程序降低为更具体的操作，D02 根据目标支持的类型和
 
 此时还有一个关键问题没有展开。刚才的五个虚拟寄存器可以复用少量架构寄存器，但更长的程序可能同时保留许多仍需使用的值。编译器怎样安排它们？当寄存器不足时，又怎样用内存临时保存数据？
 
-D03 将继续沿此机器代码路线，从 [B05 的活跃值](../02-frontend-and-optimization/b05-dataflow-analysis-and-optimization.md#live-values)出发，解释寄存器分配、溢出保存与机器指令调度。
+下一篇 [D03：临时值比硬件寄存器多，编译器怎样处理？](d03-register-allocation-and-scheduling.md) 将从 [B05 的活跃值](../02-frontend-and-optimization/b05-dataflow-analysis-and-optimization.md#live-values)出发，解释寄存器分配、溢出保存与机器指令调度。
 
 [返回专题阅读顺序](README.md#计划阅读顺序)
