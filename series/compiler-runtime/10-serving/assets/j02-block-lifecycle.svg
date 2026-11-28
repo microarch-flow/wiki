@@ -1,0 +1,53 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="500" height="632" viewBox="0 0 500 632" role="img" aria-labelledby="title desc">
+  <title id="title">C 解除引用后，私有块还需要等最后访问结束</title>
+  <desc id="desc">副本 0 的池总共四个物理 KV 块，每块四个位置、每层 512 字节。t1 已提交混合轮之后，A 逻辑引用 b0、b1、b2，C 引用 b0、b3。b0 有两个活跃引用，其余各一个。可分配块为零。t3 引擎观察取消并解除 C 逻辑引用：b0 仍由 A 引用，b3 已无逻辑引用但本轮仍可能访问，因此标记待回收，可分配块仍为零。t4 相关访问结束且确认回收条件后，A 的三个块仍保留，b3 可以归还，得到一个可分配块，每层 512 字节。D 可以重新申请。KV 池本身仍保留四个块的容量。</desc>
+  <defs>
+    <style>
+      text{font-family:"Noto Sans CJK SC","PingFang SC","Microsoft YaHei",sans-serif;fill:#173d35;font-size:19px}
+      .head{font-size:23px;font-weight:700}.subhead{font-size:20px;font-weight:700}.label{font-size:18px;fill:#416354}.small{font-size:17px;fill:#416354}
+      .panel{fill:#edf2e8;stroke:#9ab69e;stroke-width:1.4}.held{fill:#d9e9dc;stroke:#6f9a80;stroke-width:1.4}.shared{fill:#dfe8ef;stroke:#7d9eb1;stroke-width:1.4}.pending{fill:#f2e4c9;stroke:#aa9163;stroke-width:1.4}.free{fill:#f5f6ef;stroke:#9cae9e;stroke-width:1.4;stroke-dasharray:4 3}
+      .block-id{font-size:18px;font-weight:700;text-anchor:middle}.owner{font-size:18px;text-anchor:middle}.refs{font-size:17px;fill:#416354;text-anchor:middle}
+      .line{stroke:#c4d0c4;stroke-width:1.3;fill:none}
+    </style>
+  </defs>
+  <rect x="1" y="1" width="498" height="630" rx="14" fill="#f5f6ef" stroke="#c4d0c4" stroke-width="1.3"/>
+  <text x="24" y="35" class="head">没有逻辑引用 ≠ 可以复用</text>
+  <text x="24" y="60" class="label">副本 0：4 个块，每层每块 512 B</text>
+
+  <rect x="18" y="77" width="464" height="154" rx="10" class="panel"/>
+  <text x="30" y="104" class="subhead">t1 · 已提交 A、C 的混合轮</text>
+  <rect x="30" y="116" width="104" height="78" rx="7" class="shared"/>
+  <rect x="142" y="116" width="104" height="78" rx="7" class="held"/>
+  <rect x="254" y="116" width="104" height="78" rx="7" class="held"/>
+  <rect x="366" y="116" width="104" height="78" rx="7" class="held"/>
+  <text x="82" y="138" class="block-id">b0</text><text x="194" y="138" class="block-id">b1</text><text x="306" y="138" class="block-id">b2</text><text x="418" y="138" class="block-id">b3</text>
+  <text x="82" y="161" class="owner">A、C</text><text x="194" y="161" class="owner">A</text><text x="306" y="161" class="owner">A</text><text x="418" y="161" class="owner">C</text>
+  <text x="82" y="183" class="refs">引用 2</text><text x="194" y="183" class="refs">引用 1</text><text x="306" y="183" class="refs">引用 1</text><text x="418" y="183" class="refs">引用 1</text>
+  <text x="30" y="217" class="label">占用 4 块，当前可分配 0 块</text>
+
+  <rect x="18" y="244" width="464" height="174" rx="10" class="panel"/>
+  <text x="30" y="271" class="subhead">t3 · 解除 C 的逻辑块引用</text>
+  <rect x="30" y="283" width="104" height="78" rx="7" class="held"/>
+  <rect x="142" y="283" width="104" height="78" rx="7" class="held"/>
+  <rect x="254" y="283" width="104" height="78" rx="7" class="held"/>
+  <rect x="366" y="283" width="104" height="78" rx="7" class="pending"/>
+  <text x="82" y="305" class="block-id">b0</text><text x="194" y="305" class="block-id">b1</text><text x="306" y="305" class="block-id">b2</text><text x="418" y="305" class="block-id">b3</text>
+  <text x="82" y="328" class="owner">A</text><text x="194" y="328" class="owner">A</text><text x="306" y="328" class="owner">A</text><text x="418" y="328" class="owner">待回收</text>
+  <text x="82" y="350" class="refs">引用 1</text><text x="194" y="350" class="refs">引用 1</text><text x="306" y="350" class="refs">引用 1</text><text x="418" y="350" class="refs">引用 0</text>
+  <text x="30" y="383" class="label">b3 仍可能被本轮读取或写入</text>
+  <text x="30" y="406" class="label">占用或待回收 4 块，可分配 0 块</text>
+
+  <rect x="18" y="431" width="464" height="151" rx="10" class="panel"/>
+  <text x="30" y="458" class="subhead">t4 · 最后访问结束，确认回收</text>
+  <rect x="30" y="470" width="104" height="78" rx="7" class="held"/>
+  <rect x="142" y="470" width="104" height="78" rx="7" class="held"/>
+  <rect x="254" y="470" width="104" height="78" rx="7" class="held"/>
+  <rect x="366" y="470" width="104" height="78" rx="7" class="free"/>
+  <text x="82" y="492" class="block-id">b0</text><text x="194" y="492" class="block-id">b1</text><text x="306" y="492" class="block-id">b2</text><text x="418" y="492" class="block-id">b3</text>
+  <text x="82" y="515" class="owner">A</text><text x="194" y="515" class="owner">A</text><text x="306" y="515" class="owner">A</text><text x="418" y="515" class="owner">可分配</text>
+  <text x="82" y="537" class="refs">引用 1</text><text x="194" y="537" class="refs">引用 1</text><text x="306" y="537" class="refs">引用 1</text><text x="418" y="537" class="refs">引用 0</text>
+  <text x="30" y="571" class="label">D 可申请 1 块（512 B/层）</text>
+
+  <path d="M24 594H476" class="line"/>
+  <text x="24" y="616" class="small">池容量仍为 4 块；引用数仅统计逻辑引用。</text>
+</svg>
