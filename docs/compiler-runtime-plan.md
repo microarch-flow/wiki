@@ -203,7 +203,7 @@ D02–D04 与 D05–D08 是两条分支。内核工程师不必先学完整寄�
 | --- | --- | --- | --- | --- | --- | --- |
 | D01 | 一句张量计算，怎样逐步变成循环和内存操作？ | 分层 Lowering、Tensor IR、Loop IR、Bufferization、显式读写与转换合法性。 | A01–A03、B04 的必要知识 | `d01-lowering-and-bufferization.md` | 已发布 |
 | D02 | 一个 IR 操作怎样变成目标机器的指令？ | 类型与指令合法化、指令选择、Machine IR、目标调用约定。 | D01 中低层 IR、A04 | `d02-instruction-selection.md` | 已发布 |
-| D03 | 临时值比硬件寄存器多，编译器怎样处理？ | 活跃区间、寄存器分配、Spill/Reload、机器指令调度与相互约束。 | D02、B05 | `d03-register-allocation-and-scheduling.md` | 初稿完成，待发布核验 |
+| D03 | 临时值比硬件寄存器多，编译器怎样处理？ | 活跃区间、寄存器分配、Spill/Reload、机器指令调度与相互约束。 | D02、B05 | `d03-register-allocation-and-scheduling.md` | 已发布 |
 | D04 | 生成的代码怎样成为可加载、可调用的程序？ | 汇编、目标文件、符号、重定位、静态与动态链接、Kernel 元数据及产物兼容。 | D02、D03 或已有目标代码 | `d04-executable-artifacts.md` | 待写 |
 | D05 | 分块方案确定后，怎样生成可执行的矩阵乘法内核？ | 循环代码生成、SIMD/SIMT/NPU 实现、边界处理、地址计算、Kernel 库与生成。 | D01、C01、C02、A04 | `d05-matrix-multiplication-kernels.md` | 待写 |
 | D06 | 两个算子已经决定融合，怎样真正减少中间数据搬运？ | 融合循环、Epilogue、归约、Softmax、同步与中间状态保留。 | D05；B06、C05 的相关知识 | `d06-fused-kernels.md` | 待写 |
@@ -467,3 +467,5 @@ K 横跨所有路线。K01/K02 可早期开展，K03–K05 按被分析的机制
 - 2026-11-28 · F01 已发布并核验。正文提交 `03f2e1e`，[GitHub Pages 部署](https://github.com/microarch-flow/wiki/actions/runs/46126833863) 成功；[公开正文](https://microarch-flow.github.io/wiki/series/compiler-runtime/06-execution-runtime/f01-module-loading-and-dispatch/)、E01 衔接链接、专题导读、两张图解、导航、面包屑及搜索收录已核验。合并并行完成的 E01/D02 后，本地整站 178 项测试全部通过，独立复算三组 12 B 缓冲区与四线程的三个有效结果 [5, 5, 6]（非真实 GPU 实测）。F02–F05 仍待编写，旧推理运行时不变。
 
 - 2026-11-28 · E02 继承 E01 的 ctx_P 与 A05 的 L_A/L_B/C/W，沿用并行完成的 F01 中三个设备地址，采用 Linux PCIe 显式 DMA 教学路径区分 CPU VA、主机 PA、DMA 地址、设备侧地址；追踪分配、Pin、Map、访问权、可见性与释放条件。主机与设备资源已准备，但未提交或真正搬运；保留 E03/E04 的提交与完成机制及 F 的运行时资源管理边界。E02 初稿完成；核查 Linux DMA/Pin/SVA 与 CUDA 内存管理官方资料，复算三个地址视图及偏移、12 B 数据长度和加法结果，三张图解完成实际渲染与 360 px 窄屏检查。合并 D02 发布记录后本地整站 179 项测试全部通过。
+
+- 2026-11-28 · D03 已发布并核验。正文提交 `208daf3`，[GitHub Pages 部署](https://github.com/microarch-flow/wiki/actions/runs/46129106512)成功。[公开正文](https://microarch-flow.github.io/wiki/series/compiler-runtime/04-code-generation/d03-register-allocation-and-scheduling/)、D02 后继、专题导读、三张图解、导航、面包屑与搜索索引均已核验。两份教学汇编各以 10,000 组随机比特向量和边界输入复算，验证输入未改变、栈对齐与恢复；独立复算理想发射时序为 9/11 拍。LLVM 19.1.7 实际验证了相同计算的虚拟寄存器重写、调度和强制寄存器压力下的 Spill/Reload 生成（不同于教学约束，非真机执行）。本地 179 项整站测试通过，合并 E02 的部署版本构建和整站测试也通过。
