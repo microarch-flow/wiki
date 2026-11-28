@@ -144,6 +144,6 @@
 
 本篇的输入已事先就绪。如果恢复 A05 中的两项搬入任务 L_A、L_B 以及写回任务 W，我们又需要解决一个问题：主机能否一次提交这些工作而不必等待每项完成，同时确保 C 读到正确输入、W 读到正确结果？
 
-接下来在 [通用执行运行时](README.md#计划阅读顺序) 的 F02 中，沿着这四项任务研究异步提交、任务依赖、同步与结果可见性。
+接下来在 [F02：提交任务的函数已经返回，为什么不能马上读取计算结果？](f02-asynchronous-execution.md) 中，沿着这四项任务研究异步提交、任务依赖、同步与结果可见性。
 
 [CUDA Driver API：API Synchronization Behavior](https://docs.nvidia.com/cuda/cuda-driver-api/api-sync-behavior.html) · [OpenCL API：Event Objects](https://registry.khronos.org/OpenCL/specs/unified/html/OpenCL_API.html#event-objects)

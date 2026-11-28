@@ -1,0 +1,52 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 568" width="500" height="568" role="img" aria-labelledby="timeline-title timeline-desc">
+  <title id="timeline-title">阻塞与异步提交的教学时间线</title>
+  <desc id="timeline-desc">假设只有一个搬运引擎、一个计算引擎，提交开销忽略。搬入 A 和 B 分别用两拍，计算用三拍，写回用两拍。两种提交方式中，搬运引擎都在 0 至 2 拍搬入 A、2 至 4 拍搬入 B，计算引擎在 4 至 7 拍计算，搬运引擎在 7 至 9 拍写回。阻塞方式下主机每提交一项便等待该任务完成，再提交下一项；异步方式下主机提前提交带正确依赖的四项任务，可以执行不依赖本次结果的其他工作。两种方式的本次设备工作均在第 9 拍完成。图中时间仅为教学假设，不是测量结果，也不表示异步提交必然带来设备任务重叠。</desc>
+  <defs>
+    <style>
+      text{font-family:"Noto Sans CJK SC","PingFang SC","Microsoft YaHei",sans-serif;fill:#173d35;font-size:18px}
+      .head{font-weight:700;font-size:23px}.subhead{font-weight:700;font-size:20px}.label{font-size:17px;fill:#416354}.small{font-size:16px;fill:#416354}.tick{font-size:14px;fill:#416354}.slot{font-size:16px;font-weight:600}
+      .panel{fill:#edf2e8;stroke:#9ab69e;stroke-width:1.4}.idle{fill:#f9f8ef;stroke:#b8ba9e;stroke-width:1}.load{fill:#d9e9dc;stroke:#6f9a80;stroke-width:1.3}.compute{fill:#c1dac6;stroke:#6f9a80;stroke-width:1.4}.wait{fill:#f2e4c9;stroke:#9c7b42;stroke-width:1.3}.work{fill:#d9e9dc;stroke:#6f9a80;stroke-width:1.3}.grid{stroke:#c4d0c4;stroke-width:1;stroke-dasharray:3 3}.end{stroke:#9c7b42;stroke-width:1.4}
+    </style>
+  </defs>
+  <rect x="1" y="1" width="498" height="566" rx="14" fill="#f5f6ef" stroke="#c4d0c4" stroke-width="1.3"/>
+  <text x="24" y="33" class="head">异步提交：主机不必逐项等待</text>
+  <text x="24" y="58" class="label">一个搬运引擎，一个计算引擎；忽略提交开销</text>
+  <text x="24" y="80" class="small">两次搬入各 2 拍，计算 3 拍，写回 2 拍</text>
+
+  <rect x="18" y="91" width="464" height="198" rx="10" class="panel"/>
+  <text x="32" y="118" class="subhead">方式一：每次提交后阻塞等待</text>
+  <g class="tick" text-anchor="middle">
+    <text x="135" y="142">0</text><text x="171" y="142">1</text><text x="207" y="142">2</text><text x="243" y="142">3</text><text x="279" y="142">4</text><text x="315" y="142">5</text><text x="351" y="142">6</text><text x="387" y="142">7</text><text x="423" y="142">8</text><text x="459" y="142">9</text>
+  </g>
+  <g class="grid"><path d="M135 149V259M171 149V259M207 149V259M243 149V259M279 149V259M315 149V259M351 149V259M387 149V259M423 149V259M459 149V259"/></g>
+  <g class="label" text-anchor="end"><text x="124" y="174">Host</text><text x="124" y="212">搬运引擎</text><text x="124" y="250">计算引擎</text></g>
+  <g class="wait"><rect x="135" y="152" width="72" height="32" rx="4"/><rect x="207" y="152" width="72" height="32" rx="4"/><rect x="279" y="152" width="108" height="32" rx="4"/><rect x="387" y="152" width="72" height="32" rx="4"/></g>
+  <g class="slot" text-anchor="middle"><text x="171" y="174">等 L_A</text><text x="243" y="174">等 L_B</text><text x="333" y="174">等 C</text><text x="423" y="174">等 W</text></g>
+  <rect x="135" y="190" width="324" height="32" rx="4" class="idle"/>
+  <g class="load"><rect x="135" y="190" width="72" height="32" rx="4"/><rect x="207" y="190" width="72" height="32" rx="4"/><rect x="387" y="190" width="72" height="32" rx="4"/></g>
+  <g class="slot" text-anchor="middle"><text x="171" y="212">L_A</text><text x="243" y="212">L_B</text><text x="423" y="212">W</text></g>
+  <rect x="135" y="228" width="324" height="32" rx="4" class="idle"/><rect x="279" y="228" width="108" height="32" rx="4" class="compute"/>
+  <text x="333" y="250" class="slot" text-anchor="middle">C</text>
+  <path d="M459 146V264" class="end"/>
+  <text x="459" y="280" class="small" text-anchor="end">第 9 拍：结果可读</text>
+
+  <rect x="18" y="301" width="464" height="198" rx="10" class="panel"/>
+  <text x="32" y="328" class="subhead">方式二：提前提交四项（含依赖）</text>
+  <g class="tick" text-anchor="middle">
+    <text x="135" y="352">0</text><text x="171" y="352">1</text><text x="207" y="352">2</text><text x="243" y="352">3</text><text x="279" y="352">4</text><text x="315" y="352">5</text><text x="351" y="352">6</text><text x="387" y="352">7</text><text x="423" y="352">8</text><text x="459" y="352">9</text>
+  </g>
+  <g class="grid"><path d="M135 359V469M171 359V469M207 359V469M243 359V469M279 359V469M315 359V469M351 359V469M387 359V469M423 359V469M459 359V469"/></g>
+  <g class="label" text-anchor="end"><text x="124" y="384">Host</text><text x="124" y="422">搬运引擎</text><text x="124" y="460">计算引擎</text></g>
+  <rect x="135" y="362" width="324" height="32" rx="4" class="work"/>
+  <text x="297" y="384" class="slot" text-anchor="middle">可做与本次结果无关的工作</text>
+  <rect x="135" y="400" width="324" height="32" rx="4" class="idle"/>
+  <g class="load"><rect x="135" y="400" width="72" height="32" rx="4"/><rect x="207" y="400" width="72" height="32" rx="4"/><rect x="387" y="400" width="72" height="32" rx="4"/></g>
+  <g class="slot" text-anchor="middle"><text x="171" y="422">L_A</text><text x="243" y="422">L_B</text><text x="423" y="422">W</text></g>
+  <rect x="135" y="438" width="324" height="32" rx="4" class="idle"/><rect x="279" y="438" width="108" height="32" rx="4" class="compute"/>
+  <text x="333" y="460" class="slot" text-anchor="middle">C</text>
+  <path d="M459 356V474" class="end"/>
+  <text x="459" y="490" class="small" text-anchor="end">第 9 拍：结果可读</text>
+
+  <text x="24" y="526" class="label">相同设备日程：9 拍；区别在主机是否逐项等待。</text>
+  <text x="24" y="550" class="small">教学假设，非实测；异步提交不保证设备工作重叠。</text>
+</svg>

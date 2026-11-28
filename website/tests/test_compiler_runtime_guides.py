@@ -206,6 +206,19 @@ class CompilerRuntimeGuideTests(unittest.TestCase):
             ("f01-module-and-context.svg", "f01-dispatch-and-buffers.svg"),
         )
 
+    def test_f02_article_navigation_search_and_diagrams(self):
+        route = "06-execution-runtime"
+        slug = "f02-asynchronous-execution"
+        self._check_article(
+            route,
+            "通用执行运行时",
+            slug,
+            "提交任务的函数已经返回，为什么不能马上读取计算结果？",
+            ("f02-sequential-vs-async.svg", "f02-stream-dependencies.svg"),
+        )
+        previous = SITE / PREFIX / route / "f01-module-loading-and-dispatch/index.html"
+        self.assertIn(f"../{slug}/", GuideContent(previous.read_text()).links)
+
     def test_a01_article_navigation_search_and_diagrams(self):
         self._check_foundation_article(
             "a01-program-semantics",
