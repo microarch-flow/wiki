@@ -163,7 +163,7 @@ B03 可以在 A02/A03 后独立阅读。这里主讲变换的语义和合法性�
 | ID | 暂定标题 | 核心范围 | 主要前置 | 计划文件名 | 状态 |
 | --- | --- | --- | --- | --- | --- | --- |
 | B01 | 一段源代码怎样变成编译器能够处理的表示？ | Token、词法与语法分析、AST、符号表、作用域、类型检查、初始 IR。 | A01、A02 | `b01-compiler-frontend.md` | 已发布 |
-| B02 | 遇到分支和循环，编译器怎样表示不同执行路径上的值？ | CFG、基本块、SSA、Phi、Block Argument、支配关系、Use-Def。 | B01；已有 IR 认知可直接进入 | `b02-control-flow-and-ssa.md` | 初稿完成，待发布核验 |
+| B02 | 遇到分支和循环，编译器怎样表示不同执行路径上的值？ | CFG、基本块、SSA、Phi、Block Argument、支配关系、Use-Def。 | B01；已有 IR 认知可直接进入 | `b02-control-flow-and-ssa.md` | 已发布 |
 | B03 | AI 框架运行过一次模型，为什么编译器仍可能不知道完整的计算过程？ | Tracing、Export、模型导入、动态形状、控制流捕获、Guard、Graph Break。 | A02、A03；按需 B02 | `b03-graph-capture.md` | 待写 |
 | B04 | 两项运算究竟能不能交换执行顺序？ | 数据依赖、内存读写、Alias、副作用、循环依赖与顺序合法性。 | A02；按需 B02 | `b04-dependency-and-alias-analysis.md` | 待写 |
 | B05 | 程序中哪些计算可以提前完成、复用或直接删除？ | 数据流分析、活跃性分析、常量传播与折叠、CSE、DCE、控制流化简。 | B02、B04 | `b05-dataflow-analysis-and-optimization.md` | 待写 |
@@ -417,3 +417,5 @@ K 横跨所有路线。K01/K02 可早期开展，K03–K05 按被分析的机制
 - 2026-11-28 · A05 复用 A04 向量加法，将搬入、计算、写回拆为四项具体任务，以消费者可读、成功交接及最后访问结束区分任务接纳、就绪、完成、同步和资源生命周期。按既定范围保留驱动与运行时实现细节，完成 A 专题五篇初稿。
 
 - 2026-11-28 · A05 已发布并核验，A 专题五篇初稿全部完成发布。正文提交 `520132d`，[GitHub Pages 部署](https://github.com/microarch-flow/wiki/actions/runs/46111874187) 成功；[公开正文](https://microarch-flow.github.io/wiki/series/compiler-runtime/01-foundations/a05-task-and-resource-lifecycle/) 及 A04 后继链接、专题入口、图解、导航、面包屑和全部五篇搜索收录已核验。本地整站 164 项测试全部通过（含并行完成的 B01），教学事件模型复算正确顺序及三类提前访问反例。保留后续 B/E/F 等专题的既定前置关系和知识边界。
+
+- 2026-11-28 · B02 已发布并核验。正文提交 `2ebb134`，[GitHub Pages 部署](https://github.com/microarch-flow/wiki/actions/runs/46112811993)成功。[公开正文](https://microarch-flow.github.io/wiki/series/compiler-runtime/02-frontend-and-optimization/b02-control-flow-and-ssa/)、B01 后继链接、专题入口、两张图解、侧栏、面包屑及搜索索引均已核验。分支和循环示例经 Go 1.19.8 与 LLVM 19.1.7 复算，MLIR 分支经工具校验及转换执行。本地整站 165 项测试通过。
