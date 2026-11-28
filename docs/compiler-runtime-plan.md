@@ -165,7 +165,7 @@ B03 可以在 A02/A03 后独立阅读。这里主讲变换的语义和合法性�
 | B01 | 一段源代码怎样变成编译器能够处理的表示？ | Token、词法与语法分析、AST、符号表、作用域、类型检查、初始 IR。 | A01、A02 | `b01-compiler-frontend.md` | 已发布 |
 | B02 | 遇到分支和循环，编译器怎样表示不同执行路径上的值？ | CFG、基本块、SSA、Phi、Block Argument、支配关系、Use-Def。 | B01；已有 IR 认知可直接进入 | `b02-control-flow-and-ssa.md` | 已发布 |
 | B03 | AI 框架运行过一次模型，为什么编译器仍可能不知道完整的计算过程？ | Tracing、Export、模型导入、动态形状、控制流捕获、Guard、Graph Break。 | A02、A03；按需 B02 | `b03-graph-capture.md` | 已发布 |
-| B04 | 两项运算究竟能不能交换执行顺序？ | 数据依赖、内存读写、Alias、副作用、循环依赖与顺序合法性。 | A02；按需 B02 | `b04-dependency-and-alias-analysis.md` | 初稿完成，待发布核验 |
+| B04 | 两项运算究竟能不能交换执行顺序？ | 数据依赖、内存读写、Alias、副作用、循环依赖与顺序合法性。 | A02；按需 B02 | `b04-dependency-and-alias-analysis.md` | 已发布 |
 | B05 | 程序中哪些计算可以提前完成、复用或直接删除？ | 数据流分析、活跃性分析、常量传播与折叠、CSE、DCE、控制流化简。 | B02、B04 | `b05-dataflow-analysis-and-optimization.md` | 待写 |
 | B06 | 看起来等价的两种计算，编译器为什么不能任意替换？ | Shape 推导、符号约束、图重写、融合与分解合法性、循环变换、数值语义、Pass Pipeline。 | B04、B05；按需 B03 | `b06-legal-transformation.md` | 待写 |
 
@@ -427,3 +427,5 @@ K 横跨所有路线。K01/K02 可早期开展，K03–K05 按被分析的机制
 - 2026-11-28 · B03 已发布并核验。正文提交 `a0f0c0e`，[GitHub Pages 部署](https://github.com/microarch-flow/wiki/actions/runs/46115804546)成功。[公开正文](https://microarch-flow.github.io/wiki/series/compiler-runtime/02-frontend-and-optimization/b03-graph-capture/)、B02 后继链接、专题入口、两张图解、侧栏、面包屑及搜索索引均已核验。PyTorch 2.8.0 CPU 实测覆盖同形异值分支、导出约束、图断点和 Guard 失效。ONNX 1.20.1 检查并执行了等价三节点图。
 
 - 2026-11-28 · C01 已发布并核验。正文提交 `e845e61`，[GitHub Pages 部署](https://github.com/microarch-flow/wiki/actions/runs/46116608737)成功。[公开正文](https://microarch-flow.github.io/wiki/series/compiler-runtime/03-mapping-and-planning/c01-tensor-mapping/)、专题入口、图解、站内链接、导航、面包屑及搜索索引均已核验。本地整站 167 项测试通过，独立复算确认两种输出分工、两段归约的部分和，以及尾块的 24/32 和 24/24 个有效乘加位置。
+
+- 2026-11-28 · B04 已发布并核验。正文提交 `5f719ea`，[GitHub Pages 部署](https://github.com/microarch-flow/wiki/actions/runs/46117290829)成功。[公开正文](https://microarch-flow.github.io/wiki/series/compiler-runtime/02-frontend-and-optimization/b04-dependency-and-alias-analysis/)、B03 后继链接、专题导读、两张图解、面包屑、侧栏与搜索索引均已核验。Go 实测确认同一格与相邻格的读写结果，以及循环正序和逆序的最终数组。网站构建及 168 项测试通过。
