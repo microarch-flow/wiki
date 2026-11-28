@@ -251,7 +251,7 @@ F01–F03 为模型执行的主要基础。F04、F05 分别深入重放和变体
 | --- | --- | --- | --- | --- | --- | --- |
 | F01 | 设备已经准备好了，运行时怎样启动第一次计算？ | Module Load、执行上下文、Kernel Dispatch、参数绑定、资源准备。 | A04、E01/E03 的接口；D04 按需 | `f01-module-loading-and-dispatch.md` | 已发布 |
 | F02 | 提交任务的函数已经返回，为什么不能马上读取计算结果？ | Stream、Event、Fence、异步执行、依赖及可见性、搬运计算编排。 | F01、A05、E04 的完成语义 | `f02-asynchronous-execution.md` | 已发布 |
-| F03 | 两项任务需要使用同一块 Buffer，什么时候才能安全复用？ | 动态分配、内存池、碎片、所有权、延迟释放、异步资源回收。 | F02 | `f03-runtime-buffer-management.md` | 初稿完成，待发布核验 |
+| F03 | 两项任务需要使用同一块 Buffer，什么时候才能安全复用？ | 动态分配、内存池、碎片、所有权、延迟释放、异步资源回收。 | F02 | `f03-runtime-buffer-management.md` | 已发布 |
 | F04 | 多次执行相同的任务序列，怎样减少每轮提交开销？ | 任务图、执行图捕获、Replay、动态 DAG、重放约束及重建。 | F02、F03 | `f04-execution-graphs-and-replay.md` | 待写 |
 | F05 | 实际输入形状发生变化，运行时怎样找到可以执行的程序？ | Shape Guard、分桶、变体选择、JIT 触发、编译缓存、Fallback。 | A03、F01、F03；按需 F04 | `f05-dynamic-shapes-and-specialization.md` | 待写 |
 
@@ -481,3 +481,5 @@ K 横跨所有路线。K01/K02 可早期开展，K03–K05 按被分析的机制
 - 2026-11-28 · F03 初稿完成。承接 F02 的独立双组日程，将两块输出缩为共享 d_Y，由 W₁→C₂ 的资源依赖推导一种 72→60 B、13→15 拍的教学空间与时间取舍。引入动态申请、引用与使用权、待回收状态、流有序分配、池的保留及空闲统计、48 B 地址池的外部碎片与取整引起的内部碎片；继承旧版取消后保留在途引用、allocated/reserved 统计边界。已结合 E02/E03 区分映射与池化、命令槽与任务 Buffer；E04 完成后复核失败时的底层静止和资源清理条件。F01–F03 共同执行主线初稿完成，G 可继续承接；F04/F05 各自深化。
 
 - 2026-11-28 · D04 已发布并核验，D01–D04 通用机器代码生成路线的初稿已完成。正文提交 `c29c16c`，[GitHub Pages 部署](https://github.com/microarch-flow/wiki/actions/runs/46132726384)成功。[公开正文](https://microarch-flow.github.io/wiki/series/compiler-runtime/04-code-generation/d04-executable-artifacts/)、D03 后继、专题导读、三张图解、导航、面包屑与搜索索引均已核验。LLVM 19.1.7 实际生成了 ELF32 RV32I 目标文件；LLVM MC 和 LLD 19.1.7 重新汇编、静态链接验证了符号、重定位及 PT_LOAD 布局，省略辅助函数时链接失败。从真实 ELF 的入口及指令字用教学模型执行得到 20，直接调用 evaluate 的 10,000 组随机与 6 组边界输入复算通过（非真机执行）。合并 F03 后本地整站 184 项测试通过。
+
+- 2026-11-28 · F03 已发布并核验，F01–F03 共同执行主线初稿均已发布。正文提交 `69c3df7`，[GitHub Pages 部署](https://github.com/microarch-flow/wiki/actions/runs/46132430970) 成功；[公开正文](https://microarch-flow.github.io/wiki/series/compiler-runtime/06-execution-runtime/f03-runtime-buffer-management/)、F02 后继及 E03 衔接链接、专题导读、三张图解、导航、面包屑及搜索收录均已核验。基于 E03 的整站 183 项测试通过；复算 13/15 拍日程、72/60 B 数据预算、48 B 池碎片例及两组加法输出（教学模型，非 GPU 实测），三图 360 px 窄屏渲染核验通过。保留并行完成的 D04，F04/F05 待编写，旧推理运行时不变。
