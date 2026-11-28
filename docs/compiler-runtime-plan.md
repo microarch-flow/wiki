@@ -204,7 +204,7 @@ D02–D04 与 D05–D08 是两条分支。内核工程师不必先学完整寄�
 | D01 | 一句张量计算，怎样逐步变成循环和内存操作？ | 分层 Lowering、Tensor IR、Loop IR、Bufferization、显式读写与转换合法性。 | A01–A03、B04 的必要知识 | `d01-lowering-and-bufferization.md` | 已发布 |
 | D02 | 一个 IR 操作怎样变成目标机器的指令？ | 类型与指令合法化、指令选择、Machine IR、目标调用约定。 | D01 中低层 IR、A04 | `d02-instruction-selection.md` | 已发布 |
 | D03 | 临时值比硬件寄存器多，编译器怎样处理？ | 活跃区间、寄存器分配、Spill/Reload、机器指令调度与相互约束。 | D02、B05 | `d03-register-allocation-and-scheduling.md` | 已发布 |
-| D04 | 生成的代码怎样成为可加载、可调用的程序？ | 汇编、目标文件、符号、重定位、静态与动态链接、Kernel 元数据及产物兼容。 | D02、D03 或已有目标代码 | `d04-executable-artifacts.md` | 初稿完成，待发布核验 |
+| D04 | 生成的代码怎样成为可加载、可调用的程序？ | 汇编、目标文件、符号、重定位、静态与动态链接、Kernel 元数据及产物兼容。 | D02、D03 或已有目标代码 | `d04-executable-artifacts.md` | 已发布 |
 | D05 | 分块方案确定后，怎样生成可执行的矩阵乘法内核？ | 循环代码生成、SIMD/SIMT/NPU 实现、边界处理、地址计算、Kernel 库与生成。 | D01、C01、C02、A04 | `d05-matrix-multiplication-kernels.md` | 待写 |
 | D06 | 两个算子已经决定融合，怎样真正减少中间数据搬运？ | 融合循环、Epilogue、归约、Softmax、同步与中间状态保留。 | D05；B06、C05 的相关知识 | `d06-fused-kernels.md` | 待写 |
 | D07 | Attention 为什么可以不将完整的分数矩阵写入显存？ | 分块 Attention、在线 Softmax、因果掩码与 IO 复杂度、Prefill/Decode 内核差异、split-KV、分页 KV 访问。 | D06、Attention 基础 | `d07-attention-kernels.md` | 待写（深化） |
@@ -479,3 +479,5 @@ K 横跨所有路线。K01/K02 可早期开展，K03–K05 按被分析的机制
 - 2026-11-28 · E03 沿 E01/E02 的 ctx_P 与六个缓冲区、A04/A05 的向量加法及 F01 的入口 K、参数和执行规模，构造四项命令。采用四槽逻辑 head/tail 提交队列，区分命令记录、队列槽与任务资源；说明校验、资源持有、发布次序、Doorbell、设备接纳及成功交接依赖，保留完成处理和运行时编排边界。E03 初稿完成；核查 Linux DMA/内存屏障/MMIO、NVMe 队列与 AMD GPU/NPU 官方文档，复算四槽队列占用、任务依赖与向量加法结果，三张图解完成 500/360 px 渲染检查。合并 F02 正文后本地整站 182 项测试全部通过。
 
 - 2026-11-28 · F03 初稿完成。承接 F02 的独立双组日程，将两块输出缩为共享 d_Y，由 W₁→C₂ 的资源依赖推导一种 72→60 B、13→15 拍的教学空间与时间取舍。引入动态申请、引用与使用权、待回收状态、流有序分配、池的保留及空闲统计、48 B 地址池的外部碎片与取整引起的内部碎片；继承旧版取消后保留在途引用、allocated/reserved 统计边界。已结合 E02/E03 区分映射与池化、命令槽与任务 Buffer；E04 完成后复核失败时的底层静止和资源清理条件。F01–F03 共同执行主线初稿完成，G 可继续承接；F04/F05 各自深化。
+
+- 2026-11-28 · D04 已发布并核验，D01–D04 通用机器代码生成路线的初稿已完成。正文提交 `c29c16c`，[GitHub Pages 部署](https://github.com/microarch-flow/wiki/actions/runs/46132726384)成功。[公开正文](https://microarch-flow.github.io/wiki/series/compiler-runtime/04-code-generation/d04-executable-artifacts/)、D03 后继、专题导读、三张图解、导航、面包屑与搜索索引均已核验。LLVM 19.1.7 实际生成了 ELF32 RV32I 目标文件；LLVM MC 和 LLD 19.1.7 重新汇编、静态链接验证了符号、重定位及 PT_LOAD 布局，省略辅助函数时链接失败。从真实 ELF 的入口及指令字用教学模型执行得到 20，直接调用 evaluate 的 10,000 组随机与 6 组边界输入复算通过（非真机执行）。合并 F03 后本地整站 184 项测试通过。
