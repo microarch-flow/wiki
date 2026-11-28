@@ -1,0 +1,63 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="440" height="591" viewBox="0 0 440 591" role="img" aria-labelledby="title desc">
+  <title id="title">两个线程共同完成一行 Softmax 的归约与同步</title>
+  <desc id="desc">使用两个位于同一协作组的线程，每线程负责一个列元素。矩阵乘法完成的第二行分数以 FP32 表示，为 17 和 16。两线程将各自分数写入共享槽，使用覆盖两者并保证数据可见的同步后，各线程可读到两值并求得最大值 17。每线程减去该最大值求指数，分别得到 1 和约 0.368，再写入共享的指数槽。第二次同步后两线程可读到两个指数，并求得总和约 1.368。各线程将自己的指数除以这个总和，得到约 0.731 和 0.269。图示使用组内共享存储和同步，不假设隐式同步或跨组同步。</desc>
+  <defs>
+    <marker id="arrow" markerWidth="7" markerHeight="7" refX="6.3" refY="3.5" orient="auto" markerUnits="userSpaceOnUse">
+      <path d="M0 0 7 3.5 0 7Z" fill="#476957"/>
+    </marker>
+    <style>
+      text {font-family:"Noto Sans CJK SC","PingFang SC","Microsoft YaHei",sans-serif;fill:#173d35;font-size:19px}
+      .head {font-size:21px;font-weight:700}
+      .label {font-size:18px;font-weight:700}
+      .note {font-size:16px;fill:#416354}
+      .code {font-family:"DejaVu Sans Mono",Consolas,monospace;font-size:17px}
+      .panel {fill:#edf2e8;stroke:#cad8cb;stroke-width:1.2}
+      .node {fill:#e9eee4;stroke:#97ad9a;stroke-width:1.25}
+      .cell {fill:#d9e9dc;stroke:#729582;stroke-width:1.25}
+      .target {fill:#f2e4c9;stroke:#aa9163;stroke-width:1.5}
+      .target-text {fill:#78591b;font-weight:700}
+      .wire {fill:none;stroke:#476957;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;marker-end:url(#arrow)}
+      .line {fill:none;stroke:#476957;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+    </style>
+  </defs>
+  <rect x="1" y="1" width="438" height="589" rx="14" fill="#f5f6ef" stroke="#c4d0c4"/>
+  <text x="18" y="30" class="head">第二行 i = 1 · Softmax</text>
+  <text x="18" y="54" class="note">同一协作组：每个线程完成一列，FP32。</text>
+  <rect x="13" y="66" width="414" height="473" rx="9" class="panel"/>
+  <rect x="26" y="78" width="184" height="57" rx="7" class="node"/>
+  <rect x="230" y="78" width="184" height="57" rx="7" class="node"/>
+  <text x="118" y="100" class="label" text-anchor="middle">线程 0 · j=0</text>
+  <text x="322" y="100" class="label" text-anchor="middle">线程 1 · j=1</text>
+  <text x="118" y="123" class="code" text-anchor="middle">P[1,0]=17</text>
+  <text x="322" y="123" class="code" text-anchor="middle">P[1,1]=16</text>
+  <path d="M118 135V147M322 135V147" class="wire"/>
+  <rect x="26" y="151" width="388" height="78" rx="7" class="target"/>
+  <text x="220" y="173" class="label target-text" text-anchor="middle">写共享分数槽 [17, 16]</text>
+  <text x="220" y="195" class="note target-text" text-anchor="middle">同步 A：两份分数均可见</text>
+  <text x="220" y="217" class="code" text-anchor="middle">max(17,16) = 17</text>
+  <path d="M118 229V240M322 229V240" class="wire"/>
+  <rect x="26" y="244" width="184" height="60" rx="7" class="node"/>
+  <rect x="230" y="244" width="184" height="60" rx="7" class="node"/>
+  <text x="118" y="267" class="code" text-anchor="middle">exp(17−17)</text>
+  <text x="322" y="267" class="code" text-anchor="middle">exp(16−17)</text>
+  <text x="118" y="291" class="code" text-anchor="middle">= 1</text>
+  <text x="322" y="291" class="code" text-anchor="middle">≈ 0.368</text>
+  <path d="M118 304V315M322 304V315" class="wire"/>
+  <rect x="26" y="319" width="388" height="78" rx="7" class="target"/>
+  <text x="220" y="341" class="label target-text" text-anchor="middle">写共享指数槽 [1, 0.368]</text>
+  <text x="220" y="363" class="note target-text" text-anchor="middle">同步 B：两份指数均可见</text>
+  <text x="220" y="385" class="code" text-anchor="middle">sum ≈ 1.368</text>
+  <path d="M118 397V408M322 397V408" class="wire"/>
+  <rect x="26" y="412" width="184" height="76" rx="7" class="cell"/>
+  <rect x="230" y="412" width="184" height="76" rx="7" class="cell"/>
+  <text x="118" y="435" class="code" text-anchor="middle">1 / sum</text>
+  <text x="322" y="435" class="code" text-anchor="middle">0.368 / sum</text>
+  <text x="118" y="458" class="code" text-anchor="middle">≈ 0.731</text>
+  <text x="322" y="458" class="code" text-anchor="middle">≈ 0.269</text>
+  <text x="118" y="479" class="note" text-anchor="middle">写第 0 列</text>
+  <text x="322" y="479" class="note" text-anchor="middle">写第 1 列</text>
+  <text x="25" y="516" class="note">整行归约完成后才写各自的归一化结果。</text>
+
+  <text x="18" y="560" class="note">同步 A/B 仅覆盖本协作组，须保证存储可见。</text>
+  <text x="18" y="582" class="note">箭头表示数据依赖，非硬件执行拍数。</text>
+</svg>

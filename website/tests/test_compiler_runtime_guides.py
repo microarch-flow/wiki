@@ -490,6 +490,19 @@ class CompilerRuntimeGuideTests(unittest.TestCase):
         previous = SITE / PREFIX / route / "g01-model-loading-and-execution/index.html"
         self.assertIn(f"../{slug}/", GuideContent(previous.read_text()).links)
 
+    def test_d06_article_navigation_search_and_diagrams(self):
+        route = "04-code-generation"
+        slug = "d06-fused-kernels"
+        self._check_article(
+            route,
+            "算子实现与代码生成",
+            slug,
+            "两个算子已经决定融合，怎样真正减少中间数据搬运？",
+            ("d06-epilogue-dataflow.svg", "d06-row-reduction.svg"),
+        )
+        previous = SITE / PREFIX / route / "d05-matrix-multiplication-kernels/index.html"
+        self.assertIn(f"../{slug}/", GuideContent(previous.read_text()).links)
+
     def _check_foundation_article(self, slug, title, diagram_names):
         self._check_article("01-foundations", "软件执行共同基础", slug, title, diagram_names)
 
