@@ -1,0 +1,108 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 885" width="500" height="885" role="img" aria-labelledby="title desc">
+  <title id="title">同一空闲块，分配给谁会影响后续进展</title>
+  <desc id="desc">B 完成并安全回收后，A 占满两个块、已生成 1、有效 KV8，第三块空闲，C 等待。路径一给 A 的 Decode 使用新块，A 后续两个 Decode 继续使用该尾块，无须新块；A 完成时有效 KV11、已生成 4，安全回收后 C 可以运行 P6。路径二先安排 C P4，占满第三块，C 的提示尚剩 2 个位置，因此没有首输出；A 下一 Decode 与 C 下一提示均需一个新块，池满，双方无法推进。</desc>
+  <defs>
+    <style>text{font-family:"Noto Sans CJK SC","PingFang SC","Microsoft YaHei",sans-serif;fill:#173d35;font-size:19px}
+.head{font-size:23px;font-weight:700}.subhead{font-size:20px;font-weight:700}.label{font-size:18px;fill:#416354}.small{font-size:17px;fill:#416354}.token{font-size:18px;font-weight:600}.tiny{font-size:16px;fill:#416354}
+.a{fill:#d9e9dc;stroke:#6f9a80;stroke-width:1.4}.b{fill:#f2e4c9;stroke:#9c7b42;stroke-width:1.4}.c{fill:#dfe8ef;stroke:#7d9eb1;stroke-width:1.4}
+.Afill{fill:#82ae91;stroke:#5d8a72;stroke-width:1.2}.Bfill{fill:#dec187;stroke:#9c7b42;stroke-width:1.2}.Cfill{fill:#a3c0d1;stroke:#628ba5;stroke-width:1.2}
+.pad{fill:#f5f6ef;stroke:#9cae9e;stroke-width:1.4;stroke-dasharray:4 3}.line{stroke:#c4d0c4;stroke-width:1.3;fill:none}.outline{stroke:#8b9c8e;stroke-width:1.4;fill:none}
+.context{fill:#edf2e8;stroke:#9ab69e;stroke-width:1.5}.artifact{fill:#f9f8ef;stroke:#b8ba9e;stroke-width:1.4}.warn-panel{fill:#f3e3dc;stroke:#b77d6b;stroke-width:1.4}.warn{fill:#8c4536;font-size:18px;font-weight:600}.ok{fill:#2f6b4d;font-size:18px;font-weight:600}
+.arrow{stroke:#527d64;stroke-width:2;fill:none;marker-end:url(#arrow)}.warn-arrow{stroke:#b77d6b;stroke-width:2;fill:none;marker-end:url(#warn-arrow)}</style>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0 0L10 5L0 10Z" fill="#527d64"/></marker>
+    <marker id="warn-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0 0L10 5L0 10Z" fill="#b77d6b"/></marker>
+  </defs>
+  <rect x="1" y="1" width="498" height="883" rx="14" fill="#f5f6ef" stroke="#c4d0c4" stroke-width="1.3"/>
+  <text x="24" y="35" class="head">只剩一块：给 A，还是给 C？</text>
+  <text x="24" y="62" class="label">在同一 R2 结束状态选择下一轮工作。</text>
+  <text x="24" y="85" class="small">每组四格是一个块；虚框为未填位置。</text>
+  <rect x="18" y="103" width="464" height="122" rx="9" class="context"/>
+  <text x="32" y="131" class="subhead">共同起点：B 已安全回收；C 等待</text>
+  <rect x="32" y="146" width="140" height="43" rx="6" class="a"/>
+  <rect x="39" y="154" width="30" height="27" rx="3" class="Afill"/>
+  <rect x="71" y="154" width="30" height="27" rx="3" class="Afill"/>
+  <rect x="103" y="154" width="30" height="27" rx="3" class="Afill"/>
+  <rect x="135" y="154" width="30" height="27" rx="3" class="Afill"/>
+  <text x="102" y="210" class="tiny" text-anchor="middle">A 块 · 4/4</text>
+  <rect x="180" y="146" width="140" height="43" rx="6" class="a"/>
+  <rect x="187" y="154" width="30" height="27" rx="3" class="Afill"/>
+  <rect x="219" y="154" width="30" height="27" rx="3" class="Afill"/>
+  <rect x="251" y="154" width="30" height="27" rx="3" class="Afill"/>
+  <rect x="283" y="154" width="30" height="27" rx="3" class="Afill"/>
+  <text x="250" y="210" class="tiny" text-anchor="middle">A 块 · 4/4</text>
+  <rect x="328" y="146" width="140" height="43" rx="6" class="pad"/>
+  <rect x="335" y="154" width="30" height="27" rx="3" class="pad"/>
+  <rect x="367" y="154" width="30" height="27" rx="3" class="pad"/>
+  <rect x="399" y="154" width="30" height="27" rx="3" class="pad"/>
+  <rect x="431" y="154" width="30" height="27" rx="3" class="pad"/>
+  <text x="398" y="210" class="tiny" text-anchor="middle">空闲块</text>
+  <path d="M250 225V247" class="arrow"/>
+  <rect x="18" y="251" width="464" height="322" rx="9" class="artifact"/>
+  <text x="32" y="280" class="subhead">路径 1：先让 A Decode</text>
+  <text x="32" y="306" class="small">R3：A D1，第三块只填入第 1 个位置。</text>
+  <rect x="32" y="321" width="140" height="43" rx="6" class="a"/>
+  <rect x="39" y="329" width="30" height="27" rx="3" class="Afill"/>
+  <rect x="71" y="329" width="30" height="27" rx="3" class="Afill"/>
+  <rect x="103" y="329" width="30" height="27" rx="3" class="Afill"/>
+  <rect x="135" y="329" width="30" height="27" rx="3" class="Afill"/>
+  <text x="102" y="385" class="tiny" text-anchor="middle">A 块 · 4/4</text>
+  <rect x="180" y="321" width="140" height="43" rx="6" class="a"/>
+  <rect x="187" y="329" width="30" height="27" rx="3" class="Afill"/>
+  <rect x="219" y="329" width="30" height="27" rx="3" class="Afill"/>
+  <rect x="251" y="329" width="30" height="27" rx="3" class="Afill"/>
+  <rect x="283" y="329" width="30" height="27" rx="3" class="Afill"/>
+  <text x="250" y="385" class="tiny" text-anchor="middle">A 块 · 4/4</text>
+  <rect x="328" y="321" width="140" height="43" rx="6" class="a"/>
+  <rect x="335" y="329" width="30" height="27" rx="3" class="Afill"/>
+  <rect x="367" y="329" width="30" height="27" rx="3" class="pad"/>
+  <rect x="399" y="329" width="30" height="27" rx="3" class="pad"/>
+  <rect x="431" y="329" width="30" height="27" rx="3" class="pad"/>
+  <text x="398" y="385" class="tiny" text-anchor="middle">A 块 · 1/4</text>
+  <text x="32" y="411" class="small">继续两轮 D1：仍使用第三块。</text>
+  <text x="32" y="437" class="ok">A 已生成 4，KV11，完成并安全回收。</text>
+  <path d="M32 450H468" class="line"/>
+  <text x="32" y="478" class="small">之后：C P6，取得两个空闲块。</text>
+  <rect x="32" y="494" width="140" height="43" rx="6" class="c"/>
+  <rect x="39" y="502" width="30" height="27" rx="3" class="Cfill"/>
+  <rect x="71" y="502" width="30" height="27" rx="3" class="Cfill"/>
+  <rect x="103" y="502" width="30" height="27" rx="3" class="Cfill"/>
+  <rect x="135" y="502" width="30" height="27" rx="3" class="Cfill"/>
+  <text x="102" y="558" class="tiny" text-anchor="middle">C 块 · 4/4</text>
+  <rect x="180" y="494" width="140" height="43" rx="6" class="c"/>
+  <rect x="187" y="502" width="30" height="27" rx="3" class="Cfill"/>
+  <rect x="219" y="502" width="30" height="27" rx="3" class="Cfill"/>
+  <rect x="251" y="502" width="30" height="27" rx="3" class="pad"/>
+  <rect x="283" y="502" width="30" height="27" rx="3" class="pad"/>
+  <text x="250" y="558" class="tiny" text-anchor="middle">C 块 · 2/4</text>
+  <rect x="328" y="494" width="140" height="43" rx="6" class="pad"/>
+  <rect x="335" y="502" width="30" height="27" rx="3" class="pad"/>
+  <rect x="367" y="502" width="30" height="27" rx="3" class="pad"/>
+  <rect x="399" y="502" width="30" height="27" rx="3" class="pad"/>
+  <rect x="431" y="502" width="30" height="27" rx="3" class="pad"/>
+  <text x="398" y="558" class="tiny" text-anchor="middle">空闲块</text>
+  <rect x="18" y="591" width="464" height="274" rx="9" class="artifact"/>
+  <text x="32" y="620" class="subhead">路径 2：先给 C 分块 Prefill</text>
+  <text x="32" y="646" class="small">R3：C P4，剩余 2 个提示位置未计算。</text>
+  <rect x="32" y="661" width="140" height="43" rx="6" class="a"/>
+  <rect x="39" y="669" width="30" height="27" rx="3" class="Afill"/>
+  <rect x="71" y="669" width="30" height="27" rx="3" class="Afill"/>
+  <rect x="103" y="669" width="30" height="27" rx="3" class="Afill"/>
+  <rect x="135" y="669" width="30" height="27" rx="3" class="Afill"/>
+  <text x="102" y="725" class="tiny" text-anchor="middle">A 块 · 4/4</text>
+  <rect x="180" y="661" width="140" height="43" rx="6" class="a"/>
+  <rect x="187" y="669" width="30" height="27" rx="3" class="Afill"/>
+  <rect x="219" y="669" width="30" height="27" rx="3" class="Afill"/>
+  <rect x="251" y="669" width="30" height="27" rx="3" class="Afill"/>
+  <rect x="283" y="669" width="30" height="27" rx="3" class="Afill"/>
+  <text x="250" y="725" class="tiny" text-anchor="middle">A 块 · 4/4</text>
+  <rect x="328" y="661" width="140" height="43" rx="6" class="c"/>
+  <rect x="335" y="669" width="30" height="27" rx="3" class="Cfill"/>
+  <rect x="367" y="669" width="30" height="27" rx="3" class="Cfill"/>
+  <rect x="399" y="669" width="30" height="27" rx="3" class="Cfill"/>
+  <rect x="431" y="669" width="30" height="27" rx="3" class="Cfill"/>
+  <text x="398" y="725" class="tiny" text-anchor="middle">C 块 · 4/4</text>
+  <rect x="32" y="751" width="436" height="95" rx="6" class="warn-panel"/>
+  <text x="44" y="779" class="warn">A 下一 D1：需 1 个新块。</text>
+  <text x="44" y="804" class="warn">C 下一提示位置：也需 1 个新块。</text>
+  <text x="44" y="831" class="small">无空闲块，C 尚无首输出。</text>
+</svg>

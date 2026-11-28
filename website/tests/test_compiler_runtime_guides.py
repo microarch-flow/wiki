@@ -627,9 +627,24 @@ class CompilerRuntimeGuideTests(unittest.TestCase):
         previous = SITE / PREFIX / route / "h01-continuous-batching/index.html"
         self.assertIn(f"../{slug}/", GuideContent(previous.read_text()).links)
 
+    def test_h03_article_navigation_search_and_diagrams(self):
+        route = "08-request-scheduling"
+        slug = "h03-admission-and-request-scheduling"
+        self._check_article(
+            route,
+            "请求调度与批处理",
+            slug,
+            "KV 空间不足时，应该接纳、等待还是抢占哪个请求？",
+            ("h03-block-pressure.svg", "h03-admission-choices.svg", "h03-preemption-progress.svg"),
+        )
+        for previous_slug in ("h01-continuous-batching", "h02-chunked-prefill"):
+            previous = SITE / PREFIX / route / previous_slug / "index.html"
+            self.assertIn(f"../{slug}/", GuideContent(previous.read_text()).links)
+
     def test_h_request_scheduling_formulas_are_renderable(self):
         route = SITE / PREFIX / "08-request-scheduling"
-        for slug, count in (("h01-continuous-batching", 2), ("h02-chunked-prefill", 4)):
+        for slug, count in (("h01-continuous-batching", 2), ("h02-chunked-prefill", 4),
+                            ("h03-admission-and-request-scheduling", 3)):
             with self.subTest(slug=slug):
                 content = (route / slug / "index.html").read_text()
                 body = re.search(r"<article\b[^>]*>(.*?)</article>", content, re.S)[1]

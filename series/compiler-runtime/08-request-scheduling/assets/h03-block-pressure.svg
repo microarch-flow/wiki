@@ -1,0 +1,86 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 680" width="500" height="680" role="img" aria-labelledby="title desc">
+  <title id="title">池满时，不同请求的下一轮分配需求</title>
+  <desc id="desc">教学模型：KV 池有 3 个块，每个块容纳 4 个位置。R1 结束后 A 已生成 1、有效 KV 8 并占满两块，B 已生成 1、有效 KV 3 并占一块，池无空闲块。A 下一次 Decode 需要新块，B 可以填自己的尾槽。在 R2 仅执行 B Decode 1，C 到达。B 生成第 2 个输出、有效 KV 4，完成后待安全回收。B 块安全归还之后，A 仍已生成 1、有效 KV 8，池出现一个可分配块，C 等待。实色小格表示有效 KV，虚框为未填位置；带有请求背景的尾槽不等于空闲块。</desc>
+  <defs>
+    <style>text{font-family:"Noto Sans CJK SC","PingFang SC","Microsoft YaHei",sans-serif;fill:#173d35;font-size:19px}
+.head{font-size:23px;font-weight:700}.subhead{font-size:20px;font-weight:700}.label{font-size:18px;fill:#416354}.small{font-size:17px;fill:#416354}.token{font-size:18px;font-weight:600}.tiny{font-size:16px;fill:#416354}
+.a{fill:#d9e9dc;stroke:#6f9a80;stroke-width:1.4}.b{fill:#f2e4c9;stroke:#9c7b42;stroke-width:1.4}.c{fill:#dfe8ef;stroke:#7d9eb1;stroke-width:1.4}
+.Afill{fill:#82ae91;stroke:#5d8a72;stroke-width:1.2}.Bfill{fill:#dec187;stroke:#9c7b42;stroke-width:1.2}.Cfill{fill:#a3c0d1;stroke:#628ba5;stroke-width:1.2}
+.pad{fill:#f5f6ef;stroke:#9cae9e;stroke-width:1.4;stroke-dasharray:4 3}.line{stroke:#c4d0c4;stroke-width:1.3;fill:none}.outline{stroke:#8b9c8e;stroke-width:1.4;fill:none}
+.context{fill:#edf2e8;stroke:#9ab69e;stroke-width:1.5}.artifact{fill:#f9f8ef;stroke:#b8ba9e;stroke-width:1.4}.warn-panel{fill:#f3e3dc;stroke:#b77d6b;stroke-width:1.4}.warn{fill:#8c4536;font-size:18px;font-weight:600}.ok{fill:#2f6b4d;font-size:18px;font-weight:600}
+.arrow{stroke:#527d64;stroke-width:2;fill:none;marker-end:url(#arrow)}.warn-arrow{stroke:#b77d6b;stroke-width:2;fill:none;marker-end:url(#warn-arrow)}</style>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0 0L10 5L0 10Z" fill="#527d64"/></marker>
+    <marker id="warn-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0 0L10 5L0 10Z" fill="#b77d6b"/></marker>
+  </defs>
+  <rect x="1" y="1" width="498" height="678" rx="14" fill="#f5f6ef" stroke="#c4d0c4" stroke-width="1.3"/>
+  <text x="24" y="35" class="head">池满时，哪条请求还能推进？</text>
+  <text x="24" y="62" class="label">KV 池：3 块 × 4 位置。</text>
+  <text x="24" y="85" class="small">实色小格为有效 KV；虚框为未填位置。</text>
+  <rect x="18" y="103" width="464" height="212" rx="9" class="artifact"/>
+  <text x="32" y="132" class="subhead">R1 结束：A P8，B P3</text>
+  <text x="32" y="158" class="small">A 已生成 1，B 已生成 1；池无空闲块。</text>
+  <rect x="32" y="173" width="140" height="43" rx="6" class="a"/>
+  <rect x="39" y="181" width="30" height="27" rx="3" class="Afill"/>
+  <rect x="71" y="181" width="30" height="27" rx="3" class="Afill"/>
+  <rect x="103" y="181" width="30" height="27" rx="3" class="Afill"/>
+  <rect x="135" y="181" width="30" height="27" rx="3" class="Afill"/>
+  <text x="102" y="237" class="tiny" text-anchor="middle">A 块 · 4/4</text>
+  <rect x="180" y="173" width="140" height="43" rx="6" class="a"/>
+  <rect x="187" y="181" width="30" height="27" rx="3" class="Afill"/>
+  <rect x="219" y="181" width="30" height="27" rx="3" class="Afill"/>
+  <rect x="251" y="181" width="30" height="27" rx="3" class="Afill"/>
+  <rect x="283" y="181" width="30" height="27" rx="3" class="Afill"/>
+  <text x="250" y="237" class="tiny" text-anchor="middle">A 块 · 4/4</text>
+  <rect x="328" y="173" width="140" height="43" rx="6" class="b"/>
+  <rect x="335" y="181" width="30" height="27" rx="3" class="Bfill"/>
+  <rect x="367" y="181" width="30" height="27" rx="3" class="Bfill"/>
+  <rect x="399" y="181" width="30" height="27" rx="3" class="Bfill"/>
+  <rect x="431" y="181" width="30" height="27" rx="3" class="pad"/>
+  <text x="398" y="237" class="tiny" text-anchor="middle">B 块 · 3/4</text>
+  <text x="32" y="269" class="warn">A D1：需申请新块，失败。</text>
+  <text x="32" y="295" class="ok">B D1：使用自己的尾槽，可以执行。</text>
+  <path d="M250 315V337" class="arrow"/>
+  <rect x="18" y="341" width="464" height="185" rx="9" class="artifact"/>
+  <text x="32" y="370" class="subhead">R2：只调度 B D1</text>
+  <text x="32" y="396" class="small">R2 期间 C 到达；本轮 A 没有新计算。</text>
+  <rect x="32" y="412" width="140" height="43" rx="6" class="a"/>
+  <rect x="39" y="420" width="30" height="27" rx="3" class="Afill"/>
+  <rect x="71" y="420" width="30" height="27" rx="3" class="Afill"/>
+  <rect x="103" y="420" width="30" height="27" rx="3" class="Afill"/>
+  <rect x="135" y="420" width="30" height="27" rx="3" class="Afill"/>
+  <text x="102" y="476" class="tiny" text-anchor="middle">A 块 · 4/4</text>
+  <rect x="180" y="412" width="140" height="43" rx="6" class="a"/>
+  <rect x="187" y="420" width="30" height="27" rx="3" class="Afill"/>
+  <rect x="219" y="420" width="30" height="27" rx="3" class="Afill"/>
+  <rect x="251" y="420" width="30" height="27" rx="3" class="Afill"/>
+  <rect x="283" y="420" width="30" height="27" rx="3" class="Afill"/>
+  <text x="250" y="476" class="tiny" text-anchor="middle">A 块 · 4/4</text>
+  <rect x="328" y="412" width="140" height="43" rx="6" class="b"/>
+  <rect x="335" y="420" width="30" height="27" rx="3" class="Bfill"/>
+  <rect x="367" y="420" width="30" height="27" rx="3" class="Bfill"/>
+  <rect x="399" y="420" width="30" height="27" rx="3" class="Bfill"/>
+  <rect x="431" y="420" width="30" height="27" rx="3" class="Bfill"/>
+  <text x="398" y="476" class="tiny" text-anchor="middle">B 块 · 4/4</text>
+  <text x="32" y="505" class="small">B 已生成 2，KV4，生成完成。</text>
+  <path d="M250 526V548" class="arrow"/>
+  <rect x="18" y="552" width="464" height="108" rx="9" class="context"/>
+  <text x="32" y="579" class="subhead">B 安全回收后：空闲块 = 1</text>
+  <rect x="32" y="591" width="140" height="43" rx="6" class="a"/>
+  <rect x="39" y="599" width="30" height="27" rx="3" class="Afill"/>
+  <rect x="71" y="599" width="30" height="27" rx="3" class="Afill"/>
+  <rect x="103" y="599" width="30" height="27" rx="3" class="Afill"/>
+  <rect x="135" y="599" width="30" height="27" rx="3" class="Afill"/>
+  <text x="102" y="655" class="tiny" text-anchor="middle">A 块 · 4/4</text>
+  <rect x="180" y="591" width="140" height="43" rx="6" class="a"/>
+  <rect x="187" y="599" width="30" height="27" rx="3" class="Afill"/>
+  <rect x="219" y="599" width="30" height="27" rx="3" class="Afill"/>
+  <rect x="251" y="599" width="30" height="27" rx="3" class="Afill"/>
+  <rect x="283" y="599" width="30" height="27" rx="3" class="Afill"/>
+  <text x="250" y="655" class="tiny" text-anchor="middle">A 块 · 4/4</text>
+  <rect x="328" y="591" width="140" height="43" rx="6" class="pad"/>
+  <rect x="335" y="599" width="30" height="27" rx="3" class="pad"/>
+  <rect x="367" y="599" width="30" height="27" rx="3" class="pad"/>
+  <rect x="399" y="599" width="30" height="27" rx="3" class="pad"/>
+  <rect x="431" y="599" width="30" height="27" rx="3" class="pad"/>
+  <text x="398" y="655" class="tiny" text-anchor="middle">空闲块</text>
+</svg>
