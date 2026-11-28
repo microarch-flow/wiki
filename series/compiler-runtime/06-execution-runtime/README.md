@@ -27,7 +27,7 @@ F01–F03 为模型执行的主要基础。F04、F05 分别深入重放和变体
 | F01 | [设备已经准备好了，运行时怎样启动第一次计算？](f01-module-loading-and-dispatch.md) | Module Load、执行上下文、Kernel Dispatch、参数绑定、资源准备。 | A04、E01/E03 的接口；D04 按需 | 已发布 |
 | F02 | [提交任务的函数已经返回，为什么不能马上读取计算结果？](f02-asynchronous-execution.md) | Stream、Event、Fence、异步执行、依赖及可见性、搬运计算编排。 | F01、A05、E04 的完成语义 | 已发布 |
 | F03 | [两项任务需要使用同一块 Buffer，什么时候才能安全复用？](f03-runtime-buffer-management.md) | 动态分配、内存池、碎片、所有权、延迟释放、异步资源回收。 | F02 | 已发布 |
-| F04 | [多次执行相同的任务序列，怎样减少每轮提交开销？](f04-execution-graphs-and-replay.md) | 任务图、执行图捕获、Replay、动态 DAG、重放约束及重建。 | F02、F03 | 初稿完成 |
+| F04 | [多次执行相同的任务序列，怎样减少每轮提交开销？](f04-execution-graphs-and-replay.md) | 任务图、执行图捕获、Replay、动态 DAG、重放约束及重建。 | F02、F03 | 已发布 |
 | F05 | 实际输入形状发生变化，运行时怎样找到可以执行的程序？ | Shape Guard、分桶、变体选择、JIT 触发、编译缓存、Fallback。 | A03、F01、F03；按需 F04 | 未发布 |
 
 ## 从哪里来，接下来往哪读
