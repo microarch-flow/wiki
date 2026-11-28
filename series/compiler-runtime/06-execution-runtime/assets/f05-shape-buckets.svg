@@ -1,0 +1,108 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 637" width="500" height="637" role="img" aria-labelledby="title desc">
+  <title id="title">形状分桶和逐元素加法的 padding 空间开销</title>
+  <desc id="desc">教学中只准备容量 4、8 两种方案。实际长度 3、5、7 分别映射到容量 4、8、8。每块 Buffer 中有效数据为 12、20、28 B，按桶分配则占 16、32、32 B，空余分别是 4、12、4 B。以长度 5 为例，A、B、Y 皆使用容量为 8 的 Buffer，前 5 个元素有效，最后 3 个为 padding 或空余位置，仅前 5 个输出作为实际结果。若按整个桶分配、复制，每块占 32 B 而非 20 B。逐元素加法可独立处理有效位置，其他算子的 padding 必须保证语义。</desc>
+  <defs>
+    <style>
+      text{font-family:"Noto Sans CJK SC","PingFang SC","Microsoft YaHei",sans-serif;fill:#173d35;font-size:18px}
+      .head{font-weight:700;font-size:23px}.subhead{font-weight:700;font-size:20px}.label{font-size:17px;fill:#416354}.small{font-size:16px;fill:#416354}.tick{font-size:14px;fill:#416354}.slot{font-size:17px;font-weight:600}.strong{font-weight:700;font-size:18px}.warn{fill:#765820;font-weight:600;font-size:17px}
+      .panel{fill:#edf2e8;stroke:#9ab69e;stroke-width:1.4}.idle{fill:#f9f8ef;stroke:#b8ba9e;stroke-width:1}.load{fill:#d9e9dc;stroke:#6f9a80;stroke-width:1.3}.compute{fill:#c1dac6;stroke:#6f9a80;stroke-width:1.4}.wait{fill:#f2e4c9;stroke:#9c7b42;stroke-width:1.3}.free{fill:#d9e9dc;stroke:#6f9a80;stroke-width:1.3}.used{fill:#f2e4c9;stroke:#9c7b42;stroke-width:1.3}.grid{stroke:#c4d0c4;stroke-width:1;stroke-dasharray:3 3}.edge{fill:none;stroke:#527d64;stroke-width:2;marker-end:url(#arrow)}.dep{fill:none;stroke:#9c7b42;stroke-width:2;stroke-dasharray:5 3;marker-end:url(#dep-arrow)}.end{fill:none;stroke:#9c7b42;stroke-width:1.5}.danger{fill:none;stroke:#9c7b42;stroke-width:1.8;stroke-dasharray:5 3}
+    </style>
+    <marker id="arrow" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0 0L7 3.5L0 7Z" fill="#527d64"/></marker>
+    <marker id="dep-arrow" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0 0L7 3.5L0 7Z" fill="#9c7b42"/></marker>
+  </defs>
+  <rect x="1" y="1" width="498" height="635" rx="14" fill="#f5f6ef" stroke="#c4d0c4" stroke-width="1.3"/>
+  <text x="24" y="33" class="head">把多种输入长度映射到少量容量</text>
+  <text x="24" y="58" class="label">教学分桶：固定容量 4 或 8 个 int32 元素</text>
+  <rect x="18" y="77" width="464" height="244" rx="10" class="panel"/>
+  <text x="32" y="103" class="subhead">每个 Buffer 的空间开销</text>
+  <text x="66" y="129" class="small" text-anchor="middle">实际</text>
+  <text x="66" y="148" class="small" text-anchor="middle">长度 n</text>
+  <text x="154" y="129" class="small" text-anchor="middle">桶</text>
+  <text x="154" y="148" class="small" text-anchor="middle">容量</text>
+  <text x="247" y="129" class="small" text-anchor="middle">有效</text>
+  <text x="247" y="148" class="small" text-anchor="middle">字节数</text>
+  <text x="343" y="129" class="small" text-anchor="middle">分配</text>
+  <text x="343" y="148" class="small" text-anchor="middle">字节数</text>
+  <text x="435" y="129" class="small" text-anchor="middle">空余</text>
+  <text x="435" y="148" class="small" text-anchor="middle">字节数</text>
+  <rect x="32" y="160" width="436" height="39" rx="5" class="idle"/>
+  <text x="66" y="185" class="slot" text-anchor="middle">3</text>
+  <text x="154" y="185" class="slot" text-anchor="middle">4</text>
+  <text x="247" y="185" class="slot" text-anchor="middle">12 B</text>
+  <text x="343" y="185" class="slot" text-anchor="middle">16 B</text>
+  <text x="435" y="185" class="slot" text-anchor="middle">4 B</text>
+  <rect x="32" y="206" width="436" height="39" rx="5" class="idle"/>
+  <text x="66" y="231" class="slot" text-anchor="middle">5</text>
+  <text x="154" y="231" class="slot" text-anchor="middle">8</text>
+  <text x="247" y="231" class="slot" text-anchor="middle">20 B</text>
+  <text x="343" y="231" class="slot" text-anchor="middle">32 B</text>
+  <text x="435" y="231" class="slot" text-anchor="middle">12 B</text>
+  <rect x="32" y="252" width="436" height="39" rx="5" class="idle"/>
+  <text x="66" y="277" class="slot" text-anchor="middle">7</text>
+  <text x="154" y="277" class="slot" text-anchor="middle">8</text>
+  <text x="247" y="277" class="slot" text-anchor="middle">28 B</text>
+  <text x="343" y="277" class="slot" text-anchor="middle">32 B</text>
+  <text x="435" y="277" class="slot" text-anchor="middle">4 B</text>
+  <text x="32" y="311" class="small">长度 5、7 复用容量 8 的方案；空间成本不同。</text>
+  <rect x="18" y="335" width="464" height="211" rx="10" class="panel"/>
+  <text x="32" y="362" class="subhead">例：长度 n = 5，使用容量 8</text>
+  <text x="32" y="387" class="label">A、B、Y 各自使用一块 32 B Buffer</text>
+  <text x="94" y="422" class="label" text-anchor="end">A · 输入</text>
+  <rect x="109" y="399" width="41" height="32" rx="5" class="compute"/>
+  <text x="129.5" y="421.0" class="slot" text-anchor="middle">0</text>
+  <rect x="153" y="399" width="41" height="32" rx="5" class="compute"/>
+  <text x="173.5" y="421.0" class="slot" text-anchor="middle">1</text>
+  <rect x="197" y="399" width="41" height="32" rx="5" class="compute"/>
+  <text x="217.5" y="421.0" class="slot" text-anchor="middle">2</text>
+  <rect x="241" y="399" width="41" height="32" rx="5" class="compute"/>
+  <text x="261.5" y="421.0" class="slot" text-anchor="middle">3</text>
+  <rect x="285" y="399" width="41" height="32" rx="5" class="compute"/>
+  <text x="305.5" y="421.0" class="slot" text-anchor="middle">4</text>
+  <rect x="329" y="399" width="41" height="32" rx="5" class="wait"/>
+  <text x="349.5" y="421.0" class="slot" text-anchor="middle">5</text>
+  <rect x="373" y="399" width="41" height="32" rx="5" class="wait"/>
+  <text x="393.5" y="421.0" class="slot" text-anchor="middle">6</text>
+  <rect x="417" y="399" width="41" height="32" rx="5" class="wait"/>
+  <text x="437.5" y="421.0" class="slot" text-anchor="middle">7</text>
+  <text x="94" y="464" class="label" text-anchor="end">B · 输入</text>
+  <rect x="109" y="441" width="41" height="32" rx="5" class="compute"/>
+  <text x="129.5" y="463.0" class="slot" text-anchor="middle">0</text>
+  <rect x="153" y="441" width="41" height="32" rx="5" class="compute"/>
+  <text x="173.5" y="463.0" class="slot" text-anchor="middle">1</text>
+  <rect x="197" y="441" width="41" height="32" rx="5" class="compute"/>
+  <text x="217.5" y="463.0" class="slot" text-anchor="middle">2</text>
+  <rect x="241" y="441" width="41" height="32" rx="5" class="compute"/>
+  <text x="261.5" y="463.0" class="slot" text-anchor="middle">3</text>
+  <rect x="285" y="441" width="41" height="32" rx="5" class="compute"/>
+  <text x="305.5" y="463.0" class="slot" text-anchor="middle">4</text>
+  <rect x="329" y="441" width="41" height="32" rx="5" class="wait"/>
+  <text x="349.5" y="463.0" class="slot" text-anchor="middle">5</text>
+  <rect x="373" y="441" width="41" height="32" rx="5" class="wait"/>
+  <text x="393.5" y="463.0" class="slot" text-anchor="middle">6</text>
+  <rect x="417" y="441" width="41" height="32" rx="5" class="wait"/>
+  <text x="437.5" y="463.0" class="slot" text-anchor="middle">7</text>
+  <text x="94" y="506" class="label" text-anchor="end">Y · 输出</text>
+  <rect x="109" y="483" width="41" height="32" rx="5" class="compute"/>
+  <text x="129.5" y="505.0" class="slot" text-anchor="middle">0</text>
+  <rect x="153" y="483" width="41" height="32" rx="5" class="compute"/>
+  <text x="173.5" y="505.0" class="slot" text-anchor="middle">1</text>
+  <rect x="197" y="483" width="41" height="32" rx="5" class="compute"/>
+  <text x="217.5" y="505.0" class="slot" text-anchor="middle">2</text>
+  <rect x="241" y="483" width="41" height="32" rx="5" class="compute"/>
+  <text x="261.5" y="505.0" class="slot" text-anchor="middle">3</text>
+  <rect x="285" y="483" width="41" height="32" rx="5" class="compute"/>
+  <text x="305.5" y="505.0" class="slot" text-anchor="middle">4</text>
+  <rect x="329" y="483" width="41" height="32" rx="5" class="wait"/>
+  <text x="349.5" y="505.0" class="slot" text-anchor="middle">5</text>
+  <rect x="373" y="483" width="41" height="32" rx="5" class="wait"/>
+  <text x="393.5" y="505.0" class="slot" text-anchor="middle">6</text>
+  <rect x="417" y="483" width="41" height="32" rx="5" class="wait"/>
+  <text x="437.5" y="505.0" class="slot" text-anchor="middle">7</text>
+  <rect x="109" y="519" width="10" height="10" rx="1" class="compute"/>
+  <text x="124" y="530" class="small">有效元素</text>
+  <rect x="267" y="519" width="10" height="10" rx="1" class="wait"/>
+  <text x="282" y="530" class="small">Padding / 空余位置</text>
+  <text x="24" y="572" class="label">前 5 个结果有效；3 个位置不作为有效输出。</text>
+  <text x="24" y="595" class="small">按整个桶分配和复制时，每块占 32 B 而非 20 B。</text>
+  <text x="24" y="619" class="small">逐元素加法可如此补齐；其他算子须保持原语义。</text>
+</svg>

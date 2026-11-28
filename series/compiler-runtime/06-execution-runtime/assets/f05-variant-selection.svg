@@ -1,0 +1,75 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 984" width="500" height="984" role="img" aria-labelledby="title desc">
+  <title id="title">动态输入的可执行变体选择和 JIT 回退路径</title>
+  <desc id="desc">收到实际输入后，先检查输入语义与调用约束，不满足输入基本约束则明确失败；搜索已有可用变体（已加载或可加载），检查 guard。如果命中，则进入执行前统一核验。若没有匹配项，先查询编译产物缓存；命中合适产物则直接校验并加载，缓存未命中时根据代价、支持范围和策略判断是否尝试 JIT。允许 JIT 时触发实际编译，编译由 B 至 D 专题负责；成功后校验、缓存并加载得到可调用变体。若选择不编译、编译失败或校验加载失败，则尝试满足语义及设备资源约束的通用实现或其他后端；不存在可用回退方案则明确失败。所有成功选中的方案在需要时进行加载，再核验 guard 与资源、绑定本次执行参数并提交；执行前若失败则另选合法方案或报告失败。这是教学策略示意，不要求所有平台都采用 JIT 或相同控制流。</desc>
+  <defs>
+    <style>
+      text{font-family:"Noto Sans CJK SC","PingFang SC","Microsoft YaHei",sans-serif;fill:#173d35;font-size:18px}
+      .head{font-weight:700;font-size:23px}.subhead{font-weight:700;font-size:20px}.label{font-size:17px;fill:#416354}.small{font-size:16px;fill:#416354}.tick{font-size:14px;fill:#416354}.slot{font-size:17px;font-weight:600}.strong{font-weight:700;font-size:18px}.warn{fill:#765820;font-weight:600;font-size:17px}
+      .panel{fill:#edf2e8;stroke:#9ab69e;stroke-width:1.4}.idle{fill:#f9f8ef;stroke:#b8ba9e;stroke-width:1}.load{fill:#d9e9dc;stroke:#6f9a80;stroke-width:1.3}.compute{fill:#c1dac6;stroke:#6f9a80;stroke-width:1.4}.wait{fill:#f2e4c9;stroke:#9c7b42;stroke-width:1.3}.free{fill:#d9e9dc;stroke:#6f9a80;stroke-width:1.3}.used{fill:#f2e4c9;stroke:#9c7b42;stroke-width:1.3}.grid{stroke:#c4d0c4;stroke-width:1;stroke-dasharray:3 3}.edge{fill:none;stroke:#527d64;stroke-width:2;marker-end:url(#arrow)}.dep{fill:none;stroke:#9c7b42;stroke-width:2;stroke-dasharray:5 3;marker-end:url(#dep-arrow)}.end{fill:none;stroke:#9c7b42;stroke-width:1.5}.danger{fill:none;stroke:#9c7b42;stroke-width:1.8;stroke-dasharray:5 3}
+    </style>
+    <marker id="arrow" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0 0L7 3.5L0 7Z" fill="#527d64"/></marker>
+    <marker id="dep-arrow" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0 0L7 3.5L0 7Z" fill="#9c7b42"/></marker>
+  </defs>
+  <rect x="1" y="1" width="498" height="982" rx="14" fill="#f5f6ef" stroke="#c4d0c4" stroke-width="1.3"/>
+  <text x="24" y="33" class="head">运行时怎样选择一个可执行方案？</text>
+  <text x="24" y="58" class="label">没有匹配变体，不代表一定要触发 JIT。</text>
+  <rect x="75" y="77" width="350" height="43" rx="5" class="load"/>
+  <text x="250.0" y="104.5" class="slot" text-anchor="middle">接收实际输入</text>
+  <path d="M250 120V135" class="edge"/>
+  <rect x="75" y="139" width="350" height="68" rx="8" class="panel"/>
+  <text x="250" y="164" class="slot" text-anchor="middle">检查输入语义与调用约束</text>
+  <text x="250" y="188" class="warn" text-anchor="middle">不满足输入基本约束 → 明确失败</text>
+  <path d="M250 207V222" class="edge"/>
+  <rect x="75" y="226" width="350" height="67" rx="8" class="panel"/>
+  <text x="250" y="251" class="slot" text-anchor="middle">查找已知可用变体</text>
+  <text x="250" y="275" class="label" text-anchor="middle">已加载 / 可加载 · Guard 通过？</text>
+  <path d="M425 258H477V797H429" class="edge"/>
+  <text x="451" y="246" class="small" text-anchor="middle">命中</text>
+  <path d="M250 293V314H155V325" class="dep"/>
+  <text x="261" y="312" class="warn">未命中</text>
+  <rect x="22" y="329" width="266" height="84" rx="8" class="panel"/>
+  <text x="155" y="355" class="slot" text-anchor="middle">查询兼容编译产物缓存</text>
+  <text x="155" y="381" class="small" text-anchor="middle">缓存键与兼容条件满足？</text>
+  <path d="M22 371H11V677H18" class="edge"/>
+  <text x="29" y="432" class="small">命中：复用</text>
+  <path d="M155 413V443" class="dep"/>
+  <text x="166" y="436" class="warn">未命中</text>
+  <rect x="22" y="447" width="266" height="67" rx="8" class="wait"/>
+  <text x="155" y="473" class="slot" text-anchor="middle">策略允许尝试 JIT？</text>
+  <text x="155" y="498" class="small" text-anchor="middle">结合代价、支持范围和策略</text>
+  <path d="M155 514V544" class="edge"/>
+  <text x="166" y="537" class="small">是</text>
+  <path d="M288 481H330" class="dep"/>
+  <text x="310" y="469" class="small" text-anchor="middle">否</text>
+  <rect x="334" y="447" width="129" height="270" rx="8" class="panel"/>
+  <text x="398.5" y="472" class="subhead" text-anchor="middle">合法回退</text>
+  <text x="398.5" y="497" class="label" text-anchor="middle">通用实现</text>
+  <text x="398.5" y="519" class="label" text-anchor="middle">或其他后端</text>
+  <text x="398.5" y="545" class="small" text-anchor="middle">仍须满足语义</text>
+  <text x="398.5" y="566" class="small" text-anchor="middle">与资源约束</text>
+  <text x="398.5" y="596" class="warn" text-anchor="middle">无可用方案</text>
+  <text x="398.5" y="618" class="warn" text-anchor="middle">↓</text>
+  <text x="398.5" y="640" class="warn" text-anchor="middle">明确失败</text>
+  <text x="398.5" y="700" class="label" text-anchor="middle">回退成功</text>
+  <rect x="22" y="548" width="266" height="75" rx="8" class="wait"/>
+  <text x="155" y="577" class="slot" text-anchor="middle">触发编译，生成产物</text>
+  <text x="155" y="603" class="small" text-anchor="middle">实际编译属于 B–D 专题</text>
+  <path d="M155 623V646" class="edge"/>
+  <path d="M288 585H330" class="dep"/>
+  <text x="310" y="573" class="small" text-anchor="middle">失败</text>
+  <rect x="22" y="650" width="266" height="67" rx="8" class="panel"/>
+  <text x="155" y="677" class="slot" text-anchor="middle">校验 / 缓存 / 加载产物</text>
+  <text x="155" y="700" class="small" text-anchor="middle">取得可用变体</text>
+  <path d="M288 683H330" class="dep"/>
+  <text x="310" y="669" class="small" text-anchor="middle">失败</text>
+  <path d="M155 717V754H250V764" class="edge"/>
+  <path d="M398 717V740H250V764" class="edge"/>
+  <rect x="75" y="768" width="350" height="83" rx="8" class="compute"/>
+  <text x="250" y="795" class="slot" text-anchor="middle">必要时加载，核验 Guard 与资源</text>
+  <text x="250" y="821" class="label" text-anchor="middle">绑定本次输入、Buffer 与启动参数</text>
+  <path d="M250 851V868" class="edge"/>
+  <rect x="75" y="872" width="350" height="43" rx="5" class="load"/>
+  <text x="250.0" y="899.5" class="slot" text-anchor="middle">提交工作（Dispatch）</text>
+  <text x="24" y="942" class="small">核验或绑定失败时，选择其他合法方案或明确失败。</text>
+  <text x="24" y="966" class="small">示意一种策略；不同运行时不要求采用同一控制流。</text>
+</svg>

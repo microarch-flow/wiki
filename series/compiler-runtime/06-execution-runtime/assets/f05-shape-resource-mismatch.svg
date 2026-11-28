@@ -1,0 +1,105 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 739" width="500" height="739" role="img" aria-labelledby="title desc">
+  <title id="title">输入实际长度变化导致原先的 Buffer 和启动资源不再适用</title>
+  <desc id="desc">F01 中，n 等于 3，A、B、Y 各占 12 B，一个四线程 Block 覆盖索引 0 至 3；前三个元素有效，索引 3 跳过。若仅把 n 改为 5，三个 Buffer 仍只有各 12 B，原先的启动配置只覆盖 0 至 3，索引 3 的所需访问空间不足，索引 4 则没有线程覆盖。重新准备各至少 20 B 的设备 Buffer，启动两个各含四线程的 Block，覆盖索引 0 至 7；索引 0 至 4 有效，5 至 7 跳过。这里只示意资源约束，无非法访问实测。</desc>
+  <defs>
+    <style>
+      text{font-family:"Noto Sans CJK SC","PingFang SC","Microsoft YaHei",sans-serif;fill:#173d35;font-size:18px}
+      .head{font-weight:700;font-size:23px}.subhead{font-weight:700;font-size:20px}.label{font-size:17px;fill:#416354}.small{font-size:16px;fill:#416354}.tick{font-size:14px;fill:#416354}.slot{font-size:17px;font-weight:600}.strong{font-weight:700;font-size:18px}.warn{fill:#765820;font-weight:600;font-size:17px}
+      .panel{fill:#edf2e8;stroke:#9ab69e;stroke-width:1.4}.idle{fill:#f9f8ef;stroke:#b8ba9e;stroke-width:1}.load{fill:#d9e9dc;stroke:#6f9a80;stroke-width:1.3}.compute{fill:#c1dac6;stroke:#6f9a80;stroke-width:1.4}.wait{fill:#f2e4c9;stroke:#9c7b42;stroke-width:1.3}.free{fill:#d9e9dc;stroke:#6f9a80;stroke-width:1.3}.used{fill:#f2e4c9;stroke:#9c7b42;stroke-width:1.3}.grid{stroke:#c4d0c4;stroke-width:1;stroke-dasharray:3 3}.edge{fill:none;stroke:#527d64;stroke-width:2;marker-end:url(#arrow)}.dep{fill:none;stroke:#9c7b42;stroke-width:2;stroke-dasharray:5 3;marker-end:url(#dep-arrow)}.end{fill:none;stroke:#9c7b42;stroke-width:1.5}.danger{fill:none;stroke:#9c7b42;stroke-width:1.8;stroke-dasharray:5 3}
+    </style>
+    <marker id="arrow" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0 0L7 3.5L0 7Z" fill="#527d64"/></marker>
+    <marker id="dep-arrow" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0 0L7 3.5L0 7Z" fill="#9c7b42"/></marker>
+  </defs>
+  <rect x="1" y="1" width="498" height="737" rx="14" fill="#f5f6ef" stroke="#c4d0c4" stroke-width="1.3"/>
+  <text x="24" y="33" class="head">只改 n，旧资源不一定够用</text>
+  <text x="24" y="58" class="label">沿 F01：int32 向量加法，每个元素占 4 B</text>
+  <text x="24" y="80" class="small">下图展示 A、B、Y 中任意一块 Buffer</text>
+  <rect x="18" y="96" width="464" height="182" rx="10" class="panel"/>
+  <text x="32" y="123" class="subhead">原方案：n = 3</text>
+  <text x="114" y="156" class="label" text-anchor="end">Buffer</text>
+  <rect x="126" y="138" width="38" height="30" rx="5" class="load"/>
+  <text x="145.0" y="159.0" class="slot" text-anchor="middle">0</text>
+  <rect x="167" y="138" width="38" height="30" rx="5" class="load"/>
+  <text x="186.0" y="159.0" class="slot" text-anchor="middle">1</text>
+  <rect x="208" y="138" width="38" height="30" rx="5" class="load"/>
+  <text x="227.0" y="159.0" class="slot" text-anchor="middle">2</text>
+  <text x="467" y="159" class="slot" text-anchor="end">12 B</text>
+  <text x="114" y="197" class="label" text-anchor="end">线程 i</text>
+  <rect x="126" y="180" width="38" height="30" rx="5" class="compute"/>
+  <text x="145.0" y="201.0" class="slot" text-anchor="middle">0</text>
+  <rect x="167" y="180" width="38" height="30" rx="5" class="compute"/>
+  <text x="186.0" y="201.0" class="slot" text-anchor="middle">1</text>
+  <rect x="208" y="180" width="38" height="30" rx="5" class="compute"/>
+  <text x="227.0" y="201.0" class="slot" text-anchor="middle">2</text>
+  <rect x="249" y="180" width="38" height="30" rx="5" class="idle"/>
+  <text x="268.0" y="201.0" class="slot" text-anchor="middle">3</text>
+  <path d="M126 215v4H287v-4" class="end"/>
+  <text x="206.5" y="235" class="small" text-anchor="middle">Block 0</text>
+  <text x="32" y="260" class="label">3 个元素有效，i = 3 跳过。</text>
+  <rect x="18" y="293" width="464" height="182" rx="10" class="panel"/>
+  <text x="32" y="320" class="subhead">仅把 n 改为 5：旧方案失效</text>
+  <text x="114" y="353" class="label" text-anchor="end">Buffer</text>
+  <rect x="126" y="335" width="38" height="30" rx="5" class="load"/>
+  <text x="145.0" y="356.0" class="slot" text-anchor="middle">0</text>
+  <rect x="167" y="335" width="38" height="30" rx="5" class="load"/>
+  <text x="186.0" y="356.0" class="slot" text-anchor="middle">1</text>
+  <rect x="208" y="335" width="38" height="30" rx="5" class="load"/>
+  <text x="227.0" y="356.0" class="slot" text-anchor="middle">2</text>
+  <rect x="249" y="335" width="38" height="30" rx="5" class="wait"/>
+  <text x="268.0" y="356.0" class="slot" text-anchor="middle">3</text>
+  <rect x="290" y="335" width="38" height="30" rx="5" class="wait"/>
+  <text x="309.0" y="356.0" class="slot" text-anchor="middle">4</text>
+  <text x="467" y="356" class="slot" text-anchor="end">12 B</text>
+  <text x="114" y="394" class="label" text-anchor="end">线程 i</text>
+  <rect x="126" y="377" width="38" height="30" rx="5" class="compute"/>
+  <text x="145.0" y="398.0" class="slot" text-anchor="middle">0</text>
+  <rect x="167" y="377" width="38" height="30" rx="5" class="compute"/>
+  <text x="186.0" y="398.0" class="slot" text-anchor="middle">1</text>
+  <rect x="208" y="377" width="38" height="30" rx="5" class="compute"/>
+  <text x="227.0" y="398.0" class="slot" text-anchor="middle">2</text>
+  <rect x="249" y="377" width="38" height="30" rx="5" class="wait"/>
+  <text x="268.0" y="398.0" class="slot" text-anchor="middle">3</text>
+  <rect x="290" y="377" width="38" height="30" rx="5" class="idle"/>
+  <text x="309.0" y="398.0" class="slot" text-anchor="middle">—</text>
+  <text x="467" y="397" class="slot" text-anchor="end">1 × 4</text>
+  <text x="32" y="431" class="warn">棕色：所需空间未准备；—：线程缺失。</text>
+  <text x="32" y="457" class="warn">i = 3 无有效空间；i = 4 没有线程覆盖。</text>
+  <rect x="18" y="490" width="464" height="182" rx="10" class="panel"/>
+  <text x="32" y="517" class="subhead">重新准备资源：n = 5</text>
+  <text x="114" y="550" class="label" text-anchor="end">Buffer</text>
+  <rect x="126" y="532" width="38" height="30" rx="5" class="load"/>
+  <text x="145.0" y="553.0" class="slot" text-anchor="middle">0</text>
+  <rect x="167" y="532" width="38" height="30" rx="5" class="load"/>
+  <text x="186.0" y="553.0" class="slot" text-anchor="middle">1</text>
+  <rect x="208" y="532" width="38" height="30" rx="5" class="load"/>
+  <text x="227.0" y="553.0" class="slot" text-anchor="middle">2</text>
+  <rect x="249" y="532" width="38" height="30" rx="5" class="load"/>
+  <text x="268.0" y="553.0" class="slot" text-anchor="middle">3</text>
+  <rect x="290" y="532" width="38" height="30" rx="5" class="load"/>
+  <text x="309.0" y="553.0" class="slot" text-anchor="middle">4</text>
+  <text x="467" y="553" class="slot" text-anchor="end">≥ 20 B</text>
+  <text x="114" y="591" class="label" text-anchor="end">线程 i</text>
+  <rect x="126" y="574" width="38" height="30" rx="5" class="compute"/>
+  <text x="145.0" y="595.0" class="slot" text-anchor="middle">0</text>
+  <rect x="167" y="574" width="38" height="30" rx="5" class="compute"/>
+  <text x="186.0" y="595.0" class="slot" text-anchor="middle">1</text>
+  <rect x="208" y="574" width="38" height="30" rx="5" class="compute"/>
+  <text x="227.0" y="595.0" class="slot" text-anchor="middle">2</text>
+  <rect x="249" y="574" width="38" height="30" rx="5" class="compute"/>
+  <text x="268.0" y="595.0" class="slot" text-anchor="middle">3</text>
+  <rect x="290" y="574" width="38" height="30" rx="5" class="compute"/>
+  <text x="309.0" y="595.0" class="slot" text-anchor="middle">4</text>
+  <rect x="331" y="574" width="38" height="30" rx="5" class="idle"/>
+  <text x="350.0" y="595.0" class="slot" text-anchor="middle">5</text>
+  <rect x="372" y="574" width="38" height="30" rx="5" class="idle"/>
+  <text x="391.0" y="595.0" class="slot" text-anchor="middle">6</text>
+  <rect x="413" y="574" width="38" height="30" rx="5" class="idle"/>
+  <text x="432.0" y="595.0" class="slot" text-anchor="middle">7</text>
+  <path d="M126 609v4H287v-4" class="end"/>
+  <text x="206.5" y="629" class="small" text-anchor="middle">Block 0</text>
+  <path d="M290 609v4H451v-4" class="end"/>
+  <text x="370.5" y="629" class="small" text-anchor="middle">Block 1</text>
+  <text x="32" y="654" class="label">5 个元素有效，i = 5、6、7 跳过。</text>
+  <text x="24" y="697" class="small">仅为资源约束示意，未实际执行非法内存访问。</text>
+  <text x="24" y="721" class="small">n = 5 时，A、B、Y 各自都需满足 20 B 有效空间。</text>
+</svg>

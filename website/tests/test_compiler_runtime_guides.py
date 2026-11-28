@@ -245,6 +245,21 @@ class CompilerRuntimeGuideTests(unittest.TestCase):
         previous = SITE / PREFIX / route / "f03-runtime-buffer-management/index.html"
         self.assertIn(f"../{slug}/", GuideContent(previous.read_text()).links)
 
+    def test_f05_article_navigation_search_and_diagrams(self):
+        route = "06-execution-runtime"
+        slug = "f05-dynamic-shapes-and-specialization"
+        self._check_article(
+            route,
+            "通用执行运行时",
+            slug,
+            "实际输入形状发生变化，运行时怎样找到可以执行的程序？",
+            ("f05-shape-resource-mismatch.svg", "f05-shape-buckets.svg", "f05-variant-selection.svg"),
+        )
+        previous = SITE / PREFIX / route / "f04-execution-graphs-and-replay/index.html"
+        self.assertIn(f"../{slug}/", GuideContent(previous.read_text()).links)
+        guide = GuideContent((SITE / PREFIX / route / "index.html").read_text())
+        self.assertEqual(sum(any(f"f0{i}-" in link for i in range(1, 6)) for link in guide.links), 5)
+
     def test_a01_article_navigation_search_and_diagrams(self):
         self._check_foundation_article(
             "a01-program-semantics",

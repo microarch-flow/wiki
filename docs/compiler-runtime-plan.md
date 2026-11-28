@@ -255,7 +255,7 @@ F01–F03 为模型执行的主要基础。F04、F05 分别深入重放和变体
 | F02 | 提交任务的函数已经返回，为什么不能马上读取计算结果？ | Stream、Event、Fence、异步执行、依赖及可见性、搬运计算编排。 | F01、A05、E04 的完成语义 | `f02-asynchronous-execution.md` | 已发布 |
 | F03 | 两项任务需要使用同一块 Buffer，什么时候才能安全复用？ | 动态分配、内存池、碎片、所有权、延迟释放、异步资源回收。 | F02 | `f03-runtime-buffer-management.md` | 已发布 |
 | F04 | 多次执行相同的任务序列，怎样减少每轮提交开销？ | 任务图、执行图捕获、Replay、动态 DAG、重放约束及重建。 | F02、F03 | `f04-execution-graphs-and-replay.md` | 已发布 |
-| F05 | 实际输入形状发生变化，运行时怎样找到可以执行的程序？ | Shape Guard、分桶、变体选择、JIT 触发、编译缓存、Fallback。 | A03、F01、F03；按需 F04 | `f05-dynamic-shapes-and-specialization.md` | 待写 |
+| F05 | 实际输入形状发生变化，运行时怎样找到可以执行的程序？ | Shape Guard、分桶、变体选择、JIT 触发、编译缓存、Fallback。 | A03、F01、F03；按需 F04 | `f05-dynamic-shapes-and-specialization.md` | 初稿完成，待发布核验 |
 
 ### G. 模型执行与生成控制（9 篇）
 
@@ -497,3 +497,5 @@ K 横跨所有路线。K01/K02 可早期开展，K03–K05 按被分析的机制
 - 2026-11-28 · D05 已发布并核验，AI 内核实现路线已开始。正文提交 `392d2af`，[GitHub Pages 部署](https://github.com/microarch-flow/wiki/actions/runs/46136068312)成功；[公开正文](https://microarch-flow.github.io/wiki/series/compiler-runtime/04-code-generation/d05-matrix-multiplication-kernels/)、D01/D04 衔接、专题导读、三张图解、导航、面包屑及搜索索引均已核验。合并 F04 后本地整站 187 项测试通过；1440 px/390 px 浏览器检查无横向溢出。实际 C11 编译执行及 SIMD 模型各通过 1,002 组，CUDA 线程模型通过 3,018 次（含末块无效线程），实际 CBLAS SGEMM 验证与 cuBLAS 参数等价关系通过 1,006 组，NPU 教学模型两种输出布局合计 606 次通过。GPU/NPU 结果为软件模型验证，非真机测量。旧版推理运行时未修改。
 
 - 2026-11-28 · G02 初稿完成。沿 G01 的模型 M 和请求 A（8 个输入、4 个输出上限），区分已知 Token、已生成 Token、已计算位置及实际有效 KV。假设全因果 Attention、无前缀复用/分块/投机、恰好生成 4 个输出：Prefill 得 y1，三轮 Decode 得 y2–y4，最终 12 个已知 Token、4 个已生成 Token、11 个有效 KV 位置。明确逐层 KV、数据就绪与状态回收的通用执行契约；按有效位置计重复计算 38→11、每层每查询头有效因果位置对 202→66。沿用 Transformer 工作负载的教学层核查阶段 FLOP、权重与历史 KV 的逻辑读写（不作为实际 HBM 流量或时延）；完整容量留 G04、采样留 G03、分页留 G05、性能估算留 K05。核查 Transformers v4.57.0、vLLM v0.10.2、PagedAttention、FlashAttention、Splitwise 原始资料，旧推理运行时不变。
+
+- 2026-11-28 · F05 初稿完成。沿 F01–F04 的向量加法将实际长度由3变5，复用现有动态 Kernel 但调整参数、启动规模与三组 Buffer 有效容量；从合法输入与 Guard 失配的区别引出执行变体、长度3/5/7的4/8容量桶、Padding 与图重放条件。保留旧版21/29/31→32分桶取舍，区分 JIT 触发、编译过程、产物缓存、加载及回退，承接 B03/C05/D04 与 G01 的执行后端，批次组成归 H。F01–F05 五篇初稿均完成，待 F05 发布核验。
