@@ -158,6 +158,19 @@ class CompilerRuntimeGuideTests(unittest.TestCase):
         previous = SITE / PREFIX / route / "b02-control-flow-and-ssa/index.html"
         self.assertIn(f"../{slug}/", GuideContent(previous.read_text()).links)
 
+    def test_b04_article_navigation_search_and_diagrams(self):
+        route = "02-frontend-and-optimization"
+        slug = "b04-dependency-and-alias-analysis"
+        self._check_article(
+            route,
+            "编译前端与程序优化",
+            slug,
+            "两项运算究竟能不能交换执行顺序？",
+            ("b04-alias-ranges.svg", "b04-loop-dependence.svg"),
+        )
+        previous = SITE / PREFIX / route / "b03-graph-capture/index.html"
+        self.assertIn(f"../{slug}/", GuideContent(previous.read_text()).links)
+
     def test_a01_article_navigation_search_and_diagrams(self):
         self._check_foundation_article(
             "a01-program-semantics",

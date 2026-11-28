@@ -1,0 +1,63 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="442" height="480" viewBox="0 0 442 480" role="img" aria-labelledby="alias-title alias-desc">
+  <title id="alias-title">两个名字访问 buf 中的哪四个字节？</title>
+  <desc id="alias-desc">每种顺序都从 int32 数组 buf 等于 [7, 11] 开始。p[0] 把 20 写进第一格，其相对字节区间为左闭右开 [0,4)。若 q[0] 也读第一格，先写后读会读到 20，先读后写会读到 7。若 q[0] 读第二格，即 [4,8)，两种顺序都读到 11。</desc>
+  <defs>
+    <marker id="write-tip" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M0 0L8 4L0 8Z" fill="#396b55"/>
+    </marker>
+    <marker id="read-tip" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M0 0L8 4L0 8Z" fill="#2c6a72"/>
+    </marker>
+  </defs>
+  <style>
+    text { font-family: "Noto Sans CJK SC", "PingFang SC", "Microsoft YaHei", sans-serif; fill: #173d35; text-anchor: middle; font-size: 19px }
+    .code { font-family: "DejaVu Sans Mono", Consolas, monospace; font-size: 19px }
+    .heading { font-size: 21px; font-weight: 700 }
+    .note { fill: #416354; font-size: 18px }
+    .cell { fill: #e8e9df; stroke: #9aa89a; stroke-width: 1.5 }
+    .divider { stroke: #9aa89a; stroke-width: 1.5 }
+    .interval { font-family: "DejaVu Sans Mono", Consolas, monospace; fill: #416354; font-size: 18px }
+    .write { fill: #d9e9dc; stroke: #6f9a80; stroke-width: 1.5 }
+    .read { fill: #e4edec; stroke: #759696; stroke-width: 1.5 }
+    .to-write { fill: none; stroke: #396b55; stroke-width: 2; marker-end: url(#write-tip) }
+    .to-read { fill: none; stroke: #2c6a72; stroke-width: 2; stroke-dasharray: 6 3; marker-end: url(#read-tip) }
+  </style>
+  <rect x="1" y="1" width="440" height="478" rx="14" fill="#f5f6ef" stroke="#c4d0c4"/>
+  <text class="heading" x="221" y="30">每次都从 int32 数组 [7, 11] 开始</text>
+  <text class="note" x="221" y="57">每格占 4 字节，区间从 buf 起点算起。</text>
+
+  <g transform="translate(0 70)">
+    <text class="heading" x="221" y="25">读写同一格</text>
+    <rect class="write" x="51" y="35" width="157" height="35" rx="8"/>
+    <text x="129.5" y="59">p[0] 写入 20</text>
+    <rect class="read" x="234" y="35" width="157" height="35" rx="8"/>
+    <text x="312.5" y="59">q[0] 读取</text>
+    <path class="to-write" d="M126 70V98"/>
+    <path class="to-read" d="M306 70L165 98"/>
+    <rect class="cell" x="51" y="100" width="340" height="60" rx="6"/>
+    <path class="divider" d="M221 100V160"/>
+    <text class="code" x="136" y="124">buf[0] = 7</text>
+    <text class="interval" x="136" y="149">[0,4)</text>
+    <text class="code" x="306" y="124">buf[1] = 11</text>
+    <text class="interval" x="306" y="149">[4,8)</text>
+    <text x="221" y="188">先写后读得到 20，先读后写得到 7。</text>
+  </g>
+
+  <path d="M20 276H422" stroke="#c4d0c4"/>
+  <g transform="translate(0 283)">
+    <text class="heading" x="221" y="25">读写相邻两格</text>
+    <rect class="write" x="51" y="35" width="157" height="35" rx="8"/>
+    <text x="129.5" y="59">p[0] 写入 20</text>
+    <rect class="read" x="234" y="35" width="157" height="35" rx="8"/>
+    <text x="312.5" y="59">q[0] 读取</text>
+    <path class="to-write" d="M126 70V98"/>
+    <path class="to-read" d="M306 70V98"/>
+    <rect class="cell" x="51" y="100" width="340" height="60" rx="6"/>
+    <path class="divider" d="M221 100V160"/>
+    <text class="code" x="136" y="124">buf[0] = 7</text>
+    <text class="interval" x="136" y="149">[0,4)</text>
+    <text class="code" x="306" y="124">buf[1] = 11</text>
+    <text class="interval" x="306" y="149">[4,8)</text>
+    <text x="221" y="185">两种顺序都读到 11。</text>
+  </g>
+</svg>
