@@ -1,0 +1,71 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="500" height="599" viewBox="0 0 500 599" role="img" aria-labelledby="title desc">
+  <title id="title">Prefill 与 Decode 之间的状态交接及所有权边界</title>
+  <desc id="desc">请求 A 完成 Prefill 并采样第一个生成 Token y1 后，已知 9 个 Token、已生成 1 个，有效历史 KV 位置仍为 p1 至 p8。沿用 G04 单层例，每位置 128 B，共 1024 B，源块号 7、2。Decode 池确认模型及状态身份、预算并为历史分配本地块 9、12。Prefill 池冻结待传状态及对应元数据，完成传输后 Decode 池安装本地块及映射，确认有效数据已经就绪；源块仅在通信以及其他引用安全结束后方可回收，物理块号不跨池通用。Decode 执行以 y1 为输入的位置 p9，在本地追加对应 KV，并采样 y2。</desc>
+  <defs>
+    <marker id="arrow" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto"><path d="M0 0L6 3L0 6Z" fill="#527d64"/></marker>
+    <marker id="arrowback" markerWidth="6" markerHeight="6" refX="1" refY="3" orient="auto"><path d="M6 0L0 3L6 6Z" fill="#527d64"/></marker>
+  </defs>
+
+  <style>
+    text { font-family: "Noto Sans CJK SC", "PingFang SC", "Microsoft YaHei", sans-serif; fill: #173d35; font-size: 18px; }
+    .head { font-size: 23px; font-weight: 700; } .subhead { font-size: 20px; font-weight: 700; }
+    .label { font-size: 17px; fill: #416354; } .small { font-size: 16px; fill: #416354; }
+    .num { font-size: 18px; text-anchor: middle; font-weight: 600; }
+    .panel { fill: #edf2e8; stroke: #9ab69e; stroke-width: 1.4; }
+    .card { fill: #f9f8ef; stroke: #b8ba9e; stroke-width: 1.25; }
+    .r0 { fill: #d9e9dc; stroke: #729582; stroke-width: 1.25; }
+    .r1 { fill: #f2e4c9; stroke: #aa9163; stroke-width: 1.25; }
+    .r2 { fill: #dce8e9; stroke: #7a969b; stroke-width: 1.25; }
+    .full { fill: #eaeedf; stroke: #9ab69e; stroke-width: 1.25; }
+    .arr { fill: none; stroke: #527d64; stroke-width: 1.8; marker-end: url(#arrow); }
+    .bi { fill: none; stroke: #527d64; stroke-width: 1.7; marker-start: url(#arrowback); marker-end: url(#arrow); }
+    .candidate { fill: none; stroke: #527d64; stroke-width: 2; stroke-dasharray: 3 2; marker-end: url(#arrow); }
+    .guide { stroke: #c4d0c4; stroke-width: 1; stroke-dasharray: 3 3; }
+    .wait { fill: #f9f8ef; stroke: #b8ba9e; stroke-width: 1.25; stroke-dasharray: 4 3; }
+    .tick { font-size: 15px; fill: #416354; }
+  </style>
+  <rect x="1" y="1" width="498" height="597" rx="14" fill="#f5f6ef" stroke="#c4d0c4" stroke-width="1.3"/>
+  <text x="24" y="33" class="head">从 P 池交接状态到 D 池</text>
+  <text x="24" y="58" class="label">沿用请求 A：单层 KV 每个有效位置 128 B</text>
+  <rect x="18" y="73" width="224" height="151" rx="10" class="panel"/>
+  <rect x="258" y="73" width="224" height="151" rx="10" class="panel"/>
+  <text x="30" y="100" class="subhead">P 池 · Prefill 已完成</text>
+  <text x="30" y="124" class="small">已知 9，已生成 1</text>
+  <text x="30" y="146" class="small">采样 y1；KV 仍是 p1–p8</text>
+  <rect x="30" y="156" width="95" height="27" rx="4" class="r0"/>
+  <text x="77.5" y="175.5" class="num">块 7</text>
+  <rect x="132" y="156" width="95" height="27" rx="4" class="r0"/>
+  <text x="179.5" y="175.5" class="num">块 2</text>
+  <text x="30" y="208" class="label">有效 KV = 8 × 128 B</text>
+  <text x="270" y="100" class="subhead">D 池 · 先准备接收</text>
+  <text x="270" y="124" class="small">确认身份和容量预算</text>
+  <text x="270" y="146" class="small">为 8 个位置准备本地块</text>
+  <rect x="270" y="156" width="95" height="27" rx="4" class="wait"/>
+  <text x="317.5" y="175.5" class="num">块 9</text>
+  <rect x="372" y="156" width="95" height="27" rx="4" class="wait"/>
+  <text x="419.5" y="175.5" class="num">块 12</text>
+  <text x="270" y="208" class="label">目的块号与源端不同</text>
+  <rect x="18" y="236" width="464" height="98" rx="10" class="card"/>
+  <text x="30" y="262" class="label">冻结待传状态</text>
+  <text x="470" y="262" class="label" text-anchor="end">接收待安装</text>
+  <text x="250" y="286" class="label" text-anchor="middle">p1–p8 的 KV 共 1,024 B</text>
+  <path d="M43 296H456" class="arr"/>
+  <text x="250" y="323" class="small" text-anchor="middle">另交接位置、身份及生成状态等元数据</text>
+  <rect x="258" y="347" width="224" height="98" rx="10" class="panel"/>
+  <text x="270" y="374" class="subhead">安装后确认历史就绪</text>
+  <rect x="270" y="384" width="95" height="27" rx="4" class="r1"/>
+  <text x="317.5" y="403.5" class="num">块 9</text>
+  <rect x="372" y="384" width="95" height="27" rx="4" class="r1"/>
+  <text x="419.5" y="403.5" class="num">块 12</text>
+  <text x="270" y="432" class="small">建立本地位置映射</text>
+  <rect x="18" y="347" width="224" height="98" rx="10" class="panel"/>
+  <text x="30" y="374" class="subhead">P 池 · 源块回收条件</text>
+  <text x="30" y="399" class="small">通信结束、引用安全结束</text>
+  <text x="30" y="425" class="label">然后才可回收块 7、2</text>
+  <path d="M370 447V469" class="arr"/>
+  <rect x="258" y="472" width="224" height="86" rx="7" class="r1"/>
+  <text x="370" y="495" class="subhead" text-anchor="middle">D 池 · 执行 Decode</text>
+  <text x="370" y="519" class="small" text-anchor="middle">消耗 y1 → 生成 p9 KV</text>
+  <text x="370" y="543" class="small" text-anchor="middle">再采样下一个 Token y2</text>
+  <text x="24" y="580" class="small">源/目的物理块号不通用，需要按位置恢复映射。</text>
+</svg>

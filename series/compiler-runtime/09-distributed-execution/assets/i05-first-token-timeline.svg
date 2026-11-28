@@ -1,0 +1,63 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="500" height="397" viewBox="0 0 500 397" role="img" aria-labelledby="title desc">
+  <title id="title">先发或暂存第一个 Token 改变 TTFT、ITL，但不改变第二个 Token 就绪时刻</title>
+  <desc id="desc">以 Prefill 完成并采样 y1 的时刻作为 0 ms。假设 625 MiB 的 KV 在 64 GB/s 的有效带宽下纯传输需要 10.24 ms，不考虑其他开销，Decode 计算 y2 耗时 2 ms，于 t=12.24 ms 就绪。一种策略在 t=0 发 y1，在 t=12.24 发 y2，首二 Token 间隔 12.24 ms。另一策略将 y1 暂存到传输完成的 10.24 ms 后发送，y2 仍在 12.24 ms 发送，此时首二 Token 间隔 2 ms，但 TTFT 增加 10.24 ms。相对时间不代表完整 TTFT；两种策略的 y2 就绪时刻相同。</desc>
+  <defs>
+    <marker id="arrow" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto"><path d="M0 0L6 3L0 6Z" fill="#527d64"/></marker>
+    <marker id="arrowback" markerWidth="6" markerHeight="6" refX="1" refY="3" orient="auto"><path d="M6 0L0 3L6 6Z" fill="#527d64"/></marker>
+  </defs>
+
+  <style>
+    text { font-family: "Noto Sans CJK SC", "PingFang SC", "Microsoft YaHei", sans-serif; fill: #173d35; font-size: 18px; }
+    .head { font-size: 23px; font-weight: 700; } .subhead { font-size: 20px; font-weight: 700; }
+    .label { font-size: 17px; fill: #416354; } .small { font-size: 16px; fill: #416354; }
+    .num { font-size: 18px; text-anchor: middle; font-weight: 600; }
+    .panel { fill: #edf2e8; stroke: #9ab69e; stroke-width: 1.4; }
+    .card { fill: #f9f8ef; stroke: #b8ba9e; stroke-width: 1.25; }
+    .r0 { fill: #d9e9dc; stroke: #729582; stroke-width: 1.25; }
+    .r1 { fill: #f2e4c9; stroke: #aa9163; stroke-width: 1.25; }
+    .r2 { fill: #dce8e9; stroke: #7a969b; stroke-width: 1.25; }
+    .full { fill: #eaeedf; stroke: #9ab69e; stroke-width: 1.25; }
+    .arr { fill: none; stroke: #527d64; stroke-width: 1.8; marker-end: url(#arrow); }
+    .bi { fill: none; stroke: #527d64; stroke-width: 1.7; marker-start: url(#arrowback); marker-end: url(#arrow); }
+    .candidate { fill: none; stroke: #527d64; stroke-width: 2; stroke-dasharray: 3 2; marker-end: url(#arrow); }
+    .guide { stroke: #c4d0c4; stroke-width: 1; stroke-dasharray: 3 3; }
+    .wait { fill: #f9f8ef; stroke: #b8ba9e; stroke-width: 1.25; stroke-dasharray: 4 3; }
+    .tick { font-size: 15px; fill: #416354; }
+  </style>
+  <rect x="1" y="1" width="498" height="395" rx="14" fill="#f5f6ef" stroke="#c4d0c4" stroke-width="1.3"/>
+  <text x="24" y="33" class="head">同样的第二个 Token，ITL 为何不同？</text>
+  <text x="24" y="58" class="label">以 P 完成并采样 y1 时刻为 0 ms</text>
+  <text x="24" y="80" class="small">625 MiB / 64 GB/s = 10.24 ms（纯传输）</text>
+  <rect x="18" y="94" width="464" height="202" rx="10" class="panel"/>
+  <text x="126" y="120" class="tick" text-anchor="middle">0</text>
+  <path d="M126 128V284" class="guide"/>
+  <text x="405" y="120" class="tick" text-anchor="middle">10.24</text>
+  <path d="M405 128V284" class="guide"/>
+  <text x="460" y="120" class="tick" text-anchor="middle">12.24</text>
+  <path d="M460 128V284" class="guide"/>
+  <text x="30" y="120" class="small">时间/ms</text>
+  <text x="28" y="153" class="label">状态交接</text>
+  <rect x="126" y="132" width="279" height="31" rx="4" class="r0"/>
+  <rect x="405" y="132" width="55" height="31" rx="4" class="r1"/>
+  <text x="265.5" y="153" class="small" text-anchor="middle">传输 KV</text>
+  <text x="432.5" y="153" class="small" text-anchor="middle">计算</text>
+  <text x="28" y="195" class="label">先发 y1</text>
+  <text x="28" y="216" class="small">ITL 12.24</text>
+  <path d="M126 201H460" class="arr"/>
+  <circle cx="126" cy="201" r="5.5" fill="#527d64"/>
+  <text x="126" y="191" class="small" text-anchor="middle">y1</text>
+  <circle cx="460" cy="201" r="5.5" fill="#527d64"/>
+  <text x="460" y="191" class="small" text-anchor="middle">y2</text>
+  <text x="28" y="260" class="label">后发 y1</text>
+  <text x="28" y="281" class="small">ITL 2</text>
+  <path d="M126 266H405" class="guide"/>
+  <path d="M405 266H460" class="arr"/>
+  <circle cx="405" cy="266" r="5.5" fill="#9c7b42"/>
+  <text x="405" y="256" class="small" text-anchor="middle">y1</text>
+  <circle cx="460" cy="266" r="5.5" fill="#9c7b42"/>
+  <text x="460" y="256" class="small" text-anchor="middle">y2</text>
+  <text x="24" y="322" class="small">D 端计算 y2：2 ms，两种情况下同在 12.24 ms 就绪。</text>
+  <text x="24" y="347" class="small">后发 y1：TTFT 相对增加 10.24 ms，首二 ITL 仅 2 ms。</text>
+  <text x="24" y="371" class="small">先发、后发分别在 0 ms、10.24 ms 发送 y1。</text>
+  <text x="24" y="391" class="tick">只比较交接之后的相对时间，不含其它延迟。</text>
+</svg>
