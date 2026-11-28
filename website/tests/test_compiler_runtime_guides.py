@@ -228,6 +228,19 @@ class CompilerRuntimeGuideTests(unittest.TestCase):
         previous = SITE / PREFIX / route / "c01-tensor-mapping/index.html"
         self.assertIn(f"../{slug}/", GuideContent(previous.read_text()).links)
 
+    def test_c03_article_navigation_search_and_diagrams(self):
+        route = "03-mapping-and-planning"
+        slug = "c03-static-execution-planning"
+        self._check_article(
+            route,
+            "资源映射与执行规划",
+            slug,
+            "计算与数据搬运怎样安排在同一张时间表上？",
+            ("c03-column-dependencies.svg", "c03-schedules.svg"),
+        )
+        previous = SITE / PREFIX / route / "c02-layout-and-dataflow-planning/index.html"
+        self.assertIn(f"../{slug}/", GuideContent(previous.read_text()).links)
+
     def _check_foundation_article(self, slug, title, diagram_names):
         self._check_article("01-foundations", "软件执行共同基础", slug, title, diagram_names)
 

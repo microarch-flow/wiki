@@ -1,0 +1,78 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="420" height="395" viewBox="0 0 420 395" role="img" aria-labelledby="title desc">
+  <title id="title">单槽与双槽的计算和搬运日程</title>
+  <desc id="desc">两图横轴均从时刻 0 到 14，单位为拍。一个双向 DMA 承担装入和写回。P0 与 P1 一起计算一列，计算段包含权重广播。单 W 槽中，DMA 装第 0 列为 0 至 2，装第 1 列为 6 至 8，写第 0 列为 8 至 10，写第 1 列为 12 至 14。两列计算分别为 2 至 6 和 8 至 12。双 W 槽中，两列装入为 0 至 2 和 2 至 4，两列计算为 2 至 6 和 6 至 10，两列写回为 6 至 8 和 10 至 12。所有区间含起点、不含终点。</desc>
+  <defs>
+    <style>
+      text { font-family: "Noto Sans CJK SC", "PingFang SC", "Microsoft YaHei", sans-serif; fill: #173d35 }
+      .heading { font-size: 21px; font-weight: 700 }
+      .finish { font-size: 17px; text-anchor: end }
+      .tick, .track { font-size: 15px; text-anchor: middle }
+      .tick { fill: #416354 }
+      .task { font-size: 20px; font-weight: 650; text-anchor: middle }
+      .note { font-size: 15px; fill: #355745 }
+      .blank { fill: #f1f3eb; stroke: #c5d1c5 }
+      .grid { fill: none; stroke: #bfcdbf; stroke-width: 1 }
+      .load { fill: #deebec; stroke: #6f9093 }
+      .compute { fill: #d9e9dc; stroke: #729582 }
+      .store { fill: #f2e4c9; stroke: #aa9163 }
+    </style>
+    <g id="tracks">
+      <g class="tick" aria-label="时刻刻度">
+        <text x="80" y="59">0</text><text x="126" y="59">2</text>
+        <text x="172" y="59">4</text><text x="218" y="59">6</text>
+        <text x="264" y="59">8</text><text x="310" y="59">10</text>
+        <text x="356" y="59">12</text><text x="402" y="59">14</text>
+      </g>
+      <rect x="80" y="69" width="322" height="32" class="blank"/>
+      <rect x="80" y="108" width="322" height="32" class="blank"/>
+      <path d="M80 65v75 M126 65v75 M172 65v75 M218 65v75 M264 65v75 M310 65v75 M356 65v75 M402 65v75" class="grid"/>
+      <text x="40" y="91" class="track">DMA</text>
+      <text x="40" y="130" class="track">P0 + P1</text>
+    </g>
+  </defs>
+  <rect x="1" y="1" width="418" height="393" rx="14" fill="#f5f6ef" stroke="#c4d0c4"/>
+  <g aria-label="单 W 槽，时刻 14 完成">
+    <text x="18" y="31" class="heading">单 W 槽</text>
+    <text x="402" y="31" class="finish">时刻 14 完成</text>
+    <use href="#tracks"/>
+    <g aria-label="DMA 装入与写回">
+      <rect x="80" y="69" width="46" height="32" rx="2" class="load"/>
+      <rect x="218" y="69" width="46" height="32" rx="2" class="load"/>
+      <rect x="264" y="69" width="46" height="32" rx="2" class="store"/>
+      <rect x="356" y="69" width="46" height="32" rx="2" class="store"/>
+      <g class="task">
+        <text x="103" y="92">L₀</text><text x="241" y="92">L₁</text>
+        <text x="287" y="92">S₀</text><text x="379" y="92">S₁</text>
+      </g>
+    </g>
+    <g aria-label="两单元的计算">
+      <rect x="126" y="108" width="92" height="32" rx="2" class="compute"/>
+      <rect x="264" y="108" width="92" height="32" rx="2" class="compute"/>
+      <g class="task"><text x="172" y="131">C₀</text><text x="310" y="131">C₁</text></g>
+    </g>
+  </g>
+  <path d="M18 160H402" stroke="#c4d0c4"/>
+  <g transform="translate(0 161)" aria-label="双 W 槽，时刻 12 完成">
+    <text x="18" y="31" class="heading">双 W 槽</text>
+    <text x="402" y="31" class="finish">时刻 12 完成</text>
+    <use href="#tracks"/>
+    <g aria-label="DMA 装入与写回">
+      <rect x="80" y="69" width="46" height="32" rx="2" class="load"/>
+      <rect x="126" y="69" width="46" height="32" rx="2" class="load"/>
+      <rect x="218" y="69" width="46" height="32" rx="2" class="store"/>
+      <rect x="310" y="69" width="46" height="32" rx="2" class="store"/>
+      <g class="task">
+        <text x="103" y="92">L₀</text><text x="149" y="92">L₁</text>
+        <text x="241" y="92">S₀</text><text x="333" y="92">S₁</text>
+      </g>
+    </g>
+    <g aria-label="两单元的计算">
+      <rect x="126" y="108" width="92" height="32" rx="2" class="compute"/>
+      <rect x="218" y="108" width="92" height="32" rx="2" class="compute"/>
+      <g class="task"><text x="172" y="131">C₀</text><text x="264" y="131">C₁</text></g>
+    </g>
+  </g>
+  <text x="18" y="331" class="note">横轴为时刻，单位为拍。下标 0、1 表示列号。</text>
+  <text x="18" y="354" class="note">L 装入 W 列，S 写回 Y 列，共用一个双向 DMA。</text>
+  <text x="18" y="377" class="note">C 计算 Y 列，包含向 P0、P1 广播权重。</text>
+</svg>

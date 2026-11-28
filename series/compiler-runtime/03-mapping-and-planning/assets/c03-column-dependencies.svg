@@ -1,0 +1,51 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="400" height="337" viewBox="0 0 400 337" role="img" aria-labelledby="title desc">
+  <title id="title">按行分工、分两轮计算输出列的六项任务及其数据依赖</title>
+  <desc id="desc">X 已经就绪。左链中，L₀ 搬入 W 的第 0 列，C₀ 使用该列算出 21 和 17，S₀ 将结果写回 Y 的第 0 列。右链中，L₁ 搬入 W 的第 1 列，C₁ 算出 29 和 16，S₁ 写回 Y 的第 1 列。每次计算由 P0 算第 0 行、P1 算第 1 行。箭头表示任务之间的值依赖。两列都写回后，完整的 Y 可读。</desc>
+  <style>
+    text { font-family: "Noto Sans CJK SC", "PingFang SC", "Microsoft YaHei", sans-serif; fill: #173d35 }
+    .heading, .task, .detail, .finish { text-anchor: middle }
+    .heading { font-size: 20px; font-weight: 700 }
+    .task { font-size: 17px; font-weight: 650 }
+    .detail, .value { font-size: 16px; fill: #395a4d }
+    .finish { font-size: 18px; font-weight: 650 }
+    .move { fill: #f2e4c9; stroke: #aa9163; stroke-width: 1.25 }
+    .compute { fill: #d9e9dc; stroke: #729582; stroke-width: 1.25 }
+    .edge { fill: none; stroke: #416354; stroke-width: 1.8; marker-end: url(#arrow) }
+  </style>
+  <defs>
+    <marker id="arrow" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="5" markerHeight="5" orient="auto">
+      <path d="M0 0 8 4 0 8Z" fill="#416354"/>
+    </marker>
+  </defs>
+  <rect x="1" y="1" width="398" height="335" rx="14" fill="#f5f6ef" stroke="#c4d0c4"/>
+  <g aria-label="第零列">
+    <text x="104" y="31" class="heading">第 0 列</text>
+    <rect x="14" y="44" width="180" height="39" rx="7" class="move"/>
+    <text x="104" y="70" class="task">L₀　搬入 W 第 0 列</text>
+    <path d="M36 84v41" class="edge"/>
+    <text x="48" y="111" class="value">权重 (3, 5, 2, 1)</text>
+    <rect x="14" y="128" width="180" height="58" rx="7" class="compute"/>
+    <text x="104" y="153" class="task">C₀　计算 Y 第 0 列</text>
+    <text x="104" y="176" class="detail">P0、P1 各算一行</text>
+    <path d="M36 187v41" class="edge"/>
+    <text x="48" y="214" class="value">结果 (21, 17)</text>
+    <rect x="14" y="231" width="180" height="39" rx="7" class="move"/>
+    <text x="104" y="257" class="task">S₀　写回 Y 第 0 列</text>
+  </g>
+  <g aria-label="第一列">
+    <text x="296" y="31" class="heading">第 1 列</text>
+    <rect x="206" y="44" width="180" height="39" rx="7" class="move"/>
+    <text x="296" y="70" class="task">L₁　搬入 W 第 1 列</text>
+    <path d="M228 84v41" class="edge"/>
+    <text x="240" y="111" class="value">权重 (1, 2, 3, 4)</text>
+    <rect x="206" y="128" width="180" height="58" rx="7" class="compute"/>
+    <text x="296" y="153" class="task">C₁　计算 Y 第 1 列</text>
+    <text x="296" y="176" class="detail">P0、P1 各算一行</text>
+    <path d="M228 187v41" class="edge"/>
+    <text x="240" y="214" class="value">结果 (29, 16)</text>
+    <rect x="206" y="231" width="180" height="39" rx="7" class="move"/>
+    <text x="296" y="257" class="task">S₁　写回 Y 第 1 列</text>
+  </g>
+  <path d="M104 276v12h192v-12 M200 288v9" fill="none" stroke="#729582" stroke-width="1.5"/>
+  <text x="200" y="321" class="finish">两列都已写回，完整的 Y 可读</text>
+</svg>
