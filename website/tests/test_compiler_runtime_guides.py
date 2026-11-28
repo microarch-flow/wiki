@@ -302,6 +302,15 @@ class CompilerRuntimeGuideTests(unittest.TestCase):
             ("d01-lowering-stages.svg", "d01-buffer-reuse.svg"),
         )
 
+    def test_e01_article_navigation_search_and_diagrams(self):
+        self._check_article(
+            "05-device-driver",
+            "设备驱动与底层资源管理",
+            "e01-device-context-and-driver",
+            "应用程序怎样找到并获得计算设备的使用权？",
+            ("e01-control-path.svg", "e01-device-contexts.svg"),
+        )
+
     def _check_foundation_article(self, slug, title, diagram_names):
         self._check_article("01-foundations", "软件执行共同基础", slug, title, diagram_names)
 

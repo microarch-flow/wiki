@@ -1,0 +1,55 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 540 560" width="540" height="560" role="img" aria-labelledby="contexts-title contexts-desc">
+  <title id="contexts-title">同一设备中的两个逻辑设备上下文</title>
+  <desc id="contexts-desc">在本教学模型中，进程 P 与进程 Q 分别建立独立设备上下文 ctx_P 与 ctx_Q。每个上下文关联各自的资源记录、后续建立的设备地址范围及提交资源。驱动与设备按上下文的授权控制资源使用，P 不可以访问 Q 未授权的资源，Q 也不可以访问 P 未授权的资源。两个上下文使用同一个已经初始化的物理设备，可能共享计算引擎与设备存储，不意味着独占一套硬件。图中内存区域仅表示未来的授权关系，不是固定物理分区；箭头不是时序关系。</desc>
+  <defs>
+    <marker id="ctx-arrow-p" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0 0L7 3.5L0 7Z" fill="#527d64"/></marker>
+    <marker id="ctx-arrow-q" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0 0L7 3.5L0 7Z" fill="#9c7b42"/></marker>
+    <style>
+      text{font-family:"Noto Sans CJK SC","PingFang SC","Microsoft YaHei",sans-serif;fill:#173d35;font-size:20px}
+      .head{font-weight:700;font-size:23px}.subhead{font-weight:700;font-size:20px}.label{font-size:18px;fill:#416354}.small{font-size:16px;fill:#416354}.code{font-family:"Noto Sans Mono CJK SC","Consolas",monospace;font-size:21px;font-weight:600}
+      .p{fill:#d9e9dc;stroke:#6f9a80;stroke-width:1.4}.q{fill:#f2e4c9;stroke:#9c7b42;stroke-width:1.4}.device{fill:#edf2e8;stroke:#9ab69e;stroke-width:1.4}.shared{fill:#f9f8ef;stroke:#b8ba9e;stroke-width:1.3}.neutral{fill:#e4e7de;stroke:#a5afa2;stroke-width:1.3}
+      .p-edge{fill:none;stroke:#527d64;stroke-width:2;marker-end:url(#ctx-arrow-p)}.q-edge{fill:none;stroke:#9c7b42;stroke-width:2;marker-end:url(#ctx-arrow-q)}
+    </style>
+  </defs>
+  <rect x="1" y="1" width="538" height="558" rx="14" fill="#f5f6ef" stroke="#c4d0c4" stroke-width="1.3"/>
+  <text x="24" y="33" class="head">两个上下文，共用一个计算设备</text>
+  <text x="24" y="57" class="small">本例假设两个进程分别建立独立会话</text>
+
+  <rect x="19" y="73" width="244" height="50" rx="8" class="p"/>
+  <rect x="277" y="73" width="244" height="50" rx="8" class="q"/>
+  <g text-anchor="middle" class="subhead">
+    <text x="141" y="104">进程 P</text>
+    <text x="399" y="104">进程 Q</text>
+  </g>
+  <path d="M141 123V140" class="p-edge"/>
+  <path d="M399 123V140" class="q-edge"/>
+
+  <rect x="19" y="144" width="244" height="130" rx="9" class="p"/>
+  <rect x="277" y="144" width="244" height="130" rx="9" class="q"/>
+  <g class="code" text-anchor="middle"><text x="141" y="174">ctx_P</text><text x="399" y="174">ctx_Q</text></g>
+  <g class="label" text-anchor="middle">
+    <text x="141" y="205">P 的资源记录</text><text x="399" y="205">Q 的资源记录</text>
+    <text x="141" y="229">地址范围（待映射）</text><text x="399" y="229">地址范围（待映射）</text>
+    <text x="141" y="253">提交资源（待建立）</text><text x="399" y="253">提交资源（待建立）</text>
+  </g>
+  <path d="M141 274V289" class="p-edge"/>
+  <path d="M399 274V289" class="q-edge"/>
+
+  <rect x="19" y="293" width="502" height="62" rx="8" class="shared"/>
+  <text x="270" y="317" class="subhead" text-anchor="middle">驱动与设备依据授权控制访问</text>
+  <text x="270" y="341" class="small" text-anchor="middle">P、Q 不能访问对方未授权的资源</text>
+  <path d="M141 355V373" class="p-edge"/>
+  <path d="M399 355V373" class="q-edge"/>
+
+  <rect x="19" y="377" width="502" height="146" rx="11" class="device"/>
+  <text x="33" y="403" class="subhead">同一个已初始化的物理设备</text>
+  <rect x="35" y="416" width="470" height="34" rx="7" class="shared"/>
+  <text x="270" y="439" class="label" text-anchor="middle">共享的计算引擎</text>
+  <text x="35" y="478" class="label">设备存储</text>
+  <rect x="137" y="458" width="116" height="33" rx="5" class="p"/>
+  <rect x="257" y="458" width="116" height="33" rx="5" class="q"/>
+  <rect x="377" y="458" width="128" height="33" rx="5" class="neutral"/>
+  <g text-anchor="middle" class="small"><text x="195" y="480">P 授权区</text><text x="315" y="480">Q 授权区</text><text x="441" y="480">其他区域</text></g>
+  <text x="270" y="512" class="small" text-anchor="middle">以后建立的授权范围示意，不代表固定物理分区</text>
+  <text x="270" y="545" class="small" text-anchor="middle">取得使用权并非独占整台设备；箭头不是时间轴</text>
+</svg>
