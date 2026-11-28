@@ -171,6 +171,19 @@ class CompilerRuntimeGuideTests(unittest.TestCase):
         previous = SITE / PREFIX / route / "b03-graph-capture/index.html"
         self.assertIn(f"../{slug}/", GuideContent(previous.read_text()).links)
 
+    def test_b05_article_navigation_search_and_diagrams(self):
+        route = "02-frontend-and-optimization"
+        slug = "b05-dataflow-analysis-and-optimization"
+        self._check_article(
+            route,
+            "编译前端与程序优化",
+            slug,
+            "程序中哪些计算可以提前完成、复用或直接删除？",
+            ("b05-constants-at-join.svg", "b05-live-values.svg"),
+        )
+        previous = SITE / PREFIX / route / "b04-dependency-and-alias-analysis/index.html"
+        self.assertIn(f"../{slug}/", GuideContent(previous.read_text()).links)
+
     def test_a01_article_navigation_search_and_diagrams(self):
         self._check_foundation_article(
             "a01-program-semantics",

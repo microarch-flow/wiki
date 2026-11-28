@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="452" height="406" viewBox="0 0 452 406" role="img" aria-labelledby="live-title live-desc">
+  <title id="live-title">删掉无使用者的结果，哪些运算会随之失去使用者？</title>
+  <desc id="live-desc">图中每条箭头从值的定义连向使用该值的运算。%t 为 a 加 b。在通向返回值的一支，%s 将 %t 与自身相加，%y 为 %s 乘四，函数返回 %y。在另一支，%f 为 %t 乘三，%g 为 %f 加一。假设这些纯整数运算都能正常完成。%g 的结果没有使用者，删去其运算后，%f 也失去唯一的使用者。%s 仍然需要 %t，因此保留 %t 的运算。</desc>
+  <defs>
+    <marker id="use-tip" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M0 0L8 4L0 8Z" fill="#396b55"/>
+    </marker>
+  </defs>
+  <style>
+    text { font-family: "Noto Sans CJK SC", "PingFang SC", "Microsoft YaHei", sans-serif; fill: #173d35; text-anchor: middle; font-size: 20px }
+    .code { font-family: "DejaVu Sans Mono", Consolas, monospace; font-size: 20px }
+    .small { font-size: 18px; fill: #416354 }
+    .used { fill: #d9e9dc; stroke: #6f9a80; stroke-width: 1.5 }
+    .unused-branch { fill: #efefe6; stroke: #8c958a; stroke-width: 1.5; stroke-dasharray: 6 3 }
+    .edge { fill: none; stroke: #396b55; stroke-width: 2; marker-end: url(#use-tip) }
+  </style>
+  <rect x="1" y="1" width="450" height="404" rx="14" fill="#f5f6ef" stroke="#c4d0c4"/>
+  <text class="small" x="226" y="29">箭头从值的定义指向它的使用者。</text>
+  <rect class="used" x="126" y="45" width="200" height="44" rx="10"/>
+  <text class="code" x="226" y="74">%t = a + b</text>
+  <path class="edge" d="M188 89L113 127"/>
+  <path class="edge" d="M264 89L339 127"/>
+
+  <rect class="used" x="16" y="129" width="194" height="46" rx="10"/>
+  <text class="code" x="113" y="159">%s = %t + %t</text>
+  <rect class="unused-branch" x="242" y="129" width="194" height="46" rx="10"/>
+  <text class="code" x="339" y="159">%f = %t * 3</text>
+  <path class="edge" d="M113 175V203"/>
+  <path class="edge" d="M339 175V203"/>
+
+  <rect class="used" x="16" y="205" width="194" height="46" rx="10"/>
+  <text class="code" x="113" y="235">%y = %s * 4</text>
+  <rect class="unused-branch" x="242" y="205" width="194" height="46" rx="10"/>
+  <text class="code" x="339" y="235">%g = %f + 1</text>
+  <text class="small" x="339" y="278">%g 的结果无人使用</text>
+  <path class="edge" d="M113 251V279"/>
+
+  <rect class="used" x="16" y="281" width="194" height="42" rx="9"/>
+  <text class="code" x="113" y="309">return %y</text>
+  <path d="M18 339H434" stroke="#c4d0c4"/>
+  <text x="226" y="365">先删 %g，%f 就失去了唯一的使用者。</text>
+  <text x="226" y="392">%s 仍要使用 %t，所以保留 %t。</text>
+</svg>

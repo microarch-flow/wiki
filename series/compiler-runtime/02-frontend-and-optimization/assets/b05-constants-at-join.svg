@@ -1,0 +1,55 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="452" height="462" viewBox="0 0 452 462" role="img" aria-labelledby="constants-title constants-desc">
+  <title id="constants-title">flag 未知时，合流处仍能确定 scale 的值</title>
+  <desc id="constants-desc">第一处判断使用运行时输入 flag，真路和假路都可到达。真路把二加二折叠为四，假路直接使用四。因而无论从哪条路进入合流点，scale 都是四。第二处判断 scale 是否等于四，只会沿真边取四倍结果，指向备用结果 g 的假边不可达。</desc>
+  <defs>
+    <marker id="constant-tip" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M0 0L8 4L0 8Z" fill="#396b55"/>
+    </marker>
+    <marker id="impossible-tip" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M0 0L8 4L0 8Z" fill="#75766b"/>
+    </marker>
+  </defs>
+  <style>
+    text { font-family: "Noto Sans CJK SC", "PingFang SC", "Microsoft YaHei", sans-serif; fill: #173d35; text-anchor: middle; font-size: 20px }
+    .code { font-family: "DejaVu Sans Mono", Consolas, monospace; font-size: 20px }
+    .emphasis { font-weight: 700 }
+    .label { font-size: 18px }
+    .block { fill: #e0ebe3; stroke: #82a18e; stroke-width: 1.5 }
+    .known { fill: #d9e9dc; stroke: #6f9a80; stroke-width: 1.5 }
+    .unreachable { fill: #efefe6; stroke: #919388; stroke-width: 1.5; stroke-dasharray: 6 4 }
+    .edge { fill: none; stroke: #396b55; stroke-width: 2; marker-end: url(#constant-tip) }
+    .disabled { fill: none; stroke: #75766b; stroke-width: 2; stroke-dasharray: 6 4; marker-end: url(#impossible-tip) }
+  </style>
+  <rect x="1" y="1" width="450" height="460" rx="14" fill="#f5f6ef" stroke="#c4d0c4"/>
+
+  <rect class="block" x="98" y="13" width="256" height="62" rx="11"/>
+  <text class="emphasis" x="226" y="39">判断 flag</text>
+  <text class="label" x="226" y="63">取值到运行时才知道</text>
+  <path class="edge" d="M180 75L113 118"/>
+  <path class="edge" d="M272 75L339 118"/>
+  <text class="label" x="96" y="99">真 · 可走</text>
+  <text class="label" x="355" y="99">假 · 可走</text>
+
+  <rect class="block" x="15" y="120" width="196" height="65" rx="10"/>
+  <text class="code" x="113" y="149">scale = 2 + 2</text>
+  <text class="label" x="113" y="173">折叠得 4</text>
+  <rect class="block" x="241" y="120" width="196" height="65" rx="10"/>
+  <text class="code" x="339" y="159">scale = 4</text>
+  <path class="edge" d="M113 185L183 221"/>
+  <path class="edge" d="M339 185L269 221"/>
+
+  <rect class="known" x="91" y="223" width="270" height="50" rx="10"/>
+  <text x="226" y="254">两路合流，scale 都是 4</text>
+  <path class="edge" d="M226 273V303"/>
+  <rect class="known" x="116" y="305" width="220" height="46" rx="10"/>
+  <text class="code" x="226" y="334">scale == 4 ?</text>
+
+  <path class="edge" d="M180 351L113 402"/>
+  <path class="disabled" d="M272 351L339 402"/>
+  <text class="label" x="94" y="377">真 · 必走</text>
+  <text class="label" x="366" y="377">假 · 不可达</text>
+  <rect class="known" x="41" y="404" width="144" height="43" rx="9"/>
+  <text class="emphasis" x="113" y="432">四倍结果</text>
+  <rect class="unreachable" x="267" y="404" width="144" height="43" rx="9"/>
+  <text x="339" y="432">备用结果 g</text>
+</svg>
