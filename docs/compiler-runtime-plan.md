@@ -150,7 +150,7 @@
 | A02 | 程序中的计算、分支和先后关系怎样被明确表达？ | 数据流、控制流、计算图、IR、依赖关系的表达；认识不同抽象层次。 | A01 | `a02-program-representation.md` | 已发布 |
 | A03 | 同一个张量，为什么可以在内存中有不同的排列？ | Shape、Dtype、Stride、Layout、索引到地址、转置视图、动态维度。 | A01 | `a03-tensor-representation.md` | 已发布 |
 | A04 | 软件怎样把一项计算交给硬件？ | ISA、ABI、编程模型、指令、Kernel、任务、资源抽象与可执行产物的接口。 | A01、A02；张量场景参考 A03 | `a04-execution-contract.md` | 已发布 |
-| A05 | 一项任务被提交之后，什么时候结果才可以使用？ | 接纳、就绪、执行、完成、可见性、同步、资源所有权与生命周期。 | A04 | `a05-task-and-resource-lifecycle.md` | 初稿完成，待发布核验 |
+| A05 | 一项任务被提交之后，什么时候结果才可以使用？ | 接纳、就绪、执行、完成、可见性、同步、资源所有权与生命周期。 | A04 | `a05-task-and-resource-lifecycle.md` | 已发布 |
 
 ### B. 编译前端与程序优化（6 篇）
 
@@ -414,4 +414,6 @@ K 横跨所有路线。K01/K02 可早期开展，K03–K05 按被分析的机制
 
 - 2026-11-28 · B01 已发布并核验。正文提交 `2214aa9`，[GitHub Pages 部署](https://github.com/microarch-flow/wiki/actions/runs/46111023069)成功。[公开正文](https://microarch-flow.github.io/wiki/series/compiler-runtime/02-frontend-and-optimization/b01-compiler-frontend/)、B 导读入口、表达式树、侧栏、面包屑、站内锚点及搜索索引均已核验。Go 1.19.8 复核了分组、同名声明与错误示例，本地整站 163 项测试通过。
 
-- 2026-11-28 · A05 复用 A04 向量加法，将搬入、计算、写回拆为四项具体任务，以消费者可读、成功交接及最后访问结束区分任务接纳、就绪、完成、同步和资源生命周期。按既定范围保留驱动与运行时实现细节，完成 A 专题五篇初稿；A05 待公开页面核验。
+- 2026-11-28 · A05 复用 A04 向量加法，将搬入、计算、写回拆为四项具体任务，以消费者可读、成功交接及最后访问结束区分任务接纳、就绪、完成、同步和资源生命周期。按既定范围保留驱动与运行时实现细节，完成 A 专题五篇初稿。
+
+- 2026-11-28 · A05 已发布并核验，A 专题五篇初稿全部完成发布。正文提交 `520132d`，[GitHub Pages 部署](https://github.com/microarch-flow/wiki/actions/runs/46111874187) 成功；[公开正文](https://microarch-flow.github.io/wiki/series/compiler-runtime/01-foundations/a05-task-and-resource-lifecycle/) 及 A04 后继链接、专题入口、图解、导航、面包屑和全部五篇搜索收录已核验。本地整站 164 项测试全部通过（含并行完成的 B01），教学事件模型复算正确顺序及三类提前访问反例。保留后续 B/E/F 等专题的既定前置关系和知识边界。
