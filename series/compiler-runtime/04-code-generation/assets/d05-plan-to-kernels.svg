@@ -1,0 +1,55 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="440" height="564" viewBox="0 0 440 564" role="img" aria-labelledby="title desc">
+  <title id="title">相同矩阵乘法计划在不同编程模型中的实现</title>
+  <desc id="desc">矩阵乘法 Y=XW，X 为 2×4，W 为 4×2。输入按单字节元素存储，X 按行、W 按列；Y 为按行存储的双字节元素。计划将两行分别交给两个执行位置，逐列遍历 k，局部累加。CPU 向量实现可用两条通道对应两行，显式取数、广播权重并更新向量累加器；GPU 线程实现可用两个逻辑线程对应两行，各自取数和累加；命令式 NPU 通过搬入权重、配置计算和搬出结果来实现。三条箭头表示不同实现，不是顺次运行的三个阶段。</desc>
+  <defs>
+    <marker id="arrow" markerWidth="7" markerHeight="7" refX="6.3" refY="3.5" orient="auto" markerUnits="userSpaceOnUse">
+      <path d="M0 0 7 3.5 0 7Z" fill="#476957"/>
+    </marker>
+    <style>
+      text {font-family:"Noto Sans CJK SC","PingFang SC","Microsoft YaHei",sans-serif;fill:#173d35;font-size:19px}
+      .head {font-size:21px;font-weight:700}
+      .label {font-size:19px;font-weight:700}
+      .note {font-size:16px;fill:#416354}
+      .code {font-family:"DejaVu Sans Mono",Consolas,monospace;font-size:17px}
+      .panel {fill:#edf2e8;stroke:#cad8cb;stroke-width:1.2}
+      .node {fill:#e9eee4;stroke:#97ad9a;stroke-width:1.25}
+      .target {fill:#f2e4c9;stroke:#aa9163;stroke-width:1.5}
+      .target-text {fill:#78591b;font-weight:700}
+      .line {fill:none;stroke:#476957;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+      .wire {fill:none;stroke:#476957;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;marker-end:url(#arrow)}
+    </style>
+  </defs>
+  <rect x="1" y="1" width="438" height="562" rx="14" fill="#f5f6ef" stroke="#c4d0c4"/>
+  <rect x="13" y="13" width="414" height="150" rx="9" class="panel"/>
+  <text x="25" y="40" class="head">同一计算语义、同一分工</text>
+  <text x="25" y="68" class="code">Y = XW (2×4 · 4×2)</text>
+  <text x="25" y="94" class="note">X 按行，W 按列（各 1 B/元素）；</text>
+  <text x="25" y="118" class="note">Y 按行（2 B/元素）。累加器按输出初始化。</text>
+  <rect x="25" y="128" width="390" height="25" rx="5" class="target"/>
+  <text x="220" y="147" class="note target-text" text-anchor="middle">两行各自累加，逐列完成输出</text>
+  <path d="M23 163V509" class="line"/>
+  <text x="47" y="185" class="note">针对目标实现（不是执行先后）</text>
+  <path d="M23 251H42" class="wire"/>
+  <path d="M23 380H42" class="wire"/>
+  <path d="M23 509H42" class="wire"/>
+  <rect x="46" y="198" width="381" height="112" rx="9" class="node"/>
+  <text x="59" y="224" class="label">CPU · SIMD</text>
+  <rect x="60" y="234" width="166" height="27" rx="6" class="panel"/>
+  <rect x="239" y="234" width="174" height="27" rx="6" class="panel"/>
+  <text x="143" y="253" class="code" text-anchor="middle">lane 0: i=0</text>
+  <text x="326" y="253" class="code" text-anchor="middle">lane 1: i=1</text>
+  <text x="59" y="282" class="note">取两行的值，广播权重，向量乘加；</text>
+  <text x="59" y="302" class="note">写入各行对应的输出地址。</text>
+  <rect x="46" y="327" width="381" height="112" rx="9" class="node"/>
+  <text x="59" y="353" class="label">GPU · SIMT</text>
+  <rect x="60" y="363" width="166" height="27" rx="6" class="panel"/>
+  <rect x="239" y="363" width="174" height="27" rx="6" class="panel"/>
+  <text x="143" y="382" class="code" text-anchor="middle">thread 0: i=0</text>
+  <text x="326" y="382" class="code" text-anchor="middle">thread 1: i=1</text>
+  <text x="59" y="411" class="note">线程按编号确定输入行，维护自身部分和；</text>
+  <text x="59" y="431" class="note">各自读数、乘加和写回。</text>
+  <rect x="46" y="456" width="381" height="94" rx="9" class="node"/>
+  <text x="59" y="482" class="label">命令式 NPU</text>
+  <text x="59" y="509" class="note">发出带地址的搬入、计算和写回操作；</text>
+  <text x="59" y="532" class="note">配置两行分工及完成依赖。</text>
+</svg>

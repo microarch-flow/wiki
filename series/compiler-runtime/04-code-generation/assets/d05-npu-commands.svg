@@ -1,0 +1,86 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="440" height="660" viewBox="0 0 440 660" role="img" aria-labelledby="title desc">
+  <title id="title">候选 D 的片上地址复用与跨步写回</title>
+  <desc id="desc">两行 X 已经驻留在两个计算单元的本地存储。L0 把第一列权重装入共享 SRAM 偏移0。C0 与 L1 可以重叠；两者都完成时，偏移0的第一列权重已读完，偏移4保存第二列权重，偏移8保存第一列结果21和17。C1 与 S0 可以重叠；C1 读偏移4并将第二列结果29和16写入偏移0，S0 从偏移8把21和17分别搬到外层 Y 的字节偏移0和4。C1 与 S0 均完成后，S1 从偏移0把29和16分别搬到外层 Y 的字节偏移2和6。最终按行紧密存储的 uint16 结果依次为21、29、17、16。</desc>
+  <defs>
+    <marker id="arrow" markerWidth="7" markerHeight="7" refX="6.3" refY="3.5" orient="auto" markerUnits="userSpaceOnUse">
+      <path d="M0 0 7 3.5 0 7Z" fill="#476957"/>
+    </marker>
+    <style>
+      text {font-family:"Noto Sans CJK SC","PingFang SC","Microsoft YaHei",sans-serif;fill:#173d35;font-size:19px}
+      .head {font-size:21px;font-weight:700}
+      .label {font-size:18px;font-weight:700}
+      .note {font-size:16px;fill:#416354}
+      .code {font-family:"DejaVu Sans Mono",Consolas,monospace;font-size:18px}
+      .code-sm {font-family:"DejaVu Sans Mono",Consolas,monospace;font-size:16px}
+      .panel {fill:#edf2e8;stroke:#cad8cb;stroke-width:1.2}
+      .node {fill:#e9eee4;stroke:#97ad9a;stroke-width:1.25}
+      .cell {fill:#d9e9dc;stroke:#729582;stroke-width:1.3}
+      .target {fill:#f2e4c9;stroke:#aa9163;stroke-width:1.5}
+      .target-text {fill:#78591b;font-weight:700}
+      .free {fill:#e9eee4;stroke:#97ad9a;stroke-width:1.25;stroke-dasharray:4 3}
+      .wire {fill:none;stroke:#476957;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;marker-end:url(#arrow)}
+    </style>
+  </defs>
+  <rect x="1" y="1" width="438" height="658" rx="14" fill="#f5f6ef" stroke="#c4d0c4"/>
+  <text x="19" y="31" class="head">候选 D：固定的片上地址方案</text>
+  <text x="19" y="57" class="note">X 两行已在本地；共享 SRAM 有三个 4 B 槽。</text>
+  <rect x="14" y="69" width="412" height="44" rx="8" class="node"/>
+  <text x="220" y="96" class="label" text-anchor="middle">L₀：搬入 W₀ 到 SRAM+0</text>
+  <path d="M220 113V128" class="wire"/>
+
+  <rect x="14" y="131" width="412" height="168" rx="8" class="panel"/>
+  <text x="26" y="158" class="head">① C₀ 与 L₁ 可重叠</text>
+  <text x="26" y="182" class="note">两者完成后的 SRAM 状态：</text>
+  <text x="92" y="205" class="code-sm" text-anchor="middle">+0 B</text>
+  <text x="220" y="205" class="code-sm" text-anchor="middle">+4 B</text>
+  <text x="348" y="205" class="code-sm" text-anchor="middle">+8 B</text>
+  <rect x="30" y="213" width="124" height="53" rx="5" class="free"/>
+  <rect x="158" y="213" width="124" height="53" rx="5" class="cell"/>
+  <rect x="286" y="213" width="124" height="53" rx="5" class="target"/>
+  <text x="92" y="233" class="label" text-anchor="middle">W₀ 已读完</text>
+  <text x="220" y="233" class="label" text-anchor="middle">W₁</text>
+  <text x="348" y="233" class="label target-text" text-anchor="middle">Y₀</text>
+  <text x="92" y="255" class="code-sm" text-anchor="middle">3,5,2,1</text>
+  <text x="220" y="255" class="code-sm" text-anchor="middle">1,2,3,4</text>
+  <text x="348" y="255" class="code target-text" text-anchor="middle">21,17</text>
+  <text x="26" y="288" class="note target-text">C₀ 不再读 +0，可以把这一槽交给 Y₁。</text>
+  <path d="M220 299V315" class="wire"/>
+
+  <rect x="14" y="318" width="412" height="171" rx="8" class="panel"/>
+  <text x="26" y="345" class="head">② C₁ 与 S₀ 可重叠</text>
+  <text x="26" y="369" class="note">两者完成后的 SRAM 状态：</text>
+  <text x="92" y="392" class="code-sm" text-anchor="middle">+0 B</text>
+  <text x="220" y="392" class="code-sm" text-anchor="middle">+4 B</text>
+  <text x="348" y="392" class="code-sm" text-anchor="middle">+8 B</text>
+  <rect x="30" y="400" width="124" height="53" rx="5" class="cell"/>
+  <rect x="158" y="400" width="124" height="53" rx="5" class="free"/>
+  <rect x="286" y="400" width="124" height="53" rx="5" class="free"/>
+  <text x="92" y="420" class="label" text-anchor="middle">Y₁</text>
+  <text x="220" y="420" class="label" text-anchor="middle">W₁ 已读完</text>
+  <text x="348" y="420" class="label" text-anchor="middle">Y₀ 已搬出</text>
+  <text x="92" y="442" class="code" text-anchor="middle">29,16</text>
+  <text x="220" y="442" class="code-sm" text-anchor="middle">1,2,3,4</text>
+  <text x="348" y="442" class="code" text-anchor="middle">21,17</text>
+  <text x="26" y="476" class="note">C₁ 读 +4、写 +0；S₀ 从 +8 搬出 Y₀。</text>
+  <path d="M220 489V505" class="wire"/>
+
+  <rect x="14" y="508" width="412" height="138" rx="8" class="panel"/>
+  <text x="26" y="534" class="label">③ S₁ 从 +0 搬出 Y₁，完整输出</text>
+  <text x="26" y="558" class="note">外层 Y 为行主序 uint16，S₀ / S₁ 跨步写回。</text>
+  <text x="78" y="581" class="code-sm" text-anchor="middle">Y+0 B</text>
+  <text x="173" y="581" class="code-sm" text-anchor="middle">Y+2 B</text>
+  <text x="268" y="581" class="code-sm" text-anchor="middle">Y+4 B</text>
+  <text x="363" y="581" class="code-sm" text-anchor="middle">Y+6 B</text>
+  <rect x="32" y="588" width="92" height="45" rx="5" class="target"/>
+  <rect x="127" y="588" width="92" height="45" rx="5" class="cell"/>
+  <rect x="222" y="588" width="92" height="45" rx="5" class="target"/>
+  <rect x="317" y="588" width="92" height="45" rx="5" class="cell"/>
+  <text x="78" y="606" class="code target-text" text-anchor="middle">21</text>
+  <text x="173" y="606" class="code" text-anchor="middle">29</text>
+  <text x="268" y="606" class="code target-text" text-anchor="middle">17</text>
+  <text x="363" y="606" class="code" text-anchor="middle">16</text>
+  <text x="78" y="625" class="note target-text" text-anchor="middle">S₀</text>
+  <text x="173" y="625" class="note" text-anchor="middle">S₁</text>
+  <text x="268" y="625" class="note target-text" text-anchor="middle">S₀</text>
+  <text x="363" y="625" class="note" text-anchor="middle">S₁</text>
+</svg>

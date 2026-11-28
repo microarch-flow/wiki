@@ -438,6 +438,21 @@ class CompilerRuntimeGuideTests(unittest.TestCase):
         previous = SITE / PREFIX / route / "d03-register-allocation-and-scheduling/index.html"
         self.assertIn(f"../{slug}/", GuideContent(previous.read_text()).links)
 
+    def test_d05_article_navigation_search_and_diagrams(self):
+        route = "04-code-generation"
+        slug = "d05-matrix-multiplication-kernels"
+        self._check_article(
+            route,
+            "算子实现与代码生成",
+            slug,
+            "分块方案确定后，怎样生成可执行的矩阵乘法内核？",
+            ("d05-plan-to-kernels.svg", "d05-accumulator-states.svg",
+             "d05-npu-commands.svg"),
+        )
+        for previous in ("d01-lowering-and-bufferization", "d04-executable-artifacts"):
+            page = SITE / PREFIX / route / previous / "index.html"
+            self.assertIn(f"../{slug}/", GuideContent(page.read_text()).links)
+
     def _check_foundation_article(self, slug, title, diagram_names):
         self._check_article("01-foundations", "软件执行共同基础", slug, title, diagram_names)
 
