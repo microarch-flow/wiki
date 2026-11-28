@@ -870,6 +870,11 @@ def on_config(config, **kwargs):
     storage_topics = grouped_original_topics(root, STORAGE)
     storage_resources = storage_resources_tree(root)
     validate_storage_navigation(root, [*storage_topics, *storage_resources])
+    storage_v2 = root / "storage-v2"
+    storage_alternate = []
+    if (storage_v2 / "README.md").is_file():
+        storage_alternate.append({"新版：存储系统": make_tree(
+            storage_v2, root, ("README.md", "index.md"), order_subdirs=True)})
     # These files use stable paths. A content-derived query prevents browsers
     # from combining freshly deployed HTML with a cached older CSS/JS file.
     for setting in ("extra_css", "extra_javascript"):
@@ -889,7 +894,8 @@ def on_config(config, **kwargs):
             {f"{MICRO}首页": "microarchitecture.md"},
             *micro_topics,
         ]},
-        "storage.md": {STORAGE: [{"系列首页": "storage.md"}, *storage_topics, *storage_resources]},
+        "storage.md": {STORAGE: [{"系列首页": "storage.md"}, *storage_alternate,
+                                *storage_topics, *storage_resources]},
         "interconnect.md": {INTERCONNECT: [{"系列首页": "interconnect.md"}, *grouped_original_topics(root, INTERCONNECT)]},
     }
     config.nav = [{"首页": "README.md"}]
@@ -986,6 +992,12 @@ def on_page_markdown(markdown, page, **kwargs):
     if page.file.src_uri == "microarchitecture.md" and (Path(kwargs["config"].docs_dir) / "microarchitecture-v2/README.md").is_file():
         notice = "> **旧版资料。** 新版正在逐步重构和发布；可前往[新版计算微架构导读](microarchitecture-v2/README.md)。本页与原有文章仍可阅读。\n\n"
         # Preserve the legacy intro/cover and all of its original headings and anchors.
+        markdown = re.sub(r"^## ", lambda match: notice + match.group(0), markdown, count=1, flags=re.MULTILINE)
+    if (page.file.src_uri == "storage.md"
+            and (Path(kwargs["config"].docs_dir) / "storage-v2/README.md").is_file()):
+        notice = ("> **新版建设中。** 可前往[新版存储系统导读](storage-v2/README.md)了解新的阅读路线；"
+                  "本页与原有文章仍可正常阅读。\n\n")
+        # Keep the legacy source and all existing heading anchors unchanged.
         markdown = re.sub(r"^## ", lambda match: notice + match.group(0), markdown, count=1, flags=re.MULTILINE)
     if (page.file.src_uri == "series/inference-runtime/README.md"
             and (Path(kwargs["config"].docs_dir) / "series/compiler-runtime/README.md").is_file()):

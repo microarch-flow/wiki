@@ -1,0 +1,23 @@
+digraph knowledge {
+  graph [rankdir=TB, bgcolor="#f5f6ef", pad="0.18", nodesep="0.24", ranksep="0.42", splines=polyline, outputorder=edgesfirst];
+  node [shape=box, style="rounded,filled", color="#82a18e", fillcolor="#e0ebe3", fontcolor="#173d35", penwidth=1.3, fontname="Noto Sans CJK SC", fontsize=15, margin="0.13,0.10"];
+  edge [color="#396b55", penwidth=1.4, arrowsize=.65];
+  I01 [label="I01 SSD 读路径"];
+  I02 [label="I02 FTL 异地写入"];
+  I03 [label="I03 回收与写放大"];
+  I04 [label="I04 持久化与恢复"];
+  I05 [label="I05 HBF 读路径"];
+  I06 [label="I06 HBF 写入与维护"];
+  I07 [label="I07 HBF 工作负载\n（深化）", fillcolor="#edece0"];
+  {rank=same; I01; I05}
+  {rank=same; I02; I06}
+  {rank=same; I03; I04; I07}
+  I01 -> I02;
+  I02 -> I03;
+  I02 -> I04;
+  I05 -> I06;
+  I05 -> I07;
+  I06 -> I07 [style=dashed, color="#738578"];
+  I02 -> I06 [style=dashed, color="#738578", constraint=false];
+  I04 -> I06 [style=dashed, color="#738578", constraint=false];
+}

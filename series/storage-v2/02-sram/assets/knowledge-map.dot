@@ -1,0 +1,14 @@
+digraph knowledge {
+  graph [rankdir=TB, bgcolor="#f5f6ef", pad="0.18", nodesep="0.24", ranksep="0.42", splines=polyline, outputorder=edgesfirst];
+  node [shape=box, style="rounded,filled", color="#82a18e", fillcolor="#e0ebe3", fontcolor="#173d35", penwidth=1.3, fontname="Noto Sans CJK SC", fontsize=15, margin="0.13,0.10"];
+  edge [color="#396b55", penwidth=1.4, arrowsize=.65];
+  B01 [label="B01 6T 单元"];
+  B02 [label="B02 SRAM 阵列"];
+  B03 [label="B03 宏接口"];
+  B04 [label="B04 多端口与 Bank"];
+  C01 [label="C01 寄存器文件", fillcolor="#edece3", color="#a2aa9e"];
+  B01 -> B02;
+  B02 -> B03;
+  B03 -> B04;
+  B04 -> C01 [style=dashed, color="#738578"];
+}

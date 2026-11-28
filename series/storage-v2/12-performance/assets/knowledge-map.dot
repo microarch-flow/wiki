@@ -1,0 +1,28 @@
+digraph knowledge {
+  graph [rankdir=TB, bgcolor="#f5f6ef", pad="0.18", nodesep="0.24", ranksep="0.42", splines=polyline, outputorder=edgesfirst];
+  node [shape=box, style="rounded,filled", color="#82a18e", fillcolor="#e0ebe3", fontcolor="#173d35", penwidth=1.3, fontname="Noto Sans CJK SC", fontsize=15, margin="0.13,0.10"];
+  edge [color="#396b55", penwidth=1.4, arrowsize=.65];
+  A [label="A01、A03
+访问与资源", fillcolor="#edf1df"];
+  J03 [label="J03 加速器存储", fillcolor="#edf1df"];
+  J05 [label="J05 封装与集成", fillcolor="#edf1df"];
+  MECH [label="对应存储机制", fillcolor="#edf1df"];
+  L01 [label="L01 服务与带宽"];
+  L02 [label="L02 多层流量"];
+  L03 [label="L03 事件模型"];
+  L04 [label="L04 测量与校准"];
+  L05 [label="L05 架构探索"];
+  A -> L01;
+  L01 -> L02;
+  J03 -> L02;
+  L01 -> L03;
+  MECH -> L03;
+  L01 -> L04;
+  L03 -> L04;
+  L01 -> L05;
+  J03 -> L05;
+  J05 -> L05;
+  L02 -> L05 [style=dashed, color="#738578"];
+  L03 -> L05 [style=dashed, color="#738578"];
+  L04 -> L05 [style=dashed, color="#738578"];
+}

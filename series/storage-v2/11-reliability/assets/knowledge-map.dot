@@ -1,0 +1,20 @@
+digraph knowledge {
+  graph [rankdir=TB, bgcolor="#f5f6ef", pad="0.18", nodesep="0.24", ranksep="0.42", splines=polyline, outputorder=edgesfirst];
+  node [shape=box, style="rounded,filled", color="#82a18e", fillcolor="#e0ebe3", fontcolor="#173d35", penwidth=1.3, fontname="Noto Sans CJK SC", fontsize=15, margin="0.13,0.10"];
+  edge [color="#396b55", penwidth=1.4, arrowsize=.65];
+  A01 [label="A01 访问共同基础", fillcolor="#edf1df"];
+  ARRAY [label="相关阵列机制", fillcolor="#edf1df"];
+  SYSTEM [label="相关系统组织", fillcolor="#edf1df"];
+  MEDIA [label="DRAM、NAND 等
+特有失效机制", fillcolor="#edf1df"];
+  K01 [label="K01 检测与纠正"];
+  K02 [label="K02 检查与修复"];
+  K03 [label="K03 端到端保护"];
+  A01 -> K01;
+  K01 -> K02;
+  ARRAY -> K02;
+  K01 -> K03;
+  K02 -> K03;
+  SYSTEM -> K03;
+  MEDIA -> K03 [style=dashed, color="#738578"];
+}

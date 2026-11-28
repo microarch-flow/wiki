@@ -68,6 +68,8 @@ NoC 的十个阅读分组、文章短标题和顺序维护在 `series/interconne
 
 新版计算微架构的正文与专题导读维护在 `series/microarchitecture-v2/`，通过 `website/series.json` 的本地系列配置发布到 `microarchitecture-v2/`。首页与顶栏进入新版；旧版 `series/microarchitecture/` 保持历史 URL，在同一系列的「旧版资料」分组中可访问。新版九个编号目录按目录顺序导航，正文文件名使用计划书中的稳定编号前缀；专题导读中的未发布条目是纯文本，实际发表后再加链接。知识关系图使用 SVG（可直接查看），同目录下的 Graphviz `.dot` 源可用于更新图形：`dot -Tsvg knowledge-map.dot -o knowledge-map.svg`。重构依据见 [计算微架构重构计划书](../docs/microarchitecture-v2-plan.md)。
 
+新版存储系统的正文与专题导读在 `series/storage-v2/` 独立建设，发布路径为 `storage-v2/`。重构期间 `prepare.py` 单独暂存新版，`hooks.py` 在原存储系列首页及导航中提供新版入口；八个主系列的登记与旧版存储源码、历史公开路径均保持不变。十二个专题按编号目录顺序导航，未发布的计划条目只使用纯文本，发表正文后再添加链接。静态知识关系图采用 SVG，并保留 `.dot` 源。重构依据见 [存储系统重构计划书](../docs/storage-v2-plan.md)；`test_storage_v2_guides.py` 检查新旧入口及新版导读的导航、搜索、图解和站内链接。
+
 当前生产配置只使用本仓库的正文，不需要检出或联网读取旧来源仓库。仓内内容变更随主仓 `main` 推送发布。
 
 ## 可选：增加来自其他仓库的技术系列

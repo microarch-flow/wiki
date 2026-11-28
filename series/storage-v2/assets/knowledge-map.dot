@@ -1,0 +1,26 @@
+digraph knowledge {
+  graph [rankdir=TB, bgcolor="#f5f6ef", pad="0.18", nodesep="0.24", ranksep="0.42", splines=polyline, outputorder=edgesfirst];
+  node [shape=box, style="rounded,filled", color="#82a18e", fillcolor="#e0ebe3", fontcolor="#173d35", penwidth=1.3, fontname="Noto Sans CJK SC", fontsize=15, margin="0.13,0.10"];
+  edge [color="#396b55", penwidth=1.4, arrowsize=.65];
+  A [label="A 共同基础\n4 篇"];
+  B [label="B SRAM\n4 篇"];
+  C [label="C 片上存储\n3 篇"];
+  D [label="D Cache\n5 篇"];
+  E [label="E 地址翻译\n5 篇"];
+  F [label="F DRAM\n6 篇"];
+  G [label="G 内存控制器\n5 篇"];
+  H [label="H 非易失介质\n5 篇"];
+  I [label="I 非易失存储系统\n7 篇"];
+  J [label="J 系统级存储组织与集成\n按实际系统汇合 · 5 篇"];
+  K [label="K 数据完整性与存储可靠性\n贯穿各分支 · 3 篇", fillcolor="#f3eddf", color="#b5a67d"];
+  L [label="L 性能分析、建模与设计权衡\n贯穿各分支 · 5 篇", fillcolor="#f3eddf", color="#b5a67d"];
+  A -> B; A -> C; A -> D; A -> E; A -> F; A -> H;
+  B -> C [style=dashed, color="#738578"];
+  D -> E [style=dashed, color="#738578"];
+  F -> G;
+  H -> I;
+  C -> J; D -> J; E -> J; G -> J; I -> J;
+  {rank=same; B; D; E; F; H;}
+  {rank=same; C; G; I;}
+  {rank=sink; K; L;}
+}

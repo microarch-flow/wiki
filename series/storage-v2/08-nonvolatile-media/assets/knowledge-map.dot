@@ -1,0 +1,18 @@
+digraph knowledge {
+  graph [rankdir=TB, bgcolor="#f5f6ef", pad="0.18", nodesep="0.24", ranksep="0.42", splines=polyline, outputorder=edgesfirst];
+  node [shape=box, style="rounded,filled", color="#82a18e", fillcolor="#e0ebe3", fontcolor="#173d35", penwidth=1.3, fontname="Noto Sans CJK SC", fontsize=15, margin="0.13,0.10"];
+  edge [color="#396b55", penwidth=1.4, arrowsize=.65];
+  H01 [label="H01 非易失状态\n与 Flash 单元"];
+  H02 [label="H02 NOR / NAND 阵列"];
+  H03 [label="H03 NAND 编程与擦除"];
+  H04 [label="H04 多位存储与磨损"];
+  H05 [label="H05 其他介质\n（深化）", fillcolor="#edece0"];
+  DRAM [label="DRAM 阵列\n（对照）", color="#a8b0a6", fillcolor="#f5f6ef", fontsize=12];
+  {rank=same; H01; DRAM}
+  {rank=same; H02; H05}
+  H01 -> H02;
+  H01 -> H05;
+  H02 -> H03;
+  H03 -> H04;
+  DRAM -> H02 [style=dashed, color="#738578"];
+}

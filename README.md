@@ -17,6 +17,8 @@
 | [存储系统](./series/storage/README.md) | SRAM、DRAM、HBM 和高带宽闪存 |
 | [芯片与系统互连](./series/interconnect/README.md) | 片上总线、网络、PCIe、SerDes 和光互连 |
 
+新版 [存储系统导读](./series/storage-v2/README.md) 正在独立建设，覆盖存储介质、访问机制与系统组织。详见[存储系统重构计划书](./docs/storage-v2-plan.md)，原存储资料仍可阅读。
+
 ### 模型怎样计算，一次推理怎样跑起来？
 
 | 系列 | 内容 |

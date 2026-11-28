@@ -1,0 +1,19 @@
+digraph knowledge {
+  graph [rankdir=TB, bgcolor="#f5f6ef", pad="0.18", nodesep="0.24", ranksep="0.42", splines=polyline, outputorder=edgesfirst];
+  node [shape=box, style="rounded,filled", color="#82a18e", fillcolor="#e0ebe3", fontcolor="#173d35", penwidth=1.3, fontname="Noto Sans CJK SC", fontsize=15, margin="0.13,0.10"];
+  edge [color="#396b55", penwidth=1.4, arrowsize=.65];
+  A14 [label="A01、A04\n访问请求与局部性", fillcolor="#edf1df"];
+  D01 [label="D01\nCache 查找"];
+  D02 [label="D02\n写策略与副本"];
+  D03 [label="D03\n非阻塞访问"];
+  D04 [label="D04\n多级缓存"];
+  D05 [label="D05\n预取与争用"];
+  { rank=same; D03; D04; }
+  A14 -> D01;
+  D01 -> D02;
+  D02 -> D03;
+  D02 -> D04;
+  D03 -> D05;
+  D03 -> D04 [style=dashed, color="#738578", constraint=false];
+  D04 -> D05 [style=dashed, color="#738578"];
+}

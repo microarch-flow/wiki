@@ -401,6 +401,14 @@ def stage_site(root=ROOT, build_root=None, registry=None, source_root=None, layo
         shutil.copy2(root / "website" / "series-redirect.html", series_redirect)
         shutil.copy2(storage_home, docs / "storage.md")
         published.add(storage_home, docs / "storage.md")
+        # Publish the reconstruction beside the existing storage sources and
+        # their preserved URLs. The current registry still points to storage.md.
+        storage_v2 = "series/storage-v2"
+        if (root / storage_v2).exists():
+            alternate = source_directory(root, storage_v2)
+            destination = docs / "storage-v2"
+            copy_source(alternate, destination, public_only=True)
+            published.add_tree(alternate, destination)
         shutil.copy2(root / "website" / "interconnect.md", docs / "interconnect.md")
         published.add(root / "series/interconnect/README.md", docs / "interconnect.md", rewrite_page=False)
         shutil.copy2(root / "website" / "articles.md", docs / "articles.md")

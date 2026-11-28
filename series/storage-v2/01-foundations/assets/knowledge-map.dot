@@ -1,0 +1,14 @@
+digraph knowledge {
+  graph [rankdir=TB, bgcolor="#f5f6ef", pad="0.18", nodesep="0.24", ranksep="0.42", splines=polyline, outputorder=edgesfirst];
+  node [shape=box, style="rounded,filled", color="#82a18e", fillcolor="#e0ebe3", fontcolor="#173d35", penwidth=1.3, fontname="Noto Sans CJK SC", fontsize=15, margin="0.13,0.10"];
+  edge [color="#396b55", penwidth=1.4, arrowsize=.65];
+  A01 [label="A01 数据、地址与请求"];
+  A02 [label="A02 逻辑阵列"];
+  A03 [label="A03 端口、Bank 与竞争"];
+  A04 [label="A04 存储层次与局部性"];
+  A01 -> A02;
+  A01 -> A04;
+  A02 -> A03;
+  A03 -> A04 [style=dashed, color="#738578", constraint=false];
+  {rank=same; A02; A04;}
+}

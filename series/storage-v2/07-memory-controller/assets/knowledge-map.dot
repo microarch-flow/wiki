@@ -1,0 +1,19 @@
+digraph knowledge {
+  graph [rankdir=TB, bgcolor="#f5f6ef", pad="0.18", nodesep="0.24", ranksep="0.42", splines=polyline, outputorder=edgesfirst];
+  node [shape=box, style="rounded,filled", color="#82a18e", fillcolor="#e0ebe3", fontcolor="#173d35", penwidth=1.3, fontname="Noto Sans CJK SC", fontsize=15, margin="0.13,0.10"];
+  edge [color="#396b55", penwidth=1.4, arrowsize=.65];
+  G01 [label="G01 请求接纳与映射"];
+  G02 [label="G02 合法性与调度"];
+  G03 [label="G03 写队列与排空"];
+  G04 [label="G04 刷新调度"];
+  G05 [label="G05 公平与 QoS"];
+  L03 [label="L03 存储事件模型", fillcolor="#edece3", color="#a2aa9e"];
+  G01 -> G02;
+  G01 -> G03;
+  G02 -> G03;
+  G02 -> G04;
+  G02 -> G05;
+  G03 -> G05;
+  G04 -> G05;
+  G02 -> L03 [style=dashed, color="#738578", constraint=false];
+}
