@@ -254,6 +254,19 @@ class CompilerRuntimeGuideTests(unittest.TestCase):
         previous = SITE / PREFIX / route / "c02-layout-and-dataflow-planning/index.html"
         self.assertIn(f"../{slug}/", GuideContent(previous.read_text()).links)
 
+    def test_c04_article_navigation_search_and_diagrams(self):
+        route = "03-mapping-and-planning"
+        slug = "c04-static-buffer-allocation"
+        self._check_article(
+            route,
+            "资源映射与执行规划",
+            slug,
+            "已经使用过的缓冲空间，什么时候可以交给下一项任务？",
+            ("c04-buffer-lifetimes.svg", "c04-buffer-placement.svg"),
+        )
+        previous = SITE / PREFIX / route / "c03-static-execution-planning/index.html"
+        self.assertIn(f"../{slug}/", GuideContent(previous.read_text()).links)
+
     def _check_foundation_article(self, slug, title, diagram_names):
         self._check_article("01-foundations", "软件执行共同基础", slug, title, diagram_names)
 

@@ -1,0 +1,83 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="420" height="349" viewBox="0 0 420 349" role="img" aria-labelledby="title desc">
+  <title id="title">双槽日程中四个片上缓冲区的占用区间</title>
+  <desc id="desc">每个逻辑缓冲区需要 4 B。实点为开始预留，空心点为释放，区间含起点、不含终点。权重 W₀ 占用 [0,6)，W₁ 占用 [2,10)，片上结果 Y₀ 占用 [2,8)，Y₁ 占用 [6,12)。时刻 6，W₀ 的最后一次读取结束，Y₁ 开始预留，两者的占用时间没有重叠。此时 Y₀ 仍要写回，直到时刻 8 才能释放。五段区间内同时占用的缓冲区数依次为 1、3、3、2、1。</desc>
+  <defs>
+    <style>
+      text { font-family: "Noto Sans CJK SC", "PingFang SC", "Microsoft YaHei", sans-serif; fill: #173d35 }
+      .heading { font-size: 21px; font-weight: 700 }
+      .note { font-size: 16px; fill: #355745 }
+      .tick { font-size: 16px; text-anchor: middle }
+      .row { font-size: 20px; font-weight: 650; text-anchor: middle }
+      .six { font-weight: 700; fill: #834c27 }
+      .grid { fill: none; stroke: #cbd6cb; stroke-width: 1 }
+      .handoff { fill: none; stroke: #995e38; stroke-width: 1.6; stroke-dasharray: 3 4 }
+      .ground { fill: none; stroke: #d6ded2; stroke-width: 1 }
+      .weight { color: #436b70 }
+      .output { color: #886334 }
+      .life { fill: none; stroke: currentColor; stroke-width: 7 }
+      .start { fill: currentColor }
+      .end { fill: #f5f6ef; stroke: currentColor; stroke-width: 2.2 }
+      .count { fill: #e8eee5; stroke: #bccbbd }
+    </style>
+  </defs>
+  <rect x="1" y="1" width="418" height="347" rx="14" fill="#f5f6ef" stroke="#c4d0c4"/>
+  <text x="18" y="32" class="heading">四个片上缓冲区，每个 4 B</text>
+  <g aria-label="区间与单位">
+    <circle cx="25" cy="56" r="5.5" fill="#476957"/>
+    <text x="38" y="62" class="note">开始预留</text>
+    <circle cx="134" cy="56" r="5.5" fill="#f5f6ef" stroke="#476957" stroke-width="2.2"/>
+    <text x="147" y="62" class="note">释放</text>
+    <text x="244" y="62" class="note">横轴单位为拍</text>
+  </g>
+  <g aria-label="从 0 到 12 的时刻">
+    <text x="31" y="94" class="tick">时刻</text>
+    <g class="tick">
+      <text x="66" y="94">0</text><text x="121" y="94">2</text>
+      <text x="176" y="94">4</text><text x="231" y="94" class="six">6</text>
+      <text x="286" y="94">8</text><text x="341" y="94">10</text>
+      <text x="396" y="94">12</text>
+    </g>
+    <path d="M66 101V245 M121 101V245 M176 101V245 M286 101V245 M341 101V245 M396 101V245" class="grid"/>
+    <path d="M231 101V245" class="handoff"/>
+    <path d="M66 122H396 M66 156H396 M66 190H396 M66 224H396" class="ground"/>
+  </g>
+  <g class="weight" aria-label="W₀ 从时刻 0 到 6">
+    <text x="31" y="129" class="row">W₀</text>
+    <path d="M66 122H231" class="life"/>
+    <circle cx="66" cy="122" r="6" class="start"/>
+    <circle cx="231" cy="122" r="6" class="end"/>
+  </g>
+  <g class="weight" aria-label="W₁ 从时刻 2 到 10">
+    <text x="31" y="163" class="row">W₁</text>
+    <path d="M121 156H341" class="life"/>
+    <circle cx="121" cy="156" r="6" class="start"/>
+    <circle cx="341" cy="156" r="6" class="end"/>
+  </g>
+  <g class="output" aria-label="Y₀ 从时刻 2 到 8">
+    <text x="31" y="197" class="row">Y₀</text>
+    <path d="M121 190H286" class="life"/>
+    <circle cx="121" cy="190" r="6" class="start"/>
+    <circle cx="286" cy="190" r="6" class="end"/>
+  </g>
+  <g class="output" aria-label="Y₁ 从时刻 6 到 12">
+    <text x="31" y="231" class="row">Y₁</text>
+    <path d="M231 224H396" class="life"/>
+    <circle cx="231" cy="224" r="6" class="start"/>
+    <circle cx="396" cy="224" r="6" class="end"/>
+  </g>
+  <g aria-label="各区间同时占用的缓冲区数">
+    <text x="31" y="266" class="tick">块数</text>
+    <rect x="66" y="246" width="55" height="28" class="count"/>
+    <rect x="121" y="246" width="110" height="28" class="count"/>
+    <rect x="231" y="246" width="55" height="28" class="count"/>
+    <rect x="286" y="246" width="55" height="28" class="count"/>
+    <rect x="341" y="246" width="55" height="28" class="count"/>
+    <g class="tick">
+      <text x="93.5" y="266">1</text><text x="176" y="266">3</text>
+      <text x="258.5" y="266">3</text><text x="313.5" y="266">2</text>
+      <text x="368.5" y="266">1</text>
+    </g>
+  </g>
+  <text x="18" y="304" class="note">时刻 6，W₀ 释放，Y₁ 开始预留。</text>
+  <text x="18" y="329" class="note">Y₀ 的写回还在进行，时刻 8 才能释放。</text>
+</svg>

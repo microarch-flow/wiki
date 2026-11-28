@@ -1,0 +1,48 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="420" height="295" viewBox="0 0 420 295" role="img" aria-labelledby="title desc">
+  <title id="title">十二拍中，同一段 SRAM 地址先后交给了谁？</title>
+  <desc id="desc">横轴为时间，从 0 至 12 拍；纵轴为 SRAM 字节偏移，每一行占 4 B。在偏移 [0,4) 上，W₀ 从时刻 0 占用到 6，Y₁ 自 6 接续至 12。在 [4,8) 上，W₁ 从 2 占用到 10。在 [8,12) 上，Y₀ 从 2 占用到 8。每个区间含起点、不含终点。色块表示空间已为该值预留，空白表示未预留；预留期间数据可能尚未写完。</desc>
+  <style>
+    text { font-family: "Noto Sans CJK SC", "PingFang SC", "Microsoft YaHei", sans-serif; fill: #173d35 }
+    .heading { font-size: 20px; font-weight: 700 }
+    .axis, .tick, .offset, .note { font-size: 16px }
+    .axis, .tick, .note { fill: #395a4d }
+    .tick, .value { text-anchor: middle }
+    .offset { text-anchor: end }
+    .value { font-size: 21px; font-weight: 700 }
+    .grid { fill: none; stroke: #c4d0c4; stroke-width: 1 }
+    .weight { fill: #d9e9dc; stroke: #729582; stroke-width: 1.25 }
+    .output { fill: #f2e4c9; stroke: #aa9163; stroke-width: 1.25 }
+  </style>
+  <rect x="1" y="1" width="418" height="293" rx="14" fill="#f5f6ef" stroke="#c4d0c4"/>
+  <text x="16" y="31" class="heading">同一段地址可以先后存放两个值</text>
+  <text x="394" y="60" class="axis" text-anchor="end">时间（拍）</text>
+  <text x="12" y="86" class="axis">字节偏移</text>
+  <g class="tick" aria-label="时间刻度">
+    <text x="96" y="86">0</text><text x="146" y="86">2</text>
+    <text x="196" y="86">4</text><text x="246" y="86" font-weight="700">6</text>
+    <text x="296" y="86">8</text><text x="346" y="86">10</text><text x="396" y="86">12</text>
+  </g>
+  <rect x="96" y="96" width="300" height="126" fill="#fafaf4" stroke="#c4d0c4"/>
+  <path d="M146 96v126 M196 96v126 M246 96v126 M296 96v126 M346 96v126" class="grid" stroke-dasharray="2 4"/>
+  <path d="M96 138h300 M96 180h300" class="grid"/>
+  <g aria-label="偏移零到四">
+    <text x="81" y="123" class="offset">[0, 4)</text>
+    <rect x="96" y="101" width="150" height="32" class="weight"/>
+    <rect x="246" y="101" width="150" height="32" class="output"/>
+    <text x="171" y="124" class="value">W₀</text>
+    <text x="321" y="124" class="value">Y₁</text>
+    <path d="M246 93v42" stroke="#355749" stroke-width="2"/>
+  </g>
+  <g aria-label="偏移四到八">
+    <text x="81" y="165" class="offset">[4, 8)</text>
+    <rect x="146" y="143" width="200" height="32" class="weight"/>
+    <text x="246" y="166" class="value">W₁</text>
+  </g>
+  <g aria-label="偏移八到十二">
+    <text x="81" y="207" class="offset">[8, 12)</text>
+    <rect x="146" y="185" width="150" height="32" class="output"/>
+    <text x="221" y="208" class="value">Y₀</text>
+  </g>
+  <text x="16" y="252" class="note">t = 6 时，偏移 [0, 4) 从 W₀ 转交给 Y₁。</text>
+  <text x="16" y="277" class="note">空白处未预留。色块内已预留，数据可能仍在写入。</text>
+</svg>
