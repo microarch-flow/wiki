@@ -398,6 +398,19 @@ class CompilerRuntimeGuideTests(unittest.TestCase):
         previous = SITE / PREFIX / route / "d02-instruction-selection/index.html"
         self.assertIn(f"../{slug}/", GuideContent(previous.read_text()).links)
 
+    def test_d04_article_navigation_search_and_diagrams(self):
+        route = "04-code-generation"
+        slug = "d04-executable-artifacts"
+        self._check_article(
+            route,
+            "算子实现与代码生成",
+            slug,
+            "生成的代码怎样成为可加载、可调用的程序？",
+            ("d04-relocation.svg", "d04-object-to-load.svg", "d04-kernel-artifact.svg"),
+        )
+        previous = SITE / PREFIX / route / "d03-register-allocation-and-scheduling/index.html"
+        self.assertIn(f"../{slug}/", GuideContent(previous.read_text()).links)
+
     def _check_foundation_article(self, slug, title, diagram_names):
         self._check_article("01-foundations", "软件执行共同基础", slug, title, diagram_names)
 

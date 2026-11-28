@@ -204,7 +204,7 @@ D02–D04 与 D05–D08 是两条分支。内核工程师不必先学完整寄�
 | D01 | 一句张量计算，怎样逐步变成循环和内存操作？ | 分层 Lowering、Tensor IR、Loop IR、Bufferization、显式读写与转换合法性。 | A01–A03、B04 的必要知识 | `d01-lowering-and-bufferization.md` | 已发布 |
 | D02 | 一个 IR 操作怎样变成目标机器的指令？ | 类型与指令合法化、指令选择、Machine IR、目标调用约定。 | D01 中低层 IR、A04 | `d02-instruction-selection.md` | 已发布 |
 | D03 | 临时值比硬件寄存器多，编译器怎样处理？ | 活跃区间、寄存器分配、Spill/Reload、机器指令调度与相互约束。 | D02、B05 | `d03-register-allocation-and-scheduling.md` | 已发布 |
-| D04 | 生成的代码怎样成为可加载、可调用的程序？ | 汇编、目标文件、符号、重定位、静态与动态链接、Kernel 元数据及产物兼容。 | D02、D03 或已有目标代码 | `d04-executable-artifacts.md` | 待写 |
+| D04 | 生成的代码怎样成为可加载、可调用的程序？ | 汇编、目标文件、符号、重定位、静态与动态链接、Kernel 元数据及产物兼容。 | D02、D03 或已有目标代码 | `d04-executable-artifacts.md` | 初稿完成，待发布核验 |
 | D05 | 分块方案确定后，怎样生成可执行的矩阵乘法内核？ | 循环代码生成、SIMD/SIMT/NPU 实现、边界处理、地址计算、Kernel 库与生成。 | D01、C01、C02、A04 | `d05-matrix-multiplication-kernels.md` | 待写 |
 | D06 | 两个算子已经决定融合，怎样真正减少中间数据搬运？ | 融合循环、Epilogue、归约、Softmax、同步与中间状态保留。 | D05；B06、C05 的相关知识 | `d06-fused-kernels.md` | 待写 |
 | D07 | Attention 为什么可以不将完整的分数矩阵写入显存？ | 分块 Attention、在线 Softmax、因果掩码与 IO 复杂度、Prefill/Decode 内核差异、split-KV、分页 KV 访问。 | D06、Attention 基础 | `d07-attention-kernels.md` | 待写（深化） |
@@ -215,6 +215,8 @@ D02–D04 与 D05–D08 是两条分支。内核工程师不必先学完整寄�
 D02 沿 A04 的 RISC-V 目标，分别用 RV32IM 和 RV32I 实现定宽整数加乘；用 64 位加法说明类型拆分及进位，用 D01 的 12 B 地址偏移说明多操作匹配，最后联系 ILP32 整数调用约定与 Machine IR 中的虚拟寄存器。D03 接续虚拟寄存器分配及调度，D04 接续目标产物与辅助函数链接。
 
 D03 将 D02 的三个参数改为从只读 Buffer 获取，以两个可分配 GPR 的教学约束观察活跃区间和干涉，生成使用私有栈槽的 Spill/Reload，再比较调整加载顺序后的压力与理想发射时间。编译器机器指令调度与硬件动态发射、重命名分别解释。
+
+D04 继续追踪 D02 的 RV32I 尾调用，通过真实 ELF 目标文件的符号表和 R_RISCV_CALL_PLT 解释编码与重定位，再用静态链接产物的程序头区分链接与加载。设备侧回到 A04/F01 向量加法，明确代码对象、元数据和兼容性契约，实际加载和任务提交归 E/F。
 
 旧版算子、Attention 和低精度正文的覆盖复核：
 
