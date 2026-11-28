@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="456" height="380" viewBox="0 0 456 380" role="img" aria-labelledby="capture-title capture-desc">
+  <title id="capture-title">一次正例执行走过了哪条路径？</title>
+  <desc id="capture-desc">两次输入的形状相同，数值互为相反数。每次用本次的输入 X 计算 Z 等于 X 乘 W 再加上 bias。正例的元素和大于零，沿实线返回 ReLU(Z)，这是本次记录的路径。换用元素和小于零的输入时，条件为假，沿虚线返回这次算出的 Z 的相反数。两条控制路径在返回处汇合。</desc>
+  <defs>
+    <marker id="path-arrow" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M0 0L8 4L0 8Z" fill="#396b55"/>
+    </marker>
+    <marker id="other-arrow" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M0 0L8 4L0 8Z" fill="#2c6a72"/>
+    </marker>
+  </defs>
+  <style>
+    text { font-family: "Noto Sans CJK SC", "PingFang SC", "Microsoft YaHei", sans-serif; fill: #173d35; text-anchor: middle; font-size: 20px }
+    .code { font-family: "DejaVu Sans Mono", Consolas, monospace; font-size: 21px }
+    .block { fill: #e8e9df; stroke: #9aa89a; stroke-width: 1.5 }
+    .seen { fill: #d9e9dc; stroke: #6f9a80; stroke-width: 2 }
+    .other { fill: #e4edec; stroke: #759696; stroke-width: 1.5; stroke-dasharray: 6 3 }
+    .edge { fill: none; stroke: #396b55; stroke-width: 2; marker-end: url(#path-arrow) }
+    .taken { stroke-width: 3 }
+    .untaken { fill: none; stroke: #2c6a72; stroke-width: 2.3; stroke-dasharray: 7 4; marker-end: url(#other-arrow) }
+    .hint { font-size: 19px; fill: #416354 }
+    .label { font-size: 18px }
+  </style>
+  <rect x="1" y="1" width="454" height="378" rx="14" fill="#f5f6ef" stroke="#c4d0c4"/>
+  <text class="hint" x="228" y="33">两次调用的 X 形状相同，数值互为相反数。</text>
+  <rect class="block" x="86" y="52" width="284" height="73" rx="11"/>
+  <text x="228" y="79">用本次输入计算</text>
+  <text class="code" x="228" y="108">Z = X @ W + bias</text>
+  <path class="edge" d="M228 125V149"/>
+  <rect class="block" x="129" y="151" width="198" height="43" rx="11"/>
+  <text class="code" x="228" y="179">sum(X) &gt; 0 ?</text>
+
+  <path class="edge taken" d="M178 194L114 246"/>
+  <path class="untaken" d="M278 194L342 246"/>
+  <text class="label" x="78" y="215">真 · 正例已记录</text>
+  <text class="label" x="378" y="215">假 · 换输入时走</text>
+  <rect class="seen" x="34" y="248" width="160" height="44" rx="10"/>
+  <text class="code" x="114" y="277">ReLU(Z)</text>
+  <rect class="other" x="262" y="248" width="160" height="44" rx="10"/>
+  <text class="code" x="342" y="277">-Z</text>
+
+  <path class="edge taken" d="M114 292L171 325"/>
+  <path class="untaken" d="M342 292L285 325"/>
+  <rect class="block" x="117" y="327" width="222" height="38" rx="10"/>
+  <text x="228" y="353">返回所选分支的结果</text>
+</svg>

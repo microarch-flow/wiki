@@ -145,6 +145,19 @@ class CompilerRuntimeGuideTests(unittest.TestCase):
         previous_body = GuideContent(previous.read_text())
         self.assertIn(f"../{slug}/", previous_body.links)
 
+    def test_b03_article_navigation_search_and_diagrams(self):
+        route = "02-frontend-and-optimization"
+        slug = "b03-graph-capture"
+        self._check_article(
+            route,
+            "编译前端与程序优化",
+            slug,
+            "AI 框架运行过一次模型，为什么编译器仍可能不知道完整的计算过程？",
+            ("b03-operator-graph.svg", "b03-branch-capture.svg"),
+        )
+        previous = SITE / PREFIX / route / "b02-control-flow-and-ssa/index.html"
+        self.assertIn(f"../{slug}/", GuideContent(previous.read_text()).links)
+
     def test_a01_article_navigation_search_and_diagrams(self):
         self._check_foundation_article(
             "a01-program-semantics",

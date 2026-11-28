@@ -1,0 +1,44 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="430" height="445" viewBox="0 0 430 445" role="img" aria-labelledby="operator-title operator-desc">
+  <title id="operator-title">矩阵乘法、偏置加法和 ReLU 之间传递哪些张量值？</title>
+  <desc id="operator-desc">形状为 M 行 2 列的 X 和形状为 2 行 2 列的 W 是矩阵乘法的输入。结果 P 和长度为 2 的 bias 是加法的输入，加法按行使用偏置。结果 Z 进入 ReLU，产生 Y。P、Z、Y 都是 M 行 2 列。箭头表示值的产生和使用。</desc>
+  <defs>
+    <marker id="value-arrow" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M0 0L8 4L0 8Z" fill="#396b55"/>
+    </marker>
+  </defs>
+  <style>
+    text { font-family: "DejaVu Sans Mono", Consolas, monospace; fill: #173d35; text-anchor: middle; font-size: 21px }
+    .op { fill: #d9e9dc; stroke: #6f9a80; stroke-width: 1.5 }
+    .value { fill: #e8e9df; stroke: #9aa89a; stroke-width: 1.5 }
+    .name { font-weight: bold; font-size: 22px }
+    .edge { fill: none; stroke: #396b55; stroke-width: 2; marker-end: url(#value-arrow) }
+    .edge-name { text-anchor: end }
+    .legend { font-family: "Noto Sans CJK SC", "PingFang SC", "Microsoft YaHei", sans-serif; font-size: 18px; fill: #416354 }
+  </style>
+  <rect x="1" y="1" width="428" height="443" rx="14" fill="#f5f6ef" stroke="#c4d0c4"/>
+
+  <path class="edge" d="M112 61L174 97"/>
+  <path class="edge" d="M295 61L234 97"/>
+  <path class="edge" d="M204 143V207"/>
+  <text class="edge-name" x="190" y="183">P[M,2]</text>
+  <path class="edge" d="M348 190L272 224"/>
+  <path class="edge" d="M204 252V296"/>
+  <text class="edge-name" x="190" y="281">Z[M,2]</text>
+  <path class="edge" d="M204 341V364"/>
+
+  <rect class="value" x="43" y="19" width="137" height="42" rx="10"/>
+  <text x="111.5" y="47">X[M,2]</text>
+  <rect class="value" x="227" y="19" width="137" height="42" rx="10"/>
+  <text x="295.5" y="47">W[2,2]</text>
+  <rect class="op" x="137" y="99" width="134" height="44" rx="10"/>
+  <text class="name" x="204" y="129">MatMul</text>
+  <rect class="value" x="282" y="148" width="132" height="42" rx="10"/>
+  <text x="348" y="176">bias[2]</text>
+  <rect class="op" x="137" y="209" width="134" height="43" rx="10"/>
+  <text class="name" x="204" y="238">Add</text>
+  <rect class="op" x="137" y="298" width="134" height="43" rx="10"/>
+  <text class="name" x="204" y="327">ReLU</text>
+  <rect class="value" x="137" y="366" width="134" height="41" rx="10"/>
+  <text x="204" y="394">Y[M,2]</text>
+  <text class="legend" x="215" y="432">箭头表示一个值由谁提供、被谁使用。</text>
+</svg>
