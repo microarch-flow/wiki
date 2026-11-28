@@ -1,0 +1,108 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 582" width="500" height="582" role="img" aria-labelledby="title desc">
+  <title id="title">固定批与连续批：请求到达与输出时刻</title>
+  <desc id="desc">两图的时间轴比例相同，单位毫秒。每行对应一个请求，空心菱形表示请求到达，实心圆表示单个输出 Token 的可观察时刻。A、B 在0毫秒到达，C在14毫秒到达。固定批 A 在12、16、19、22毫秒输出，B在12、16毫秒输出，C在31、34、37毫秒输出。连续批 A 在12、16、26、30毫秒输出，B在12、16毫秒输出，C在26、30、33毫秒输出。固定批全部请求在37毫秒完成，连续批在33毫秒完成。这是 H01 的构造引擎内事件，不是客户端实测。</desc>
+  <defs><style>
+    text{font-family:"Noto Sans CJK SC","PingFang SC","Microsoft YaHei",sans-serif;fill:#173d35;font-size:18px}
+    .head{font-size:23px;font-weight:700}.subhead{font-size:20px;font-weight:700}.label{font-size:18px;font-weight:600}.small{font-size:17px;fill:#416354}.tick{font-size:16px;fill:#416354}
+    .panel{fill:#edf2e8;stroke:#9ab69e;stroke-width:1.4}.grid{stroke:#c4d0c4;stroke-width:1;stroke-dasharray:3 3}.axis{stroke:#8b9c8e;stroke-width:1.3;fill:none}
+    .a-path{stroke:#6f9a80;stroke-width:2;fill:none}.b-path{stroke:#9c7b42;stroke-width:2;fill:none}.c-path{stroke:#7d9eb1;stroke-width:2;fill:none}.arrive{fill:#f5f6ef;stroke:#51675a;stroke-width:2}.a-mark{fill:#427a5a;stroke:#f5f6ef;stroke-width:1.2}.b-mark{fill:#946a28;stroke:#f5f6ef;stroke-width:1.2}.c-mark{fill:#426e90;stroke:#f5f6ef;stroke-width:1.2}
+  </style></defs>
+  <rect x="1" y="1" width="498" height="580" rx="14" fill="#f5f6ef" stroke="#c4d0c4" stroke-width="1.3"/>
+  <text x="24" y="34" class="head">同一组请求，两条时间线</text>
+  <text x="24" y="60" class="small">A、B：0 ms 到达；C：14 ms 到达</text>
+  <path d="M32 77l6 6l-6 6l-6 -6Z" class="arrive"/>
+  <text x="47" y="89" class="small">请求到达</text>
+  <circle cx="198" cy="83" r="6" class="a-mark"/>
+  <text x="211" y="89" class="small">输出一个 Token</text>
+  <rect x="18" y="104" width="464" height="219" rx="10" class="panel"/>
+  <text x="32" y="130" class="subhead">固定批</text>
+  <path d="M66 156L466 156" class="axis"/>
+  <text x="467" y="130" class="tick" text-anchor="end">时间（ms）</text>
+  <text x="66" y="149" class="tick" text-anchor="middle">0</text>
+  <path d="M66 156L66 302" class="grid"/>
+  <text x="166" y="149" class="tick" text-anchor="middle">10</text>
+  <path d="M166 156L166 302" class="grid"/>
+  <text x="266" y="149" class="tick" text-anchor="middle">20</text>
+  <path d="M266 156L266 302" class="grid"/>
+  <text x="366" y="149" class="tick" text-anchor="middle">30</text>
+  <path d="M366 156L366 302" class="grid"/>
+  <text x="466" y="149" class="tick" text-anchor="middle">40</text>
+  <path d="M466 156L466 302" class="grid"/>
+  <text x="32" y="192" class="label">A</text>
+  <path d="M66 186L286 186" class="a-path"/>
+  <path d="M66 180l6 6l-6 6l-6 -6Z" class="arrive"/>
+  <text x="66" y="209" class="tick" text-anchor="middle">0</text>
+  <circle cx="186" cy="186" r="6" class="a-mark"/>
+  <text x="186" y="175" class="tick" text-anchor="middle">12</text>
+  <circle cx="226" cy="186" r="6" class="a-mark"/>
+  <text x="226" y="175" class="tick" text-anchor="middle">16</text>
+  <circle cx="256" cy="186" r="6" class="a-mark"/>
+  <text x="256" y="175" class="tick" text-anchor="middle">19</text>
+  <circle cx="286" cy="186" r="6" class="a-mark"/>
+  <text x="286" y="175" class="tick" text-anchor="middle">22</text>
+  <text x="32" y="237" class="label">B</text>
+  <path d="M66 231L226 231" class="b-path"/>
+  <path d="M66 225l6 6l-6 6l-6 -6Z" class="arrive"/>
+  <text x="66" y="254" class="tick" text-anchor="middle">0</text>
+  <circle cx="186" cy="231" r="6" class="b-mark"/>
+  <text x="186" y="220" class="tick" text-anchor="middle">12</text>
+  <circle cx="226" cy="231" r="6" class="b-mark"/>
+  <text x="226" y="220" class="tick" text-anchor="middle">16</text>
+  <text x="32" y="282" class="label">C</text>
+  <path d="M206 276L436 276" class="c-path"/>
+  <path d="M206 270l6 6l-6 6l-6 -6Z" class="arrive"/>
+  <text x="206" y="299" class="tick" text-anchor="middle">14</text>
+  <circle cx="376" cy="276" r="6" class="c-mark"/>
+  <text x="376" y="265" class="tick" text-anchor="middle">31</text>
+  <circle cx="406" cy="276" r="6" class="c-mark"/>
+  <text x="406" y="265" class="tick" text-anchor="middle">34</text>
+  <circle cx="436" cy="276" r="6" class="c-mark"/>
+  <text x="436" y="265" class="tick" text-anchor="middle">37</text>
+  <text x="462" y="315" class="small" text-anchor="end">全部完成：37 ms</text>
+  <rect x="18" y="333" width="464" height="219" rx="10" class="panel"/>
+  <text x="32" y="359" class="subhead">连续批</text>
+  <path d="M66 385L466 385" class="axis"/>
+  <text x="467" y="359" class="tick" text-anchor="end">时间（ms）</text>
+  <text x="66" y="378" class="tick" text-anchor="middle">0</text>
+  <path d="M66 385L66 531" class="grid"/>
+  <text x="166" y="378" class="tick" text-anchor="middle">10</text>
+  <path d="M166 385L166 531" class="grid"/>
+  <text x="266" y="378" class="tick" text-anchor="middle">20</text>
+  <path d="M266 385L266 531" class="grid"/>
+  <text x="366" y="378" class="tick" text-anchor="middle">30</text>
+  <path d="M366 385L366 531" class="grid"/>
+  <text x="466" y="378" class="tick" text-anchor="middle">40</text>
+  <path d="M466 385L466 531" class="grid"/>
+  <text x="32" y="421" class="label">A</text>
+  <path d="M66 415L366 415" class="a-path"/>
+  <path d="M66 409l6 6l-6 6l-6 -6Z" class="arrive"/>
+  <text x="66" y="438" class="tick" text-anchor="middle">0</text>
+  <circle cx="186" cy="415" r="6" class="a-mark"/>
+  <text x="186" y="404" class="tick" text-anchor="middle">12</text>
+  <circle cx="226" cy="415" r="6" class="a-mark"/>
+  <text x="226" y="404" class="tick" text-anchor="middle">16</text>
+  <circle cx="326" cy="415" r="6" class="a-mark"/>
+  <text x="326" y="404" class="tick" text-anchor="middle">26</text>
+  <circle cx="366" cy="415" r="6" class="a-mark"/>
+  <text x="366" y="404" class="tick" text-anchor="middle">30</text>
+  <text x="32" y="466" class="label">B</text>
+  <path d="M66 460L226 460" class="b-path"/>
+  <path d="M66 454l6 6l-6 6l-6 -6Z" class="arrive"/>
+  <text x="66" y="483" class="tick" text-anchor="middle">0</text>
+  <circle cx="186" cy="460" r="6" class="b-mark"/>
+  <text x="186" y="449" class="tick" text-anchor="middle">12</text>
+  <circle cx="226" cy="460" r="6" class="b-mark"/>
+  <text x="226" y="449" class="tick" text-anchor="middle">16</text>
+  <text x="32" y="511" class="label">C</text>
+  <path d="M206 505L396 505" class="c-path"/>
+  <path d="M206 499l6 6l-6 6l-6 -6Z" class="arrive"/>
+  <text x="206" y="528" class="tick" text-anchor="middle">14</text>
+  <circle cx="326" cy="505" r="6" class="c-mark"/>
+  <text x="326" y="494" class="tick" text-anchor="middle">26</text>
+  <circle cx="366" cy="505" r="6" class="c-mark"/>
+  <text x="366" y="494" class="tick" text-anchor="middle">30</text>
+  <circle cx="396" cy="505" r="6" class="c-mark"/>
+  <text x="396" y="494" class="tick" text-anchor="middle">33</text>
+  <text x="462" y="544" class="small" text-anchor="end">全部完成：33 ms</text>
+  <text x="250" y="574" class="small" text-anchor="middle">构造的引擎内部输出时间，不是客户端实测。</text>
+</svg>

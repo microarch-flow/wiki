@@ -1,0 +1,103 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 564" width="500" height="564" role="img" aria-labelledby="title desc">
+  <title id="title">两组向量加法：单组延迟与整组吞吐</title>
+  <desc id="desc">F02 教学模型有两组各自独立、在第0拍可开始执行的向量加法。每次搬入 A 或 B、写回 W 各2拍，计算 C 各3拍。串行方案搬运引擎的第一组在0到2搬入A，2到4搬入B，7到9写回；第二组在9到11、11到13、16到18做相应工作。计算引擎在4到7、13到16计算。第一组第9拍完成，全部第18拍完成。重叠方案搬运引擎在0到2、2到4、4到6、6到8分别搬入两组A、B，8到10写回第一组，11到13写回第二组。计算引擎在4到7、8到11计算。第一组第10拍完成，全部第13拍完成。两种方案的搬运忙碌时间均为12拍、计算忙碌时间均为6拍。构造日程，非硬件实测。</desc>
+  <defs><style>
+    text{font-family:"Noto Sans CJK SC","PingFang SC","Microsoft YaHei",sans-serif;fill:#173d35;font-size:18px}
+    .head{font-size:23px;font-weight:700}.subhead{font-size:20px;font-weight:700}.label{font-size:18px;font-weight:600}.small{font-size:17px;fill:#416354}.tick{font-size:16px;fill:#416354}
+    .panel{fill:#edf2e8;stroke:#9ab69e;stroke-width:1.4}.grid{stroke:#c4d0c4;stroke-width:1;stroke-dasharray:3 3}.axis{stroke:#8b9c8e;stroke-width:1.3;fill:none}
+    .idle{fill:#f9f8ef;stroke:#b8ba9e;stroke-width:1}.g1{fill:#d9e9dc;stroke:#6f9a80;stroke-width:1.2}.g2{fill:#dfe8ef;stroke:#7d9eb1;stroke-width:1.2}.slot{font-weight:600;font-size:17px}.finish1{stroke:#427a5a;stroke-width:2;fill:none}.finishall{stroke:#426e90;stroke-width:2;fill:none}
+  </style></defs>
+  <rect x="1" y="1" width="498" height="562" rx="14" fill="#f5f6ef" stroke="#c4d0c4" stroke-width="1.3"/>
+  <text x="24" y="33" class="head">两个结果何时可读？</text>
+  <text x="24" y="59" class="small">两组工作在第 0 拍均已就绪；共享单 DMA</text>
+  <text x="24" y="81" class="small">A、B：搬入；C：计算；W：写回</text>
+  <rect x="25" y="91" width="19" height="18" rx="4" class="g1"/>
+  <text x="52" y="106" class="small">第一组</text>
+  <rect x="225" y="91" width="19" height="18" rx="4" class="g2"/>
+  <text x="252" y="106" class="small">第二组</text>
+  <rect x="18" y="122" width="464" height="199" rx="10" class="panel"/>
+  <text x="32" y="146" class="subhead">串行执行</text>
+  <text x="467" y="146" class="tick" text-anchor="end">时间（拍）</text>
+  <path d="M103 176L463 176" class="axis"/>
+  <text x="103" y="167" class="tick" text-anchor="middle">0</text>
+  <path d="M103 176L103 248" class="grid"/>
+  <text x="163" y="167" class="tick" text-anchor="middle">3</text>
+  <path d="M163 176L163 248" class="grid"/>
+  <text x="223" y="167" class="tick" text-anchor="middle">6</text>
+  <path d="M223 176L223 248" class="grid"/>
+  <text x="283" y="167" class="tick" text-anchor="middle">9</text>
+  <path d="M283 176L283 248" class="grid"/>
+  <text x="343" y="167" class="tick" text-anchor="middle">12</text>
+  <path d="M343 176L343 248" class="grid"/>
+  <text x="403" y="167" class="tick" text-anchor="middle">15</text>
+  <path d="M403 176L403 248" class="grid"/>
+  <text x="463" y="167" class="tick" text-anchor="middle">18</text>
+  <path d="M463 176L463 248" class="grid"/>
+  <text x="91" y="205" class="label" text-anchor="end">搬运</text>
+  <rect x="103" y="183" width="360" height="29" rx="3" class="idle"/>
+  <rect x="103" y="183" width="40" height="29" rx="3" class="g1"/>
+  <text x="123.0" y="203" class="slot" text-anchor="middle">A₁</text>
+  <rect x="143" y="183" width="40" height="29" rx="3" class="g1"/>
+  <text x="163.0" y="203" class="slot" text-anchor="middle">B₁</text>
+  <rect x="243" y="183" width="40" height="29" rx="3" class="g1"/>
+  <text x="263.0" y="203" class="slot" text-anchor="middle">W₁</text>
+  <rect x="283" y="183" width="40" height="29" rx="3" class="g2"/>
+  <text x="303.0" y="203" class="slot" text-anchor="middle">A₂</text>
+  <rect x="323" y="183" width="40" height="29" rx="3" class="g2"/>
+  <text x="343.0" y="203" class="slot" text-anchor="middle">B₂</text>
+  <rect x="423" y="183" width="40" height="29" rx="3" class="g2"/>
+  <text x="443.0" y="203" class="slot" text-anchor="middle">W₂</text>
+  <text x="91" y="241" class="label" text-anchor="end">计算</text>
+  <rect x="103" y="219" width="360" height="29" rx="3" class="idle"/>
+  <rect x="183" y="219" width="60" height="29" rx="3" class="g1"/>
+  <text x="213.0" y="239" class="slot" text-anchor="middle">C₁</text>
+  <rect x="363" y="219" width="60" height="29" rx="3" class="g2"/>
+  <text x="393.0" y="239" class="slot" text-anchor="middle">C₂</text>
+  <path d="M283 176V182M283 248V256" class="finish1"/>
+  <path d="M463 176V182M463 248V256" class="finishall"/>
+  <text x="32" y="277" class="label">第一组完成：9 拍；全部完成：18 拍</text>
+  <text x="32" y="303" class="small">窗口内：搬运忙碌 12/18；计算忙碌 6/18</text>
+  <rect x="18" y="331" width="464" height="199" rx="10" class="panel"/>
+  <text x="32" y="355" class="subhead">重叠执行</text>
+  <text x="467" y="355" class="tick" text-anchor="end">时间（拍）</text>
+  <path d="M103 385L463 385" class="axis"/>
+  <text x="103" y="376" class="tick" text-anchor="middle">0</text>
+  <path d="M103 385L103 457" class="grid"/>
+  <text x="163" y="376" class="tick" text-anchor="middle">3</text>
+  <path d="M163 385L163 457" class="grid"/>
+  <text x="223" y="376" class="tick" text-anchor="middle">6</text>
+  <path d="M223 385L223 457" class="grid"/>
+  <text x="283" y="376" class="tick" text-anchor="middle">9</text>
+  <path d="M283 385L283 457" class="grid"/>
+  <text x="343" y="376" class="tick" text-anchor="middle">12</text>
+  <path d="M343 385L343 457" class="grid"/>
+  <text x="403" y="376" class="tick" text-anchor="middle">15</text>
+  <path d="M403 385L403 457" class="grid"/>
+  <text x="463" y="376" class="tick" text-anchor="middle">18</text>
+  <path d="M463 385L463 457" class="grid"/>
+  <text x="91" y="414" class="label" text-anchor="end">搬运</text>
+  <rect x="103" y="392" width="260" height="29" rx="3" class="idle"/>
+  <rect x="103" y="392" width="40" height="29" rx="3" class="g1"/>
+  <text x="123.0" y="412" class="slot" text-anchor="middle">A₁</text>
+  <rect x="143" y="392" width="40" height="29" rx="3" class="g1"/>
+  <text x="163.0" y="412" class="slot" text-anchor="middle">B₁</text>
+  <rect x="183" y="392" width="40" height="29" rx="3" class="g2"/>
+  <text x="203.0" y="412" class="slot" text-anchor="middle">A₂</text>
+  <rect x="223" y="392" width="40" height="29" rx="3" class="g2"/>
+  <text x="243.0" y="412" class="slot" text-anchor="middle">B₂</text>
+  <rect x="263" y="392" width="40" height="29" rx="3" class="g1"/>
+  <text x="283.0" y="412" class="slot" text-anchor="middle">W₁</text>
+  <rect x="323" y="392" width="40" height="29" rx="3" class="g2"/>
+  <text x="343.0" y="412" class="slot" text-anchor="middle">W₂</text>
+  <text x="91" y="450" class="label" text-anchor="end">计算</text>
+  <rect x="103" y="428" width="260" height="29" rx="3" class="idle"/>
+  <rect x="183" y="428" width="60" height="29" rx="3" class="g1"/>
+  <text x="213.0" y="448" class="slot" text-anchor="middle">C₁</text>
+  <rect x="263" y="428" width="60" height="29" rx="3" class="g2"/>
+  <text x="293.0" y="448" class="slot" text-anchor="middle">C₂</text>
+  <path d="M303 385V391M303 457V465" class="finish1"/>
+  <path d="M363 385V391M363 457V465" class="finishall"/>
+  <text x="32" y="486" class="label">第一组完成：10 拍；全部完成：13 拍</text>
+  <text x="32" y="512" class="small">窗口内：搬运忙碌 12/13；计算忙碌 6/13</text>
+  <text x="250" y="550" class="small" text-anchor="middle">两种日程的时间均为教学假设，非实测。</text>
+</svg>
