@@ -1,0 +1,103 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 918" width="500" height="918" role="img" aria-labelledby="title desc">
+  <title id="title">在共享的部分填充 KV 块上进行写时复制</title>
+  <desc id="desc">教学分支 A 与 A′ 假设已经确认共享身份，具有相同的十个有效位置，与主线的请求 B 无关。块表均为 [7,2,11]，三个池块的序列映射引用数均为二。末块十一的偏移零、一有效，分别为 y1、y2。两个分支选择不同的 y3，均未建立第十一个位置 j10 的 KV。为避免写入相同物理槽，A′ 获得私有块五，复制块十一的两个有效槽，根据复制依赖保护源块与目标块。逻辑映射切换到块五后，块十一的序列引用数从二降为一；在途复制读取仍持有访问权，不能因映射引用归零或减少而提前回收。这个教学方案等待复制读写完成后，A 写入块十一的偏移二，A′ 写入块五的偏移二；两者都保留原来前两个槽的内容，剩余偏移三为空。完整块七、二继续共享，引用数为二；两个末块的序列引用数分别为一。图不把缓存身份交给分块机制自动判定，不把序列引用次数当作在途访问权。</desc>
+  <defs>
+    <marker id="arrow" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0 0L7 3.5L0 7Z" fill="#527d64"/></marker>
+    <style>
+text{font-family:"Noto Sans CJK SC","PingFang SC","Microsoft YaHei",sans-serif;fill:#173d35;font-size:20px}
+.head{font-weight:700;font-size:23px}.subhead{font-weight:700;font-size:20px}.label{font-size:18px;fill:#416354}
+.small{font-size:17px;fill:#416354}.tiny{font-size:16px;fill:#416354}.token{font-size:18px;font-weight:600}
+.context{fill:#edf2e8;stroke:#9ab69e;stroke-width:1.5}.artifact{fill:#f9f8ef;stroke:#b8ba9e;stroke-width:1.4}
+.done{fill:#d9e9dc;stroke:#6f9a80;stroke-width:1.4}.known{fill:#f2e4c9;stroke:#9c7b42;stroke-width:1.5}
+.unknown{fill:#f5f6ef;stroke:#8b9c8e;stroke-width:1.4;stroke-dasharray:3 3}
+.future{fill:#f5f6ef;stroke:#c4d0c4;stroke-width:1}.line{stroke:#c4d0c4;stroke-width:1.3;fill:none}
+.arrow{stroke:#527d64;stroke-width:2;fill:none;marker-end:url(#arrow)}.branch{stroke:#527d64;stroke-width:2;fill:none}
+.bar{fill:#82af91;stroke:#527d64;stroke-width:1}.goldbar{fill:#d5b16e;stroke:#9c7b42;stroke-width:1}
+.cut{fill:#e9ece5;stroke:#9cae9e;stroke-width:1.4;stroke-dasharray:4 3}.match{fill:#f2e4c9;stroke:#9c7b42;stroke-width:2}
+
+.highlight{fill:#d9e9dc;stroke:#9c7b42;stroke-width:2.5}
+.empty{fill:#f5f6ef;stroke:#8b9c8e;stroke-width:1.4;stroke-dasharray:3 3}
+</style>
+  </defs>
+  <rect x="1" y="1" width="498" height="916" rx="14" fill="#f5f6ef" stroke="#c4d0c4" stroke-width="1.3"/>
+
+  <text x="24" y="34" class="head">共享的末块，怎样允许不同后缀？</text>
+  <text x="24" y="61" class="label">教学分支 A 与 A′：共同已有 10 个有效位置</text>
+  <rect x="18" y="78" width="464" height="231" rx="10" class="context"/>
+  <text x="32" y="108" class="subhead">1. 已知共享前缀的两个序列分支</text>
+  <text x="32" y="136" class="small">A′ 是 A 的假设分支，不是贯穿例的请求 B。</text>
+  <text x="32" y="168" class="label">A  块表 [7, 2, 11]</text>
+  <text x="32" y="195" class="label">A′ 块表 [7, 2, 11]</text>
+  <rect x="291" y="150" width="177" height="51" rx="5" class="done"/>
+  <text x="379.5" y="171" text-anchor="middle" class="token">池块 7、2、11</text>
+  <text x="379.5" y="192" text-anchor="middle" class="small">序列引用数各 2</text>
+  <text x="32" y="223" class="label">末块 11：</text>
+  <rect x="215" y="205" width="58" height="34" rx="4" class="done"/>
+  <text x="244.0" y="228.0" text-anchor="middle" class="token">y1</text>
+  <rect x="280" y="205" width="58" height="34" rx="4" class="done"/>
+  <text x="309.0" y="228.0" text-anchor="middle" class="token">y2</text>
+  <rect x="345" y="205" width="58" height="34" rx="4" class="empty"/>
+  <text x="374.0" y="228.0" text-anchor="middle" class="small">—</text>
+  <rect x="410" y="205" width="58" height="34" rx="4" class="empty"/>
+  <text x="439.0" y="228.0" text-anchor="middle" class="small">—</text>
+
+  <text x="32" y="264" class="label">已选出不同的 y3(A)、y3(A′)；</text>
+  <text x="32" y="291" class="label">二者都待计算，准备写 j=10（末块偏移 2）。</text>
+  <path d="M250 313V331" class="arrow"/>
+  <rect x="18" y="337" width="464" height="264" rx="10" class="artifact"/>
+  <text x="32" y="367" class="subhead">2. A′ 获得新块 5，并复制有效槽</text>
+  <text x="32" y="399" class="label">原块 11</text>
+  <rect x="215" y="379" width="58" height="34" rx="4" class="done"/>
+  <text x="244.0" y="402.0" text-anchor="middle" class="token">y1</text>
+  <rect x="280" y="379" width="58" height="34" rx="4" class="done"/>
+  <text x="309.0" y="402.0" text-anchor="middle" class="token">y2</text>
+  <rect x="345" y="379" width="58" height="34" rx="4" class="empty"/>
+  <text x="374.0" y="402.0" text-anchor="middle" class="small">—</text>
+  <rect x="410" y="379" width="58" height="34" rx="4" class="empty"/>
+  <text x="439.0" y="402.0" text-anchor="middle" class="small">—</text>
+
+  <path d="M244 417V448 M309 417V448" class="branch"/>
+  <path d="M239 447L244 457L249 447Z M304 447L309 457L314 447Z" fill="#527d64"/>
+  <text x="32" y="477" class="label">私有块 5</text>
+  <rect x="215" y="461" width="58" height="34" rx="4" class="done"/>
+  <text x="244.0" y="484.0" text-anchor="middle" class="token">y1</text>
+  <rect x="280" y="461" width="58" height="34" rx="4" class="done"/>
+  <text x="309.0" y="484.0" text-anchor="middle" class="token">y2</text>
+  <rect x="345" y="461" width="58" height="34" rx="4" class="empty"/>
+  <text x="374.0" y="484.0" text-anchor="middle" class="small">—</text>
+  <rect x="410" y="461" width="58" height="34" rx="4" class="empty"/>
+  <text x="439.0" y="484.0" text-anchor="middle" class="small">—</text>
+
+  <text x="32" y="523" class="small">切换 A′ 映射到块 5；块 11 的序列引用数 2 → 1。</text>
+  <text x="32" y="549" class="small">复制仍在途时，要保留对源块的访问权。</text>
+  <text x="32" y="578" class="small">本例等复制读写完成，再分别写入各自末块。</text>
+  <path d="M250 605V623" class="arrow"/>
+  <rect x="18" y="629" width="464" height="222" rx="10" class="context"/>
+  <text x="32" y="659" class="subhead">3. 各自在私有末块中写入不同后缀</text>
+  <text x="32" y="689" class="label">A  [7, 2, 11]；末块 11（序列引用数 1）</text>
+  <rect x="215" y="701" width="58" height="34" rx="4" class="done"/>
+  <text x="244.0" y="724.0" text-anchor="middle" class="token">y1</text>
+  <rect x="280" y="701" width="58" height="34" rx="4" class="done"/>
+  <text x="309.0" y="724.0" text-anchor="middle" class="token">y2</text>
+  <rect x="345" y="701" width="58" height="34" rx="4" class="done"/>
+  <text x="374.0" y="724.0" text-anchor="middle" class="token">y3(A)</text>
+  <rect x="410" y="701" width="58" height="34" rx="4" class="empty"/>
+  <text x="439.0" y="724.0" text-anchor="middle" class="small">—</text>
+
+  <text x="32" y="723" class="label">写入偏移 2</text>
+  <text x="32" y="763" class="label">A′ [7, 2, 5]；末块 5（序列引用数 1）</text>
+  <rect x="215" y="775" width="58" height="34" rx="4" class="done"/>
+  <text x="244.0" y="798.0" text-anchor="middle" class="token">y1</text>
+  <rect x="280" y="775" width="58" height="34" rx="4" class="done"/>
+  <text x="309.0" y="798.0" text-anchor="middle" class="token">y2</text>
+  <rect x="345" y="775" width="58" height="34" rx="4" class="done"/>
+  <text x="374.0" y="798.0" text-anchor="middle" class="token">y3(A′)</text>
+  <rect x="410" y="775" width="58" height="34" rx="4" class="empty"/>
+  <text x="439.0" y="798.0" text-anchor="middle" class="small">—</text>
+
+  <text x="32" y="797" class="label">写入偏移 2</text>
+  <text x="32" y="836" class="small">完整块 7、2 仍共享，序列引用数为 2。</text>
+  <text x="250" y="877" text-anchor="middle" class="small">需先确认共享身份；引用数不包含在途任务的访问权。</text>
+  <text x="250" y="901" text-anchor="middle" class="small">示意逻辑顺序，框不按字节或实际时间比例。</text>
+
+</svg>

@@ -1,0 +1,128 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 824" width="500" height="824" role="img" aria-labelledby="title desc">
+  <title id="title">请求 A 的逻辑块分配和有效 KV 随阶段的增长</title>
+  <desc id="desc">每块容纳四个位置。A 初始没有已用块，Prefill 完成后池块 7 和 2 共八槽全有效，已知 y1 但没有其 KV。Decode 1 前先分配池块 11 准备 y1 的新 KV 位置，然后执行前向，写入第九个位置，分配容量为十二槽。Decode 2 和 Decode 3 继续使用块 11 的偏移一、二，使有效位置数增为十、十一，而分配位置数保持十二。选出 y4 后生成停止，最后一个槽仍为空，不需要计算 y4 的 KV。引用解除且所有在途访问结束后，块才能被安全回收。图按逻辑槽位统计，不等于实际设备字节分配。</desc>
+  <defs>
+    <marker id="arrow" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0 0L7 3.5L0 7Z" fill="#527d64"/></marker>
+    <style>
+text{font-family:"Noto Sans CJK SC","PingFang SC","Microsoft YaHei",sans-serif;fill:#173d35;font-size:20px}
+.head{font-weight:700;font-size:23px}.subhead{font-weight:700;font-size:20px}.label{font-size:18px;fill:#416354}
+.small{font-size:17px;fill:#416354}.tiny{font-size:16px;fill:#416354}.token{font-size:18px;font-weight:600}
+.context{fill:#edf2e8;stroke:#9ab69e;stroke-width:1.5}.artifact{fill:#f9f8ef;stroke:#b8ba9e;stroke-width:1.4}
+.done{fill:#d9e9dc;stroke:#6f9a80;stroke-width:1.4}.known{fill:#f2e4c9;stroke:#9c7b42;stroke-width:1.5}
+.unknown{fill:#f5f6ef;stroke:#8b9c8e;stroke-width:1.4;stroke-dasharray:3 3}
+.future{fill:#f5f6ef;stroke:#c4d0c4;stroke-width:1}.line{stroke:#c4d0c4;stroke-width:1.3;fill:none}
+.arrow{stroke:#527d64;stroke-width:2;fill:none;marker-end:url(#arrow)}.branch{stroke:#527d64;stroke-width:2;fill:none}
+.bar{fill:#82af91;stroke:#527d64;stroke-width:1}.goldbar{fill:#d5b16e;stroke:#9c7b42;stroke-width:1}
+.cut{fill:#e9ece5;stroke:#9cae9e;stroke-width:1.4;stroke-dasharray:4 3}.match{fill:#f2e4c9;stroke:#9c7b42;stroke-width:2}
+
+.highlight{fill:#d9e9dc;stroke:#9c7b42;stroke-width:2.5}
+.empty{fill:#f5f6ef;stroke:#8b9c8e;stroke-width:1.4;stroke-dasharray:3 3}
+</style>
+  </defs>
+  <rect x="1" y="1" width="498" height="822" rx="14" fill="#f5f6ef" stroke="#c4d0c4" stroke-width="1.3"/>
+
+  <text x="24" y="34" class="head">A 的 KV 块怎样随着计算增长？</text>
+  <text x="24" y="61" class="label">每块容纳 4 个位置，分配容量不等于有效 KV</text>
+  <rect x="18" y="78" width="464" height="347" rx="10" class="context"/>
+  <text x="32" y="108" class="subhead">按执行完成后的状态观察</text>
+  <rect x="32" y="120" width="20" height="16" rx="3" class="done"/>
+  <text x="59" y="134" class="small">有效槽</text>
+  <rect x="160" y="120" width="20" height="16" rx="3" class="empty"/>
+  <text x="188" y="134" class="small">空槽（已分配）</text>
+  <text x="32" y="167" class="label">阶段</text>
+  <text x="145" y="167" text-anchor="middle" class="small">有效</text>
+  <text x="220" y="167" text-anchor="middle" class="small">分配</text>
+  <text x="372" y="167" text-anchor="middle" class="small">块表及槽位</text>
+  <path d="M32 177H468" class="line"/>
+  <text x="32" y="209" text-anchor="start" class="small">开始</text>
+  <text x="145" y="209" text-anchor="middle" class="token">0</text>
+  <text x="220" y="209" text-anchor="middle" class="token">0</text>
+  <text x="371" y="209" text-anchor="middle" class="small">无块</text>
+  <path d="M32 227H468" class="line"/>
+  <text x="32" y="256" text-anchor="start" class="small">Prefill</text>
+  <text x="145" y="256" text-anchor="middle" class="token">8</text>
+  <text x="220" y="256" text-anchor="middle" class="token">8</text>
+  <text x="293" y="244" text-anchor="middle" class="tiny">7</text>
+  <rect x="263" y="248" width="13" height="15" rx="1.5" class="done"/>
+  <rect x="278" y="248" width="13" height="15" rx="1.5" class="done"/>
+  <rect x="293" y="248" width="13" height="15" rx="1.5" class="done"/>
+  <rect x="308" y="248" width="13" height="15" rx="1.5" class="done"/>
+  <text x="361" y="244" text-anchor="middle" class="tiny">2</text>
+  <rect x="331" y="248" width="13" height="15" rx="1.5" class="done"/>
+  <rect x="346" y="248" width="13" height="15" rx="1.5" class="done"/>
+  <rect x="361" y="248" width="13" height="15" rx="1.5" class="done"/>
+  <rect x="376" y="248" width="13" height="15" rx="1.5" class="done"/>
+  <path d="M32 274H468" class="line"/>
+  <text x="32" y="303" text-anchor="start" class="small">Decode 1</text>
+  <text x="145" y="303" text-anchor="middle" class="token">9</text>
+  <text x="220" y="303" text-anchor="middle" class="token">12</text>
+  <text x="293" y="291" text-anchor="middle" class="tiny">7</text>
+  <rect x="263" y="295" width="13" height="15" rx="1.5" class="done"/>
+  <rect x="278" y="295" width="13" height="15" rx="1.5" class="done"/>
+  <rect x="293" y="295" width="13" height="15" rx="1.5" class="done"/>
+  <rect x="308" y="295" width="13" height="15" rx="1.5" class="done"/>
+  <text x="361" y="291" text-anchor="middle" class="tiny">2</text>
+  <rect x="331" y="295" width="13" height="15" rx="1.5" class="done"/>
+  <rect x="346" y="295" width="13" height="15" rx="1.5" class="done"/>
+  <rect x="361" y="295" width="13" height="15" rx="1.5" class="done"/>
+  <rect x="376" y="295" width="13" height="15" rx="1.5" class="done"/>
+  <text x="429" y="291" text-anchor="middle" class="tiny">11</text>
+  <rect x="399" y="295" width="13" height="15" rx="1.5" class="done"/>
+  <rect x="414" y="295" width="13" height="15" rx="1.5" class="empty"/>
+  <rect x="429" y="295" width="13" height="15" rx="1.5" class="empty"/>
+  <rect x="444" y="295" width="13" height="15" rx="1.5" class="empty"/>
+  <path d="M32 321H468" class="line"/>
+  <text x="32" y="350" text-anchor="start" class="small">Decode 2</text>
+  <text x="145" y="350" text-anchor="middle" class="token">10</text>
+  <text x="220" y="350" text-anchor="middle" class="token">12</text>
+  <text x="293" y="338" text-anchor="middle" class="tiny">7</text>
+  <rect x="263" y="342" width="13" height="15" rx="1.5" class="done"/>
+  <rect x="278" y="342" width="13" height="15" rx="1.5" class="done"/>
+  <rect x="293" y="342" width="13" height="15" rx="1.5" class="done"/>
+  <rect x="308" y="342" width="13" height="15" rx="1.5" class="done"/>
+  <text x="361" y="338" text-anchor="middle" class="tiny">2</text>
+  <rect x="331" y="342" width="13" height="15" rx="1.5" class="done"/>
+  <rect x="346" y="342" width="13" height="15" rx="1.5" class="done"/>
+  <rect x="361" y="342" width="13" height="15" rx="1.5" class="done"/>
+  <rect x="376" y="342" width="13" height="15" rx="1.5" class="done"/>
+  <text x="429" y="338" text-anchor="middle" class="tiny">11</text>
+  <rect x="399" y="342" width="13" height="15" rx="1.5" class="done"/>
+  <rect x="414" y="342" width="13" height="15" rx="1.5" class="done"/>
+  <rect x="429" y="342" width="13" height="15" rx="1.5" class="empty"/>
+  <rect x="444" y="342" width="13" height="15" rx="1.5" class="empty"/>
+  <path d="M32 368H468" class="line"/>
+  <text x="32" y="397" text-anchor="start" class="small">Decode 3</text>
+  <text x="145" y="397" text-anchor="middle" class="token">11</text>
+  <text x="220" y="397" text-anchor="middle" class="token">12</text>
+  <text x="293" y="385" text-anchor="middle" class="tiny">7</text>
+  <rect x="263" y="389" width="13" height="15" rx="1.5" class="done"/>
+  <rect x="278" y="389" width="13" height="15" rx="1.5" class="done"/>
+  <rect x="293" y="389" width="13" height="15" rx="1.5" class="done"/>
+  <rect x="308" y="389" width="13" height="15" rx="1.5" class="done"/>
+  <text x="361" y="385" text-anchor="middle" class="tiny">2</text>
+  <rect x="331" y="389" width="13" height="15" rx="1.5" class="done"/>
+  <rect x="346" y="389" width="13" height="15" rx="1.5" class="done"/>
+  <rect x="361" y="389" width="13" height="15" rx="1.5" class="done"/>
+  <rect x="376" y="389" width="13" height="15" rx="1.5" class="done"/>
+  <text x="429" y="385" text-anchor="middle" class="tiny">11</text>
+  <rect x="399" y="389" width="13" height="15" rx="1.5" class="done"/>
+  <rect x="414" y="389" width="13" height="15" rx="1.5" class="done"/>
+  <rect x="429" y="389" width="13" height="15" rx="1.5" class="done"/>
+  <rect x="444" y="389" width="13" height="15" rx="1.5" class="empty"/>
+
+  <rect x="18" y="439" width="464" height="196" rx="10" class="artifact"/>
+  <text x="32" y="469" class="subhead">什么时候取得第三个块？</text>
+  <text x="32" y="499" class="label">Prefill 后 8 个槽全部有效，选出了 y1。</text>
+  <rect x="32" y="512" width="436" height="40" rx="5" class="known"/>
+  <text x="250" y="538" text-anchor="middle" class="token">先分配池块 11，准备 y1 的 KV 写入</text>
+  <path d="M250 555V570" class="arrow"/>
+  <rect x="32" y="576" width="436" height="40" rx="5" class="done"/>
+  <text x="250" y="601" text-anchor="middle" class="token">执行 Decode 1 → 写第 9 个位置的 KV</text>
+  <rect x="18" y="650" width="464" height="130" rx="10" class="context"/>
+  <text x="32" y="680" class="subhead">到 Decode 3 为止</text>
+  <text x="32" y="709" class="label">块 11 依次使用偏移 0、1、2；末槽空置。</text>
+  <text x="32" y="737" class="label">已选 y4，但停止后不再为它执行前向。</text>
+  <text x="32" y="764" class="small">最后引用解除、在途访问结束后，块才可回收。</text>
+  <text x="250" y="806" text-anchor="middle" class="small">分配数按位置计；不等于设备实际字节分配。</text>
+
+</svg>
