@@ -197,6 +197,15 @@ class CompilerRuntimeGuideTests(unittest.TestCase):
         previous = SITE / PREFIX / route / "b05-dataflow-analysis-and-optimization/index.html"
         self.assertIn(f"../{slug}/", GuideContent(previous.read_text()).links)
 
+    def test_f01_article_navigation_search_and_diagrams(self):
+        self._check_article(
+            "06-execution-runtime",
+            "通用执行运行时",
+            "f01-module-loading-and-dispatch",
+            "设备已经准备好了，运行时怎样启动第一次计算？",
+            ("f01-module-and-context.svg", "f01-dispatch-and-buffers.svg"),
+        )
+
     def test_a01_article_navigation_search_and_diagrams(self):
         self._check_foundation_article(
             "a01-program-semantics",
