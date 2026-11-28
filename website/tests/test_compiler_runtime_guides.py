@@ -159,6 +159,13 @@ class CompilerRuntimeGuideTests(unittest.TestCase):
             ("a04-execution-layers.svg", "a04-device-task.svg"),
         )
 
+    def test_a05_article_navigation_search_and_diagrams(self):
+        self._check_foundation_article(
+            "a05-task-and-resource-lifecycle",
+            "一项任务被提交之后，什么时候结果才可以使用？",
+            ("a05-task-dependencies.svg", "a05-buffer-lifecycle.svg"),
+        )
+
     def _check_foundation_article(self, slug, title, diagram_names):
         self._check_article("01-foundations", "软件执行共同基础", slug, title, diagram_names)
 

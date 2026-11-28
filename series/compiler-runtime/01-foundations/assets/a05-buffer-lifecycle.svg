@@ -1,0 +1,66 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 540 646" width="540" height="646" role="img" aria-labelledby="buf-title buf-desc">
+  <title id="buf-title">设备输入和输出缓冲区的使用与回收</title>
+  <desc id="buf-desc">左侧设备输入缓冲区 d_A：为搬入任务 L_A 保留，搬入完成后结果对 C 可读但仍被保留，C 读取期间仍在使用。确认 C 不再访问、没有其他使用者且接口契约允许后，才可释放或复用。右侧设备输出缓冲区 d_Y：在 C 写入前保留；C 写入，结果对 W 可读时仍被保留；W 读取期间仍在使用，确认 W 不再访问且没有其他使用者并且接口契约允许后，才可释放或复用。主机还必须等写回任务 W 成功完成并确认结果对主机可见，才可读取 Y=[5,5,6]。两条缓冲区状态链并非统一的时间轴。</desc>
+  <defs>
+    <marker id="buf-arrow" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0 0L7 3.5L0 7Z" fill="#527d64"/></marker>
+    <style>
+      text{font-family:"Noto Sans CJK SC","PingFang SC","Microsoft YaHei",sans-serif;fill:#173d35;font-size:20px}
+      .head{font-weight:700;font-size:23px}.subhead{font-size:20px;font-weight:700}.label{font-size:18px;fill:#416354}.small{font-size:16px;fill:#416354}.code{font-family:"Noto Sans Mono CJK SC","Consolas",monospace;font-size:20px;font-weight:600}.selected{font-weight:700;fill:#78591b}
+      .lane{fill:#edf2e8;stroke:#cad8cb;stroke-width:1.3}.occupied{fill:#f9f8ef;stroke:#b8ba9e;stroke-width:1.4}.ready{fill:#f2e4c9;stroke:#9c7b42;stroke-width:1.5}.reuse{fill:#d1e4d5;stroke:#6f9a80;stroke-width:1.5}.host{fill:#f9f8ef;stroke:#9c7b42;stroke-width:1.5}.edge{fill:none;stroke:#527d64;stroke-width:2;marker-end:url(#buf-arrow)}
+    </style>
+  </defs>
+  <rect x="1" y="1" width="538" height="644" rx="14" fill="#f5f6ef" stroke="#c4d0c4" stroke-width="1.3"/>
+  <text x="24" y="33" class="head">结果可读，不等于缓冲区可回收</text>
+  <text x="24" y="57" class="small">两条链分别描述各缓冲区的状态，不是同一时间轴</text>
+
+  <rect x="14" y="72" width="250" height="494" rx="11" class="lane"/>
+  <rect x="276" y="72" width="250" height="494" rx="11" class="lane"/>
+  <text x="139" y="99" class="subhead" text-anchor="middle">输入缓冲区 d_A</text>
+  <text x="401" y="99" class="subhead" text-anchor="middle">输出缓冲区 d_Y</text>
+
+  <rect x="30" y="115" width="218" height="70" rx="8" class="occupied"/>
+  <text x="139" y="143" class="subhead" text-anchor="middle">为 L_A 保留</text>
+  <text x="139" y="167" class="label" text-anchor="middle">搬入时写入 d_A</text>
+  <path d="M139 185V203" class="edge"/>
+  <rect x="30" y="207" width="218" height="70" rx="8" class="ready"/>
+  <text x="139" y="235" class="subhead selected" text-anchor="middle">结果对 C 可读</text>
+  <text x="139" y="259" class="label" text-anchor="middle">仍为 C 保留，勿覆盖</text>
+  <path d="M139 277V295" class="edge"/>
+  <rect x="30" y="299" width="218" height="64" rx="8" class="occupied"/>
+  <text x="139" y="326" class="subhead" text-anchor="middle">C 访问 d_A</text>
+  <text x="139" y="349" class="label" text-anchor="middle">读取输入</text>
+  <path d="M139 363V381" class="edge"/>
+  <rect x="30" y="385" width="218" height="77" rx="8" class="occupied"/>
+  <text x="139" y="410" class="label" text-anchor="middle">确认 C 不再访问</text>
+  <text x="139" y="434" class="label" text-anchor="middle">且无其他使用者</text>
+  <text x="139" y="453" class="small" text-anchor="middle">符合接口契约</text>
+  <path d="M139 462V480" class="edge"/>
+  <rect x="30" y="484" width="218" height="60" rx="8" class="reuse"/>
+  <text x="139" y="509" class="subhead" text-anchor="middle">可释放／复用</text>
+  <text x="139" y="531" class="small" text-anchor="middle">d_A 可交给新任务</text>
+
+  <rect x="292" y="115" width="218" height="70" rx="8" class="occupied"/>
+  <text x="401" y="143" class="subhead" text-anchor="middle">为 C 保留</text>
+  <text x="401" y="167" class="label" text-anchor="middle">计算时写入 d_Y</text>
+  <path d="M401 185V203" class="edge"/>
+  <rect x="292" y="207" width="218" height="70" rx="8" class="ready"/>
+  <text x="401" y="235" class="subhead selected" text-anchor="middle">结果对 W 可读</text>
+  <text x="401" y="259" class="label" text-anchor="middle">仍为 W 保留，勿覆盖</text>
+  <path d="M401 277V295" class="edge"/>
+  <rect x="292" y="299" width="218" height="64" rx="8" class="occupied"/>
+  <text x="401" y="326" class="subhead" text-anchor="middle">W 访问 d_Y</text>
+  <text x="401" y="349" class="label" text-anchor="middle">读取结果以写回</text>
+  <path d="M401 363V381" class="edge"/>
+  <rect x="292" y="385" width="218" height="77" rx="8" class="occupied"/>
+  <text x="401" y="410" class="label" text-anchor="middle">确认 W 不再访问</text>
+  <text x="401" y="434" class="label" text-anchor="middle">且无其他使用者</text>
+  <text x="401" y="453" class="small" text-anchor="middle">符合接口契约</text>
+  <path d="M401 462V480" class="edge"/>
+  <rect x="292" y="484" width="218" height="60" rx="8" class="reuse"/>
+  <text x="401" y="509" class="subhead" text-anchor="middle">可释放／复用</text>
+  <text x="401" y="531" class="small" text-anchor="middle">d_Y 可交给新任务</text>
+
+  <rect x="14" y="579" width="512" height="53" rx="9" class="host"/>
+  <text x="270" y="601" class="label selected" text-anchor="middle">主机读取 Y = [5, 5, 6] 的条件</text>
+  <text x="270" y="621" class="small" text-anchor="middle">写回 W 成功完成，且结果已经对主机可见</text>
+</svg>

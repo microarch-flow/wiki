@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 540 556" width="540" height="556" role="img" aria-labelledby="dep-title dep-desc">
+  <title id="dep-title">向量加法的任务依赖与结果交接</title>
+  <desc id="dep-desc">本例主机 A=[2,1,4]、B=[3,4,2] 分别由搬入任务 L_A、L_B 写入设备缓冲区 d_A、d_B。两个结果对计算任务 C 均可用时，C 的输入依赖才满足。C 执行 vec_add，将 Y=[5,5,6] 写入 d_Y；结果对写回任务 W 可用后，W 将其搬回 Host Y。只有写回成功完成且结果对主机可见时，主机才能读取正确结果。箭头表示任务之间必须满足的数据可用关系，不表示固定执行顺序表、耗时或硬件并行性。</desc>
+  <defs>
+    <marker id="dep-arrow" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0 0L7 3.5L0 7Z" fill="#527d64"/></marker>
+    <style>
+      text{font-family:"Noto Sans CJK SC","PingFang SC","Microsoft YaHei",sans-serif;fill:#173d35;font-size:20px}
+      .head{font-weight:700;font-size:23px}.subhead{font-size:20px;font-weight:700}.label{font-size:18px;fill:#416354}.small{font-size:16px;fill:#416354}.code{font-family:"Noto Sans Mono CJK SC","Consolas",monospace;font-size:19px;font-weight:600}.code-small{font-family:"Noto Sans Mono CJK SC","Consolas",monospace;font-size:17px}.selected{font-weight:700;fill:#78591b}
+      .load{fill:#edf2e8;stroke:#9ab69e;stroke-width:1.5}.compute{fill:#d1e4d5;stroke:#6f9a80;stroke-width:1.7}.writeback{fill:#e8eee3;stroke:#8fa790;stroke-width:1.5}.target{fill:#f2e4c9;stroke:#9c7b42;stroke-width:1.6}.edge{fill:none;stroke:#527d64;stroke-width:2.1;marker-end:url(#dep-arrow)}
+    </style>
+  </defs>
+  <rect x="1" y="1" width="538" height="554" rx="14" fill="#f5f6ef" stroke="#c4d0c4" stroke-width="1.3"/>
+  <text x="24" y="33" class="head">搬入、计算、写回的依赖关系</text>
+  <text x="24" y="58" class="small">教学示例：主机与设备存储分离</text>
+
+  <rect x="20" y="78" width="240" height="100" rx="10" class="load"/>
+  <rect x="280" y="78" width="240" height="100" rx="10" class="load"/>
+  <text x="140" y="105" class="subhead" text-anchor="middle">L_A 搬入 A</text>
+  <text x="400" y="105" class="subhead" text-anchor="middle">L_B 搬入 B</text>
+  <text x="140" y="131" class="code-small" text-anchor="middle">Host A → d_A</text>
+  <text x="400" y="131" class="code-small" text-anchor="middle">Host B → d_B</text>
+  <text x="140" y="157" class="code" text-anchor="middle">[2, 1, 4]</text>
+  <text x="400" y="157" class="code" text-anchor="middle">[3, 4, 2]</text>
+
+  <path d="M140 178V187H220V241" class="edge"/>
+  <path d="M400 178V187H320V241" class="edge"/>
+  <text x="140" y="205" class="label" text-anchor="middle">d_A 对 C 可读</text>
+  <text x="400" y="205" class="label" text-anchor="middle">d_B 对 C 可读</text>
+  <rect x="80" y="245" width="380" height="96" rx="10" class="compute"/>
+  <text x="270" y="270" class="subhead" text-anchor="middle">C 计算加法</text>
+  <text x="270" y="298" class="code-small" text-anchor="middle">vec_add(d_A, d_B, d_Y, 3)</text>
+  <text x="270" y="325" class="label" text-anchor="middle">两个输入依赖均须满足</text>
+
+  <path d="M270 341V376" class="edge"/>
+  <text x="283" y="364" class="label">d_Y 对 W 可读</text>
+  <rect x="80" y="380" width="380" height="62" rx="10" class="writeback"/>
+  <text x="100" y="404" class="subhead">W 写回结果</text>
+  <text x="270" y="427" class="code-small" text-anchor="middle">d_Y → Host Y</text>
+
+  <path d="M270 442V478" class="edge"/>
+  <text x="283" y="466" class="small">写回成功且对主机可见</text>
+  <rect x="80" y="482" width="380" height="40" rx="8" class="target"/>
+  <text x="270" y="508" class="code selected" text-anchor="middle">主机读取 Y = [5, 5, 6]</text>
+  <text x="270" y="542" class="small" text-anchor="middle">箭头表示结果可用的依赖关系，不表示实际耗时或并行性</text>
+</svg>
