@@ -1,0 +1,71 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 810" width="500" height="810" role="img" aria-labelledby="title desc">
+  <title id="title">两候选教学例中的概率质量流</title>
+  <desc id="desc">目标分布 p(a,b)=(0.6,0.4)，草稿分布 q(a,b)=(0.8,0.2)。从 q 抽样：提议 a 时接受概率为 0.75，接受 a 的概率质量为 0.6，拒绝的质量为 0.2；提议 b 时接受概率为 1，接受 b 的质量为 0.2。拒绝事件后使用归一化正残差 max(0,p-q)，未归一化残差是 (0,0.2)，归一化为 (0,1)，所以把拒绝的 0.2 全部归到 b。最终提交 a 的概率为 0.6、b 为 0.2+0.2=0.4，恰好为目标分布 p。条宽表示概率质量（各自满条为 1），数值是教学概率，不是实测频数。</desc>
+  <defs>
+    <marker id="arrow" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0 0L7 3.5L0 7Z" fill="#527d64"/></marker>
+    <style>
+text{font-family:"Noto Sans CJK SC","PingFang SC","Microsoft YaHei",sans-serif;fill:#173d35;font-size:20px}
+.head{font-weight:700;font-size:23px}.subhead{font-weight:700;font-size:20px}.label{font-size:18px;fill:#416354}
+.small{font-size:17px;fill:#416354}.tiny{font-size:16px;fill:#416354}.token{font-size:18px;font-weight:600}
+.context{fill:#edf2e8;stroke:#9ab69e;stroke-width:1.5}.artifact{fill:#f9f8ef;stroke:#b8ba9e;stroke-width:1.4}
+.done{fill:#d9e9dc;stroke:#6f9a80;stroke-width:1.4}.known{fill:#f2e4c9;stroke:#9c7b42;stroke-width:1.5}
+.unknown{fill:#f5f6ef;stroke:#8b9c8e;stroke-width:1.4;stroke-dasharray:3 3}
+.future{fill:#f5f6ef;stroke:#c4d0c4;stroke-width:1}.line{stroke:#c4d0c4;stroke-width:1.3;fill:none}
+.arrow{stroke:#527d64;stroke-width:2;fill:none;marker-end:url(#arrow)}.branch{stroke:#527d64;stroke-width:2;fill:none}
+.bar{fill:#82af91;stroke:#527d64;stroke-width:1}.goldbar{fill:#d5b16e;stroke:#9c7b42;stroke-width:1}
+.cut{fill:#e9ece5;stroke:#9cae9e;stroke-width:1.4;stroke-dasharray:4 3}.match{fill:#f2e4c9;stroke:#9c7b42;stroke-width:2}
+
+.candidate{fill:#f2e4c9;stroke:#9c7b42;stroke-width:1.5;stroke-dasharray:4 3}
+.provisional{fill:#d9e9dc;stroke:#6f9a80;stroke-width:2;stroke-dasharray:4 3}
+.reject{fill:#e3e8de;stroke:#8b9c8e;stroke-width:1.5;stroke-dasharray:4 3}
+</style>
+  </defs>
+  <rect x="1" y="1" width="498" height="808" rx="14" fill="#f5f6ef" stroke="#c4d0c4" stroke-width="1.3"/>
+
+  <text x="24" y="34" class="head">拒绝采样如何恢复目标概率</text>
+  <text x="24" y="61" class="label">教学例：词表只包含候选 a 与 b</text>
+  <rect x="18" y="79" width="464" height="157" rx="10" class="context"/>
+  <text x="32" y="110" class="subhead">用于验证的分布（每根条总概率为 1）</text>
+  <text x="32" y="147" class="token">p</text>
+  <rect x="63" y="126" width="243" height="32" rx="3" class="bar"/>
+  <rect x="306" y="126" width="162" height="32" rx="3" class="goldbar"/>
+  <text x="184.5" y="148" text-anchor="middle" class="token">a · 0.6</text>
+  <text x="387" y="148" text-anchor="middle" class="token">b · 0.4</text>
+  <text x="32" y="190" class="token">q</text>
+  <rect x="63" y="169" width="324" height="32" rx="3" class="bar"/>
+  <rect x="387" y="169" width="81" height="32" rx="3" class="goldbar"/>
+  <text x="225" y="191" text-anchor="middle" class="token">a · 0.8</text>
+  <text x="427.5" y="191" text-anchor="middle" class="tiny">b · 0.2</text>
+  <text x="32" y="224" class="small">p：目标采样分布；q：草稿采样分布。</text>
+  <path d="M250 240V258" class="arrow"/>
+  <rect x="18" y="265" width="464" height="215" rx="10" class="artifact"/>
+  <text x="32" y="295" class="subhead">从 q 提议，再判断接受或拒绝</text>
+  <text x="32" y="325" class="label">提议 a：接受率 0.6 / 0.8 = 0.75</text>
+  <text x="32" y="351" class="label">提议 b：接受率 1（全部接受）</text>
+  <rect x="63" y="366" width="243" height="52" rx="3" class="bar"/>
+  <rect x="306" y="366" width="81" height="52" class="reject"/>
+  <rect x="387" y="366" width="81" height="52" rx="3" class="goldbar"/>
+  <text x="184.5" y="388" text-anchor="middle" class="tiny">接受 a</text>
+  <text x="184.5" y="409" text-anchor="middle" class="token">0.6</text>
+  <text x="346.5" y="388" text-anchor="middle" class="tiny">拒绝 a</text>
+  <text x="346.5" y="409" text-anchor="middle" class="token">0.2</text>
+  <text x="427.5" y="388" text-anchor="middle" class="tiny">接受 b</text>
+  <text x="427.5" y="409" text-anchor="middle" class="token">0.2</text>
+  <text x="32" y="445" class="small">a：0.8 × 0.75 = 0.6；0.8 × 0.25 = 0.2。</text>
+  <text x="32" y="467" class="small">b：0.2 × 1 = 0.2。拒绝的概率质量为 0.2。</text>
+  <path d="M250 485V503" class="arrow"/>
+  <rect x="18" y="509" width="464" height="113" rx="10" class="context"/>
+  <text x="32" y="539" class="subhead">把拒绝的 0.2 概率质量重新分配</text>
+  <text x="32" y="569" class="label">正残差 max(0, p−q) = (0, 0.2)</text>
+  <text x="32" y="597" class="label">归一化为 (0, 1)，因此全部给 b。</text>
+  <path d="M250 626V644" class="arrow"/>
+  <rect x="18" y="650" width="464" height="117" rx="10" class="context"/>
+  <text x="32" y="680" class="subhead">最终提交的概率分布</text>
+  <rect x="63" y="693" width="243" height="35" rx="3" class="bar"/>
+  <rect x="306" y="693" width="162" height="35" rx="3" class="goldbar"/>
+  <text x="184.5" y="717" text-anchor="middle" class="token">a · 0.6</text>
+  <text x="387" y="717" text-anchor="middle" class="token">b · 0.2 + 0.2</text>
+  <text x="250" y="751" text-anchor="middle" class="subhead">恰好得到 p = (0.6, 0.4)</text>
+  <text x="250" y="793" text-anchor="middle" class="small">条宽为概率质量比例；并非实测抽样频数。</text>
+
+</svg>

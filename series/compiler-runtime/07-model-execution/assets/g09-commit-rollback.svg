@@ -1,0 +1,99 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 877" width="500" height="877" role="img" aria-labelledby="title desc">
+  <title id="title">投机解码验证后的提交与回滚</title>
+  <desc id="desc">请求 A 假设不提前停止并生成至四个输出上限。Verify 计算了 p1 至 p8 的已有 KV 和三个新位置 y1、d2、d3 的暂态 KV。结果一先接受 d2，拒绝 d3，在相同位置从规定分布选择 r3（即 y3）；正式序列为 p1 至 p8、y1、d2、r3，已提交生成 3，有效 KV 十个位置。原 d3 的 KV 不能用于 r3，丢弃状态需在最后设备访问停止和引用清理后才能安全回收。下一轮普通前向输入 r3，选择 y4，正式有效 KV 十一，生成四个。结果二若接受 d2 和 d3，再从 P4 选择额外 y4，直接提交 y1、d2、d3 的新 KV，使有效 KV 达十一，输出生成四个。两种结果都没有 y4 的有效 KV，生成已达上限，无需其额外前向。图的回收不表示立即归还物理存储。</desc>
+  <defs>
+    <marker id="arrow" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0 0L7 3.5L0 7Z" fill="#527d64"/></marker>
+    <style>
+text{font-family:"Noto Sans CJK SC","PingFang SC","Microsoft YaHei",sans-serif;fill:#173d35;font-size:20px}
+.head{font-weight:700;font-size:23px}.subhead{font-weight:700;font-size:20px}.label{font-size:18px;fill:#416354}
+.small{font-size:17px;fill:#416354}.tiny{font-size:16px;fill:#416354}.token{font-size:18px;font-weight:600}
+.context{fill:#edf2e8;stroke:#9ab69e;stroke-width:1.5}.artifact{fill:#f9f8ef;stroke:#b8ba9e;stroke-width:1.4}
+.done{fill:#d9e9dc;stroke:#6f9a80;stroke-width:1.4}.known{fill:#f2e4c9;stroke:#9c7b42;stroke-width:1.5}
+.unknown{fill:#f5f6ef;stroke:#8b9c8e;stroke-width:1.4;stroke-dasharray:3 3}
+.future{fill:#f5f6ef;stroke:#c4d0c4;stroke-width:1}.line{stroke:#c4d0c4;stroke-width:1.3;fill:none}
+.arrow{stroke:#527d64;stroke-width:2;fill:none;marker-end:url(#arrow)}.branch{stroke:#527d64;stroke-width:2;fill:none}
+.bar{fill:#82af91;stroke:#527d64;stroke-width:1}.goldbar{fill:#d5b16e;stroke:#9c7b42;stroke-width:1}
+.cut{fill:#e9ece5;stroke:#9cae9e;stroke-width:1.4;stroke-dasharray:4 3}.match{fill:#f2e4c9;stroke:#9c7b42;stroke-width:2}
+
+.candidate{fill:#f2e4c9;stroke:#9c7b42;stroke-width:1.5;stroke-dasharray:4 3}
+.provisional{fill:#d9e9dc;stroke:#6f9a80;stroke-width:2;stroke-dasharray:4 3}
+.reject{fill:#e3e8de;stroke:#8b9c8e;stroke-width:1.5;stroke-dasharray:4 3}
+</style>
+  </defs>
+  <rect x="1" y="1" width="498" height="875" rx="14" fill="#f5f6ef" stroke="#c4d0c4" stroke-width="1.3"/>
+
+  <text x="24" y="34" class="head">接受或拒绝后，正式 KV 怎样变化？</text>
+  <text x="24" y="61" class="label">请求 A：最多生成 4 个；假设未提前停止</text>
+  <rect x="25" y="77" width="23" height="18" rx="3" class="done"/>
+  <text x="55" y="92" class="small">正式有效 KV</text>
+  <rect x="252" y="77" width="23" height="18" rx="3" class="known"/>
+  <text x="282" y="92" class="small">已提交、尚无 KV</text>
+  <rect x="25" y="103" width="23" height="18" rx="3" class="provisional"/>
+  <text x="55" y="118" class="small">本轮暂态 KV</text>
+  <rect x="252" y="103" width="23" height="18" rx="3" class="reject"/>
+  <text x="282" y="118" class="small">丢弃，不可读</text>
+  <rect x="18" y="134" width="464" height="106" rx="10" class="artifact"/>
+  <text x="32" y="163" class="subhead">Verify 刚完成：暂态 + 旧 KV</text>
+  <rect x="32" y="174" width="216" height="40" rx="4" class="done"/>
+  <text x="140" y="200" text-anchor="middle" class="token">p1–p8 · 8</text>
+  <rect x="254" y="174" width="68" height="40" rx="4" class="provisional"/>
+  <text x="288" y="200" text-anchor="middle" class="token">y1</text>
+  <rect x="326" y="174" width="68" height="40" rx="4" class="provisional"/>
+  <text x="360" y="200" text-anchor="middle" class="token">d2</text>
+  <rect x="398" y="174" width="68" height="40" rx="4" class="provisional"/>
+  <text x="432" y="200" text-anchor="middle" class="token">d3</text>
+
+  <text x="32" y="231" class="tiny">以下为两种可能结果，而非先后步骤。</text>
+  <path d="M250 245V264" class="arrow"/>
+  <rect x="18" y="271" width="464" height="342" rx="10" class="context"/>
+  <text x="32" y="301" class="subhead">结果一：接受 d2，拒绝 d3</text>
+  <text x="32" y="329" class="label">在 d3 对应位置重新选择 r3（即 y3）。</text>
+  <rect x="32" y="344" width="210" height="39" rx="4" class="done"/>
+  <text x="137" y="370" text-anchor="middle" class="token">p1–p8 · 8</text>
+  <rect x="248" y="344" width="70" height="39" rx="4" class="done"/>
+  <text x="283" y="370" text-anchor="middle" class="token">y1</text>
+  <rect x="322" y="344" width="70" height="39" rx="4" class="done"/>
+  <text x="357" y="370" text-anchor="middle" class="token">d2</text>
+  <rect x="396" y="344" width="70" height="39" rx="4" class="known"/>
+  <text x="431" y="370" text-anchor="middle" class="token">r3</text>
+
+  <text x="32" y="411" class="subhead">已生成 3；正式有效 KV 10</text>
+  <rect x="32" y="425" width="61" height="37" rx="4" class="reject"/>
+  <text x="62.5" y="450" text-anchor="middle" class="token">d3</text>
+  <path d="M43 443H82" stroke="#8b9c8e" stroke-width="2"/>
+  <text x="105" y="440" class="label">旧 d3 KV 不可供 r3 使用。</text>
+  <text x="105" y="461" class="tiny">最后访问结束、引用解除后才能回收。</text>
+  <path d="M250 472V490" class="arrow"/>
+  <text x="32" y="510" class="subhead">下一轮普通前向：r3 → y4</text>
+  <rect x="32" y="524" width="142" height="40" rx="4" class="done"/>
+  <text x="103" y="550" text-anchor="middle" class="token">p1–p8 · 8</text>
+  <rect x="180" y="524" width="69" height="40" rx="4" class="done"/>
+  <text x="214.5" y="550" text-anchor="middle" class="token">y1</text>
+  <rect x="253" y="524" width="69" height="40" rx="4" class="done"/>
+  <text x="287.5" y="550" text-anchor="middle" class="token">d2</text>
+  <rect x="326" y="524" width="69" height="40" rx="4" class="done"/>
+  <text x="360.5" y="550" text-anchor="middle" class="token">r3</text>
+  <rect x="399" y="524" width="69" height="40" rx="4" class="known"/>
+  <text x="433.5" y="550" text-anchor="middle" class="token">y4</text>
+
+  <text x="32" y="593" class="subhead">已生成 4；正式有效 KV 11；停止</text>
+  <rect x="18" y="627" width="464" height="180" rx="10" class="context"/>
+  <text x="32" y="657" class="subhead">结果二：两个候选全部接受</text>
+  <text x="32" y="685" class="label">沿 P4 再选一个额外 Token y4。</text>
+  <rect x="32" y="699" width="142" height="40" rx="4" class="done"/>
+  <text x="103" y="725" text-anchor="middle" class="token">p1–p8 · 8</text>
+  <rect x="180" y="699" width="69" height="40" rx="4" class="done"/>
+  <text x="214.5" y="725" text-anchor="middle" class="token">y1</text>
+  <rect x="253" y="699" width="69" height="40" rx="4" class="done"/>
+  <text x="287.5" y="725" text-anchor="middle" class="token">d2</text>
+  <rect x="326" y="699" width="69" height="40" rx="4" class="done"/>
+  <text x="360.5" y="725" text-anchor="middle" class="token">d3</text>
+  <rect x="399" y="699" width="69" height="40" rx="4" class="known"/>
+  <text x="433.5" y="725" text-anchor="middle" class="token">y4</text>
+
+  <text x="32" y="768" class="subhead">已生成 4；正式有效 KV 11；停止</text>
+  <text x="32" y="793" class="small">d2、d3 直接保留其已计算 KV。</text>
+  <text x="250" y="835" text-anchor="middle" class="small">两种结果中，最后的 y4 均不需要再执行前向。</text>
+  <text x="250" y="859" text-anchor="middle" class="small">以上计数不含已丢弃 KV 的暂时物理占用。</text>
+
+</svg>

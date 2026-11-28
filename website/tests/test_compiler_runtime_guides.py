@@ -545,6 +545,21 @@ class CompilerRuntimeGuideTests(unittest.TestCase):
             previous = SITE / PREFIX / route / previous_slug / "index.html"
             self.assertIn(f"../{slug}/", GuideContent(previous.read_text()).links)
 
+    def test_g09_article_navigation_search_and_diagrams(self):
+        route = "07-model-execution"
+        slug = "g09-speculative-decoding"
+        self._check_article(
+            route,
+            "模型执行与生成控制",
+            slug,
+            "一次生成多个候选 Token，怎样验证并提交正确的结果？",
+            ("g09-draft-verify.svg", "g09-commit-rollback.svg",
+             "g09-rejection-sampling.svg"),
+        )
+        for previous_slug in ("g03-sampling-and-generation", "g04-model-state-and-memory-budget"):
+            previous = SITE / PREFIX / route / previous_slug / "index.html"
+            self.assertIn(f"../{slug}/", GuideContent(previous.read_text()).links)
+
     def _check_foundation_article(self, slug, title, diagram_names):
         self._check_article("01-foundations", "软件执行共同基础", slug, title, diagram_names)
 
