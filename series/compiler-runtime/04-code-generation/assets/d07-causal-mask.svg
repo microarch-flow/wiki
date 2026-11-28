@@ -1,0 +1,54 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="440" height="388" viewBox="0 0 440 388" role="img" aria-labelledby="title desc">
+  <title id="title">分块 Prefill 的矩形因果掩码与尾部列</title>
+  <desc id="desc">已有 h=3 个历史位置 0、1、2，本轮追加 q=2 个位置3、4。Query 的绝对位置是3、4；Key 的有效绝对位置是0到4。列按两个位置一个计算 tile 分三组，尾块的第二个 lane（位置5）无效。Query 3 可用 Key 0至3，因果掩码屏蔽未来位置4；Query 4 可用全部已有位置0至4。尾部 lane 5 对两行都必须禁止实际越界访问。共有4+5=9个有效位置对。</desc>
+  <defs>
+    <style>
+      text {font-family:"Noto Sans CJK SC","PingFang SC","Microsoft YaHei",sans-serif;fill:#173d35;font-size:19px}
+      .head {font-size:21px;font-weight:700}
+      .label {font-size:18px;font-weight:700}
+      .note {font-size:16px;fill:#416354}
+      .small {font-size:15px;fill:#416354}
+      .group {fill:#edf2e8;stroke:#97ad9a;stroke-width:1.2;stroke-dasharray:4 3}
+      .valid {fill:#d9e9dc;stroke:#729582;stroke-width:1.2}
+      .future {fill:#f2e4c9;stroke:#aa9163;stroke-width:1.5}
+      .tail {fill:#e0e2df;stroke:#9a9f98;stroke-width:1.2;stroke-dasharray:3 2}
+      .future-text {fill:#78591b;font-weight:700}
+      .tail-text {fill:#636b64;font-weight:700}
+      .check {font-size:19px;font-weight:700;fill:#285b46}
+    </style>
+  </defs>
+  <rect x="1" y="1" width="438" height="386" rx="14" fill="#f5f6ef" stroke="#c4d0c4"/>
+  <text x="18" y="30" class="head">矩形因果掩码与尾块</text>
+  <text x="18" y="54" class="note">h=3，q=2；所有位置均从 0 编号</text>
+  <text x="18" y="81" class="note">Query：3、4；有效 Key：0…4</text>
+  <text x="106" y="107" class="label">Key 绝对位置</text>
+  <rect x="100" y="118" width="106" height="139" rx="6" class="group"/>
+  <rect x="208" y="118" width="106" height="139" rx="6" class="group"/>
+  <rect x="316" y="118" width="106" height="139" rx="6" class="group"/>
+  <text x="153" y="139" class="small" text-anchor="middle">Tile 0</text>
+  <text x="261" y="139" class="small" text-anchor="middle">Tile 1</text>
+  <text x="369" y="139" class="small" text-anchor="middle">Tile 2</text>
+  <g class="label" text-anchor="middle">
+    <text x="127" y="162">0</text><text x="179" y="162">1</text><text x="235" y="162">2</text><text x="287" y="162">3</text><text x="343" y="162">4</text><text x="395" y="162" class="tail-text">5*</text>
+  </g>
+  <text x="18" y="155" class="small">Query</text>
+  <text x="18" y="173" class="small">位置</text>
+  <rect x="18" y="178" width="71" height="32" rx="4" class="valid"/>
+  <rect x="18" y="216" width="71" height="32" rx="4" class="valid"/>
+  <text x="53.5" y="199" text-anchor="middle" class="label">3</text>
+  <text x="53.5" y="237" text-anchor="middle" class="label">4</text>
+  <g>
+    <rect x="104" y="178" width="46" height="32" rx="4" class="valid"/><rect x="156" y="178" width="46" height="32" rx="4" class="valid"/><rect x="212" y="178" width="46" height="32" rx="4" class="valid"/><rect x="264" y="178" width="46" height="32" rx="4" class="valid"/><rect x="320" y="178" width="46" height="32" rx="4" class="future"/><rect x="372" y="178" width="46" height="32" rx="4" class="tail"/>
+    <rect x="104" y="216" width="46" height="32" rx="4" class="valid"/><rect x="156" y="216" width="46" height="32" rx="4" class="valid"/><rect x="212" y="216" width="46" height="32" rx="4" class="valid"/><rect x="264" y="216" width="46" height="32" rx="4" class="valid"/><rect x="320" y="216" width="46" height="32" rx="4" class="valid"/><rect x="372" y="216" width="46" height="32" rx="4" class="tail"/>
+    <g class="check" text-anchor="middle"><text x="127" y="200">✓</text><text x="179" y="200">✓</text><text x="235" y="200">✓</text><text x="287" y="200">✓</text><text x="127" y="238">✓</text><text x="179" y="238">✓</text><text x="235" y="238">✓</text><text x="287" y="238">✓</text><text x="343" y="238">✓</text></g>
+    <text x="343" y="200" text-anchor="middle" class="future-text">×</text><text x="395" y="200" text-anchor="middle" class="tail-text">—</text><text x="395" y="238" text-anchor="middle" class="tail-text">—</text>
+  </g>
+  <text x="18" y="280" class="label">有效位置对：4 + 5 = 9</text>
+  <rect x="18" y="297" width="17" height="17" rx="3" class="valid"/>
+  <text x="43" y="311" class="note">有效</text>
+  <rect x="112" y="297" width="17" height="17" rx="3" class="future"/>
+  <text x="137" y="311" class="note">未来位置（因果掩码）</text>
+  <rect x="18" y="326" width="17" height="17" rx="3" class="tail"/>
+  <text x="43" y="340" class="note">* 尾部 lane：位置 5 不存在</text>
+  <text x="18" y="369" class="note">尾部无效列不得越界读取 K/V。</text>
+</svg>

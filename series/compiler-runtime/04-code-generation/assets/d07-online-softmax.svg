@@ -1,0 +1,67 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="440" height="568" viewBox="0 0 440 568" role="img" aria-labelledby="title desc">
+  <title id="title">两块 Attention 分数的在线归一化与加权和更新</title>
+  <desc id="desc">令 r 等于 exp(−1)。第一块分数为 17、16，Value 的一个分量为 2、4，最大值 m=17，指数和 l=1+r，加权和 z=2+4r。第二块分数为 18、17，Value 的同一分量为 6、8，局部最大值为18，指数和1+r，加权和6+8r。新最大值18比旧最大值17大，须将旧状态的 l 和 z 同乘 r，再把它们与新块的状态分别相加。合并后 m=18，l=(1+r)²，z=6+10r+4r²，最终输出该 Value 分量 z/l 约为5.462。中间无需保存整行分数或概率。</desc>
+  <defs>
+    <marker id="arrow" markerWidth="7" markerHeight="7" refX="6.3" refY="3.5" orient="auto" markerUnits="userSpaceOnUse"><path d="M0 0 7 3.5 0 7Z" fill="#476957"/></marker>
+    <style>
+      text {font-family:"Noto Sans CJK SC","PingFang SC","Microsoft YaHei",sans-serif;fill:#173d35;font-size:19px}
+      .head {font-size:21px;font-weight:700}
+      .label {font-size:18px;font-weight:700}
+      .note {font-size:16px;fill:#416354}
+      .formula {font-size:19px;font-family:"DejaVu Sans Mono","Noto Sans CJK SC",monospace}
+      .panel {fill:#edf2e8;stroke:#cad8cb;stroke-width:1.2}
+      .node {fill:#e9eee4;stroke:#97ad9a;stroke-width:1.25}
+      .state {fill:#d9e9dc;stroke:#729582;stroke-width:1.25}
+      .target {fill:#f2e4c9;stroke:#aa9163;stroke-width:1.5}
+      .target-text {fill:#78591b;font-weight:700}
+      .wire {fill:none;stroke:#476957;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;marker-end:url(#arrow)}
+      .line {fill:none;stroke:#476957;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+    </style>
+  </defs>
+  <rect x="1" y="1" width="438" height="566" rx="14" fill="#f5f6ef" stroke="#c4d0c4"/>
+  <text x="18" y="30" class="head">同一行分数，分两块处理</text>
+  <text x="18" y="54" class="note">r = exp(−1) ≈ 0.368；只跟踪 V 的一个分量</text>
+
+  <rect x="13" y="67" width="414" height="194" rx="9" class="panel"/>
+  <rect x="25" y="79" width="190" height="74" rx="7" class="node"/>
+  <rect x="225" y="79" width="190" height="74" rx="7" class="node"/>
+  <text x="120" y="100" class="label" text-anchor="middle">块 0 · 先处理</text>
+  <text x="320" y="100" class="label" text-anchor="middle">块 1 · 后处理</text>
+  <text x="120" y="123" class="formula" text-anchor="middle">s = [17,16]</text>
+  <text x="320" y="123" class="formula" text-anchor="middle">s = [18,17]</text>
+  <text x="120" y="145" class="formula" text-anchor="middle">v = [2,4]</text>
+  <text x="320" y="145" class="formula" text-anchor="middle">v = [6,8]</text>
+  <path d="M120 153V165" class="wire"/>
+  <path d="M320 153V165" class="wire"/>
+  <rect x="25" y="169" width="190" height="81" rx="7" class="state"/>
+  <rect x="225" y="169" width="190" height="81" rx="7" class="state"/>
+  <text x="120" y="191" class="formula" text-anchor="middle">m = 17</text>
+  <text x="320" y="191" class="formula target-text" text-anchor="middle">m = 18</text>
+  <text x="120" y="215" class="formula" text-anchor="middle">l = 1+r</text>
+  <text x="320" y="215" class="formula" text-anchor="middle">l = 1+r</text>
+  <text x="120" y="239" class="formula" text-anchor="middle">z = 2+4r</text>
+  <text x="320" y="239" class="formula" text-anchor="middle">z = 6+8r</text>
+
+  <path d="M120 261V278" class="wire"/>
+  <path d="M320 261V278" class="wire"/>
+  <rect x="13" y="282" width="414" height="120" rx="9" class="target"/>
+  <text x="220" y="305" class="label target-text" text-anchor="middle">统一到最大值 18</text>
+  <text x="120" y="329" class="note target-text" text-anchor="middle">旧 l 和 z 乘 r</text>
+  <text x="320" y="329" class="note" text-anchor="middle">新块保持不变</text>
+  <text x="120" y="355" class="formula" text-anchor="middle">r(1+r)</text>
+  <text x="320" y="355" class="formula" text-anchor="middle">1+r</text>
+  <text x="220" y="355" class="label" text-anchor="middle">+</text>
+  <text x="120" y="382" class="formula" text-anchor="middle">r(2+4r)</text>
+  <text x="320" y="382" class="formula" text-anchor="middle">6+8r</text>
+  <text x="220" y="382" class="label" text-anchor="middle">+</text>
+  <path d="M220 402V420" class="wire"/>
+
+  <rect x="13" y="424" width="414" height="99" rx="9" class="state"/>
+  <text x="28" y="449" class="label">合并后的状态 · m = 18</text>
+  <text x="28" y="478" class="formula">l = (1+r)²</text>
+  <text x="28" y="503" class="formula">z = 6+10r+4r²</text>
+  <rect x="274" y="467" width="138" height="42" rx="6" class="target"/>
+  <text x="343" y="494" class="formula target-text" text-anchor="middle">≈ 5.462</text>
+  <text x="275" y="450" class="note">输出 z/l</text>
+  <text x="18" y="551" class="note">跨块只保留 m、l、z，不保留整行概率。</text>
+</svg>
