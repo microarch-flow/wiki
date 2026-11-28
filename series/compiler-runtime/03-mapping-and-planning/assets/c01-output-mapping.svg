@@ -1,0 +1,49 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="400" height="386" viewBox="0 0 400 386" role="img" aria-labelledby="title desc">
+  <title id="title">四个输出点积的两种分工</title>
+  <desc id="desc">每格是一个输出 Y[i,j]，需要累加四个乘积。按行分工时，第一轮 P0 算 Y[0,0]、P1 算 Y[1,0]，第二轮 P0 算 Y[0,1]、P1 算 Y[1,1]。按列分工时，第一轮 P0 算 Y[0,0]、P1 算 Y[0,1]，第二轮 P0 算 Y[1,0]、P1 算 Y[1,1]。</desc>
+  <style>
+    text { font-family: "Noto Sans CJK SC", "PingFang SC", "Microsoft YaHei", sans-serif; fill: #173d35 }
+    .heading { font-size: 20px; font-weight: 700 }
+    .axis { font-size: 16px; fill: #416354; text-anchor: middle }
+    .assignment { font-size: 17px; text-anchor: middle }
+    .unit { font-weight: 700 }
+    .p0 { fill: #d9e9dc; stroke: #729582; stroke-width: 1.25 }
+    .p1 { fill: #f2e4c9; stroke: #aa9163; stroke-width: 1.25 }
+  </style>
+  <rect x="1" y="1" width="398" height="384" rx="14" fill="#f5f6ef" stroke="#c4d0c4"/>
+  <g aria-label="按行分工">
+    <text x="20" y="33" class="heading">按行分工</text>
+    <text x="142" y="61" class="axis">第 0 列</text>
+    <text x="292" y="61" class="axis">第 1 列</text>
+    <text x="40" y="99" class="axis">第 0 行</text>
+    <text x="40" y="149" class="axis">第 1 行</text>
+    <rect x="71" y="70" width="142" height="45" rx="6" class="p0"/>
+    <rect x="221" y="70" width="142" height="45" rx="6" class="p0"/>
+    <rect x="71" y="120" width="142" height="45" rx="6" class="p1"/>
+    <rect x="221" y="120" width="142" height="45" rx="6" class="p1"/>
+    <g class="assignment">
+      <text x="142" y="99"><tspan class="unit">P0</tspan> · 第 1 轮</text>
+      <text x="292" y="99"><tspan class="unit">P0</tspan> · 第 2 轮</text>
+      <text x="142" y="149"><tspan class="unit">P1</tspan> · 第 1 轮</text>
+      <text x="292" y="149"><tspan class="unit">P1</tspan> · 第 2 轮</text>
+    </g>
+  </g>
+  <path d="M20 187H380" stroke="#c4d0c4"/>
+  <g transform="translate(0 190)" aria-label="按列分工">
+    <text x="20" y="33" class="heading">按列分工</text>
+    <text x="142" y="61" class="axis">第 0 列</text>
+    <text x="292" y="61" class="axis">第 1 列</text>
+    <text x="40" y="99" class="axis">第 0 行</text>
+    <text x="40" y="149" class="axis">第 1 行</text>
+    <rect x="71" y="70" width="142" height="45" rx="6" class="p0"/>
+    <rect x="221" y="70" width="142" height="45" rx="6" class="p1"/>
+    <rect x="71" y="120" width="142" height="45" rx="6" class="p0"/>
+    <rect x="221" y="120" width="142" height="45" rx="6" class="p1"/>
+    <g class="assignment">
+      <text x="142" y="99"><tspan class="unit">P0</tspan> · 第 1 轮</text>
+      <text x="292" y="99"><tspan class="unit">P1</tspan> · 第 1 轮</text>
+      <text x="142" y="149"><tspan class="unit">P0</tspan> · 第 2 轮</text>
+      <text x="292" y="149"><tspan class="unit">P1</tspan> · 第 2 轮</text>
+    </g>
+  </g>
+</svg>

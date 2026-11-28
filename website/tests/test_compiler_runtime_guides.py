@@ -193,6 +193,15 @@ class CompilerRuntimeGuideTests(unittest.TestCase):
             ("a05-task-dependencies.svg", "a05-buffer-lifecycle.svg"),
         )
 
+    def test_c01_article_navigation_search_and_diagrams(self):
+        self._check_article(
+            "03-mapping-and-planning",
+            "资源映射与执行规划",
+            "c01-tensor-mapping",
+            "一块矩阵怎样分给有限数量的计算单元？",
+            ("c01-output-mapping.svg",),
+        )
+
     def _check_foundation_article(self, slug, title, diagram_names):
         self._check_article("01-foundations", "软件执行共同基础", slug, title, diagram_names)
 
