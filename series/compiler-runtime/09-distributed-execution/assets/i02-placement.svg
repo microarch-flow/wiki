@@ -1,0 +1,118 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="500" height="630" viewBox="0 0 500 630" role="img" aria-labelledby="title desc">
+  <title id="title">同一个四层模型的三种两卡放置方式</title>
+  <desc id="desc">模型 M 由依次执行的 L0、L1、L2、L3 构成。教学假设每层的权重为 64 KiB，忽略其他权重、KV、激活和工作区。TP=2 时，两张卡各保存每层一半的权重，共 128 KiB，层内计算按布局要求跨卡交换数据。PP=2 时，卡 0 完整保存 L0、L1，卡 1 完整保存 L2、L3，各 128 KiB，在阶段边界传递激活。DP=2 时，两张卡各复制完整的四层，每卡 256 KiB，各自处理独立请求 A、B，不要求跨卡梯度通信。</desc>
+  <defs>
+    <marker id="arrow" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto"><path d="M0 0L6 3L0 6Z" fill="#527d64"/></marker>
+    <marker id="arrowback" markerWidth="6" markerHeight="6" refX="1" refY="3" orient="auto"><path d="M6 0L0 3L6 6Z" fill="#527d64"/></marker>
+  </defs>
+
+  <style>
+    text { font-family: "Noto Sans CJK SC", "PingFang SC", "Microsoft YaHei", sans-serif; fill: #173d35; font-size: 18px; }
+    .head { font-size: 23px; font-weight: 700; } .subhead { font-size: 20px; font-weight: 700; }
+    .label { font-size: 17px; fill: #416354; } .small { font-size: 16px; fill: #416354; }
+    .num { font-size: 18px; text-anchor: middle; font-weight: 600; }
+    .panel { fill: #edf2e8; stroke: #9ab69e; stroke-width: 1.4; }
+    .card { fill: #f9f8ef; stroke: #b8ba9e; stroke-width: 1.25; }
+    .r0 { fill: #d9e9dc; stroke: #729582; stroke-width: 1.25; }
+    .r1 { fill: #f2e4c9; stroke: #aa9163; stroke-width: 1.25; }
+    .r2 { fill: #dce8e9; stroke: #7a969b; stroke-width: 1.25; }
+    .full { fill: #eaeedf; stroke: #9ab69e; stroke-width: 1.25; }
+    .arr { fill: none; stroke: #527d64; stroke-width: 1.8; marker-end: url(#arrow); }
+    .bi { fill: none; stroke: #527d64; stroke-width: 1.7; marker-start: url(#arrowback); marker-end: url(#arrow); }
+    .candidate { fill: none; stroke: #527d64; stroke-width: 2; stroke-dasharray: 3 2; marker-end: url(#arrow); }
+    .guide { stroke: #c4d0c4; stroke-width: 1; stroke-dasharray: 3 3; }
+    .wait { fill: #f9f8ef; stroke: #b8ba9e; stroke-width: 1.25; stroke-dasharray: 4 3; }
+    .tick { font-size: 15px; fill: #416354; }
+  </style>
+  <rect x="1" y="1" width="498" height="628" rx="14" fill="#f5f6ef" stroke="#c4d0c4" stroke-width="1.3"/>
+  <text x="24" y="33" class="head">同一个模型，三种放置方式</text>
+  <text x="24" y="58" class="label">仅计权重：每层 64 KiB，M 共 256 KiB</text>
+  <text x="24" y="105" class="subhead">M</text>
+  <rect x="91" y="79" width="67" height="35" rx="4" class="full"/>
+  <text x="124.5" y="102.5" class="num">L0</text>
+  <path d="M160 96H190" class="arr"/>
+  <rect x="193" y="79" width="67" height="35" rx="4" class="full"/>
+  <text x="226.5" y="102.5" class="num">L1</text>
+  <path d="M262 96H292" class="arr"/>
+  <rect x="295" y="79" width="67" height="35" rx="4" class="full"/>
+  <text x="328.5" y="102.5" class="num">L2</text>
+  <path d="M364 96H394" class="arr"/>
+  <rect x="397" y="79" width="67" height="35" rx="4" class="full"/>
+  <text x="430.5" y="102.5" class="num">L3</text>
+  <rect x="18" y="128" width="464" height="168" rx="10" class="panel"/>
+  <text x="30" y="155" class="subhead">TP=2 · 切开每一层</text>
+  <text x="470" y="155" class="label" text-anchor="end">128 KiB/卡</text>
+  <text x="30" y="190" class="label">卡 0</text>
+  <text x="30" y="257" class="label">卡 1</text>
+  <rect x="109" y="166" width="76" height="36" rx="4" class="r0"/>
+  <text x="147.0" y="190.0" class="num">L0 ½</text>
+  <rect x="109" y="233" width="76" height="36" rx="4" class="r1"/>
+  <text x="147.0" y="257.0" class="num">L0 ½</text>
+  <path d="M147 205V230" class="bi"/>
+  <rect x="200" y="166" width="76" height="36" rx="4" class="r0"/>
+  <text x="238.0" y="190.0" class="num">L1 ½</text>
+  <rect x="200" y="233" width="76" height="36" rx="4" class="r1"/>
+  <text x="238.0" y="257.0" class="num">L1 ½</text>
+  <path d="M238 205V230" class="bi"/>
+  <rect x="291" y="166" width="76" height="36" rx="4" class="r0"/>
+  <text x="329.0" y="190.0" class="num">L2 ½</text>
+  <rect x="291" y="233" width="76" height="36" rx="4" class="r1"/>
+  <text x="329.0" y="257.0" class="num">L2 ½</text>
+  <path d="M329 205V230" class="bi"/>
+  <rect x="382" y="166" width="76" height="36" rx="4" class="r0"/>
+  <text x="420.0" y="190.0" class="num">L3 ½</text>
+  <rect x="382" y="233" width="76" height="36" rx="4" class="r1"/>
+  <text x="420.0" y="257.0" class="num">L3 ½</text>
+  <path d="M420 205V230" class="bi"/>
+  <text x="250" y="287" class="small" text-anchor="middle">层内按布局要求通信 · 共同执行一个请求</text>
+  <rect x="18" y="307" width="464" height="126" rx="10" class="panel"/>
+  <text x="30" y="334" class="subhead">PP=2 · 分开不同层</text>
+  <text x="470" y="334" class="label" text-anchor="end">128 KiB/卡</text>
+  <rect x="30" y="346" width="191" height="73" rx="7" class="r0"/>
+  <rect x="279" y="346" width="191" height="73" rx="7" class="r1"/>
+  <text x="42" y="368" class="small">卡 0 · 阶段 0</text>
+  <text x="291" y="368" class="small">卡 1 · 阶段 1</text>
+  <rect x="44" y="378" width="65" height="32" rx="4" class="card"/>
+  <text x="76.5" y="400.0" class="num">L0</text>
+  <rect x="138" y="378" width="65" height="32" rx="4" class="card"/>
+  <text x="170.5" y="400.0" class="num">L1</text>
+  <rect x="293" y="378" width="65" height="32" rx="4" class="card"/>
+  <text x="325.5" y="400.0" class="num">L2</text>
+  <rect x="387" y="378" width="65" height="32" rx="4" class="card"/>
+  <text x="419.5" y="400.0" class="num">L3</text>
+  <path d="M112 394H135" class="arr"/>
+  <path d="M361 394H384" class="arr"/>
+  <text x="250" y="383" class="small" text-anchor="middle">激活</text>
+  <path d="M224 394H276" class="arr"/>
+  <rect x="18" y="444" width="464" height="149" rx="10" class="panel"/>
+  <text x="30" y="471" class="subhead">DP=2 · 复制完整模型</text>
+  <text x="470" y="471" class="label" text-anchor="end">256 KiB/卡</text>
+  <rect x="30" y="482" width="440" height="38" rx="7" class="r0"/>
+  <text x="42" y="507" class="small">卡 0 · A</text>
+  <rect x="147" y="486" width="56" height="30" rx="4" class="card"/>
+  <text x="175.0" y="507.0" class="num">L0</text>
+  <path d="M205 501H223" class="arr"/>
+  <rect x="226" y="486" width="56" height="30" rx="4" class="card"/>
+  <text x="254.0" y="507.0" class="num">L1</text>
+  <path d="M284 501H302" class="arr"/>
+  <rect x="305" y="486" width="56" height="30" rx="4" class="card"/>
+  <text x="333.0" y="507.0" class="num">L2</text>
+  <path d="M363 501H381" class="arr"/>
+  <rect x="384" y="486" width="56" height="30" rx="4" class="card"/>
+  <text x="412.0" y="507.0" class="num">L3</text>
+  <rect x="30" y="525" width="440" height="38" rx="7" class="r1"/>
+  <text x="42" y="550" class="small">卡 1 · B</text>
+  <rect x="147" y="529" width="56" height="30" rx="4" class="card"/>
+  <text x="175.0" y="550.0" class="num">L0</text>
+  <path d="M205 544H223" class="arr"/>
+  <rect x="226" y="529" width="56" height="30" rx="4" class="card"/>
+  <text x="254.0" y="550.0" class="num">L1</text>
+  <path d="M284 544H302" class="arr"/>
+  <rect x="305" y="529" width="56" height="30" rx="4" class="card"/>
+  <text x="333.0" y="550.0" class="num">L2</text>
+  <path d="M363 544H381" class="arr"/>
+  <rect x="384" y="529" width="56" height="30" rx="4" class="card"/>
+  <text x="412.0" y="550.0" class="num">L3</text>
+  <text x="250" y="584" class="small" text-anchor="middle">两个副本分别处理请求 A、B</text>
+  <text x="250" y="617" class="small" text-anchor="middle">只画权重放置和必要的计算交接，不含状态预算。</text>
+</svg>

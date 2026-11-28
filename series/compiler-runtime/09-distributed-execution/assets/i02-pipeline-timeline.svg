@@ -1,0 +1,68 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="500" height="336" viewBox="0 0 500 336" role="img" aria-labelledby="title desc">
+  <title id="title">两阶段流水线执行三个独立微批的时间线</title>
+  <desc id="desc">两个阶段分别占用一张卡。假设每个微批在每个阶段都执行 1 拍，3 个微批 U1、U2、U3 工作相互独立，忽略传输、排队和额外开销。第 1 拍阶段 0 执行 U1、阶段 1 空闲；第 2 拍阶段 0 执行 U2、阶段 1 执行 U1；第 3 拍阶段 0 执行 U3、阶段 1 执行 U2；第 4 拍阶段 0 空闲、阶段 1 执行 U3。每个微批从阶段 0 交接至阶段 1。共 6 个有效阶段槽位、8 个总槽位，理想利用率 75%。独立微批不等同于同一请求依次生成的三个 Token。</desc>
+  <defs>
+    <marker id="arrow" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto"><path d="M0 0L6 3L0 6Z" fill="#527d64"/></marker>
+    <marker id="arrowback" markerWidth="6" markerHeight="6" refX="1" refY="3" orient="auto"><path d="M6 0L0 3L6 6Z" fill="#527d64"/></marker>
+  </defs>
+
+  <style>
+    text { font-family: "Noto Sans CJK SC", "PingFang SC", "Microsoft YaHei", sans-serif; fill: #173d35; font-size: 18px; }
+    .head { font-size: 23px; font-weight: 700; } .subhead { font-size: 20px; font-weight: 700; }
+    .label { font-size: 17px; fill: #416354; } .small { font-size: 16px; fill: #416354; }
+    .num { font-size: 18px; text-anchor: middle; font-weight: 600; }
+    .panel { fill: #edf2e8; stroke: #9ab69e; stroke-width: 1.4; }
+    .card { fill: #f9f8ef; stroke: #b8ba9e; stroke-width: 1.25; }
+    .r0 { fill: #d9e9dc; stroke: #729582; stroke-width: 1.25; }
+    .r1 { fill: #f2e4c9; stroke: #aa9163; stroke-width: 1.25; }
+    .r2 { fill: #dce8e9; stroke: #7a969b; stroke-width: 1.25; }
+    .full { fill: #eaeedf; stroke: #9ab69e; stroke-width: 1.25; }
+    .arr { fill: none; stroke: #527d64; stroke-width: 1.8; marker-end: url(#arrow); }
+    .bi { fill: none; stroke: #527d64; stroke-width: 1.7; marker-start: url(#arrowback); marker-end: url(#arrow); }
+    .candidate { fill: none; stroke: #527d64; stroke-width: 2; stroke-dasharray: 3 2; marker-end: url(#arrow); }
+    .guide { stroke: #c4d0c4; stroke-width: 1; stroke-dasharray: 3 3; }
+    .wait { fill: #f9f8ef; stroke: #b8ba9e; stroke-width: 1.25; stroke-dasharray: 4 3; }
+    .tick { font-size: 15px; fill: #416354; }
+  </style>
+  <rect x="1" y="1" width="498" height="334" rx="14" fill="#f5f6ef" stroke="#c4d0c4" stroke-width="1.3"/>
+  <text x="24" y="33" class="head">三个独立微批如何通过两阶段？</text>
+  <text x="24" y="58" class="label">教学假设：每个微批在每个阶段耗时 1 拍</text>
+  <rect x="18" y="73" width="464" height="181" rx="10" class="panel"/>
+  <text x="126" y="101" class="small" text-anchor="end">时隙</text>
+  <text x="177" y="101" class="num">1</text>
+  <text x="259" y="101" class="num">2</text>
+  <path d="M218 108V230" class="guide"/>
+  <text x="341" y="101" class="num">3</text>
+  <path d="M300 108V230" class="guide"/>
+  <text x="423" y="101" class="num">4</text>
+  <path d="M382 108V230" class="guide"/>
+  <text x="31" y="138" class="label">阶段 0</text>
+  <text x="31" y="160" class="small">卡 0</text>
+  <text x="31" y="208" class="label">阶段 1</text>
+  <text x="31" y="230" class="small">卡 1</text>
+  <rect x="139" y="113" width="76" height="44" rx="4" class="r0"/>
+  <text x="177.0" y="141.0" class="num">U1</text>
+  <rect x="221" y="113" width="76" height="44" rx="4" class="r1"/>
+  <text x="259.0" y="141.0" class="num">U2</text>
+  <rect x="303" y="113" width="76" height="44" rx="4" class="r2"/>
+  <text x="341.0" y="141.0" class="num">U3</text>
+  <rect x="385" y="113" width="76" height="44" rx="4" class="wait"/>
+  <text x="423" y="132" class="tick" text-anchor="middle">排空气泡</text>
+  <text x="423" y="150" class="tick" text-anchor="middle">空闲</text>
+  <rect x="139" y="183" width="76" height="44" rx="4" class="wait"/>
+  <text x="177" y="202" class="tick" text-anchor="middle">填充气泡</text>
+  <text x="177" y="220" class="tick" text-anchor="middle">空闲</text>
+  <rect x="221" y="183" width="76" height="44" rx="4" class="r0"/>
+  <text x="259.0" y="211.0" class="num">U1</text>
+  <rect x="303" y="183" width="76" height="44" rx="4" class="r1"/>
+  <text x="341.0" y="211.0" class="num">U2</text>
+  <rect x="385" y="183" width="76" height="44" rx="4" class="r2"/>
+  <text x="423.0" y="211.0" class="num">U3</text>
+  <path d="M177 160L259 180" class="arr"/>
+  <path d="M259 160L341 180" class="arr"/>
+  <path d="M341 160L423 180" class="arr"/>
+  <text x="250" y="245" class="small" text-anchor="middle">箭头为同一微批的阶段交接</text>
+  <text x="24" y="282" class="subhead">有效阶段槽位 6 / 总槽位 8 = 75%</text>
+  <text x="24" y="307" class="small">忽略通信、排队等开销；仅为理想调度。</text>
+  <text x="24" y="328" class="small">独立微批不是同一请求的连续三个 Token。</text>
+</svg>

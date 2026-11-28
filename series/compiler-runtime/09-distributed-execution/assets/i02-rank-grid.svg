@@ -1,0 +1,67 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="500" height="499" viewBox="0 0 500 499" role="img" aria-labelledby="title desc">
+  <title id="title">TP、PP 与 DP 的八卡三维分组示例</title>
+  <desc id="desc">教学映射：D=2 个模型副本，P=2 个流水阶段，T=2 个张量并行参与者，每设备一 Rank，Rank 编号 r=((d×2)+p)×2+t，r 也作为卡号。副本 0 中 TP 组为 {0,1}、{2,3}，副本 1 为 {4,5}、{6,7}。跨阶段同 t 的候选点对点路径为 0→2、1→3、4→6、5→7；实际是否选择这些路径以及传输多少数据取决于两阶段激活的布局。两个副本独立服务请求，推理无必然的 DP 梯度同步通信。</desc>
+  <defs>
+    <marker id="arrow" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto"><path d="M0 0L6 3L0 6Z" fill="#527d64"/></marker>
+    <marker id="arrowback" markerWidth="6" markerHeight="6" refX="1" refY="3" orient="auto"><path d="M6 0L0 3L6 6Z" fill="#527d64"/></marker>
+  </defs>
+
+  <style>
+    text { font-family: "Noto Sans CJK SC", "PingFang SC", "Microsoft YaHei", sans-serif; fill: #173d35; font-size: 18px; }
+    .head { font-size: 23px; font-weight: 700; } .subhead { font-size: 20px; font-weight: 700; }
+    .label { font-size: 17px; fill: #416354; } .small { font-size: 16px; fill: #416354; }
+    .num { font-size: 18px; text-anchor: middle; font-weight: 600; }
+    .panel { fill: #edf2e8; stroke: #9ab69e; stroke-width: 1.4; }
+    .card { fill: #f9f8ef; stroke: #b8ba9e; stroke-width: 1.25; }
+    .r0 { fill: #d9e9dc; stroke: #729582; stroke-width: 1.25; }
+    .r1 { fill: #f2e4c9; stroke: #aa9163; stroke-width: 1.25; }
+    .r2 { fill: #dce8e9; stroke: #7a969b; stroke-width: 1.25; }
+    .full { fill: #eaeedf; stroke: #9ab69e; stroke-width: 1.25; }
+    .arr { fill: none; stroke: #527d64; stroke-width: 1.8; marker-end: url(#arrow); }
+    .bi { fill: none; stroke: #527d64; stroke-width: 1.7; marker-start: url(#arrowback); marker-end: url(#arrow); }
+    .candidate { fill: none; stroke: #527d64; stroke-width: 2; stroke-dasharray: 3 2; marker-end: url(#arrow); }
+    .guide { stroke: #c4d0c4; stroke-width: 1; stroke-dasharray: 3 3; }
+    .wait { fill: #f9f8ef; stroke: #b8ba9e; stroke-width: 1.25; stroke-dasharray: 4 3; }
+    .tick { font-size: 15px; fill: #416354; }
+  </style>
+  <rect x="1" y="1" width="498" height="497" rx="14" fill="#f5f6ef" stroke="#c4d0c4" stroke-width="1.3"/>
+  <text x="24" y="33" class="head">八张卡怎样组成两个模型副本？</text>
+  <text x="24" y="58" class="label">DP=2，PP=2，TP=2 · 教学 Rank 网格</text>
+  <text x="24" y="83" class="small">r = ((d × 2) + p) × 2 + t；r 作为卡号</text>
+  <rect x="18" y="96" width="464" height="154" rx="10" class="panel"/>
+  <text x="30" y="121" class="subhead">副本 0 · d=0</text>
+  <rect x="32" y="134" width="188" height="104" rx="7" class="card"/>
+  <text x="126" y="156" class="small" text-anchor="middle">阶段 0 · TP {0,1}</text>
+  <rect x="41" y="163" width="170" height="31" rx="4" class="r0"/>
+  <text x="126" y="184" class="small" text-anchor="middle">R0 · 卡 0 · t=0</text>
+  <rect x="41" y="200" width="170" height="31" rx="4" class="r1"/>
+  <text x="126" y="221" class="small" text-anchor="middle">R1 · 卡 1 · t=1</text>
+  <rect x="280" y="134" width="188" height="104" rx="7" class="card"/>
+  <text x="374" y="156" class="small" text-anchor="middle">阶段 1 · TP {2,3}</text>
+  <rect x="289" y="163" width="170" height="31" rx="4" class="r0"/>
+  <text x="374" y="184" class="small" text-anchor="middle">R2 · 卡 2 · t=0</text>
+  <rect x="289" y="200" width="170" height="31" rx="4" class="r1"/>
+  <text x="374" y="221" class="small" text-anchor="middle">R3 · 卡 3 · t=1</text>
+  <path d="M214 178H285" class="candidate"/>
+  <path d="M214 215H285" class="candidate"/>
+  <rect x="18" y="261" width="464" height="154" rx="10" class="panel"/>
+  <text x="30" y="286" class="subhead">副本 1 · d=1</text>
+  <rect x="32" y="299" width="188" height="104" rx="7" class="card"/>
+  <text x="126" y="321" class="small" text-anchor="middle">阶段 0 · TP {4,5}</text>
+  <rect x="41" y="328" width="170" height="31" rx="4" class="r0"/>
+  <text x="126" y="349" class="small" text-anchor="middle">R4 · 卡 4 · t=0</text>
+  <rect x="41" y="365" width="170" height="31" rx="4" class="r1"/>
+  <text x="126" y="386" class="small" text-anchor="middle">R5 · 卡 5 · t=1</text>
+  <rect x="280" y="299" width="188" height="104" rx="7" class="card"/>
+  <text x="374" y="321" class="small" text-anchor="middle">阶段 1 · TP {6,7}</text>
+  <rect x="289" y="328" width="170" height="31" rx="4" class="r0"/>
+  <text x="374" y="349" class="small" text-anchor="middle">R6 · 卡 6 · t=0</text>
+  <rect x="289" y="365" width="170" height="31" rx="4" class="r1"/>
+  <text x="374" y="386" class="small" text-anchor="middle">R7 · 卡 7 · t=1</text>
+  <path d="M214 343H285" class="candidate"/>
+  <path d="M214 380H285" class="candidate"/>
+  <text x="24" y="439" class="label">同阶段框：TP 通信组</text>
+  <path d="M24 457H80" class="candidate"/>
+  <text x="89" y="462" class="small">同 t 的 PP 点对点候选路径</text>
+  <text x="24" y="487" class="small">副本独立服务；不要求 DP 梯度同步。</text>
+</svg>
