@@ -1,0 +1,75 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="400" height="405" viewBox="0 0 400 405" role="img" aria-labelledby="title desc">
+  <title id="title">读取 W 的第 0 列时，两种布局各涉及几个 4 B 块？</title>
+  <desc id="desc">W 有四行两列，每个元素占一字节，起始地址按四字节对齐。第 0 列依次是 3、5、2、1。按行存放时，它们位于偏移 0、2、4、6，独立冷读需读取块 0 和块 1。按列打包后，它们位于偏移 0、1、2、3，只需读取块 0。每格上方为字节偏移，目标元素下方标出行号 k。</desc>
+  <style>
+    text { font-family: "Noto Sans CJK SC", "PingFang SC", "Microsoft YaHei", sans-serif; fill: #173d35 }
+    .heading { font-size: 19px; font-weight: 700 }
+    .note, .block { font-size: 16px }
+    .offset, .index { font-size: 15px }
+    .offset, .block, .index, .value { text-anchor: middle }
+    .offset, .note { fill: #416354 }
+    .value { font-size: 21px; font-weight: 650 }
+    .cell { fill: #f8f7ef }
+    .target { fill: #d9e9dc }
+    .grid { stroke: #729582; stroke-width: 1.25; fill: none }
+  </style>
+  <defs>
+    <g id="offsets" class="offset">
+      <text x="36" y="0">+0</text><text x="81" y="0">+1</text>
+      <text x="126" y="0">+2</text><text x="171" y="0">+3</text>
+      <text x="229" y="0">+4</text><text x="274" y="0">+5</text>
+      <text x="319" y="0">+6</text><text x="364" y="0">+7</text>
+    </g>
+    <g id="blocks" class="grid">
+      <rect x="13.5" y="0" width="180" height="57"/>
+      <path d="M58.5 0v57 M103.5 0v57 M148.5 0v57"/>
+      <rect x="206.5" y="0" width="180" height="57"/>
+      <path d="M251.5 0v57 M296.5 0v57 M341.5 0v57"/>
+    </g>
+  </defs>
+  <rect x="1" y="1" width="398" height="403" rx="14" fill="#f5f6ef" stroke="#c4d0c4"/>
+  <text x="15" y="29" class="heading">读 W 的第 0 列</text>
+  <text x="15" y="56" class="note">每格 1 B。格上方标字节偏移，目标格内标行号 k。</text>
+  <g aria-label="按行存放，独立冷读一列需要两个块">
+    <text x="15" y="92" class="heading">按行存放</text>
+    <use href="#offsets" y="117"/>
+    <g transform="translate(0 126)">
+      <rect x="13.5" width="180" height="57" class="cell"/>
+      <rect x="206.5" width="180" height="57" class="cell"/>
+      <g class="target">
+        <rect x="13.5" width="45" height="57"/><rect x="103.5" width="45" height="57"/>
+        <rect x="206.5" width="45" height="57"/><rect x="296.5" width="45" height="57"/>
+      </g>
+      <use href="#blocks"/>
+      <g class="value">
+        <text x="36" y="25">3</text><text x="81" y="25">1</text><text x="126" y="25">5</text><text x="171" y="25">2</text>
+        <text x="229" y="25">2</text><text x="274" y="25">3</text><text x="319" y="25">1</text><text x="364" y="25">4</text>
+      </g>
+      <g class="index">
+        <text x="36" y="48">k=0</text><text x="126" y="48">k=1</text>
+        <text x="229" y="48">k=2</text><text x="319" y="48">k=3</text>
+      </g>
+    </g>
+    <g class="block"><text x="103.5" y="207">读取块 0</text><text x="296.5" y="207">读取块 1</text></g>
+  </g>
+  <path d="M15 224H385" stroke="#c4d0c4"/>
+  <g aria-label="按列打包，独立冷读一列只需要块零">
+    <text x="15" y="251" class="heading">按列打包</text>
+    <use href="#offsets" y="276"/>
+    <g transform="translate(0 285)">
+      <rect x="13.5" width="180" height="57" class="target"/>
+      <rect x="206.5" width="180" height="57" class="cell"/>
+      <use href="#blocks"/>
+      <g class="value">
+        <text x="36" y="25">3</text><text x="81" y="25">5</text><text x="126" y="25">2</text><text x="171" y="25">1</text>
+        <text x="229" y="25">1</text><text x="274" y="25">2</text><text x="319" y="25">3</text><text x="364" y="25">4</text>
+      </g>
+      <g class="index">
+        <text x="36" y="48">k=0</text><text x="81" y="48">k=1</text>
+        <text x="126" y="48">k=2</text><text x="171" y="48">k=3</text>
+      </g>
+    </g>
+    <g class="block"><text x="103.5" y="366">读取块 0</text><text x="296.5" y="366">跳过块 1</text></g>
+  </g>
+  <text x="15" y="393" class="note">两次独立冷读均从空状态开始，每次取整块 4 B。</text>
+</svg>

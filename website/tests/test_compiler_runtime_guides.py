@@ -215,6 +215,19 @@ class CompilerRuntimeGuideTests(unittest.TestCase):
             ("c01-output-mapping.svg",),
         )
 
+    def test_c02_article_navigation_search_and_diagrams(self):
+        route = "03-mapping-and-planning"
+        slug = "c02-layout-and-dataflow-planning"
+        self._check_article(
+            route,
+            "资源映射与执行规划",
+            slug,
+            "同一组数据怎样安排布局和驻留，才能减少搬运？",
+            ("c02-reuse-paths.svg", "c02-weight-layout.svg"),
+        )
+        previous = SITE / PREFIX / route / "c01-tensor-mapping/index.html"
+        self.assertIn(f"../{slug}/", GuideContent(previous.read_text()).links)
+
     def _check_foundation_article(self, slug, title, diagram_names):
         self._check_article("01-foundations", "软件执行共同基础", slug, title, diagram_names)
 
