@@ -1,0 +1,62 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 584" width="500" height="584" role="img" aria-labelledby="layers-title layers-desc">
+  <title id="layers-title">计算语义、可执行内核与本次任务</title>
+  <desc id="layers-desc">逻辑上的逐元素加法 Y=A+B，A 为 2、1、4，B 为 3、4、2，得到 Y 为 5、5、6。对一种可编程设备，可以选择由目标指令实现的 vec_add 内核，并加载包含该内核的可执行程序。任务一引用 vec_add，绑定设备可访问的输入 A、B、输出 Y 和长度 3。任务二引用同一个内核，绑定另外的输入 A2、B2、输出 Y2 和长度 3。两次调用的参数不同，但可复用同一个内核；目标指令的示意仅适用于可编程设备。</desc>
+  <defs>
+    <marker id="layers-arrow" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0 0L7 3.5L0 7Z" fill="#527d64"/></marker>
+    <style>
+      text{font-family:"Noto Sans CJK SC","PingFang SC","Microsoft YaHei",sans-serif;fill:#173d35;font-size:21px}
+      .head{font-weight:700;font-size:23px}.subhead{font-weight:700;font-size:20px}.label{font-size:18px;fill:#416354}.small{font-size:16px;fill:#416354}.code{font-family:"Noto Sans Mono CJK SC","Consolas",monospace;font-size:21px;font-weight:600}.code-small{font-family:"Noto Sans Mono CJK SC","Consolas",monospace;font-size:18px;font-weight:500}.selected{font-weight:700;fill:#78591b}
+      .panel{fill:#edf2e8;stroke:#cad8cb;stroke-width:1.2}.cell{fill:#d9e9dc;stroke:#6f9a80;stroke-width:1.3}.target{fill:#f2e4c9;stroke:#9c7b42;stroke-width:1.6}.task{fill:#f9f8ef;stroke:#9eaf9c;stroke-width:1.4}.edge{fill:none;stroke:#527d64;stroke-width:2;marker-end:url(#layers-arrow)}
+    </style>
+  </defs>
+  <rect x="1" y="1" width="498" height="582" rx="14" fill="#f5f6ef" stroke="#c4d0c4" stroke-width="1.3"/>
+  <text x="24" y="33" class="head">同一份内核，可以服务多次任务</text>
+
+  <rect class="panel" x="18" y="51" width="464" height="124" rx="10"/>
+  <text x="32" y="79" class="subhead">计算语义：Y = A + B</text>
+  <text x="42" y="123" class="code-small">A</text>
+  <text x="42" y="156" class="code-small">B</text>
+  <g class="cell">
+    <rect x="65" y="101" width="44" height="29" rx="5"/><rect x="111" y="101" width="44" height="29" rx="5"/><rect x="157" y="101" width="44" height="29" rx="5"/>
+    <rect x="65" y="134" width="44" height="29" rx="5"/><rect x="111" y="134" width="44" height="29" rx="5"/><rect x="157" y="134" width="44" height="29" rx="5"/>
+  </g>
+  <g class="code-small" text-anchor="middle">
+    <text x="87" y="122">2</text><text x="133" y="122">1</text><text x="179" y="122">4</text>
+    <text x="87" y="155">3</text><text x="133" y="155">4</text><text x="179" y="155">2</text>
+  </g>
+  <path d="M214 132H255" class="edge"/>
+  <text x="282" y="110" class="label">逐元素相加</text>
+  <text x="263" y="147" class="code-small">Y</text>
+  <g class="target">
+    <rect x="288" y="124" width="46" height="35" rx="5"/><rect x="337" y="124" width="46" height="35" rx="5"/><rect x="386" y="124" width="46" height="35" rx="5"/>
+  </g>
+  <g class="code selected" text-anchor="middle"><text x="311" y="149">5</text><text x="360" y="149">5</text><text x="409" y="149">6</text></g>
+
+  <path d="M250 175V217" class="edge"/>
+  <text x="263" y="201" class="small">选择一种可编程设备实现</text>
+
+  <rect class="panel" x="65" y="222" width="370" height="133" rx="11"/>
+  <text x="250" y="252" class="subhead" text-anchor="middle">已加载的可执行程序</text>
+  <rect class="cell" x="84" y="265" width="332" height="75" rx="8"/>
+  <text x="250" y="291" class="code" text-anchor="middle">vec_add</text>
+  <text x="250" y="316" class="label" text-anchor="middle">目标指令实现：读取、相加、写入</text>
+  <text x="250" y="336" class="small" text-anchor="middle">内核入口（示意，非指令清单）</text>
+
+  <path d="M130 405V382H163V355" class="edge"/>
+  <path d="M370 405V382H337V355" class="edge"/>
+  <rect class="panel" x="183" y="363" width="134" height="27" rx="7"/>
+  <text x="250" y="383" class="label" text-anchor="middle">引用同一内核</text>
+
+  <rect class="task" x="18" y="405" width="224" height="124" rx="10"/>
+  <rect class="task" x="258" y="405" width="224" height="124" rx="10"/>
+  <text x="130" y="433" class="subhead" text-anchor="middle">任务 1</text>
+  <text x="370" y="433" class="subhead" text-anchor="middle">任务 2</text>
+  <text x="130" y="460" class="code-small" text-anchor="middle">vec_add</text>
+  <text x="370" y="460" class="code-small" text-anchor="middle">vec_add</text>
+  <text x="130" y="486" class="label" text-anchor="middle">输入 A、B，输出 Y</text>
+  <text x="370" y="486" class="label" text-anchor="middle">输入 A2、B2，输出 Y2</text>
+  <text x="130" y="512" class="label" text-anchor="middle">长度 n = 3</text>
+  <text x="370" y="512" class="label" text-anchor="middle">长度 n = 3</text>
+  <text x="250" y="553" class="label" text-anchor="middle">绑定各自的存储位置与本次参数</text>
+  <text x="250" y="576" class="small" text-anchor="middle">内核描述实现，任务描述一次具体执行请求</text>
+</svg>

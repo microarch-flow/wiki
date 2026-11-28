@@ -143,6 +143,13 @@ class CompilerRuntimeGuideTests(unittest.TestCase):
             ("a03-layout-comparison.svg", "a03-transpose-view.svg"),
         )
 
+    def test_a04_article_navigation_search_and_diagrams(self):
+        self._check_foundation_article(
+            "a04-execution-contract",
+            "软件怎样把一项计算交给硬件？",
+            ("a04-execution-layers.svg", "a04-device-task.svg"),
+        )
+
     def _check_foundation_article(self, slug, title, diagram_names):
         route = "01-foundations"
         relative = f"{PREFIX}{route}/{slug}/"
