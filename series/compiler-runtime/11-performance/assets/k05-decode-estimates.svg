@@ -1,0 +1,92 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 641" width="500" height="641" role="img" aria-labelledby="title desc">
+  <title id="title">Decode 单轮的独立资源服务项：条件估算</title>
+  <desc id="desc">Llama 3 70B，TP4四张H100，每条已有4096个历史KV位置，假设逻辑读取量等于HBM读量。批B=1、32、100的逻辑读取量分别141.342、182.950、274.218 GB。HBM按聚合13.4 TB/s峰值带宽的服务项为10.548、13.653、20.464 ms；假设使用70%峰值带宽的服务项为15.068、19.504、29.234 ms；聚合3958 TFLOP/s稠密计算峰值下的计算项为0.038、1.219、3.808 ms。三个资源服务项同一比例时间轴独立绘图，不能直接相加或看作完整轮时延。忽略实际流量变化、KV写入、其他算子和通信等，70%不是校准或测得的效率。</desc>
+  <defs>
+    <style>
+      text{font-family:"Noto Sans CJK SC","PingFang SC","Microsoft YaHei",sans-serif;fill:#173d35;font-size:18px}
+      .head{font-size:23px;font-weight:700}.subhead{font-size:20px;font-weight:700}.label{font-size:18px;font-weight:600}.small{font-size:17px;fill:#416354}.tick{font-size:16px;fill:#416354}
+      .panel{fill:#edf2e8;stroke:#9ab69e;stroke-width:1.4}.grid{stroke:#c4d0c4;stroke-width:1;stroke-dasharray:3 3}.axis{stroke:#8b9c8e;stroke-width:1.3;fill:none}
+      .idle{fill:#f9f8ef;stroke:#b8ba9e;stroke-width:1}.warn{fill:#765820;font-weight:600}.warn-panel{fill:#f6efe0;stroke:#b9914e;stroke-width:1.5}
+      .hbm{fill:#c1dac6;stroke:none}.eff{fill:#91b6d0;stroke:none}.math{fill:#d7b578;stroke:none}.number{font-size:16px;font-weight:600}.band{fill:#f9f8ef;stroke:#c4d0c4;stroke-width:.7}
+    </style>
+    <marker id="arrow" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0 0L7 3.5L0 7Z" fill="#527d64"/></marker>
+  </defs>
+  <rect x="1" y="1" width="498" height="639" rx="14" fill="#f5f6ef" stroke="#c4d0c4" stroke-width="1.3"/>
+  <text x="24.0000" y="34.0000" class="head">同样历史长度，批大以后哪项变长？</text>
+  <text x="24.0000" y="60.0000" class="small">历史 4,096 / 请求；假设逻辑读量 = HBM 读量。</text>
+  <text x="24.0000" y="83.0000" class="small">峰值：带宽 13.4 TB/s；计算 3,958 TFLOP/s。</text>
+  <rect x="18.0000" y="98.0000" width="464.0000" height="153.0000" rx="10" class="panel"/>
+  <text x="32.0000" y="122.0000" class="subhead">B = 1；逻辑读取 141.342 GB</text>
+  <text x="468.0000" y="147.0000" class="tick" text-anchor="end">ms</text>
+  <path d="M116.0000 154.0000L404.0000 154.0000" class="axis"/>
+  <text x="116.0000" y="147.0000" class="tick" text-anchor="middle">0</text>
+  <path d="M116.0000 154.0000L116.0000 241.0000" class="grid"/>
+  <text x="212.0000" y="147.0000" class="tick" text-anchor="middle">10</text>
+  <path d="M212.0000 154.0000L212.0000 241.0000" class="grid"/>
+  <text x="308.0000" y="147.0000" class="tick" text-anchor="middle">20</text>
+  <path d="M308.0000 154.0000L308.0000 241.0000" class="grid"/>
+  <text x="404.0000" y="147.0000" class="tick" text-anchor="middle">30</text>
+  <path d="M404.0000 154.0000L404.0000 241.0000" class="grid"/>
+  <text x="108.0000" y="177.0000" class="tick" text-anchor="end">峰值带宽</text>
+  <rect x="116.0000" y="160.0000" width="288.0000" height="22.0000" rx="0" class="band"/>
+  <rect x="116.0000" y="160.0000" width="101.2608" height="22.0000" rx="0" class="hbm"/>
+  <text x="469.0000" y="177.0000" class="number" text-anchor="end">10.548</text>
+  <text x="108.0000" y="204.0000" class="tick" text-anchor="end">70% 带宽</text>
+  <rect x="116.0000" y="187.0000" width="288.0000" height="22.0000" rx="0" class="band"/>
+  <rect x="116.0000" y="187.0000" width="144.6528" height="22.0000" rx="0" class="eff"/>
+  <text x="469.0000" y="204.0000" class="number" text-anchor="end">15.068</text>
+  <text x="108.0000" y="231.0000" class="tick" text-anchor="end">峰值计算</text>
+  <rect x="116.0000" y="214.0000" width="288.0000" height="22.0000" rx="0" class="band"/>
+  <rect x="116.0000" y="214.0000" width="0.3648" height="22.0000" rx="0" class="math"/>
+  <text x="469.0000" y="231.0000" class="number" text-anchor="end">0.038</text>
+  <rect x="18.0000" y="263.0000" width="464.0000" height="153.0000" rx="10" class="panel"/>
+  <text x="32.0000" y="287.0000" class="subhead">B = 32；逻辑读取 182.950 GB</text>
+  <text x="468.0000" y="312.0000" class="tick" text-anchor="end">ms</text>
+  <path d="M116.0000 319.0000L404.0000 319.0000" class="axis"/>
+  <text x="116.0000" y="312.0000" class="tick" text-anchor="middle">0</text>
+  <path d="M116.0000 319.0000L116.0000 406.0000" class="grid"/>
+  <text x="212.0000" y="312.0000" class="tick" text-anchor="middle">10</text>
+  <path d="M212.0000 319.0000L212.0000 406.0000" class="grid"/>
+  <text x="308.0000" y="312.0000" class="tick" text-anchor="middle">20</text>
+  <path d="M308.0000 319.0000L308.0000 406.0000" class="grid"/>
+  <text x="404.0000" y="312.0000" class="tick" text-anchor="middle">30</text>
+  <path d="M404.0000 319.0000L404.0000 406.0000" class="grid"/>
+  <text x="108.0000" y="342.0000" class="tick" text-anchor="end">峰值带宽</text>
+  <rect x="116.0000" y="325.0000" width="288.0000" height="22.0000" rx="0" class="band"/>
+  <rect x="116.0000" y="325.0000" width="131.0688" height="22.0000" rx="0" class="hbm"/>
+  <text x="469.0000" y="342.0000" class="number" text-anchor="end">13.653</text>
+  <text x="108.0000" y="369.0000" class="tick" text-anchor="end">70% 带宽</text>
+  <rect x="116.0000" y="352.0000" width="288.0000" height="22.0000" rx="0" class="band"/>
+  <rect x="116.0000" y="352.0000" width="187.2384" height="22.0000" rx="0" class="eff"/>
+  <text x="469.0000" y="369.0000" class="number" text-anchor="end">19.504</text>
+  <text x="108.0000" y="396.0000" class="tick" text-anchor="end">峰值计算</text>
+  <rect x="116.0000" y="379.0000" width="288.0000" height="22.0000" rx="0" class="band"/>
+  <rect x="116.0000" y="379.0000" width="11.7024" height="22.0000" rx="0" class="math"/>
+  <text x="469.0000" y="396.0000" class="number" text-anchor="end">1.219</text>
+  <rect x="18.0000" y="428.0000" width="464.0000" height="153.0000" rx="10" class="panel"/>
+  <text x="32.0000" y="452.0000" class="subhead">B = 100；逻辑读取 274.218 GB</text>
+  <text x="468.0000" y="477.0000" class="tick" text-anchor="end">ms</text>
+  <path d="M116.0000 484.0000L404.0000 484.0000" class="axis"/>
+  <text x="116.0000" y="477.0000" class="tick" text-anchor="middle">0</text>
+  <path d="M116.0000 484.0000L116.0000 571.0000" class="grid"/>
+  <text x="212.0000" y="477.0000" class="tick" text-anchor="middle">10</text>
+  <path d="M212.0000 484.0000L212.0000 571.0000" class="grid"/>
+  <text x="308.0000" y="477.0000" class="tick" text-anchor="middle">20</text>
+  <path d="M308.0000 484.0000L308.0000 571.0000" class="grid"/>
+  <text x="404.0000" y="477.0000" class="tick" text-anchor="middle">30</text>
+  <path d="M404.0000 484.0000L404.0000 571.0000" class="grid"/>
+  <text x="108.0000" y="507.0000" class="tick" text-anchor="end">峰值带宽</text>
+  <rect x="116.0000" y="490.0000" width="288.0000" height="22.0000" rx="0" class="band"/>
+  <rect x="116.0000" y="490.0000" width="196.4544" height="22.0000" rx="0" class="hbm"/>
+  <text x="469.0000" y="507.0000" class="number" text-anchor="end">20.464</text>
+  <text x="108.0000" y="534.0000" class="tick" text-anchor="end">70% 带宽</text>
+  <rect x="116.0000" y="517.0000" width="288.0000" height="22.0000" rx="0" class="band"/>
+  <rect x="116.0000" y="517.0000" width="280.6464" height="22.0000" rx="0" class="eff"/>
+  <text x="469.0000" y="534.0000" class="number" text-anchor="end">29.234</text>
+  <text x="108.0000" y="561.0000" class="tick" text-anchor="end">峰值计算</text>
+  <rect x="116.0000" y="544.0000" width="288.0000" height="22.0000" rx="0" class="band"/>
+  <rect x="116.0000" y="544.0000" width="36.5568" height="22.0000" rx="0" class="math"/>
+  <text x="469.0000" y="561.0000" class="number" text-anchor="end">3.808</text>
+  <text x="24.0000" y="609.0000" class="label">各项分别比较，不相加；70% 为假设效率。</text>
+  <text x="250.0000" y="630.0000" class="small" text-anchor="middle">资源服务项非整轮时延，未测真实流量或通信。</text>
+</svg>

@@ -1,0 +1,49 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 478" width="500" height="478" role="img" aria-labelledby="title desc">
+  <title id="title">Prefill 工作量与条件计算服务时间</title>
+  <desc id="desc">原 Llama 3 70B 教学圆整参数量 P=70×10^9，输入长度3500、无前缀命中。线性层工作量近似2Ps=490 TFLOP；按有效因果位置对计数近似 QK 和 AV 工作量16.06090752 TFLOP，合计506.06090752 TFLOP（图中四位小数）。在四张H100 的聚合稠密计算峰值3958 TFLOP/s 下，两项计算资源服务时间127.858毫秒；假设持续效率50%，则255.715毫秒。总工作比例和两个时间条均依照比例绘制。并未计算整个Prefill或TTFT，不含其他算子、实际内核无效位置、通信、内存、排队及采样等，不是实测。</desc>
+  <defs>
+    <style>
+      text{font-family:"Noto Sans CJK SC","PingFang SC","Microsoft YaHei",sans-serif;fill:#173d35;font-size:18px}
+      .head{font-size:23px;font-weight:700}.subhead{font-size:20px;font-weight:700}.label{font-size:18px;font-weight:600}.small{font-size:17px;fill:#416354}.tick{font-size:16px;fill:#416354}
+      .panel{fill:#edf2e8;stroke:#9ab69e;stroke-width:1.4}.grid{stroke:#c4d0c4;stroke-width:1;stroke-dasharray:3 3}.axis{stroke:#8b9c8e;stroke-width:1.3;fill:none}
+      .idle{fill:#f9f8ef;stroke:#b8ba9e;stroke-width:1}.warn{fill:#765820;font-weight:600}.warn-panel{fill:#f6efe0;stroke:#b9914e;stroke-width:1.5}
+      .linear{fill:#d9e9dc;stroke:#6f9a80;stroke-width:1.1}.attention{fill:#91b6d0;stroke:#426e90;stroke-width:.8}.peak{fill:#c1dac6;stroke:#6f9a80;stroke-width:1.1}.eff{fill:#91b6d0;stroke:#426e90;stroke-width:.8}.number{font-size:18px;font-weight:600}
+    </style>
+    <marker id="arrow" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0 0L7 3.5L0 7Z" fill="#527d64"/></marker>
+  </defs>
+  <rect x="1" y="1" width="498" height="476" rx="14" fill="#f5f6ef" stroke="#c4d0c4" stroke-width="1.3"/>
+  <text x="24.0000" y="34.0000" class="head">3500 个输入位置，要完成多少计算？</text>
+  <text x="24.0000" y="60.0000" class="small">Llama 3 70B 圆整模型；无前缀命中。</text>
+  <rect x="18.0000" y="76.0000" width="464.0000" height="161.0000" rx="10" class="panel"/>
+  <text x="32.0000" y="102.0000" class="subhead">两项近似工作量（按 FLOP 比例）</text>
+  <rect x="32.0000" y="115.0000" width="422.1626" height="30.0000" rx="0" class="linear"/>
+  <rect x="454.1626" y="115.0000" width="13.8374" height="30.0000" rx="0" class="attention"/>
+  <rect x="32.0000" y="157.0000" width="16.0000" height="16.0000" rx="3" class="linear"/>
+  <text x="55.0000" y="171.0000" class="small">线性层 2Ps ≈ 490 TFLOP</text>
+  <rect x="32.0000" y="183.0000" width="16.0000" height="16.0000" rx="3" class="attention"/>
+  <text x="55.0000" y="197.0000" class="small">QK + AV（有效因果对）≈ 16.0609 TFLOP</text>
+  <text x="32.0000" y="225.0000" class="label">合计：约 506.0609 TFLOP</text>
+  <rect x="18.0000" y="249.0000" width="464.0000" height="168.0000" rx="10" class="panel"/>
+  <text x="32.0000" y="275.0000" class="subhead">计算资源时间项</text>
+  <text x="32.0000" y="300.0000" class="small">聚合稠密峰值 3,958 TFLOP/s</text>
+  <text x="462.0000" y="300.0000" class="tick" text-anchor="end">时间（ms）</text>
+  <path d="M32.0000 327.0000L463.6000 327.0000" class="axis"/>
+  <text x="32.0000" y="319.0000" class="tick" text-anchor="middle">0</text>
+  <path d="M32.0000 327.0000L32.0000 405.0000" class="grid"/>
+  <text x="115.0000" y="319.0000" class="tick" text-anchor="middle">50</text>
+  <path d="M115.0000 327.0000L115.0000 405.0000" class="grid"/>
+  <text x="198.0000" y="319.0000" class="tick" text-anchor="middle">100</text>
+  <path d="M198.0000 327.0000L198.0000 405.0000" class="grid"/>
+  <text x="281.0000" y="319.0000" class="tick" text-anchor="middle">150</text>
+  <path d="M281.0000 327.0000L281.0000 405.0000" class="grid"/>
+  <text x="364.0000" y="319.0000" class="tick" text-anchor="middle">200</text>
+  <path d="M364.0000 327.0000L364.0000 405.0000" class="grid"/>
+  <text x="447.0000" y="319.0000" class="tick" text-anchor="middle">250</text>
+  <path d="M447.0000 327.0000L447.0000 405.0000" class="grid"/>
+  <text x="32.0000" y="346.0000" class="number">峰值计算：127.858 ms</text>
+  <rect x="32.0000" y="350.0000" width="212.2443" height="16.0000" rx="0" class="peak"/>
+  <text x="32.0000" y="385.0000" class="number">50% 假设效率：255.715 ms</text>
+  <rect x="32.0000" y="389.0000" width="424.4869" height="16.0000" rx="0" class="eff"/>
+  <text x="24.0000" y="438.0000" class="label">非完整 TTFT；未含其他资源、通信及排队。</text>
+  <text x="250.0000" y="464.0000" class="small" text-anchor="middle">条件计算估算，非实测。</text>
+</svg>

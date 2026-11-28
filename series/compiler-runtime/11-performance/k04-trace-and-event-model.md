@@ -365,7 +365,7 @@ PYTHONPATH=website/tests python3 -m unittest test_compiler_runtime_k04
 
 本篇将输入 Trace、调度和状态规则、服务时间与事件推进分开，使我们能够改变条件并预测完成过程。K03 为成本和验证提供测量手段，K02 为模型实现提供正确性检查；[C05](../03-mapping-and-planning/c05-cost-model-and-search.md) 可以利用经核查的成本或预测结果选择执行方案。
 
-K05 将从另一种角度出发：给定模型和设备的参数，计算容量、计算与数据服务约束以及满足服务目标的条件估算，再结合实际测量判断哪些假设成立。
+[K05：一套模型和设备配置究竟能够服务多少请求？](k05-capacity-and-performance-estimation.md) 将从另一种角度出发：给定模型和设备的参数，计算容量、计算与数据服务约束以及满足服务目标的条件估算，再结合实际测量判断哪些假设成立。
 
 - [K01：怎样定义可以公平比较的延迟和吞吐量？](k01-performance-metrics.md)
 - [K02：怎样验证编译优化和运行时实现仍然符合预期？](k02-correctness-and-validation.md)
