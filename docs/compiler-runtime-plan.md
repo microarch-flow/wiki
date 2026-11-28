@@ -231,7 +231,7 @@ D02 沿 A04 的 RISC-V 目标，分别用 RV32IM 和 RV32I 实现定宽整数加
 | ID | 暂定标题 | 核心范围 | 主要前置 | 计划文件名 | 状态 |
 | --- | --- | --- | --- | --- | --- | --- |
 | E01 | 应用程序怎样找到并获得计算设备的使用权？ | 用户态与内核态、驱动与固件、设备发现、初始化、上下文、所有权和隔离。 | A04；参考 A05 | `e01-device-context-and-driver.md` | 已发布 |
-| E02 | 计算设备怎样访问一块由软件分配的内存？ | 主机与设备地址、内存申请、Pin、Map、DMA 映射、访问权限与可见性。 | E01、存储与互连接口 | `e02-device-memory-mapping.md` | 待写 |
+| E02 | 计算设备怎样访问一块由软件分配的内存？ | 主机与设备地址、内存申请、Pin、Map、DMA 映射、访问权限与可见性。 | E01、存储与互连接口 | `e02-device-memory-mapping.md` | 已发布 |
 | E03 | 驱动怎样告诉设备有一项工作需要执行？ | 命令缓冲区、描述符、命令队列、Doorbell、提交顺序、设备接纳。 | E01、E02、A05 | `e03-command-submission.md` | 待写 |
 | E04 | 设备完成任务或发生错误后，驱动怎样归还资源？ | 完成队列、中断、轮询、Fence、错误报告、复位、清理与可见性。 | E03 | `e04-completion-and-error-handling.md` | 待写 |
 
@@ -463,3 +463,5 @@ K 横跨所有路线。K01/K02 可早期开展，K03–K05 按被分析的机制
 - 2026-11-28 · D02 已发布并核验。正文提交 `b1bfbf9`，[GitHub Pages 部署](https://github.com/microarch-flow/wiki/actions/runs/46126401602)成功。[公开正文](https://microarch-flow.github.io/wiki/series/compiler-runtime/04-code-generation/d02-instruction-selection/)、D01 后继、专题导读、两张图解、导航、面包屑及搜索收录均已核验。LLVM 19.1.7 C API 实际生成 RV32IM/RV32I 汇编与分配前的 Machine IR，验证立即数及地址选择；定宽乘加与宽整数加法各 10,000 组随机比特向量和边界算例复算通过（非真机执行）。合并 E01 后本地整站 177 项测试通过。
 
 - 2026-11-28 · F01 已发布并核验。正文提交 `03f2e1e`，[GitHub Pages 部署](https://github.com/microarch-flow/wiki/actions/runs/46126833863) 成功；[公开正文](https://microarch-flow.github.io/wiki/series/compiler-runtime/06-execution-runtime/f01-module-loading-and-dispatch/)、E01 衔接链接、专题导读、两张图解、导航、面包屑及搜索收录已核验。合并并行完成的 E01/D02 后，本地整站 178 项测试全部通过，独立复算三组 12 B 缓冲区与四线程的三个有效结果 [5, 5, 6]（非真实 GPU 实测）。F02–F05 仍待编写，旧推理运行时不变。
+
+- 2026-11-28 · E02 继承 E01 的 ctx_P 与 A05 的 L_A/L_B/C/W，沿用并行完成的 F01 中三个设备地址，采用 Linux PCIe 显式 DMA 教学路径区分 CPU VA、主机 PA、DMA 地址、设备侧地址；追踪分配、Pin、Map、访问权、可见性与释放条件。主机与设备资源已准备，但未提交或真正搬运；保留 E03/E04 的提交与完成机制及 F 的运行时资源管理边界。E02 初稿完成；核查 Linux DMA/Pin/SVA 与 CUDA 内存管理官方资料，复算三个地址视图及偏移、12 B 数据长度和加法结果，三张图解完成实际渲染与 360 px 窄屏检查。合并 D02 发布记录后本地整站 179 项测试全部通过。

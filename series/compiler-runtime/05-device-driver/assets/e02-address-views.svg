@@ -1,0 +1,51 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 494" width="500" height="494" role="img" aria-labelledby="address-title address-desc">
+  <title id="address-title">CPU 与 DMA 引擎从不同地址访问同一个主机缓冲区</title>
+  <desc id="address-desc">本教学模型假设主机页大小为 4 KiB，CPU 对主机向量 A 使用虚拟地址 0x1000_0080，CPU 页表将其翻译为主机物理地址 0x9000_0080。设备 D0 的 DMA 引擎使用 DMA 地址 0x3000_0080，在本例中该地址是 IOVA，经 IOMMU 翻译至相同的主机物理地址。A 包含三个 int32 元素 2、1、4，占 12 B，在主机物理页内的偏移为 0x80。两条地址路径仅表示映射与访问关系，不表示数据已经搬运，也不表示这些地址可以在不同地址空间中通用。</desc>
+  <defs>
+    <marker id="va-arrow" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0 0L7 3.5L0 7Z" fill="#9c7b42"/></marker>
+    <marker id="dma-arrow" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0 0L7 3.5L0 7Z" fill="#527d64"/></marker>
+    <style>
+      text{font-family:"Noto Sans CJK SC","PingFang SC","Microsoft YaHei",sans-serif;fill:#173d35;font-size:20px}
+      .head{font-weight:700;font-size:23px}.subhead{font-weight:700;font-size:20px}.label{font-size:18px;fill:#416354}.small{font-size:16px;fill:#416354}.code{font-family:"Noto Sans Mono CJK SC","Consolas",monospace;font-size:19px;font-weight:600}
+      .cpu{fill:#f2e4c9;stroke:#9c7b42;stroke-width:1.4}.dma{fill:#d9e9dc;stroke:#6f9a80;stroke-width:1.4}.shared{fill:#f9f8ef;stroke:#b8ba9e;stroke-width:1.3}.host{fill:#edf2e8;stroke:#9ab69e;stroke-width:1.4}
+      .cpu-edge{fill:none;stroke:#9c7b42;stroke-width:2;marker-end:url(#va-arrow)}.dma-edge{fill:none;stroke:#527d64;stroke-width:2;marker-end:url(#dma-arrow)}
+    </style>
+  </defs>
+  <rect x="1" y="1" width="498" height="492" rx="14" fill="#f5f6ef" stroke="#c4d0c4" stroke-width="1.3"/>
+  <text x="24" y="34" class="head">两个地址视角，同一段主机内存</text>
+  <text x="24" y="58" class="small">本例：4 KiB 页，DMA 使用 IOVA</text>
+
+  <rect x="18" y="75" width="225" height="98" rx="9" class="cpu"/>
+  <rect x="257" y="75" width="225" height="98" rx="9" class="dma"/>
+  <g text-anchor="middle">
+    <text x="130.5" y="102" class="subhead">主机 CPU</text>
+    <text x="130.5" y="131" class="label">CPU VA</text>
+    <text x="130.5" y="154" class="code">0x1000_0080</text>
+    <text x="369.5" y="102" class="subhead">D0 的 DMA 引擎</text>
+    <text x="369.5" y="131" class="label">DMA 地址（IOVA）</text>
+    <text x="369.5" y="154" class="code">0x3000_0080</text>
+  </g>
+  <path d="M130.5 173V198" class="cpu-edge"/>
+  <path d="M369.5 173V198" class="dma-edge"/>
+  <rect x="18" y="202" width="225" height="60" rx="8" class="cpu"/>
+  <rect x="257" y="202" width="225" height="60" rx="8" class="dma"/>
+  <g text-anchor="middle">
+    <text x="130.5" y="227" class="subhead">CPU 页表</text>
+    <text x="130.5" y="249" class="small">CPU 地址翻译</text>
+    <text x="369.5" y="227" class="subhead">IOMMU</text>
+    <text x="369.5" y="249" class="small">DMA 地址翻译</text>
+  </g>
+  <path d="M130.5 262V279H191V304" class="cpu-edge"/>
+  <path d="M369.5 262V279H309V304" class="dma-edge"/>
+
+  <rect x="74" y="308" width="352" height="130" rx="10" class="host"/>
+  <g text-anchor="middle">
+    <text x="250" y="335" class="subhead">主机 PA：0x9000_0080</text>
+    <text x="250" y="359" class="small">物理页起始地址 0x9000_0000</text>
+    <rect x="93" y="371" width="314" height="54" rx="7" class="shared"/>
+    <text x="250" y="393" class="code">A = [2, 1, 4]</text>
+    <text x="250" y="415" class="small">页内偏移 0x80；共 12 B</text>
+    <text x="250" y="464" class="small">箭头表示地址翻译关系，不表示数据搬运</text>
+    <text x="250" y="485" class="small">地址只在相应地址空间和访问上下文中有效</text>
+  </g>
+</svg>

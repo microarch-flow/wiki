@@ -1,0 +1,54 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 762" width="500" height="762" role="img" aria-labelledby="lifecycle-title lifecycle-desc">
+  <title id="lifecycle-title">一次显式 DMA 映射的生命周期</title>
+  <desc id="lifecycle-desc">教学示意采用非一致性 streaming DMA 的显式映射模式。首先主机软件写入输入 A 和 B，准备输出 Y；随后为本例需要访问的主机页建立持有关系或固定页，建立 DMA 映射，并按接口要求将缓冲区交给设备。对首次建立映射与重复使用既有映射，接口要求可能不同。DMA 读取主机 A、B 至设备，计算引擎产生设备结果 d_Y，再由 DMA 将其写回主机 Y。DMA 拥有相关缓冲区期间，CPU 不访问相关缓存行；此后确认最后一次访问已经结束，按映射接口把结果同步至 CPU 或解除映射，只有写回成功且数据可见后才读取 Y。最终在不再需要映射且确认 DMA 停止时，撤销映射（若尚未撤销），解除需要固定的页面，释放或复用存储。映射可以按契约保留并复用，并非每次 DMA 均须固定和解除映射。</desc>
+  <defs>
+    <marker id="life-arrow" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0 0L7 3.5L0 7Z" fill="#527d64"/></marker>
+    <style>
+      text{font-family:"Noto Sans CJK SC","PingFang SC","Microsoft YaHei",sans-serif;fill:#173d35;font-size:20px}
+      .head{font-weight:700;font-size:23px}.subhead{font-weight:700;font-size:20px}.label{font-size:18px;fill:#416354}.small{font-size:16px;fill:#416354}.code{font-family:"Noto Sans Mono CJK SC","Consolas",monospace;font-size:18px;font-weight:600}
+      .host{fill:#f9f8ef;stroke:#b8ba9e;stroke-width:1.4}.driver{fill:#f2e4c9;stroke:#9c7b42;stroke-width:1.4}.device{fill:#edf2e8;stroke:#9ab69e;stroke-width:1.4}.alloc{fill:#d9e9dc;stroke:#6f9a80;stroke-width:1.3}
+      .edge{fill:none;stroke:#527d64;stroke-width:2;marker-end:url(#life-arrow)}.num{font-size:18px;font-weight:700;fill:#fffdf6}
+    </style>
+  </defs>
+  <rect x="1" y="1" width="498" height="760" rx="14" fill="#f5f6ef" stroke="#c4d0c4" stroke-width="1.3"/>
+  <text x="24" y="34" class="head">一次 DMA 映射怎样安全结束？</text>
+  <text x="24" y="58" class="small">本例采用非一致性 streaming DMA</text>
+
+  <rect x="18" y="75" width="464" height="83" rx="10" class="host"/>
+  <circle cx="42" cy="102" r="15" fill="#527d64"/><text x="42" y="108" class="num" text-anchor="middle">1</text>
+  <text x="66" y="108" class="subhead">CPU 准备主机缓冲区</text>
+  <text x="66" y="137" class="code">A = [2, 1, 4]    B = [3, 4, 2]</text>
+
+  <path d="M250 158V176" class="edge"/>
+  <rect x="18" y="180" width="464" height="116" rx="10" class="driver"/>
+  <circle cx="42" cy="207" r="15" fill="#9c7b42"/><text x="42" y="213" class="num" text-anchor="middle">2</text>
+  <text x="66" y="213" class="subhead">准备 DMA 访问条件</text>
+  <text x="66" y="241" class="label">固定本例主机页（Pin），建立 DMA 映射</text>
+  <text x="66" y="266" class="label">按接口要求同步，将访问权交给 DMA</text>
+  <text x="66" y="287" class="small">首次映射与复用映射的交接方式可能不同</text>
+
+  <path d="M250 296V314" class="edge"/>
+  <rect x="18" y="318" width="464" height="160" rx="10" class="device"/>
+  <circle cx="42" cy="345" r="15" fill="#527d64"/><text x="42" y="351" class="num" text-anchor="middle">3</text>
+  <text x="66" y="351" class="subhead">任务提交后：搬运与计算</text>
+  <rect x="31" y="362" width="438" height="82" rx="8" class="alloc"/>
+  <text x="250" y="384" class="label" text-anchor="middle">DMA 读取主机输入 A、B（搬入设备）</text>
+  <text x="250" y="409" class="label" text-anchor="middle">计算引擎产生 d_Y</text>
+  <text x="250" y="434" class="label" text-anchor="middle">DMA 写回主机 Y</text>
+  <text x="250" y="464" class="small" text-anchor="middle">DMA 持有缓冲区期间，CPU 不访问相应缓存行</text>
+
+  <path d="M250 478V496" class="edge"/>
+  <rect x="18" y="500" width="464" height="113" rx="10" class="host"/>
+  <circle cx="42" cy="527" r="15" fill="#527d64"/><text x="42" y="533" class="num" text-anchor="middle">4</text>
+  <text x="66" y="533" class="subhead">确认 DMA 的最后一次访问已结束</text>
+  <text x="66" y="561" class="label">按接口要求同步给 CPU 或解除映射</text>
+  <text x="66" y="587" class="label">写回成功且数据可见，才读取 Y</text>
+
+  <path d="M250 613V631" class="edge"/>
+  <rect x="18" y="635" width="464" height="89" rx="10" class="driver"/>
+  <circle cx="42" cy="661" r="15" fill="#9c7b42"/><text x="42" y="667" class="num" text-anchor="middle">5</text>
+  <text x="66" y="667" class="subhead">按后续使用情况回收或保留资源</text>
+  <text x="66" y="693" class="label">不再使用：撤销剩余映射、解除固定、释放内存</text>
+  <text x="66" y="713" class="small">需要继续访问时，也可以按契约保留映射</text>
+  <text x="250" y="747" class="small" text-anchor="middle">生命周期示意，不表示每次 DMA 都需要 Pin / Unmap</text>
+</svg>

@@ -320,6 +320,19 @@ class CompilerRuntimeGuideTests(unittest.TestCase):
             ("e01-control-path.svg", "e01-device-contexts.svg"),
         )
 
+    def test_e02_article_navigation_search_and_diagrams(self):
+        route = "05-device-driver"
+        slug = "e02-device-memory-mapping"
+        self._check_article(
+            route,
+            "设备驱动与底层资源管理",
+            slug,
+            "计算设备怎样访问一块由软件分配的内存？",
+            ("e02-address-views.svg", "e02-buffer-preparation.svg", "e02-mapping-lifecycle.svg"),
+        )
+        previous = SITE / PREFIX / route / "e01-device-context-and-driver/index.html"
+        self.assertIn(f"../{slug}/", GuideContent(previous.read_text()).links)
+
     def test_d02_article_navigation_search_and_diagrams(self):
         route = "04-code-generation"
         slug = "d02-instruction-selection"
