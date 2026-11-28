@@ -1,0 +1,19 @@
+digraph knowledge {
+  graph [rankdir=TB, bgcolor="#f5f6ef", pad="0.18", nodesep="0.24", ranksep="0.42", splines=polyline, outputorder=edgesfirst];
+  node [shape=box, style="rounded,filled", color="#82a18e", fillcolor="#e0ebe3", fontcolor="#173d35", penwidth=1.3, fontname="Noto Sans CJK SC", fontsize=15, margin="0.13,0.10"];
+  edge [color="#396b55", penwidth=1.4, arrowsize=.65];
+  B01 [label="B01 编译前端"];
+  B02 [label="B02 CFG 与 SSA"];
+  B03 [label="B03 AI 图捕获"];
+  B04 [label="B04 依赖分析"];
+  B05 [label="B05 数据流优化"];
+  B06 [label="B06 变换合法性"];
+  B01 -> B02;
+  B02 -> B04 [style=dashed, color="#738578"];
+  B02 -> B05;
+  B04 -> B05;
+  B04 -> B06;
+  B05 -> B06;
+  B02 -> B03 [style=dashed, color="#738578"];
+  B03 -> B06 [style=dashed, color="#738578"];
+}

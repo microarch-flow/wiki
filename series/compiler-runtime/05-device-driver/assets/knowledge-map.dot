@@ -1,0 +1,13 @@
+digraph knowledge {
+  graph [rankdir=TB, bgcolor="#f5f6ef", pad="0.18", nodesep="0.24", ranksep="0.42", splines=polyline, outputorder=edgesfirst];
+  node [shape=box, style="rounded,filled", color="#82a18e", fillcolor="#e0ebe3", fontcolor="#173d35", penwidth=1.3, fontname="Noto Sans CJK SC", fontsize=15, margin="0.13,0.10"];
+  edge [color="#396b55", penwidth=1.4, arrowsize=.65];
+  E01 [label="E01 设备上下文"];
+  E02 [label="E02 内存映射"];
+  E03 [label="E03 命令提交"];
+  E04 [label="E04 完成与异常"];
+  E01 -> E02;
+  E01 -> E03;
+  E02 -> E03;
+  E03 -> E04;
+}

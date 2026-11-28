@@ -907,6 +907,10 @@ def on_config(config, **kwargs):
                 tree = development_tree(root, directory, config.extra["storage_sidebar_labels"])
             elif entry["local"]["publish"] == "series/inference-runtime":
                 tree = inference_tree(root, directory, config.extra["storage_sidebar_labels"])
+                compiler_runtime = root / "series/compiler-runtime"
+                if (compiler_runtime / "README.md").is_file():
+                    tree.append({"新版：编译器与运行时系统": make_tree(
+                        compiler_runtime, root, ("README.md", "index.md"), order_subdirs=True)})
             elif entry["local"]["publish"] == "foundations":
                 tree = foundations_tree(root, directory, config.extra["storage_sidebar_labels"])
             elif entry["local"]["publish"] == "microarchitecture-v2":
@@ -982,6 +986,12 @@ def on_page_markdown(markdown, page, **kwargs):
     if page.file.src_uri == "microarchitecture.md" and (Path(kwargs["config"].docs_dir) / "microarchitecture-v2/README.md").is_file():
         notice = "> **旧版资料。** 新版正在逐步重构和发布；可前往[新版计算微架构导读](microarchitecture-v2/README.md)。本页与原有文章仍可阅读。\n\n"
         # Preserve the legacy intro/cover and all of its original headings and anchors.
+        markdown = re.sub(r"^## ", lambda match: notice + match.group(0), markdown, count=1, flags=re.MULTILINE)
+    if (page.file.src_uri == "series/inference-runtime/README.md"
+            and (Path(kwargs["config"].docs_dir) / "series/compiler-runtime/README.md").is_file()):
+        notice = ("> **新版建设中。** 可前往[编译器与运行时系统导读](../compiler-runtime/README.md)了解新的阅读路线；"
+                  "本系列及原有文章仍可正常阅读。\n\n")
+        # Add a reader-facing link without modifying the old source or anchors.
         markdown = re.sub(r"^## ", lambda match: notice + match.group(0), markdown, count=1, flags=re.MULTILINE)
     if page.file.src_uri == "README.md":
         config = kwargs["config"]

@@ -24,6 +24,8 @@
 | [算法与模型](./series/workload/README.md) | 模型组件、视觉、自动驾驶、机器人和芯片工作负载 |
 | [推理运行时](./series/inference-runtime/README.md) | 请求路径、模型执行、状态管理、调度、解码、分布式服务与性能验证 |
 
+新版 [编译器与运行时系统](./series/compiler-runtime/README.md) 正在独立建设，将覆盖从编译器、设备驱动到推理服务的完整软件栈。详见[重构计划书](./docs/compiler-runtime-plan.md)，原推理运行时资料仍可阅读。
+
 ### 一颗真实芯片怎样设计、实现和交付？
 
 | 系列 | 内容 |

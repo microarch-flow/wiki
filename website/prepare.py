@@ -416,6 +416,15 @@ def stage_site(root=ROOT, build_root=None, registry=None, source_root=None, layo
                     stage_workload(selected, docs / local["publish"], published)
                 elif local["publish"] == "series/inference-runtime":
                     stage_inference(selected, docs / local["publish"], published)
+                    # While the merged software series is being developed, publish
+                    # its own source tree alongside (not over) the existing runtime.
+                    # The existing series remains the registry/homepage destination.
+                    compiler_runtime = "series/compiler-runtime"
+                    if (root / compiler_runtime).exists():
+                        alternate = source_directory(root, compiler_runtime)
+                        destination = docs / compiler_runtime
+                        copy_source(alternate, destination, public_only=True)
+                        published.add_tree(alternate, destination)
                 else:
                     destination = docs / local["publish"]
                     copy_source(selected, destination, public_only=True)

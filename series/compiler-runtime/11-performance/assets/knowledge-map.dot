@@ -1,0 +1,19 @@
+digraph knowledge {
+  graph [rankdir=TB, bgcolor="#f5f6ef", pad="0.18", nodesep="0.24", ranksep="0.42", splines=polyline, outputorder=edgesfirst];
+  node [shape=box, style="rounded,filled", color="#82a18e", fillcolor="#e0ebe3", fontcolor="#173d35", penwidth=1.3, fontname="Noto Sans CJK SC", fontsize=15, margin="0.13,0.10"];
+  edge [color="#396b55", penwidth=1.4, arrowsize=.65];
+  K01 [label="K01 性能指标"];
+  K02 [label="K02 正确性验证"];
+  K03 [label="K03 压测与定位"];
+  K04 [label="K04 事件模型"];
+  K05 [label="K05 容量估算"];
+  K06 [label="K06 框架案例", fillcolor="#f3eddf", color="#b5a67d"];
+  K01 -> K03;
+  K01 -> K04;
+  K01 -> K05;
+  K02 -> K03 [style=dashed, color="#738578"];
+  K03 -> K04 [style=dashed, color="#738578"];
+  K03 -> K05 [style=dashed, color="#738578"];
+  K04 -> K05 [style=dashed, color="#738578"];
+  K03 -> K06 [style=dashed, color="#738578"];
+}

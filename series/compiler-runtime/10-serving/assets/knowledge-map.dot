@@ -1,0 +1,10 @@
+digraph knowledge {
+  graph [rankdir=TB, bgcolor="#f5f6ef", pad="0.18", nodesep="0.24", ranksep="0.42", splines=polyline, outputorder=edgesfirst];
+  node [shape=box, style="rounded,filled", color="#82a18e", fillcolor="#e0ebe3", fontcolor="#173d35", penwidth=1.3, fontname="Noto Sans CJK SC", fontsize=15, margin="0.13,0.10"];
+  edge [color="#396b55", penwidth=1.4, arrowsize=.65];
+  J01 [label="J01 请求接入与路由"];
+  J02 [label="J02 生命周期"];
+  J03 [label="J03 部署与扩缩容"];
+  J01 -> J02;
+  J02 -> J03;
+}

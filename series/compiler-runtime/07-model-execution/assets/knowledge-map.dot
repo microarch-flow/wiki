@@ -1,0 +1,25 @@
+digraph knowledge {
+  graph [rankdir=TB, bgcolor="#f5f6ef", pad="0.18", nodesep="0.24", ranksep="0.42", splines=polyline, outputorder=edgesfirst];
+  node [shape=box, style="rounded,filled", color="#82a18e", fillcolor="#e0ebe3", fontcolor="#173d35", penwidth=1.3, fontname="Noto Sans CJK SC", fontsize=15, margin="0.13,0.10"];
+  edge [color="#396b55", penwidth=1.4, arrowsize=.65];
+  G01 [label="G01 模型实例"];
+  G02 [label="G02 单次生成"];
+  G03 [label="G03 采样与生成"];
+  G04 [label="G04 内存预算"];
+  G05 [label="G05 分页 KV"];
+  G06 [label="G06 前缀复用"];
+  G07 [label="G07 KV 分层", fillcolor="#f3eddf", color="#b5a67d"];
+  G08 [label="G08 约束解码", fillcolor="#f3eddf", color="#b5a67d"];
+  G09 [label="G09 投机解码", fillcolor="#f3eddf", color="#b5a67d"];
+  G01 -> G02;
+  G02 -> G03;
+  G02 -> G04;
+  G04 -> G05;
+  G05 -> G06;
+  G05 -> G07;
+  G06 -> G07 [style=dashed, color="#738578"];
+  G03 -> G08;
+  G03 -> G09;
+  G04 -> G09;
+  G05 -> G09 [style=dashed, color="#738578"];
+}

@@ -1,0 +1,21 @@
+digraph knowledge {
+  graph [rankdir=TB, bgcolor="#f5f6ef", pad="0.18", nodesep="0.24", ranksep="0.42", splines=polyline, outputorder=edgesfirst];
+  node [shape=box, style="rounded,filled", color="#82a18e", fillcolor="#e0ebe3", fontcolor="#173d35", penwidth=1.3, fontname="Noto Sans CJK SC", fontsize=15, margin="0.13,0.10"];
+  edge [color="#396b55", penwidth=1.4, arrowsize=.65];
+  D01 [label="D01 Lowering"];
+  D02 [label="D02 指令选择"];
+  D03 [label="D03 寄存器分配"];
+  D04 [label="D04 可执行产物"];
+  D05 [label="D05 矩阵乘法内核"];
+  D06 [label="D06 融合与归约"];
+  D07 [label="D07 Attention 内核", fillcolor="#f3eddf", color="#b5a67d"];
+  D08 [label="D08 低精度内核", fillcolor="#f3eddf", color="#b5a67d"];
+  D01 -> D02;
+  D02 -> D03;
+  D03 -> D04;
+  D01 -> D05;
+  D05 -> D06;
+  D06 -> D07;
+  D05 -> D08;
+  D05 -> D04 [style=dashed, color="#738578"];
+}

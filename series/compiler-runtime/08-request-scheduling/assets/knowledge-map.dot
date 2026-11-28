@@ -1,0 +1,11 @@
+digraph knowledge {
+  graph [rankdir=TB, bgcolor="#f5f6ef", pad="0.18", nodesep="0.24", ranksep="0.42", splines=polyline, outputorder=edgesfirst];
+  node [shape=box, style="rounded,filled", color="#82a18e", fillcolor="#e0ebe3", fontcolor="#173d35", penwidth=1.3, fontname="Noto Sans CJK SC", fontsize=15, margin="0.13,0.10"];
+  edge [color="#396b55", penwidth=1.4, arrowsize=.65];
+  H01 [label="H01 连续批处理"];
+  H02 [label="H02 分块 Prefill"];
+  H03 [label="H03 资源准入与调度"];
+  H01 -> H02;
+  H01 -> H03;
+  H02 -> H03 [style=dashed, color="#738578"];
+}

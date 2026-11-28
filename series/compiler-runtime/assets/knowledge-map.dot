@@ -1,0 +1,34 @@
+digraph knowledge {
+  graph [rankdir=TB, bgcolor="#f5f6ef", pad="0.18", nodesep="0.24", ranksep="0.42", splines=polyline, outputorder=edgesfirst];
+  node [shape=box, style="rounded,filled", color="#82a18e", fillcolor="#e0ebe3", fontcolor="#173d35", penwidth=1.3, fontname="Noto Sans CJK SC", fontsize=15, margin="0.13,0.10"];
+  edge [color="#396b55", penwidth=1.4, arrowsize=.65];
+  A [label="A 软件执行共同基础\n5 篇"];
+  B [label="B 编译前端与程序优化\n6 篇"];
+  C [label="C 资源映射与执行规划\n5 篇"];
+  D [label="D 算子实现与代码生成\n8 篇"];
+  E [label="E 设备驱动与底层资源管理\n4 篇"];
+  F [label="F 通用执行运行时\n5 篇"];
+  G [label="G 模型执行与生成控制\n9 篇"];
+  H [label="H 请求调度与批处理\n3 篇"];
+  I [label="I 分布式执行与通信编排\n5 篇"];
+  J [label="J 推理服务系统\n3 篇"];
+  K [label="K 性能分析、建模与验证\n贯穿所有路线 · 6 篇", fillcolor="#f3eddf", color="#b5a67d"];
+  A -> B;
+  A -> E;
+  B -> C;
+  B -> D;
+  C -> D [style=dashed, color="#738578"];
+  E -> F;
+  D -> F [style=dashed, color="#738578"];
+  F -> G;
+  G -> H;
+  G -> I;
+  C -> I [style=dashed, color="#738578"];
+  H -> I [style=dashed, color="#738578"];
+  H -> J;
+  I -> J [style=dashed, color="#738578"];
+  {rank=same; B; E;}
+  {rank=same; C; D; F;}
+  {rank=same; H; I;}
+  {rank=sink; K;}
+}

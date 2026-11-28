@@ -147,6 +147,8 @@ mkdocs build
 
 `website/tests/fixtures/inference-legacy.json` 记录重组前 18 个页面及 277 个实际 DOM 锚点；正文中的 `inference-legacy-anchors` 将旧片段定位到相关说明。`test_inference_refinement.py` 检查旧 URL、锚点、全文链接、导航、搜索和唯一发布位置。`series/inference-runtime/examples/verify_examples.py` 另外运行 9 项公式与教学事件模型检查；这些不属于 GPU 性能验收。Python 示例通过 GitHub 源码链接提供，不作为网站正文发布。
 
+编译器与运行时系统新版在 `series/compiler-runtime/` 独立建设，计划见 `docs/compiler-runtime-plan.md`。重构期间，`prepare.py` 在暂存旧推理运行时的同时暂存新版目录，`hooks.py` 在旧系列首页和导航中提供新版入口，不改变八个主系列的登记及现有 URL。`test_compiler_runtime_guides.py` 核对文章基线、旧文迁移清单及新导读的链接、图解、导航和搜索。新版稳定并确认退役方案后，再统一切换主系列入口及链接兼容策略。
+
 芯片架构实例的系列首页按芯片类别列出产品。每组的编号列表同时维护侧栏顺序和短标题，构建检查全部文章是否各出现一次。产品目录的 `README.md` 在组内按文章显示，沿用该目录的公开地址。面包屑中的类别链接指向系列首页的对应小节。测试用 `website/tests/fixtures/chip-architecture-legacy.json` 核对已发布的页面和锚点。
 
 构建完成后，可以运行 `python -m unittest discover -s website/tests`，检查各页面的当前导航项和面包屑链接。
