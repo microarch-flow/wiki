@@ -30,7 +30,7 @@ C01–C04 分别给出计算分工、数据驻留、含搬运的时间表和缓�
 | C02 | [同一组数据怎样安排布局和驻留，才能减少搬运？](c02-layout-and-dataflow-planning.md) | Layout 选择、数据复用、Dataflow 选择、存储层次、布局转换代价。 | C01 | 已发布 |
 | C03 | [计算与数据搬运怎样安排在同一张时间表上？](c03-static-execution-planning.md) | Task DAG、静态调度、资源占用、DMA 编排、通信规划、计算搬运重叠。 | A05、C02 | 已发布 |
 | C04 | [已经使用过的缓冲空间，什么时候可以交给下一项任务？](c04-static-buffer-allocation.md) | 静态 Buffer 生命周期、分配、复用、干涉关系、容量及别名约束。 | C03、B04；按需 B05 | 已发布 |
-| C05 | [许多方案都能正确执行，怎样找到更好的一个？](c05-cost-model-and-search.md) | 合法性与优化目标、代价模型、设计空间、搜索、Auto-tuning、Pareto、Shape 专门化。 | C01–C04 的相关知识；按需 K03 | 初稿完成，待发布核验 |
+| C05 | [许多方案都能正确执行，怎样找到更好的一个？](c05-cost-model-and-search.md) | 合法性与优化目标、代价模型、设计空间、搜索、Auto-tuning、Pareto、Shape 专门化。 | C01–C04 的相关知识；按需 K03 | 已发布 |
 
 ## 从哪里来，接下来往哪读
 
