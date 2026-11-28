@@ -162,7 +162,7 @@ B03 可以在 A02/A03 后独立阅读。这里主讲变换的语义和合法性�
 
 | ID | 暂定标题 | 核心范围 | 主要前置 | 计划文件名 | 状态 |
 | --- | --- | --- | --- | --- | --- | --- |
-| B01 | 一段源代码怎样变成编译器能够处理的表示？ | Token、词法与语法分析、AST、符号表、作用域、类型检查、初始 IR。 | A01、A02 | `b01-compiler-frontend.md` | 初稿完成，待发布核验 |
+| B01 | 一段源代码怎样变成编译器能够处理的表示？ | Token、词法与语法分析、AST、符号表、作用域、类型检查、初始 IR。 | A01、A02 | `b01-compiler-frontend.md` | 已发布 |
 | B02 | 遇到分支和循环，编译器怎样表示不同执行路径上的值？ | CFG、基本块、SSA、Phi、Block Argument、支配关系、Use-Def。 | B01；已有 IR 认知可直接进入 | `b02-control-flow-and-ssa.md` | 待写 |
 | B03 | AI 框架运行过一次模型，为什么编译器仍可能不知道完整的计算过程？ | Tracing、Export、模型导入、动态形状、控制流捕获、Guard、Graph Break。 | A02、A03；按需 B02 | `b03-graph-capture.md` | 待写 |
 | B04 | 两项运算究竟能不能交换执行顺序？ | 数据依赖、内存读写、Alias、副作用、循环依赖与顺序合法性。 | A02；按需 B02 | `b04-dependency-and-alias-analysis.md` | 待写 |
@@ -411,3 +411,5 @@ K 横跨所有路线。K01/K02 可早期开展，K03–K05 按被分析的机制
 - 2026-11-28 · A04 已发布并核验。正文提交 `ccc96d1`，[GitHub Pages 部署](https://github.com/microarch-flow/wiki/actions/runs/46110429038) 成功；[公开正文](https://microarch-flow.github.io/wiki/series/compiler-runtime/01-foundations/a04-execution-contract/) 及 A03 后继链接、专题入口、图解、导航、面包屑与搜索收录均已核验。本地整站 162 项测试全部通过，CUDA 内核的索引与算术经主机侧复算（非真实 GPU 执行）。A05 仍待编写。
 
 - 2026-11-28 · B 专题依赖复核与 B01 初稿：保留六篇划分。B01 从 A01 的整数表达式推导出 A02 的运算和值引用，B02 接续分支和循环。B03 可从 A02/A03 独立进入，B04 的读写和别名分析与 B02 汇入 B05，B06 汇总变换条件。B01 改用声明了 `int32` 参数的 Go 函数，用 20 与 14 核对两种分组。
+
+- 2026-11-28 · B01 已发布并核验。正文提交 `2214aa9`，[GitHub Pages 部署](https://github.com/microarch-flow/wiki/actions/runs/46111023069)成功。[公开正文](https://microarch-flow.github.io/wiki/series/compiler-runtime/02-frontend-and-optimization/b01-compiler-frontend/)、B 导读入口、表达式树、侧栏、面包屑、站内锚点及搜索索引均已核验。Go 1.19.8 复核了分组、同名声明与错误示例，本地整站 163 项测试通过。
