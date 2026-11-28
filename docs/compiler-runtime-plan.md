@@ -205,7 +205,7 @@ D02–D04 与 D05–D08 是两条分支。内核工程师不必先学完整寄�
 | D02 | 一个 IR 操作怎样变成目标机器的指令？ | 类型与指令合法化、指令选择、Machine IR、目标调用约定。 | D01 中低层 IR、A04 | `d02-instruction-selection.md` | 已发布 |
 | D03 | 临时值比硬件寄存器多，编译器怎样处理？ | 活跃区间、寄存器分配、Spill/Reload、机器指令调度与相互约束。 | D02、B05 | `d03-register-allocation-and-scheduling.md` | 已发布 |
 | D04 | 生成的代码怎样成为可加载、可调用的程序？ | 汇编、目标文件、符号、重定位、静态与动态链接、Kernel 元数据及产物兼容。 | D02、D03 或已有目标代码 | `d04-executable-artifacts.md` | 已发布 |
-| D05 | 分块方案确定后，怎样生成可执行的矩阵乘法内核？ | 循环代码生成、SIMD/SIMT/NPU 实现、边界处理、地址计算、Kernel 库与生成。 | D01、C01、C02、A04 | `d05-matrix-multiplication-kernels.md` | 初稿完成，待发布核验 |
+| D05 | 分块方案确定后，怎样生成可执行的矩阵乘法内核？ | 循环代码生成、SIMD/SIMT/NPU 实现、边界处理、地址计算、Kernel 库与生成。 | D01、C01、C02、A04 | `d05-matrix-multiplication-kernels.md` | 已发布 |
 | D06 | 两个算子已经决定融合，怎样真正减少中间数据搬运？ | 融合循环、Epilogue、归约、Softmax、同步与中间状态保留。 | D05；B06、C05 的相关知识 | `d06-fused-kernels.md` | 待写 |
 | D07 | Attention 为什么可以不将完整的分数矩阵写入显存？ | 分块 Attention、在线 Softmax、因果掩码与 IO 复杂度、Prefill/Decode 内核差异、split-KV、分页 KV 访问。 | D06、Attention 基础 | `d07-attention-kernels.md` | 待写（深化） |
 | D08 | 低精度数据怎样变成设备可以直接处理的输入？ | 权重/激活/KV 的低精度执行路径、Q/DQ、Packing、Scale 应用、融合反量化、混合精度累加与输出转换。 | D05、数值格式及量化基础 | `d08-low-precision-kernels.md` | 待写（深化） |
@@ -493,3 +493,5 @@ K 横跨所有路线。K01/K02 可早期开展，K03–K05 按被分析的机制
 - 2026-11-28 · F04 已发布并核验。正文提交 `49cff6f`，[GitHub Pages 部署](https://github.com/microarch-flow/wiki/actions/runs/46135959105) 成功；[公开正文](https://microarch-flow.github.io/wiki/series/compiler-runtime/06-execution-runtime/f04-execution-graphs-and-replay/)、F03 后继及 E04 衔接链接、专题导读、两张图解、导航、面包屑与搜索收录均已核验。基于 E04/D04 的整站 186 项测试全部通过；复算 14/12 拍日程、100 核的 300 μs 累计提交/301、503 μs 完成时刻、图准备成本 P=18 拍的摊销和两轮向量结果（教学模型，非 GPU 实测）；两图 360 px 渲染检查通过。保留并行 D05，F05 待编写，旧推理运行时不变。
 
 - 2026-11-28 · G 专题认知依赖与迁移复核：保留九篇及两条路线。F01–F03 已建立通用模块/入口、依赖与可见性、动态 Buffer 生命周期；G01 不依赖 D05–D08、F04/F05 的深化知识。旧版模型加载、请求路径的身份及状态归属归 G01；G02–G03 追踪请求 A 的已生成和已计算位置，普通无前缀复用、无投机的四 Token 生成需一次完整 Prefill 与三次 Decode（结束时历史状态覆盖 11 个位置）；G04–G07 保留逐层预算、逻辑块与共享/迁移、计数边界；G08/G09 保留约束状态及候选状态提交/回滚。算法与模型已有 Attention、GQA、SSM 和自回归基础，但尚无独立 MLA 和投机解码正文，G04/G09 补足其所需的最小前置认知及原始来源，不改其他系列。H01/H02 以 G02/G03 为基础，H03 另需 G04/G05；I、J 继承模型与请求实例身份。G01 完成初稿，沿 M/W→请求 A（8 输入、4 输出上限、已生成及已计算均为 0），保留版本/适配器相容、后端交接、预热范围及启动峰值；核查 Safetensors、ONNX Runtime、TensorRT、vLLM v0.10.2 源码、Diffusers v0.34.0、Mamba 论文。复算 BF16 矩阵 32 MiB 及两份并存的 64 MiB 教学峰值，两张图 500/360 px 渲染检查通过；合并 F04/D05 正文后的本地网站构建和 188 项整站测试通过。旧推理运行时不变。
+
+- 2026-11-28 · D05 已发布并核验，AI 内核实现路线已开始。正文提交 `392d2af`，[GitHub Pages 部署](https://github.com/microarch-flow/wiki/actions/runs/46136068312)成功；[公开正文](https://microarch-flow.github.io/wiki/series/compiler-runtime/04-code-generation/d05-matrix-multiplication-kernels/)、D01/D04 衔接、专题导读、三张图解、导航、面包屑及搜索索引均已核验。合并 F04 后本地整站 187 项测试通过；1440 px/390 px 浏览器检查无横向溢出。实际 C11 编译执行及 SIMD 模型各通过 1,002 组，CUDA 线程模型通过 3,018 次（含末块无效线程），实际 CBLAS SGEMM 验证与 cuBLAS 参数等价关系通过 1,006 组，NPU 教学模型两种输出布局合计 606 次通过。GPU/NPU 结果为软件模型验证，非真机测量。旧版推理运行时未修改。
