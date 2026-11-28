@@ -31,7 +31,7 @@ B03 可以在 A02/A03 后独立阅读。这里主讲变换的语义和合法性�
 | B03 | [AI 框架运行过一次模型，为什么编译器仍可能不知道完整的计算过程？](b03-graph-capture.md) | Tracing、Export、模型导入、动态形状、控制流捕获、Guard、Graph Break。 | A02、A03；按需 B02 | 已发布 |
 | B04 | [两项运算究竟能不能交换执行顺序？](b04-dependency-and-alias-analysis.md) | 数据依赖、内存读写、Alias、副作用、循环依赖与顺序合法性。 | A02；按需 B02 | 已发布 |
 | B05 | [程序中哪些计算可以提前完成、复用或直接删除？](b05-dataflow-analysis-and-optimization.md) | 数据流分析、活跃性分析、常量传播与折叠、CSE、DCE、控制流化简。 | B02、B04 | 已发布 |
-| B06 | [看起来等价的两种计算，编译器为什么不能任意替换？](b06-legal-transformation.md) | Shape 推导、符号约束、图重写、融合与分解合法性、循环变换、数值语义、Pass Pipeline。 | B04、B05；按需 B03 | 初稿完成，待发布核验 |
+| B06 | [看起来等价的两种计算，编译器为什么不能任意替换？](b06-legal-transformation.md) | Shape 推导、符号约束、图重写、融合与分解合法性、循环变换、数值语义、Pass Pipeline。 | B04、B05；按需 B03 | 已发布 |
 
 ## 从哪里来，接下来往哪读
 
