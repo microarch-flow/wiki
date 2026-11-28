@@ -149,7 +149,7 @@
 | A01 | 同一段计算，软件究竟要求计算机做什么？ | 程序语义、值与变量、函数、状态、副作用；区分计算结果和可观察行为。 | 基本编程 | `a01-program-semantics.md` | 已发布 |
 | A02 | 程序中的计算、分支和先后关系怎样被明确表达？ | 数据流、控制流、计算图、IR、依赖关系的表达；认识不同抽象层次。 | A01 | `a02-program-representation.md` | 已发布 |
 | A03 | 同一个张量，为什么可以在内存中有不同的排列？ | Shape、Dtype、Stride、Layout、索引到地址、转置视图、动态维度。 | A01 | `a03-tensor-representation.md` | 已发布 |
-| A04 | 软件怎样把一项计算交给硬件？ | ISA、ABI、编程模型、指令、Kernel、任务、资源抽象与可执行产物的接口。 | A01、A02；张量场景参考 A03 | `a04-execution-contract.md` | 初稿完成，待发布核验 |
+| A04 | 软件怎样把一项计算交给硬件？ | ISA、ABI、编程模型、指令、Kernel、任务、资源抽象与可执行产物的接口。 | A01、A02；张量场景参考 A03 | `a04-execution-contract.md` | 已发布 |
 | A05 | 一项任务被提交之后，什么时候结果才可以使用？ | 接纳、就绪、执行、完成、可见性、同步、资源所有权与生命周期。 | A04 | `a05-task-and-resource-lifecycle.md` | 待写 |
 
 ### B. 编译前端与程序优化（6 篇）
@@ -406,4 +406,6 @@ K 横跨所有路线。K01/K02 可早期开展，K03–K05 按被分析的机制
 
 - 2026-11-28 · A03 已发布并核验。正文提交 `d16eb31`，[GitHub Pages 部署](https://github.com/microarch-flow/wiki/actions/runs/46108346052) 成功；[公开正文](https://microarch-flow.github.io/wiki/series/compiler-runtime/01-foundations/a03-tensor-representation/) 及 A02 后继链接、专题入口、图解、导航、面包屑和搜索收录均已核验。本地整站 161 项测试全部通过；NumPy 算例已实测复算。A04、A05 仍待编写。
 
-- 2026-11-28 · A04 延续 A03 第 0 行向量加法，以 RV32I 与 RISC-V ABI、CUDA 内核及调用为例，明确编程模型、资源接口、产物和具体任务的区别；以主机与设备分离的教学系统承接搬入、计算、写回。保留驱动提交细节和任务完成语义的后续归属。A04 初稿完成，待公开页面核验。
+- 2026-11-28 · A04 延续 A03 第 0 行向量加法，以 RV32I 与 RISC-V ABI、CUDA 内核及调用为例，明确编程模型、资源接口、产物和具体任务的区别；以主机与设备分离的教学系统承接搬入、计算、写回。保留驱动提交细节和任务完成语义的后续归属。A04 初稿完成。
+
+- 2026-11-28 · A04 已发布并核验。正文提交 `ccc96d1`，[GitHub Pages 部署](https://github.com/microarch-flow/wiki/actions/runs/46110429038) 成功；[公开正文](https://microarch-flow.github.io/wiki/series/compiler-runtime/01-foundations/a04-execution-contract/) 及 A03 后继链接、专题入口、图解、导航、面包屑与搜索收录均已核验。本地整站 162 项测试全部通过，CUDA 内核的索引与算术经主机侧复算（非真实 GPU 执行）。A05 仍待编写。
