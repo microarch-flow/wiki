@@ -627,6 +627,15 @@ class CompilerRuntimeGuideTests(unittest.TestCase):
         previous = SITE / PREFIX / route / "h01-continuous-batching/index.html"
         self.assertIn(f"../{slug}/", GuideContent(previous.read_text()).links)
 
+    def test_h_request_scheduling_formulas_are_renderable(self):
+        route = SITE / PREFIX / "08-request-scheduling"
+        for slug, count in (("h01-continuous-batching", 2), ("h02-chunked-prefill", 4)):
+            with self.subTest(slug=slug):
+                content = (route / slug / "index.html").read_text()
+                body = re.search(r"<article\b[^>]*>(.*?)</article>", content, re.S)[1]
+                self.assertEqual(len(re.findall(r'class="arithmatex(?: |")', body)), count)
+                self.assertNotIn("$$", body)
+
     def _check_foundation_article(self, slug, title, diagram_names):
         self._check_article("01-foundations", "软件执行共同基础", slug, title, diagram_names)
 
