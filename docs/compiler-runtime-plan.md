@@ -166,7 +166,7 @@ B03 可以在 A02/A03 后独立阅读。这里主讲变换的语义和合法性�
 | B02 | 遇到分支和循环，编译器怎样表示不同执行路径上的值？ | CFG、基本块、SSA、Phi、Block Argument、支配关系、Use-Def。 | B01；已有 IR 认知可直接进入 | `b02-control-flow-and-ssa.md` | 已发布 |
 | B03 | AI 框架运行过一次模型，为什么编译器仍可能不知道完整的计算过程？ | Tracing、Export、模型导入、动态形状、控制流捕获、Guard、Graph Break。 | A02、A03；按需 B02 | `b03-graph-capture.md` | 已发布 |
 | B04 | 两项运算究竟能不能交换执行顺序？ | 数据依赖、内存读写、Alias、副作用、循环依赖与顺序合法性。 | A02；按需 B02 | `b04-dependency-and-alias-analysis.md` | 已发布 |
-| B05 | 程序中哪些计算可以提前完成、复用或直接删除？ | 数据流分析、活跃性分析、常量传播与折叠、CSE、DCE、控制流化简。 | B02、B04 | `b05-dataflow-analysis-and-optimization.md` | 初稿完成，待发布核验 |
+| B05 | 程序中哪些计算可以提前完成、复用或直接删除？ | 数据流分析、活跃性分析、常量传播与折叠、CSE、DCE、控制流化简。 | B02、B04 | `b05-dataflow-analysis-and-optimization.md` | 已发布 |
 | B06 | 看起来等价的两种计算，编译器为什么不能任意替换？ | Shape 推导、符号约束、图重写、融合与分解合法性、循环变换、数值语义、Pass Pipeline。 | B04、B05；按需 B03 | `b06-legal-transformation.md` | 待写 |
 
 ### C. 资源映射与执行规划（5 篇）
@@ -435,3 +435,5 @@ K 横跨所有路线。K01/K02 可早期开展，K03–K05 按被分析的机制
 - 2026-11-28 · C02 已发布并核验。正文提交 `ace9873`，[GitHub Pages 部署](https://github.com/microarch-flow/wiki/actions/runs/46118015069)成功。[公开正文](https://microarch-flow.github.io/wiki/series/compiler-runtime/03-mapping-and-planning/c02-layout-and-dataflow-planning/)、C01 后继、专题导读、两张图解、导航、面包屑和搜索收录均已核对。本地整站 169 项测试通过，复算确认五种映射选择的源端读数，以及重排权重在第二次调用抵平、第三次节省外层流量的条件。
 
 - 2026-11-28 · C03 已发布并核验。正文提交 `c7ce950`，[GitHub Pages 部署](https://github.com/microarch-flow/wiki/actions/runs/46120041225)成功。[公开正文](https://microarch-flow.github.io/wiki/series/compiler-runtime/03-mapping-and-planning/c03-static-execution-planning/)、C02 后继、专题导读、两张图解、导航、面包屑和搜索收录均已核对。本地整站 170 项测试通过，穷举合法资源次序并复算矩阵结果，核对全串行 16 拍、单槽 14 拍、双槽独立端口 12 拍与双槽共用独占端口 14 拍。
+
+- 2026-11-28 · B05 已发布并核验。正文提交 `fefa4b0`，[GitHub Pages 部署](https://github.com/microarch-flow/wiki/actions/runs/46120124316)成功。[公开正文](https://microarch-flow.github.io/wiki/series/compiler-runtime/02-frontend-and-optimization/b05-dataflow-analysis-and-optimization/)、B04 后继链接、专题导读、两张图解、导航、面包屑及搜索索引均已核验。Go 1.19.8 与 LLVM 19.1.7 验证了 score 化简前后的 14 次调用，另用 Go 复算了倍率改变和两次读取的反例。整站构建及 171 项测试通过。
