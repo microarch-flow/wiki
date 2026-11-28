@@ -1,0 +1,63 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="400" height="534" viewBox="0 0 400 534" role="img" aria-labelledby="title desc">
+  <title id="title">一次带设备实测的自动调优怎样选择下一批方案？</title>
+  <desc id="desc">固定目标设备、输入形状和可行条件后，提出一批候选方案。淘汰不符合语义或资源约束的候选。对其余方案用代价模型估计，选择一部分，生成并编译代码，在目标设备上运行和测量。记录候选与实测结果，也可更新模型。若预算尚有剩余，依据记录提出下一批方案。预算用尽时，在已测的可行方案中交付当前最佳项或 Pareto 前沿。这是一个使用实测反馈的调优示例。</desc>
+  <style>
+    text { font-family: "Noto Sans CJK SC", "PingFang SC", "Microsoft YaHei", sans-serif; fill: #173d35 }
+    .heading { font-size: 20px; font-weight: 700 }
+    .main, .detail, .edge-label { text-anchor: middle }
+    .main { font-size: 18px; font-weight: 650 }
+    .detail, .edge-label { font-size: 16px; fill: #395a4d }
+    .step { fill: #d9e9dc; stroke: #729582; stroke-width: 1.25 }
+    .result { fill: #f2e4c9; stroke: #aa9163; stroke-width: 1.25 }
+    .given { fill: #fafaf4; stroke: #a3b3a4; stroke-width: 1.25 }
+    .edge { fill: none; stroke: #416354; stroke-width: 1.7; marker-end: url(#arrow) }
+  </style>
+  <defs>
+    <marker id="arrow" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="5" markerHeight="5" orient="auto">
+      <path d="M0 0 8 4 0 8Z" fill="#416354"/>
+    </marker>
+  </defs>
+  <rect x="1" y="1" width="398" height="532" rx="14" fill="#f5f6ef" stroke="#c4d0c4"/>
+  <text x="16" y="30" class="heading">带设备实测的自动调优示例</text>
+  <g aria-label="搜索条件和候选方案">
+    <rect x="15" y="44" width="241" height="39" rx="7" class="given"/>
+    <text x="135.5" y="69" class="detail">固定设备、输入形状与可行条件</text>
+    <path d="M135.5 84v17" class="edge"/>
+    <rect x="15" y="104" width="241" height="38" rx="7" class="step"/>
+    <text x="135.5" y="129" class="main">提出一批候选方案</text>
+  </g>
+  <g aria-label="检查候选、淘汰不可行方案">
+    <path d="M135.5 143v17" class="edge"/>
+    <rect x="15" y="163" width="241" height="40" rx="7" class="step"/>
+    <text x="135.5" y="189" class="main">检查语义和资源约束</text>
+    <path d="M257 183h26" class="edge"/>
+    <rect x="286" y="158" width="88" height="50" rx="7" class="given"/>
+    <text x="330" y="179" class="detail">未通过</text>
+    <text x="330" y="199" class="detail">淘汰该项</text>
+    <path d="M135.5 204v25" class="edge"/>
+    <text x="166" y="222" class="edge-label">通过</text>
+  </g>
+  <g aria-label="模型估计和目标设备测量">
+    <rect x="15" y="232" width="241" height="51" rx="7" class="step"/>
+    <text x="135.5" y="254" class="main">用代价模型估计性能</text>
+    <text x="135.5" y="275" class="detail">挑选一部分候选实测</text>
+    <path d="M135.5 284v16" class="edge"/>
+    <rect x="15" y="303" width="241" height="51" rx="7" class="step"/>
+    <text x="135.5" y="325" class="main">生成并编译候选代码</text>
+    <text x="135.5" y="346" class="detail">在目标设备上运行并测量</text>
+    <path d="M135.5 355v16" class="edge"/>
+    <rect x="15" y="374" width="241" height="51" rx="7" class="step"/>
+    <text x="135.5" y="396" class="main">记录候选与测量结果</text>
+    <text x="135.5" y="417" class="detail">也可据此更新代价模型</text>
+  </g>
+  <g aria-label="根据实测记录继续搜索，或输出已测结果">
+    <path d="M257 399.5h130v-276.5H259" class="edge"/>
+    <text x="322" y="388" class="edge-label">尚有预算</text>
+    <text x="322" y="113" class="edge-label">依据实测记录</text>
+    <path d="M135.5 426v37" class="edge"/>
+    <text x="184" y="451" class="edge-label">预算用尽</text>
+    <rect x="15" y="466" width="241" height="55" rx="7" class="result"/>
+    <text x="135.5" y="489" class="main">交付已测可行方案中的</text>
+    <text x="135.5" y="512" class="main">最佳项或 Pareto 前沿</text>
+  </g>
+</svg>

@@ -280,6 +280,19 @@ class CompilerRuntimeGuideTests(unittest.TestCase):
         previous = SITE / PREFIX / route / "c03-static-execution-planning/index.html"
         self.assertIn(f"../{slug}/", GuideContent(previous.read_text()).links)
 
+    def test_c05_article_navigation_search_and_diagrams(self):
+        route = "03-mapping-and-planning"
+        slug = "c05-cost-model-and-search"
+        self._check_article(
+            route,
+            "资源映射与执行规划",
+            slug,
+            "许多方案都能正确执行，怎样找到更好的一个？",
+            ("c05-pareto.svg", "c05-search-loop.svg"),
+        )
+        previous = SITE / PREFIX / route / "c04-static-buffer-allocation/index.html"
+        self.assertIn(f"../{slug}/", GuideContent(previous.read_text()).links)
+
     def test_d01_article_navigation_search_and_diagrams(self):
         self._check_article(
             "04-code-generation",

@@ -1,0 +1,58 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="420" height="390" viewBox="0 0 420 390" role="img" aria-labelledby="title desc">
+  <title id="title">用共享 SRAM 占用和完成时间比较五个计划</title>
+  <desc id="desc">固定硬件和本例候选集。横轴是计划占用的共享 SRAM 字节数，向左更小。纵轴是从开始搬入到输出可读的拍数，向下更短。菱形 A 为 8 B、16 拍，菱形 D 为 12 B、12 拍，这两个合法候选均非支配。圆形 B 为 12 B、14 拍，圆形 C 为 16 B、12 拍，两者都被 D 支配。叉号 E 的账面值为 8 B、12 拍，存在容量冲突，排除在性能比较之外。</desc>
+  <defs>
+    <style>
+      text { font-family: "Noto Sans CJK SC", "PingFang SC", "Microsoft YaHei", sans-serif; fill: #173d35 }
+      .heading { font-size: 21px; font-weight: 700 }
+      .note, .axis-label { font-size: 16px; fill: #355745 }
+      .tick { font-size: 15px; fill: #416354 }
+      .axis { fill: none; stroke: #6e8378; stroke-width: 1.5 }
+      .grid { fill: none; stroke: #cbd6cb; stroke-width: 1; stroke-dasharray: 3 4 }
+      .front { fill: #3b745e; stroke: #254f40; stroke-width: 1.5 }
+      .other { fill: #f5f6ef; stroke: #536d79; stroke-width: 2.4 }
+      .illegal { fill: none; stroke: #9a442f; stroke-width: 2.7; stroke-linecap: round }
+      .id { font-size: 18px; font-weight: 700 }
+    </style>
+  </defs>
+  <rect x="1" y="1" width="418" height="388" rx="14" fill="#f5f6ef" stroke="#c4d0c4"/>
+  <text x="18" y="31" class="heading">固定硬件上的五个候选方案</text>
+  <text x="18" y="56" class="note">靠左占用更少，靠下完成更早。</text>
+  <text x="18" y="86" class="axis-label">从开始搬入到输出可读（拍）</text>
+  <g aria-label="横轴 8、12、16 字节，纵轴 12、14、16 拍">
+    <path d="M61 113H390 M61 173H390 M61 233H390 M90 102V251 M218 102V251 M346 102V251" class="grid"/>
+    <path d="M60 99V252H392" class="axis"/>
+    <path d="M55 113H60 M55 173H60 M55 233H60 M90 252V257 M218 252V257 M346 252V257" class="axis"/>
+    <g class="tick" text-anchor="end">
+      <text x="50" y="118">16</text><text x="50" y="178">14</text><text x="50" y="238">12</text>
+    </g>
+    <g class="tick" text-anchor="middle">
+      <text x="90" y="277">8</text><text x="218" y="277">12</text><text x="346" y="277">16</text>
+    </g>
+    <text x="218" y="301" text-anchor="middle" class="axis-label">计划占用的共享 SRAM（B）</text>
+  </g>
+  <g transform="translate(90 113)" aria-label="A，8 B，16 拍">
+    <path d="M0 -8 8 0 0 8 -8 0Z" class="front"/><text x="13" y="6" class="id">A</text>
+  </g>
+  <g transform="translate(218 173)" aria-label="B，12 B，14 拍">
+    <circle r="6.5" class="other"/><text x="13" y="6" class="id">B</text>
+  </g>
+  <g transform="translate(346 233)" aria-label="C，16 B，12 拍">
+    <circle r="6.5" class="other"/><text x="13" y="6" class="id">C</text>
+  </g>
+  <g transform="translate(218 233)" aria-label="D，12 B，12 拍">
+    <path d="M0 -8 8 0 0 8 -8 0Z" class="front"/><text x="13" y="6" class="id">D</text>
+  </g>
+  <g transform="translate(90 233)" aria-label="E，8 B，12 拍，容量冲突">
+    <path d="M-6 -6 6 6 M-6 6 6 -6" class="illegal"/><text x="13" y="6" class="id">E</text>
+  </g>
+  <path d="M18 318H402" stroke="#c4d0c4"/>
+  <g aria-label="图例">
+    <path transform="translate(26 342)" d="M0 -7 7 0 0 7 -7 0Z" class="front"/>
+    <text x="41" y="348" class="note">A、D 非支配</text>
+    <circle cx="206" cy="342" r="6" class="other"/>
+    <text x="221" y="348" class="note">B、C 被 D 支配</text>
+    <path transform="translate(26 368)" d="M-5 -5 5 5 M-5 5 5 -5" class="illegal"/>
+    <text x="41" y="374" class="note">E 有容量冲突，不参与比较</text>
+  </g>
+</svg>
