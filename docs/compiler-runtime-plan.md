@@ -195,20 +195,28 @@ C02 延续 C01 的按行、按列分工，先统计共享 SRAM 为两单元提�
 
 执行方案确定之后，还需要把它变成目标设备能理解的指令、命令或内核。不同层次的 IR 使这种转换能够逐步完成。
 
-从一个小张量表达式降低到循环和显式访问。机器代码分支使用短标量程序与有限寄存器；AI 内核分支沿用 C 的矩阵分块，逐步引入归约、融合及低精度执行。
+从 A03 的 2×3 int32 张量加法开始，降低到循环、缓冲区和显式访问。机器代码分支回到 A01/B01 的标量表达式；AI 内核分支沿用 C 的矩阵分块，逐步引入归约、融合及低精度执行。
 
 D02–D04 与 D05–D08 是两条分支。内核工程师不必先学完整寄存器分配；已有产物也可直接进入 D04。D07、D08 为深化。
 
 | ID | 暂定标题 | 核心范围 | 主要前置 | 计划文件名 | 状态 |
 | --- | --- | --- | --- | --- | --- | --- |
-| D01 | 一句张量计算，怎样逐步变成循环和内存操作？ | 分层 Lowering、Tensor IR、Loop IR、Bufferization、显式读写与转换合法性。 | A01–A03、B 中必要分析 | `d01-lowering-and-bufferization.md` | 待写 |
+| D01 | 一句张量计算，怎样逐步变成循环和内存操作？ | 分层 Lowering、Tensor IR、Loop IR、Bufferization、显式读写与转换合法性。 | A01–A03、B04 的必要知识 | `d01-lowering-and-bufferization.md` | 初稿完成，待发布核验 |
 | D02 | 一个 IR 操作怎样变成目标机器的指令？ | 类型与指令合法化、指令选择、Machine IR、目标调用约定。 | D01 中低层 IR、A04 | `d02-instruction-selection.md` | 待写 |
 | D03 | 临时值比硬件寄存器多，编译器怎样处理？ | 活跃区间、寄存器分配、Spill/Reload、机器指令调度与相互约束。 | D02、B05 | `d03-register-allocation-and-scheduling.md` | 待写 |
 | D04 | 生成的代码怎样成为可加载、可调用的程序？ | 汇编、目标文件、符号、重定位、静态与动态链接、Kernel 元数据及产物兼容。 | D02、D03 或已有目标代码 | `d04-executable-artifacts.md` | 待写 |
 | D05 | 分块方案确定后，怎样生成可执行的矩阵乘法内核？ | 循环代码生成、SIMD/SIMT/NPU 实现、边界处理、地址计算、Kernel 库与生成。 | D01、C01、C02、A04 | `d05-matrix-multiplication-kernels.md` | 待写 |
 | D06 | 两个算子已经决定融合，怎样真正减少中间数据搬运？ | 融合循环、Epilogue、归约、Softmax、同步与中间状态保留。 | D05；B06、C05 的相关知识 | `d06-fused-kernels.md` | 待写 |
-| D07 | Attention 为什么可以不将完整的分数矩阵写入显存？ | 分块 Attention、在线 Softmax、Prefill/Decode 内核差异、split-KV、分页 KV 访问。 | D06、Attention 基础 | `d07-attention-kernels.md` | 待写（深化） |
-| D08 | 低精度数据怎样变成设备可以直接处理的输入？ | Q/DQ、Packing、Scale 应用、低精度 Kernel、融合反量化、累加与输出转换。 | D05、数值格式及量化基础 | `d08-low-precision-kernels.md` | 待写（深化） |
+| D07 | Attention 为什么可以不将完整的分数矩阵写入显存？ | 分块 Attention、在线 Softmax、因果掩码与 IO 复杂度、Prefill/Decode 内核差异、split-KV、分页 KV 访问。 | D06、Attention 基础 | `d07-attention-kernels.md` | 待写（深化） |
+| D08 | 低精度数据怎样变成设备可以直接处理的输入？ | 权重/激活/KV 的低精度执行路径、Q/DQ、Packing、Scale 应用、融合反量化、混合精度累加与输出转换。 | D05、数值格式及量化基础 | `d08-low-precision-kernels.md` | 待写（深化） |
+
+2026-11-28 复核 D 专题：保留八篇及两条分支。D01 使用 A03 的张量加法，先说明逻辑索引与计算域，再追踪 Bufferization 后的显式读写。利用 B04 的旧值读取反例区分逻辑张量值与实际存储，区分转换目标合法性与语义正确性。D02 接回 A01/B01 的短标量程序；D05 固定 C01–C03 已建立的矩阵分工、布局和搬运条件，不要求先读 D02–D04。
+
+旧版算子、Attention 和低精度正文的覆盖复核：
+
+- D05 保留 GEMM 的 M/K/N 与请求数、Token 行数的区别，以及 Kernel 库和布局约束；D06 保留逐元素 Epilogue、归一化/归约、残差与 RoPE、多个消费者、资源约束及实际中间结果驻留。
+- D07 保留矩形因果掩码、在线 Softmax 的局部状态及边界条件、IO 复杂度的适用前提、Prefill/Decode 与 split-KV 的归并，以及软件 KV 块与计算 Tile 的区别；块表访问和状态管理分别归 D07 与 G。
+- D08 保留权重、激活及 KV 三类数据的低精度执行，区分原生低精度和需要解码的路径、Packing/Scale/对齐及元数据、混合精度累加和输出转换。量化算法归算法与模型，KV 容量与生命周期归 G，质量及性能验证归 K。
 
 ### E. 设备驱动与底层资源管理（4 篇）
 

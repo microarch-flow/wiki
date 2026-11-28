@@ -1,0 +1,94 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="440" height="627" viewBox="0 0 440 627" role="img" aria-labelledby="title desc">
+  <title id="title">同一张量加法的三层表示</title>
+  <desc id="desc">本例 A、B、Y 都是 2×3 int32，结果 Y 的两行为 5、5、6 和 4、7、9。追踪下标 [1,0]：整组运算中该格结果为 4；展开循环后，i=1、j=0 时读取 3 和 1 相加；若各张量按行存储，基址分别为 1000、2000、3000，则这一格偏移 12 字节，显式读 1012、2012，计算后写 3012。</desc>
+  <defs>
+    <marker id="arrow" markerWidth="7" markerHeight="7" refX="6.3" refY="3.5" orient="auto" markerUnits="userSpaceOnUse">
+      <path d="M0 0 7 3.5 0 7Z" fill="#476957"/>
+    </marker>
+    <style>
+      text {font-family:"Noto Sans CJK SC","PingFang SC","Microsoft YaHei",sans-serif;fill:#173d35;font-size:19px}
+      .head {font-size:21px;font-weight:700}
+      .note {font-size:16px;fill:#416354}
+      .code {font-family:"DejaVu Sans Mono",Consolas,monospace;font-size:18px}
+      .code-sm {font-family:"DejaVu Sans Mono",Consolas,monospace;font-size:16px}
+      .cell {fill:#d9e9dc;stroke:#729582;stroke-width:1.3}
+      .target {fill:#f2e4c9;stroke:#aa9163;stroke-width:1.6}
+      .target-text {fill:#78591b;font-weight:700}
+      .panel {fill:#edf2e8;stroke:#cad8cb;stroke-width:1.2}
+      .node {fill:#e9eee4;stroke:#97ad9a;stroke-width:1.25}
+      .wire {fill:none;stroke:#476957;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;marker-end:url(#arrow)}
+      .warn {fill:#875b35}
+    </style>
+  </defs>
+  <rect x="1" y="1" width="438" height="625" rx="14" fill="#f5f6ef" stroke="#c4d0c4"/>
+  <rect x="13" y="13" width="414" height="153" rx="9" class="panel"/>
+  <text x="25" y="40" class="head">① 整组张量值</text>
+  <text x="25" y="64" class="note">Y = add(A, B)，形状 2 × 3，int32</text>
+  <text x="77" y="89" class="code" text-anchor="middle">A</text>
+  <rect x="29" y="97" width="30" height="31" rx="4" class="cell"/>
+  <text x="44" y="119" class="code" text-anchor="middle">2</text>
+  <rect x="62" y="97" width="30" height="31" rx="4" class="cell"/>
+  <text x="77" y="119" class="code" text-anchor="middle">1</text>
+  <rect x="95" y="97" width="30" height="31" rx="4" class="cell"/>
+  <text x="110" y="119" class="code" text-anchor="middle">4</text>
+  <rect x="29" y="131" width="30" height="31" rx="4" class="target"/>
+  <text x="44" y="153" class="code target-text" text-anchor="middle">3</text>
+  <rect x="62" y="131" width="30" height="31" rx="4" class="cell"/>
+  <text x="77" y="153" class="code" text-anchor="middle">5</text>
+  <rect x="95" y="131" width="30" height="31" rx="4" class="cell"/>
+  <text x="110" y="153" class="code" text-anchor="middle">6</text>
+  <text x="145" y="134" class="head" text-anchor="middle">+</text>
+  <text x="211" y="89" class="code" text-anchor="middle">B</text>
+  <rect x="163" y="97" width="30" height="31" rx="4" class="cell"/>
+  <text x="178" y="119" class="code" text-anchor="middle">3</text>
+  <rect x="196" y="97" width="30" height="31" rx="4" class="cell"/>
+  <text x="211" y="119" class="code" text-anchor="middle">4</text>
+  <rect x="229" y="97" width="30" height="31" rx="4" class="cell"/>
+  <text x="244" y="119" class="code" text-anchor="middle">2</text>
+  <rect x="163" y="131" width="30" height="31" rx="4" class="target"/>
+  <text x="178" y="153" class="code target-text" text-anchor="middle">1</text>
+  <rect x="196" y="131" width="30" height="31" rx="4" class="cell"/>
+  <text x="211" y="153" class="code" text-anchor="middle">2</text>
+  <rect x="229" y="131" width="30" height="31" rx="4" class="cell"/>
+  <text x="244" y="153" class="code" text-anchor="middle">3</text>
+  <text x="280" y="134" class="head" text-anchor="middle">=</text>
+  <text x="347" y="89" class="code" text-anchor="middle">Y</text>
+  <rect x="299" y="97" width="30" height="31" rx="4" class="cell"/>
+  <text x="314" y="119" class="code" text-anchor="middle">5</text>
+  <rect x="332" y="97" width="30" height="31" rx="4" class="cell"/>
+  <text x="347" y="119" class="code" text-anchor="middle">5</text>
+  <rect x="365" y="97" width="30" height="31" rx="4" class="cell"/>
+  <text x="380" y="119" class="code" text-anchor="middle">6</text>
+  <rect x="299" y="131" width="30" height="31" rx="4" class="target"/>
+  <text x="314" y="153" class="code target-text" text-anchor="middle">4</text>
+  <rect x="332" y="131" width="30" height="31" rx="4" class="cell"/>
+  <text x="347" y="153" class="code" text-anchor="middle">7</text>
+  <rect x="365" y="131" width="30" height="31" rx="4" class="cell"/>
+  <text x="380" y="153" class="code" text-anchor="middle">9</text>
+  <path d="M220 169V187" class="wire"/>
+  <rect x="13" y="190" width="414" height="156" rx="9" class="panel"/>
+  <text x="25" y="218" class="head">② 展开为逐元素循环</text>
+  <text x="25" y="247" class="code">for 0 ≤ i &lt; 2:</text>
+  <text x="45" y="270" class="code">for 0 ≤ j &lt; 3:</text>
+  <text x="65" y="293" class="code">Y[i,j] = A[i,j] + B[i,j]</text>
+  <rect x="25" y="307" width="390" height="28" rx="6" class="target"/>
+  <text x="220" y="327" class="code target-text" text-anchor="middle">i=1, j=0：3 + 1 → 4</text>
+  <path d="M220 349V367" class="wire"/>
+  <rect x="13" y="370" width="414" height="244" rx="9" class="panel"/>
+  <text x="25" y="397" class="head">③ 明确存储位置与读写</text>
+  <text x="25" y="422" class="note">按行存，Stride (3,1)，每元素 4 B</text>
+  <text x="25" y="445" class="note">本轮偏移 = (1 × 3 + 0) × 4 = 12 B</text>
+  <rect x="27" y="457" width="180" height="54" rx="7" class="node"/>
+  <rect x="233" y="457" width="180" height="54" rx="7" class="node"/>
+  <text x="117" y="479" class="code-sm" text-anchor="middle">load(1012) → 3</text>
+  <text x="117" y="499" class="note" text-anchor="middle">A 基址 = 1000</text>
+  <text x="323" y="479" class="code-sm" text-anchor="middle">load(2012) → 1</text>
+  <text x="323" y="499" class="note" text-anchor="middle">B 基址 = 2000</text>
+  <path d="M117 511V522H178V531" class="wire"/>
+  <path d="M323 511V522H262V531" class="wire"/>
+  <rect x="158" y="534" width="124" height="30" rx="6" class="target"/>
+  <text x="220" y="555" class="code target-text" text-anchor="middle">3 + 1 = 4</text>
+  <path d="M220 564V574" class="wire"/>
+  <rect x="44" y="576" width="352" height="30" rx="6" class="node"/>
+  <text x="220" y="597" class="code-sm" text-anchor="middle">store(3012, 4) · Y 基址 3000</text>
+</svg>

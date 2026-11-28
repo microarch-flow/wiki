@@ -1,0 +1,59 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="440" height="611" viewBox="0 0 440 611" role="img" aria-labelledby="title desc">
+  <title id="title">独立缓冲区与原地复用</title>
+  <desc id="desc">本图只追踪 A[1,0]=3 和 B[1,0]=1。方案一使用独立输出缓冲区，在 3012 写 4，旧输入仍在 1012 保留 3。方案二复用 A 的存储，在 1012 写入 4，仅当覆盖符合调用约定且无后续需要旧值的使用者或受影响的别名访问时才安全。如果消费者之后需要旧 A，从这一地址读取将得到 4 而不是 3。</desc>
+  <defs>
+    <marker id="arrow" markerWidth="7" markerHeight="7" refX="6.3" refY="3.5" orient="auto" markerUnits="userSpaceOnUse">
+      <path d="M0 0 7 3.5 0 7Z" fill="#476957"/>
+    </marker>
+    <style>
+      text {font-family:"Noto Sans CJK SC","PingFang SC","Microsoft YaHei",sans-serif;fill:#173d35;font-size:19px}
+      .head {font-size:21px;font-weight:700}
+      .note {font-size:16px;fill:#416354}
+      .code {font-family:"DejaVu Sans Mono",Consolas,monospace;font-size:18px}
+      .code-sm {font-family:"DejaVu Sans Mono",Consolas,monospace;font-size:16px}
+      .cell {fill:#d9e9dc;stroke:#729582;stroke-width:1.3}
+      .target {fill:#f2e4c9;stroke:#aa9163;stroke-width:1.6}
+      .target-text {fill:#78591b;font-weight:700}
+      .panel {fill:#edf2e8;stroke:#cad8cb;stroke-width:1.2}
+      .node {fill:#e9eee4;stroke:#97ad9a;stroke-width:1.25}
+      .wire {fill:none;stroke:#476957;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;marker-end:url(#arrow)}
+      .warn {fill:#875b35}
+    </style>
+  </defs>
+  <rect x="1" y="1" width="438" height="609" rx="14" fill="#f5f6ef" stroke="#c4d0c4"/>
+  <text x="20" y="32" class="head">同一个结果，能否覆盖旧输入？</text>
+  <text x="20" y="56" class="note">只追踪 A[1,0]=3、B[1,0]=1。</text>
+  <rect x="13" y="73" width="414" height="187" rx="9" class="panel"/>
+  <text x="25" y="101" class="head">方案一：Y 使用独立存储</text>
+  <rect x="27" y="115" width="180" height="46" rx="6" class="target"/>
+  <rect x="233" y="115" width="180" height="46" rx="6" class="node"/>
+  <text x="117" y="135" class="code-sm" text-anchor="middle">1012 · A[1,0]</text>
+  <text x="117" y="155" class="code target-text" text-anchor="middle">3</text>
+  <text x="323" y="135" class="code-sm" text-anchor="middle">3012 · Y[1,0]</text>
+  <text x="323" y="155" class="note" text-anchor="middle">未写入</text>
+  <path d="M220 163V183" class="wire"/>
+  <text x="233" y="180" class="note">写出结果 4</text>
+  <rect x="27" y="190" width="180" height="46" rx="6" class="target"/>
+  <rect x="233" y="190" width="180" height="46" rx="6" class="cell"/>
+  <text x="117" y="210" class="code-sm" text-anchor="middle">1012 · A[1,0]</text>
+  <text x="117" y="230" class="code target-text" text-anchor="middle">3</text>
+  <text x="323" y="210" class="code-sm" text-anchor="middle">3012 · Y[1,0]</text>
+  <text x="323" y="230" class="code" text-anchor="middle">4</text>
+  <text x="220" y="252" class="note" text-anchor="middle">旧 A 保留；Y 是新结果。</text>
+  <rect x="13" y="274" width="414" height="222" rx="9" class="panel"/>
+  <text x="25" y="302" class="head">方案二：Y 复用 A 的存储</text>
+  <rect x="111" y="316" width="218" height="46" rx="6" class="target"/>
+  <text x="220" y="336" class="code-sm" text-anchor="middle">1012 · A[1,0]</text>
+  <text x="220" y="356" class="code target-text" text-anchor="middle">3</text>
+  <path d="M220 365V390" class="wire"/>
+  <text x="233" y="382" class="note">覆盖为 4</text>
+  <rect x="111" y="394" width="218" height="46" rx="6" class="target"/>
+  <text x="220" y="414" class="code-sm" text-anchor="middle">1012 · Y[1,0]</text>
+  <text x="220" y="434" class="code target-text" text-anchor="middle">4</text>
+  <text x="25" y="463" class="note">条件：允许覆盖、旧 A 不再需要、</text>
+  <text x="25" y="484" class="note">没有会受影响的别名访问。</text>
+  <rect x="13" y="510" width="414" height="88" rx="9" class="target"/>
+  <text x="25" y="539" class="head">如果后来还有消费者需要旧 A？</text>
+  <text x="25" y="564" class="warn">从 1012 读到 4，而原程序要求 3。</text>
+  <text x="25" y="586" class="note">这时不能直接采用方案二。</text>
+</svg>
