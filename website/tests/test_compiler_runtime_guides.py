@@ -311,6 +311,19 @@ class CompilerRuntimeGuideTests(unittest.TestCase):
             ("e01-control-path.svg", "e01-device-contexts.svg"),
         )
 
+    def test_d02_article_navigation_search_and_diagrams(self):
+        route = "04-code-generation"
+        slug = "d02-instruction-selection"
+        self._check_article(
+            route,
+            "算子实现与代码生成",
+            slug,
+            "一个 IR 操作怎样变成目标机器的指令？",
+            ("d02-ir-to-machine.svg", "d02-wide-add.svg"),
+        )
+        previous = SITE / PREFIX / route / "d01-lowering-and-bufferization/index.html"
+        self.assertIn(f"../{slug}/", GuideContent(previous.read_text()).links)
+
     def _check_foundation_article(self, slug, title, diagram_names):
         self._check_article("01-foundations", "软件执行共同基础", slug, title, diagram_names)
 

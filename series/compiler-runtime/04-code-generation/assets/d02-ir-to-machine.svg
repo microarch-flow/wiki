@@ -1,0 +1,74 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="440" height="690" viewBox="0 0 440 690" role="img" aria-labelledby="title desc">
+  <title id="title">标量 IR、Machine IR 与一种目标寄存器分配结果</title>
+  <desc id="desc">输入 a、b、c 分别为 2、3、4，IR 中加法产生 t=5，乘法产生 y=20。选定 RV32IM 和 ILP32 调用约定后，入口参数从 a0、a1、a2 复制到虚拟寄存器 vA、vB、vC，目标 ADD 产生 vT，MUL 产生 vY，返回值交给 a0，再返回。此时虚拟寄存器尚未分配。一种合法的分配及去掉多余复制之后的汇编是 add a0,a0,a1；mul a0,a0,a2；ret。这次运行 a0 从 2 变成 5，再变成 20。</desc>
+  <defs>
+    <marker id="arrow" markerWidth="7" markerHeight="7" refX="6.3" refY="3.5" orient="auto" markerUnits="userSpaceOnUse">
+      <path d="M0 0 7 3.5 0 7Z" fill="#476957"/>
+    </marker>
+    <style>
+      text {font-family:"Noto Sans CJK SC","PingFang SC","Microsoft YaHei",sans-serif;fill:#173d35;font-size:19px}
+      .head {font-size:21px;font-weight:700}
+      .note {font-size:16px;fill:#416354}
+      .code {font-family:"DejaVu Sans Mono",Consolas,monospace;font-size:18px}
+      .code-sm {font-family:"DejaVu Sans Mono",Consolas,monospace;font-size:16px}
+      .cell {fill:#d9e9dc;stroke:#729582;stroke-width:1.3}
+      .target {fill:#f2e4c9;stroke:#aa9163;stroke-width:1.6}
+      .target-text {fill:#78591b;font-weight:700}
+      .panel {fill:#edf2e8;stroke:#cad8cb;stroke-width:1.2}
+      .node {fill:#e9eee4;stroke:#97ad9a;stroke-width:1.25}
+      .wire {fill:none;stroke:#476957;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;marker-end:url(#arrow)}
+    </style>
+  </defs>
+  <rect x="1" y="1" width="438" height="688" rx="14" fill="#f5f6ef" stroke="#c4d0c4"/>
+  <rect x="13" y="13" width="414" height="169" rx="9" class="panel"/>
+  <text x="25" y="41" class="head">① 标量 IR</text>
+  <text x="25" y="64" class="note">这次输入（编译时并不固定）</text>
+  <rect x="25" y="75" width="122" height="31" rx="5" class="cell"/>
+  <rect x="159" y="75" width="122" height="31" rx="5" class="cell"/>
+  <rect x="293" y="75" width="122" height="31" rx="5" class="cell"/>
+  <text x="86" y="97" class="code" text-anchor="middle">a = 2</text>
+  <text x="220" y="97" class="code" text-anchor="middle">b = 3</text>
+  <text x="354" y="97" class="code" text-anchor="middle">c = 4</text>
+  <text x="25" y="129" class="code-sm">%t = add_i32(a,b)</text>
+  <text x="25" y="151" class="code-sm">%y = mul_i32(%t,c)</text>
+  <text x="25" y="173" class="code-sm">return %y</text>
+  <text x="400" y="129" class="code target-text" text-anchor="end">5</text>
+  <text x="400" y="151" class="code target-text" text-anchor="end">20</text>
+  <path d="M220 185V211" class="wire"/>
+  <text x="232" y="204" class="note">指令选择、调用约定</text>
+  <rect x="13" y="214" width="414" height="249" rx="9" class="panel"/>
+  <text x="25" y="241" class="head">② Machine IR（示意）</text>
+  <text x="25" y="263" class="note">RV32IM · ILP32 · 固定输入位置</text>
+  <rect x="25" y="274" width="122" height="31" rx="5" class="cell"/>
+  <rect x="159" y="274" width="122" height="31" rx="5" class="cell"/>
+  <rect x="293" y="274" width="122" height="31" rx="5" class="cell"/>
+  <text x="86" y="296" class="code-sm" text-anchor="middle">a0 = 2</text>
+  <text x="220" y="296" class="code-sm" text-anchor="middle">a1 = 3</text>
+  <text x="354" y="296" class="code-sm" text-anchor="middle">a2 = 4</text>
+  <rect x="25" y="316" width="390" height="43" rx="6" class="node"/>
+  <text x="36" y="334" class="code-sm">vA = COPY a0; vB = COPY a1</text>
+  <text x="36" y="352" class="code-sm">vC = COPY a2</text>
+  <text x="25" y="382" class="code-sm">vT = ADD vA,vB</text>
+  <text x="25" y="404" class="code-sm">vY = MUL vT,vC</text>
+  <text x="400" y="382" class="code target-text" text-anchor="end">5</text>
+  <text x="400" y="404" class="code target-text" text-anchor="end">20</text>
+  <text x="25" y="426" class="code-sm">a0 = COPY vY; RET ra</text>
+  <text x="25" y="450" class="note">vA/vB/vC/vT/vY 尚未分配</text>
+  <path d="M220 466V492" class="wire"/>
+  <text x="232" y="485" class="note">分配、去掉多余复制</text>
+  <rect x="13" y="495" width="414" height="182" rx="9" class="panel"/>
+  <text x="25" y="522" class="head">③ 一种合法的目标汇编</text>
+  <text x="25" y="545" class="note">执行操作</text>
+  <text x="400" y="545" class="note" text-anchor="end">a0 中的值</text>
+  <rect x="320" y="552" width="85" height="32" rx="6" class="cell"/>
+  <text x="362.5" y="574" class="code" text-anchor="middle">2</text>
+  <text x="25" y="574" class="code-sm">进入函数</text>
+  <text x="25" y="604" class="code-sm">add a0,a0,a1</text>
+  <rect x="320" y="585" width="85" height="26" rx="6" class="target"/>
+  <text x="362.5" y="604" class="code target-text" text-anchor="middle">5</text>
+  <text x="25" y="633" class="code-sm">mul a0,a0,a2</text>
+  <rect x="320" y="614" width="85" height="26" rx="6" class="target"/>
+  <text x="362.5" y="633" class="code target-text" text-anchor="middle">20</text>
+  <text x="25" y="661" class="code-sm">ret</text>
+  <text x="400" y="661" class="note" text-anchor="end">返回 20</text>
+</svg>
