@@ -1,12 +1,14 @@
 """Verify the new software guides coexist with the published runtime series."""
 
 from collections import Counter
+from html import unescape
 from html.parser import HTMLParser
 import json
 from pathlib import Path
 import re
 import unittest
 from urllib.parse import unquote, urljoin, urlsplit
+from xml.etree import ElementTree
 
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -28,10 +30,13 @@ class GuideContent(HTMLParser):
         self.in_article = False
         self.links = []
         self.images = []
+        self.ids = []
         self.feed(html)
 
     def handle_starttag(self, tag, attrs):
         attrs = dict(attrs)
+        if "id" in attrs:
+            self.ids.append(attrs["id"])
         if tag == "article":
             self.in_article = True
         elif self.in_article and tag == "a":
@@ -116,6 +121,68 @@ class CompilerRuntimeGuideTests(unittest.TestCase):
                     if path.is_dir():
                         path /= "index.html"
                     self.assertTrue(path.is_file(), (relative, link))
+
+    def test_a01_article_navigation_search_and_diagrams(self):
+        route = "01-foundations"
+        slug = "a01-program-semantics"
+        title = "同一段计算，软件究竟要求计算机做什么？"
+        relative = f"{PREFIX}{route}/{slug}/"
+        url = "https://site.invalid/" + relative
+        source = SOURCE / route / f"{slug}.md"
+        staged = DOCS / PREFIX / route / source.name
+        self.assertRegex(source.read_text(), rf"(?m)^# {re.escape(title)}$")
+        self.assertTrue(staged.is_file())
+
+        page = (SITE / relative / "index.html").read_text()
+        body = re.search(r"<article\b[^>]*>(.*?)</article>", page, re.S)[1]
+        headings = re.findall(r"<h1\b[^>]*>(.*?)</h1>", body, re.S)
+        self.assertEqual(len(headings), 1)
+        heading = re.sub(r'<a\b[^>]*class="headerlink"[^>]*>.*?</a>', "", headings[0], flags=re.S)
+        self.assertEqual(unescape(re.sub(r"<[^>]+>", "", heading)).strip(), title)
+        self.assertIn(f'<link rel="canonical" href="https://microarch-flow.github.io/wiki/{relative}">', page)
+
+        entries = json.loads((SITE / "search/search_index.json").read_text())["docs"]
+        indexed = [item for item in entries if unquote(item["location"]) == relative]
+        self.assertEqual(len(indexed), 1)
+        self.assertEqual(indexed[0]["title"].replace("\u200b", ""), title)
+
+        primary = page.split('<div class="md-sidebar md-sidebar--primary"', 1)[1].split(
+            '<div class="md-sidebar md-sidebar--secondary"', 1)[0]
+        active = re.findall(r'<a\b[^>]*class="[^"]*\bmd-nav__link--active\b[^"]*"[^>]*>', primary)
+        self.assertEqual(len(active), 1)
+        self.assertIn('aria-current="page"', active[0])
+        href = re.search(r'href="([^"]+)"', active[0])[1]
+        self.assertEqual(urljoin(url, unescape(href)), url)
+
+        crumb = re.search(r'<nav class="site-breadcrumbs"[^>]*>(.*?)</nav>', page, re.S)[1]
+        self.assertIn(f'<span aria-current="page">{title}</span>', crumb)
+        crumb_targets = {unescape(label): urljoin(url, unescape(href)) for href, label in
+                         re.findall(r'<a href="([^"]+)">([^<]+)</a>', crumb)}
+        self.assertEqual(crumb_targets["新版：编译器与运行时系统"], "https://site.invalid/" + PREFIX)
+        self.assertEqual(crumb_targets["软件执行共同基础"], "https://site.invalid/" + PREFIX + route + "/")
+        guide_url = "https://site.invalid/" + PREFIX + route + "/"
+        guide = GuideContent((SITE / PREFIX / route / "index.html").read_text())
+        self.assertIn(url, [urljoin(guide_url, link) for link in guide.links])
+
+        content = GuideContent(page)
+        for filename in ("a01-values-and-state.svg", "a01-observable-behavior.svg"):
+            original = SOURCE / route / "assets" / filename
+            published = SITE / PREFIX / route / "assets" / filename
+            self.assertTrue(original.is_file())
+            self.assertTrue(published.is_file())
+            self.assertEqual(ElementTree.parse(published).getroot().tag, "{http://www.w3.org/2000/svg}svg")
+            self.assertTrue(any(src.endswith("/" + filename) and alt for src, alt in content.images), filename)
+
+        for ref in [*content.links, *(src for src, _ in content.images)]:
+            target = urlsplit(urljoin(url, ref))
+            if target.netloc != "site.invalid":
+                continue
+            path = SITE / unquote(target.path).lstrip("/")
+            if path.is_dir():
+                path /= "index.html"
+            self.assertTrue(path.is_file(), (relative, ref))
+            if target.fragment and path.suffix == ".html":
+                self.assertIn(unquote(target.fragment), GuideContent(path.read_text()).ids, (relative, ref))
 
 
 if __name__ == "__main__":

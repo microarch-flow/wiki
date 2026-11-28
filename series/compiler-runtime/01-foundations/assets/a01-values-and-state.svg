@@ -1,0 +1,44 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 482" width="500" height="482" role="img" aria-labelledby="values-title values-desc">
+  <title id="values-title">一次计算中的名称、值与状态变化</title>
+  <desc id="values-desc">输入名称 a、b、c 分别关联整数 2、3、4。执行 t = a + b 后，名称 t 关联值 5。执行 t = t * c 时，先读取旧值 5 和 c 的值 4，得到 20，再将 t 绑定到 20。最后 return t 返回 20。本图只跟踪源程序的抽象状态，不表示物理存储位置或硬件时钟。</desc>
+  <defs>
+    <marker id="v-arrow" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0 0L7 3.5L0 7Z" fill="#396b55"/></marker>
+    <style>
+      text{font-family:"Noto Sans CJK SC","PingFang SC","Microsoft YaHei",sans-serif;fill:#173d35;font-size:21px}
+      .head{font-weight:700;font-size:23px}.label{font-size:18px;fill:#416354}.code{font-family:"Noto Sans Mono CJK SC","Consolas",monospace;font-size:21px;font-weight:600}.note{font-size:18px;fill:#416354}
+      .step{fill:#e0ebe3;stroke:#82a18e;stroke-width:1.5}.name{fill:#e8e9df;stroke:#9aa89a;stroke-width:1.5}.value{fill:#d9e9dc;stroke:#6f9a80;stroke-width:1.5}
+      .edge{fill:none;stroke:#396b55;stroke-width:2;marker-end:url(#v-arrow)}
+    </style>
+  </defs>
+  <rect x="1" y="1" width="498" height="480" rx="14" fill="#f5f6ef" stroke="#c4d0c4" stroke-width="1.3"/>
+  <text class="head" x="24" y="32">跟踪名称与值的关系</text>
+  <rect class="step" x="24" y="48" width="452" height="60" rx="10"/>
+  <text class="label" x="38" y="70">输入</text>
+  <g class="code" text-anchor="middle">
+    <text x="102" y="94">a = 2</text><text x="250" y="94">b = 3</text><text x="398" y="94">c = 4</text>
+  </g>
+  <path class="edge" d="M250 108V142"/>
+  <text class="code" x="268" y="132">t = a + b</text>
+  <rect class="step" x="24" y="148" width="452" height="94" rx="10"/>
+  <text class="label" x="146" y="174" text-anchor="middle">名称</text>
+  <text class="label" x="354" y="174" text-anchor="middle">当前绑定的值</text>
+  <rect class="name" x="96" y="184" width="100" height="42" rx="7"/>
+  <text class="code" x="146" y="212" text-anchor="middle">t</text>
+  <path class="edge" d="M196 205H300"/>
+  <rect class="value" x="304" y="184" width="100" height="42" rx="7"/>
+  <text class="code" x="354" y="212" text-anchor="middle">5</text>
+  <path class="edge" d="M250 242V292"/>
+  <text class="code" x="268" y="264">t = t * c</text>
+  <text class="note" x="268" y="284">先用旧值 5 × 4</text>
+  <rect class="step" x="24" y="298" width="452" height="76" rx="10"/>
+  <text class="label" x="38" y="324">第二步之后：名称不变，改为关联新值</text>
+  <rect class="name" x="96" y="332" width="100" height="34" rx="7"/>
+  <text class="code" x="146" y="355" text-anchor="middle">t</text>
+  <path class="edge" d="M196 349H300"/>
+  <rect class="value" x="304" y="332" width="100" height="34" rx="7"/>
+  <text class="code" x="354" y="355" text-anchor="middle">20</text>
+  <path class="edge" d="M250 374V412"/>
+  <text class="code" x="268" y="402">return t</text>
+  <rect class="value" x="138" y="418" width="224" height="46" rx="10"/>
+  <text class="head" x="250" y="448" text-anchor="middle">返回值 20</text>
+</svg>
