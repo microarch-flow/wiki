@@ -1,0 +1,113 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 664" width="500" height="664" role="img" aria-labelledby="title desc">
+  <title id="title">A、B、C 的请求 Trace 怎样变成八轮执行事件</title>
+  <desc id="desc">教学事件模型，A、B、C 的输入数分别8、3、6，输出数分别4、2、3；A和B在0 ms到达，C在5.000 ms到达；每轮最多5个实际输入 token。先安排Decode再安排Prefill。轮次 R1 0–1.500 AP5无输出，R2 1.500–3.000 AP3 BP2 输出A1，R3 3.000–4.308 AD1 BP1 输出A2 B1，R4 4.308–5.720 AD1 BD1 输出A3 B2，R5 5.720–7.330 AD1 CP4 输出A4，R6 7.330–8.530 CP2 输出C1，R7 8.530–9.736 CD1 输出C2，R8 9.736–10.943 CD1 输出C3。C在5.000 ms到达，等0.720 ms到5.720 ms才进入批次，8.530 ms首输出；TTFT=3.530 ms。轴按比例绘制，轮次长度及输出时刻由教学成本模型推算，不是硬件实测。</desc>
+  <defs>
+    <style>
+      text{font-family:"Noto Sans CJK SC","PingFang SC","Microsoft YaHei",sans-serif;fill:#173d35;font-size:18px}
+      .head{font-size:23px;font-weight:700}.subhead{font-size:20px;font-weight:700}.label{font-size:18px;font-weight:600}.small{font-size:17px;fill:#416354}.tick{font-size:16px;fill:#416354}
+      .panel{fill:#edf2e8;stroke:#9ab69e;stroke-width:1.4}.grid{stroke:#c4d0c4;stroke-width:1;stroke-dasharray:3 3}.axis{stroke:#8b9c8e;stroke-width:1.3;fill:none}
+      .idle{fill:#f9f8ef;stroke:#b8ba9e;stroke-width:1}.warn{fill:#765820;font-weight:600}.warn-panel{fill:#f6efe0;stroke:#b9914e;stroke-width:1.5}
+      .r1{fill:#d9e9dc;stroke:#6f9a80;stroke-width:1.2}.r2{fill:#dfe8ef;stroke:#7d9eb1;stroke-width:1.2}.round{font-size:17px;font-weight:700}.thead{fill:#e1ebdf;stroke:#9ab69e;stroke-width:1}.row1{fill:#f5f6ef}.row2{fill:#edf2e8}.tbl{font-size:16px;fill:#173d35}.wait{stroke:#9c7b42;stroke-width:2;stroke-dasharray:3 2;fill:none}.go{stroke:#426e90;stroke-width:2;fill:none}.arrival{fill:#f5f6ef;stroke:#51675a;stroke-width:2}.start{fill:#f2e4c9;stroke:#9c7b42;stroke-width:1.5}.out{fill:#426e90;stroke:#f5f6ef;stroke-width:1.2}
+    </style>
+    <marker id="arrow" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0 0L7 3.5L0 7Z" fill="#527d64"/></marker>
+  </defs>
+  <rect x="1" y="1" width="498" height="662" rx="14" fill="#f5f6ef" stroke="#c4d0c4" stroke-width="1.3"/>
+  <text x="24.000" y="34.000" class="head">预算 5：请求 Trace 变成八轮工作</text>
+  <text x="24.000" y="60.000" class="small">输入/输出：A 8/4，B 3/2，C 6/3。</text>
+  <text x="24.000" y="84.000" class="small">A、B 在 0 ms 到达；C 在 5 ms 到达。</text>
+  <rect x="18.000" y="99.000" width="464.000" height="190.000" rx="10" class="panel"/>
+  <text x="32.000" y="124.000" class="subhead">执行轮次与请求 C 的等待</text>
+  <text x="462.000" y="124.000" class="tick" text-anchor="end">时间（ms）</text>
+  <path d="M48.000 152.000L466.000 152.000" class="axis"/>
+  <text x="48.000" y="144.000" class="tick" text-anchor="middle">0</text>
+  <path d="M48.000 152.000L48.000 223.000" class="grid"/>
+  <text x="124.000" y="144.000" class="tick" text-anchor="middle">2</text>
+  <path d="M124.000 152.000L124.000 223.000" class="grid"/>
+  <text x="200.000" y="144.000" class="tick" text-anchor="middle">4</text>
+  <path d="M200.000 152.000L200.000 223.000" class="grid"/>
+  <text x="276.000" y="144.000" class="tick" text-anchor="middle">6</text>
+  <path d="M276.000 152.000L276.000 223.000" class="grid"/>
+  <text x="352.000" y="144.000" class="tick" text-anchor="middle">8</text>
+  <path d="M352.000 152.000L352.000 223.000" class="grid"/>
+  <text x="428.000" y="144.000" class="tick" text-anchor="middle">10</text>
+  <path d="M428.000 152.000L428.000 223.000" class="grid"/>
+  <text x="466.000" y="144.000" class="tick" text-anchor="middle">11</text>
+  <path d="M466.000 152.000L466.000 223.000" class="grid"/>
+  <rect x="48.000" y="158.000" width="57.000" height="29.000" rx="3" class="r1"/>
+  <text x="76.500" y="179.000" class="round" text-anchor="middle">R1</text>
+  <rect x="105.000" y="158.000" width="57.000" height="29.000" rx="3" class="r2"/>
+  <text x="133.500" y="179.000" class="round" text-anchor="middle">R2</text>
+  <rect x="162.000" y="158.000" width="49.704" height="29.000" rx="3" class="r1"/>
+  <text x="186.852" y="179.000" class="round" text-anchor="middle">R3</text>
+  <rect x="211.704" y="158.000" width="53.656" height="29.000" rx="3" class="r2"/>
+  <text x="238.532" y="179.000" class="round" text-anchor="middle">R4</text>
+  <rect x="265.360" y="158.000" width="61.180" height="29.000" rx="3" class="r1"/>
+  <text x="295.950" y="179.000" class="round" text-anchor="middle">R5</text>
+  <rect x="326.540" y="158.000" width="45.600" height="29.000" rx="3" class="r2"/>
+  <text x="349.340" y="179.000" class="round" text-anchor="middle">R6</text>
+  <rect x="372.140" y="158.000" width="45.828" height="29.000" rx="3" class="r1"/>
+  <text x="395.054" y="179.000" class="round" text-anchor="middle">R7</text>
+  <rect x="417.968" y="158.000" width="45.866" height="29.000" rx="3" class="r2"/>
+  <text x="440.901" y="179.000" class="round" text-anchor="middle">R8</text>
+  <text x="32.000" y="217.000" class="label">C</text>
+  <path d="M238.000 212.000L265.360 212.000" class="wait"/>
+  <path d="M265.360 212.000L372.140 212.000" class="go"/>
+  <path d="M238.000 206.000l6 6l-6 6l-6 -6Z" class="arrival"/>
+  <rect x="261.360" y="208.000" width="8.000" height="8.000" rx="1" class="start"/>
+  <circle cx="372.140" cy="212.000" r="6" class="out"/>
+  <path d="M35.000 235.000l5 5l-5 5l-5 -5Z" class="arrival"/>
+  <text x="47.000" y="246.000" class="small">5.000 到达</text>
+  <rect x="178.000" y="235.000" width="10.000" height="10.000" rx="1" class="start"/>
+  <text x="194.000" y="246.000" class="small">5.720 入批</text>
+  <circle cx="333.000" cy="240.000" r="5" class="out"/>
+  <text x="345.000" y="246.000" class="small">8.530 首输出</text>
+  <text x="32.000" y="276.000" class="label">等待 0.720 ms；C 的 TTFT = 3.530 ms。</text>
+  <text x="24.000" y="315.000" class="small">P：Prefill 输入；D：Decode 输入。</text>
+  <rect x="18.000" y="329.000" width="464.000" height="33.000" rx="4" class="thead"/>
+  <text x="27.000" y="351.000" class="label">轮</text>
+  <text x="71.000" y="351.000" class="label">时间区间（ms）</text>
+  <text x="253.000" y="351.000" class="label">本轮输入</text>
+  <text x="388.000" y="351.000" class="label">轮末输出</text>
+  <rect x="18.000" y="362.000" width="464.000" height="31.000" rx="0" class="row1"/>
+  <text x="32.000" y="383.000" class="tbl" text-anchor="middle">1</text>
+  <text x="71.000" y="383.000" class="tbl">0.000–1.500</text>
+  <text x="253.000" y="383.000" class="tbl">AP5</text>
+  <text x="388.000" y="383.000" class="tbl">—</text>
+  <rect x="18.000" y="393.000" width="464.000" height="31.000" rx="0" class="row2"/>
+  <text x="32.000" y="414.000" class="tbl" text-anchor="middle">2</text>
+  <text x="71.000" y="414.000" class="tbl">1.500–3.000</text>
+  <text x="253.000" y="414.000" class="tbl">AP3 BP2</text>
+  <text x="388.000" y="414.000" class="tbl">A1</text>
+  <rect x="18.000" y="424.000" width="464.000" height="31.000" rx="0" class="row1"/>
+  <text x="32.000" y="445.000" class="tbl" text-anchor="middle">3</text>
+  <text x="71.000" y="445.000" class="tbl">3.000–4.308</text>
+  <text x="253.000" y="445.000" class="tbl">AD1 BP1</text>
+  <text x="388.000" y="445.000" class="tbl">A2 B1</text>
+  <rect x="18.000" y="455.000" width="464.000" height="31.000" rx="0" class="row2"/>
+  <text x="32.000" y="476.000" class="tbl" text-anchor="middle">4</text>
+  <text x="71.000" y="476.000" class="tbl">4.308–5.720</text>
+  <text x="253.000" y="476.000" class="tbl">AD1 BD1</text>
+  <text x="388.000" y="476.000" class="tbl">A3 B2</text>
+  <rect x="18.000" y="486.000" width="464.000" height="31.000" rx="0" class="row1"/>
+  <text x="32.000" y="507.000" class="tbl" text-anchor="middle">5</text>
+  <text x="71.000" y="507.000" class="tbl">5.720–7.330</text>
+  <text x="253.000" y="507.000" class="tbl">AD1 CP4</text>
+  <text x="388.000" y="507.000" class="tbl">A4</text>
+  <rect x="18.000" y="517.000" width="464.000" height="31.000" rx="0" class="row2"/>
+  <text x="32.000" y="538.000" class="tbl" text-anchor="middle">6</text>
+  <text x="71.000" y="538.000" class="tbl">7.330–8.530</text>
+  <text x="253.000" y="538.000" class="tbl">CP2</text>
+  <text x="388.000" y="538.000" class="tbl">C1</text>
+  <rect x="18.000" y="548.000" width="464.000" height="31.000" rx="0" class="row1"/>
+  <text x="32.000" y="569.000" class="tbl" text-anchor="middle">7</text>
+  <text x="71.000" y="569.000" class="tbl">8.530–9.736</text>
+  <text x="253.000" y="569.000" class="tbl">CD1</text>
+  <text x="388.000" y="569.000" class="tbl">C2</text>
+  <rect x="18.000" y="579.000" width="464.000" height="31.000" rx="0" class="row2"/>
+  <text x="32.000" y="600.000" class="tbl" text-anchor="middle">8</text>
+  <text x="71.000" y="600.000" class="tbl">9.736–10.943</text>
+  <text x="253.000" y="600.000" class="tbl">CD1</text>
+  <text x="388.000" y="600.000" class="tbl">C3</text>
+  <text x="24.000" y="632.000" class="small">A1 表示 A 的第 1 个输出 Token。</text>
+  <text x="250.000" y="654.000" class="small" text-anchor="middle">轮时长由教学成本模型计算；不是实测。</text>
+</svg>

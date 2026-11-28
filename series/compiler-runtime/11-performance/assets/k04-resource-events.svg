@@ -1,0 +1,56 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 658" width="500" height="658" role="img" aria-labelledby="title desc">
+  <title id="title">按时间取出完成事件，再检查资源是否能开始新任务</title>
+  <desc id="desc">F02 两组向量加法，单 DMA 与独立计算引擎。图示一段事件日历，不需逐拍推进。t=4 搬入 B1 完成，C1 与搬入 A2 同时开始。未来完成队列按时刻为 6 LA2、7 C1。t=6 LA2完成，LB2开始，未来队列为7 C1、8 LB2。t=7 C1完成，W1 数据就绪但 DMA 仍被 LB2 占用，未来队列为8 LB2。t=8 LB2完成，W1与C2可分别占用DMA及计算引擎并同时开始，未来队列为10 W1、11 C2。同刻先处理完成和到达事件，用更新后的状态决定再调度。教学模型非实测。</desc>
+  <defs>
+    <style>
+      text{font-family:"Noto Sans CJK SC","PingFang SC","Microsoft YaHei",sans-serif;fill:#173d35;font-size:18px}
+      .head{font-size:23px;font-weight:700}.subhead{font-size:20px;font-weight:700}.label{font-size:18px;font-weight:600}.small{font-size:17px;fill:#416354}.tick{font-size:16px;fill:#416354}
+      .panel{fill:#edf2e8;stroke:#9ab69e;stroke-width:1.4}.grid{stroke:#c4d0c4;stroke-width:1;stroke-dasharray:3 3}.axis{stroke:#8b9c8e;stroke-width:1.3;fill:none}
+      .idle{fill:#f9f8ef;stroke:#b8ba9e;stroke-width:1}.warn{fill:#765820;font-weight:600}.warn-panel{fill:#f6efe0;stroke:#b9914e;stroke-width:1.5}
+      .queue{fill:#f9f8ef;stroke:#9aa89a;stroke-width:1.2}.dma{fill:#d9e9dc;stroke:#6f9a80;stroke-width:1.2}.compute{fill:#dfe8ef;stroke:#7d9eb1;stroke-width:1.2}.edge{fill:none;stroke:#527d64;stroke-width:1.8;marker-end:url(#arrow)}.event{font-size:17px;font-weight:600}
+    </style>
+    <marker id="arrow" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0 0L7 3.5L0 7Z" fill="#527d64"/></marker>
+  </defs>
+  <rect x="1" y="1" width="498" height="656" rx="14" fill="#f5f6ef" stroke="#c4d0c4" stroke-width="1.3"/>
+  <text x="24.000" y="34.000" class="head">时钟跳到下一个完成事件</text>
+  <text x="24.000" y="60.000" class="small">F02：单 DMA、独立计算引擎；时钟单位为拍。</text>
+  <text x="24.000" y="84.000" class="small">同刻先处理完成与到达，再依据状态调度。</text>
+  <rect x="18.000" y="100.000" width="464.000" height="121.000" rx="10" class="panel"/>
+  <text x="32.000" y="126.000" class="subhead">t = 4：L_B₁ 完成</text>
+  <text x="32.000" y="150.000" class="small">DMA：L_A₂ 开始 → t6</text>
+  <text x="32.000" y="174.000" class="small">计算：C₁ 开始 → t7</text>
+  <text x="32.000" y="203.000" class="label">未来完成队列</text>
+  <rect x="173.000" y="182.000" width="133.000" height="29.000" rx="4" class="dma"/>
+  <text x="239.500" y="203.000" class="event" text-anchor="middle">t6 · L_A₂</text>
+  <rect x="315.000" y="182.000" width="133.000" height="29.000" rx="4" class="compute"/>
+  <text x="381.500" y="203.000" class="event" text-anchor="middle">t7 · C₁</text>
+  <path d="M248.000 222.000L248.000 232.000" class="edge"/>
+  <rect x="18.000" y="234.000" width="464.000" height="121.000" rx="10" class="panel"/>
+  <text x="32.000" y="260.000" class="subhead">t = 6：L_A₂ 完成</text>
+  <text x="32.000" y="284.000" class="small">DMA：L_B₂ 开始 → t8</text>
+  <text x="32.000" y="308.000" class="small">计算：C₁ 仍在运行</text>
+  <text x="32.000" y="337.000" class="label">未来完成队列</text>
+  <rect x="173.000" y="316.000" width="133.000" height="29.000" rx="4" class="compute"/>
+  <text x="239.500" y="337.000" class="event" text-anchor="middle">t7 · C₁</text>
+  <rect x="315.000" y="316.000" width="133.000" height="29.000" rx="4" class="dma"/>
+  <text x="381.500" y="337.000" class="event" text-anchor="middle">t8 · L_B₂</text>
+  <path d="M248.000 356.000L248.000 366.000" class="edge"/>
+  <rect x="18.000" y="368.000" width="464.000" height="121.000" rx="10" class="panel"/>
+  <text x="32.000" y="394.000" class="subhead">t = 7：C₁ 完成</text>
+  <text x="32.000" y="418.000" class="warn">W₁ 数据就绪；DMA 仍被 L_B₂ 占用</text>
+  <text x="32.000" y="442.000" class="small">计算：空闲</text>
+  <text x="32.000" y="471.000" class="label">未来完成队列</text>
+  <rect x="173.000" y="450.000" width="133.000" height="29.000" rx="4" class="dma"/>
+  <text x="239.500" y="471.000" class="event" text-anchor="middle">t8 · L_B₂</text>
+  <path d="M248.000 490.000L248.000 500.000" class="edge"/>
+  <rect x="18.000" y="502.000" width="464.000" height="121.000" rx="10" class="panel"/>
+  <text x="32.000" y="528.000" class="subhead">t = 8：L_B₂ 完成</text>
+  <text x="32.000" y="552.000" class="small">DMA：W₁ 开始 → t10</text>
+  <text x="32.000" y="576.000" class="small">计算：C₂ 开始 → t11</text>
+  <text x="32.000" y="605.000" class="label">未来完成队列</text>
+  <rect x="173.000" y="584.000" width="133.000" height="29.000" rx="4" class="dma"/>
+  <text x="239.500" y="605.000" class="event" text-anchor="middle">t10 · W₁</text>
+  <rect x="315.000" y="584.000" width="133.000" height="29.000" rx="4" class="compute"/>
+  <text x="381.500" y="605.000" class="event" text-anchor="middle">t11 · C₂</text>
+  <text x="250.000" y="646.000" class="small" text-anchor="middle">教学事件日历：只有状态变化时才推进，不是实测。</text>
+</svg>
