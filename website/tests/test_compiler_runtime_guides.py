@@ -614,6 +614,19 @@ class CompilerRuntimeGuideTests(unittest.TestCase):
         previous = SITE / PREFIX / route / "g05-paged-kv-cache" / "index.html"
         self.assertIn(f"../{slug}/", GuideContent(previous.read_text()).links)
 
+    def test_h02_article_navigation_search_and_diagrams(self):
+        route = "08-request-scheduling"
+        slug = "h02-chunked-prefill"
+        self._check_article(
+            route,
+            "请求调度与批处理",
+            slug,
+            "一个很长的提示词，怎样避免长时间阻塞正在生成的请求？",
+            ("h02-latency-timeline.svg", "h02-chunk-causal.svg", "h02-token-budget.svg"),
+        )
+        previous = SITE / PREFIX / route / "h01-continuous-batching/index.html"
+        self.assertIn(f"../{slug}/", GuideContent(previous.read_text()).links)
+
     def _check_foundation_article(self, slug, title, diagram_names):
         self._check_article("01-foundations", "软件执行共同基础", slug, title, diagram_names)
 
