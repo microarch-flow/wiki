@@ -136,6 +136,13 @@ class CompilerRuntimeGuideTests(unittest.TestCase):
             ("a02-value-flow.svg", "a02-branch-flow.svg"),
         )
 
+    def test_a03_article_navigation_search_and_diagrams(self):
+        self._check_foundation_article(
+            "a03-tensor-representation",
+            "同一个张量，为什么可以在内存中有不同的排列？",
+            ("a03-layout-comparison.svg", "a03-transpose-view.svg"),
+        )
+
     def _check_foundation_article(self, slug, title, diagram_names):
         route = "01-foundations"
         relative = f"{PREFIX}{route}/{slug}/"
