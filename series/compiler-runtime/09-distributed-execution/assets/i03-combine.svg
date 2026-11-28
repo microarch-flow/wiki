@@ -1,0 +1,57 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="500" height="507" viewBox="0 0 500 507" role="img" aria-labelledby="title desc">
+  <title id="title">根据 Token 身份恢复原位置，再合并专家输出</title>
+  <desc id="desc">跟踪原输入位于 Rank 1 的 t2。Rank 0 的专家 E0 和 E1 各自产生一份针对 t2 的 8 元素 FP16 输出向量，每份 16 B，独立返回给 Rank 1；元数据保留 Token 及专家身份或等价映射，确保两份结果恢复至原来的 t2 位置。为说明加权合并，取 E0 输出首维为 4、E1 输出首维为 10，权重分别为 2/3、1/3，则合并首维为 4×2/3+10×1/3=6。其他维度同样按各自数值合并。同批其他 Token 的输出不得混入 t2。全批独立返回的远端向量载荷仍为 64 B，不含元数据、填充及协议开销。</desc>
+  <defs>
+    <marker id="arrow" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto"><path d="M0 0L6 3L0 6Z" fill="#527d64"/></marker>
+    <marker id="arrowback" markerWidth="6" markerHeight="6" refX="1" refY="3" orient="auto"><path d="M6 0L0 3L6 6Z" fill="#527d64"/></marker>
+  </defs>
+
+  <style>
+    text { font-family: "Noto Sans CJK SC", "PingFang SC", "Microsoft YaHei", sans-serif; fill: #173d35; font-size: 18px; }
+    .head { font-size: 23px; font-weight: 700; } .subhead { font-size: 20px; font-weight: 700; }
+    .label { font-size: 17px; fill: #416354; } .small { font-size: 16px; fill: #416354; }
+    .num { font-size: 18px; text-anchor: middle; font-weight: 600; }
+    .panel { fill: #edf2e8; stroke: #9ab69e; stroke-width: 1.4; }
+    .card { fill: #f9f8ef; stroke: #b8ba9e; stroke-width: 1.25; }
+    .r0 { fill: #d9e9dc; stroke: #729582; stroke-width: 1.25; }
+    .r1 { fill: #f2e4c9; stroke: #aa9163; stroke-width: 1.25; }
+    .r2 { fill: #dce8e9; stroke: #7a969b; stroke-width: 1.25; }
+    .full { fill: #eaeedf; stroke: #9ab69e; stroke-width: 1.25; }
+    .arr { fill: none; stroke: #527d64; stroke-width: 1.8; marker-end: url(#arrow); }
+    .bi { fill: none; stroke: #527d64; stroke-width: 1.7; marker-start: url(#arrowback); marker-end: url(#arrow); }
+    .candidate { fill: none; stroke: #527d64; stroke-width: 2; stroke-dasharray: 3 2; marker-end: url(#arrow); }
+    .guide { stroke: #c4d0c4; stroke-width: 1; stroke-dasharray: 3 3; }
+    .wait { fill: #f9f8ef; stroke: #b8ba9e; stroke-width: 1.25; stroke-dasharray: 4 3; }
+    .tick { font-size: 15px; fill: #416354; }
+  </style>
+  <rect x="1" y="1" width="498" height="505" rx="14" fill="#f5f6ef" stroke="#c4d0c4" stroke-width="1.3"/>
+  <text x="24" y="33" class="head">怎样把专家输出送回原 Token？</text>
+  <text x="24" y="58" class="label">只跟踪 t2；其源端为 Rank 1</text>
+  <rect x="18" y="75" width="464" height="94" rx="10" class="panel"/>
+  <text x="30" y="101" class="subhead">Rank 0 · 计算完成</text>
+  <rect x="30" y="111" width="212" height="45" rx="6" class="r0"/>
+  <text x="40" y="129" class="label">E0(t2) · 16 B</text>
+  <text x="40" y="149" class="small">首维 4（共 8 元素）</text>
+  <rect x="257" y="111" width="212" height="45" rx="6" class="r0"/>
+  <text x="267" y="129" class="label">E1(t2) · 16 B</text>
+  <text x="267" y="149" class="small">首维 10（共 8 元素）</text>
+  <path d="M136 173V218" class="arr"/>
+  <path d="M363 173V218" class="arr"/>
+  <text x="250" y="195" class="label" text-anchor="middle">各自返回</text>
+  <text x="250" y="215" class="small" text-anchor="middle">两份 16 B</text>
+  <rect x="18" y="225" width="464" height="194" rx="10" class="panel"/>
+  <text x="30" y="252" class="subhead">Rank 1 · 恢复 t2 的位置</text>
+  <rect x="30" y="263" width="212" height="63" rx="7" class="r1"/>
+  <text x="136" y="287" class="label" text-anchor="middle">t2 · E0 首维 4</text>
+  <text x="136" y="312" class="label" text-anchor="middle">路由权重 2/3</text>
+  <rect x="257" y="263" width="212" height="63" rx="7" class="r1"/>
+  <text x="363" y="287" class="label" text-anchor="middle">t2 · E1 首维 10</text>
+  <text x="363" y="312" class="label" text-anchor="middle">路由权重 1/3</text>
+  <path d="M136 330L224 355" class="arr"/>
+  <path d="M363 330L276 355" class="arr"/>
+  <rect x="59" y="359" width="382" height="45" rx="7" class="card"/>
+  <text x="250" y="388" class="label" text-anchor="middle">t2 输出首维：4 × 2/3 + 10 × 1/3 = 6</text>
+  <text x="24" y="444" class="small">按元数据对齐 Token 与专家，再逐元素加权。</text>
+  <text x="24" y="467" class="small">同批其他 Token 仍归各自的位置，不混入 t2。</text>
+  <text x="24" y="490" class="label">全批独立返回的远端向量共 64 B。</text>
+</svg>
