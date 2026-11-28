@@ -1,0 +1,61 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 808" width="500" height="808" role="img" aria-labelledby="title description">
+  <title id="title">W 写回完成到主机结果可读</title>
+  <desc id="description">教学路径：W 将 d_Y 的 12 B 写回主机 DMA 地址 0x3000_2080。设备依其契约确认 W 成功结束且不再访问 Y，先写完整 CQE 再发布生产计数。设备可发中断提示，也可以由驱动轮询 CQ。驱动按队列约定读取状态、匹配任务并保存结果之后，按 E02 非一致性流式 DMA 契约执行适用的 sync-for-CPU 或解除映射，数据对 CPU 可见后才能读取 Y=[5,5,6]、建立 e_Y。收到完成记录本身不等于已经执行所需缓存同步。各步骤表示交接条件而非实际时序。</desc>
+  <defs>
+    <marker id="arrow" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0 0L7 3.5L0 7Z" fill="#527d64"/></marker>
+    <style>
+      text{font-family:"Noto Sans CJK SC","PingFang SC","Microsoft YaHei",sans-serif;fill:#173d35;font-size:20px}
+      .head{font-weight:700;font-size:23px}.subhead{font-weight:700;font-size:20px}.label{font-size:18px;fill:#416354}.small{font-size:16px;fill:#416354}.code{font-family:"Noto Sans Mono CJK SC","Consolas",monospace;font-size:19px;font-weight:600}.muted{font-size:16px;fill:#657568}.warntext{font-size:18px;fill:#82483d}
+      .host{fill:#f9f8ef;stroke:#b8ba9e;stroke-width:1.4}.driver{fill:#f2e4c9;stroke:#9c7b42;stroke-width:1.4}.device{fill:#edf2e8;stroke:#9ab69e;stroke-width:1.4}.alloc{fill:#d9e9dc;stroke:#6f9a80;stroke-width:1.3}.empty{fill:#f5f6ef;stroke:#a5afa2;stroke-width:1.3;stroke-dasharray:5 3}.error{fill:#f6e6dd;stroke:#b68979;stroke-width:1.4}.card{fill:#fffdf6;stroke:#b8ba9e;stroke-width:1.3}
+      .edge{fill:none;stroke:#527d64;stroke-width:2;marker-end:url(#arrow)}.dashed-edge{fill:none;stroke:#527d64;stroke-width:2;stroke-dasharray:5 3;marker-end:url(#arrow)}.line{fill:none;stroke:#b8ba9e;stroke-width:1.2}.dash{fill:none;stroke:#b8ba9e;stroke-width:1.2;stroke-dasharray:5 3}.num{font-size:18px;font-weight:700;fill:#fffdf6}
+    </style>
+  </defs>
+  <rect x="1" y="1" width="498" height="806" rx="14" fill="#f5f6ef" stroke="#c4d0c4" stroke-width="1.3"/>
+  <text x="24" y="34" class="head">写回完成后，Y 何时可以读？</text>
+  <text x="24" y="58" class="small">沿用 E02 的非一致性流式 DMA</text>
+  <rect x="18" y="76" width="464" height="94" rx="10" class="device"/>
+  <circle cx="42" cy="101" r="15" fill="#527d64"/>
+  <text x="42" y="107" class="num" text-anchor="middle">1</text>
+  <text x="66" y="107" class="subhead">W 写回主机缓冲区 Y</text>
+  <text x="66" y="132" class="label">设备 d_Y (0x3000) → 主机 Y</text>
+  <text x="66" y="154" class="small">主机 DMA 地址 0x3000_2080，12 B</text>
+  <path d="M250 170V186" class="edge"/>
+  <rect x="18" y="191" width="464" height="72" rx="10" class="device"/>
+  <circle cx="42" cy="216" r="15" fill="#527d64"/>
+  <text x="42" y="222" class="num" text-anchor="middle">2</text>
+  <text x="66" y="222" class="subhead">设备按契约确认 W 成功结束</text>
+  <text x="66" y="247" class="label">W 的读写均结束，不再访问缓冲区</text>
+  <path d="M250 263V280" class="edge"/>
+  <rect x="18" y="285" width="464" height="72" rx="10" class="device"/>
+  <circle cx="42" cy="310" r="15" fill="#527d64"/>
+  <text x="42" y="316" class="num" text-anchor="middle">3</text>
+  <text x="66" y="316" class="subhead">先写完整 CQE，再发布生产计数</text>
+  <text x="66" y="341" class="label">记录 W 的标识与成功状态</text>
+  <path d="M250 357V374" class="edge"/>
+  <rect x="18" y="379" width="464" height="78" rx="10" class="host"/>
+  <text x="133" y="402" class="subhead" text-anchor="middle">设备可发中断提示</text>
+  <text x="133" y="429" class="small" text-anchor="middle">或合并通知</text>
+  <text x="366" y="402" class="subhead" text-anchor="middle">驱动可轮询 CQ</text>
+  <text x="366" y="429" class="small" text-anchor="middle">按队列契约检查</text>
+  <path d="M250 389V447" class="line"/>
+  <path d="M250 457V474" class="edge"/>
+  <rect x="18" y="479" width="464" height="72" rx="10" class="driver"/>
+  <circle cx="42" cy="504" r="15" fill="#9c7b42"/>
+  <text x="42" y="510" class="num" text-anchor="middle">4</text>
+  <text x="66" y="510" class="subhead">驱动读取状态并匹配任务</text>
+  <text x="66" y="535" class="label">检查新记录，保存成功或失败</text>
+  <path d="M250 551V568" class="edge"/>
+  <rect x="18" y="573" width="464" height="72" rx="10" class="driver"/>
+  <circle cx="42" cy="598" r="15" fill="#9c7b42"/>
+  <text x="42" y="604" class="num" text-anchor="middle">5</text>
+  <text x="66" y="604" class="subhead">按 DMA 契约交还主机 Y</text>
+  <text x="66" y="629" class="label">按需 sync-for-CPU 或解除映射</text>
+  <path d="M250 645V662" class="edge"/>
+  <rect x="18" y="667" width="464" height="72" rx="10" class="alloc"/>
+  <circle cx="42" cy="692" r="15" fill="#527d64"/>
+  <text x="42" y="698" class="num" text-anchor="middle">6</text>
+  <text x="66" y="698" class="subhead">Y 才可由 CPU 正确读取</text>
+  <text x="66" y="723" class="label">e_Y：Y = [5, 5, 6]</text>
+  <text x="250" y="768" class="small" text-anchor="middle">收到完成记录 ≠ 已执行所需的缓存同步</text>
+  <text x="250" y="790" class="small" text-anchor="middle">箭头只表示交接条件，不表示实际耗时。</text>
+</svg>

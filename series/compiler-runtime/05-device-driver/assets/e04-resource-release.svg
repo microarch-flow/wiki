@@ -1,0 +1,55 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 671" width="500" height="671" role="img" aria-labelledby="title description">
+  <title id="title">六个缓冲区的最后使用者与资源归还条件</title>
+  <desc id="description">成功路径中的六个缓冲区：主机 A 的最后 DMA 使用者是 L_A，主机 B 是 L_B；设备 d_A、d_B 的最后使用者是 C；设备 d_Y 的最后使用者是 W；主机 Y 在 W 停止访问且完成主机可见性同步后可读，应用最后一次消费后才能释放存储。成功或错误状态不自动证明不再访问；资源回收均要求满足接口保证及无其他引用。主机解除 DMA 映射和页面固定不等于释放应用内存。本图仅表示安全边界，不要求立即解除或释放。</desc>
+  <defs>
+    <marker id="arrow" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0 0L7 3.5L0 7Z" fill="#527d64"/></marker>
+    <style>
+      text{font-family:"Noto Sans CJK SC","PingFang SC","Microsoft YaHei",sans-serif;fill:#173d35;font-size:20px}
+      .head{font-weight:700;font-size:23px}.subhead{font-weight:700;font-size:20px}.label{font-size:18px;fill:#416354}.small{font-size:16px;fill:#416354}.code{font-family:"Noto Sans Mono CJK SC","Consolas",monospace;font-size:19px;font-weight:600}.muted{font-size:16px;fill:#657568}.warntext{font-size:18px;fill:#82483d}
+      .host{fill:#f9f8ef;stroke:#b8ba9e;stroke-width:1.4}.driver{fill:#f2e4c9;stroke:#9c7b42;stroke-width:1.4}.device{fill:#edf2e8;stroke:#9ab69e;stroke-width:1.4}.alloc{fill:#d9e9dc;stroke:#6f9a80;stroke-width:1.3}.empty{fill:#f5f6ef;stroke:#a5afa2;stroke-width:1.3;stroke-dasharray:5 3}.error{fill:#f6e6dd;stroke:#b68979;stroke-width:1.4}.card{fill:#fffdf6;stroke:#b8ba9e;stroke-width:1.3}
+      .edge{fill:none;stroke:#527d64;stroke-width:2;marker-end:url(#arrow)}.dashed-edge{fill:none;stroke:#527d64;stroke-width:2;stroke-dasharray:5 3;marker-end:url(#arrow)}.line{fill:none;stroke:#b8ba9e;stroke-width:1.2}.dash{fill:none;stroke:#b8ba9e;stroke-width:1.2;stroke-dasharray:5 3}.num{font-size:18px;font-weight:700;fill:#fffdf6}
+    </style>
+  </defs>
+  <rect x="1" y="1" width="498" height="669" rx="14" fill="#f5f6ef" stroke="#c4d0c4" stroke-width="1.3"/>
+  <text x="24" y="34" class="head">谁还在使用缓冲区？</text>
+  <text x="24" y="58" class="small">成功路径：每组数据 12 B，无额外访问者</text>
+  <rect x="18" y="76" width="464" height="43" rx="8" class="driver"/>
+  <text x="32" y="103" class="subhead">缓冲区</text>
+  <text x="153" y="103" class="small">最后使用者</text>
+  <text x="278" y="103" class="subhead">归还条件</text>
+  <rect x="18" y="124" width="464" height="66" rx="7" class="host"/>
+  <text x="32" y="152" class="subhead">主机 A</text>
+  <text x="171" y="152" class="code" text-anchor="middle">L_A</text>
+  <text x="257" y="148" class="label">L_A 停止读 A</text>
+  <text x="257" y="172" class="small">可交还 A 的 DMA 使用权</text>
+  <rect x="18" y="194" width="464" height="66" rx="7" class="host"/>
+  <text x="32" y="222" class="subhead">主机 B</text>
+  <text x="171" y="222" class="code" text-anchor="middle">L_B</text>
+  <text x="257" y="218" class="label">L_B 停止读 B</text>
+  <text x="257" y="242" class="small">可交还 B 的 DMA 使用权</text>
+  <rect x="18" y="264" width="464" height="66" rx="7" class="device"/>
+  <text x="32" y="292" class="subhead">设备 d_A</text>
+  <text x="171" y="292" class="code" text-anchor="middle">C</text>
+  <text x="257" y="288" class="label">C 停止读取 d_A</text>
+  <text x="257" y="312" class="small">可归还设备存储</text>
+  <rect x="18" y="334" width="464" height="66" rx="7" class="device"/>
+  <text x="32" y="362" class="subhead">设备 d_B</text>
+  <text x="171" y="362" class="code" text-anchor="middle">C</text>
+  <text x="257" y="358" class="label">C 停止读取 d_B</text>
+  <text x="257" y="382" class="small">可归还设备存储</text>
+  <rect x="18" y="404" width="464" height="66" rx="7" class="device"/>
+  <text x="32" y="432" class="subhead">设备 d_Y</text>
+  <text x="171" y="432" class="code" text-anchor="middle">W</text>
+  <text x="257" y="428" class="label">W 停止读取 d_Y</text>
+  <text x="257" y="452" class="small">可归还设备存储</text>
+  <rect x="18" y="474" width="464" height="66" rx="7" class="host"/>
+  <text x="32" y="502" class="subhead">主机 Y</text>
+  <text x="171" y="502" class="code" text-anchor="middle">W / CPU</text>
+  <text x="257" y="498" class="label">W 停止写 Y，按契约同步</text>
+  <text x="257" y="522" class="small">最后消费结束后释放</text>
+  <rect x="18" y="555" width="464" height="74" rx="10" class="alloc"/>
+  <text x="250" y="578" class="label" text-anchor="middle">全部条件还包括：无其他引用，接口允许交还</text>
+  <text x="250" y="600" class="label" text-anchor="middle">主机解除 DMA 映射和 Pin</text>
+  <text x="250" y="620" class="small" text-anchor="middle">不等于释放应用的内存</text>
+  <text x="250" y="654" class="small" text-anchor="middle">本图表示资源使用边界，不要求立即释放。</text>
+</svg>

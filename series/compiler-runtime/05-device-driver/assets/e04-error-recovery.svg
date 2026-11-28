@@ -1,0 +1,52 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 755" width="500" height="755" role="img" aria-labelledby="title description">
+  <title id="title">失败、停止访问与安全回收的边界</title>
+  <desc id="description">L_B 失败可能只写入了部分 d_B，等待超时也不能证明任务已经失败或已停止访问。确认前置条件不满足时，C 和 W 不得按成功数据使用 d_B 或 d_Y。软件记录已知错误或不确定状态，停止提交依赖任务，按照接口收束已提交命令；若能够确认旧访问已停止，可在没有其他引用并满足接口交还条件时回收。否则按设备契约等待排空或执行必要的复位，再确认是否隔离或终止所有旧访问。无法确认时，保留相关资源，不得交给新任务复用；复位范围由实际设备决定，不需要所有错误都全卡复位。L_B 已失败时，不应把 Y 当成本次有效结果。</desc>
+  <defs>
+    <marker id="arrow" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0 0L7 3.5L0 7Z" fill="#527d64"/></marker>
+    <style>
+      text{font-family:"Noto Sans CJK SC","PingFang SC","Microsoft YaHei",sans-serif;fill:#173d35;font-size:20px}
+      .head{font-weight:700;font-size:23px}.subhead{font-weight:700;font-size:20px}.label{font-size:18px;fill:#416354}.small{font-size:16px;fill:#416354}.code{font-family:"Noto Sans Mono CJK SC","Consolas",monospace;font-size:19px;font-weight:600}.muted{font-size:16px;fill:#657568}.warntext{font-size:18px;fill:#82483d}
+      .host{fill:#f9f8ef;stroke:#b8ba9e;stroke-width:1.4}.driver{fill:#f2e4c9;stroke:#9c7b42;stroke-width:1.4}.device{fill:#edf2e8;stroke:#9ab69e;stroke-width:1.4}.alloc{fill:#d9e9dc;stroke:#6f9a80;stroke-width:1.3}.empty{fill:#f5f6ef;stroke:#a5afa2;stroke-width:1.3;stroke-dasharray:5 3}.error{fill:#f6e6dd;stroke:#b68979;stroke-width:1.4}.card{fill:#fffdf6;stroke:#b8ba9e;stroke-width:1.3}
+      .edge{fill:none;stroke:#527d64;stroke-width:2;marker-end:url(#arrow)}.dashed-edge{fill:none;stroke:#527d64;stroke-width:2;stroke-dasharray:5 3;marker-end:url(#arrow)}.line{fill:none;stroke:#b8ba9e;stroke-width:1.2}.dash{fill:none;stroke:#b8ba9e;stroke-width:1.2;stroke-dasharray:5 3}.num{font-size:18px;font-weight:700;fill:#fffdf6}
+    </style>
+  </defs>
+  <rect x="1" y="1" width="498" height="753" rx="14" fill="#f5f6ef" stroke="#c4d0c4" stroke-width="1.3"/>
+  <text x="24" y="34" class="head">L_B 失败后，何时才能回收？</text>
+  <text x="24" y="58" class="small">失败路径：d_B 可能仅被写入了一部分</text>
+  <rect x="18" y="76" width="464" height="70" rx="10" class="error"/>
+  <text x="250" y="102" class="subhead" text-anchor="middle">L_B 返回错误，或软件等待超时</text>
+  <text x="250" y="129" class="small" text-anchor="middle">超时与错误通知都不证明旧访问已经停止</text>
+  <path d="M250 146V163" class="edge"/>
+  <rect x="18" y="168" width="464" height="70" rx="10" class="driver"/>
+  <text x="250" y="194" class="subhead" text-anchor="middle">记录失败或等待处理的不确定状态</text>
+  <text x="250" y="220" class="small" text-anchor="middle">停止提交相关依赖工作；C、W 不消费失效数据</text>
+  <path d="M250 238V255" class="edge"/>
+  <rect x="18" y="260" width="464" height="65" rx="10" class="host"/>
+  <text x="250" y="286" class="subhead" text-anchor="middle">先检查旧任务是否已停止访问</text>
+  <text x="250" y="310" class="small" text-anchor="middle">已提交的依赖命令也需要收束</text>
+  <path d="M250 325V342" class="edge"/>
+  <rect x="18" y="347" width="464" height="88" rx="10" class="driver"/>
+  <text x="250" y="374" class="subhead" text-anchor="middle">若尚未确认：按设备契约处理</text>
+  <text x="250" y="398" class="label" text-anchor="middle">等待排空或执行必要的复位，确认访问已停止</text>
+  <text x="250" y="421" class="small" text-anchor="middle">复位范围由设备实现，不一定需要全卡复位</text>
+  <path d="M250 435V452" class="edge"/>
+  <rect x="18" y="457" width="464" height="57" rx="10" class="host"/>
+  <text x="250" y="484" class="subhead" text-anchor="middle">已确认旧访问停止？</text>
+  <path d="M250 514V535H133V556" class="edge"/>
+  <path d="M250 535H367V556" class="edge"/>
+  <text x="145" y="545" class="small">是</text>
+  <text x="348" y="545" class="small">否</text>
+  <rect x="18" y="561" width="230" height="113" rx="10" class="alloc"/>
+  <text x="133" y="587" class="subhead" text-anchor="middle">安全回收条件</text>
+  <text x="133" y="611" class="label" text-anchor="middle">记录终止状态</text>
+  <text x="133" y="634" class="label" text-anchor="middle">确认无引用后归还</text>
+  <text x="133" y="655" class="small" text-anchor="middle">撤销映射或释放资源</text>
+  <rect x="260" y="561" width="222" height="113" rx="10" class="error"/>
+  <text x="371" y="587" class="subhead" text-anchor="middle">暂不回收</text>
+  <text x="371" y="611" class="label" text-anchor="middle">保留相关资源</text>
+  <text x="371" y="634" class="label" text-anchor="middle">不得交给新任务复用</text>
+  <text x="371" y="655" class="small" text-anchor="middle">继续恢复或等待确认</text>
+  <rect x="18" y="688" width="464" height="48" rx="10" class="error"/>
+  <text x="250" y="711" class="warntext" text-anchor="middle">L_B 失败时，不能把 Y 当成本次有效结果。</text>
+  <text x="250" y="730" class="small" text-anchor="middle">失败传播与资源回收是不同的交接。</text>
+</svg>

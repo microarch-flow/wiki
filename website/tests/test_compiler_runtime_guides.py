@@ -372,6 +372,20 @@ class CompilerRuntimeGuideTests(unittest.TestCase):
         previous = SITE / PREFIX / route / "e02-device-memory-mapping/index.html"
         self.assertIn(f"../{slug}/", GuideContent(previous.read_text()).links)
 
+    def test_e04_article_navigation_search_and_diagrams(self):
+        route = "05-device-driver"
+        slug = "e04-completion-and-error-handling"
+        self._check_article(
+            route,
+            "设备驱动与底层资源管理",
+            slug,
+            "设备完成任务或发生错误后，驱动怎样归还资源？",
+            ("e04-completion-queue.svg", "e04-completion-path.svg",
+             "e04-resource-release.svg", "e04-error-recovery.svg"),
+        )
+        previous = SITE / PREFIX / route / "e03-command-submission/index.html"
+        self.assertIn(f"../{slug}/", GuideContent(previous.read_text()).links)
+
     def test_d02_article_navigation_search_and_diagrams(self):
         route = "04-code-generation"
         slug = "d02-instruction-selection"

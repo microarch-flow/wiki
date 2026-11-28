@@ -237,7 +237,7 @@ D04 继续追踪 D02 的 RV32I 尾调用，通过真实 ELF 目标文件的符�
 | E01 | 应用程序怎样找到并获得计算设备的使用权？ | 用户态与内核态、驱动与固件、设备发现、初始化、上下文、所有权和隔离。 | A04；参考 A05 | `e01-device-context-and-driver.md` | 已发布 |
 | E02 | 计算设备怎样访问一块由软件分配的内存？ | 主机与设备地址、内存申请、Pin、Map、DMA 映射、访问权限与可见性。 | E01、存储与互连接口 | `e02-device-memory-mapping.md` | 已发布 |
 | E03 | 驱动怎样告诉设备有一项工作需要执行？ | 命令缓冲区、描述符、命令队列、Doorbell、提交顺序、设备接纳。 | E01、E02、A05 | `e03-command-submission.md` | 已发布 |
-| E04 | 设备完成任务或发生错误后，驱动怎样归还资源？ | 完成队列、中断、轮询、Fence、错误报告、复位、清理与可见性。 | E03 | `e04-completion-and-error-handling.md` | 待写 |
+| E04 | 设备完成任务或发生错误后，驱动怎样归还资源？ | 完成队列、中断、轮询、Fence、错误报告、复位、清理与可见性。 | E03 | `e04-completion-and-error-handling.md` | 已发布 |
 
 ### F. 通用执行运行时（5 篇）
 
@@ -483,3 +483,5 @@ K 横跨所有路线。K01/K02 可早期开展，K03–K05 按被分析的机制
 - 2026-11-28 · D04 已发布并核验，D01–D04 通用机器代码生成路线的初稿已完成。正文提交 `c29c16c`，[GitHub Pages 部署](https://github.com/microarch-flow/wiki/actions/runs/46132726384)成功。[公开正文](https://microarch-flow.github.io/wiki/series/compiler-runtime/04-code-generation/d04-executable-artifacts/)、D03 后继、专题导读、三张图解、导航、面包屑与搜索索引均已核验。LLVM 19.1.7 实际生成了 ELF32 RV32I 目标文件；LLVM MC 和 LLD 19.1.7 重新汇编、静态链接验证了符号、重定位及 PT_LOAD 布局，省略辅助函数时链接失败。从真实 ELF 的入口及指令字用教学模型执行得到 20，直接调用 evaluate 的 10,000 组随机与 6 组边界输入复算通过（非真机执行）。合并 F03 后本地整站 184 项测试通过。
 
 - 2026-11-28 · F03 已发布并核验，F01–F03 共同执行主线初稿均已发布。正文提交 `69c3df7`，[GitHub Pages 部署](https://github.com/microarch-flow/wiki/actions/runs/46132430970) 成功；[公开正文](https://microarch-flow.github.io/wiki/series/compiler-runtime/06-execution-runtime/f03-runtime-buffer-management/)、F02 后继及 E03 衔接链接、专题导读、三张图解、导航、面包屑及搜索收录均已核验。基于 E03 的整站 183 项测试通过；复算 13/15 拍日程、72/60 B 数据预算、48 B 池碎片例及两组加法输出（教学模型，非 GPU 实测），三图 360 px 窄屏渲染核验通过。保留并行完成的 D04，F04/F05 待编写，旧推理运行时不变。
+
+- 2026-11-28 · E04 继承 E01–E03 的 ctx_P、四项任务与六个 Buffer，采用四槽 CQ 追踪完成记录、通知、状态处理及主机可见性，区分 SQ/CQ 槽位、Fence、DMA 映射和存储的生命周期。以 L_B 失败说明依赖失败、取消、超时、复位及访问终止的不同条件，并闭合上下文清理与共享设备边界；动态 Buffer 管理留 F03。E 专题四篇初稿全部完成；核查 Linux DMA/中断/dma-fence/PCI 错误恢复与 NVMe 官方资料，复算 CQ 0/0→2/0→2/2、主机结果交接和未停止访问不得回收的反例，四张图解完成 500/360 px 实际渲染。合并 F03 正文后本地整站 184 项测试全部通过。复审 E01–E04 确认现有四篇划分完整，不必增篇。
