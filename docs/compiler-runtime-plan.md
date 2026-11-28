@@ -257,7 +257,7 @@ F01–F03 为模型执行的主要基础。F04、F05 分别深入重放和变体
 | F02 | 提交任务的函数已经返回，为什么不能马上读取计算结果？ | Stream、Event、Fence、异步执行、依赖及可见性、搬运计算编排。 | F01、A05、E04 的完成语义 | `f02-asynchronous-execution.md` | 已发布 |
 | F03 | 两项任务需要使用同一块 Buffer，什么时候才能安全复用？ | 动态分配、内存池、碎片、所有权、延迟释放、异步资源回收。 | F02 | `f03-runtime-buffer-management.md` | 已发布 |
 | F04 | 多次执行相同的任务序列，怎样减少每轮提交开销？ | 任务图、执行图捕获、Replay、动态 DAG、重放约束及重建。 | F02、F03 | `f04-execution-graphs-and-replay.md` | 已发布 |
-| F05 | 实际输入形状发生变化，运行时怎样找到可以执行的程序？ | Shape Guard、分桶、变体选择、JIT 触发、编译缓存、Fallback。 | A03、F01、F03；按需 F04 | `f05-dynamic-shapes-and-specialization.md` | 初稿完成，待发布核验 |
+| F05 | 实际输入形状发生变化，运行时怎样找到可以执行的程序？ | Shape Guard、分桶、变体选择、JIT 触发、编译缓存、Fallback。 | A03、F01、F03；按需 F04 | `f05-dynamic-shapes-and-specialization.md` | 已发布 |
 
 ### G. 模型执行与生成控制（9 篇）
 
@@ -503,3 +503,5 @@ K 横跨所有路线。K01/K02 可早期开展，K03–K05 按被分析的机制
 - 2026-11-28 · F05 初稿完成。沿 F01–F04 的向量加法将实际长度由3变5，复用现有动态 Kernel 但调整参数、启动规模与三组 Buffer 有效容量；从合法输入与 Guard 失配的区别引出执行变体、长度3/5/7的4/8容量桶、Padding 与图重放条件。保留旧版21/29/31→32分桶取舍，区分 JIT 触发、编译过程、产物缓存、加载及回退，承接 B03/C05/D04 与 G01 的执行后端，批次组成归 H。F01–F05 五篇初稿均完成，待 F05 发布核验。
 
 - 2026-11-28 · D06 初稿完成，随本次 main 更新发布。沿 D05 算例追踪 MatMul + BiasRelu 的中间值、Epilogue 与行 Softmax 归约；两张静态图解及入口链接。独立 C11 例程严格编译并通过 2,003 组测试，行内局部状态与双线程共享/屏障 Softmax 模型通过 3,024 组有限分数和掩码用例（非 GPU 实测）。旧版推理运行时不变。
+
+- 2026-11-28 · F05 已发布并核验，F01–F05 五篇初稿全部发布。正文提交 `1e1a9a7`，[GitHub Pages 部署](https://github.com/microarch-flow/wiki/actions/runs/46138300039) 成功；[公开正文](https://microarch-flow.github.io/wiki/series/compiler-runtime/06-execution-runtime/f05-dynamic-shapes-and-specialization/)、F04 后继及 G01 衔接、三张图解、导航、面包屑、专题导读与五篇搜索收录均已核验。合并 G02 后本地整站 190 项测试全部通过；复算三/五元素结果、36/60/96 B 空间、4/8 线程启动规模、分桶空余容量与固定搬运差额（教学模型，非 GPU 实测），三张图 360 px 渲染通过。复审 F01–F05 认知依赖及知识边界，F01–F03 为通用执行主线，F04/F05 为按场景深化。保留并行 D06/G02，旧推理运行时未修改。
