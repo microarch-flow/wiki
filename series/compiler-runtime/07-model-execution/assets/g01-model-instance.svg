@@ -1,0 +1,57 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 852" width="500" height="852" role="img" aria-labelledby="loading-title loading-desc">
+  <title id="loading-title">从模型文件到可反复调用的模型实例</title>
+  <desc id="loading-desc">模型配置与程序、权重文件和分词或预处理规则共同提供模型执行所需信息。核对模型结构、参数名称、形状、类型和版本后，依据相互匹配的布局和设备约束准备权重并选择或加载后端，两类工作可部分重叠。模型实例 M 引用可访问权重 W、执行入口及支持条件、执行上下文及资源池。准备就绪后接收请求 A，输入序列 p1 至 p8，最多输出四个 Token，已生成 Token 数和已完成计算位置数均为零。资源池已准备不代表请求历史状态已计算。</desc>
+  <defs>
+    <marker id="g01-load-arrow" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0 0L7 3.5L0 7Z" fill="#527d64"/></marker>
+    <style>
+      text{font-family:"Noto Sans CJK SC","PingFang SC","Microsoft YaHei",sans-serif;fill:#173d35;font-size:21px}
+      .head{font-weight:700;font-size:23px}.subhead{font-weight:700;font-size:20px}.label{font-size:18px;fill:#416354}.small{font-size:17px;fill:#416354}
+      .artifact{fill:#f9f8ef;stroke:#b8ba9e;stroke-width:1.4}.context{fill:#edf2e8;stroke:#9ab69e;stroke-width:1.5}.inner{fill:#f5f6ef;stroke:#9ab69e;stroke-width:1.4}.entry{fill:#d9e9dc;stroke:#6f9a80;stroke-width:1.4}.request{fill:#f2e4c9;stroke:#9c7b42;stroke-width:1.5}
+      .edge{fill:none;stroke:#527d64;stroke-width:2;marker-end:url(#g01-load-arrow)}.guide{fill:none;stroke:#527d64;stroke-width:1.7;stroke-dasharray:5 4}
+    </style>
+  </defs>
+  <rect x="1" y="1" width="498" height="850" rx="14" fill="#f5f6ef" stroke="#c4d0c4" stroke-width="1.3"/>
+  <text x="24" y="34" class="head">从模型文件建立模型实例</text>
+  <rect x="18" y="53" width="464" height="146" rx="10" class="artifact"/>
+  <text x="32" y="80" class="subhead">待准备的模型材料</text>
+  <rect x="34" y="94" width="432" height="29" rx="5" class="inner"/>
+  <text x="250" y="115" class="label" text-anchor="middle">配置与模型程序（计算结构）</text>
+  <rect x="34" y="128" width="432" height="29" rx="5" class="inner"/>
+  <text x="250" y="149" class="label" text-anchor="middle">权重文件（参数值）</text>
+  <rect x="34" y="162" width="432" height="29" rx="5" class="inner"/>
+  <text x="250" y="183" class="label" text-anchor="middle">Tokenizer / 输入规则</text>
+  <path d="M250 199V218" class="edge"/>
+  <rect x="18" y="223" width="464" height="60" rx="8" class="entry"/>
+  <text x="250" y="246" class="subhead" text-anchor="middle">核对模型结构及参数</text>
+  <text x="250" y="270" class="label" text-anchor="middle">名称、形状、类型、版本与输入约定</text>
+  <path d="M250 283V298H130V310" class="edge"/>
+  <path d="M250 298H370V310" class="edge"/>
+  <rect x="18" y="315" width="224" height="100" rx="8" class="artifact"/>
+  <text x="130" y="343" class="subhead" text-anchor="middle">权重准备</text>
+  <text x="130" y="370" class="label" text-anchor="middle">解包、转换布局</text>
+  <text x="130" y="395" class="label" text-anchor="middle">设备搬运</text>
+  <rect x="258" y="315" width="224" height="100" rx="8" class="artifact"/>
+  <text x="370" y="343" class="subhead" text-anchor="middle">后端准备</text>
+  <text x="370" y="370" class="label" text-anchor="middle">选择实现、加载入口</text>
+  <text x="370" y="395" class="label" text-anchor="middle">必要时编译</text>
+  <path d="M242 365H258" class="guide"/>
+  <path d="M130 415V461H250V477" class="edge"/>
+  <path d="M370 415V461H250" fill="none" stroke="#527d64" stroke-width="2"/>
+  <text x="250" y="436" class="small" text-anchor="middle">可部分重叠</text>
+  <text x="250" y="455" class="small" text-anchor="middle">布局与设备约束须匹配</text>
+  <rect x="18" y="482" width="464" height="186" rx="10" class="context"/>
+  <text x="32" y="511" class="subhead">模型实例 M（可重复调用）</text>
+  <rect x="34" y="525" width="432" height="36" rx="6" class="entry"/>
+  <text x="250" y="549" class="label" text-anchor="middle">设备可访问的权重 W</text>
+  <rect x="34" y="569" width="432" height="36" rx="6" class="entry"/>
+  <text x="250" y="593" class="label" text-anchor="middle">执行入口与支持条件</text>
+  <rect x="34" y="613" width="432" height="36" rx="6" class="inner"/>
+  <text x="250" y="637" class="label" text-anchor="middle">执行上下文及资源池的引用</text>
+  <path d="M250 668V708" class="edge"/>
+  <text x="264" y="692" class="small">必要准备与验证完成</text>
+  <rect x="18" y="713" width="464" height="105" rx="10" class="request"/>
+  <text x="32" y="741" class="subhead">请求 A（尚未执行）</text>
+  <text x="32" y="767" class="label">输入 p₁ … p₈，输出上限 4 个 Token</text>
+  <text x="32" y="794" class="label">已生成 0，已计算位置数 0</text>
+  <text x="250" y="840" class="small" text-anchor="middle">逻辑流程示意，不规定各准备步骤的实际顺序</text>
+</svg>

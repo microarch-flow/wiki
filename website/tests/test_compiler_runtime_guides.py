@@ -453,6 +453,15 @@ class CompilerRuntimeGuideTests(unittest.TestCase):
             page = SITE / PREFIX / route / previous / "index.html"
             self.assertIn(f"../{slug}/", GuideContent(page.read_text()).links)
 
+    def test_g01_article_navigation_search_and_diagrams(self):
+        self._check_article(
+            "07-model-execution",
+            "模型执行与生成控制",
+            "g01-model-loading-and-execution",
+            "模型文件怎样变成可以反复执行的模型实例？",
+            ("g01-model-instance.svg", "g01-request-ownership.svg"),
+        )
+
     def _check_foundation_article(self, slug, title, diagram_names):
         self._check_article("01-foundations", "软件执行共同基础", slug, title, diagram_names)
 
