@@ -1,0 +1,81 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 580" width="500" height="580" role="img" aria-labelledby="title desc">
+  <title id="title">开环和闭环负载的请求发送时刻不同</title>
+  <desc id="desc">沿 H01 连续批，A 和 B 都在 0 毫秒发出，每轮最多安排2条序列。开环按外部计划在14毫秒发出 C；闭环槽位要等 B 完成才发 C；假设通知、发送和接收无耗时且同刻到达先于下一轮调度，正常耗时下 B 在16毫秒完成，C 的首输出在26毫秒，故从实际发出到首输出开环12毫秒、闭环10毫秒。各轮耗时加倍时 B 在32毫秒完成，C 的首输出在52毫秒，开环仍在14毫秒发，闭环到32毫秒才发，两者从实际发送到首输出分别38毫秒和20毫秒。图示构造事件，非实测。只有明确外部计划到达与实际发送的计时边界，指标才可公平比较。</desc>
+  <defs>
+    <style>
+      text{font-family:"Noto Sans CJK SC","PingFang SC","Microsoft YaHei",sans-serif;fill:#173d35;font-size:18px}
+      .head{font-size:23px;font-weight:700}.subhead{font-size:20px;font-weight:700}.label{font-size:18px;font-weight:600}.small{font-size:17px;fill:#416354}.tick{font-size:16px;fill:#416354}
+      .panel{fill:#edf2e8;stroke:#9ab69e;stroke-width:1.4}.grid{stroke:#c4d0c4;stroke-width:1;stroke-dasharray:3 3}.axis{stroke:#8b9c8e;stroke-width:1.3;fill:none}
+      .idle{fill:#f9f8ef;stroke:#b8ba9e;stroke-width:1}.warn{fill:#765820;font-weight:600}.warn-panel{fill:#f6efe0;stroke:#b9914e;stroke-width:1.5}
+      .arrival{fill:#f5f6ef;stroke:#51675a;stroke-width:2}.out{fill:#426e90;stroke:#f5f6ef;stroke-width:1.2}.a-path{fill:none;stroke:#6f9a80;stroke-width:3}.c-path{fill:none;stroke:#7d9eb1;stroke-width:3}.b-finish{stroke:#9c7b42;stroke-width:1.7;stroke-dasharray:4 3;fill:none}.plan{stroke:#8b9c8e;stroke-width:1.5;stroke-dasharray:4 4;fill:none}.defer{stroke:#b9914e;stroke-width:2;stroke-dasharray:3 3;fill:none}
+    </style>
+    <marker id="arrow" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0 0L7 3.5L0 7Z" fill="#527d64"/></marker>
+  </defs>
+  <rect x="1" y="1" width="498" height="578" rx="14" fill="#f5f6ef" stroke="#c4d0c4" stroke-width="1.3"/>
+  <text x="24" y="34" class="head">压测端何时发送 C？</text>
+  <text x="24" y="60" class="small">A/B 于 0 ms 发出；闭环最多有两条在途请求。</text>
+  <path d="M30 76l6 6l-6 6l-6 -6Z" class="arrival"/>
+  <text x="43" y="89" class="small">C 实际发出</text>
+  <circle cx="210" cy="82" r="6" class="out"/>
+  <text x="224" y="89" class="small">C 首输出</text>
+  <rect x="18" y="106" width="464" height="207" rx="10" class="panel"/>
+  <text x="32" y="133" class="subhead">原轮次耗时</text>
+  <text x="462" y="133" class="warn" text-anchor="end">B 完成：16 ms</text>
+  <path d="M88.0 161L457.59999999999997 161" class="axis"/>
+  <text x="470" y="156" class="tick" text-anchor="end">ms</text>
+  <text x="88.0" y="154" class="tick" text-anchor="middle">0</text>
+  <path d="M88.0 161L88.0 269" class="grid"/>
+  <text x="154.0" y="154" class="tick" text-anchor="middle">10</text>
+  <path d="M154.0 161L154.0 269" class="grid"/>
+  <text x="220.0" y="154" class="tick" text-anchor="middle">20</text>
+  <path d="M220.0 161L220.0 269" class="grid"/>
+  <text x="286.0" y="154" class="tick" text-anchor="middle">30</text>
+  <path d="M286.0 161L286.0 269" class="grid"/>
+  <text x="352.0" y="154" class="tick" text-anchor="middle">40</text>
+  <path d="M352.0 161L352.0 269" class="grid"/>
+  <text x="418.0" y="154" class="tick" text-anchor="middle">50</text>
+  <path d="M418.0 161L418.0 269" class="grid"/>
+  <path d="M193.6 165V198M193.6 226V258" class="b-finish"/>
+  <text x="32" y="193" class="label">开环</text>
+  <path d="M180.39999999999998 187L259.6 187" class="a-path"/>
+  <path d="M180.39999999999998 181l6 6l-6 6l-6 -6Z" class="arrival"/>
+  <circle cx="259.6" cy="187" r="6" class="out"/>
+  <text x="90" y="212" class="label">14 → 26 ms，TTFT = 12 ms</text>
+  <text x="32" y="253" class="label">闭环</text>
+  <path d="M193.6 247L259.6 247" class="c-path"/>
+  <path d="M193.6 241l6 6l-6 6l-6 -6Z" class="arrival"/>
+  <circle cx="259.6" cy="247" r="6" class="out"/>
+  <text x="90" y="272" class="label">16 → 26 ms，TTFT = 10 ms</text>
+  <text x="32" y="303" class="small">开环按计划发出；闭环等前一个请求完成。</text>
+  <rect x="18" y="326" width="464" height="207" rx="10" class="panel"/>
+  <text x="32" y="353" class="subhead">每轮耗时加倍</text>
+  <text x="462" y="353" class="warn" text-anchor="end">B 完成：32 ms</text>
+  <path d="M88.0 381L457.59999999999997 381" class="axis"/>
+  <text x="470" y="376" class="tick" text-anchor="end">ms</text>
+  <text x="88.0" y="374" class="tick" text-anchor="middle">0</text>
+  <path d="M88.0 381L88.0 489" class="grid"/>
+  <text x="154.0" y="374" class="tick" text-anchor="middle">10</text>
+  <path d="M154.0 381L154.0 489" class="grid"/>
+  <text x="220.0" y="374" class="tick" text-anchor="middle">20</text>
+  <path d="M220.0 381L220.0 489" class="grid"/>
+  <text x="286.0" y="374" class="tick" text-anchor="middle">30</text>
+  <path d="M286.0 381L286.0 489" class="grid"/>
+  <text x="352.0" y="374" class="tick" text-anchor="middle">40</text>
+  <path d="M352.0 381L352.0 489" class="grid"/>
+  <text x="418.0" y="374" class="tick" text-anchor="middle">50</text>
+  <path d="M418.0 381L418.0 489" class="grid"/>
+  <path d="M299.2 385V418M299.2 446V478" class="b-finish"/>
+  <text x="32" y="413" class="label">开环</text>
+  <path d="M180.39999999999998 407L431.2 407" class="a-path"/>
+  <path d="M180.39999999999998 401l6 6l-6 6l-6 -6Z" class="arrival"/>
+  <circle cx="431.2" cy="407" r="6" class="out"/>
+  <text x="90" y="432" class="label">14 → 52 ms，TTFT = 38 ms</text>
+  <text x="32" y="473" class="label">闭环</text>
+  <path d="M299.2 467L431.2 467" class="c-path"/>
+  <path d="M299.2 461l6 6l-6 6l-6 -6Z" class="arrival"/>
+  <circle cx="431.2" cy="467" r="6" class="out"/>
+  <text x="90" y="492" class="label">32 → 52 ms，TTFT = 20 ms</text>
+  <text x="32" y="523" class="small">开环按计划发出；闭环等前一个请求完成。</text>
+  <text x="24" y="556" class="label">两种入口语义不同，只看 TTFT 会掩盖等待。</text>
+  <text x="250" y="574" class="small" text-anchor="middle">构造时间线，不是实测。</text>
+</svg>

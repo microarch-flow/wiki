@@ -1,0 +1,75 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 504" width="500" height="504" role="img" aria-labelledby="title desc">
+  <title id="title">资源约束加入关键路径：不能只沿数据流寻找瓶颈</title>
+  <desc id="desc">F02 两组输入都独立。DMA 是单串行搬运引擎，依次在0–2搬入 A1、2–4搬入 B1、4–6搬入 A2、6–8搬入 B2、8–10写回第一组 W1、11–13写回第二组 W2。计算引擎4–7计算 C1，8–11计算 C2。深色任务是原日程的关键链，即 LA1、LB1、LA2、LB2、C2、W2，总13拍，四项搬入受同一 DMA 的资源序列约束。C1 第7拍结束，但 W1 因 DMA 还在搬入 B2，需等第8拍开始，W1第10拍结束。固定任务顺序、只缩短 C1 从3拍至2拍，C1结束提前至第6拍，W1仍须等到8拍，总时间仍13。只缩短 C2 从3拍至1拍，C2第9拍完成，W2还必须等W1归还 DMA 的第10拍才执行，到第12拍完成，总时间12拍。构造示例，不是硬件实测。</desc>
+  <defs>
+    <style>
+      text{font-family:"Noto Sans CJK SC","PingFang SC","Microsoft YaHei",sans-serif;fill:#173d35;font-size:18px}
+      .head{font-size:23px;font-weight:700}.subhead{font-size:20px;font-weight:700}.label{font-size:18px;font-weight:600}.small{font-size:17px;fill:#416354}.tick{font-size:16px;fill:#416354}
+      .panel{fill:#edf2e8;stroke:#9ab69e;stroke-width:1.4}.grid{stroke:#c4d0c4;stroke-width:1;stroke-dasharray:3 3}.axis{stroke:#8b9c8e;stroke-width:1.3;fill:none}
+      .idle{fill:#f9f8ef;stroke:#b8ba9e;stroke-width:1}.warn{fill:#765820;font-weight:600}.warn-panel{fill:#f6efe0;stroke:#b9914e;stroke-width:1.5}
+      .critical{fill:#c1dac6;stroke:#427a5a;stroke-width:1.7}.other{fill:#dfe8ef;stroke:#7d9eb1;stroke-width:1.2}.slot{font-size:17px;font-weight:600}.gap{stroke:#9c7b42;stroke-width:2;stroke-dasharray:3 2;fill:none}.edge{fill:none;stroke:#527d64;stroke-width:1.7;marker-end:url(#arrow)}
+    </style>
+    <marker id="arrow" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0 0L7 3.5L0 7Z" fill="#527d64"/></marker>
+  </defs>
+  <rect x="1" y="1" width="498" height="502" rx="14" fill="#f5f6ef" stroke="#c4d0c4" stroke-width="1.3"/>
+  <text x="24" y="34" class="head">只缩短一个内核，整组会更快吗？</text>
+  <text x="24" y="60" class="small">F02：单 DMA 与独立计算引擎；两组任务独立。</text>
+  <rect x="25" y="73" width="20" height="18" rx="4" class="critical"/>
+  <text x="53" y="89" class="small">关键链任务</text>
+  <rect x="224" y="73" width="20" height="18" rx="4" class="other"/>
+  <text x="252" y="89" class="small">非关键链任务</text>
+  <rect x="18" y="104" width="464" height="186" rx="10" class="panel"/>
+  <text x="32" y="131" class="subhead">原日程（总完成 13 拍）</text>
+  <text x="464" y="130" class="tick" text-anchor="end">时间（拍）</text>
+  <path d="M89 158L453 158" class="axis"/>
+  <text x="89" y="150" class="tick" text-anchor="middle">0</text>
+  <path d="M89 158L89 231" class="grid"/>
+  <text x="145" y="150" class="tick" text-anchor="middle">2</text>
+  <path d="M145 158L145 231" class="grid"/>
+  <text x="201" y="150" class="tick" text-anchor="middle">4</text>
+  <path d="M201 158L201 231" class="grid"/>
+  <text x="257" y="150" class="tick" text-anchor="middle">6</text>
+  <path d="M257 158L257 231" class="grid"/>
+  <text x="285" y="150" class="tick" text-anchor="middle">7</text>
+  <path d="M285 158L285 231" class="grid"/>
+  <text x="313" y="150" class="tick" text-anchor="middle">8</text>
+  <path d="M313 158L313 231" class="grid"/>
+  <text x="369" y="150" class="tick" text-anchor="middle">10</text>
+  <path d="M369 158L369 231" class="grid"/>
+  <text x="397" y="150" class="tick" text-anchor="middle">11</text>
+  <path d="M397 158L397 231" class="grid"/>
+  <text x="453" y="150" class="tick" text-anchor="middle">13</text>
+  <path d="M453 158L453 231" class="grid"/>
+  <text x="80" y="186" class="label" text-anchor="end">DMA</text>
+  <rect x="89" y="165" width="364" height="29" rx="3" class="idle"/>
+  <rect x="89" y="165" width="56" height="29" rx="3" class="critical"/>
+  <text x="117.0" y="186" class="slot" text-anchor="middle">A₁</text>
+  <rect x="145" y="165" width="56" height="29" rx="3" class="critical"/>
+  <text x="173.0" y="186" class="slot" text-anchor="middle">B₁</text>
+  <rect x="201" y="165" width="56" height="29" rx="3" class="critical"/>
+  <text x="229.0" y="186" class="slot" text-anchor="middle">A₂</text>
+  <rect x="257" y="165" width="56" height="29" rx="3" class="critical"/>
+  <text x="285.0" y="186" class="slot" text-anchor="middle">B₂</text>
+  <rect x="313" y="165" width="56" height="29" rx="3" class="other"/>
+  <text x="341.0" y="186" class="slot" text-anchor="middle">W₁</text>
+  <rect x="397" y="165" width="56" height="29" rx="3" class="critical"/>
+  <text x="425.0" y="186" class="slot" text-anchor="middle">W₂</text>
+  <text x="80" y="221" class="label" text-anchor="end">计算</text>
+  <rect x="89" y="200" width="364" height="29" rx="3" class="idle"/>
+  <rect x="201" y="200" width="84" height="29" rx="3" class="other"/>
+  <text x="243.0" y="221" class="slot" text-anchor="middle">C₁</text>
+  <rect x="313" y="200" width="84" height="29" rx="3" class="critical"/>
+  <text x="355.0" y="221" class="slot" text-anchor="middle">C₂</text>
+  <path d="M285 236L313 236" class="gap"/>
+  <text x="32" y="254" class="small">C₁ 在第 7 拍完成，W₁ 仍要等 DMA 到第 8 拍。</text>
+  <text x="32" y="279" class="label">关键链：A₁ → B₁ → A₂ → B₂ → C₂ → W₂</text>
+  <text x="24" y="320" class="subhead">保持各资源任务次序，分别缩短一个计算</text>
+  <rect x="18" y="332" width="464" height="64" rx="8" class="panel"/>
+  <text x="32" y="356" class="label">C₁：3 → 2 拍；第 6 拍结束。</text>
+  <text x="32" y="381" class="small">W₁ 仍为 8–10；全部完成：13 拍。</text>
+  <rect x="18" y="403" width="464" height="74" rx="8" class="panel"/>
+  <text x="32" y="427" class="label">C₂：3 → 1 拍；第 9 拍结束。</text>
+  <text x="32" y="450" class="small">W₂ 仍要等 W₁ 交还 DMA；10–12 执行。</text>
+  <text x="32" y="469" class="label">全部完成：12 拍。</text>
+  <text x="250" y="495" class="small" text-anchor="middle">教学日程；A/B 表示搬入 L_A/L_B；非实测。</text>
+</svg>
