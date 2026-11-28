@@ -180,7 +180,7 @@ B03 可以在 A02/A03 后独立阅读。这里主讲变换的语义和合法性�
 | ID | 暂定标题 | 核心范围 | 主要前置 | 计划文件名 | 状态 |
 | --- | --- | --- | --- | --- | --- | --- |
 | C01 | 一块矩阵怎样分给有限数量的计算单元？ | 计算分解、张量分块、时空映射、任务分配、Placement、尾块与资源约束。 | A03、A04、B04 的必要知识 | `c01-tensor-mapping.md` | 已发布 |
-| C02 | 同一组数据怎样安排布局和驻留，才能减少搬运？ | Layout 选择、数据复用、Dataflow 选择、存储层次、布局转换代价。 | C01 | `c02-layout-and-dataflow-planning.md` | 初稿完成，待发布核验 |
+| C02 | 同一组数据怎样安排布局和驻留，才能减少搬运？ | Layout 选择、数据复用、Dataflow 选择、存储层次、布局转换代价。 | C01 | `c02-layout-and-dataflow-planning.md` | 已发布 |
 | C03 | 计算与数据搬运怎样安排在同一张时间表上？ | Task DAG、静态调度、资源占用、DMA 编排、通信规划、计算搬运重叠。 | A05、C02 | `c03-static-execution-planning.md` | 待写 |
 | C04 | 已经使用过的缓冲空间，什么时候可以交给下一项任务？ | 静态 Buffer 生命周期、分配、复用、干涉关系、容量及别名约束。 | C03、B04；按需 B05 | `c04-static-buffer-allocation.md` | 待写 |
 | C05 | 许多方案都能正确执行，怎样找到更好的一个？ | 合法性与优化目标、代价模型、设计空间、搜索、Auto-tuning、Pareto、Shape 专门化。 | C01–C04 的相关知识；按需 K03 | `c05-cost-model-and-search.md` | 待写 |
@@ -431,3 +431,5 @@ K 横跨所有路线。K01/K02 可早期开展，K03–K05 按被分析的机制
 - 2026-11-28 · C01 已发布并核验。正文提交 `e845e61`，[GitHub Pages 部署](https://github.com/microarch-flow/wiki/actions/runs/46116608737)成功。[公开正文](https://microarch-flow.github.io/wiki/series/compiler-runtime/03-mapping-and-planning/c01-tensor-mapping/)、专题入口、图解、站内链接、导航、面包屑及搜索索引均已核验。本地整站 167 项测试通过，独立复算确认两种输出分工、两段归约的部分和，以及尾块的 24/32 和 24/24 个有效乘加位置。
 
 - 2026-11-28 · B04 已发布并核验。正文提交 `5f719ea`，[GitHub Pages 部署](https://github.com/microarch-flow/wiki/actions/runs/46117290829)成功。[公开正文](https://microarch-flow.github.io/wiki/series/compiler-runtime/02-frontend-and-optimization/b04-dependency-and-alias-analysis/)、B03 后继链接、专题导读、两张图解、面包屑、侧栏与搜索索引均已核验。Go 实测确认同一格与相邻格的读写结果，以及循环正序和逆序的最终数组。网站构建及 168 项测试通过。
+
+- 2026-11-28 · C02 已发布并核验。正文提交 `ace9873`，[GitHub Pages 部署](https://github.com/microarch-flow/wiki/actions/runs/46118015069)成功。[公开正文](https://microarch-flow.github.io/wiki/series/compiler-runtime/03-mapping-and-planning/c02-layout-and-dataflow-planning/)、C01 后继、专题导读、两张图解、导航、面包屑和搜索收录均已核对。本地整站 169 项测试通过，复算确认五种映射选择的源端读数，以及重排权重在第二次调用抵平、第三次节省外层流量的条件。
